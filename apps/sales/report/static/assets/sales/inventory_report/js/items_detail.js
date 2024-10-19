@@ -122,29 +122,36 @@ $(document).ready(function () {
         // console.log(data_list)
         table.DataTable().clear().destroy()
         table.DataTableDefault({
-            dom: '',
+            styleDom: 'hide-foot',
             paging: false,
+            scrollY: '60vh',
+            scrollX: true,
+            scrollCollapse: true,
             reloadCurrency: true,
             data: data_list,
             columns: [
                 {
-                    className: '',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'prd') {
                             let html = `
-                                <span class="product-td badge badge-secondary badge-pill" data-product-id="${row?.['product_id']}">
-                                    <a tabindex="0"
-                                       data-bs-placement="bottom"
-                                       data-bs-toggle="popover"
-                                       data-bs-trigger="hover focus"
-                                       data-bs-html="true"
-                                       data-bs-content="- ${trans_script.attr('data-trans-uom')}: <span class='badge badge-soft-blue badge-pill'>${row?.['product_uom']}</span><br>- ${trans_script.attr('data-trans-vm')}: <span class='fst-italic'>${row?.['we']}<span>"
-                                       class="w-100 text-white d-inline-block popover-prd">
-                                    ${row?.['product_code']}
-                                    </a>
-                                </span>&nbsp;
-                                <b>${row?.['product_title']}</b>
-                            `
+                                <span style="font-size: medium" data-product-id="${row?.['product_id']}" class="product-td text-primary fw-bold">${row?.['product_title']}</span>
+                                <a tabindex="0" href="#"
+                                    data-bs-placement="top"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover focus"
+                                    data-bs-html="true"
+                                    data-bs-content="
+                                    <div class='border rounded p-2'>
+                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-code')}</span>: <span class='badge badge-primary badge-sm'>${row?.['product_code']}</span>
+                                    <br>
+                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-uom')}</span>: <span class='text-primary'>${row?.['product_uom']}</span>
+                                    <br>
+                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-vm')}</span>: <span class='text-primary'>${row?.['we']}<span>
+                                    </div>"
+                                    class="popover-prd">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>`
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
                             }
@@ -153,14 +160,17 @@ $(document).ready(function () {
                             }
                             return html
                         }
-                        if (row?.['row_type'] === 'log') {
-                            return `<span style="font-size: small" class="badge text-muted text-right w-100">${row?.['system_date']}</span>`
+                        else if (row?.['row_type'] === 'log') {
+                            return `<span class="text-muted">${row?.['system_date']}</span>`
+                        }
+                        else if (row?.['row_type'] === 'open') {
+                            return `--`
                         }
                         return ``
                     }
                 },
                 {
-                    className: '',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
                             return `<label class="text-center text-secondary">${row?.['ob_label']}</label>`
@@ -170,18 +180,16 @@ $(document).ready(function () {
                                     <span class="badge badge-soft-${row?.['text_color']} w-40">${row?.['trans_code']}</span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `
-                                    <span class="badge badge-sm badge-soft-secondary badge-pill">
+                            return `<span class="text-secondary fw-bold wh-of-${row?.['product_id']}">${row?.['warehouse_title']}</span>
+                                    <span class="badge badge-sm badge-soft-secondary badge-pill fw-bold">
                                         ${row?.['warehouse_code']}
-                                    </span>&nbsp;
-                                    <span class="text-secondary fw-bold wh-of-${row?.['product_id']}">${row?.['warehouse_title']}</span>
-                            `
+                                    </span>`
                         }
                         return ``
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'log') {
                             return `<span class="text-${row?.['text_color']}">${row?.['quantity']}</span>`
@@ -190,7 +198,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'log') {
                             return `<span class="text-${row?.['text_color']} mask-money" data-init-money="${row?.['cost']}"></span>`
@@ -199,7 +207,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'log') {
                             return `<span class="text-${row?.['text_color']} mask-money" data-init-money="${row?.['value']}"></span>`
@@ -208,94 +216,70 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
-                            return `<span style="font-size: medium" class="badge badge-pill text-secondary">${row?.['opening_balance_quantity']}</span>`
+                            return `<span class="text-secondary">${row?.['opening_balance_quantity']}</span>`
                         }
                         else if (row?.['row_type'] === 'log') {
-                            return `<span style="font-size: medium" class="badge badge-pill text-secondary current-quantity-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}">${row?.['current_quantity']}</span>`
+                            return `<span class="text-secondary current-quantity-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}">${row?.['current_quantity']}</span>`
                         }
                         else if (row?.['row_type'] === 'prd') {
-                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill sum-current-quantity-${row?.['product_id']}-${row?.['sale_order_id']}"></span>`
+                            return `<span class="fw-bold text-primary sum-current-quantity-${row?.['product_id']}-${row?.['sale_order_id']}"></span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-secondary sum-current-quantity-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}">${row?.['ending_balance_quantity']}</span>`
+                            return `<span class="fw-bold text-secondary sum-current-quantity-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}">${row?.['ending_balance_quantity']}</span>`
                         }
                         return ``
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
-                            return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money" data-init-money="${row?.['opening_balance_cost']}"></span>`
+                            return `<span class="text-secondary mask-money" data-init-money="${row?.['opening_balance_cost']}"></span>`
                         }
                         else if (row?.['row_type'] === 'log') {
-                            return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money current-cost-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_cost']}"></span>`
+                            return `<span class="text-secondary mask-money current-cost-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_cost']}"></span>`
                         }
                         else if (row?.['row_type'] === 'prd') {
-                            return `<span style="font-size: medium" class="badge badge-pill badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-cost-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
+                            return `<span class="fw-bold text-primary mask-money sum-current-cost-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-secondary mask-money sum-current-cost-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_cost']}"></span>`
+                            return `<span class="fw-bold text-secondary mask-money sum-current-cost-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_cost']}"></span>`
                         }
                         return ``
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
-                            return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money" data-init-money="${row?.['opening_balance_value']}"></span>`
+                            return `<span class="text-secondary mask-money" data-init-money="${row?.['opening_balance_value']}"></span>`
                         }
                         else if (row?.['row_type'] === 'log') {
-                            return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money current-value-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_value']}"></span>`
+                            return `<span class="text-secondary mask-money current-value-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_value']}"></span>`
                         }
                         else if (row?.['row_type'] === 'prd') {
-                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-value-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
+                            return `<span class="fw-bold text-primary mask-money sum-current-value-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-secondary mask-money sum-current-value-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_value']}"></span>`
+                            return `<span class="fw-bold text-secondary mask-money sum-current-value-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_value']}"></span>`
                         }
                         return ``
                     }
                 },
             ],
             initComplete: function(settings, json) {
-                table.find('tbody tr').each(function () {
-                    $(this).find('td:eq(0)').css({
-                        'min-width': '150px'
-                    })
-                    $(this).find('td:eq(1)').css({
-                        'min-width': '250px'
-                    })
-                    $(this).find('td:eq(2)').css({
-                        'min-width': '100px'
-                    })
-                    $(this).find('td:eq(3)').css({
-                        'min-width': '150px'
-                    })
-                    $(this).find('td:eq(4)').css({
-                        'min-width': '150px'
-                    })
-                    $(this).find('td:eq(5)').css({
-                        'min-width': '100px'
-                    })
-                    $(this).find('td:eq(6)').css({
-                        'min-width': '150px'
-                    })
-                    $(this).find('td:eq(7)').css({
-                        'min-width': '150px'
-                    })
-                })
-
                 table.find('.product-td').each(function () {
-                    $(this).closest('td').attr('colspan', 4)
+                    $(this).closest('tr').addClass('bg-secondary-light-5')
+                    $(this).closest('tr').addClass('fixed-row')
+                    $(this).closest('td').attr('colspan', 5)
                     $(this).closest('tr').find('td:eq(1)').remove()
-                    $(this).closest('tr').find('td:eq(2)').remove()
-                    $(this).closest('tr').find('td:eq(3)').remove()
-                    $(this).closest('tr').find('td:eq(4)').remove()
+                    $(this).closest('tr').find('td:eq(1)').remove()
+                    $(this).closest('tr').find('td:eq(1)').remove()
+                    $(this).closest('tr').find('td:eq(1)').remove()
+
                     let product_id = $(this).attr('data-product-id')
                     let sale_order_id = $(this).closest('tr').find('.sale-order-td').attr('data-so-id')
 
@@ -328,7 +312,6 @@ $(document).ready(function () {
 
     $('#btn-view').on('click', function () {
         if (periodMonthEle.val()) {
-            items_detail_report_table_Ele.prop('hidden', true)
             WindowControl.showLoading();
             let dataParam = {}
             dataParam['sub_period_order'] = periodMonthEle.val() ? parseInt(periodMonthEle.val()) : null
@@ -584,7 +567,6 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.value) {
                 if (periodMonthEle.val()) {
-                    items_detail_report_table_Ele.prop('hidden', true)
                     WindowControl.showLoading();
                     let dataParam = {}
                     dataParam['sub_period_order'] = periodMonthEle.val() ? parseInt(periodMonthEle.val()) : null

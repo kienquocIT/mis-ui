@@ -7058,7 +7058,7 @@ msgstr "SL tích luỹ"
 
 #
 msgid "Cumulative cost"
-msgstr "Giá cost tích luỹ"
+msgstr "Giá vốn tích luỹ"
 
 #
 msgid "Cumulative value"
@@ -7534,7 +7534,7 @@ msgstr "Báo cáo tồn kho"
 
 #
 msgid "Items detail report"
-msgstr "Báo cáo nhập-xuất hàng"
+msgstr "Báo cáo nhập - xuất hàng"
 
 #
 msgid "Please cancel current quotation"
@@ -7834,15 +7834,15 @@ msgstr "NGÀY HẾT HẠN"
 
 #
 msgid "I/O quantity"
-msgstr "SL nhập/xuất"
+msgstr "SL nhập - xuất"
 
 #
 msgid "I/O cost"
-msgstr "Giá cost nhập/xuất"
+msgstr "Giá nhập - xuất"
 
 #
 msgid "I/O value"
-msgstr "Giá trị nhập/xuất"
+msgstr "Giá trị nhập - xuất"
 
 #
 msgid "Inventory UoM"

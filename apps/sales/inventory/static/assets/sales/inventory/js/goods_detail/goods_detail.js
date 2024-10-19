@@ -62,10 +62,12 @@ $(document).ready(function () {
     function loadMainTable(category_list=[], product_list=[], warehouse_list=[], status_list=[]) {
         $main_table.DataTable().clear().destroy()
         $main_table.DataTableDefault({
+            styleDom: 'hide-foot',
             rowIdx: true,
             paging: false,
             useDataServer: true,
             scrollY: '60vh',
+            scrollX: true,
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {

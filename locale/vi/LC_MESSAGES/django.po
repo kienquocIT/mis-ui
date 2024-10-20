@@ -5414,7 +5414,7 @@ msgstr "Tải lại bản lưu trữ cuối cùng ở máy tính này"
 
 #
 msgid "Sale reports"
-msgstr "Báo cáo kinh doanh"
+msgstr "Các báo cáo kinh doanh"
 
 #
 msgid "Revenue report"
@@ -7374,11 +7374,11 @@ msgstr "Nhân viên mua hàng"
 
 #
 msgid "Purchasing reports"
-msgstr "Báo cáo mua hàng"
+msgstr "Các báo cáo mua hàng"
 
 #
 msgid "Purchase order report"
-msgstr "Báo cáo theo đơn mua hàng"
+msgstr "Báo cáo đơn mua hàng"
 
 #
 msgid "Purchasing Code"

@@ -141,17 +141,16 @@ $(document).ready(function () {
                                     data-bs-trigger="hover focus"
                                     data-bs-html="true"
                                     data-bs-content="
-                                    <div class='border rounded p-2'>
                                     <span class='text-decoration-underline'>${trans_script.attr('data-trans-code')}</span>: <span class='badge badge-primary badge-sm'>${row?.['product_code']}</span>
                                     <br>
                                     <span class='text-decoration-underline'>${trans_script.attr('data-trans-uom')}</span>: <span class='text-primary'>${row?.['product_uom']}</span>
                                     <br>
                                     <span class='text-decoration-underline'>${trans_script.attr('data-trans-vm')}</span>: <span class='text-primary'>${row?.['we']}<span>
-                                    </div>"
+                                    "
                                     class="popover-prd">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
-                                <span style="font-size: medium" data-product-id="${row?.['product_id']}" class="product-td text-primary fw-bold">${row?.['product_title']}</span>`
+                                <span data-product-id="${row?.['product_id']}" class="product-td text-primary fw-bold">${row?.['product_title']}</span>`
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
                             }

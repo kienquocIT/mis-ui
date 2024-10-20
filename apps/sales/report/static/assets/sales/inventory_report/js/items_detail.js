@@ -272,7 +272,7 @@ $(document).ready(function () {
             ],
             initComplete: function(settings, json) {
                 table.find('.product-td').each(function () {
-                    $(this).closest('tr').addClass('bg-secondary-light-5')
+                    $(this).closest('tr').addClass('bg-primary-light-5')
                     $(this).closest('tr').addClass('fixed-row')
                     $(this).closest('td').attr('colspan', 5)
                     $(this).closest('tr').find('td:eq(1)').remove()

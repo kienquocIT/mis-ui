@@ -206,7 +206,7 @@ $(document).ready(function () {
             data: data_list,
             columns: [
                 {
-                    className: 'wrap-text',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['sale_order_code']) {
                             if (!sale_order_code_list.includes(`${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']}`)) {

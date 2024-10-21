@@ -70,21 +70,7 @@
 		            <div class="card-line bg-primary-light-5"></div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-12 col-lg-4 col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="items_select">{% trans 'Product' %}</label>
-                                    <select class="form-select select2 select-multiple" id="items_select" multiple
-                                            data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-4 col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
-                                    <select class="form-select select2 select-multiple" id="warehouses_select" multiple
-                                            data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-2 col-md-4">
+                            <div class="col-6 col-lg-4 col-md-4">
                                 <div class="form-group">
                                     <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
                                     <select class="form-select select2" id="period-select"
@@ -93,10 +79,26 @@
                                     ></select>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-2 col-md-4">
+                            <div class="col-6 col-lg-4 col-md-4">
                                 <div class="form-group">
                                     <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
                                     <select id="period-month" class="form-select"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-lg-8 col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="items_select">{% trans 'Product' %}</label>
+                                    <select class="form-select select2 select-multiple" id="items_select" multiple
+                                            data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-4 col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
+                                    <select class="form-select select2 select-multiple" id="warehouses_select" multiple
+                                            data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
                                 </div>
                             </div>
                         </div>

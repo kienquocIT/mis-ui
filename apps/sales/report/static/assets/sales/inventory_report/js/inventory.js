@@ -192,7 +192,6 @@ $(document).ready(function () {
 
     function RenderTableWithParameter(table, data_list=[], data_wh=[], table_detail=false) {
         table.DataTable().clear().destroy()
-        console.log(data_list)
         let sale_order_code_list = []
         table.DataTableDefault({
             styleDom: 'hide-foot',

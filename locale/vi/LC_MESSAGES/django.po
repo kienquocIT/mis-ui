@@ -7074,7 +7074,7 @@ msgstr "Đổi - trả hàng"
 
 #
 msgid "Opening balance"
-msgstr "Tồn đầu kỳ"
+msgstr "Tồn đầu"
 
 #
 msgid "Expired date"

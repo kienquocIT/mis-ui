@@ -2546,10 +2546,10 @@ class WFRTControl {
     static setupHTMLSelectAssociation(AssociationData, type) {
         let htmlCustom = ``;
         let commonTxt = $.fn.transEle.attr('data-select-association-type-1');
-        let commonImg = `<i class="far fa-lightbulb text-yellow"></i>`;
+        let commonImg = `<i class="fas fa-info-circle text-info"></i>`;
         if (type === 1) {
             commonTxt = $.fn.transEle.attr('data-select-association-type-2');
-            commonImg = `<i class="fas fa-exclamation-triangle text-red"></i>`;
+            commonImg = `<i class="fas fa-exclamation-triangle text-danger"></i>`;
         }
         let typeMapTxt = {
             1: $.fn.transEle.attr('data-node-type-1'),
@@ -2559,7 +2559,7 @@ class WFRTControl {
         for (let associate of AssociationData) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <i class="fas fa-th mr-2"></i>
+                                    <i class="fas fa-vector-square mr-2"></i>
                                     <span class="mr-2">${associate?.['node_out']?.['title']}</span>
                                     <span class="badge badge-soft-success">${typeMapTxt[associate?.['node_out']?.['option_collaborator']]}</span>
                                 </div>

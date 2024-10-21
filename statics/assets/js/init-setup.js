@@ -3569,8 +3569,14 @@ class WFAssociateControl {
             if (left !== null && right !== null) {
                 let isMatch = false;
                 if (condition?.['operator'] === 'is') {
-                    isMatch = left === right;
-                    return isMatch;
+                    if (Array.isArray(left)) {
+                        isMatch = left.includes(right);
+                        return isMatch;
+                    }
+                    if (typeof left === 'string') {
+                        isMatch = left === right;
+                        return isMatch;
+                    }
                 }
                 if (condition?.['operator'] === '=') {
                     isMatch = left === right;  // Strict equality
@@ -3606,15 +3612,59 @@ class WFAssociateControl {
 
     };
 
+    // static findKey(dataForm, key) {
+    //     if (!key.includes("__")) {
+    //         return dataForm?.[key];
+    //     }
+    //     if (key.includes("__")) {
+    //         let listSub = key.split("__");
+    //         return listSub.reduce((acc, curr) => acc?.[curr], dataForm);
+    //     }
+    // };
+
+    // static findKey(dataForm, key) {
+    //     if (!key.includes("__")) {
+    //         return dataForm?.[key];
+    //     }
+    //     if (key.includes("__")) {
+    //         let listSub = key.split("__");
+    //         return listSub.reduce((acc, curr) => {
+    //             if (Array.isArray(acc)) {
+    //                 // If the current accumulator is an array, map over it
+    //                 return acc.map(item => item?.[curr]);
+    //             } else {
+    //                 // Regular reduction step
+    //                 return acc?.[curr];
+    //             }
+    //         }, dataForm);
+    //     }
+    // };
+
     static findKey(dataForm, key) {
         if (!key.includes("__")) {
             return dataForm?.[key];
         }
-        if (key.includes("__")) {
-            let listSub = key.split("__");
-            return listSub.reduce((acc, curr) => acc?.[curr], dataForm);
-        }
-    };
+        let listSub = key.split("__");
+        return listSub.reduce((acc, curr) => {
+            if (Array.isArray(acc)) {
+                // If the current accumulator is an array, use flatMap to continue reduction
+                return acc.flatMap(item => {
+                    if (Array.isArray(item?.[curr])) {
+                        // If the current item is also an array, return the array itself
+                        return item?.[curr];
+                    } else {
+                        // If the item is not an array, proceed normally
+                        return item?.[curr];
+                    }
+                });
+            } else {
+                // Regular reduction step if `acc` is not an array
+                return acc?.[curr];
+            }
+        }, dataForm);
+    }
+
+
 
     static evaluateLogic(conditions) {
         let result = conditions[0];  // Start with the first value

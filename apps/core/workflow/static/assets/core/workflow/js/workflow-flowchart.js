@@ -109,7 +109,7 @@ function clickConnection(connect) {
     data_cond = data_cond[node_in + '_' + node_out]
 
     let $eleAssociate = $('#node-associate');
-    let associate_temp = $eleAssociate.val().replaceAll('\\', '');
+    let associate_temp = $eleAssociate.val();
     if (associate_temp) {
         let associate_data_json = JSON.parse(associate_temp);
         data_cond = associate_data_json[node_in + '_' + node_out];

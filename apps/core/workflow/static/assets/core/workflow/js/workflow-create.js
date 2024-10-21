@@ -62,7 +62,7 @@ $(function () {
             if ($eleAssociate.val()) {
                 _form.dataForm['associate'] = $eleAssociate.val();
             }
-            let associate_temp = _form.dataForm['associate'].replaceAll('\\', '');
+            let associate_temp = _form.dataForm['associate'];
             if (associate_temp) {
                 let associate_data_submit = [];
                 let associate_data_json = JSON.parse(associate_temp);

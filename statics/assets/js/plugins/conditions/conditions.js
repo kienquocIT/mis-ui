@@ -17,11 +17,23 @@ class Conditions {
             'keyResp': 'account_sale_list',
             'keyText': 'name',
         },
+        'saledata.Industry': {
+            'url': Conditions.$url.attr('data-md-industry'),
+            'keyResp': 'industry_list',
+        },
         'hr.Employee': {
             'url': Conditions.$url.attr('data-md-employee'),
             'keyResp': 'employee_list',
             'keyText': 'full_name',
-        }
+        },
+        'saledata.Product': {
+            'url': Conditions.$url.attr('data-md-product'),
+            'keyResp': 'product_sale_list',
+        },
+        'saledata.ProductType': {
+            'url': Conditions.$url.attr('data-md-product-type'),
+            'keyResp': 'product_type_list',
+        },
     }
 
     /***
@@ -179,7 +191,7 @@ class Conditions {
                     let child = item[idx_child];
                     if (typeof child === 'object' && !Array.isArray(child) && Object.keys(child).length) {
                         let child_eq = idx_child
-                        if (idx_child > 0) child_eq = idx_child - 1
+                        if (idx_child > 0) child_eq = idx_child / 2;
                         elm_subform.find('[data-subformset-add]').trigger('click');
                         let subform_text = elm_subform.find('[data-subformset-body]').children('.formset').last().find('input[type="number"]').attr('name');
                         let reorder_idx = subform_text.split('-')
@@ -491,8 +503,6 @@ class Conditions {
                     // call init select2 for left_cond
                     let left_cond = elm_sub_formset_row.find('[name*="-left_cond"]')
                     $this.loadInitS2(left_cond, [], {"application": $('#select-box-features').val(), 'is_wf_condition': true}, $('#next-node-association'));
-                    // left_cond.attr('data-params', JSON.stringify({"application": $('#select-box-features').val(), 'is_sale_indicator': false, 'parent_n__isnull': true}))
-                    // initSelectBox(left_cond)
 
                     // datatype on change
                     left_cond.on("select2:select", function (e) {

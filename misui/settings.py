@@ -64,6 +64,7 @@ INSTALLED_APPS = \
         'apps.sharedapp',
         'apps.log',
         'django_celery_results',  # Listen celery task and record it to database.
+        'apps.core.chatbot',  # chatbot AI
         'django_celery_beat',  # celery crontab
     ] + [  # Core Application
         'apps.core.account',

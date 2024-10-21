@@ -484,10 +484,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_QUOTATION_PRODUCT_LIST = StringUrl('purchasing/purchase-quotation-product/list')
 
     # Process
-    FUNCTION_PROCESS_LIST = StringUrl('sale-process/function/list')
-    PROCESS = StringUrl('sale-process/')
-    SKIP_PROCESS_STEP = StringUrl('sale-process/step/skip/{pk}')
-    SET_CURRENT_PROCESS_STEP = StringUrl('sale-process/step/set-current/{pk}')
+    PROCESS_CONFIG_LIST = StringUrl('process/config/list')
+    PROCESS_CONFIG_DETAIL = StringUrl('process/config/detail/{pk}')
+    PROCESS_RUNTIME_LIST = StringUrl('process/runtime/list')
+    PROCESS_RUNTIME_DETAIL = StringUrl('process/runtime/detail/{pk}')
+
+    # Chatbot
+    CHATBOT_CHAT = StringUrl('chatbot/chat')
 
     # Expense item
 

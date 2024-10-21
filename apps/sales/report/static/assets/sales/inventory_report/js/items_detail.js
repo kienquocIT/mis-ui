@@ -418,8 +418,11 @@ $(document).ready(function () {
                                             text_color = 'orange'
                                         }
                                         if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                                text_color = 'purple'
-                                            }
+                                            text_color = 'purple'
+                                        }
+                                        if (activity?.['trans_title'] === 'Balance init input')  {
+                                            text_color = 'muted'
+                                        }
                                         let trans_title_sub = {
                                             'Goods receipt': trans_script.attr('data-trans-grc'),
                                             'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
@@ -493,6 +496,9 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
                                             text_color = 'purple'
                                         }
+                                    if (activity?.['trans_title'] === 'Balance init input') {
+                                        text_color = 'muted'
+                                    }
                                     let trans_title_sub = {
                                         'Goods receipt': trans_script.attr('data-trans-grc'),
                                         'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
@@ -501,6 +507,7 @@ $(document).ready(function () {
                                         'Delivery': trans_script.attr('data-trans-dlvr'),
                                         'Goods issue': trans_script.attr('data-trans-gis'),
                                         'Goods transfer (out)': trans_script.attr('data-trans-gtf'),
+                                        'Balance init input': trans_script.attr('data-trans-bii'),
                                     }
 
                                     table_inventory_report_data.push({
@@ -712,6 +719,9 @@ $(document).ready(function () {
                                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                                         text_color = 'purple'
                                                     }
+                                                    if (activity?.['trans_title'] === 'Balance init input') {
+                                                        text_color = 'muted'
+                                                    }
                                                     let trans_title_sub = {
                                                         'Goods receipt': trans_script.attr('data-trans-grc'),
                                                         'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
@@ -863,6 +873,9 @@ $(document).ready(function () {
                                                 }
                                                 if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                                     text_color = 'purple'
+                                                }
+                                                if (activity?.['trans_title'] === 'Balance init input') {
+                                                    text_color = 'muted'
                                                 }
                                                 let trans_title_sub = {
                                                     'Goods receipt': trans_script.attr('data-trans-grc'),

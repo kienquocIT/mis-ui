@@ -188,6 +188,7 @@ $(document).ready(function () {
                 row.find('.status-none').prop('hidden', true);
                 row.find('.status-ok').prop('hidden', false);
                 row.find('.status-error').prop('hidden', true);
+                row.find('.err-title').prop('hidden', true);
 
                 if (count === no_new_row) {
                     Swal.fire({
@@ -200,6 +201,7 @@ $(document).ready(function () {
         } catch (errs) {
             row.find('.status-none').prop('hidden', true);
             row.find('.status-error').prop('hidden', false);
+            row.find('.err-title').prop('hidden', false);
             row.find('.status-ok').prop('hidden', true);
 
             for (let key in errs.data.errors) {

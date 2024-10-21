@@ -32,7 +32,7 @@ from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
     CurrencyDetailAPI, SyncSellingRateWithVCB, PriceList, PriceListAPI, PriceListDetail, PriceDetailAPI,
     UpdateProductForPriceListAPI, PriceListDeleteProductAPI, ProductAddFromPriceListAPI, DeleteCurrencyFromPriceListAPI,
-    PriceDeleteAPI, PriceListUpdate
+    PriceDeleteAPI, PriceListUpdate, ProductAddFromPriceListImportAPI
 )
 from apps.masterdata.saledata.views.revenue_plan_config import RevenuePlanConfigList, RevenuePlanConfigListAPI
 from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, \
@@ -227,6 +227,11 @@ urlpatterns = [
         'create-product-from-price-list/api/<str:pk>',
         ProductAddFromPriceListAPI.as_view(),
         name='ProductAddFromPriceListAPI'
+    ),
+    path(
+        'create-product-from-price-list-import/api',
+        ProductAddFromPriceListImportAPI.as_view(),
+        name='ProductAddFromPriceListImportAPI'
     ),
     path(
         'delete-currency-from-price-list/api/<str:pk>',

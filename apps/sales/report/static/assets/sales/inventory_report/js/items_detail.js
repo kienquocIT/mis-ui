@@ -51,7 +51,6 @@ $(document).ready(function () {
         periodMonthEle.empty();
         periodMonthEle.initSelect2({
             data: data,
-            allowClear: true,
             templateResult: function (state) {
                 let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
                 return $(`<span>${state.text} ${groupHTML}</span>`);
@@ -152,10 +151,10 @@ $(document).ready(function () {
                                 </a>
                                 <span data-product-id="${row?.['product_id']}" class="product-td text-primary fw-bold">${row?.['product_title']}</span>`
                             if (row?.['product_lot_number']) {
-                                html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
+                                html += `<span class="ml-1 text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
                             }
                             if (row?.['sale_order_code']) {
-                                html += `<span class="badge badge-pill badge-soft-red sale-order-td" data-so-id="${row?.['sale_order_id']}"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order_code']}</span>`
+                                html += `<span class="ml-1 text-danger small fw-bold sale-order-td" data-so-id="${row?.['sale_order_id']}">${row?.['sale_order_code']}</span>`
                             }
                             return html
                         }
@@ -163,9 +162,10 @@ $(document).ready(function () {
                             return `<span class="text-muted">${row?.['system_date']}</span>`
                         }
                         else if (row?.['row_type'] === 'open') {
-                            return `--`
+                            let month = parseInt(periodMonthEle.val()) + current_period['space_month']
+                            return `01/${month < 10 ? `0${month}` : month}/${new Date().getFullYear()}`
                         }
-                        return ``
+                        return `***`
                     }
                 },
                 {
@@ -352,7 +352,6 @@ $(document).ready(function () {
                             'sale_order_id': item?.['sale_order']?.['id'],
                             'vm': item?.['product']?.['valuation_method']
                         })
-                        console.log(table_inventory_report_data)
                         for (const stock_activity of item?.['stock_activities']) {
                             if (warehouses_select_Ele.val().length > 0) {
                                 if (warehouses_select_Ele.val().includes(stock_activity?.['warehouse_id'])) {

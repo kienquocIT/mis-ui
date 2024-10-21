@@ -89,7 +89,6 @@ $(document).ready(function () {
         periodMonthEle.empty();
         periodMonthEle.initSelect2({
             data: data,
-            allowClear: true,
             templateResult: function (state) {
                 let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
                 return $(`<span>${state.text} ${groupHTML}</span>`);

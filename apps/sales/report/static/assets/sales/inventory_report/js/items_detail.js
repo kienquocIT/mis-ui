@@ -59,10 +59,10 @@ $(document).ready(function () {
         });
     }
 
-    function LoadPeriod(data) {
-        periodEle.initSelect2({
+    function LoadPeriod(ele, data) {
+        ele.initSelect2({
             ajax: {
-                url: periodEle.attr('data-url'),
+                url: ele.attr('data-url'),
                 method: 'GET',
             },
             data: (data ? data : null),
@@ -70,17 +70,16 @@ $(document).ready(function () {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            let selected_option = SelectDDControl.get_data_from_idx(periodEle, periodEle.val())
+            let selected_option = SelectDDControl.get_data_from_idx(ele, ele.val())
             if (selected_option) {
                 getMonthOrder(selected_option['space_month'], selected_option?.['fiscal_year'])
             }
         })
     }
-    LoadPeriod(current_period)
+    LoadPeriod(periodEle, current_period)
 
     function LoadItemsSelectBox(ele, data) {
         ele.initSelect2({
-            placeholder: trans_script.attr('data-trans-all'),
             allowClear: true,
             ajax: {
                 url: ele.attr('data-url'),
@@ -99,7 +98,6 @@ $(document).ready(function () {
 
     function LoadWarehouseSelectBox(ele, data) {
         ele.initSelect2({
-            placeholder: trans_script.attr('data-trans-all'),
             allowClear: true,
             ajax: {
                 url: ele.attr('data-url'),
@@ -124,7 +122,7 @@ $(document).ready(function () {
         table.DataTableDefault({
             styleDom: 'hide-foot',
             paging: false,
-            scrollY: '60vh',
+            scrollY: '72vh',
             scrollX: true,
             scrollCollapse: true,
             reloadCurrency: true,
@@ -986,5 +984,21 @@ $(document).ready(function () {
                 }
             }
         })
+    })
+
+    $('#btn-reset').on('click', function () {
+        items_select_Ele.empty()
+        warehouses_select_Ele.empty()
+        periodMonthEle.empty()
+        let current_period = {}
+        if (current_period_Ele.text() !== '') {
+            current_period = JSON.parse(current_period_Ele.text())
+            getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
+            periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+        }
+    })
+    $('#btn-filter').on('click', function () {
+        LoadItemsSelectBox(items_select_Ele)
+        LoadWarehouseSelectBox(warehouses_select_Ele)
     })
 })

@@ -7826,7 +7826,7 @@ msgstr "SẢN PHẨM"
 
 #
 msgid "INVENTORY UOM"
-msgstr "ĐƠN VỊ KHO"
+msgstr "ĐV KHO"
 
 #
 msgid "SYSTEM DATE"

@@ -80,6 +80,7 @@ $(document).ready(function () {
 
     function LoadItemsSelectBox(ele, data) {
         ele.initSelect2({
+            placeholder: trans_script.attr('data-trans-all'),
             allowClear: true,
             ajax: {
                 url: ele.attr('data-url'),
@@ -98,6 +99,7 @@ $(document).ready(function () {
 
     function LoadWarehouseSelectBox(ele, data) {
         ele.initSelect2({
+            placeholder: trans_script.attr('data-trans-all'),
             allowClear: true,
             ajax: {
                 url: ele.attr('data-url'),
@@ -143,7 +145,7 @@ $(document).ready(function () {
                                     <br>
                                     <span class='text-decoration-underline'>${trans_script.attr('data-trans-uom')}</span>: <span class='text-primary'>${row?.['product_uom']}</span>
                                     <br>
-                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-vm')}</span>: <span class='text-primary'>${row?.['we']}<span>
+                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-vm')}</span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}<span>
                                     "
                                     class="popover-prd">
                                     <i class="fas fa-info-circle"></i>
@@ -348,8 +350,9 @@ $(document).ready(function () {
                             'product_lot_number': item?.['product']?.['lot_number'],
                             'sale_order_code': item?.['product']?.['sale_order_code'],
                             'sale_order_id': item?.['sale_order']?.['id'],
-                            'we': item?.['product']?.['valuation_method'] === 0 ? trans_script.attr('data-trans-fifo') : item?.['product']?.['valuation_method'] === 1 ? trans_script.attr('data-trans-we') : ''
+                            'vm': item?.['product']?.['valuation_method']
                         })
+                        console.log(table_inventory_report_data)
                         for (const stock_activity of item?.['stock_activities']) {
                             if (warehouses_select_Ele.val().length > 0) {
                                 if (warehouses_select_Ele.val().includes(stock_activity?.['warehouse_id'])) {

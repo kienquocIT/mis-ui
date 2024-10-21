@@ -3578,6 +3578,18 @@ class WFAssociateControl {
                         return isMatch;
                     }
                 }
+                if (condition?.['operator'] === 'contains') {
+                    if (Array.isArray(left)) {
+                        isMatch = left.includes(right);
+                        return isMatch;
+                    }
+                }
+                if (condition?.['operator'] === 'not_contains') {
+                    if (Array.isArray(left)) {
+                        isMatch = !left.includes(right);
+                        return isMatch;
+                    }
+                }
                 if (condition?.['operator'] === '=') {
                     isMatch = left === right;  // Strict equality
                     return isMatch;

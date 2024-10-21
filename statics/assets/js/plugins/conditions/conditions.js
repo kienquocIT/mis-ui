@@ -156,7 +156,7 @@ class Conditions {
                     'data-keyResp': Conditions.appMapUrl[app_label]?.['keyResp'],
                     'data-keyText': Conditions.appMapUrl[app_label]?.['keyText'],
                 })
-                this.loadInitS2($elm_cond.find('select[name="' + right_cond + '"]'), [value.right_cond]);
+                this.loadInitS2($elm_cond.find('select[name="' + right_cond + '"]'), [value.right_cond], {}, $('#next-node-association'));
             }
         }
 
@@ -299,7 +299,7 @@ class Conditions {
             typeData['id'] = typeData?.['value'];
             typeData['title'] = typeData?.['text'];
         }
-        this.loadInitS2(elm.find('[name*="-math"]'), WF_DATATYPE[value]);
+        this.loadInitS2(elm.find('[name*="-math"]'), WF_DATATYPE[value], {}, $('#next-node-association'));
         if (WF_DATATYPE[value].length > 0) {
             elm.find('[name*="-math"]').val(WF_DATATYPE[value][0]?.['id']).trigger('change');
         }
@@ -378,7 +378,7 @@ class Conditions {
             right_cond = select.parents('[data-subformset-form]').find('[name*="-right_cond"]')
             right_cond.attr({
                 'data-virtual': JSON.stringify(virtual),
-                'data-onload': JSON.stringify([left_info]),
+                // 'data-onload': JSON.stringify([left_info]),
                 'data-params': params,
                 'data-url': Conditions.appMapUrl[app_label]?.['url'],
                 'data-method': "GET",
@@ -392,7 +392,6 @@ class Conditions {
 
             // on change right condition
             right_cond.on("select2:select", function (e) {
-                debugger
                 const right_data = e.params.data;
                 if (right_data.type !== 5) {
                     let r_idx = right_data.type === 6 ? 1 : right_data.type

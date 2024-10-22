@@ -67,9 +67,7 @@
         <div class="col-12">
             <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
                 <span class="alert-icon-wrap"><i class="fas fa-exclamation-triangle"></i></span>
-                <p>{% trans 'After the stock activities have occurred, the Inventory Reports will be run in the order of the configured accounting periods. Make sure that the Opening Balance is created before these activities take place to avoid reporting errors.' %}</p>
-                <p>{% trans 'The initial balance will be inserted from the month of starting to use the software.' %}</p>
-                <p>{% trans 'If the data changes after the time of starting to use the software (not recommended). Re-run all reports from that month to now to update them correctly.' %}</p>
+                <p>{% trans 'The initial balance will be inserted from the month of starting to use the software.' %} {% trans 'The Opening Balance should be created before these activities take place to avoid reporting errors.' %}</p>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>

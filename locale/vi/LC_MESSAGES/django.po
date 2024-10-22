@@ -8809,16 +8809,12 @@ msgid "Consider carefully when clear balance init. The system will delete this b
 msgstr "Hãy cân nhắc cẩn thận khi xóa số dư đã khởi tạo. Hệ thống sẽ xóa số dư này sau khi kiểm tra thõa mãn các điều kiện về bảo toàn dữ liệu."
 
 #
-msgid "After the stock activities have occurred, the Inventory Reports will be run in the order of the configured accounting periods. Make sure that the Opening Balance is created before these activities take place to avoid reporting errors."
-msgstr "Sau khi các hoạt động nhập-xuất kho diễn ra, các Báo Cáo Kho sẽ chạy theo thứ tự của kì kế toán được cấu hình. Đảm bảo rằng SDDK này được khởi tạo trước khi các hoạt động nhập-xuất kho diễn ra để tránh sai sót số liệu báo cáo."
+msgid "The Opening Balance should be created before these activities take place to avoid reporting errors."
+msgstr "SDDK nên được tạo trước khi các hoạt động nhập - xuất kho diễn ra để tránh sai sót số liệu báo cáo."
 
 #
 msgid "The initial balance will be inserted from the month of starting to use the software."
 msgstr "SDDK sẽ được chèn bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
-
-#
-msgid "If the data changes after the time of starting to use the software (not recommended). Re-run all reports from that month to now to update them correctly."
-msgstr "Nếu dữ liệu có sự thay đổi sau thời gian bắt đầu sử dụng phần mềm (không khuyến khích). Hãy chạy lại tất cả các báo cáo từ tháng đó đến nay để cập nhật lại chính xác."
 
 #
 msgid "Pretax value"
@@ -9037,8 +9033,8 @@ msgid "Import data from excel"
 msgstr "Nhập dữ liệu từ excel"
 
 #
-msgid "Make sure that the tables in your Excel file have the same COLUMN ORDER as the feature you are importing."
-msgstr "Đảm bảo rằng bảng trong file Excel của bạn có THỨ TỰ CỘT giống như chức năng cần nhập."
+msgid "The table in excel file must have the same column order as selected table."
+msgstr "Bảng trong file excel phải có thứ cột giống như bảng đã chọn."
 
 #
 msgid "From row"
@@ -9217,5 +9213,5 @@ msgid "Product does not have bill of material"
 msgstr "Sản phẩm không có định mức nguyên vật liệu"
 
 #
-msgid "Load datatable from excel"
-msgstr "Tải bảng từ excel"
+msgid "Load data from excel to datatable"
+msgstr "Tải dữ liệu từ excel lên bảng"

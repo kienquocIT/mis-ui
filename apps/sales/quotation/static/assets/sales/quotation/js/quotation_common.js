@@ -2301,7 +2301,7 @@ class QuotationLoadDataHandle {
             ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-price')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-discount')) {
             ele.setAttribute('readonly', 'true');
@@ -2347,6 +2347,12 @@ class QuotationLoadDataHandle {
         }
         for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
             ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.btn-select-price')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
+            ele.setAttribute('disabled', 'true');
         }
     };
 

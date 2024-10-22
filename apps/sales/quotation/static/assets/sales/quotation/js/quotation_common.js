@@ -1540,6 +1540,7 @@ class QuotationLoadDataHandle {
                     }
                 }
             });
+            QuotationLoadDataHandle.loadSetWFRuntimeZone();
         }
     };
 
@@ -1568,6 +1569,7 @@ class QuotationLoadDataHandle {
                                     if (elePrice) {
                                         elePrice.setAttribute('disabled', 'true');
                                         $(elePrice).attr('value', String(data.bom_order_list[0]?.['sum_price']));
+                                        QuotationLoadDataHandle.loadSetWFRuntimeZone();
                                         $.fn.initMaskMoney2();
                                         if (btnSCost) {
                                             btnSCost.setAttribute('disabled', 'true');
@@ -4334,13 +4336,13 @@ class indicatorHandle {
                     'code': indicator?.['code'],
                 },
                 'order': indicator?.['order'],
-                'indicator_value': value,
+                'indicator_value': value ? value : 0,
                 'indicator_rate': rateValue,
                 'quotation_indicator_value': quotationValue,
                 'difference_indicator_value': differenceValue,
             });
             result_json[indicator?.['order']] = {
-                'indicator_value': value,
+                'indicator_value': value ? value : 0,
                 'indicator_rate': rateValue
             }
         }
@@ -6390,13 +6392,13 @@ class QuotationSubmitHandle {
             }
             for (let indicator of quotation_indicators_data_setup) {
                 if (indicator?.[keyInd]?.['code'] === "IN0001") {
-                    _form.dataForm['indicator_revenue'] = indicator?.['indicator_value'];
+                    _form.dataForm['indicator_revenue'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
                 }
                 if (indicator?.[keyInd]?.['code'] === "IN0003") {
-                    _form.dataForm['indicator_gross_profit'] = indicator?.['indicator_value'];
+                    _form.dataForm['indicator_gross_profit'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
                 }
                 if (indicator?.[keyInd]?.['code'] === "IN0006") {
-                    _form.dataForm['indicator_net_income'] = indicator?.['indicator_value'];
+                    _form.dataForm['indicator_net_income'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
                 }
             }
         }

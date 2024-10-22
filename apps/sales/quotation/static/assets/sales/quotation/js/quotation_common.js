@@ -2503,7 +2503,7 @@ class QuotationDataTableHandle {
                         } else if (itemType === 1) {  // PROMOTION
                             des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '--';
                         }
-                        return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${des}</textarea></div>`;
+                        return `<div class="row"><textarea class="form-control table-row-description zone-readonly" rows="2" data-zone="${dataZone}" readonly>${des}</textarea></div>`;
                     }
                 },
                 {
@@ -2573,6 +2573,7 @@ class QuotationDataTableHandle {
                                             class="btn btn-icon btn-light btn-select-price"
                                             data-bs-toggle="modal"
                                             data-bs-target="#selectPriceModal"
+                                            data-zone="${dataZone}"
                                             disabled
                                         ><i class="fas fa-ellipsis-h"></i>
                                         </button>
@@ -2820,6 +2821,7 @@ class QuotationDataTableHandle {
                                                     class="btn btn-icon btn-light btn-select-cost"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#selectCostModal"
+                                                    data-zone="${dataZone}"
                                                 ><i class="fas fa-ellipsis-h"></i>
                                                 </button>
                                             </div>

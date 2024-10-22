@@ -4801,7 +4801,7 @@ msgstr "Website của tôi"
 
 #
 msgid "Working calendar update successfully"
-msgstr "Lịch làm việc cập nhập thành công"
+msgstr "Lịch làm việc cập nhật thành công"
 
 #
 msgid "Working year create successfully"
@@ -4817,7 +4817,7 @@ msgstr "Tạo ngày lễ thành công"
 
 #
 msgid "The holiday has been updated successfully"
-msgstr "Cập nhập ngày lễ thành công"
+msgstr "Cập nhật ngày lễ thành công"
 
 #
 msgid "The holiday deleted"
@@ -4829,7 +4829,7 @@ msgstr "Yêu cầu nghỉ phép tạo thành công"
 
 #
 msgid "Leave available update successfully"
-msgstr "danh sách số dư cập nhập thành công"
+msgstr "danh sách số dư cập nhật thành công"
 
 #
 msgid "Increase"
@@ -5414,7 +5414,7 @@ msgstr "Tải lại bản lưu trữ cuối cùng ở máy tính này"
 
 #
 msgid "Sale reports"
-msgstr "Báo cáo kinh doanh"
+msgstr "Các báo cáo kinh doanh"
 
 #
 msgid "Revenue report"
@@ -5454,7 +5454,7 @@ msgstr "Ngành nghề"
 
 #
 msgid "Update permit"
-msgstr "Cập nhập quyền"
+msgstr "Cập nhật quyền"
 
 #
 msgid "Sale Activities"
@@ -6582,7 +6582,7 @@ msgstr "Tháng bắt đầu"
 
 #
 msgid "Update period"
-msgstr "Cập nhập kỳ kế toán"
+msgstr "Cập nhật kỳ kế toán"
 
 #
 msgid "New period"
@@ -6874,11 +6874,11 @@ msgstr "Đã trả lại"
 
 #
 msgid "Inventory reports"
-msgstr "Báo cáo tồn kho"
+msgstr "Các báo cáo kho"
 
 #
 msgid "Items Detail Report"
-msgstr "Báo cáo nhâp-xuất hàng"
+msgstr "Báo cáo chi tiết hàng"
 
 #
 msgid "Add group"
@@ -7042,7 +7042,7 @@ msgstr "Tạo HĐ điện tử"
 
 #
 msgid "Update invoice"
-msgstr "Cập nhập HĐ điện tử"
+msgstr "Cập nhật HĐ điện tử"
 
 #
 msgid "View invoice"
@@ -7050,7 +7050,11 @@ msgstr "Xem HĐ điện tử"
 
 #
 msgid "Inventory Report"
-msgstr "Báo cáo tồn kho"
+msgstr "Báo cáo hàng tồn kho"
+
+#
+msgid "Inventory report"
+msgstr "Báo cáo hàng tồn kho"
 
 #
 msgid "Cumulative quantity"
@@ -7058,7 +7062,7 @@ msgstr "SL tích luỹ"
 
 #
 msgid "Cumulative cost"
-msgstr "Giá cost tích luỹ"
+msgstr "Giá vốn tích luỹ"
 
 #
 msgid "Cumulative value"
@@ -7070,7 +7074,7 @@ msgstr "Đổi - trả hàng"
 
 #
 msgid "Opening balance"
-msgstr "Tồn đầu kỳ"
+msgstr "Tồn đầu"
 
 #
 msgid "Expired date"
@@ -7174,7 +7178,7 @@ msgstr "Chi tiết phiếu Điều chỉnh tồn kho"
 
 #
 msgid "Inventory adjustment update"
-msgstr "Cập nhập phiếu Điều chỉnh tồn kho"
+msgstr "Cập nhật phiếu Điều chỉnh tồn kho"
 
 #
 msgid "Inventory adjustment list"
@@ -7370,11 +7374,11 @@ msgstr "Nhân viên mua hàng"
 
 #
 msgid "Purchasing reports"
-msgstr "Báo cáo mua hàng"
+msgstr "Các báo cáo mua hàng"
 
 #
 msgid "Purchase order report"
-msgstr "Báo cáo theo đơn mua hàng"
+msgstr "Báo cáo đơn mua hàng"
 
 #
 msgid "Purchasing Code"
@@ -7529,12 +7533,12 @@ msgid "Asset, tools return list"
 msgstr "Danh sách thu hồi tài sản"
 
 #
-msgid "Inventory report"
-msgstr "Báo cáo tồn kho"
+msgid "Inventory stock report"
+msgstr "Báo cáo hàng tồn kho"
 
 #
 msgid "Items detail report"
-msgstr "Báo cáo nhập-xuất hàng"
+msgstr "Báo cáo chi tiết hàng"
 
 #
 msgid "Please cancel current quotation"
@@ -7778,7 +7782,7 @@ msgstr "Chi tiết phiếu đăng ký hàng"
 
 #
 msgid "Goods registration update"
-msgstr "Cập nhập phiếu đăng ký hàng"
+msgstr "Cập nhật phiếu đăng ký hàng"
 
 #
 msgid "Registered"
@@ -7822,7 +7826,7 @@ msgstr "SẢN PHẨM"
 
 #
 msgid "INVENTORY UOM"
-msgstr "ĐƠN VỊ KHO"
+msgstr "ĐV KHO"
 
 #
 msgid "SYSTEM DATE"
@@ -7834,15 +7838,15 @@ msgstr "NGÀY HẾT HẠN"
 
 #
 msgid "I/O quantity"
-msgstr "SL nhập/xuất"
+msgstr "SL nhập - xuất"
 
 #
 msgid "I/O cost"
-msgstr "Giá cost nhập/xuất"
+msgstr "Giá nhập - xuất"
 
 #
 msgid "I/O value"
-msgstr "Giá trị nhập/xuất"
+msgstr "Giá trị nhập - xuất"
 
 #
 msgid "Inventory UoM"
@@ -8814,7 +8818,7 @@ msgstr "SDDK sẽ được chèn bắt đầu từ tháng sử dụng phần m�
 
 #
 msgid "If the data changes after the time of starting to use the software (not recommended). Re-run all reports from that month to now to update them correctly."
-msgstr "Nếu dữ liệu có sự thay đổi sau thời gian bắt đầu sử dụng phần mềm (không khuyến khích). Hãy chạy lại tất cả các báo cáo từ tháng đó đến nay để cập nhập lại chính xác."
+msgstr "Nếu dữ liệu có sự thay đổi sau thời gian bắt đầu sử dụng phần mềm (không khuyến khích). Hãy chạy lại tất cả các báo cáo từ tháng đó đến nay để cập nhật lại chính xác."
 
 #
 msgid "Pretax value"
@@ -9098,7 +9102,7 @@ msgstr "Nhập liệu hoàn tất!"
 
 #
 msgid "Reload this page to see the update."
-msgstr "Tải lại trang để xem cập nhập."
+msgstr "Tải lại trang để xem cập nhật."
 
 #
 msgid "Can not import some rows"
@@ -9203,6 +9207,14 @@ msgstr "Tên thuộc tính"
 #
 msgid "Value name"
 msgstr "Tên biến thể"
+
+#
+msgid "Balance init input"
+msgstr "Nhập SDĐK"
+
+#
+msgid "Product does not have bill of material"
+msgstr "Sản phẩm không có định mức nguyên vật liệu"
 
 #
 msgid "Select product price"

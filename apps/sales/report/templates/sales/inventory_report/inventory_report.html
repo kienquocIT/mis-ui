@@ -5,18 +5,23 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
+        thead th {
+            color: white !important;
+        }
         thead th span {
             color: white !important;
-            font-size: medium !important;
-            border: none !important;
+        }
+        tfoot td span {
+            font-weight: bold; !important;
         }
         .detail-row {
             background-color: #f6f6f6 !important;
         }
-        .sticky {
+        .fixed-row {
             position: sticky;
             top: 0;
-            z-index: 1;
+            background: white;
+            z-index: 2;
         }
     </style>
 {% endblock %}
@@ -42,17 +47,21 @@
             data-trans-revenue="{% trans 'Revenue' %}"
             data-trans-net-profit="{% trans 'Net income' %}"
             data-trans-gross-profit="{% trans 'Gross profit' %}"
-            data-trans-we="{% trans 'Weighted average' %}"
             data-trans-ob="{% trans 'Opening balance' %}"
             data-trans-grc="{% trans 'Goods receipt' %}"
             data-trans-grt="{% trans 'Goods return' %}"
             data-trans-dlvr="{% trans 'Delivery' %}"
             data-trans-gis="{% trans 'Goods issue' %}"
             data-trans-gtf="{% trans 'Goods transfer' %}"
+            data-trans-bii="{% trans 'Balance init input' %}"
             data-trans-no-info="{% trans 'Have not done. Please finish in Goods Detail.' %}"
             data-trans-all-warehouse="{% trans 'All warehouses' %}"
             data-trans-gtf-in="{% trans 'IN' %}"
             data-trans-gtf-out="{% trans 'OUT' %}"
+            data-trans-vm="{% trans 'Valuation method' %}"
+            data-trans-code="{% trans 'Product Code' %}"
+            data-trans-we="{% trans 'Weighted average' %}"
+            data-trans-fifo="{% trans 'FIFO' %}"
             data-trans-all="{% trans 'Default all' %}"
     ></script>
 
@@ -63,97 +72,106 @@
             data-url-qr-code-lot-info="{% url 'GetQRCodeLotInfoAPI' %}"
     ></script>
 
-    <div class="accordion accordion-card accordion-soft accordion-icon" id="accordionPanelsStayOpenExampleOne">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                    <span class="d-flex align-items-center">
-                        <i class="bi bi-funnel mr-2"></i>
-                        <span>
-                            <span>{% trans 'Filter' %}</span>
-                        </span>
-                    </span>
-                </button>
-            </h2>
-            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-                <div class="accordion-body">
-                    <div class="row">
-                        <div class="col-12 col-lg-2 col-md-6">
-                            <div class="form-group">
-                                <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
-                                <select class="form-select select2 select-multiple" id="warehouses_select" multiple
-                                        data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+    <div class="row">
+        <div class="col-12">
+            <button id="btn-filter" class="btn border-primary bg-primary-light-5 text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
+            </button>
+            <div class="collapse mt-2" id="collapseExample">
+                <div class="card card-wth-line">
+		            <div class="card-line bg-primary-light-5"></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6 col-lg-4 col-md-4">
+                                <div class="form-group">
+                                    <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
+                                    <select class="form-select select2" id="period-select"
+                                            data-url="{% url 'PeriodsConfigListAPI' %}"
+                                            data-method="GET"
+                                    ></select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-12 col-lg-2 col-md-6">
-                            <div class="form-group">
-                                <label class="form-label" for="items_select">{% trans 'Product' %}</label>
-                                <select class="form-select select2 select-multiple" id="items_select" multiple
-                                        data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+                            <div class="col-6 col-lg-4 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
+                                    <select id="period-month" class="form-select"></select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-12 col-lg-2 col-md-6">
-                            <div class="form-group">
-                                <label for="project-select" class="form-label">{% trans 'Project' %}</label>
-                                <select class="form-select select2" id="project-select"
-                                        data-url="{% url 'SaleOrderListAPI' %}"
-                                        data-method="GET"
-                                ></select>
+                            <div class="col-6 col-lg-2 col-md-2">
+                                <div class="form-group">
+                                    <label class="form-label" for="period-day-from">{% trans 'From' %}</label>
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
+                                        <input type="number" min="1" max="31" id="period-day-from" class="form-control">
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-12 col-lg-2 col-md-6">
-                            <div class="form-group">
-                                <label for="period-select" class="form-label required">{% trans 'Period' %}</label>
-                                <select class="form-select select2" id="period-select"
-                                        data-url="{% url 'PeriodsConfigListAPI' %}"
-                                        data-method="GET"
-                                ></select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-2 col-md-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
-                                <select id="period-month" class="form-select"></select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-1 col-md-4">
-                            <div class="form-group">
-                                <label class="form-label" for="period-day-from">{% trans 'From' %}</label>
-                                <span class="input-affix-wrapper">
-                                    <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
-                                    <input type="number" min="1" max="31" id="period-day-from" class="form-control">
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-1 col-md-4">
-                            <div class="form-group">
-                                <label class="form-label" for="period-day-to">{% trans 'To' %}</label>
-                                <span class="input-affix-wrapper">
-                                    <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
-                                    <input type="number" min="1" max="31" id="period-day-to" class="form-control">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-lg-1 col-md-4">
-                            <div class="btn-group dropend" role="group">
-                                <button id="btn-view-group" type="button" class="btn btn-gradient-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {% trans 'View' %}&nbsp;<i class="fas fa-eye"></i>
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="btn-action">
-                                    <a class="dropdown-item" id="btn-view" href="#"><i class="far fa-window-maximize"></i> <span>{% trans 'General' %}</span></a>
-                                    <a class="dropdown-item" id="btn-view-detail" href="#"><i class="fas fa-list-ul"></i> <span>{% trans 'Detail' %}</span></a>
+                            <div class="col-6 col-lg-2 col-md-2">
+                                <div class="form-group">
+                                    <label class="form-label" for="period-day-to">{% trans 'To' %}</label>
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
+                                        <input type="number" min="1" max="31" id="period-day-to" class="form-control">
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                        <div hidden class="col-12 col-lg-1 col-md-4">
-                            <div class="btn-group dropend" role="group">
-                                <button id="btn-action" type="button" class="btn btn-gradient-dark dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {% trans 'Action' %}
+                        <div class="row">
+                            <div class="col-12 col-lg-4 col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
+                                    <select class="form-select select2 select-multiple" id="warehouses_select" multiple
+                                            data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-8 col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="items_select">{% trans 'Product' %}</label>
+                                    <select class="form-select select2 select-multiple" id="items_select" multiple
+                                            data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+                                </div>
+                            </div>
+                            <div class="project-filter col-12 col-lg-4 col-md-12">
+                                <div class="form-group">
+                                    <label for="project-select" class="form-label">{% trans 'Project' %}</label>
+                                    <select class="form-select select2" id="project-select"
+                                            data-url="{% url 'SaleOrderListAPI' %}"
+                                            data-method="GET"
+                                    ></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="btn-group dropup" role="group">
+                                    <button type="button" class="btn btn-primary btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span>
+                                            <span class="icon">
+                                                <span class="feather-icon"><i class="fas fa-eye"></i></span>
+                                            </span>
+                                            <span>{% trans 'Apply' %}</span>
+                                        </span>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="btn-action">
+                                        <a class="dropdown-item" id="btn-view" href="#"><i class="far fa-window-maximize"></i> <span>{% trans 'General' %}</span></a>
+                                        <a class="dropdown-item" id="btn-view-detail" href="#"><i class="fas fa-list-ul"></i> <span>{% trans 'Detail' %}</span></a>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-danger btn-sm" id="btn-reset">
+                                    <span>
+                                        <span class="icon">
+                                            <span class="feather-icon"><i class="fas fa-undo-alt"></i></span>
+                                        </span>
+                                        <span>{% trans 'Reset' %}</span>
+                                    </span>
                                 </button>
-                                <div class="dropdown-menu" aria-labelledby="btn-action">
-                                    <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
+                                <div hidden class="btn-group dropend" role="group">
+                                    <button id="btn-action" type="button" class="btn btn-gradient-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {% trans 'Action' %}
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="btn-action">
+                                        <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -163,44 +181,87 @@
         </div>
     </div>
 
-    <div class="row mt-3 mb-3">
-        <div hidden class="col-12" style="position: relative; overflow: auto; width: 100%; max-height: 70vh">
-            <table class="table table-hover nowrap w-100" id="table-inventory-report">
-                <thead class="sticky">
-                    <tr class="bg-gradient-primary">
-                        <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'SALE ORDER' %}</span></th>
-                        <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'PRODUCT' %}</span></th>
-                        <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'INVENTORY UOM' %}</span></th>
-                        <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'SYSTEM DATE' %}</span></th>
-                        <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'LOT' %}</span></th>
-                        <th class="border-1" rowspan="3"><span class="badge badge-primary badge-outline badge-pill">{% trans 'EXP DATE' %}</span></th>
-                        <th class="border-1 text-right" colspan="2"><span class="badge badge-primary badge-outline badge-pill">{% trans 'OPENING' %}</span></th>
-                        <th class="border-1 text-right" colspan="2"><span class="badge badge-primary badge-outline badge-pill">{% trans 'INPUT' %}</span></th>
-                        <th class="border-1 text-right" colspan="2"><span class="badge badge-primary badge-outline badge-pill">{% trans 'OUTPUT' %}</span></th>
-                        <th class="border-1 text-right" colspan="2"><span class="badge badge-primary badge-outline badge-pill">{% trans 'ENDING' %}</span></th>
-                    </tr>
-                    <tr class="bg-gradient-primary">
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Quantity' %}</span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Value' %}</span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Quantity' %}</span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Value' %}</span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Quantity' %}</span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Value' %}</span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Quantity' %}</span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill">{% trans 'Value' %}</span></th>
-                    </tr>
-                    <tr class="bg-gradient-primary" id="thead-value">
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill" id="opening-total-quantity">0</span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill mask-money" id="opening-total-value" data-init-money="0"></span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill" id="in-total-quantity">0</span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill mask-money" id="in-total-value" data-init-money="0"></span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill" id="out-total-quantity">0</span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill mask-money" id="out-total-value" data-init-money="0"></span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill" id="ending-total-quantity">0</span></th>
-                        <th class="border-1 text-right"><span class="badge badge-primary badge-outline badge-pill mask-money" id="ending-total-value" data-init-money="0"></span></th>
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100" id="table-inventory-report">
+                <thead>
+                    <tr class="bg-primary">
+                        <th class="border-1" style="min-width: 80px; border-top-left-radius: calc(0.5rem - 1px);">{% trans 'SALE ORDER' %}</th>
+                        <th class="border-1" style="min-width: 250px" id="product-col">{% trans 'PRODUCT' %}</th>
+                        <th class="border-1" style="min-width: 50px">{% trans 'INVENTORY UOM' %}</th>
+                        <th class="border-1" style="min-width: 100px">{% trans 'SYSTEM DATE' %}</th>
+                        <th class="border-1" style="min-width: 100px">{% trans 'LOT' %}</th>
+                        <th class="border-1" style="min-width: 100px">{% trans 'EXP DATE' %}</th>
+                        <th class="border-1 text-center" style="min-width: 220px">
+                            <div class="row">
+                                <div class="col-12 text-right">{% trans 'OPENING' %}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-right">{% trans 'Quantity' %}</div>
+                                <div class="col-8 text-right">{% trans 'Value' %}</div>
+                            </div>
+                        </th>
+                        <th class="border-1 text-center" style="min-width: 220px">
+                            <div class="row">
+                                <div class="col-12 text-right">{% trans 'INPUT' %}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-right">{% trans 'Quantity' %}</div>
+                                <div class="col-8 text-right">{% trans 'Value' %}</div>
+                            </div>
+                        </th>
+                        <th class="border-1 text-center" style="min-width: 220px">
+                            <div class="row">
+                                <div class="col-12 text-right">{% trans 'OUTPUT' %}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-right">{% trans 'Quantity' %}</div>
+                                <div class="col-8 text-right">{% trans 'Value' %}</div>
+                            </div>
+                        </th>
+                        <th class="border-1 text-center" style="min-width: 220px; border-top-right-radius: calc(0.5rem - 1px);">
+                            <div class="row">
+                                <div class="col-12 text-right">{% trans 'ENDING' %}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-right">{% trans 'Quantity' %}</div>
+                                <div class="col-8 text-right">{% trans 'Value' %}</div>
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody></tbody>
+                <tfoot>
+                    <tr class="bg-secondary-light-5" id="thead-value">
+                        <td style="border-bottom-left-radius: calc(0.5rem - 1px);"></td>
+                        <td class="fw-bold">{% trans 'TOTAL' %}</td>
+                        <td colspan="4"></td>
+                        <td>
+                            <div class="row">
+                                <div class="col-4 text-right"><span class="opening-total-quantity"></span></div>
+                                <div class="col-8 text-right"><span class="mask-money opening-total-value" data-init-money="0"></span></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="row">
+                                <div class="col-4 text-right"><span class="in-total-quantity"></span></div>
+                                <div class="col-8 text-right"><span class="mask-money in-total-value" data-init-money="0"></span></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="row">
+                                <div class="col-4 text-right"><span class="out-total-quantity"></span></div>
+                                <div class="col-8 text-right"><span class="mask-money out-total-value" data-init-money="0"></span></div>
+                            </div>
+                        </td>
+                        <td style="border-bottom-right-radius: calc(0.5rem - 1px);">
+                            <div class="row">
+                                <div class="col-4 text-right"><span class="ending-total-quantity"></span></div>
+                                <div class="col-8 text-right"><span class="mask-money ending-total-value" data-init-money="0"></span></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -219,7 +280,7 @@
                         <div class="col-12">
                             <table class="table w-100 nowrap" id="view-prd-wh-table">
                                 <thead>
-                                <tr>
+                                <tr class="bg-primary">
                                     <th>{% trans 'Product' %}</th>
                                     <th>{% trans 'Stock quantity' %}</th>
                                     <th>{% trans 'Lot number' %} ({% trans 'Lot quantity' %}) ({% trans 'Expired date' %})

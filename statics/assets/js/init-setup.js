@@ -3113,7 +3113,7 @@ class WFRTControl {
 
     static getZoneData() {
         let itemEle = $('#idxZonesData');
-        if (itemEle) {
+        if (itemEle && itemEle.length > 0) {
             return JSON.parse(itemEle.text());
         }
         return [];

@@ -51,7 +51,6 @@ $(document).ready(function () {
         periodMonthEle.empty();
         periodMonthEle.initSelect2({
             data: data,
-            allowClear: true,
             templateResult: function (state) {
                 let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
                 return $(`<span>${state.text} ${groupHTML}</span>`);
@@ -59,10 +58,10 @@ $(document).ready(function () {
         });
     }
 
-    function LoadPeriod(data) {
-        periodEle.initSelect2({
+    function LoadPeriod(ele, data) {
+        ele.initSelect2({
             ajax: {
-                url: periodEle.attr('data-url'),
+                url: ele.attr('data-url'),
                 method: 'GET',
             },
             data: (data ? data : null),
@@ -70,13 +69,13 @@ $(document).ready(function () {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            let selected_option = SelectDDControl.get_data_from_idx(periodEle, periodEle.val())
+            let selected_option = SelectDDControl.get_data_from_idx(ele, ele.val())
             if (selected_option) {
                 getMonthOrder(selected_option['space_month'], selected_option?.['fiscal_year'])
             }
         })
     }
-    LoadPeriod(current_period)
+    LoadPeriod(periodEle, current_period)
 
     function LoadItemsSelectBox(ele, data) {
         ele.initSelect2({
@@ -122,51 +121,55 @@ $(document).ready(function () {
         // console.log(data_list)
         table.DataTable().clear().destroy()
         table.DataTableDefault({
-            dom: '',
+            styleDom: 'hide-foot',
             paging: false,
+            scrollY: '72vh',
+            scrollX: true,
+            scrollCollapse: true,
             reloadCurrency: true,
             data: data_list,
             columns: [
                 {
-                    className: '',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'prd') {
                             let html = `
-                                <span class="product-td badge badge-secondary badge-pill w-25" data-product-id="${row?.['product_id']}">
-                                    <a tabindex="0"
-                                       data-bs-placement="bottom"
-                                       data-bs-toggle="popover"
-                                       data-bs-trigger="hover focus"
-                                       data-bs-html="true"
-                                       data-bs-content="- ${trans_script.attr('data-trans-uom')}: <span class='badge badge-soft-blue badge-pill'>${row?.['product_uom']}</span><br>- ${trans_script.attr('data-trans-vm')}: <span class='fst-italic'>${row?.['we']}<span>"
-                                       class="w-100 text-white d-inline-block popover-prd">
-                                    ${row?.['product_code']}
-                                    </a>
-                                </span>&nbsp;
-                                <b>${row?.['product_title']}</b>
-                            `
+                                <a tabindex="0" href="#"
+                                    data-bs-placement="top"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover focus"
+                                    data-bs-html="true"
+                                    data-bs-content="
+                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-code')}</span>: <span class='badge badge-primary badge-sm'>${row?.['product_code']}</span>
+                                    <br>
+                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-uom')}</span>: <span class='text-primary'>${row?.['product_uom']}</span>
+                                    <br>
+                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-vm')}</span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}<span>
+                                    "
+                                    class="popover-prd">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                                <span data-product-id="${row?.['product_id']}" class="product-td text-primary fw-bold">${row?.['product_title']}</span>`
                             if (row?.['product_lot_number']) {
-                                html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
+                                html += `<span class="ml-1 text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
                             }
                             if (row?.['sale_order_code']) {
-                                html += `<span class="badge badge-pill badge-soft-red sale-order-td" data-so-id="${row?.['sale_order_id']}"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order_code']}</span>`
+                                html += `<span class="ml-1 text-danger small fw-bold sale-order-td" data-so-id="${row?.['sale_order_id']}">${row?.['sale_order_code']}</span>`
                             }
                             return html
                         }
-                        return ``
-                    }
-                },
-                {
-                    className: 'text-center',
-                    render: (data, type, row) => {
-                        if (row?.['row_type'] === 'log') {
-                            return `${row?.['system_date']}`
+                        else if (row?.['row_type'] === 'log') {
+                            return `<span class="text-muted">${row?.['system_date']}</span>`
                         }
-                        return ``
+                        else if (row?.['row_type'] === 'open') {
+                            let month = parseInt(periodMonthEle.val()) + current_period['space_month']
+                            return `01/${month < 10 ? `0${month}` : month}/${new Date().getFullYear()}`
+                        }
+                        return `***`
                     }
                 },
                 {
-                    className: '',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
                             return `<label class="text-center text-secondary">${row?.['ob_label']}</label>`
@@ -176,18 +179,16 @@ $(document).ready(function () {
                                     <span class="badge badge-soft-${row?.['text_color']} w-40">${row?.['trans_code']}</span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `
-                                    <span class="badge badge-sm badge-soft-secondary badge-pill">
+                            return `<span class="text-secondary fw-bold wh-of-${row?.['product_id']}">${row?.['warehouse_title']}</span>
+                                    <span class="badge badge-sm badge-soft-secondary badge-pill fw-bold">
                                         ${row?.['warehouse_code']}
-                                    </span>&nbsp;
-                                    <span class="text-secondary fw-bold wh-of-${row?.['product_id']}">${row?.['warehouse_title']}</span>
-                            `
+                                    </span>`
                         }
                         return ``
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'log') {
                             return `<span class="text-${row?.['text_color']}">${row?.['quantity']}</span>`
@@ -196,7 +197,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'log') {
                             return `<span class="text-${row?.['text_color']} mask-money" data-init-money="${row?.['cost']}"></span>`
@@ -205,7 +206,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'log') {
                             return `<span class="text-${row?.['text_color']} mask-money" data-init-money="${row?.['value']}"></span>`
@@ -214,92 +215,70 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
-                            return `<span style="font-size: medium" class="badge badge-pill text-secondary">${row?.['opening_balance_quantity']}</span>`
+                            return `<span class="text-secondary">${row?.['opening_balance_quantity']}</span>`
                         }
                         else if (row?.['row_type'] === 'log') {
-                            return `<span style="font-size: medium" class="badge badge-pill text-secondary current-quantity-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}">${row?.['current_quantity']}</span>`
+                            return `<span class="text-secondary current-quantity-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}">${row?.['current_quantity']}</span>`
                         }
                         else if (row?.['row_type'] === 'prd') {
-                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill sum-current-quantity-${row?.['product_id']}-${row?.['sale_order_id']}"></span>`
+                            return `<span class="fw-bold text-primary sum-current-quantity-${row?.['product_id']}-${row?.['sale_order_id']}"></span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-secondary sum-current-quantity-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}">${row?.['ending_balance_quantity']}</span>`
+                            return `<span class="fw-bold text-secondary sum-current-quantity-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}">${row?.['ending_balance_quantity']}</span>`
                         }
                         return ``
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
-                            return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money" data-init-money="${row?.['opening_balance_cost']}"></span>`
+                            return `<span class="text-secondary mask-money" data-init-money="${row?.['opening_balance_cost']}"></span>`
                         }
                         else if (row?.['row_type'] === 'log') {
-                            return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money current-cost-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_cost']}"></span>`
+                            return `<span class="text-secondary mask-money current-cost-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_cost']}"></span>`
                         }
                         else if (row?.['row_type'] === 'prd') {
-                            return `<span style="font-size: medium" class="badge badge-pill badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-cost-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
+                            return `<span class="fw-bold text-primary mask-money sum-current-cost-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-secondary mask-money sum-current-cost-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_cost']}"></span>`
+                            return `<span class="fw-bold text-secondary mask-money sum-current-cost-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_cost']}"></span>`
                         }
                         return ``
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
-                            return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money" data-init-money="${row?.['opening_balance_value']}"></span>`
+                            return `<span class="text-secondary mask-money" data-init-money="${row?.['opening_balance_value']}"></span>`
                         }
                         else if (row?.['row_type'] === 'log') {
-                            return `<span style="font-size: medium" class="badge badge-pill text-secondary mask-money current-value-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_value']}"></span>`
+                            return `<span class="text-secondary mask-money current-value-${row?.['product_id']}" data-stock-type="${row?.['stock_type']}" data-init-money="${row?.['current_value']}"></span>`
                         }
                         else if (row?.['row_type'] === 'prd') {
-                            return `<span style="font-size: medium" class="badge badge-soft-secondary badge-outline badge-pill mask-money sum-current-value-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
+                            return `<span class="fw-bold text-primary mask-money sum-current-value-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money=""></span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
-                            return `<span style="font-size: medium" class="badge badge-pill fw-bold text-secondary mask-money sum-current-value-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_value']}"></span>`
+                            return `<span class="fw-bold text-secondary mask-money sum-current-value-of-wh-${row?.['product_id']}-${row?.['sale_order_id']}" data-init-money="${row?.['ending_balance_value']}"></span>`
                         }
                         return ``
                     }
                 },
             ],
             initComplete: function(settings, json) {
-                table.find('tbody tr').each(function () {
-                    $(this).find('td:eq(0)').css({
-                        'min-width': '400px'
-                    })
-                    $(this).find('td:eq(1)').css({
-                        'min-width': '120px'
-                    })
-                    $(this).find('td:eq(2)').css({
-                        'min-width': '250px'
-                    })
-                    $(this).find('td:eq(3)').css({
-                        'min-width': '100px'
-                    })
-                    $(this).find('td:eq(4)').css({
-                        'min-width': '150px'
-                    })
-                    $(this).find('td:eq(5)').css({
-                        'min-width': '150px'
-                    })
-                    $(this).find('td:eq(6)').css({
-                        'min-width': '100px'
-                    })
-                    $(this).find('td:eq(7)').css({
-                        'min-width': '150px'
-                    })
-                    $(this).find('td:eq(8)').css({
-                        'min-width': '150px'
-                    })
-                })
-
                 table.find('.product-td').each(function () {
+                    $(this).closest('tr').addClass('bg-primary-light-5')
+                    $(this).closest('tr').addClass('fixed-row')
+                    $(this).closest('td').attr('colspan', 5)
+                    $(this).closest('tr').find('td:eq(1)').remove()
+                    $(this).closest('tr').find('td:eq(1)').remove()
+                    $(this).closest('tr').find('td:eq(1)').remove()
+                    $(this).closest('tr').find('td:eq(1)').remove()
+
                     let product_id = $(this).attr('data-product-id')
                     let sale_order_id = $(this).closest('tr').find('.sale-order-td').attr('data-so-id')
 
@@ -332,7 +311,6 @@ $(document).ready(function () {
 
     $('#btn-view').on('click', function () {
         if (periodMonthEle.val()) {
-            items_detail_report_table_Ele.prop('hidden', true)
             WindowControl.showLoading();
             let dataParam = {}
             dataParam['sub_period_order'] = periodMonthEle.val() ? parseInt(periodMonthEle.val()) : null
@@ -372,7 +350,7 @@ $(document).ready(function () {
                             'product_lot_number': item?.['product']?.['lot_number'],
                             'sale_order_code': item?.['product']?.['sale_order_code'],
                             'sale_order_id': item?.['sale_order']?.['id'],
-                            'we': trans_script.attr('data-trans-we')
+                            'vm': item?.['product']?.['valuation_method']
                         })
                         for (const stock_activity of item?.['stock_activities']) {
                             if (warehouses_select_Ele.val().length > 0) {
@@ -418,8 +396,11 @@ $(document).ready(function () {
                                             text_color = 'orange'
                                         }
                                         if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                                text_color = 'purple'
-                                            }
+                                            text_color = 'purple'
+                                        }
+                                        if (activity?.['trans_title'] === 'Balance init input')  {
+                                            text_color = 'muted'
+                                        }
                                         let trans_title_sub = {
                                             'Goods receipt': trans_script.attr('data-trans-grc'),
                                             'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
@@ -493,6 +474,9 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
                                             text_color = 'purple'
                                         }
+                                    if (activity?.['trans_title'] === 'Balance init input') {
+                                        text_color = 'muted'
+                                    }
                                     let trans_title_sub = {
                                         'Goods receipt': trans_script.attr('data-trans-grc'),
                                         'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
@@ -501,6 +485,7 @@ $(document).ready(function () {
                                         'Delivery': trans_script.attr('data-trans-dlvr'),
                                         'Goods issue': trans_script.attr('data-trans-gis'),
                                         'Goods transfer (out)': trans_script.attr('data-trans-gtf'),
+                                        'Balance init input': trans_script.attr('data-trans-bii'),
                                     }
 
                                     table_inventory_report_data.push({
@@ -581,7 +566,6 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.value) {
                 if (periodMonthEle.val()) {
-                    items_detail_report_table_Ele.prop('hidden', true)
                     WindowControl.showLoading();
                     let dataParam = {}
                     dataParam['sub_period_order'] = periodMonthEle.val() ? parseInt(periodMonthEle.val()) : null
@@ -711,6 +695,9 @@ $(document).ready(function () {
                                                     }
                                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                                         text_color = 'purple'
+                                                    }
+                                                    if (activity?.['trans_title'] === 'Balance init input') {
+                                                        text_color = 'muted'
                                                     }
                                                     let trans_title_sub = {
                                                         'Goods receipt': trans_script.attr('data-trans-grc'),
@@ -864,6 +851,9 @@ $(document).ready(function () {
                                                 if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                                     text_color = 'purple'
                                                 }
+                                                if (activity?.['trans_title'] === 'Balance init input') {
+                                                    text_color = 'muted'
+                                                }
                                                 let trans_title_sub = {
                                                     'Goods receipt': trans_script.attr('data-trans-grc'),
                                                     'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
@@ -996,5 +986,21 @@ $(document).ready(function () {
                 }
             }
         })
+    })
+
+    $('#btn-reset').on('click', function () {
+        items_select_Ele.empty()
+        warehouses_select_Ele.empty()
+        periodMonthEle.empty()
+        let current_period = {}
+        if (current_period_Ele.text() !== '') {
+            current_period = JSON.parse(current_period_Ele.text())
+            getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
+            periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+        }
+    })
+    $('#btn-filter').on('click', function () {
+        LoadItemsSelectBox(items_select_Ele)
+        LoadWarehouseSelectBox(warehouses_select_Ele)
     })
 })

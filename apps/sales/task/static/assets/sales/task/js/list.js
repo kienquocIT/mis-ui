@@ -11,6 +11,7 @@ $(function () {
     const $formElm = $('#formOpportunityTask')
     const $oppElm = $('#opportunity_id')
     const $empElm = $('#employee_inherit_id')
+    const $prjElm = $('#project_id')
 
     // lấy danh sách status và render
     function getSttAndRender() {
@@ -252,7 +253,7 @@ $(function () {
                     // parse data
                     const strData = JSON.parse(elmUpdate.attr('data-task'))
                     elmUpdate.remove()
-                    // lấy data vừa update cập nhập vào danh sách task trước đó
+                    // lấy data vừa update cập nhật vào danh sách task trước đó
                     let taskData = kanban.getTaskList
                     let sameSTT = true
                     let old_stt
@@ -412,9 +413,8 @@ $(function () {
                                     'data-value-id', data.employee_created.id
                                 )
                             if (data['opportunity'] && Object.keys(data["opportunity"]).length > 0) {
-                                $oppElm.attr('disabled', true).attr('data-onload',
-                                    JSON.stringify({...data['opportunity'], selected: true})
-                                )
+                                $prjElm.attr('disabled', true)
+                                $oppElm.attr('disabled', true).attr('data-onload', JSON.stringify({...data['opportunity'], selected: true}))
                                 let isCheck = $(`option[value="${data['opportunity'].id}"]`, $oppElm)
                                 if (isCheck.length <= 0)
                                     $oppElm.append(`<option value="${data['opportunity'].id}" selected>${
@@ -422,6 +422,13 @@ $(function () {
                                     )
                                 else $oppElm.val(data['opportunity']["id"]).trigger("change")
 
+                            }
+                            if (data['project'] && Object.keys(data["project"]).length > 0) {
+                                $oppElm.attr('disabled', true)
+                                $prjElm.attr('disabled', true).attr('data-onload', JSON.stringify({...data['project'], selected: true}))
+                                let isCheck = $(`option[value="${data['project'].id}"]`, $oppElm)
+                                if (isCheck.length <= 0) $prjElm.append(`<option value="${data['project'].id}" selected>${data['project'].code}</option>`)
+                                else $prjElm.val(data['project']["id"]).trigger("change")
                             }
                             if (data.employee_inherit) {
                                 data.employee_inherit.selected = true

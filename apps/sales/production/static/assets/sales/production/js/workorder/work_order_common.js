@@ -281,8 +281,12 @@ class WorkOrderLoadDataHandle {
                                 WorkOrderLoadDataHandle.$time.val(`${data.bom_order_list[0]?.['sum_time'] * multi}`);
                                 WorkOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data.bom_order_list[0]));
                                 WorkOrderLoadDataHandle.loadChangeQuantity();
+                                WindowControl.hideLoading();
+                            } else {
+                                $.fn.notifyB({description: WorkOrderLoadDataHandle.$trans.attr('data-no-bom')}, 'failure');
+                                WindowControl.hideLoading();
+                                return false;
                             }
-                            WindowControl.hideLoading();
                         }
                     }
                 }

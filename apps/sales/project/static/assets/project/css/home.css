@@ -38,6 +38,7 @@
 .bg-main {
     background-color: rgb(236, 243, 253);
     border-radius: 18px;
+    height:100%;
 }
 .b-radius{
 border-radius: .5rem;

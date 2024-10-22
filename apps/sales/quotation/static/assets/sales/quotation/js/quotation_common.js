@@ -1775,19 +1775,8 @@ class QuotationLoadDataHandle {
     };
 
     static loadSetWFRuntimeZone() {
-        let $form = $('#frm_quotation_create');
-        if ($form.attr('data-method').toLowerCase() === 'get' || $form.attr('data-method').toLowerCase() === 'put') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    let dataDetail = JSON.parse(eleDetail.val());
-                    // set again WF runtime
-                    if (Object.keys(dataDetail).length > 0) {
-                        WFRTControl.setWFRuntimeID(dataDetail?.['workflow_runtime_id']);
-                    }
-                }
-            }
-        }
+        WFRTControl.activeZoneInDoc();
+        return true;
     };
 
     static loadSetupCopy(ele) {
@@ -2460,7 +2449,7 @@ class QuotationDataTableHandle {
                             return `<div class="row table-row-item-area">
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select 
-                                                class="form-select table-row-item"
+                                                class="form-select table-row-item zone-readonly"
                                                 id="product-${row?.['order']}"
                                                 data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-product')}"
                                                 data-method="GET"
@@ -2607,7 +2596,7 @@ class QuotationDataTableHandle {
                         return `<div class="row">
                                     <div class="input-group">
                                         <div class="input-affix-wrapper">
-                                            <input type="text" class="form-control table-row-discount validated-number" value="${row?.['product_discount_value']}" data-zone="${dataZone}">
+                                            <input type="text" class="form-control table-row-discount validated-number zone-readonly" value="${row?.['product_discount_value']}" data-zone="${dataZone}">
                                             <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                         </div>
                                     </div>
@@ -2763,7 +2752,12 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<select class="form-select table-row-supplied-by"></select>`;
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_costs_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_costs_data";
+                        }
+                        return `<select class="form-select table-row-supplied-by" data-zone="${dataZone}"></select>`;
                     }
                 },
                 {
@@ -3582,22 +3576,31 @@ class QuotationDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_products_data";
+                        let clsZoneReadonly = '';
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_products_data";
+                        }
+
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         let disabled = '';
                         let checked = '';
                         if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
                             disabled = 'disabled';
                             checked = 'checked';
+                            clsZoneReadonly = 'zone-readonly';
                         }
                         let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(row);
                         if (checkBOM?.['is_pass'] === false) {
                             disabled = 'disabled';
                             checked = '';
+                            clsZoneReadonly = 'zone-readonly';
                         }
                         if (row?.['title'] && row?.['code']) {
                             return `<div class="d-flex align-items-center ml-2">
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input table-row-checkbox" data-row="${dataRow}" ${disabled} ${checked}>
+                                            <input type="checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" data-row="${dataRow}" ${disabled} ${checked} data-zone="${dataZone}">
                                         </div>
                                         <div>
                                             <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
@@ -6575,7 +6578,7 @@ function validatePSValue(ele) {
                 $(ele).attr('value', String(0));
                 eleRatio.value = 0;
                 $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-                return false
+                return false;
             }
         }
     }

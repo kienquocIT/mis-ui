@@ -1088,13 +1088,14 @@ class APAction {
         let tax_rate = 0;
         if (tr.find('.expense-tax-select-box').val()) {
             let tax_selected = JSON.parse($('#' + tr.find('.expense-tax-select-box').attr('data-idx-data-loaded')).text())[tr.find('.expense-tax-select-box').val()];
-            tax_rate = tax_selected.rate;
+            tax_rate = tax_selected?.['rate'];
         }
         $.fn.initMaskMoney2();
         if (unit_price.attr('value') && quantity.val()) {
             let subtotal_value = parseFloat(unit_price.attr('value')) * parseFloat(quantity.val())
             subtotal.attr('value', subtotal_value);
-            subtotal_after_tax.attr('value', subtotal_value + subtotal_value * tax_rate / 100);
+            let tax_value = subtotal_value * tax_rate / 100
+            subtotal_after_tax.attr('value', subtotal_value + parseFloat(tax_value.toFixed(0)));
         }
         else {
             unit_price.attr('value', '');

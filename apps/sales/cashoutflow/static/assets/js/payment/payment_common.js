@@ -186,10 +186,12 @@ class PaymentAction {
             tax_rate = tax_selected?.['rate'] ? tax_selected?.['rate'] : 0;
         }
         if (unit_price.attr('value') && quantity.val()) {
-            let subtotal_value = parseFloat(unit_price.attr('value')) * parseInt(quantity.val())
+            let subtotal_value = parseFloat(unit_price.attr('value')) * parseFloat(quantity.val())
             subtotal.attr('value', subtotal_value);
-            subtotal_after_tax.attr('value', subtotal_value + subtotal_value * tax_rate / 100);
-        } else {
+            let tax_value = subtotal_value * tax_rate / 100
+            subtotal_after_tax.attr('value', subtotal_value + parseFloat(tax_value.toFixed(0)));
+        }
+        else {
             unit_price.attr('value', 0);
             subtotal.attr('value', 0);
             subtotal_after_tax.attr('value', 0);

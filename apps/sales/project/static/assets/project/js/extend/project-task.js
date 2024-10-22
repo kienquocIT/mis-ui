@@ -69,7 +69,7 @@ class labelHandle {
             const newTxt = $elmInputLabel.val()
             let labelList = $taskLabelElm.val()
             if (labelList !== undefined && labelList !== '') labelList = JSON.parse(labelList)
-            if (!labelList.length) labelList = []
+            if (labelList.length === 0) labelList = []
             labelList.push(newTxt)
             $taskLabelElm.attr('value', JSON.stringify(labelList))
             const labelHTML = $(`<span class="item-tag"><span>${newTxt}</span><span class="tag-delete">x</span></span>`)
@@ -153,8 +153,8 @@ class checklistHandle {
 function TaskSubmitFunc(platform) {
     let _form = new SetupFormSubmit(platform);
     let formData = _form.dataForm
-    const start_date = new Date(formData.start_date).getDate()
-    const end_date = new Date(formData.end_date).getDate()
+    const start_date = new Date(moment(formData.start_date, 'DD/MM/YYYY')).getTime()
+    const end_date = new Date(moment(formData.end_date, 'DD/MM/YYYY')).getTime()
     if (end_date < start_date) {
         $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
         return false
@@ -274,7 +274,7 @@ class Task_in_project {
                     data: 'employee_created',
                     targets: 0,
                     width: "35%",
-                    render: (data, type, row) => {
+                    render: (data) => {
                         let avatar = ''
                         const full_name = data.last_name + ' ' + data.first_name
                         if (data?.['avatar'])
@@ -302,7 +302,7 @@ class Task_in_project {
                     data: 'time_spent',
                     targets: 2,
                     width: "20%",
-                    render: (data, type, row) => {
+                    render: (data) => {
                         return data;
                     }
                 },
@@ -310,7 +310,7 @@ class Task_in_project {
                     data: 'id',
                     targets: 3,
                     width: "10%",
-                    render: (data, type, row) => {
+                    render: (data) => {
                         return `<btn type="button" class="btn action act-edit" data-row-id="${data}"><i class="fa-solid fa-pencil"></i></btn>`;
                     }
                 }
@@ -338,7 +338,7 @@ class Task_in_project {
             resetFormTask()
             $('.title-create').removeClass("hidden")
             $('.title-detail').addClass("hidden")
-            // $('.btn-assign').removeClass('disabled')
+
             // after reset
             $('#formOpportunityTask').append(`<input type="hidden" name="parent_n" value="${taskID}"/>`)
             const employee = JSON.parse($('#employee_info').text())

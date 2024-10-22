@@ -9223,3 +9223,11 @@ msgstr "Chọn giá sản phẩm"
 #
 msgid "Select product cost"
 msgstr "Chọn giá vốn sản phẩm"
+
+#
+msgid "The document meets the following nodes. Please select one."
+msgstr "Phiếu thỏa điều kiện các trạm sau. Vui lòng chọn một trạm."
+
+#
+msgid "The document does not meet any nodes. Do you wish to continue? If yes, please select one."
+msgstr "Phiếu không thỏa điều kiện các trạm. Bạn có muốn tiếp tục? Nếu có, vui lòng chọn một trạm."

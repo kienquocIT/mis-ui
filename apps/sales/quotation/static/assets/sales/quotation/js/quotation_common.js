@@ -11,6 +11,10 @@ class QuotationLoadDataHandle {
     static transEle = $('#app-trans-factory');
     static urlEle = $('#app-url-factory');
     static customerInitEle = $('#data-init-customer');
+    static $priceModal = $('#selectPriceModal');
+    static $btnSavePrice = $('#btn-save-select-price');
+    static $costModal = $('#selectCostModal');
+    static $btnSaveCost = $('#btn-save-select-cost');
     static dataSuppliedBy = [{'id': 0, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-make')}];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -50,6 +54,20 @@ class QuotationLoadDataHandle {
         $('.accordion-item').css({
             'margin-bottom': 0
         });
+    };
+
+    static loadEventCheckbox($modal) {
+        let checkboxes = $modal[0].querySelectorAll('.form-check-input[type="radio"]');
+        checkboxes.forEach((checkbox) => {
+            checkbox.addEventListener('click', function () {
+                let checked = checkbox.checked;
+                for (let eleCheck of checkboxes) {
+                    eleCheck.checked = false;
+                }
+                checkbox.checked = checked;
+            });
+        });
+        return true;
     };
 
     static loadInitOpportunity() {
@@ -448,7 +466,7 @@ class QuotationLoadDataHandle {
                 let description = ele[0].closest('tr').querySelector('.table-row-description');
                 let uom = ele[0].closest('tr').querySelector('.table-row-uom');
                 let price = ele[0].closest('tr').querySelector('.table-row-price');
-                let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
+                let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
                 // load Description
                 if (description) {
@@ -462,7 +480,7 @@ class QuotationLoadDataHandle {
                     QuotationLoadDataHandle.loadInitS2($(uom));
                 }
                 // load PRICE
-                if (price && priceList) {
+                if (price && modalBody) {
                     let lastPrice = QuotationLoadDataHandle.loadPriceProduct(ele[0]);
                     $(price).attr('value', String(lastPrice));
                 }
@@ -934,42 +952,50 @@ class QuotationLoadDataHandle {
         if ($(eleProduct).val()) {
             let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
             let is_change_price = false;
-            if (productData) {
+            let row = eleProduct.closest('tr');
+            if (productData && row) {
                 let data = productData;
-                let price = eleProduct.closest('tr').querySelector('.table-row-price');
-                let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
+                let price = row.querySelector('.table-row-price');
+                let modalBody= QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
                 // load PRICE
-                if (price && priceList) {
+                if (price && modalBody) {
                     let account_price_id = document.getElementById('customer-price-list').value;
                     let current_price_checked = price.getAttribute('value');
                     let lastPrice = 0;
-                    $(priceList).empty();
-                    let htmlDD = ``;
+                    $(modalBody).empty();
+                    let htmlPriceList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><b>${productData?.['title']}</b></div>`;
                     if (Array.isArray(data?.['price_list']) && data?.['price_list'].length > 0) {
                         for (let priceData of data?.['price_list']) {
-                            let clsChecked = '';
-                            if (priceData?.['is_default'] === true) { // check GENERAL_PRICE_LIST OF PRODUCT then set general_price
-                                lastPrice = parseFloat(priceData?.['value']);
-                                clsChecked = 'option-btn-checked';
-                            }
                             if (priceData?.['price_status'] === 1) {
-                                if (priceData?.['id'] === account_price_id) { // check CUSTOMER_PRICE then set customer_price
-                                    lastPrice = parseFloat(priceData?.['value']);
-                                    clsChecked = 'option-btn-checked';
+                                let checked = '';
+                                if (row.querySelector(`.input-group-price[data-price-id="${priceData?.['id']}"]`)) {
+                                    checked = 'checked';
+                                } else {
+                                    if (priceData?.['is_default'] === true) { // check GENERAL_PRICE_LIST OF PRODUCT then set general_price
+                                        lastPrice = parseFloat(priceData?.['value']);
+                                        checked = 'checked';
+                                    }
+                                    if (priceData?.['id'] === account_price_id) { // check CUSTOMER_PRICE then set customer_price
+                                        lastPrice = parseFloat(priceData?.['value']);
+                                        checked = 'checked';
+                                    }
                                 }
-                                htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1 ${clsChecked}" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}">
-                                                <div class="d-flex justify-content-between">
-                                                    <span class="mr-5">${priceData?.['title']}</span>
+                                htmlPriceList += `<div class="d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="form-check">
+                                                            <input type="radio" class="form-check-input table-row-price-option" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" ${checked}>
+                                                        </div>
+                                                        <span class="mr-5">${priceData?.['title']}</span>
+                                                    </div>
                                                     <div>
                                                         <span class="mask-money mr-5" data-init-money="${parseFloat(priceData?.['value'])}"></span>
-                                                        <span>(${priceData?.['uom']?.['title']})</span>
+                                                        <span class="badge badge-light">${priceData?.['uom']?.['title']}</span>
                                                     </div>
-                                                </div>
-                                            </a>`;
+                                                </div>`;
                             }
                         }
                     }
-                    $(priceList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-80p position-relative overflow-y-scroll">${htmlDD}</div>`);
+                    $(modalBody).append(`${htmlPriceList}`);
                     // If change price then remove promotion & shipping
                     if (current_price_checked !== price.getAttribute('value')) {
                         is_change_price = true;
@@ -979,6 +1005,8 @@ class QuotationLoadDataHandle {
                         deletePromotionRows($(tableProduct), true, false);
                         deletePromotionRows($(tableProduct), false, true);
                     }
+                    QuotationLoadDataHandle.loadEventCheckbox(QuotationLoadDataHandle.$priceModal);
+                    $.fn.initMaskMoney2();
                     return lastPrice;
                 }
             }
@@ -1450,6 +1478,7 @@ class QuotationLoadDataHandle {
                     }
                     let newRow = $table.DataTable().row.add(dataAdd).draw().node();
                     QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
+                    $(newRow.querySelector('.table-row-item')).attr('data-product-id', dataProduct?.['id']);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
@@ -1534,18 +1563,14 @@ class QuotationLoadDataHandle {
                         if (data) {
                             if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
                                 let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
-                                let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
-                                let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
+                                let btnSCost = eleProduct.closest('tr').querySelector('.btn-select-cost');
                                 if (data.bom_order_list.length > 0) {
                                     if (elePrice) {
                                         elePrice.setAttribute('disabled', 'true');
                                         $(elePrice).attr('value', String(data.bom_order_list[0]?.['sum_price']));
                                         $.fn.initMaskMoney2();
-                                        if (eleBtnPriceList) {
-                                            eleBtnPriceList.setAttribute('hidden', 'true');
-                                        }
-                                        if (eleGrPrice) {
-                                            eleGrPrice.removeAttribute('data-bs-toggle');
+                                        if (btnSCost) {
+                                            btnSCost.setAttribute('disabled', 'true');
                                         }
                                     }
                                 } else {
@@ -1562,12 +1587,11 @@ class QuotationLoadDataHandle {
     static loadCostWHProduct(eleProduct) {
         let formSubmit = $('#frm_quotation_create');
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-        if (productData) {
-            let costList = eleProduct.closest('tr').querySelector('.table-row-cost-list');
+        let row = eleProduct.closest('tr');
+        if (productData && row) {
+            let modalBody = QuotationLoadDataHandle.$costModal[0].querySelector('.modal-body');
             // load PRICE
-            if (costList && productData?.['id']) {
-                $(costList).empty();
-                let htmlDD = ``;
+            if (modalBody && productData?.['id']) {
                 let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-md-product-detail').format_url_with_uuid(productData?.['id']);
                 // call ajax get info product detail
                 $.fn.callAjax2({
@@ -1578,21 +1602,29 @@ class QuotationLoadDataHandle {
                     (resp) => {
                         let dataDetail = $.fn.switcherResp(resp);
                         if (dataDetail) {
+                            $(modalBody).empty();
+                            let htmlCostList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><b>${productData?.['title']}</b></div>`;
                             if (dataDetail?.['cost_list']) {
                                 if (Array.isArray(dataDetail?.['cost_list']) && dataDetail?.['cost_list'].length > 0) {
                                     for (let costData of dataDetail?.['cost_list']) {
-                                        htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}">
-                                                <div class="d-flex justify-content-between">
-                                                    <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
-                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
-                                                </div>
-                                            </a>`;
+                                        let checked = '';
+                                        if (row.querySelector(`.input-group-price[data-cost-wh-id="${costData?.['warehouse']?.['id']}"]`)) {
+                                            checked = 'checked';
+                                        }
+                                        htmlCostList += `<div class="d-flex justify-content-between">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="form-check">
+                                                                <input type="radio" class="form-check-input table-row-price-option" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}" ${checked}>
+                                                            </div>
+                                                            <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
+                                                        </div>
+                                                        <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
+                                                    </div>`;
                                     }
-                                    $(costList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
+                                    $(modalBody).append(`${htmlCostList}`);
                                 } else {
-                                    let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
-                                    let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
-                                    let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
+                                    let elePrice = row.querySelector('.table-row-price');
+                                    let btnSCost = row.querySelector('.btn-select-cost');
                                     if (elePrice) {
                                         if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                                             if (productData?.['standard_price'] > 0) {
@@ -1602,14 +1634,12 @@ class QuotationLoadDataHandle {
                                             }
                                         }
                                     }
-                                    if (eleBtnPriceList) {
-                                        eleBtnPriceList.setAttribute('hidden', 'true');
-                                    }
-                                    if (eleGrPrice) {
-                                        eleGrPrice.removeAttribute('data-bs-toggle');
+                                    if (btnSCost) {
+                                        btnSCost.setAttribute('disabled', 'true');
                                     }
                                 }
                             }
+                            QuotationLoadDataHandle.loadEventCheckbox(QuotationLoadDataHandle.$costModal);
                             $.fn.initMaskMoney2();
                         }
                     }
@@ -1881,16 +1911,6 @@ class QuotationLoadDataHandle {
             }
         )
         return true;
-    };
-
-    static loadCssToDTScrollBody() {
-        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
-        if (tableProductWrapper) {
-            let tableProductBd = tableProductWrapper.querySelector('.dataTables_scrollBody');
-            if (tableProductBd) {
-                tableProductBd.style.minHeight = '100px';
-            }
-        }
     };
 
     // LOAD DATA DETAIL
@@ -2545,22 +2565,22 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_products_data";
                         }
                         return `<div class="row">
-                                    <div class="dropend">
-                                        <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
-                                        <div class="input-affix-wrapper">
-                                            <input 
-                                                type="text" 
-                                                class="form-control mask-money table-row-price" 
-                                                value="${row?.['product_unit_price']}"
-                                                data-return-type="number"
-                                                data-zone="${dataZone}"
-                                            >
-                                            <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
-                                        </div>
-                                        </div>
-                                        <div role="menu" class="dropdown-menu table-row-price-list w-400p">
-                                        <a class="dropdown-item" data-value=""></a>
-                                        </div>
+                                    <div class="input-group input-group-price">
+                                        <input 
+                                            type="text" 
+                                            class="form-control mask-money table-row-price" 
+                                            value="${row?.['product_unit_price']}"
+                                            data-return-type="number"
+                                            data-zone="${dataZone}"
+                                        >
+                                        <button
+                                            type="button"
+                                            class="btn btn-icon btn-light btn-select-price"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#selectPriceModal"
+                                            disabled
+                                        ><i class="fas fa-ellipsis-h"></i>
+                                        </button>
                                     </div>
                                 </div>`;
                     }
@@ -2677,10 +2697,6 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
-            drawCallback: function () {
-                // add css to dataTables_scrollBody
-                QuotationLoadDataHandle.loadCssToDTScrollBody();
-            },
         });
     };
 
@@ -2721,6 +2737,7 @@ class QuotationDataTableHandle {
                                                 data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
                                                 data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
                                                 data-keyResp="product_sale_list"
+                                                data-product-id="${row?.['product_data']?.['id']}"
                                                 data-zone="${dataZone}"
                                                 readonly
                                             >
@@ -2789,9 +2806,7 @@ class QuotationDataTableHandle {
                         }
                         if (itemType === 0) {  // product
                             return `<div class="row">
-                                        <div class="dropdown">
-                                            <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
-                                            <div class="input-affix-wrapper">
+                                            <div class="input-group input-group-price">
                                                 <input 
                                                     type="text" 
                                                     class="form-control mask-money table-row-price disabled-custom-show" 
@@ -2800,13 +2815,14 @@ class QuotationDataTableHandle {
                                                     data-zone="${dataZone}"
                                                     disabled
                                                 >
-                                                <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-icon btn-light btn-select-cost"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#selectCostModal"
+                                                ><i class="fas fa-ellipsis-h"></i>
+                                                </button>
                                             </div>
-                                            </div>
-                                            <div role="menu" class="dropdown-menu table-row-cost-list w-400p">
-                                            <a class="dropdown-item" data-value=""></a>
-                                            </div>
-                                        </div>
                                     </div>`;
                         } else if (itemType === 1) {  // shipping
                             return `<input 
@@ -4066,18 +4082,17 @@ class QuotationCheckConfigHandle {
     static checkTableRow(config, check_type, row) {
         let eleProduct = row.querySelector('.table-row-item');
         if (eleProduct) {
-            let elePriceList = row.querySelector('.dropdown-action');
+            let btnSPrice = row.querySelector('.btn-select-price');
             let elePrice = row.querySelector('.table-row-price');
             let eleDiscount = row.querySelector('.table-row-discount');
             if (check_type === 0) {  // short sale
                 if (config?.['short_sale_config']?.['is_choose_price_list'] === false) {
-                    if (elePriceList.hasAttribute('data-bs-toggle')) {
-                        elePriceList.removeAttribute('data-bs-toggle');
-                        QuotationLoadDataHandle.loadPriceProduct(eleProduct);
+                    if (btnSPrice) {
+                        btnSPrice.setAttribute('disabled', 'true');
                     }
                 } else {
-                    if (!elePriceList.hasAttribute('data-bs-toggle')) {
-                        elePriceList.setAttribute('data-bs-toggle', 'dropdown')
+                    if (btnSPrice) {
+                        btnSPrice.removeAttribute('disabled');
                     }
                 }
                 if (config?.['short_sale_config']?.['is_input_price'] === false) {
@@ -4107,8 +4122,8 @@ class QuotationCheckConfigHandle {
                 }
             }
             if (check_type === 1) {  // long sale
-                if (!elePriceList.hasAttribute('data-bs-toggle')) {
-                    elePriceList.setAttribute('data-bs-toggle', 'dropdown');
+                if (btnSPrice) {
+                    btnSPrice.removeAttribute('disabled');
                 }
                 if (config?.['long_sale_config']?.['is_not_input_price'] === false) {
                     if (elePrice) {

@@ -9203,3 +9203,11 @@ msgstr "Tên thuộc tính"
 #
 msgid "Value name"
 msgstr "Tên biến thể"
+
+#
+msgid "Select product price"
+msgstr "Chọn giá sản phẩm"
+
+#
+msgid "Select product cost"
+msgstr "Chọn giá vốn sản phẩm"

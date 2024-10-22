@@ -6522,7 +6522,7 @@ function validatePSValue(ele) {
                 $(ele).attr('value', String(0));
                 eleRatio.value = 0;
                 $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-                return false
+                return false;
             }
         }
     }

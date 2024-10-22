@@ -9211,3 +9211,7 @@ msgstr "Tên biến thể"
 #
 msgid "Balance init input"
 msgstr "Nhập SDĐK"
+
+#
+msgid "Product does not have bill of material"
+msgstr "Sản phẩm không có định mức nguyên vật liệu"

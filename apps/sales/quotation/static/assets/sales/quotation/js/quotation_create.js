@@ -231,7 +231,7 @@ $(function () {
             // ReCalculate Total
             QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
             // load again table cost
-            QuotationLoadDataHandle.loadDataTableCost();
+            // QuotationLoadDataHandle.loadDataTableCost();
             QuotationLoadDataHandle.loadSetWFRuntimeZone();
         });
 
@@ -294,7 +294,7 @@ $(function () {
                 }
                 if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-uom') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
                     // load again table cost
-                    QuotationLoadDataHandle.loadDataTableCost();
+                    // QuotationLoadDataHandle.loadDataTableCost();
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                     if ($(this).hasClass('table-row-uom')) {
                         let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
@@ -443,6 +443,12 @@ $(function () {
         });
 
 // COST
+        $quotationTabs.on('click', '.tab-cost', function () {
+            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+                QuotationLoadDataHandle.loadDataTableCost();
+            }
+        });
+
 // ******** Action on change data of table row COST => calculate data for row & calculate data total
         tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
@@ -788,7 +794,7 @@ $(function () {
                 // ReOrder STT
                 reOrderSTT(tableProduct);
                 // load again table cost
-                QuotationLoadDataHandle.loadDataTableCost();
+                // QuotationLoadDataHandle.loadDataTableCost();
                 QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 // store data
                 QuotationStoreDataHandle.storeProduct(newRow);
@@ -918,12 +924,15 @@ $(function () {
             let keyHidden = WFRTControl.getZoneHiddenKeyData();
             if (keyHidden) {
                 if (keyHidden.length > 0) {
-                    // special case: tab cost depend on tab detail
+                    // special case: loadCost if products is not in hidden zones
                     if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
                         QuotationLoadDataHandle.loadDataTableCost();
                         QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
                         QuotationLoadDataHandle.loadSetWFRuntimeZone();
                     }
+                } else {
+                    QuotationLoadDataHandle.loadDataTableCost();
+                    QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
                 }
             }
             let submitFields = [

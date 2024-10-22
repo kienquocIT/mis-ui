@@ -2168,43 +2168,6 @@ class WFRTControl {
         // check next node
         let associationData = WFAssociateControl.checkNextNode(WFRTControl.getRuntimeDocData());
         WFRTControl.submitCheckAssociation(dataSubmit, associationData, 1, dataRTConfig);
-        // let collabOutForm = WFRTControl.getCollabOutFormData();
-        // if (collabOutForm && collabOutForm.length > 0) {
-        //     Swal.fire({
-        //         title: $.fn.transEle.attr('data-select-next-node-collab'),
-        //         html: String(WFRTControl.setupHTMLSelectCollab(collabOutForm)),
-        //         allowOutsideClick: false,
-        //         showConfirmButton: true,
-        //         confirmButtonText: $.fn.transEle.attr('data-confirm'),
-        //         showCancelButton: true,
-        //         cancelButtonText: $.fn.transEle.attr('data-cancel'),
-        //         didOpen: () => {
-        //             // Add event listener after the modal is shown
-        //             let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
-        //             checkboxes.forEach((checkbox) => {
-        //                 checkbox.addEventListener('click', function () {
-        //                     let checked = checkbox.checked;
-        //                     for (let eleCheck of checkboxes) {
-        //                         eleCheck.checked = false;
-        //                     }
-        //                     checkbox.checked = checked;
-        //                 });
-        //             });
-        //         }
-        //     }).then((result) => {
-        //         if (result.dismiss === Swal.DismissReason.timer || result.value) {
-        //             let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
-        //             if (eleChecked) {
-        //                 dataSubmit['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-        //                 return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
-        //             } else {
-        //                 return "You need to select one person!";
-        //             }
-        //         }
-        //     });
-        // } else {
-        //     return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
-        // }
     }
 
     static callWFSubmitForm(_form) {
@@ -3624,34 +3587,6 @@ class WFAssociateControl {
 
     };
 
-    // static findKey(dataForm, key) {
-    //     if (!key.includes("__")) {
-    //         return dataForm?.[key];
-    //     }
-    //     if (key.includes("__")) {
-    //         let listSub = key.split("__");
-    //         return listSub.reduce((acc, curr) => acc?.[curr], dataForm);
-    //     }
-    // };
-
-    // static findKey(dataForm, key) {
-    //     if (!key.includes("__")) {
-    //         return dataForm?.[key];
-    //     }
-    //     if (key.includes("__")) {
-    //         let listSub = key.split("__");
-    //         return listSub.reduce((acc, curr) => {
-    //             if (Array.isArray(acc)) {
-    //                 // If the current accumulator is an array, map over it
-    //                 return acc.map(item => item?.[curr]);
-    //             } else {
-    //                 // Regular reduction step
-    //                 return acc?.[curr];
-    //             }
-    //         }, dataForm);
-    //     }
-    // };
-
     static findKey(dataForm, key) {
         if (!key.includes("__")) {
             return dataForm?.[key];
@@ -3675,8 +3610,6 @@ class WFAssociateControl {
             }
         }, dataForm);
     }
-
-
 
     static evaluateLogic(conditions) {
         let result = conditions[0];  // Start with the first value

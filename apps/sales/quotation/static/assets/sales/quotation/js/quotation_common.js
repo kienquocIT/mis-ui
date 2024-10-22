@@ -737,12 +737,15 @@ class QuotationLoadDataHandle {
             let row = this.node();
             if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
                 if (row.querySelector('.table-row-checkbox').getAttribute('data-row')) {
-                    QuotationLoadDataHandle.loadAddRowProduct(JSON.parse(row.querySelector('.table-row-checkbox').getAttribute('data-row')));
+                    let dataRow = JSON.parse(row.querySelector('.table-row-checkbox').getAttribute('data-row'));
+                    if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
+                        QuotationLoadDataHandle.loadAddRowProduct(dataRow);
+                    }
                 }
             }
         });
         return true;
-    }
+    };
 
     static loadAddRowProduct(data) {
         let tableProduct = $('#datable-quotation-create-product');
@@ -785,7 +788,7 @@ class QuotationLoadDataHandle {
         $(newRow.querySelector('.table-row-item')).trigger('change');
         $(newRow.querySelector('.table-row-item')).attr('data-product-id', data?.['id']);
         // load again table cost
-        QuotationLoadDataHandle.loadDataTableCost();
+        // QuotationLoadDataHandle.loadDataTableCost();
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
         // add classes for collapse
         let eleGroups = tableProduct[0].querySelectorAll('.table-row-group');
@@ -1523,9 +1526,9 @@ class QuotationLoadDataHandle {
                 let row = this.node();
                 let eleProduct = row.querySelector('.table-row-item');
                 let elePrice = row.querySelector('.table-row-price');
-                if (eleProduct) {
-                    QuotationLoadDataHandle.loadCostProduct(eleProduct);
-                }
+                // if (eleProduct) {
+                //     QuotationLoadDataHandle.loadCostProduct(eleProduct);
+                // }
                 if ($(eleProduct).val() && elePrice) {
                     let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                     if (dataProduct) {
@@ -1625,6 +1628,8 @@ class QuotationLoadDataHandle {
                                     }
                                     $(modalBody).append(`${htmlCostList}`);
                                 } else {
+                                    htmlCostList += `<p>Product does not have cost list, please input cost.</p>`;
+                                    $(modalBody).append(`${htmlCostList}`);
                                     let elePrice = row.querySelector('.table-row-price');
                                     let btnSCost = row.querySelector('.btn-select-cost');
                                     if (elePrice) {
@@ -1643,7 +1648,7 @@ class QuotationLoadDataHandle {
                             }
                             QuotationLoadDataHandle.loadEventCheckbox(QuotationLoadDataHandle.$costModal);
                             $.fn.initMaskMoney2();
-                            // QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                            QuotationLoadDataHandle.loadSetWFRuntimeZone();
                         }
                     }
                 )
@@ -2086,7 +2091,7 @@ class QuotationLoadDataHandle {
         tableProduct.DataTable().clear().draw();
         tableCost.DataTable().clear().draw();
         tableExpense.DataTable().clear().draw();
-
+        // load table product
         tableProduct.DataTable().rows.add(products_data).draw();
         tableProduct.DataTable().rows().every(function () {
             let row = this.node();
@@ -2121,9 +2126,9 @@ class QuotationLoadDataHandle {
                 }
             }
         });
-
+        // load table cost
         tableCost.DataTable().rows.add(costs_data).draw();
-
+        // load table expense
         tableExpense.DataTable().rows.add(expenses_data).draw();
         // payment stage (sale order)
         if (form.classList.contains('sale-order')) {

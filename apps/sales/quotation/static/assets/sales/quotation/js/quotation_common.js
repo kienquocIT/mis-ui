@@ -1641,6 +1641,7 @@ class QuotationLoadDataHandle {
                             }
                             QuotationLoadDataHandle.loadEventCheckbox(QuotationLoadDataHandle.$costModal);
                             $.fn.initMaskMoney2();
+                            // QuotationLoadDataHandle.loadSetWFRuntimeZone();
                         }
                     }
                 )
@@ -6257,6 +6258,7 @@ class QuotationSubmitHandle {
         if (QuotationLoadDataHandle.customerSelectEle.val()) {
             let data = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
             if (data) {
+                _form.dataForm['customer'] = data?.['id'];
                 _form.dataForm['customer_data'] = data;
             }
         }

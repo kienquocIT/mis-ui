@@ -9235,3 +9235,7 @@ msgstr "Phiếu không thỏa điều kiện các trạm. Bạn có muốn tiế
 #
 msgid "Select next station"
 msgstr "Chọn trạm tiếp theo"
+
+#
+msgid "The product does not have cost list, please input cost."
+msgstr "Sản phẩm không có danh sách giá vốn, vui lòng nhập giá vốn."

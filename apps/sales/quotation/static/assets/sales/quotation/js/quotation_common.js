@@ -967,7 +967,7 @@ class QuotationLoadDataHandle {
                     let current_price_checked = price.getAttribute('value');
                     let lastPrice = 0;
                     $(modalBody).empty();
-                    let htmlPriceList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><b>${productData?.['title']}</b></div>`;
+                    let htmlPriceList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><i class="fas fa-cube mr-2"></i><b>${productData?.['title']}</b></div>`;
                     if (Array.isArray(data?.['price_list']) && data?.['price_list'].length > 0) {
                         let typeChecked = 0;
                         if (priceGr.getAttribute('data-price-id')) {
@@ -1618,7 +1618,7 @@ class QuotationLoadDataHandle {
                         let dataDetail = $.fn.switcherResp(resp);
                         if (dataDetail) {
                             $(modalBody).empty();
-                            let htmlCostList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><b>${productData?.['title']}</b></div>`;
+                            let htmlCostList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><i class="fas fa-cube mr-2"></i><b>${productData?.['title']}</b></div>`;
                             if (dataDetail?.['cost_list']) {
                                 if (Array.isArray(dataDetail?.['cost_list']) && dataDetail?.['cost_list'].length > 0) {
                                     for (let costData of dataDetail?.['cost_list']) {
@@ -1638,7 +1638,7 @@ class QuotationLoadDataHandle {
                                     }
                                     $(modalBody).append(`${htmlCostList}`);
                                 } else {
-                                    htmlCostList += `<p>Product does not have cost list, please input cost.</p>`;
+                                    htmlCostList += `<p>${QuotationLoadDataHandle.transEle.attr('data-product-no-cost')}</p>`;
                                     $(modalBody).append(`${htmlCostList}`);
                                     let elePrice = row.querySelector('.table-row-price');
                                     let btnSCost = row.querySelector('.btn-select-cost');

@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    // hidden btn show log
+    $('#btnLogShow').hide()
+
     const $FormElm = $('#project_form');
 
     function submitHandleFunc() {
@@ -1307,7 +1310,7 @@ class createBaseline {
         $('#create_baseline').on('click', function () {
             Swal.fire({
                 title: $.fn.gettext("Are you sure?"),
-                text: $.fn.gettext("Create baseline at this moment?"),
+                text: $.fn.gettext("Request baseline at this moment?"),
                 icon: "question",
                 showCancelButton: true,
                 // buttonsStyling: false,

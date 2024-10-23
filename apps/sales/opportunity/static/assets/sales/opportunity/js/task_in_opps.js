@@ -245,7 +245,7 @@ class Task_in_opps {
                 locale: {
                     format: 'DD/MM/YYYY'
                 }
-            })
+            }).val('').trigger('change')
         })
 
         // init ASSIGNER

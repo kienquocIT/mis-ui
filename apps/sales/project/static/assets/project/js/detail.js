@@ -61,6 +61,10 @@ $(document).ready(function () {
                 $('#employeeInheritInput').attr('data-value', project['employee_inherit'].id).val(project['employee_inherit'].full_name);
                 $('#dateStart').val(moment(project.start_date).format('DD/MM/YYYY'))
                 $('#dateFinish').val(moment(project.finish_date).format('DD/MM/YYYY'))
+                if(project['date_close'])
+                    $('#dateClose').val(moment(project['date_close']).format('DD/MM/YYYY'))
+                        .closest('.form-group').removeClass('hidden')
+
                 let group = [], work = [];
                 if ($form.hasClass('baseline_version')){
                     group = project['group']

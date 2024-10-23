@@ -3,74 +3,60 @@ let [priceSelectEle, currencySelectEle, canDeleteCheckBoxEle, autoUpdateCheckBox
 
 let columns = [
     {
-        render: (data, type, row, meta) => {
+        className: 'wrap-text min-w-50p',
+        render: () => {
             return '';
         }
     }, {
         data: 'code',
+        className: 'wrap-text min-w-150p',
         render: (data, type, row, meta) => {
-            return `<span class="badge badge-soft-success span-product" data-id="` + row.id + `"
-                        style="min-width: max-content; width: 70%" href="#"><b>` + row.code + `</b></span>`
+            return `<span class="badge badge-outline badge-soft-primary span-product w-70" data-id="${row.id}">${row.code}</span>`
         }
     }, {
         data: 'title',
+        className: 'wrap-text min-w-250p',
         render: (data, type, row, meta) => {
-            return `<span><b>` + row.title + `</b></span>`
+            return `<span class="text-muted">${row.title}</span>`
         }
     }, {
         data: 'uom_group',
+        className: 'wrap-text min-w-100p',
         render: (data, type, row, meta) => {
-            return `<div class="row">
-                        <div class="col-10" style="padding-right: 5px">
-                            <span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span>
-                        </div>
-                    </div>`
+            return `<span class="text-muted span-uom-group" data-id="${row.uom_group.id}">${row.uom_group.title}</span>`
         }
     }, {
         data: 'uom',
+        className: 'wrap-text min-w-100p',
         render: (data, type, row, meta) => {
-            return `<div class="row">
-                    <div class="col-10" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
-                    </div>`
+            return `<span class="text-blue badge-pill span-uom" data-id="${row.uom.id}">${row.uom.title}</span>`
         }
-    },]
+    },
+]
 
 class PriceListAction {
-    static generateColCurrency(product_mapped, currencies, pk) {
+    static generateColCurrency(product_mapped, currencies) {
         let table = $('#datatable-item-list');
         currencies.forEach(function (value, index) {
             table.find('thead tr').append(`<th>${transEle.data('trans-price')} ${value.abbreviation}</th>`)
             columns.push(
                 {
                     data: 'price',
+                    className: 'wrap-text min-w-250p',
                     render: (data, type, row, meta) => {
                         let price_get = row.price.filter(function (item) {
                             return item.id === value.id
                         })[0]
 
                         if (row.is_auto_update) {
-                            return `<input class="form-control mask-money w-150p money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" readonly/>`
+                            return `<input class="form-control mask-money money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" readonly/>`
                         } else {
-                            return `<input class="form-control mask-money w-150p money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" />`
+                            return `<input class="form-control mask-money money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" />`
                         }
                     }
                 },
             )
         })
-        this.addColDel(table, pk);
-    }
-
-    static addColDel(table, pk) {
-        table.find('thead tr').append(`<th></th>`)
-        columns.push(
-            {
-                data: 'id',
-                render: (data, type, row, meta) => {
-                    return `<a class="btn btn-icon btn btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del" data-id="${pk}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></button>`
-
-                }
-            },
-        )
     }
 
     static addRow(table, data) {
@@ -80,16 +66,18 @@ class PriceListAction {
     }
 
     static loadDtbPriceItem(data, columns) {
-        if (!$.fn.DataTable.isDataTable('#datatable-item-list')) {
-            let dtb = $('#datatable-item-list');
-            dtb.DataTableDefault({
-                rowIdx: true,
-                reloadCurrency: true,
-                data: data,
-                paging: false,
-                columns: columns,
-            });
-        }
+        let dtb = $('#datatable-item-list');
+        dtb.DataTable().clear().destroy()
+        dtb.DataTableDefault({
+            rowIdx: true,
+            reloadCurrency: true,
+            data: data,
+            paging: false,
+            scrollY: '55vh',
+            scrollX: true,
+            scrollCollapse: true,
+            columns: columns,
+        });
     }
 
     static getProductWithCurrency(list_product, currency) {
@@ -220,7 +208,6 @@ class PriceListLoadPage {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     let price_list_detail = data?.['price'];
-                    console.log(price_list_detail)
                     $('#data_detail').text(JSON.stringify(price_list_detail));
                     $.fn.compareStatusShowPageAction(price_list_detail)
 
@@ -255,7 +242,7 @@ class PriceListLoadPage {
 
 
                     let product_mapped = PriceListAction.getProductWithCurrency(price_list_detail?.['products_mapped'], price_list_detail.currency);
-                    PriceListAction.generateColCurrency(product_mapped, price_list_detail.currency, pk);
+                    PriceListAction.generateColCurrency(product_mapped, price_list_detail.currency);
                     PriceListAction.loadDtbPriceItem([], columns);
                     PriceListAction.addRow($('#datatable-item-list'), product_mapped.sort((a, b) => a.code.localeCompare(b.code)));
 
@@ -313,4 +300,3 @@ class PriceListLoadPage {
         currencySelectEle.prop('disabled', true);
     }
 }
-

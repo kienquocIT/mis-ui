@@ -24,9 +24,8 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="form-group">
-                            <label for="import-db-form-select-table" class="form-label required">{% trans 'Select datatable' %}</label>
-                            <select class="form-select" id="import-db-form-select-table"></select>
-                            <span class="text-muted small">{% trans 'The table in excel file must have the same column order as selected table.' %}</span>
+                            <label for="import-db-form-select-table" class="form-label">{% trans 'Datatable name' %}</label>
+                            <input disabled readonly class="form-control form-control-line" id="import-db-form-select-table">
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
@@ -63,7 +62,7 @@
                                 <div id="progress-bar" class="progress-bar bg-primary-light-3" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div id="import-db-form-modal-table" style="max-height: 50vh; overflow: auto"></div>
-                            <div class="text-muted small">{% trans 'The first column is the index column, the last column gives us the import status.' %}</div>
+                            <div class="text-muted small">{% trans 'The table in excel file must have the same column order as selected table.' %}</div>
                         </form>
                     </div>
                 </div>

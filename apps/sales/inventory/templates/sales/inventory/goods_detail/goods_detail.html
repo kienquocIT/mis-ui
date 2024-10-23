@@ -24,7 +24,7 @@
 {#    </button>#}
 {% endblock %}
 {% block pageContent %}
-    {{ data.data.list_import_db_form | json_script:"list_import_db_form" }}
+    {{ data.data.db_form_cfg | json_script:"db_form_cfg" }}
     <script id="trans-url"
             data-trans-all="{% trans 'Default all' %}"
             data-trans-delivered="{% trans 'is not in stock' %}"
@@ -116,7 +116,7 @@
         </div>
     </form>
 
-    <div class="modal fade has-import-db-form" id="modal-serial" tabindex="-1" role="dialog" aria-labelledby="modal-serial" aria-hidden="true">
+    <div class="modal fade" id="modal-serial" tabindex="-1" role="dialog" aria-labelledby="modal-serial" aria-hidden="true">
         <div class="modal-dialog modal-lg min-w-1280p" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -126,40 +126,39 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div id="import-button">
-                        {% include 'extends/import-datatable/button-import-db.html' %}
-                        <script class="import-db-form-url"
-                              data-get-method="POST"
-                              data-get-url="{% url 'GoodsDetailAPIImportDB' %}"
-                              data-get-redirect-url="{% url 'GoodsDetail' %}"
-                        ></script>
-                    </div>
-
-                    <form id="form-serial" data-method="POST"
-                          data-url="{% url 'GoodsDetailAPI' %}"
-                          data-url-redirect="{% url 'GoodsDetail' %}"
-                    >
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-12">
-                                <table class="table nowrap w-100" id="table-serial">
-                                    <thead class="bg-secondary-light-4">
-                                    <tr>
-                                        <th class="w-5" style="min-width: 50px"></th>
-                                        <th class="w-10" style="min-width: 200px">{% trans 'Vendor serial No.' %}</th>
-                                        <th class="w-15" style="min-width: 200px">{% trans 'Serial No.' %}</th>
-                                        <th class="w-15" style="min-width: 150px">{% trans 'Expired date' %}</th>
-                                        <th class="w-15" style="min-width: 150px">{% trans 'Mfr date' %}</th>
-                                        <th class="w-15" style="min-width: 150px">{% trans 'Warranty start' %}</th>
-                                        <th class="w-15" style="min-width: 150px">{% trans 'Warranty end' %}</th>
-                                        <th class="w-10" style="min-width: 100px"></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <form id="form-serial" data-method="POST"
+                                  data-url="{% url 'GoodsDetailAPI' %}"
+                                  data-url-redirect="{% url 'GoodsDetail' %}"
+                            >
+                                {% csrf_token %}
+                                <div class="import-db-space">
+                                    {% include 'extends/import-datatable/button-import-db.html' %}
+                                    <script class="import-db-form-url"
+                                          data-get-method="POST"
+                                          data-get-url="{% url 'GoodsDetailAPIImportDB' %}"
+                                          data-get-redirect-url="{% url 'GoodsDetail' %}"
+                                    ></script>
+                                    <table class="table nowrap w-100" id="table-serial">
+                                        <thead class="bg-secondary-light-4">
+                                            <tr>
+                                                <th class="w-5" style="min-width: 50px"></th>
+                                                <th class="w-10" style="min-width: 200px">{% trans 'Vendor serial No.' %}</th>
+                                                <th class="w-15" style="min-width: 200px">{% trans 'Serial No.' %}</th>
+                                                <th class="w-15" style="min-width: 150px">{% trans 'Expired date' %}</th>
+                                                <th class="w-15" style="min-width: 150px">{% trans 'Mfr date' %}</th>
+                                                <th class="w-15" style="min-width: 150px">{% trans 'Warranty start' %}</th>
+                                                <th class="w-15" style="min-width: 150px">{% trans 'Warranty end' %}</th>
+                                                <th class="w-10" style="min-width: 100px"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
@@ -170,64 +169,20 @@
     </div>
 
     {% include 'extends/import-datatable/modal-import-db.html' %}
-    <table hidden data-table-id="import-db-form-goods-detail" class="nowrap w-100 table mt-1">
+    <table hidden data-table-id="table-serial-import-db" class="nowrap w-100 table mt-1">
         <thead class="sticky bg-gold-light-5">
             <tr>
                 <th>#</th>
-                <th>
-                    {% trans 'Vendor serial No.' %}
-                    <i class="fas fa-info-circle icon-info"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="bottom"
-                       title="{% trans "" %}">
-                    </i>
-                </th>
-                <th>
-                    {% trans 'Serial No.' %}
-                    <i class="fas fa-info-circle icon-info"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="bottom"
-                       title="{% trans "" %}">
-                    </i>
-                </th>
-                <th>
-                    {% trans 'Expired date' %}
-                    <i class="fas fa-info-circle icon-info"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="bottom"
-                       title="{% trans "" %}">
-                    </i>
-                </th>
-                <th>
-                    {% trans 'Mfr date' %}
-                    <i class="fas fa-info-circle icon-info"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="bottom"
-                       title="{% trans "" %}">
-                    </i>
-                </th>
-                <th>
-                    {% trans 'Warranty start' %}
-                    <i class="fas fa-info-circle icon-info"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="bottom"
-                       title="{% trans "" %}">
-                    </i>
-                </th>
-                <th>
-                    {% trans 'Warranty end' %}
-                    <i class="fas fa-info-circle icon-info"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="bottom"
-                       title="{% trans "" %}">
-                    </i>
-                </th>
-                 <th>{% trans 'Import status' %}</th>
+                <th>{% trans 'Vendor serial No.' %}</th>
+                <th>{% trans 'Serial No.' %}</th>
+                <th>{% trans 'Expired date' %}</th>
+                <th>{% trans 'Mfr date' %}</th>
+                <th>{% trans 'Warranty start' %}</th>
+                <th>{% trans 'Warranty end' %}</th>
+                <th>{% trans 'Import status' %}</th>
             </tr>
         </thead>
-        <tbody>
-
-        </tbody>
+        <tbody></tbody>
     </table>
 {% endblock %}
 {% block dataHiddenGroup %}

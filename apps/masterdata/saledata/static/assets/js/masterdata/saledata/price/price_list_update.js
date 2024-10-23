@@ -180,8 +180,8 @@ $(document).ready(function () {
 
 // delete item
     $(document).on('click', '.btn-del', function () {
-        let data = JSON.parse($('#data_detail').text());
-        if (data.can_delete) {
+        let data = JSON.parse($('#data_detail').text())
+        if (!data.can_delete) {
             Swal.fire({
                 icon: 'error',
                 title: transEle.data('trans-delete-item-failed'),
@@ -295,4 +295,21 @@ $(document).ready(function () {
     $('#tab-setting input,#tab-setting select').on('change', function () {
         $(this).addClass('tag-changed')
     })
+
+    $(document).on('mouseenter', 'tr', function () {
+        $(this).addClass('bg-danger-light-5')
+        $(this).find('td:eq(0)').append(`
+            <button type="button" class="btn btn-sm btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del" data-id="${pk}">
+                <span class="btn-icon-wrap">
+                    <span class="feather-icon">
+                        <i class="fas fa-trash-alt"></i>
+                    </span>
+                </span>
+             </button>
+        `);
+    }).on('mouseleave', 'tr', function () {
+        $(this).removeClass('bg-danger-light-5')
+        $(this).find('td:eq(0) .btn-del').remove();
+    });
+
 })

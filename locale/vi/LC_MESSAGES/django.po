@@ -1960,12 +1960,16 @@ msgid "Select price list"
 msgstr "Lựa chọn bảng giá"
 
 #
-msgid "update automatically when source price list changes"
+msgid "Update automatically when source price list changes"
 msgstr "Tự động cập nhật khi bảng giá nguồn thay đổi"
 
 #
-msgid "Can delete Item in price list"
-msgstr "Có thể xóa mục này trong bảng giá"
+msgid "Updated when update automatically when source price list changes is ON"
+msgstr "Được cập nhập khi 'Tự động cập nhật khi bảng giá nguồn thay đổi' được BẬT"
+
+#
+msgid "Can delete inherited rows in price list"
+msgstr "Có thể xóa dòng kế thừa trong bảng giá"
 
 #
 msgid "Factor"
@@ -9089,8 +9093,8 @@ msgid "Import status"
 msgstr "Trạng thái nhập"
 
 #
-msgid "Select datatable"
-msgstr "Chọn bảng dữ liệu"
+msgid "Datatable name"
+msgstr "Tên bảng"
 
 #
 msgid "Import Done!"
@@ -9215,3 +9219,11 @@ msgstr "Sản phẩm không có định mức nguyên vật liệu"
 #
 msgid "Load data from excel to datatable"
 msgstr "Tải dữ liệu từ excel lên bảng"
+
+#
+msgid "Export datatable to excel"
+msgstr "Xuất bảng dữ liệu ra excel"
+
+#
+msgid "Reference price list"
+msgstr "Bảng giá tham chiếu"

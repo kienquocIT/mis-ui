@@ -34,112 +34,128 @@
             <p id="time-valid" class="text-right"></p>
         </div>
     </div>
+
     <div class="row">
-        <ul class="nav nav-light nav-tabs" id="tab-select-table">
-            <li class="nav-item" id="nav1">
-                <a id="products-nav" class="nav-link active" data-bs-toggle="tab" href="#tab-item-list">
-                    <span class="nav-link-text">{% trans 'Price List' %}</span>
-                </a>
-            </li>
-            <li class="nav-item" id="nav2">
-                <a id="setting-nav" class="nav-link" data-bs-toggle="tab" href="#tab-setting">
-                    <span class="nav-link-text">{% trans 'Setting' %}</span>
-                </a>
-            </li>
-        </ul>
+        <div class="col-12">
+            <ul class="nav nav-light nav-tabs" id="tab-select-table">
+                <li class="nav-item" id="nav1">
+                    <a id="products-nav" class="nav-link active" data-bs-toggle="tab" href="#tab-item-list">
+                        <span class="nav-link-text">{% trans 'Price List' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item" id="nav2">
+                    <a id="setting-nav" class="nav-link" data-bs-toggle="tab" href="#tab-setting">
+                        <span class="nav-link-text">{% trans 'Setting' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
     <div class="tab-content">
         <!-- Tab add item -->
         <div class="tab-pane fade show active" id="tab-item-list">
             <div class="row">
-                <div class="col-12 text-left"></div>
+                <div class="col-12">
+                    <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
+                          data-url-update="{% url "DeleteCurrencyFromPriceListAPI" pk=0 %}"
+                          data-method="PUT">
+                        <table id="datatable-item-list" class="table nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>{% trans "Code" %}</th>
+                                    <th>{% trans "Item name" %}</th>
+                                    <th>{% trans "UoM group" %}</th>
+                                    <th>{% trans "UoM" %}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </form>
+                </div>
             </div>
-            <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
-                  data-url-update="{% url "DeleteCurrencyFromPriceListAPI" pk=0 %}"
-                  data-method="PUT">
-                <table id="datatable-item-list" class="table nowrap w-100">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>{% trans "Code" %}</th>
-                            <th>{% trans "Item name" %}</th>
-                            <th>{% trans "UoM group" %}</th>
-                            <th>{% trans "UoM" %}</th>
-                        </tr>
-                    </thead>
-                </table>
-            </form>
         </div>
 
         <!-- Tab setting -->
         <div class="tab-pane fade" id="tab-setting">
-            <h6 id="notify" class="text-red" style="font-style: italic"></h6>
             <form id="form-update-price-list" data-method="PUT"
                   data-url="{% url "PriceDetailAPI" pk=0 %}"
                   data-url-redirect="{% url "PriceList" %}"
                   data-url-list="{% url "PriceListAPI" %}"
             >
                 {% csrf_token %}
-                <div class="row mt-3">
-                    <div class="form-group col-6">
-                        <label class="form-label">{% trans "Select price list" %}</label>
-                        <select
-                                class="form-select"
-                                data-method="GET"
-                                data-url="{% url "PriceListAPI" %}"
-                                id="select-box-price-list"
-                                disabled
-                                name="price_list_mapped"
-                                data-keyResp="price_list"
-                        >
-                        </select>
-                    </div>
-                    <div class="form-group col-6">
-                        <label class="form-label">{% trans "Select price list type" %}</label>
-                        <select class="form-select" name="price_list_type" id="select-box-type" disabled>
-                            <option></option>
-                            <option value="0">{% trans "For Sale" %}</option>
-                            <option value="1">{% trans "For Purchase" %}</option>
-                            <option value="2">{% trans "For Expense" %}</option>
-                        </select>
+                <div class="row">
+                    <div class="col-12 col-lg-5 col-md-12">
+                        <div class="form-group">
+                            <label for="select-box-type" class="form-label">{% trans "Reference price list" %}</label>
+                            <select class="form-select" name="price_list_type" id="select-box-type" disabled>
+                                <option></option>
+                                <option value="0">{% trans "For Sale" %}</option>
+                                <option value="1">{% trans "For Purchase" %}</option>
+                                <option value="2">{% trans "For Expense" %}</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-check ml-3">
-                        <input class="form-check-input" type="checkbox"
-                               id="checkbox-update-auto" name="auto_update" disabled>
-                        <label class="form-check-label" for="checkbox-update-auto">
-                            {% trans "update automatically when source price list changes" %}
-                        </label>
-                    </div>
-                    <div class="form-check ml-3">
-                        <input class="form-check-input" type="checkbox"
-                               id="checkbox-can-delete" name="can_delete" disabled>
-                        <label class="form-check-label" for="checkbox-can-delete">
-                            {% trans "Can delete Item in price list" %}
-                        </label>
+                    <div class="col-12 col-lg-5 col-md-12">
+                        <div class="form-group">
+                            <label for="select-box-currency" class="form-label required">{% trans "Currency" %}</label>
+                            <select
+                                    class="form-select"
+                                    multiple
+                                    data-method="GET"
+                                    data-url="{% url "CurrencyListAPI" %}"
+                                    id="select-box-currency"
+                                    name="currency"
+                                    data-keyResp="currency_list"
+                                    disabled
+                            >
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <div class="row mt-3">
-                    <div class="form-group col-6">
-                        <label class="form-label">{% trans "Currency" %}</label>
-                        <select
-                                class="form-select"
-                                multiple
-                                data-method="GET"
-                                data-url="{% url "CurrencyListAPI" %}"
-                                id="select-box-currency"
-                                name="currency"
-                                data-keyResp="currency_list"
-                                disabled
-                        >
-                        </select>
-                        <input type="text" id="inp-source" hidden>
+                <div class="row">
+                    <div class="col-12 col-lg-5 col-md-12">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="select-box-price-list" class="form-label">{% trans "Reference price list" %}</label>
+                                    <select
+                                            class="form-select"
+                                            data-method="GET"
+                                            data-url="{% url "PriceListAPI" %}"
+                                            id="select-box-price-list"
+                                            disabled
+                                            name="price_list_mapped"
+                                            data-keyResp="price_list"
+                                    >
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           id="checkbox-update-auto" name="auto_update" disabled>
+                                    <label class="form-check-label" for="checkbox-update-auto">
+                                        {% trans "Update automatically when source price list changes" %}
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           id="checkbox-can-delete" name="can_delete" disabled>
+                                    <label class="form-check-label" for="checkbox-can-delete">
+                                        {% trans "Can delete inherited rows in price list" %}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group col-6 inp-can-edit">
-                        <label class="form-label">{% trans "Factor" %}</label>
-                        <input class="form-control" type="number" name="factor" id="inp-factor" step="0.001"
-                               placeholder="Input factor (0.8)" disabled>
+                    <div class="col-12 col-lg-4 col-md-12">
+                        <div class="form-group inp-can-edit">
+                            <label for="inp-factor" class="form-label">{% trans "Factor" %}</label>
+                            <input class="form-control" type="number" name="factor" id="inp-factor" step="0.001" disabled>
+                            <span class="text-muted small">{% trans 'Updated when update automatically when source price list changes is ON' %}</span>
+                        </div>
                     </div>
                 </div>
             </form>

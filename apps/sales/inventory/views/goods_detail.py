@@ -18,30 +18,33 @@ class GoodsDetail(View):
     def get(self, request, *args, **kwargs):
         return {
             'data': {
-                'list_import_db_form': [
-                    {
-                        "id": "import-db-form-goods-detail",
-                        "name": _("Serial datatable"),
-                        "col_type": "tttttttt",
-                        "data_format": {
-                            "key": "data",
-                            "value_list": [
-                                {"col_key": "vendor_serial_number", "col_index": 1},
-                                {"col_key": "serial_number", "col_index": 2},
-                                {"col_key": "expire_date", "col_index": 3},
-                                {"col_key": "manufacture_date", "col_index": 4},
-                                {"col_key": "warranty_start", "col_index": 5},
-                                {"col_key": "warranty_end", "col_index": 6},
-                                {"col_key": "product_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-product-id"},
-                                {"col_key": "goods_receipt_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-goods-receipt-id"},
-                                {"col_key": "warehouse_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-warehouse-id"},
-                                {"col_key": "purchase_request_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-purchase-request-id"},
-                                {"col_key": "is_serial_update", "col_index": -1, "data_default": True},
-                            ]
+                'db_form_cfg': {
+                    'list_import_db': [
+                        {
+                            "id": "table-serial-import-db",
+                            "name": _("Serial datatable"),
+                            'map_with': 'table-serial',
+                            'option': [0],
+                            "col_type": "tttttttt",
+                            "data_format": {
+                                "key": "data",
+                                "value_list": [
+                                    {"col_key": "vendor_serial_number", "col_index": 1},
+                                    {"col_key": "serial_number", "col_index": 2},
+                                    {"col_key": "expire_date", "col_index": 3},
+                                    {"col_key": "manufacture_date", "col_index": 4},
+                                    {"col_key": "warranty_start", "col_index": 5},
+                                    {"col_key": "warranty_end", "col_index": 6},
+                                    {"col_key": "product_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-product-id"},
+                                    {"col_key": "goods_receipt_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-goods-receipt-id"},
+                                    {"col_key": "warehouse_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-warehouse-id"},
+                                    {"col_key": "purchase_request_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-purchase-request-id"},
+                                    {"col_key": "is_serial_update", "col_index": -1, "data_default": True},
+                                ]
+                            }
                         }
-                    }
-                ],
-
+                    ]
+                }
             },
         }, status.HTTP_200_OK
 

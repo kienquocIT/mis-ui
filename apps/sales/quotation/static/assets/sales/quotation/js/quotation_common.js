@@ -958,22 +958,25 @@ class QuotationLoadDataHandle {
             let row = eleProduct.closest('tr');
             if (productData && row) {
                 let data = productData;
+                let priceGr = row.querySelector('.input-group-price');
                 let price = row.querySelector('.table-row-price');
                 let modalBody= QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
                 // load PRICE
-                if (price && modalBody) {
+                if (priceGr && price && modalBody) {
                     let account_price_id = document.getElementById('customer-price-list').value;
                     let current_price_checked = price.getAttribute('value');
                     let lastPrice = 0;
                     $(modalBody).empty();
                     let htmlPriceList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><b>${productData?.['title']}</b></div>`;
                     if (Array.isArray(data?.['price_list']) && data?.['price_list'].length > 0) {
+                        let typeChecked = 0;
+                        if (priceGr.getAttribute('data-price-id')) {
+                            typeChecked = 1;
+                        }
                         for (let priceData of data?.['price_list']) {
                             if (priceData?.['price_status'] === 1) {
                                 let checked = '';
-                                if (row.querySelector(`.input-group-price[data-price-id="${priceData?.['id']}"]`)) {
-                                    checked = 'checked';
-                                } else {
+                                if (typeChecked === 0) {
                                     if (priceData?.['is_default'] === true) { // check GENERAL_PRICE_LIST OF PRODUCT then set general_price
                                         lastPrice = parseFloat(priceData?.['value']);
                                         checked = 'checked';
@@ -983,15 +986,21 @@ class QuotationLoadDataHandle {
                                         checked = 'checked';
                                     }
                                 }
+                                if (typeChecked === 1) {
+                                    if (row.querySelector(`.input-group-price[data-price-id="${priceData?.['id']}"]`)) {
+                                        checked = 'checked';
+                                    }
+                                }
                                 htmlPriceList += `<div class="d-flex justify-content-between align-items-center">
                                                     <div class="d-flex align-items-center">
                                                         <div class="form-check">
                                                             <input type="radio" class="form-check-input table-row-price-option" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" ${checked}>
                                                         </div>
-                                                        <span class="mr-5">${priceData?.['title']}</span>
+                                                        <span>${priceData?.['title']}</span>
                                                     </div>
-                                                    <div>
-                                                        <span class="mask-money mr-5" data-init-money="${parseFloat(priceData?.['value'])}"></span>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="mask-money mr-2" data-init-money="${parseFloat(priceData?.['value'])}"></span>
+                                                        <span class="mr-2">/</span>
                                                         <span class="badge badge-light">${priceData?.['uom']?.['title']}</span>
                                                     </div>
                                                 </div>`;
@@ -1594,9 +1603,10 @@ class QuotationLoadDataHandle {
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
         let row = eleProduct.closest('tr');
         if (productData && row) {
+            let priceGr = row.querySelector('.input-group-price');
             let modalBody = QuotationLoadDataHandle.$costModal[0].querySelector('.modal-body');
             // load PRICE
-            if (modalBody && productData?.['id']) {
+            if (priceGr && modalBody && productData?.['id']) {
                 let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-md-product-detail').format_url_with_uuid(productData?.['id']);
                 // call ajax get info product detail
                 $.fn.callAjax2({

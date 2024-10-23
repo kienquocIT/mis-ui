@@ -227,26 +227,26 @@ $(function () {
             let newNetIncome = 0;
             $table.DataTable().rows().every(function () {
                 let row = this.node();
-                let rowRevenue = row?.querySelector('.table-row-revenue')?.getAttribute('data-init-money');
-                let rowGrossProfit = row?.querySelector('.table-row-gross-profit')?.getAttribute('data-init-money');
-                let rowNetIncome = row?.querySelector('.table-row-net-income')?.getAttribute('data-init-money');
-                if (rowRevenue) {
-                    newRevenue += parseFloat(rowRevenue);
-                }
-                if (rowGrossProfit) {
-                    newGrossProfit += parseFloat(rowGrossProfit);
-                }
-                if (rowNetIncome) {
-                    newNetIncome += parseFloat(rowNetIncome);
+                if (!row.querySelector('.cl-child')) {
+                    let rowRevenue = row?.querySelector('.table-row-revenue')?.getAttribute('data-init-money');
+                    let rowGrossProfit = row?.querySelector('.table-row-gross-profit')?.getAttribute('data-init-money');
+                    let rowNetIncome = row?.querySelector('.table-row-net-income')?.getAttribute('data-init-money');
+                    if (rowRevenue) {
+                        newRevenue += parseFloat(rowRevenue);
+                    }
+                    if (rowGrossProfit) {
+                        newGrossProfit += parseFloat(rowGrossProfit);
+                    }
+                    if (rowNetIncome) {
+                        newNetIncome += parseFloat(rowNetIncome);
+                    }
                 }
             });
             eleRevenue.attr('data-init-money', String(newRevenue));
             eleGrossProfit.attr('data-init-money', String(newGrossProfit));
             eleNetIncome.attr('data-init-money', String(newNetIncome));
+            return true;
         }
-
-        loadDbl();
-        storeLoadInitByDataFiscalYear();
 
         function storeLoadInitByDataFiscalYear() {
             $.fn.callAjax2({
@@ -378,6 +378,8 @@ $(function () {
             loadInitS2(boxEmployee, [], {}, null, true);
             loadInitS2(boxCategory, [], {}, null, true);
             loadInitS2(boxProduct, [], {}, null, true);
+            loadDbl();
+            storeLoadInitByDataFiscalYear();
         }
 
         initData();
@@ -487,6 +489,7 @@ $(function () {
                 listDate.push(boxEnd.val());
             }
             loadFilter(listDate, $('#card-filter-date'));
+            WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
@@ -499,6 +502,7 @@ $(function () {
                     if (data) {
                         if (data.hasOwnProperty('report_product_list') && Array.isArray(data.report_product_list)) {
                             setupDataLoadTable(data.report_product_list);
+                            WindowControl.hideLoading();
                         }
                     }
                 }

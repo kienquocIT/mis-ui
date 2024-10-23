@@ -23,6 +23,7 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    {{ data.data.list_import_db_form | json_script:"list_import_db_form" }}
     <div class="row">
         <div class="col-3"></div>
         <div class="col-6 text-center">
@@ -49,8 +50,8 @@
     <div class="tab-content">
         <!-- Tab add item -->
         <div class="tab-pane fade show active" id="tab-item-list">
-            <div class="row">
-                <div class="col-12 text-left">
+            <div class="row has-import-db-form">
+                <div class="col-12 col-lg-6 col-md-6 text-left">
                     <button class="btn btn-soft-primary" id="btn-add-new-item" data-bs-toggle="modal"
                             data-bs-target="#modal-add-new-item" type="button">
                         <span data-bs-placement="bottom" data-bs-toggle="tooltip"
@@ -59,6 +60,14 @@
                             {% trans 'Add' %}
                         </span>
                     </button>
+                </div>
+                <div class="col-12 col-lg-6 col-md-6 text-left">
+                    {% include 'extends/import-datatable/button-import-db.html' %}
+                    <script class="import-db-form-url"
+                          data-get-method="POST"
+                          data-get-url="{% url 'ProductAddFromPriceListImportAPI'%}"
+                          data-get-redirect-url="{% url 'PriceListDetail' '0'%}"
+                    ></script>
                 </div>
             </div>
             <form id="form-update-item-price"
@@ -222,6 +231,26 @@
     </div>
     <script type="application/json" id="price_parent"></script>
     <script type="application/json" id="data_detail"></script>
+    {% include 'extends/import-datatable/modal-import-db.html' %}
+    <table hidden data-table-id="import-db-form-price" class="nowrap w-100 table mt-1">
+        <thead class="sticky">
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Code' %}</th>
+                <th>
+                    {% trans 'UoM' %}
+                    <i class="fas fa-info-circle icon-info"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="bottom"
+                       title="{% trans "According to product's inventory UOM" %}">
+                    </i>
+                </th>
+                <th>{% trans 'Price' %}</th>
+                <th>{% trans 'Import status' %}</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
@@ -246,6 +275,10 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/price/price_list_common.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/price/price_list_update.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/price/price_list_update_import.js' %}"></script>
     <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="{% static 'assets/js/xlsx-0.18.5.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/import-datatable.js' %}"></script>
+
 {% endblock %}

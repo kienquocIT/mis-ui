@@ -174,7 +174,7 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap min-w-1680p w-100 mb-5"
+                                            class="table nowrap min-w-1600p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr class="bg-light">
@@ -738,8 +738,48 @@
                             </table>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-select-product" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="sale_order_products_data">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-product" data-bs-dismiss="modal" data-zone="sale_order_products_data">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                    class="modal fade" id="selectPriceModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectPriceModal"
+            >
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-primary"><b>{% trans 'Select product price' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="sale_order_products_data">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-price" data-bs-dismiss="modal" data-zone="sale_order_products_data">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                    class="modal fade" id="selectCostModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectCostModal"
+            >
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-primary"><b>{% trans 'Select product cost' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="sale_order_costs_data">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-cost" data-bs-dismiss="modal" data-zone="sale_order_costs_data">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -783,6 +823,7 @@
         data-product-note-2="{% trans "The product is in the design stage for another project" %}"
         data-product-note-3="{% trans "The product does not have project BOM" %}"
         data-product-note-4="{% trans "The product is only used for project sale" %}"
+        data-product-no-cost="{% trans "The product does not have cost list, please input cost." %}"
     >
     <input
         type="text"

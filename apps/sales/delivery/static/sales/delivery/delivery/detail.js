@@ -568,12 +568,19 @@ $(async function () {
                         e.preventDefault();
                         let eleAvailable = row.querySelector('.table-row-available');
                         if (parseFloat(this.value) > 0 && eleAvailable) {
+                            let setTotal = prodTable.setupTotal();
+                            if (setTotal === false) {
+                                this.value = '0';
+                                data['picked'] = this.value;
+                                $table.DataTable().row(index).data(data).draw();
+                                return false;
+                            }
                             if (parseFloat(this.value) > parseFloat(eleAvailable.innerHTML)) {
                                 $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
                                 this.value = 0;
                                 data['picked'] = this.value;
                                 $table.DataTable().row(index).data(data).draw();
-                                return false
+                                return false;
                             }
                             data['picked'] = this.value
                             $table.DataTable().row(index).data(data).draw();
@@ -1279,6 +1286,20 @@ $(async function () {
                     $('#selectEmployeeInherit').initSelect2().val(res.employee_inherit.id).trigger('change')
                 }
                 $('#textareaRemarks').val(res.remarks)
+
+                // reset data stock
+                if ($form.attr('data-method').toLowerCase() === 'put') {
+                    if (res.hasOwnProperty('products') && Array.isArray(res?.['products'])) {
+                        for (let product of res?.['products']) {
+                            if (product.hasOwnProperty('delivery_data') && Array.isArray(product?.['delivery_data'])) {
+                                for (let deliData of product?.['delivery_data']) {
+                                    deliData['stock'] = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 prodTable.setProdList = res.products
                 prodTable.setProdConfig = res?.['config_at_that_point']
 

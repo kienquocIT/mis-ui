@@ -407,11 +407,11 @@ $(function () {
                     if (dataShow?.['type'] === 5) {
                         let url = "";
                         let keyResp = "";
-                        if (dataShow?.['app_code_md'] === 'saledata.expenseitem') {
+                        if (dataShow?.['content_type'] === 'saledata.expenseitem') {
                             url = $eleUrlFact.attr('data-url-expense-item');
                             keyResp = "expense_item_list";
                         }
-                        if (dataShow?.['app_code_md'] === 'saledata.expense') {
+                        if (dataShow?.['content_type'] === 'saledata.expense') {
                             url = $eleUrlFact.attr('data-url-labor');
                             keyResp = "expense_list";
                         }

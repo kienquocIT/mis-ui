@@ -23,7 +23,7 @@ function eventNodeClick(event) {
     for (let cond of data.condition){
         condition[cond.action] = cond
     }
-    for (let item of data.action) {
+    for (let item of data?.['action'] ? data?.['action'] : []) {
         let midd = ``
         // set if node type is approved/create and collab option is in-form/out-form
         if (item <= 1 && data.collaborators.option < 2 || item >= 4){

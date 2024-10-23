@@ -1561,6 +1561,7 @@ class QuotationLoadDataHandle {
         if (productData) {
             if (productData?.['id']) {
                 // call ajax check BOM
+                WindowControl.showLoading();
                 $.fn.callAjax2({
                         'url': QuotationLoadDataHandle.urlEle.attr('data-md-bom'),
                         'method': 'GET',
@@ -1591,6 +1592,7 @@ class QuotationLoadDataHandle {
                                     QuotationLoadDataHandle.loadCostWHProduct(eleProduct);
                                 }
                             }
+                            WindowControl.hideLoading();
                         }
                     }
                 )
@@ -2776,7 +2778,11 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
-                        return `<select class="form-select table-row-supplied-by" data-zone="${dataZone}"></select>`;
+                        let readonly = ''  // product
+                        if (row?.['shipping_id']) {
+                            readonly = 'readonly'  // shipping
+                        }
+                        return `<select class="form-select table-row-supplied-by" data-zone="${dataZone}" ${readonly}></select>`;
                     }
                 },
                 {
@@ -2871,51 +2877,32 @@ class QuotationDataTableHandle {
                                 itemType = 1  // shipping
                             }
                         }
-                        if (itemType === 0) {  // product
-                            return `<select 
-                                        class="form-select table-row-tax"
-                                        data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                        data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
-                                        data-keyResp="tax_list"
-                                        data-zone="${dataZone}"
-                                    >
-                                    </select>
-                                    <input
-                                        type="text"
-                                        class="form-control mask-money table-row-tax-amount"
-                                        value="${row?.['product_tax_amount']}"
-                                        data-return-type="number"
-                                        hidden
-                                    >
-                                    <input
-                                        type="text"
-                                        class="form-control table-row-tax-amount-raw"
-                                        value="${row?.['product_tax_amount']}"
-                                        hidden
-                                    >`;
-                        } else if (itemType === 1) {  // shipping
-                            return `<select 
-                                        class="form-select table-row-tax disabled-custom-show"
-                                        data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                        data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
-                                        data-keyResp="tax_list"
-                                        disabled
-                                    >
-                                    </select>
-                                    <input
-                                        type="text"
-                                        class="form-control mask-money table-row-tax-amount"
-                                        value="${row?.['product_tax_amount']}"
-                                        data-return-type="number"
-                                        hidden
-                                    >
-                                    <input
-                                        type="text"
-                                        class="form-control table-row-tax-amount-raw"
-                                        value="${row?.['product_tax_amount']}"
-                                        hidden
-                                    >`;
+                        let readonly = ''  // product
+                        if (row?.['shipping_id']) {
+                            readonly = 'readonly'  // shipping
                         }
+                        return `<select 
+                                    class="form-select table-row-tax"
+                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
+                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-keyResp="tax_list"
+                                    data-zone="${dataZone}"
+                                    ${readonly}
+                                >
+                                </select>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    value="${row?.['product_tax_amount']}"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row?.['product_tax_amount']}"
+                                    hidden
+                                >`;
                     }
                 },
                 {

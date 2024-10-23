@@ -2527,7 +2527,7 @@ class WFRTControl {
         for (let associate of AssociationData) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <i class="fas fa-vector-square mr-2"></i>
+                                    <i class="fas fa-cubes mr-2"></i>
                                     <span class="mr-2">${associate?.['node_out']?.['title']}</span>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">

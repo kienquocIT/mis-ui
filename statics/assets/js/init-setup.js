@@ -2408,6 +2408,11 @@ class WFRTControl {
                     typeCheck = 1;
                 }
             }
+            if (associationData?.['data'].length > 1) {
+                if (associationData?.['check'] === false) {
+                    typeCheck = 1;
+                }
+            }
             // select association
             Swal.fire({
                 title: $.fn.transEle.attr('data-select-association'),
@@ -2509,7 +2514,7 @@ class WFRTControl {
     static setupHTMLSelectAssociation(AssociationData, type) {
         let htmlCustom = ``;
         let commonTxt = $.fn.transEle.attr('data-select-association-type-1');
-        let commonImg = `<i class="fas fa-info-circle text-info"></i>`;
+        let commonImg = `<i class="fas fa-check-circle text-info"></i>`;
         if (type === 1) {
             commonTxt = $.fn.transEle.attr('data-select-association-type-2');
             commonImg = `<i class="fas fa-exclamation-triangle text-danger"></i>`;
@@ -2524,7 +2529,6 @@ class WFRTControl {
                                 <div class="d-flex align-items-center justify-content-between">
                                     <i class="fas fa-vector-square mr-2"></i>
                                     <span class="mr-2">${associate?.['node_out']?.['title']}</span>
-                                    <span class="badge badge-soft-success">${typeMapTxt[associate?.['node_out']?.['option_collaborator']]}</span>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="radio" class="form-check-input checkbox-next-association" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">

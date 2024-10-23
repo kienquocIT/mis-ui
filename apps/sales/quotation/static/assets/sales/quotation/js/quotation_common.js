@@ -2793,7 +2793,7 @@ class QuotationDataTableHandle {
                                     data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
                                     data-zone="${dataZone}"
-                                    disabled
+                                    readonly
                                 >
                                 </select>`;
                     },

@@ -9231,3 +9231,7 @@ msgstr "Phiếu thỏa điều kiện các trạm sau. Vui lòng chọn một tr
 #
 msgid "The document does not meet any nodes. Do you wish to continue? If yes, please select one."
 msgstr "Phiếu không thỏa điều kiện các trạm. Bạn có muốn tiếp tục? Nếu có, vui lòng chọn một trạm."
+
+#
+msgid "Select next station"
+msgstr "Chọn trạm tiếp theo"

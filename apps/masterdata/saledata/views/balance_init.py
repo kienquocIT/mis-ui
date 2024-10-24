@@ -22,7 +22,7 @@ class BalanceInitList(View):
                 return {
                     'data': {
                         'period_setup_sw_start_using_time': item['id'],
-                        'db_form_cfg': {
+                        'import_db_form_cfg': {
                             'list_import_db': [
                                 {
                                     "id": "table-balance-item-import-db",

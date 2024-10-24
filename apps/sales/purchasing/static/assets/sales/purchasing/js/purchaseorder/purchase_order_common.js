@@ -1581,9 +1581,7 @@ class PODataTableHandle {
                     targets: 2,
                     width: '12%',
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
-                                </div>`;
+                        return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</textarea></div>`;
                     }
                 },
                 {
@@ -1759,7 +1757,7 @@ class PODataTableHandle {
                                 des = row?.['product']?.['description'];
                             }
                         }
-                        return `<div class="row"><p class="table-row-description">${des}</p></div>`;
+                        return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${des}</textarea></div>`;
                     }
                 },
                 {

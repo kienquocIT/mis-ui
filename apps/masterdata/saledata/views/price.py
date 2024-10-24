@@ -255,7 +255,7 @@ class PriceListUpdate(View):
     def get(self, request, pk, *args, **kwargs):
         return {
             'data':{
-                'db_form_cfg': {
+                'import_db_form_cfg': {
                     'list_import_db': [
                         {
                             "id": "datatable-item-list-import-db",

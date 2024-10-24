@@ -117,6 +117,7 @@
             <thead>
             <tr class="bg-light">
                 <th>{% trans 'Employee' %}</th>
+                <th>{% trans 'Opportunity' %}</th>
                 <th>{% trans 'Sale order' %}</th>
                 <th>{% trans 'Date' %}</th>
                 <th>{% trans 'Customer' %}</th>
@@ -136,12 +137,14 @@
             type="text" id="app-url-factory"
             data-filter_customer="{% url 'AccountForSaleListAPI' %}"
             data-filter_so="{% url 'SaleOrderListAPI' %}"
+            data-so-detail="{% url 'SaleOrderDetail' 1 %}"
+            data-quotation-detail="{% url 'QuotationDetail' 1 %}"
     >
     <input
-        type="text"
-        id="app-trans-factory"
-        data-filter-customer="{% trans 'Customer' %}"
-        data-filter-so="{% trans 'Sale order' %}"
+            type="text"
+            id="app-trans-factory"
+            data-filter-customer="{% trans 'Customer' %}"
+            data-filter-so="{% trans 'Sale order' %}"
     >
     <input
             type="text"

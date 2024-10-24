@@ -1,7 +1,7 @@
 $(document).ready(function () {
     const $trans_db_script = $('#import-db-trans-script')
-    const $db_form_cfg = JSON.parse($('#db_form_cfg').text().trim())
-    const $list_import_db = $db_form_cfg?.['list_import_db'] ? $db_form_cfg?.['list_import_db'] : []
+    const $import_db_form_cfg = JSON.parse($('#import_db_form_cfg').text().trim())
+    const $list_import_db = $import_db_form_cfg?.['list_import_db'] ? $import_db_form_cfg?.['list_import_db'] : []
     const $btn_group_import_datatable = $('.btn-group-import-datatable')
     const $import_db_form = $('#import-db-form')
     const $import_db_form_select_table = $('#import-db-form-select-table')

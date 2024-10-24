@@ -11,6 +11,10 @@ class QuotationLoadDataHandle {
     static transEle = $('#app-trans-factory');
     static urlEle = $('#app-url-factory');
     static customerInitEle = $('#data-init-customer');
+    static $priceModal = $('#selectPriceModal');
+    static $btnSavePrice = $('#btn-save-select-price');
+    static $costModal = $('#selectCostModal');
+    static $btnSaveCost = $('#btn-save-select-cost');
     static dataSuppliedBy = [{'id': 0, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-make')}];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -50,6 +54,20 @@ class QuotationLoadDataHandle {
         $('.accordion-item').css({
             'margin-bottom': 0
         });
+    };
+
+    static loadEventCheckbox($modal) {
+        let checkboxes = $modal[0].querySelectorAll('.form-check-input[type="radio"]');
+        checkboxes.forEach((checkbox) => {
+            checkbox.addEventListener('click', function () {
+                let checked = checkbox.checked;
+                for (let eleCheck of checkboxes) {
+                    eleCheck.checked = false;
+                }
+                checkbox.checked = checked;
+            });
+        });
+        return true;
     };
 
     static loadInitOpportunity() {
@@ -448,7 +466,7 @@ class QuotationLoadDataHandle {
                 let description = ele[0].closest('tr').querySelector('.table-row-description');
                 let uom = ele[0].closest('tr').querySelector('.table-row-uom');
                 let price = ele[0].closest('tr').querySelector('.table-row-price');
-                let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
+                let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
                 // load Description
                 if (description) {
@@ -462,7 +480,7 @@ class QuotationLoadDataHandle {
                     QuotationLoadDataHandle.loadInitS2($(uom));
                 }
                 // load PRICE
-                if (price && priceList) {
+                if (price && modalBody) {
                     let lastPrice = QuotationLoadDataHandle.loadPriceProduct(ele[0]);
                     $(price).attr('value', String(lastPrice));
                 }
@@ -719,12 +737,15 @@ class QuotationLoadDataHandle {
             let row = this.node();
             if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
                 if (row.querySelector('.table-row-checkbox').getAttribute('data-row')) {
-                    QuotationLoadDataHandle.loadAddRowProduct(JSON.parse(row.querySelector('.table-row-checkbox').getAttribute('data-row')));
+                    let dataRow = JSON.parse(row.querySelector('.table-row-checkbox').getAttribute('data-row'));
+                    if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
+                        QuotationLoadDataHandle.loadAddRowProduct(dataRow);
+                    }
                 }
             }
         });
         return true;
-    }
+    };
 
     static loadAddRowProduct(data) {
         let tableProduct = $('#datable-quotation-create-product');
@@ -767,7 +788,7 @@ class QuotationLoadDataHandle {
         $(newRow.querySelector('.table-row-item')).trigger('change');
         $(newRow.querySelector('.table-row-item')).attr('data-product-id', data?.['id']);
         // load again table cost
-        QuotationLoadDataHandle.loadDataTableCost();
+        // QuotationLoadDataHandle.loadDataTableCost();
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
         // add classes for collapse
         let eleGroups = tableProduct[0].querySelectorAll('.table-row-group');
@@ -934,42 +955,59 @@ class QuotationLoadDataHandle {
         if ($(eleProduct).val()) {
             let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
             let is_change_price = false;
-            if (productData) {
+            let row = eleProduct.closest('tr');
+            if (productData && row) {
                 let data = productData;
-                let price = eleProduct.closest('tr').querySelector('.table-row-price');
-                let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
+                let priceGr = row.querySelector('.input-group-price');
+                let price = row.querySelector('.table-row-price');
+                let modalBody= QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
                 // load PRICE
-                if (price && priceList) {
+                if (priceGr && price && modalBody) {
                     let account_price_id = document.getElementById('customer-price-list').value;
                     let current_price_checked = price.getAttribute('value');
                     let lastPrice = 0;
-                    $(priceList).empty();
-                    let htmlDD = ``;
+                    $(modalBody).empty();
+                    let htmlPriceList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><i class="fas fa-cube mr-2"></i><b>${productData?.['title']}</b></div>`;
                     if (Array.isArray(data?.['price_list']) && data?.['price_list'].length > 0) {
+                        let typeChecked = 0;
+                        if (priceGr.getAttribute('data-price-id')) {
+                            typeChecked = 1;
+                        }
                         for (let priceData of data?.['price_list']) {
-                            let clsChecked = '';
-                            if (priceData?.['is_default'] === true) { // check GENERAL_PRICE_LIST OF PRODUCT then set general_price
-                                lastPrice = parseFloat(priceData?.['value']);
-                                clsChecked = 'option-btn-checked';
-                            }
                             if (priceData?.['price_status'] === 1) {
-                                if (priceData?.['id'] === account_price_id) { // check CUSTOMER_PRICE then set customer_price
-                                    lastPrice = parseFloat(priceData?.['value']);
-                                    clsChecked = 'option-btn-checked';
+                                let checked = '';
+                                if (typeChecked === 0) {
+                                    if (priceData?.['is_default'] === true) { // check GENERAL_PRICE_LIST OF PRODUCT then set general_price
+                                        lastPrice = parseFloat(priceData?.['value']);
+                                        checked = 'checked';
+                                    }
+                                    if (priceData?.['id'] === account_price_id) { // check CUSTOMER_PRICE then set customer_price
+                                        lastPrice = parseFloat(priceData?.['value']);
+                                        checked = 'checked';
+                                    }
                                 }
-                                htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1 ${clsChecked}" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}">
-                                                <div class="d-flex justify-content-between">
-                                                    <span class="mr-5">${priceData?.['title']}</span>
-                                                    <div>
-                                                        <span class="mask-money mr-5" data-init-money="${parseFloat(priceData?.['value'])}"></span>
-                                                        <span>(${priceData?.['uom']?.['title']})</span>
+                                if (typeChecked === 1) {
+                                    if (row.querySelector(`.input-group-price[data-price-id="${priceData?.['id']}"]`)) {
+                                        checked = 'checked';
+                                    }
+                                }
+                                htmlPriceList += `<div class="d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="form-check">
+                                                            <input type="radio" class="form-check-input table-row-price-option" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" ${checked}>
+                                                        </div>
+                                                        <span>${priceData?.['title']}</span>
                                                     </div>
-                                                </div>
-                                            </a>`;
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="mask-money mr-2" data-init-money="${parseFloat(priceData?.['value'])}"></span>
+                                                        <span class="mr-2">/</span>
+                                                        <span class="badge badge-light">${priceData?.['uom']?.['title']}</span>
+                                                    </div>
+                                                </div>`;
                             }
                         }
                     }
-                    $(priceList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-80p position-relative overflow-y-scroll">${htmlDD}</div>`);
+                    $(modalBody).append(`${htmlPriceList}`);
                     // If change price then remove promotion & shipping
                     if (current_price_checked !== price.getAttribute('value')) {
                         is_change_price = true;
@@ -979,6 +1017,8 @@ class QuotationLoadDataHandle {
                         deletePromotionRows($(tableProduct), true, false);
                         deletePromotionRows($(tableProduct), false, true);
                     }
+                    QuotationLoadDataHandle.loadEventCheckbox(QuotationLoadDataHandle.$priceModal);
+                    $.fn.initMaskMoney2();
                     return lastPrice;
                 }
             }
@@ -1450,6 +1490,7 @@ class QuotationLoadDataHandle {
                     }
                     let newRow = $table.DataTable().row.add(dataAdd).draw().node();
                     QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
+                    $(newRow.querySelector('.table-row-item')).attr('data-product-id', dataProduct?.['id']);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
@@ -1494,9 +1535,9 @@ class QuotationLoadDataHandle {
                 let row = this.node();
                 let eleProduct = row.querySelector('.table-row-item');
                 let elePrice = row.querySelector('.table-row-price');
-                if (eleProduct) {
-                    QuotationLoadDataHandle.loadCostProduct(eleProduct);
-                }
+                // if (eleProduct) {
+                //     QuotationLoadDataHandle.loadCostProduct(eleProduct);
+                // }
                 if ($(eleProduct).val() && elePrice) {
                     let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                     if (dataProduct) {
@@ -1511,6 +1552,7 @@ class QuotationLoadDataHandle {
                     }
                 }
             });
+            QuotationLoadDataHandle.loadSetWFRuntimeZone();
         }
     };
 
@@ -1534,18 +1576,15 @@ class QuotationLoadDataHandle {
                         if (data) {
                             if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
                                 let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
-                                let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
-                                let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
+                                let btnSCost = eleProduct.closest('tr').querySelector('.btn-select-cost');
                                 if (data.bom_order_list.length > 0) {
                                     if (elePrice) {
                                         elePrice.setAttribute('disabled', 'true');
                                         $(elePrice).attr('value', String(data.bom_order_list[0]?.['sum_price']));
+                                        QuotationLoadDataHandle.loadSetWFRuntimeZone();
                                         $.fn.initMaskMoney2();
-                                        if (eleBtnPriceList) {
-                                            eleBtnPriceList.setAttribute('hidden', 'true');
-                                        }
-                                        if (eleGrPrice) {
-                                            eleGrPrice.removeAttribute('data-bs-toggle');
+                                        if (btnSCost) {
+                                            btnSCost.setAttribute('disabled', 'true');
                                         }
                                     }
                                 } else {
@@ -1562,12 +1601,12 @@ class QuotationLoadDataHandle {
     static loadCostWHProduct(eleProduct) {
         let formSubmit = $('#frm_quotation_create');
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-        if (productData) {
-            let costList = eleProduct.closest('tr').querySelector('.table-row-cost-list');
+        let row = eleProduct.closest('tr');
+        if (productData && row) {
+            let priceGr = row.querySelector('.input-group-price');
+            let modalBody = QuotationLoadDataHandle.$costModal[0].querySelector('.modal-body');
             // load PRICE
-            if (costList && productData?.['id']) {
-                $(costList).empty();
-                let htmlDD = ``;
+            if (priceGr && modalBody && productData?.['id']) {
                 let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-md-product-detail').format_url_with_uuid(productData?.['id']);
                 // call ajax get info product detail
                 $.fn.callAjax2({
@@ -1578,21 +1617,31 @@ class QuotationLoadDataHandle {
                     (resp) => {
                         let dataDetail = $.fn.switcherResp(resp);
                         if (dataDetail) {
+                            $(modalBody).empty();
+                            let htmlCostList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><i class="fas fa-cube mr-2"></i><b>${productData?.['title']}</b></div>`;
                             if (dataDetail?.['cost_list']) {
                                 if (Array.isArray(dataDetail?.['cost_list']) && dataDetail?.['cost_list'].length > 0) {
                                     for (let costData of dataDetail?.['cost_list']) {
-                                        htmlDD += `<a class="dropdown-item table-row-price-option text-black border border-grey mb-1" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}">
-                                                <div class="d-flex justify-content-between">
-                                                    <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
-                                                    <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
-                                                </div>
-                                            </a>`;
+                                        let checked = '';
+                                        if (row.querySelector(`.input-group-price[data-cost-wh-id="${costData?.['warehouse']?.['id']}"]`)) {
+                                            checked = 'checked';
+                                        }
+                                        htmlCostList += `<div class="d-flex justify-content-between">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="form-check">
+                                                                <input type="radio" class="form-check-input table-row-price-option" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}" ${checked}>
+                                                            </div>
+                                                            <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
+                                                        </div>
+                                                        <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
+                                                    </div>`;
                                     }
-                                    $(costList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
+                                    $(modalBody).append(`${htmlCostList}`);
                                 } else {
-                                    let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
-                                    let eleBtnPriceList = eleProduct.closest('tr').querySelector('.table-row-btn-dropdown-price-list');
-                                    let eleGrPrice = eleProduct.closest('tr').querySelector('.input-group-price');
+                                    htmlCostList += `<p>${QuotationLoadDataHandle.transEle.attr('data-product-no-cost')}</p>`;
+                                    $(modalBody).append(`${htmlCostList}`);
+                                    let elePrice = row.querySelector('.table-row-price');
+                                    let btnSCost = row.querySelector('.btn-select-cost');
                                     if (elePrice) {
                                         if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                                             if (productData?.['standard_price'] > 0) {
@@ -1602,15 +1651,14 @@ class QuotationLoadDataHandle {
                                             }
                                         }
                                     }
-                                    if (eleBtnPriceList) {
-                                        eleBtnPriceList.setAttribute('hidden', 'true');
-                                    }
-                                    if (eleGrPrice) {
-                                        eleGrPrice.removeAttribute('data-bs-toggle');
+                                    if (btnSCost) {
+                                        btnSCost.setAttribute('disabled', 'true');
                                     }
                                 }
                             }
+                            QuotationLoadDataHandle.loadEventCheckbox(QuotationLoadDataHandle.$costModal);
                             $.fn.initMaskMoney2();
+                            QuotationLoadDataHandle.loadSetWFRuntimeZone();
                         }
                     }
                 )
@@ -1817,7 +1865,7 @@ class QuotationLoadDataHandle {
         // Check promotion -> re calculate
         QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
         // Load indicator
-        indicatorHandle.loadQuotationIndicator();
+        indicatorHandle.loadIndicator();
         // Set form novalidate
         $form[0].setAttribute('novalidate', 'novalidate');
         QuotationLoadDataHandle.loadCheckDataCopy();
@@ -1870,16 +1918,6 @@ class QuotationLoadDataHandle {
             }
         )
         return true;
-    };
-
-    static loadCssToDTScrollBody() {
-        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
-        if (tableProductWrapper) {
-            let tableProductBd = tableProductWrapper.querySelector('.dataTables_scrollBody');
-            if (tableProductBd) {
-                tableProductBd.style.minHeight = '100px';
-            }
-        }
     };
 
     // LOAD DATA DETAIL
@@ -2063,7 +2101,7 @@ class QuotationLoadDataHandle {
         tableProduct.DataTable().clear().draw();
         tableCost.DataTable().clear().draw();
         tableExpense.DataTable().clear().draw();
-
+        // load table product
         tableProduct.DataTable().rows.add(products_data).draw();
         tableProduct.DataTable().rows().every(function () {
             let row = this.node();
@@ -2098,9 +2136,9 @@ class QuotationLoadDataHandle {
                 }
             }
         });
-
+        // load table cost
         tableCost.DataTable().rows.add(costs_data).draw();
-
+        // load table expense
         tableExpense.DataTable().rows.add(expenses_data).draw();
         // payment stage (sale order)
         if (form.classList.contains('sale-order')) {
@@ -2270,7 +2308,7 @@ class QuotationLoadDataHandle {
             ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-price')) {
-            ele.setAttribute('disabled', 'true');
+            ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-discount')) {
             ele.setAttribute('readonly', 'true');
@@ -2316,6 +2354,12 @@ class QuotationLoadDataHandle {
         }
         for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
             ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.btn-select-price')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
+            ele.setAttribute('disabled', 'true');
         }
     };
 
@@ -2477,7 +2521,7 @@ class QuotationDataTableHandle {
                         } else if (itemType === 1) {  // PROMOTION
                             des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '--';
                         }
-                        return `<div class="row"><p class="table-row-description" data-zone="${dataZone}">${des}</p></div>`;
+                        return `<div class="row"><textarea class="form-control table-row-description zone-readonly" rows="2" data-zone="${dataZone}" readonly>${des}</textarea></div>`;
                     }
                 },
                 {
@@ -2534,22 +2578,23 @@ class QuotationDataTableHandle {
                             dataZone = "sale_order_products_data";
                         }
                         return `<div class="row">
-                                    <div class="dropend">
-                                        <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
-                                        <div class="input-affix-wrapper">
-                                            <input 
-                                                type="text" 
-                                                class="form-control mask-money table-row-price zone-readonly" 
-                                                value="${row?.['product_unit_price']}"
-                                                data-return-type="number"
-                                                data-zone="${dataZone}"
-                                            >
-                                            <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
-                                        </div>
-                                        </div>
-                                        <div role="menu" class="dropdown-menu table-row-price-list w-400p">
-                                        <a class="dropdown-item" data-value=""></a>
-                                        </div>
+                                    <div class="input-group input-group-price">
+                                        <input 
+                                            type="text" 
+                                            class="form-control mask-money table-row-price" 
+                                            value="${row?.['product_unit_price']}"
+                                            data-return-type="number"
+                                            data-zone="${dataZone}"
+                                        >
+                                        <button
+                                            type="button"
+                                            class="btn btn-icon btn-light btn-select-price"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#selectPriceModal"
+                                            data-zone="${dataZone}"
+                                            disabled
+                                        ><i class="fas fa-ellipsis-h"></i>
+                                        </button>
                                     </div>
                                 </div>`;
                     }
@@ -2666,10 +2711,6 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
-            drawCallback: function () {
-                // add css to dataTables_scrollBody
-                QuotationLoadDataHandle.loadCssToDTScrollBody();
-            },
         });
     };
 
@@ -2710,6 +2751,7 @@ class QuotationDataTableHandle {
                                                 data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
                                                 data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
                                                 data-keyResp="product_sale_list"
+                                                data-product-id="${row?.['product_data']?.['id']}"
                                                 data-zone="${dataZone}"
                                                 readonly
                                             >
@@ -2751,7 +2793,7 @@ class QuotationDataTableHandle {
                                     data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
                                     data-zone="${dataZone}"
-                                    disabled
+                                    readonly
                                 >
                                 </select>`;
                     },
@@ -2783,9 +2825,7 @@ class QuotationDataTableHandle {
                         }
                         if (itemType === 0) {  // product
                             return `<div class="row">
-                                        <div class="dropdown">
-                                            <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
-                                            <div class="input-affix-wrapper">
+                                            <div class="input-group input-group-price">
                                                 <input 
                                                     type="text" 
                                                     class="form-control mask-money table-row-price disabled-custom-show" 
@@ -2794,13 +2834,15 @@ class QuotationDataTableHandle {
                                                     data-zone="${dataZone}"
                                                     disabled
                                                 >
-                                                <div class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></div>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-icon btn-light btn-select-cost"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#selectCostModal"
+                                                    data-zone="${dataZone}"
+                                                ><i class="fas fa-ellipsis-h"></i>
+                                                </button>
                                             </div>
-                                            </div>
-                                            <div role="menu" class="dropdown-menu table-row-cost-list w-400p">
-                                            <a class="dropdown-item" data-value=""></a>
-                                            </div>
-                                        </div>
                                     </div>`;
                         } else if (itemType === 1) {  // shipping
                             return `<input 
@@ -3351,14 +3393,15 @@ class QuotationDataTableHandle {
                     targets: 0,
                     width: '1%',
                     render: (data, type, row, meta) => {
-                        return `<span class="table-row-order" data-value="${(meta.row + 1)}" data-zone="quotation_indicators_data">${(meta.row + 1)}</span>`
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" data-row="${dataRow}" data-value="${(meta.row + 1)}" data-zone="quotation_indicators_data">${(meta.row + 1)}</span>`
                     }
                 },
                 {
                     targets: 1,
                     width: '40%',
                     render: (data, type, row) => {
-                        return `<b class="table-row-title" data-id="${row?.['indicator']?.['id']}" data-zone="quotation_indicators_data">${row?.['indicator']?.['title']}</b>`
+                        return `<b class="table-row-title" data-id="${row?.['indicator_data']?.['id']}" data-zone="quotation_indicators_data">${row?.['indicator_data']?.['title']}</b>`
                     }
                 },
                 {
@@ -3400,42 +3443,43 @@ class QuotationDataTableHandle {
                     targets: 0,
                     width: '1%',
                     render: (data, type, row, meta) => {
-                        return `<span class="table-row-order" data-value="${(meta.row + 1)}" data-zone="sale_order_indicators_data">${(meta.row + 1)}</span>`
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" data-row="${dataRow}" data-value="${(meta.row + 1)}" data-zone="sale_order_indicators_data">${(meta.row + 1)}</span>`
                     }
                 },
                 {
                     targets: 1,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<b class="table-row-title" data-id="${row.quotation_indicator.id}" data-zone="sale_order_indicators_data">${row.quotation_indicator.title}</b>`
+                        return `<b class="table-row-title" data-id="${row?.['quotation_indicator_data']?.['id']}" data-zone="sale_order_indicators_data">${row?.['quotation_indicator_data']?.['title']}</b>`
                     }
                 },
                 {
                     targets: 2,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-quotation-value" data-init-money="${parseFloat(row.quotation_indicator_value)}" data-value="${row.quotation_indicator_value}" data-zone="sale_order_indicators_data"></span>`
+                        return `<span class="mask-money table-row-quotation-value" data-init-money="${parseFloat(row?.['quotation_indicator_value'])}" data-value="${row?.['quotation_indicator_value']}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 3,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row.indicator_value)}" data-value="${row.indicator_value}" data-zone="sale_order_indicators_data"></span>`
+                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['indicator_value'])}" data-value="${row?.['indicator_value']}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 4,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-difference-value" data-init-money="${parseFloat(row.difference_indicator_value)}" data-value="${row.difference_indicator_value}" data-zone="sale_order_indicators_data"></span>`
+                        return `<span class="mask-money table-row-difference-value" data-init-money="${parseFloat(row?.['difference_indicator_value'])}" data-value="${row?.['difference_indicator_value']}" data-zone="sale_order_indicators_data"></span>`
                     }
                 },
                 {
                     targets: 5,
                     width: '15%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-rate" data-value="${row.indicator_rate}" data-zone="sale_order_indicators_data">${row.indicator_rate} %</span>`
+                        return `<span class="table-row-rate" data-value="${row?.['indicator_rate']}" data-zone="sale_order_indicators_data">${row?.['indicator_rate']} %</span>`
                     }
                 }
             ],
@@ -4067,18 +4111,17 @@ class QuotationCheckConfigHandle {
     static checkTableRow(config, check_type, row) {
         let eleProduct = row.querySelector('.table-row-item');
         if (eleProduct) {
-            let elePriceList = row.querySelector('.dropdown-action');
+            let btnSPrice = row.querySelector('.btn-select-price');
             let elePrice = row.querySelector('.table-row-price');
             let eleDiscount = row.querySelector('.table-row-discount');
             if (check_type === 0) {  // short sale
                 if (config?.['short_sale_config']?.['is_choose_price_list'] === false) {
-                    if (elePriceList.hasAttribute('data-bs-toggle')) {
-                        elePriceList.removeAttribute('data-bs-toggle');
-                        QuotationLoadDataHandle.loadPriceProduct(eleProduct);
+                    if (btnSPrice) {
+                        btnSPrice.setAttribute('disabled', 'true');
                     }
                 } else {
-                    if (!elePriceList.hasAttribute('data-bs-toggle')) {
-                        elePriceList.setAttribute('data-bs-toggle', 'dropdown')
+                    if (btnSPrice) {
+                        btnSPrice.removeAttribute('disabled');
                     }
                 }
                 if (config?.['short_sale_config']?.['is_input_price'] === false) {
@@ -4108,8 +4151,8 @@ class QuotationCheckConfigHandle {
                 }
             }
             if (check_type === 1) {  // long sale
-                if (!elePriceList.hasAttribute('data-bs-toggle')) {
-                    elePriceList.setAttribute('data-bs-toggle', 'dropdown');
+                if (btnSPrice) {
+                    btnSPrice.removeAttribute('disabled');
                 }
                 if (config?.['long_sale_config']?.['is_not_input_price'] === false) {
                     if (elePrice) {
@@ -4145,7 +4188,7 @@ class QuotationCheckConfigHandle {
 
 // Indicator
 class indicatorHandle {
-    static loadQuotationIndicator() {
+    static loadIndicator() {
         let $ele = $('#quotation-indicator-data');
         if (!$ele.val()) {
             let url = $ele.attr('data-url');
@@ -4274,9 +4317,9 @@ class indicatorHandle {
                 if (formSubmit.attr('data-method') === 'POST') {
                     if (dataDetailCopy?.['quotation_indicators_data']) {
                         for (let quotation_indicator of dataDetailCopy?.['quotation_indicators_data']) {
-                            if (indicator.title === quotation_indicator.indicator.title) {
-                                quotationValue = quotation_indicator.indicator_value;
-                                differenceValue = (value - quotation_indicator.indicator_value);
+                            if (indicator?.['title'] === quotation_indicator?.['indicator']?.['title']) {
+                                quotationValue = quotation_indicator?.['indicator_value'];
+                                differenceValue = (value - quotation_indicator?.['indicator_value']);
                                 break;
                             }
                         }
@@ -4284,9 +4327,9 @@ class indicatorHandle {
                 } else {
                     if (dataDetail?.['quotation']?.['quotation_indicators_data']) {
                         for (let quotation_indicator of dataDetail?.['quotation']?.['quotation_indicators_data']) {
-                            if (indicator.title === quotation_indicator.indicator.title) {
-                                quotationValue = quotation_indicator.indicator_value;
-                                differenceValue = (value - quotation_indicator.indicator_value);
+                            if (indicator?.['title'] === quotation_indicator?.['indicator']?.['title']) {
+                                quotationValue = quotation_indicator?.['indicator_value'];
+                                differenceValue = (value - quotation_indicator?.['indicator_value']);
                                 break;
                             }
                         }
@@ -4295,22 +4338,26 @@ class indicatorHandle {
             }
             // append result
             result_list.push({
-                'indicator': {
-                    'id': indicator.id,
-                    'title': indicator.title,
+                'indicator': indicator?.['id'],
+                'indicator_data': {
+                    'id': indicator?.['id'],
+                    'title': indicator?.['title'],
+                    'code': indicator?.['code'],
                 },
-                'quotation_indicator': {
-                    'id': indicator.id,
-                    'title': indicator.title,
+                'quotation_indicator': indicator?.['id'],
+                'quotation_indicator_data': {
+                    'id': indicator?.['id'],
+                    'title': indicator?.['title'],
+                    'code': indicator?.['code'],
                 },
-                'order': indicator.order,
-                'indicator_value': value,
+                'order': indicator?.['order'],
+                'indicator_value': value ? value : 0,
                 'indicator_rate': rateValue,
                 'quotation_indicator_value': quotationValue,
                 'difference_indicator_value': differenceValue,
             });
-            result_json[indicator.order] = {
-                'indicator_value': value,
+            result_json[indicator?.['order']] = {
+                'indicator_value': value ? value : 0,
                 'indicator_rate': rateValue
             }
         }
@@ -6119,28 +6166,35 @@ class QuotationSubmitHandle {
         let $table = $('#datable-quotation-create-indicator');
         $table.DataTable().rows().every(function () {
             let row = this.node();
-            let indicator = row.querySelector('.table-row-title').getAttribute('data-id');
-            let indicator_value = row.querySelector('.table-row-value').getAttribute('data-value');
-            let indicator_rate = row.querySelector('.table-row-rate').getAttribute('data-value');
-            let order = row.querySelector('.table-row-order').getAttribute('data-value');
-            if (!$table.hasClass('sale-order')) { // QUOTATION INDICATOR
-                result.push({
-                    'indicator': indicator,
-                    'indicator_value': parseFloat(indicator_value),
-                    'indicator_rate': parseFloat(indicator_rate),
-                    'order': parseInt(order),
-                })
-            } else { // SALE ORDER INDICATOR
-                let quotation_indicator_value = row.querySelector('.table-row-quotation-value').getAttribute('data-value');
-                let difference_indicator_rate = row.querySelector('.table-row-difference-value').getAttribute('data-value');
-                result.push({
-                    'quotation_indicator': indicator,
-                    'indicator_value': parseFloat(indicator_value),
-                    'indicator_rate': parseFloat(indicator_rate),
-                    'quotation_indicator_value': parseFloat(quotation_indicator_value),
-                    'difference_indicator_value': parseFloat(difference_indicator_rate),
-                    'order': parseInt(order),
-                })
+            if (row.querySelector('.table-row-order')) {
+                if (row.querySelector('.table-row-order').getAttribute('data-row')) {
+                    let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
+                    let indicator = row.querySelector('.table-row-title').getAttribute('data-id');
+                    let indicator_value = row.querySelector('.table-row-value').getAttribute('data-value');
+                    let indicator_rate = row.querySelector('.table-row-rate').getAttribute('data-value');
+                    let order = row.querySelector('.table-row-order').getAttribute('data-value');
+                    if (!$table.hasClass('sale-order')) { // QUOTATION INDICATOR
+                        result.push({
+                            'indicator': indicator,
+                            'indicator_data': dataRow?.['indicator_data'],
+                            'indicator_value': parseFloat(indicator_value),
+                            'indicator_rate': parseFloat(indicator_rate),
+                            'order': parseInt(order),
+                        })
+                    } else { // SALE ORDER INDICATOR
+                        let quotation_indicator_value = row.querySelector('.table-row-quotation-value').getAttribute('data-value');
+                        let difference_indicator_rate = row.querySelector('.table-row-difference-value').getAttribute('data-value');
+                        result.push({
+                            'quotation_indicator': indicator,
+                            'quotation_indicator_data': dataRow?.['quotation_indicator_data'],
+                            'indicator_value': parseFloat(indicator_value),
+                            'indicator_rate': parseFloat(indicator_rate),
+                            'quotation_indicator_value': parseFloat(quotation_indicator_value),
+                            'difference_indicator_value': parseFloat(difference_indicator_rate),
+                            'order': parseInt(order),
+                        })
+                    }
+                }
             }
         });
         return result
@@ -6218,6 +6272,14 @@ class QuotationSubmitHandle {
 
             }
         }
+        if (QuotationLoadDataHandle.customerSelectEle.val()) {
+            let data = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
+            if (data) {
+                _form.dataForm['customer'] = data?.['id'];
+                _form.dataForm['customer_data'] = data;
+            }
+        }
+
         if (is_sale_order === false) {
             _form.dataForm['is_customer_confirm'] = $('#quotation-customer-confirm')[0].checked;
         }
@@ -6339,6 +6401,21 @@ class QuotationSubmitHandle {
         let quotation_indicators_data_setup = QuotationSubmitHandle.setupDataIndicator();
         if (quotation_indicators_data_setup.length > 0) {
             _form.dataForm[quotation_indicators_data] = quotation_indicators_data_setup;
+            let keyInd = "indicator_data";
+            if (is_sale_order === true) {
+                keyInd = "quotation_indicator_data";
+            }
+            for (let indicator of quotation_indicators_data_setup) {
+                if (indicator?.[keyInd]?.['code'] === "IN0001") {
+                    _form.dataForm['indicator_revenue'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                }
+                if (indicator?.[keyInd]?.['code'] === "IN0003") {
+                    _form.dataForm['indicator_gross_profit'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                }
+                if (indicator?.[keyInd]?.['code'] === "IN0006") {
+                    _form.dataForm['indicator_net_income'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                }
+            }
         }
         // payment stage
         if (is_sale_order === true) {

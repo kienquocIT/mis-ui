@@ -185,7 +185,7 @@ $(function () {
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title text-primary">${transEle.attr('data-edit-formula')}</h5>
+                                                    <h5 class="modal-title">${transEle.attr('data-edit-formula')}</h5>
                                                     <button
                                                             type="button" class="btn-close"
                                                             data-bs-dismiss="modal" aria-label="Close"
@@ -407,11 +407,11 @@ $(function () {
                     if (dataShow?.['type'] === 5) {
                         let url = "";
                         let keyResp = "";
-                        if (dataShow?.['app_code_md'] === 'saledata.expenseitem') {
+                        if (dataShow?.['content_type'] === 'saledata.expenseitem') {
                             url = $eleUrlFact.attr('data-url-expense-item');
                             keyResp = "expense_item_list";
                         }
-                        if (dataShow?.['app_code_md'] === 'saledata.expense') {
+                        if (dataShow?.['content_type'] === 'saledata.expense') {
                             url = $eleUrlFact.attr('data-url-labor');
                             keyResp = "expense_list";
                         }

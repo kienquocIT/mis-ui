@@ -9,27 +9,27 @@ let columns = [
         }
     }, {
         data: 'code',
-        className: 'wrap-text min-w-150p',
+        className: 'wrap-text min-w-100p',
         render: (data, type, row, meta) => {
-            return `<span class="badge badge-outline badge-soft-primary span-product w-70" data-id="${row.id}">${row.code}</span>`
+            return `<span class="badge badge-outline badge-soft-primary span-product w-100" data-id="${row.id}">${row.code}</span>`
         }
     }, {
         data: 'title',
         className: 'wrap-text min-w-250p',
         render: (data, type, row, meta) => {
-            return `<span class="text-muted">${row.title}</span>`
+            return `<span class="text-muted fw-bold">${row.title}</span>`
         }
     }, {
         data: 'uom_group',
         className: 'wrap-text min-w-100p',
         render: (data, type, row, meta) => {
-            return `<span class="text-muted span-uom-group" data-id="${row.uom_group.id}">${row.uom_group.title}</span>`
+            return `<span class="text-primary span-uom-group" data-id="${row.uom_group.id}">${row.uom_group.title}</span>`
         }
     }, {
         data: 'uom',
         className: 'wrap-text min-w-100p',
         render: (data, type, row, meta) => {
-            return `<span class="text-blue badge-pill span-uom" data-id="${row.uom.id}">${row.uom.title}</span>`
+            return `<span class="text-blue span-uom" data-id="${row.uom.id}">${row.uom.title}</span>`
         }
     },
 ]

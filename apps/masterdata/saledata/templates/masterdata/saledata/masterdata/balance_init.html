@@ -43,7 +43,7 @@
 {% endblock %}
 {% block pageContent %}
     {{ data.data.period_setup_sw_start_using_time | json_script:"period_setup_sw_start_using_time" }}
-    {{ data.data.db_form_cfg | json_script:"db_form_cfg" }}
+    {{ data.data.import_db_form_cfg | json_script:"import_db_form_cfg" }}
 
     <script id="trans-script"
             data-trans-input-lot="{% trans 'Input LOT' %}"

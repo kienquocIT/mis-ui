@@ -19,7 +19,7 @@ $(function () {
                     eleDataDetail.val(JSON.stringify(data));
                     QuotationLoadDataHandle.loadDetailQuotation(data);
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
-                    indicatorHandle.loadQuotationIndicator();
+                    indicatorHandle.loadIndicator();
 
                     // prepare for copy quotation to sale order
                     if (!$form.hasClass('sale-order')) { // QUOTATION PAGES

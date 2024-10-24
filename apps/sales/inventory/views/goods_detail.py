@@ -18,7 +18,7 @@ class GoodsDetail(View):
     def get(self, request, *args, **kwargs):
         return {
             'data': {
-                'db_form_cfg': {
+                'import_db_form_cfg': {
                     'list_import_db': [
                         {
                             "id": "table-serial-import-db",

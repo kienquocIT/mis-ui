@@ -24,7 +24,7 @@
 {#    </button>#}
 {% endblock %}
 {% block pageContent %}
-    {{ data.data.db_form_cfg | json_script:"db_form_cfg" }}
+    {{ data.data.import_db_form_cfg | json_script:"import_db_form_cfg" }}
     <script id="trans-url"
             data-trans-all="{% trans 'Default all' %}"
             data-trans-delivered="{% trans 'is not in stock' %}"

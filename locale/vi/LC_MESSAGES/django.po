@@ -8925,12 +8925,12 @@ msgid "Select Finished goods or Services"
 msgstr "Chọn Thành phẩm hoặc Dịch vụ"
 
 #
-msgid "One collaborator"
-msgstr "Một cộng tác viên"
+msgid "One collaborator actions"
+msgstr "Một cộng tác viên thao tác"
 
 #
-msgid "Many collaborators"
-msgstr "Nhiều cộng tác viên"
+msgid "Many collaborators action"
+msgstr "Nhiều cộng tác viên thao tác"
 
 #
 msgid "Config according to"
@@ -9215,6 +9215,30 @@ msgstr "Nhập SDĐK"
 #
 msgid "Product does not have bill of material"
 msgstr "Sản phẩm không có định mức nguyên vật liệu"
+
+#
+msgid "Select product price"
+msgstr "Chọn giá sản phẩm"
+
+#
+msgid "Select product cost"
+msgstr "Chọn giá vốn sản phẩm"
+
+#
+msgid "The document meets the following nodes. Please select one."
+msgstr "Phiếu thỏa điều kiện các trạm sau. Vui lòng chọn một trạm."
+
+#
+msgid "The document does not meet any nodes. Do you wish to continue? If yes, please select one."
+msgstr "Phiếu không thỏa điều kiện các trạm. Bạn có muốn tiếp tục? Nếu có, vui lòng chọn một trạm."
+
+#
+msgid "Select next station"
+msgstr "Chọn trạm tiếp theo"
+
+#
+msgid "The product does not have cost list, please input cost."
+msgstr "Sản phẩm không có danh sách giá vốn, vui lòng nhập giá vốn."
 
 #
 msgid "Load data from excel to datatable"

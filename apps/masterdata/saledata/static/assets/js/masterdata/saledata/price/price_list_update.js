@@ -296,7 +296,7 @@ $(document).ready(function () {
         $(this).addClass('tag-changed')
     })
 
-    $(document).on('mouseenter', 'tr', function () {
+    $(document).on('mouseenter', 'tbody tr', function () {
         $(this).addClass('bg-danger-light-5')
         $(this).find('td:eq(0)').append(`
             <button type="button" class="btn btn-sm btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del" data-id="${pk}">
@@ -307,7 +307,7 @@ $(document).ready(function () {
                 </span>
              </button>
         `);
-    }).on('mouseleave', 'tr', function () {
+    }).on('mouseleave', 'tbody tr', function () {
         $(this).removeClass('bg-danger-light-5')
         $(this).find('td:eq(0) .btn-del').remove();
     });

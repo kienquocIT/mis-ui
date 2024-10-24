@@ -14,7 +14,6 @@ $(document).ready(function () {
 
     $btn_group_import_datatable.on('click', function () {
         let target_table_id = $(this).closest('.import-db-space').find('table').last().attr('id')
-        console.log(target_table_id)
         for (let i = 0; i < $list_import_db.length; i++) {
             if ($list_import_db[i]?.['map_with'] === target_table_id) {
                 let option = $list_import_db[i]?.['option'] ? $list_import_db[i]?.['option'] : []
@@ -117,6 +116,9 @@ $(document).ready(function () {
         if (data.length > 1) {
             let from_index = $from_index_ele.val() ? parseInt($from_index_ele.val()) : null
             let to_index = $to_index_ele.val() ? parseInt($to_index_ele.val()) : null
+            if (to_index > data.length) {
+                to_index = data.length - 1
+            }
 
             if (from_index && to_index) {
                 PREVIEW_TABLE.find('tbody').html('')
@@ -136,7 +138,16 @@ $(document).ready(function () {
                         }
                     }
                     PREVIEW_TABLE.find('tbody').append(`<tr>
-                        <td>${i-from_index+1}</td>
+                        <td class="w-10">
+                            ${i-from_index+1}
+                            <button hidden type="button" class="btn btn-sm btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del-row-import-db" data-id="${$.fn.getPkDetail()}">
+                                <span class="btn-icon-wrap">
+                                    <span class="feather-icon">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </span>
+                                </span>
+                            </button>
+                        </td>
                         ${tds}
                         <td class="w-10">
                             <i class="status-none text-muted fw-bold fas fa-minus"></i>
@@ -257,5 +268,29 @@ $(document).ready(function () {
 
         // Gọi hàm xử lý tất cả các hàng
         processAllRows().then();
+    })
+
+    $(document).on('mouseenter', '#import-db-form-modal-table table tbody tr', function () {
+        $(this).addClass('bg-secondary-light-5')
+        $(this).find('td:eq(0) .btn-del-row-import-db').prop('hidden', false);
+    }).on('mouseleave', '#import-db-form-modal-table table tbody tr', function () {
+        $(this).removeClass('bg-secondary-light-5')
+        $(this).find('td:eq(0) .btn-del-row-import-db').prop('hidden', true);
+    });
+
+    $(document).on('click', '.btn-del-row-import-db', function () {
+        $(this).closest('tr').remove()
+        $import_db_form_modal_table.find('tbody tr').each(function (idx, ele) {
+            $(this).find('td:eq(0)').html(`
+                ${idx + 1}
+                <button hidden type="button" class="btn btn-sm btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del-row-import-db" data-id="${$.fn.getPkDetail()}">
+                    <span class="btn-icon-wrap">
+                        <span class="feather-icon">
+                            <i class="fas fa-trash-alt"></i>
+                        </span>
+                    </span>
+                </button>
+            `);
+        })
     })
 })

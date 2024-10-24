@@ -7,13 +7,14 @@ $(document).ready(function(){
         'method': 'get',
         'data': {page: 1, pageSize: 100}
     }, 'Trigger_Loaded');
+
     $(document).on('Trigger_Loaded', function(){
         const $elm = $('#Trigger_Loaded')
         const project_list = $elm.data('Trigger_Loaded')
         $elm.remove()
         HomeChart.runBlock(project_list)
         HomeChart.runChartPOwner(project_list)
-        HomeChart.runChartPPYear(project_list)
+        HomeChart.runChartPBMonth(project_list)
         HomeChart.runChartPStatus(project_list)
     });
 
@@ -240,7 +241,7 @@ class HomeChart {
         chartEmp.render();
     }
 
-    static runChartPPYear(data){
+    static runChartPBMonth(data){
         // chart project count
         let $prjChart = $('#prj_chart_year')
         var pieOpt = {
@@ -251,7 +252,7 @@ class HomeChart {
                 '#FFA500',
                 '#F0552D',
                 '#FFD700',
-                '#FF8C00',
+                '#431066',
                 '#93C572',
                 '#66B2FF',
                 '#E5C3D1',
@@ -286,7 +287,16 @@ class HomeChart {
             },
             markers: {
                 size: 4,
-                colors: ["#FFA41B"],
+                colors: ['#0064CD',
+                '#192D73',
+                '#FFA500',
+                '#F0552D',
+                '#FFD700',
+                '#431066',
+                '#93C572',
+                '#66B2FF',
+                '#E5C3D1',
+                '#9467BD'],
                 strokeColors: "#fff",
                 strokeWidth: 2,
                 hover: {
@@ -308,34 +318,55 @@ class HomeChart {
         };
         let prj_dict = {}, crtYear = new Date().getFullYear(), crtMonth = new Date().getMonth() + 1;
         // convert project list migrate
+
         for (let item of data){
-            const dateCreated = new Date(item.date_created);
-            if(dateCreated.getFullYear() in prj_dict)
-                prj_dict[dateCreated.getFullYear()].push(item)
-            else
-                prj_dict[dateCreated.getFullYear()] = [item]
-        }
+            const dateStart = new Date(item.start_date);
+            const dateFinish = new Date(item.finish_date);
+            const dateClose = item?.['date_close'] ? new Date(item['date_close']) : null;
 
-        for (let val in prj_dict){
-            let item = prj_dict[val];
-            let temp = {
-                name: val,
-                data: []
-            };
+            const startY = dateStart.getFullYear();
+            const finishY = dateFinish.getFullYear();
+            const closeY = dateClose ? dateClose.getFullYear() : null;
 
-            for (let i = 1; i <= 12; i++){
-                // kiểm tra xem là năm hiện tại thì loop tới tháng hiện tại
-                if (parseInt(val) === crtYear && i === crtMonth + 1) break
-                let child = 0
-                for (let grandChild of item){
-                    const dateCreated = new Date(grandChild.date_created)
-                    if (dateCreated.getMonth() + 1 === i) child += 1
+            // nếu năm bắt đầu record ko có trong lst data
+            if(!prj_dict[startY]) prj_dict[startY] = Array(12).fill(0);
+            if (dateClose && !prj_dict[closeY]) prj_dict[closeY] = Array(12).fill(0);
+            if (!dateClose && !prj_dict[finishY]) prj_dict[finishY] = Array(12).fill(0);
+
+            const endMonth = dateClose ? dateClose.getMonth() + 1 : dateFinish.getMonth() + 1;
+
+            // nếu cùng năm
+            if (startY === closeY || startY === finishY){
+                for (let month = dateStart.getMonth() + 1; month <= endMonth; month++){
+                    prj_dict[startY][month - 1]++
                 }
-                temp.data[i-1] = child
             }
-            pieOpt.series.push(temp)
-        }
+            // nếu khác năm
+            else{
+                // kểm tra tháng năm đầu tiên
+                for (let month = dateStart.getMonth() + 1; month <= 12; month++){
+                    prj_dict[startY][month - 1]++
+                }
 
+                // kiểm tra tháng năm giữa
+                for (let year = startY + 1; year < (closeY || finishY); year++){
+                    if (!prj_dict[year]) prj_dict[year] = Array(12).fill(0)
+                    for (let month = 1; month <= 12; month++) {
+                        prj_dict[year][month - 1]++
+                    }
+                }
+                // kiểm tra tháng năm cuối
+                for (let month = 1; month <= endMonth; month++){
+                    prj_dict[closeY || finishY][month - 1]++
+                }
+            }
+        }
+        for (let year in prj_dict){
+            pieOpt.series.push({
+                name: year,
+                data: prj_dict[year]
+            })
+        }
         var chartArea = new ApexCharts($prjChart[0], pieOpt);
         $prjChart.html('').closest('.css-skeleton').removeClass('css-skeleton')
         chartArea.render();
@@ -348,7 +379,7 @@ class HomeChart {
 
         const _prjStatus = {
             1: $.fn.gettext('Created'),
-            2: $.fn.gettext('Added'),
+            2: $.fn.gettext('Reopened'),
             3: $.fn.gettext('Finish'),
             4: $.fn.gettext('Closed'),
         }
@@ -385,7 +416,9 @@ class HomeChart {
     }
 
     static runChartPExpense(data){
-        let colors = ['#0064CD',
+        let colors = [
+                '#19b7a1',
+                '#0064CD',
                 '#192D73',
                 '#FFA500',
                 '#F0552D',
@@ -393,7 +426,6 @@ class HomeChart {
                 '#FF8C00',
                 '#93C572',
                 '#66B2FF',
-                '#E5C3D1',
                 '#9467BD'],
             $expChart = $('#prj_chart_expense');
         /*******************/

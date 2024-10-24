@@ -566,19 +566,13 @@ class QuotationLoadDataHandle {
             if (item) {
                 for (let i = 0; i < item.shipping_address.length; i++) {
                     let shipping = item.shipping_address[i];
-                    $(modalShippingContent).append(`<div class="row ml-1 shipping-group">
-                                                    <div class="row mb-1">
-                                                        <textarea class="form-control show-not-edit shipping-content disabled-custom-show" rows="3" cols="50" id="${shipping.id}" disabled>${shipping.full_address}</textarea>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-5"></div>
-                                                        <div class="col-4"></div>
-                                                        <div class="col-3 float-right">
+                    $(modalShippingContent).append(`<div class="ml-1 shipping-group">
+                                                        <textarea class="form-control show-not-edit shipping-content disabled-custom-show mb-2" rows="3" cols="50" id="${shipping.id}" disabled>${shipping.full_address}</textarea>
+                                                        <div class="d-flex justify-content-end">
                                                             <button type="button" class="btn btn-primary choose-shipping" data-bs-dismiss="modal" id="${shipping.id}" data-address="${shipping.full_address}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <br>`)
+                                                    <br>`)
                 }
             }
         }
@@ -588,19 +582,13 @@ class QuotationLoadDataHandle {
             if (item) {
                 for (let i = 0; i < item.billing_address.length; i++) {
                     let billing = item.billing_address[i];
-                    $(modalBillingContent).append(`<div class="row ml-1 billing-group">
-                                                    <div class="row mb-1">
-                                                        <textarea class="form-control show-not-edit billing-content disabled-custom-show" rows="3" cols="50" id="${billing.id}" disabled>${billing.full_address}</textarea>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-5"></div>
-                                                        <div class="col-4"></div>
-                                                        <div class="col-3">
+                    $(modalBillingContent).append(`<div class="ml-1 billing-group">
+                                                        <textarea class="form-control show-not-edit billing-content disabled-custom-show mb-2" rows="3" cols="50" id="${billing.id}" disabled>${billing.full_address}</textarea>
+                                                        <div class="d-flex justify-content-end">
                                                             <button type="button" class="btn btn-primary choose-billing" data-bs-dismiss="modal" id="${billing.id}" data-address="${billing.full_address}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <br>`)
+                                                    <br>`)
                 }
             }
         }
@@ -1561,6 +1549,7 @@ class QuotationLoadDataHandle {
         if (productData) {
             if (productData?.['id']) {
                 // call ajax check BOM
+                WindowControl.showLoading();
                 $.fn.callAjax2({
                         'url': QuotationLoadDataHandle.urlEle.attr('data-md-bom'),
                         'method': 'GET',
@@ -1591,6 +1580,7 @@ class QuotationLoadDataHandle {
                                     QuotationLoadDataHandle.loadCostWHProduct(eleProduct);
                                 }
                             }
+                            WindowControl.hideLoading();
                         }
                     }
                 )
@@ -2776,7 +2766,11 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
-                        return `<select class="form-select table-row-supplied-by" data-zone="${dataZone}"></select>`;
+                        let readonly = ''  // product
+                        if (row?.['shipping_id']) {
+                            readonly = 'readonly'  // shipping
+                        }
+                        return `<select class="form-select table-row-supplied-by" data-zone="${dataZone}" ${readonly}></select>`;
                     }
                 },
                 {
@@ -2817,44 +2811,31 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
-                        let itemType = 0  // product
-                        if (row.hasOwnProperty('product') && row.hasOwnProperty('shipping')) {
-                            if (Object.keys(row['shipping']).length > 0) {
-                                itemType = 1  // shipping
-                            }
+                        let disabled = ''  // product
+                        if (row?.['shipping_id']) {
+                            disabled = 'disabled'  // shipping
                         }
-                        if (itemType === 0) {  // product
-                            return `<div class="row">
-                                            <div class="input-group input-group-price">
-                                                <input 
-                                                    type="text" 
-                                                    class="form-control mask-money table-row-price disabled-custom-show" 
-                                                    value="${row?.['product_cost_price']}"
-                                                    data-return-type="number"
-                                                    data-zone="${dataZone}"
-                                                    disabled
-                                                >
-                                                <button
-                                                    type="button"
-                                                    class="btn btn-icon btn-light btn-select-cost"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#selectCostModal"
-                                                    data-zone="${dataZone}"
-                                                ><i class="fas fa-ellipsis-h"></i>
-                                                </button>
-                                            </div>
-                                    </div>`;
-                        } else if (itemType === 1) {  // shipping
-                            return `<input 
-                                        type="text" 
-                                        class="form-control mask-money table-row-price disabled-custom-show" 
-                                        data-return-type="number"
-                                        value="${row?.['product_cost_price']}"
-                                        data-zone="${dataZone}"
-                                        required
-                                        disabled
-                                    >`;
-                        }
+                        return `<div class="row">
+                                        <div class="input-group input-group-price">
+                                            <input 
+                                                type="text" 
+                                                class="form-control mask-money table-row-price disabled-custom-show" 
+                                                value="${row?.['product_cost_price']}"
+                                                data-return-type="number"
+                                                data-zone="${dataZone}"
+                                                disabled
+                                            >
+                                            <button
+                                                type="button"
+                                                class="btn btn-icon btn-light btn-select-cost"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#selectCostModal"
+                                                data-zone="${dataZone}"
+                                                ${disabled}
+                                            ><i class="fas fa-ellipsis-h"></i>
+                                            </button>
+                                        </div>
+                                </div>`;
                     }
                 },
                 {
@@ -2871,51 +2852,32 @@ class QuotationDataTableHandle {
                                 itemType = 1  // shipping
                             }
                         }
-                        if (itemType === 0) {  // product
-                            return `<select 
-                                        class="form-select table-row-tax"
-                                        data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                        data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
-                                        data-keyResp="tax_list"
-                                        data-zone="${dataZone}"
-                                    >
-                                    </select>
-                                    <input
-                                        type="text"
-                                        class="form-control mask-money table-row-tax-amount"
-                                        value="${row?.['product_tax_amount']}"
-                                        data-return-type="number"
-                                        hidden
-                                    >
-                                    <input
-                                        type="text"
-                                        class="form-control table-row-tax-amount-raw"
-                                        value="${row?.['product_tax_amount']}"
-                                        hidden
-                                    >`;
-                        } else if (itemType === 1) {  // shipping
-                            return `<select 
-                                        class="form-select table-row-tax disabled-custom-show"
-                                        data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                        data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
-                                        data-keyResp="tax_list"
-                                        disabled
-                                    >
-                                    </select>
-                                    <input
-                                        type="text"
-                                        class="form-control mask-money table-row-tax-amount"
-                                        value="${row?.['product_tax_amount']}"
-                                        data-return-type="number"
-                                        hidden
-                                    >
-                                    <input
-                                        type="text"
-                                        class="form-control table-row-tax-amount-raw"
-                                        value="${row?.['product_tax_amount']}"
-                                        hidden
-                                    >`;
+                        let readonly = ''  // product
+                        if (row?.['shipping_id']) {
+                            readonly = 'readonly'  // shipping
                         }
+                        return `<select 
+                                    class="form-select table-row-tax"
+                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
+                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-keyResp="tax_list"
+                                    data-zone="${dataZone}"
+                                    ${readonly}
+                                >
+                                </select>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    value="${row?.['product_tax_amount']}"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row?.['product_tax_amount']}"
+                                    hidden
+                                >`;
                     }
                 },
                 {

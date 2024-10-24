@@ -4,7 +4,7 @@ __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI',
            'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI',
            'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectListBaselineAPI', 'ProjectBaselineDetail',
            'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI', 'ProjectExpenseListAPI',
-           'ProjectListBaseline', 'ProjectWorkList', 'ProjectActivities', 'ProjectActivitiesListAPI',
+           'ProjectWorkList', 'ProjectActivities', 'ProjectActivitiesListAPI',
            'ProjectCommentListAPI', 'ProjectActivitiesCommentDetail', 'ProjectCommentDetailFlowsAPI'
            ]
 
@@ -425,29 +425,7 @@ class ProjectExpenseListAPI(APIView):
         return resp.auto_return(key_success='project_expense_list')
 
 
-class ProjectListBaseline(View):
-    @mask_view(
-        auth_require=True,
-        template='sales/project/extends/baseline-list.html',
-        breadcrumb='PROJECT_BASELINE',
-        menu_active='menu_baseline_list',
-        jsi18n='project_home'
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
 class ProjectListBaselineAPI(APIView):
-
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_BASELINE).get(params)
-        return resp.auto_return(key_success='baseline_list')
 
     @mask_view(
         login_require=True,

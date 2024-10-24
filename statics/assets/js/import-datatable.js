@@ -13,7 +13,16 @@ $(document).ready(function () {
     let SELECTED_FILE = null
 
     $btn_group_import_datatable.on('click', function () {
-        let target_table_id = $(this).closest('.import-db-space').find('table').last().attr('id')
+        let target_table_id = null
+        $(this).closest('.import-db-space').find('table').each(function () {
+            if (!target_table_id) {
+                target_table_id = $(this).attr('id')
+            }
+            else {
+                return false
+            }
+        })
+
         for (let i = 0; i < $list_import_db.length; i++) {
             if ($list_import_db[i]?.['map_with'] === target_table_id) {
                 let option = $list_import_db[i]?.['option'] ? $list_import_db[i]?.['option'] : []
@@ -93,7 +102,15 @@ $(document).ready(function () {
         $import_db_form.attr('data-url', $(this).closest('.import-db-space').find('.import-db-form-url').attr('data-get-url'))
         $import_db_form.attr('data-redirect-url', $(this).closest('.import-db-space').find('.import-db-form-url').attr('data-get-redirect-url'))
 
-        let target_table_id = $(this).closest('.import-db-space').find('table').last().attr('id')
+        let target_table_id = null
+        $(this).closest('.import-db-space').find('table').each(function () {
+            if (!target_table_id) {
+                target_table_id = $(this).attr('id')
+            }
+            else {
+                return false
+            }
+        })
         let tableEle_item = null
         for (let i = 0; i < $list_import_db.length; i++) {
             if ($list_import_db[i]?.['map_with'] === target_table_id) {
@@ -132,6 +149,16 @@ $(document).ready(function () {
                         }
                         else if (col_type[j+1] === 'm') {
                             tds += `<td><input class="form-control mask-money" value="${data[i][j] ? data[i][j] : ''}"></td>`
+                        }
+                        else if (col_type[j+1] === 'n') {
+                            tds += `<td><input type="number" class="form-control" value="${data[i][j] ? data[i][j] : ''}"></td>`
+                        }
+                        else if (col_type[j+1] === 's') {
+                            let data = data[i][j] ? data[i][j] : ''
+                            tds += `<td><select class="form-select select2"></select></td>`
+                        }
+                        else if (col_type[j+1] === 'x') {
+                            tds += `<td><span>${data[i][j] ? data[i][j] : ''}</span></td>`
                         }
                         else {
                             tds += `<td>-</td>`
@@ -292,5 +319,38 @@ $(document).ready(function () {
                 </button>
             `);
         })
+    })
+
+
+    // load data
+
+    $('.btn-load-datatable-from-excel').on('click', function () {
+        let target_table_id = null
+        $(this).closest('.import-db-space').find('table').each(function () {
+            if (!target_table_id) {
+                target_table_id = $(this).attr('id')
+            }
+            else {
+                return false
+            }
+        })
+
+        console.log(target_table_id)
+        let tableEle_item = null
+        for (let i = 0; i < $list_import_db.length; i++) {
+            if ($list_import_db[i]?.['map_with'] === target_table_id) {
+                tableEle_item = $list_import_db[i]
+            }
+        }
+        if (tableEle_item) {
+            $import_db_form_select_table.val(tableEle_item?.['name'])
+            $import_db_form_select_table.attr('data-col-type', tableEle_item?.['col_type'])
+            $import_db_form_select_table.attr('data-format', JSON.stringify(tableEle_item?.['data_format']))
+
+            let tableEle = $(`table[data-table-id="${tableEle_item?.['id']}"]`)
+            $import_db_form_modal_table.html(tableEle)
+            $import_db_form_modal_table.find('table').attr('id', tableEle.attr('data-table-id')).prop('hidden', false)
+            PREVIEW_TABLE = $import_db_form_modal_table.find('table')
+        }
     })
 })

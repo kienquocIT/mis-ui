@@ -7893,8 +7893,8 @@ msgid "Roles incurred expenses"
 msgstr "Vai trò phát sinh chi phí"
 
 #
-msgid "Create Baseline"
-msgstr "Tạo Đường cơ sở"
+msgid "Request Baseline"
+msgstr "Trình duyệt"
 
 #
 msgid "not PR"
@@ -7989,8 +7989,8 @@ msgid "Expand / Collapse"
 msgstr "Thu gọn / Mở rộng"
 
 #
-msgid "Project Baseline"
-msgstr "Đường cơ sở của Dự án"
+msgid "Baseline quantity"
+msgstr "Số lượng dự án trình duyệt"
 
 #
 msgid "Budget plan"
@@ -8058,7 +8058,7 @@ msgstr "Được phép chỉnh sửa"
 
 #
 msgid "Baseline"
-msgstr "Đường cơ sở"
+msgstr "Phiếu trình duyệt"
 
 #
 msgid "Quarter Day"
@@ -8429,19 +8429,15 @@ msgid "Project home"
 msgstr "Trang chủ dự án"
 
 #
-msgid "Baseline list"
-msgstr "Danh sách đường cơ sở"
+msgid "Project quantity"
+msgstr "Số lượng dự án"
 
 #
-msgid "New project this month"
-msgstr "Dự án mới trong tháng"
+msgid "Total Tasks - Finished Tasks"
+msgstr "Tổng giao việc - Giao việc hoàn thành"
 
 #
-msgid "Project tasks"
-msgstr "Công việc dự án"
-
-#
-msgid "Project Expense"
+msgid "Project Expenses"
 msgstr "Chi phí dự án"
 
 #
@@ -8449,8 +8445,8 @@ msgid "Project Owner"
 msgstr "Phụ trách dự án"
 
 #
-msgid "Project per years"
-msgstr "Dự án trên năm"
+msgid "Project by month"
+msgstr "Dự án theo tháng"
 
 #
 msgid "Project status"

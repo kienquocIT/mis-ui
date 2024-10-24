@@ -1,10 +1,9 @@
 import json
-
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 from apps.shared.constant import SYSTEM_STATUS
 
@@ -54,6 +53,30 @@ class QuotationCreate(View):
             'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
             'form_id': 'frm_quotation_create',
             'list_from_app': 'quotation.quotation.create',
+            'data': {
+                'import_db_form_cfg': {
+                    'list_import_db': [
+                        {
+                            "id": "datable-quotation-create-product-import-db",
+                            "name": _("Quotation line detail datatable"),
+                            'map_with': 'datable-quotation-create-product',
+                            'option': [1],
+                            "col_type": "tttsnmnsxt",
+                            "data_format": {
+                                "key": "product",
+                                "value_list": [
+                                    {"col_key": "code", "col_index": 1},
+                                    {"col_key": "uom", "col_index": 2},
+                                    {"col_key": "currency", "col_index": 3},
+                                    {"col_key": "price", "col_index": 4},
+                                    {"col_key": "price_id", "col_index": -2, "ele_id": '#script_price_id',
+                                     "get_value": False, "get_text": False, "get_attr": "data-price-id"},
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
         }
         return ctx, status.HTTP_200_OK
 

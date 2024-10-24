@@ -642,7 +642,7 @@ class ProjectTeamsHandle {
 
     static render(datas = [], is_detail = false) {
         if (!datas) return true
-        const project_PM = $('#selectEmployeeInherit').val(), $ElmCrtEdit = $('#member-current-edit');
+        const project_PM = $('#select_project_pm').val(), $ElmCrtEdit = $('#member-current-edit');
 
         // render member
         for (let data of datas) {

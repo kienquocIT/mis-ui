@@ -46,7 +46,6 @@ $(document).ready(function () {
         .then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                WFRTControl.setWFRuntimeID(data['workflow_runtime_id']);
                 $x.fn.renderCodeBreadcrumb(data);
                 let project = data
                 $('#data_form').data('form_data', data)

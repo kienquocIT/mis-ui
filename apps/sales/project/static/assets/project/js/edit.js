@@ -120,7 +120,6 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data.system_status > 2) window.location.href = $('#url-factory').attr('data-list');
-                WFRTControl.setWFRuntimeID(data['workflow_runtime_id']);
                 $x.fn.renderCodeBreadcrumb(data);
                 $('#titleInput').val(data.title)
                 $('#id').val(data.id)
@@ -129,6 +128,9 @@ $(document).ready(function () {
                 $('#employeeInheritInput').attr('data-value', data['employee_inherit'].id).val(data['employee_inherit'].full_name);
                 $('#dateStart').val(moment(data.start_date).format('DD/MM/YYYY'))
                 $('#dateFinish').val(moment(data.finish_date).format('DD/MM/YYYY'))
+                if(data['date_close'])
+                    $('#dateClose').val(moment(data['date_close']).format('DD/MM/YYYY'))
+                        .closest('.form-group').removeClass('hidden')
 
                 const afterData = fGanttCustom.convert_data(data.groups, data?.['works'])
                 new_gantt.load_more(afterData)

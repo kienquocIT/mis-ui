@@ -6,7 +6,8 @@ $(document).ready(function () {
 
     PriceListLoadPage.loadDetailPage(frm, pk);
     let load_parent = false;
-// onchange checkbox auto-update
+
+    // onchange checkbox auto-update
     autoUpdateCheckBoxEle.on('change', function () {
         if ($(this).prop("checked")) {
             if (load_parent) {
@@ -38,7 +39,7 @@ $(document).ready(function () {
         }
     })
 
-// submit form setting price list
+    // submit form setting price list
     new SetupFormSubmit(frm).validate({
         rules: {
             currency: {
@@ -137,7 +138,7 @@ $(document).ready(function () {
         }
     })
 
-// form update item price
+    // form update item price
     let frm_update_item_price = $('#form-update-item-price')
     new SetupFormSubmit(frm_update_item_price).validate({
         submitHandler: function (form) {
@@ -181,7 +182,7 @@ $(document).ready(function () {
     })
 
 
-// delete item
+    // delete item
     $(document).on('click', '.btn-del', function () {
         let data = JSON.parse($('#data_detail').text())
         if (!data.can_delete) {
@@ -249,7 +250,7 @@ $(document).ready(function () {
 
     })
 
-// on change price in table item
+    // on change price in table item
     $(document).on('input', '#datatable-item-list input.form-control', function () {
         $(this).addClass('inp-edited');
     })

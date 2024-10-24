@@ -197,6 +197,8 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data && (data['status'] === 201 || data['status'] === 200)) {
                         $.fn.notifyB({description: data.message}, 'success');
+                        QuotationLoadDataHandle.loadModalSProduct();
+                        $('#selectProductModal').modal('show');
                         setTimeout(() => {
                             WindowControl.hideLoading();
                         }, 1000);

@@ -316,3 +316,7 @@ msgstr "Là mặc định: Chỉ 1 liên hệ là mặc định với 0 là sai,
 #
 msgid "Example: [[\"001\", 1],[\"002\", 0]]"
 msgstr "Ví dụ: [[\"001\", 1],[\"002\", 0]]"
+
+#
+msgid "Example"
+msgstr "Ví dụ"

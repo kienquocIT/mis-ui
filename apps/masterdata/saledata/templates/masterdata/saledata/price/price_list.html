@@ -26,21 +26,31 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script id="trans-script"
+            data-trans-confirm-delete="{% trans 'Delete Price List?' %}"
+            data-trans-notify="{% trans 'Source/Non-empty Price List can not be deleted!' %}"
+            data-trans-valid="{% trans 'Valid' %}"
+            data-trans-invalid="{% trans 'Invalid' %}"
+            data-trans-expired="{% trans 'Expired' %}"
+            data-trans-undefined="{% trans 'Undefined' %}"
+            data-trans-delete="{% trans 'Delete' %}"
+            data-trans-cancel="{% trans 'Cancel' %}"
+            data-trans-for-sale="{% trans 'For sale' %}"
+            data-trans-for-purchase="{% trans 'For purchase' %}"
+            data-trans-for-expense="{% trans 'For expense' %}"
+            data-trans-now="{% trans 'the present' %}"
+    ></script>
     <table id="datatable-price-list" class="table nowrap w-100"
            data-url="{% url "PriceListAPI" %}"
+           data-url-delete="{% url "PriceDeleteAPI" '0' %}"
            data-method="GET">
         <thead>
         <th></th>
-        <th>{% trans "Name" %}
-            <i class="fas fa-info-circle icon-info"
-               data-bs-toggle="tooltip"
-               data-bs-placement="bottom"
-               title="{% trans 'Press row here to open detail page.' %}">
-            </i>
-        </th>
+        <th>{% trans "Price list name" %}</th>
         <th>{% trans "Type" %}</th>
+        <th>{% trans "Apply time" %}</th>
         <th>{% trans "Status" %}</th>
-        <th>{% trans "Action" %}</th>
+        <th></th>
         </thead>
     </table>
 
@@ -63,7 +73,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label required">{% trans "Price list Name" %}</label>
+                                <label class="form-label required">{% trans "Price list name" %}</label>
                                 <input class="form-control" type="text" name="title"
                                        placeholder="Input Name">
                             </div>
@@ -98,7 +108,7 @@
                                         <input class="form-check-input" type="checkbox"
                                                id="checkbox-can-delete" disabled name="can_delete">
                                         <label class="form-check-label" for="checkbox-can-delete">
-                                            {% trans "Can delete inherited rows in price list" %}
+                                            {% trans "Can delete rows in price list" %}
                                         </label>
                                     </div>
                                 </div>

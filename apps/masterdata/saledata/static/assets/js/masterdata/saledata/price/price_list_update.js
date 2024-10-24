@@ -2,6 +2,8 @@ $(document).ready(function () {
     // load detail price list
     let frm = $('#form-update-price-list');
     let pk = $.fn.getPkDetail();
+    $('#script_price_id').attr('data-price-id', pk)
+
     PriceListLoadPage.loadDetailPage(frm, pk);
     let load_parent = false;
 // onchange checkbox auto-update
@@ -25,11 +27,14 @@ $(document).ready(function () {
                     })
             }
             currencySelectEle.prop('disabled', 'disabled');
+            currencySelectEle.addClass('tag-changed')
             canDeleteCheckBoxEle.removeAttr('disabled');
-
+            $('#inp-factor').prop('disabled', false)
         } else {
             canDeleteCheckBoxEle.prop('checked', false);
+            currencySelectEle.addClass('tag-changed')
             currencySelectEle.removeAttr('disabled');
+            $('#inp-factor').prop('disabled', true)
         }
     })
 
@@ -49,8 +54,6 @@ $(document).ready(function () {
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
             frm.dataForm['currency'] = currencySelectEle.val();
-            if (frm.dataForm['currency'].length === 0) {
-            }
 
             if (!currencySelectEle.hasClass('tag-changed')) {
                 delete frm.dataForm['currency']
@@ -190,8 +193,10 @@ $(document).ready(function () {
         } else {
             Swal.fire({
                 html:
-                    '<div><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>' +
-                    `<h6 class="text-danger">${$('#base-trans-factory').data('sure-delete')}</h6>`,
+                    `<div class="mb-3">
+                        <i class="fas fa-trash-alt text-danger"></i>
+                    </div>
+                    <h6 class="text-danger">${$('#base-trans-factory').data('sure-delete')}</h6>`,
                 customClass: {
                     confirmButton: 'btn btn-outline-secondary text-danger',
                     cancelButton: 'btn btn-outline-secondary text-gray',
@@ -199,8 +204,8 @@ $(document).ready(function () {
                 },
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
+                confirmButtonText: transEle.data('trans-delete'),
+                cancelButtonText: transEle.data('trans-cancel'),
                 reverseButtons: true,
             }).then((result) => {
                 if (result.value) {
@@ -274,42 +279,15 @@ $(document).ready(function () {
         }
     })
 
-    let fragment = window.location.hash;
-
-    switch (fragment) {
-        case '#tab-setting':
-            PriceListAction.configBtnUpdate('form-update-price-list', transEle.data('trans-save-setting'));
-            break;
-        case '#tab-item-list':
-            PriceListAction.configBtnUpdate('form-update-item-price', transEle.data('trans-save-item'));
-            break;
-    }
-
-    $('#setting-nav').on('click', function () {
-        PriceListAction.configBtnUpdate('form-update-price-list', transEle.data('trans-save-setting'));
-    })
-    $('#products-nav').on('click', function () {
-        PriceListAction.configBtnUpdate('form-update-item-price', transEle.data('trans-save-item'));
-    })
-
-    $('#tab-setting input,#tab-setting select').on('change', function () {
+    $('#config-modal input, #config-modal select').on('change', function () {
         $(this).addClass('tag-changed')
     })
 
-    $(document).on('mouseenter', 'tbody tr', function () {
+    $(document).on('mouseenter', '#datatable-item-list tbody tr', function () {
         $(this).addClass('bg-danger-light-5')
-        $(this).find('td:eq(0)').append(`
-            <button type="button" class="btn btn-sm btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del" data-id="${pk}">
-                <span class="btn-icon-wrap">
-                    <span class="feather-icon">
-                        <i class="fas fa-trash-alt"></i>
-                    </span>
-                </span>
-             </button>
-        `);
-    }).on('mouseleave', 'tbody tr', function () {
+        $(this).find('td:eq(0) .btn-del').prop('hidden', false);
+    }).on('mouseleave', '#datatable-item-list tbody tr', function () {
         $(this).removeClass('bg-danger-light-5')
-        $(this).find('td:eq(0) .btn-del').remove();
+        $(this).find('td:eq(0) .btn-del').prop('hidden', true);
     });
-
 })

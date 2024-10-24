@@ -3,7 +3,7 @@ let [priceSelectEle, currencySelectEle, canDeleteCheckBoxEle, autoUpdateCheckBox
 
 let columns = [
     {
-        className: 'wrap-text min-w-50p',
+        className: 'wrap-text min-w-100p',
         render: () => {
             return '';
         }
@@ -11,7 +11,7 @@ let columns = [
         data: 'code',
         className: 'wrap-text min-w-100p',
         render: (data, type, row, meta) => {
-            return `<span class="badge badge-outline badge-soft-primary span-product w-100" data-id="${row.id}">${row.code}</span>`
+            return `<span class="badge badge-outline badge-soft-primary span-product w-100" data-auto-update="${row.is_auto_update}" data-id="${row.id}">${row.code}</span>`
         }
     }, {
         data: 'title',
@@ -48,11 +48,14 @@ class PriceListAction {
                             return item.id === value.id
                         })[0]
 
-                        if (row.is_auto_update) {
-                            return `<input class="form-control mask-money money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" readonly/>`
-                        } else {
-                            return `<input class="form-control mask-money money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" />`
+                        if (price_get) {
+                            if (row.is_auto_update) {
+                                return `<input class="form-control mask-money money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" readonly/>`
+                            } else {
+                                return `<input class="form-control mask-money money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" />`
+                            }
                         }
+                        return ''
                     }
                 },
             )
@@ -77,6 +80,21 @@ class PriceListAction {
             scrollX: true,
             scrollCollapse: true,
             columns: columns,
+            initComplete: function () {
+                if ($.fn.getPkDetail()) {
+                    dtb.find('tbody tr').each(function () {
+                        $(this).find('td:eq(0)').append(`
+                            <button hidden type="button" class="btn btn-sm btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del" data-id="${$.fn.getPkDetail()}">
+                                <span class="btn-icon-wrap">
+                                    <span class="feather-icon">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </span>
+                                </span>
+                             </button>
+                        `);
+                    })
+                }
+            }
         });
     }
 
@@ -164,12 +182,6 @@ class PriceListAction {
         })
         return list_result
     }
-
-    static configBtnUpdate(form_id, text) {
-        let btn_update_ele = $('#btn-update');
-        btn_update_ele.attr('form', form_id);
-        btn_update_ele.find('span span').first().text(text);
-    }
 }
 
 class PriceListLoadPage {
@@ -213,7 +225,7 @@ class PriceListLoadPage {
 
                     if (price_list_detail.is_default) {
                         $('#price_list_name').text(price_list_detail.title.toUpperCase());
-                        $('#tab-setting input,#tab-setting select').not(currencySelectEle).prop('disabled', true);
+                        $('#config-modal input, #config-modal select').not(currencySelectEle).prop('disabled', true);
                     } else {
                         if (price_list_detail.auto_update) {
                             $('#price_list_name').html(`${price_list_detail.title}
@@ -225,18 +237,19 @@ class PriceListLoadPage {
                         }
                     }
 
-                    if (price_list_detail.auto_update) {
-                        autoUpdateCheckBoxEle.prop('checked', true);
-                        currencySelectEle.prop('disabled', true);
-                        $('#btn-add-new-item').prop('disabled', true);
+                    autoUpdateCheckBoxEle.prop('checked', price_list_detail.auto_update);
+                    currencySelectEle.prop('disabled', price_list_detail.auto_update);
+                    $('#btn-add-new-item').prop('disabled', price_list_detail.auto_update);
+                    if (page_type !== 1) {
+                        $('#inp-factor').prop('disabled', !price_list_detail.auto_update)
                     }
                     let timeValidEle = $('#time-valid');
 
                     if (price_list_detail.valid_time_start && price_list_detail.valid_time_start) {
                         if (price_list_detail.is_default) {
-                            timeValidEle.html(`<span>${price_list_detail.valid_time_start.split(' ')[0]} - ${transEle.data('trans-now')}</span>`)
+                            timeValidEle.html(`<span>${moment(price_list_detail.valid_time_start.split(' ')[0]).format('DD/MM/YYYY')} - ${transEle.data('trans-now')}</span>`)
                         } else {
-                            timeValidEle.html(`<span>${price_list_detail.valid_time_start.split(' ')[0]} - ${price_list_detail.valid_time_end.split(' ')[0]}</span>`)
+                            timeValidEle.html(`<span>${moment(price_list_detail.valid_time_start.split(' ')[0]).format('DD/MM/YYYY')} - ${moment(price_list_detail.valid_time_end.split(' ')[0]).format('DD/MM/YYYY')}</span>`)
                         }
                     }
 
@@ -273,7 +286,15 @@ class PriceListLoadPage {
                             timeValidEle.find('span').addClass('text-orange')
                         } else if (price_list_detail.status === 'Expired') {
                             timeValidEle.find('span').addClass('text-red')
-                            this.loadPriceExpired(price_list_detail);
+
+                            $('#btn-add-new-item').prop('disabled', true);
+                            $('#datatable-item-list input').prop('readonly', true);
+                            $('#datatable-item-list .del-button').remove();
+                            $('#notify').text(`* {0} {1}`.format_by_idx(price_list_detail.status, transEle.data('trans-not-modify')))
+                            factorInputEle.prop('disabled', true);
+                            autoUpdateCheckBoxEle.prop('disabled', true);
+                            canDeleteCheckBoxEle.prop('disabled', true);
+                            currencySelectEle.prop('disabled', true);
                         } else {
                             timeValidEle.find('span').addClass('text-gray')
                         }
@@ -286,17 +307,5 @@ class PriceListLoadPage {
                 }
             }
         )
-    }
-
-    static loadPriceExpired(price_list_detail) {
-        $('#btn-add-new-item').prop('disabled', true);
-        $('#datatable-item-list input').prop('readonly', true);
-
-        $('#datatable-item-list .del-button').remove();
-        $('#notify').text(`* {0} {1}`.format_by_idx(price_list_detail.status, transEle.data('trans-not-modify')))
-        factorInputEle.prop('disabled', true);
-        autoUpdateCheckBoxEle.prop('disabled', true);
-        canDeleteCheckBoxEle.prop('disabled', true);
-        currencySelectEle.prop('disabled', true);
     }
 }

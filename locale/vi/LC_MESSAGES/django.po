@@ -775,6 +775,10 @@ msgid "Abbreviation"
 msgstr "Viết tắt"
 
 #
+msgid "Currency unit"
+msgstr "Đơn vị tiền tệ"
+
+#
 msgid "Select from Employee List"
 msgstr "Chọn từ danh sách nhân viên"
 
@@ -1307,6 +1311,10 @@ msgid "invalid"
 msgstr "Không khả dụng"
 
 #
+msgid "Invalid"
+msgstr "Không khả dụng"
+
+#
 msgid "Expired"
 msgstr "Hết hạn"
 
@@ -1524,7 +1532,7 @@ msgstr "Điều khoản thanh toán"
 
 #
 msgid "Price List"
-msgstr "Danh sách giá"
+msgstr "Bảng giá"
 
 #
 msgid "Credit Limit"
@@ -1948,7 +1956,7 @@ msgid "Create Price List"
 msgstr "Tạo bảng giá"
 
 #
-msgid "Price list Name"
+msgid "Price list name"
 msgstr "Tên bảng giá"
 
 #
@@ -1968,8 +1976,8 @@ msgid "Updated when update automatically when source price list changes is ON"
 msgstr "Được cập nhập khi 'Tự động cập nhật khi bảng giá nguồn thay đổi' được BẬT"
 
 #
-msgid "Can delete inherited rows in price list"
-msgstr "Có thể xóa dòng kế thừa trong bảng giá"
+msgid "Can delete rows in price list"
+msgstr "Có thể xóa dòng trong bảng giá"
 
 #
 msgid "Factor"
@@ -4350,12 +4358,12 @@ msgid "Get item from"
 msgstr "Lấy sản phẩm (chi phí) từ"
 
 #
-msgid "Save Setting"
-msgstr "Lưu cài đặt"
+msgid "Save Config"
+msgstr "Lưu cấu hình"
 
 #
-msgid "Save Item Price"
-msgstr "Lưu giá của sản phẩm (chi phí)"
+msgid "Save Price List"
+msgstr "Lưu bảng giá"
 
 #
 msgid "Delete this item ?"
@@ -7133,7 +7141,7 @@ msgid "Save and apply workflow"
 msgstr "Lưu và áp dụng quy trình"
 
 #
-msgid "Save change"
+msgid "Save changes"
 msgstr "Lưu thay đổi"
 
 #
@@ -9251,3 +9259,39 @@ msgstr "Xuất bảng dữ liệu ra excel"
 #
 msgid "Reference price list"
 msgstr "Bảng giá tham chiếu"
+
+#
+msgid "Undefined"
+msgstr "Không xác định"
+
+#
+msgid "Source/Non-empty Price List can not be deleted!"
+msgstr "Không thể xóa Bảng giá gốc / không rỗng."
+
+#
+msgid "Delete Price List?"
+msgstr "Xóa Bảng giá?"
+
+#
+msgid "For expense"
+msgstr "Cho chi phí"
+
+#
+msgid "Apply time"
+msgstr "Thời gian áp dụng"
+
+#
+msgid "the present"
+msgstr "hiện tại"
+
+#
+msgid "Config"
+msgstr "Cấu hình"
+
+#
+msgid "Price datatable"
+msgstr "Bảng giá"
+
+#
+msgid "Serial datatable"
+msgstr "Bảng serial"

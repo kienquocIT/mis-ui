@@ -279,8 +279,29 @@ class NodeLoadDataHandle {
                 }
             )
         }
-        let tableInWFEmployee = row.querySelector('.collab-in-workflow-area')?.querySelector('.table-in-workflow-employee');
-        NodeDataTableHandle.dataTableCollabInWFEmployee($(tableInWFEmployee));
+        if (row.querySelector('.collab-in-workflow-area')) {
+            let tableInWFEmployee = row.querySelector('.collab-in-workflow-area')?.querySelector('.table-in-workflow-employee');
+            if (tableInWFEmployee) {
+                NodeDataTableHandle.dataTableCollabInWFEmployee($(tableInWFEmployee));
+            }
+            let tableInWFExitCon = row.querySelector('.collab-in-workflow-area')?.querySelector('.table-in-workflow-exit-condition');
+            if (tableInWFExitCon) {
+                let nodeActionRaw = $('#wf_action').text();
+                if (nodeActionRaw) {
+                    let nodeAction = JSON.parse(nodeActionRaw);
+                    let dataExitCon = [{"action": nodeAction[1], "min_collaborator": 0, "next_node": ""},]
+                    for (let eleChecked of row.querySelectorAll('.check-action-node:checked')) {
+                        if (parseInt($(eleChecked).attr('data-id')) === 2) {
+                            dataExitCon.push({"action": nodeAction[2], "min_collaborator": 0, "next_node": "Rejected node"});
+                        }
+                        if (parseInt($(eleChecked).attr('data-id')) === 3) {
+                            dataExitCon.push({"action": nodeAction[3], "min_collaborator": 0, "next_node": "First node"},);
+                        }
+                    }
+                    NodeDataTableHandle.dataTableCollabInWFExitCon($(tableInWFExitCon), dataExitCon);
+                }
+            }
+        }
         // init select2
         if (row.querySelector('.box-list-source')) {
             // NodeLoadDataHandle.loadBoxListSource($(row.querySelector('.box-list-source')));
@@ -1203,7 +1224,7 @@ class NodeDataTableHandle {
                                                 class="modal fade" id="${idModal}" tabindex="-1" role="dialog"
                                                 aria-labelledby="${idModal}" aria-hidden="true"
                                             >
-                                                <div class="modal-dialog modal-dialog-centered modal-lg modal-collab" role="document">
+                                                <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title"><b>${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</b></h5>
@@ -1328,6 +1349,17 @@ class NodeDataTableHandle {
                                                                 </div>
                                                             </div>
                                                             <div class="row collab-area collab-in-workflow-area mb-5" hidden>
+                                                                <div class="d-flex justify-content-start">
+                                                                    <button
+                                                                            type="button"
+                                                                            class="btn btn-outline-primary"
+                                                                            data-bs-toggle="offcanvas"
+                                                                            data-bs-target="#${idInWFCanvas}"
+                                                                            aria-controls="${idInWFCanvas}"
+                                                                    >
+                                                                        <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${NodeLoadDataHandle.transEle.attr('data-add-new')}</span></span>
+                                                                    </button>
+                                                                </div>
                                                                 <table
                                                                     class="table nowrap w-100 table-in-workflow-employee"
                                                                 >
@@ -1344,18 +1376,23 @@ class NodeDataTableHandle {
                                                                     <tbody>
                                                                     </tbody>
                                                                 </table>
+                                                                <label class="form-label">Exit condition</label>
+                                                                <table
+                                                                    class="table nowrap w-50 table-in-workflow-exit-condition"
+                                                                >
+                                                                    <thead>
+                                                                    <tr class="bg-light">
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-actions')}</th>
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-min-collaborators')}</th>
+                                                                        <th>${NodeLoadDataHandle.transEle.attr('data-next-node')}</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    </tbody>
+                                                                </table>
                                                                 
-                                                                <div class="d-flex justify-content-start">
-                                                                    <button
-                                                                            type="button"
-                                                                            class="btn btn-outline-primary btn-sm"
-                                                                            data-bs-toggle="offcanvas"
-                                                                            data-bs-target="#${idInWFCanvas}"
-                                                                            aria-controls="${idInWFCanvas}"
-                                                                    >
-                                                                        <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${NodeLoadDataHandle.transEle.attr('data-add-new')}</span></span>
-                                                                    </button>
-                                                                </div>
+                                                                
+                                                                
                                                                 <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="${idInWFCanvas}" aria-labelledby="${idInWFCanvas}">
                                                                     <div class="offcanvas-header">
                                                                         <h5 id="offcanvasRightLabel">${NodeLoadDataHandle.transEle.attr('data-add-employee')}</h5>
@@ -1743,6 +1780,45 @@ class NodeDataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                // add css to Dtb
+                NodeLoadDataHandle.loadCssToDtb($table[0].id);
+            },
+        });
+    };
+
+    static dataTableCollabInWFExitCon($table, data) {
+        $table.DataTableDefault({
+            data: data ? data : [],
+            ordering: false,
+            searching: false,
+            paginate: false,
+            info: false,
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<b class="table-row-action" data-row="${dataRow}">${row?.['action'] ? row?.['action'] : ''}</b>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-min-collaborator">${row?.['min_collaborator']}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-next-node">${row?.['next_node']}</span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                // add css to Dtb
+                NodeLoadDataHandle.loadCssToDtb($table[0].id);
+            },
         });
     };
 

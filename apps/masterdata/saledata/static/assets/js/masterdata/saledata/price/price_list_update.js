@@ -72,6 +72,7 @@ $(document).ready(function () {
                 frm.dataForm['can_delete'] = false
             }
 
+            WindowControl.showLoading()
             $.fn.callAjax2({
                 url: frm.dataUrl.format_url_with_uuid(pk),
                 method: frm.dataMethod,
@@ -89,6 +90,7 @@ $(document).ready(function () {
                 },
                 (errs) => {
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    WindowControl.hideLoading()
                 })
         }
     })
@@ -108,6 +110,7 @@ $(document).ready(function () {
             },
         },
         submitHandler: function (form) {
+            WindowControl.showLoading()
             let frm = new SetupFormSubmit(form);
 
             frm.dataForm['product'] = {
@@ -133,6 +136,7 @@ $(document).ready(function () {
                 },
                 (errs) => {
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    WindowControl.hideLoading()
                 }
             )
         }
@@ -142,6 +146,7 @@ $(document).ready(function () {
     let frm_update_item_price = $('#form-update-item-price')
     new SetupFormSubmit(frm_update_item_price).validate({
         submitHandler: function (form) {
+            WindowControl.showLoading()
             let frm = new SetupFormSubmit($(form));
             frm.dataForm['list_item'] = PriceListAction.getDataItemChangePrice()
             $.fn.callAjax2({
@@ -161,6 +166,7 @@ $(document).ready(function () {
                 },
                 (errs) => {
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    WindowControl.hideLoading()
                 })
         }
     })
@@ -180,7 +186,6 @@ $(document).ready(function () {
                 break;
         }
     })
-
 
     // delete item
     $(document).on('click', '.btn-del', function () {

@@ -1101,7 +1101,7 @@ class NodeDataTableHandle {
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_system'] === true) {
-                            return `<b><span class="table-row-title text-primary mr-1" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b><i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${NodeLoadDataHandle.transEle.attr('data-system-node')}"></i>`;
+                            return `<b><span class="table-row-title mr-1" data-row="${dataRow}" data-node-code="${row?.['code']}">${row?.['title']}</span></b><i class="fas fa-info-circle icon-info tit_visible_tb-head" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${NodeLoadDataHandle.transEle.attr('data-system-node')}"></i>`;
                         } else {
                             let form = $('#form-create_workflow');
                             if (form.attr('data-method') !== 'GET') {
@@ -1206,7 +1206,7 @@ class NodeDataTableHandle {
                                                 <div class="modal-dialog modal-dialog-centered modal-lg modal-collab" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title text-primary"><b>${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</b></h5>
+                                                            <h5 class="modal-title"><b>${NodeLoadDataHandle.transEle.attr('data-add-collaborators')}</b></h5>
                                                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                                         </div>
                                                         <div class="modal-body modal-body-collab">

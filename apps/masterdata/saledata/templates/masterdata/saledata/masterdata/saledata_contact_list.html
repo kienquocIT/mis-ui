@@ -20,46 +20,48 @@
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <div class="col-12 col-md-3 col-lg-3">
-            <ul class="nav flex-column nav-light nav-pills nav-vertical" id="tab-select-table">
+        <div class="col-12 col-md-2 col-lg-2">
+            <ul class="nav flex-column nav-light nav-pills nav-pills-soft nav-vertical" id="tab-select-table">
                 <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-salutation">
+                    <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-salutation" href="#section-salutation">
                         <span class="nav-link-text">{% trans 'Salutations' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" data-collapse="section-interests">
+                    <a class="nav-link" data-bs-toggle="tab" data-collapse="section-interests" href="#section-interests">
                         <span class="nav-link-text">{% trans 'Interests' %}</span>
                     </a>
                 </li>
             </ul>
         </div>
         <div class="col-12 col-md-1 col-lg-1"></div>
-        <div class="col-12 col-md-8 col-lg-8">
-            <div class="lookup-data" id="section-salutation" style="display: block; position: relative; width: 100%;">
-                <table id="datatable_salutation_list" class="table nowrap w-100" data-method="GET"
-                       data-url="{% url "SalutationListAPI" %}">
-                    <thead>
-                    <th></th>
-                    <th>{% trans "Code" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Description" %}</th>
-                    <th>{% trans "Action" %}</th>
-                    </thead>
-                </table>
-            </div>
-            <div class="lookup-data" id="section-interests" style="display: none; position: relative; width: 100%;">
-                <table id="datatable_interests_list" class="table nowrap w-100"
-                       data-url="{% url "InterestListAPI" %}"
-                       data-method="GET">
-                    <thead>
-                    <th></th>
-                    <th>{% trans "Code" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Description" %}</th>
-                    <th>{% trans "Action" %}</th>
-                    </thead>
-                </table>
+        <div class="col-12 col-md-9 col-lg-9">
+            <div class="tab-content">
+                <div class="tab-pane fade show active lookup-data" id="section-salutation">
+                    <table id="datatable_salutation_list" class="table nowrap w-100" data-method="GET"
+                           data-url="{% url "SalutationListAPI" %}">
+                        <thead>
+                        <th></th>
+                        <th>{% trans "Code" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Description" %}</th>
+                        <th>{% trans "Action" %}</th>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tab-pane fade lookup-data" id="section-interests">
+                    <table id="datatable_interests_list" class="table nowrap w-100"
+                           data-url="{% url "InterestListAPI" %}"
+                           data-method="GET">
+                        <thead>
+                        <th></th>
+                        <th>{% trans "Code" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Description" %}</th>
+                        <th>{% trans "Action" %}</th>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

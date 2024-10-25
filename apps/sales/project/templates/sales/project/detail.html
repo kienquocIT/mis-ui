@@ -23,7 +23,7 @@
 
 {% block pageContent %}
     <!-- from-->
-    <form class="container-fluid mt-4" id="project_form" method="post" data-method="put" autocomplete="off"
+    <form class="container-fluid mt-4 form-detail" id="project_form" method="post" data-method="put" autocomplete="off"
           data-url-detail="{% url "ProjectDetailAPI" data.pk %}" data-url="{% url "ProjectEditAPI" data.pk %}">
         <input type="hidden" id="id">
         <div class="collapse show" id="toggle-ud">
@@ -41,7 +41,7 @@
                     <a href="#" class="btn btn-primary mr-5" id="create_baseline" hidden>
                         <span>
                             <span class="icon"><i class="bi bi-graph-up"></i></span>
-                            <span>{% trans 'Create Baseline' %}</span>
+                            <span>{% trans 'Request Baseline' %}</span>
                         </span>
                     </a>
                     {% if data.can_close %}
@@ -92,6 +92,11 @@
                                autocomplete="off" disabled>
                         <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                     </div>
+                </div>
+                <div class="col-xs-12 col-md-6"></div>
+                <div class="col-xs-12 col-md-6 form-group hidden">
+                    <label for="dateClose" class="form-label">{% trans 'Close date' %}</label>
+                    <input type="text" id="dateClose" name="close_date" class="form-control" readonly>
                 </div>
                 <input type="hidden" name="system_status" id="SystemStatusInput" class="form-control" value="1">
             </div>

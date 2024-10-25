@@ -3,74 +3,63 @@ let [priceSelectEle, currencySelectEle, canDeleteCheckBoxEle, autoUpdateCheckBox
 
 let columns = [
     {
-        render: (data, type, row, meta) => {
+        className: 'wrap-text min-w-100p',
+        render: () => {
             return '';
         }
     }, {
         data: 'code',
+        className: 'wrap-text min-w-100p',
         render: (data, type, row, meta) => {
-            return `<span class="badge badge-soft-success span-product" data-id="` + row.id + `"
-                        style="min-width: max-content; width: 70%" href="#"><b>` + row.code + `</b></span>`
+            return `<span class="badge badge-outline badge-soft-primary span-product w-100" data-auto-update="${row.is_auto_update}" data-id="${row.id}">${row.code}</span>`
         }
     }, {
         data: 'title',
+        className: 'wrap-text min-w-250p',
         render: (data, type, row, meta) => {
-            return `<span><b>` + row.title + `</b></span>`
+            return `<span class="text-muted fw-bold">${row.title}</span>`
         }
     }, {
         data: 'uom_group',
+        className: 'wrap-text min-w-100p',
         render: (data, type, row, meta) => {
-            return `<div class="row">
-                        <div class="col-10" style="padding-right: 5px">
-                            <span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span>
-                        </div>
-                    </div>`
+            return `<span class="text-primary span-uom-group" data-id="${row.uom_group.id}">${row.uom_group.title}</span>`
         }
     }, {
         data: 'uom',
+        className: 'wrap-text min-w-100p',
         render: (data, type, row, meta) => {
-            return `<div class="row">
-                    <div class="col-10" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
-                    </div>`
+            return `<span class="text-blue span-uom" data-id="${row.uom.id}">${row.uom.title}</span>`
         }
-    },]
+    },
+]
 
 class PriceListAction {
-    static generateColCurrency(product_mapped, currencies, pk) {
+    static generateColCurrency(product_mapped, currencies) {
         let table = $('#datatable-item-list');
         currencies.forEach(function (value, index) {
             table.find('thead tr').append(`<th>${transEle.data('trans-price')} ${value.abbreviation}</th>`)
             columns.push(
                 {
                     data: 'price',
+                    className: 'wrap-text min-w-250p',
                     render: (data, type, row, meta) => {
                         let price_get = row.price.filter(function (item) {
                             return item.id === value.id
                         })[0]
 
-                        if (row.is_auto_update) {
-                            return `<input class="form-control mask-money w-150p money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" readonly/>`
-                        } else {
-                            return `<input class="form-control mask-money w-150p money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" />`
+                        if (price_get) {
+                            if (row.is_auto_update) {
+                                return `<input class="form-control mask-money money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" readonly/>`
+                            } else {
+                                return `<input class="form-control mask-money money-input-value" data-abb="${price_get.abbreviation}" data-id-currency="${price_get.id}" value="${price_get.value}" />`
+                            }
                         }
+                        return ''
                     }
                 },
             )
         })
-        this.addColDel(table, pk);
-    }
-
-    static addColDel(table, pk) {
-        table.find('thead tr').append(`<th></th>`)
-        columns.push(
-            {
-                data: 'id',
-                render: (data, type, row, meta) => {
-                    return `<a class="btn btn-icon btn btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del" data-id="${pk}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></button>`
-
-                }
-            },
-        )
     }
 
     static addRow(table, data) {
@@ -80,16 +69,33 @@ class PriceListAction {
     }
 
     static loadDtbPriceItem(data, columns) {
-        if (!$.fn.DataTable.isDataTable('#datatable-item-list')) {
-            let dtb = $('#datatable-item-list');
-            dtb.DataTableDefault({
-                rowIdx: true,
-                reloadCurrency: true,
-                data: data,
-                paging: false,
-                columns: columns,
-            });
-        }
+        let dtb = $('#datatable-item-list');
+        dtb.DataTable().clear().destroy()
+        dtb.DataTableDefault({
+            rowIdx: true,
+            reloadCurrency: true,
+            data: data,
+            paging: false,
+            scrollY: '55vh',
+            scrollX: true,
+            scrollCollapse: true,
+            columns: columns,
+            initComplete: function () {
+                if ($.fn.getPkDetail()) {
+                    dtb.find('tbody tr').each(function () {
+                        $(this).find('td:eq(0)').append(`
+                            <button hidden type="button" class="btn btn-sm btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del" data-id="${$.fn.getPkDetail()}">
+                                <span class="btn-icon-wrap">
+                                    <span class="feather-icon">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </span>
+                                </span>
+                             </button>
+                        `);
+                    })
+                }
+            }
+        });
     }
 
     static getProductWithCurrency(list_product, currency) {
@@ -176,12 +182,6 @@ class PriceListAction {
         })
         return list_result
     }
-
-    static configBtnUpdate(form_id, text) {
-        let btn_update_ele = $('#btn-update');
-        btn_update_ele.attr('form', form_id);
-        btn_update_ele.find('span span').first().text(text);
-    }
 }
 
 class PriceListLoadPage {
@@ -220,13 +220,12 @@ class PriceListLoadPage {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     let price_list_detail = data?.['price'];
-                    console.log(price_list_detail)
                     $('#data_detail').text(JSON.stringify(price_list_detail));
                     $.fn.compareStatusShowPageAction(price_list_detail)
 
                     if (price_list_detail.is_default) {
                         $('#price_list_name').text(price_list_detail.title.toUpperCase());
-                        $('#tab-setting input,#tab-setting select').not(currencySelectEle).prop('disabled', true);
+                        $('#config-modal input, #config-modal select').not(currencySelectEle).prop('disabled', true);
                     } else {
                         if (price_list_detail.auto_update) {
                             $('#price_list_name').html(`${price_list_detail.title}
@@ -238,24 +237,25 @@ class PriceListLoadPage {
                         }
                     }
 
-                    if (price_list_detail.auto_update) {
-                        autoUpdateCheckBoxEle.prop('checked', true);
-                        currencySelectEle.prop('disabled', true);
-                        $('#btn-add-new-item').prop('disabled', true);
+                    autoUpdateCheckBoxEle.prop('checked', price_list_detail.auto_update);
+                    currencySelectEle.prop('disabled', price_list_detail.auto_update);
+                    $('#btn-add-new-item').prop('disabled', price_list_detail.auto_update);
+                    if (page_type !== 1) {
+                        $('#inp-factor').prop('disabled', !price_list_detail.auto_update)
                     }
                     let timeValidEle = $('#time-valid');
 
                     if (price_list_detail.valid_time_start && price_list_detail.valid_time_start) {
                         if (price_list_detail.is_default) {
-                            timeValidEle.html(`<span>${price_list_detail.valid_time_start.split(' ')[0]} - ${transEle.data('trans-now')}</span>`)
+                            timeValidEle.html(`<span>${moment(price_list_detail.valid_time_start.split(' ')[0]).format('DD/MM/YYYY')} - ${transEle.data('trans-now')}</span>`)
                         } else {
-                            timeValidEle.html(`<span>${price_list_detail.valid_time_start.split(' ')[0]} - ${price_list_detail.valid_time_end.split(' ')[0]}</span>`)
+                            timeValidEle.html(`<span>${moment(price_list_detail.valid_time_start.split(' ')[0]).format('DD/MM/YYYY')} - ${moment(price_list_detail.valid_time_end.split(' ')[0]).format('DD/MM/YYYY')}</span>`)
                         }
                     }
 
 
                     let product_mapped = PriceListAction.getProductWithCurrency(price_list_detail?.['products_mapped'], price_list_detail.currency);
-                    PriceListAction.generateColCurrency(product_mapped, price_list_detail.currency, pk);
+                    PriceListAction.generateColCurrency(product_mapped, price_list_detail.currency);
                     PriceListAction.loadDtbPriceItem([], columns);
                     PriceListAction.addRow($('#datatable-item-list'), product_mapped.sort((a, b) => a.code.localeCompare(b.code)));
 
@@ -286,7 +286,15 @@ class PriceListLoadPage {
                             timeValidEle.find('span').addClass('text-orange')
                         } else if (price_list_detail.status === 'Expired') {
                             timeValidEle.find('span').addClass('text-red')
-                            this.loadPriceExpired(price_list_detail);
+
+                            $('#btn-add-new-item').prop('disabled', true);
+                            $('#datatable-item-list input').prop('readonly', true);
+                            $('#datatable-item-list .del-button').remove();
+                            $('#notify').text(`* {0} {1}`.format_by_idx(price_list_detail.status, transEle.data('trans-not-modify')))
+                            factorInputEle.prop('disabled', true);
+                            autoUpdateCheckBoxEle.prop('disabled', true);
+                            canDeleteCheckBoxEle.prop('disabled', true);
+                            currencySelectEle.prop('disabled', true);
                         } else {
                             timeValidEle.find('span').addClass('text-gray')
                         }
@@ -300,17 +308,4 @@ class PriceListLoadPage {
             }
         )
     }
-
-    static loadPriceExpired(price_list_detail) {
-        $('#btn-add-new-item').prop('disabled', true);
-        $('#datatable-item-list input').prop('readonly', true);
-
-        $('#datatable-item-list .del-button').remove();
-        $('#notify').text(`* {0} {1}`.format_by_idx(price_list_detail.status, transEle.data('trans-not-modify')))
-        factorInputEle.prop('disabled', true);
-        autoUpdateCheckBoxEle.prop('disabled', true);
-        canDeleteCheckBoxEle.prop('disabled', true);
-        currencySelectEle.prop('disabled', true);
-    }
 }
-

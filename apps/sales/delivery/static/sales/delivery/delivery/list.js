@@ -79,19 +79,6 @@ $(document).ready(function () {
                 },
             },
             {
-                data: 'state',
-                class: 'text-center',
-                width: '10%',
-                render: (data, type, row, meta) => {
-                    const stateMap = {
-                        0: 'warning',
-                        1: 'info',
-                        2: 'success',
-                    }
-                    return `<span class="badge badge-${stateMap[data]} badge-outline">${letStateChoices[data]}</span>`;
-                }
-            },
-            {
                 width: '10%',
                 render: (data, type, row) => {
                     let sttTxt = JSON.parse($('#stt_sys').text())
@@ -103,6 +90,19 @@ $(document).ready(function () {
                         "danger",
                     ]
                     return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                }
+            },
+            {
+                data: 'state',
+                class: 'text-center',
+                width: '10%',
+                render: (data, type, row, meta) => {
+                    const stateMap = {
+                        0: 'warning',
+                        1: 'info',
+                        2: 'success',
+                    }
+                    return `<span class="badge badge-${stateMap[data]} badge-outline">${letStateChoices[data]}</span>`;
                 }
             },
             {
@@ -139,12 +139,29 @@ $(document).ready(function () {
             ajax: {
                 url: $('#url-factory').attr('data-sale-order'),
                 type: 'GET',
-                dataSrc: 'data.sale_order_list',
+                // dataSrc: 'data.sale_order_list',
                 data: function (params) {
                     params['delivery_call'] = true;
                     params['system_status__in'] = [2, 3].join(',');
-                    params['opportunity__is_deal_close'] = false;
+                    // params['opportunity__is_deal_close'] = false;
                 },
+                dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('sale_order_list')) {
+                            let fnData = [];
+                            for (let dataSO of resp.data['sale_order_list']) {
+                                if (Object.keys(dataSO?.['opportunity']).length > 0) {
+                                    if (dataSO?.['opportunity']?.['is_deal_close'] === false) {
+                                        fnData.push(dataSO);
+                                    }
+                                } else {
+                                    fnData.push(dataSO);
+                                }
+                            }
+                            return fnData;
+                        }
+                        throw Error('Call data raise errors.')
+                    },
             },
             rowIdx: true,
             columns: [

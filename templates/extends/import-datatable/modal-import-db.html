@@ -1,0 +1,140 @@
+{% load static i18n %}
+
+<style>
+    .sticky {
+        position: sticky;
+        top: 0;
+        z-index: 999;
+    }
+    #modal-import-datatable-from-excel .sticky {
+        background-color: #e9ecef !important
+    }
+</style>
+
+<div class="modal fade" id="modal-import-datatable-from-excel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLarge01" aria-hidden="true">
+	<div class="modal-dialog modal-lg" style="min-width: 85%" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">{% trans 'Import data from excel' %}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label for="import-db-form-select-table" class="form-label">{% trans 'Datatable name' %}</label>
+                            <input disabled readonly class="form-control form-control-line" id="import-db-form-select-table">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label for="import-db-form-input-file" class="form-label required">{% trans 'Click here to upload file' %}</label>
+                            <input class="form-control" type="file" id="import-db-form-input-file">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-2">
+                        <div class="form-group">
+                            <label for="from-index" class="form-label required">{% trans 'From row' %}</label>
+                            <input class="form-control" type="number" min="1" value="1" id="from-index">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-2">
+                        <div class="form-group">
+                            <label for="to-index" class="form-label required">{% trans 'To row' %}</label>
+                            <input class="form-control" type="number" min="1" value="5" id="to-index">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button id="import-db-form-load-file-btn" type="button" class="btn btn-outline-primary btn-sm">{% trans 'Load File Data' %}</button>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <form id="import-db-form"
+                              data-url=""
+                              data-method=""
+                              data-redirect-url=""
+                        >
+                            {% csrf_token %}
+                            <div id="progress-container" class="progress progress-bar-xs">
+                                <div id="progress-bar" class="progress-bar bg-primary-light-3" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div id="import-db-form-modal-table" style="max-height: 50vh; overflow: auto"></div>
+                            <div class="text-muted small">{% trans 'The table in excel file must have the same column order as selected table.' %}</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+				<button type="submit" form="import-db-form" class="btn btn-gradient-primary">{% trans 'Import' %}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modal-load-datatable-from-excel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLarge01" aria-hidden="true">
+	<div class="modal-dialog modal-lg" style="min-width: 85%" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">{% trans 'Load data from excel' %}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label for="import-db-form-select-table" class="form-label">{% trans 'Datatable name' %}</label>
+                            <input disabled readonly class="form-control form-control-line" id="import-db-form-select-table">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label for="import-db-form-input-file" class="form-label required">{% trans 'Click here to upload file' %}</label>
+                            <input class="form-control" type="file" id="import-db-form-input-file">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-2">
+                        <div class="form-group">
+                            <label for="from-index" class="form-label required">{% trans 'From row' %}</label>
+                            <input class="form-control" type="number" min="1" value="1" id="from-index">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-2">
+                        <div class="form-group">
+                            <label for="to-index" class="form-label required">{% trans 'To row' %}</label>
+                            <input class="form-control" type="number" min="1" value="5" id="to-index">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button id="import-db-form-load-file-btn" type="button" class="btn btn-outline-primary btn-sm">{% trans 'Load File Data' %}</button>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <form id="load-db-form"
+                              data-url=""
+                              data-method=""
+                              data-redirect-url=""
+                        >
+                            {% csrf_token %}
+                            <div id="progress-container" class="progress progress-bar-xs">
+                                <div id="progress-bar" class="progress-bar bg-primary-light-3" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div id="import-db-form-modal-table" style="max-height: 50vh; overflow: auto"></div>
+                            <div class="text-muted small">{% trans 'The table in excel file must have the same column order as selected table.' %}</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+				<button type="submit" form="load-db-form" class="btn btn-gradient-primary">{% trans 'Load' %}</button>
+			</div>
+		</div>
+	</div>
+</div>

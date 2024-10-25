@@ -1895,9 +1895,7 @@ class GRDataTableHandle {
                     targets: 2,
                     width: '12%',
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <p><span class="table-row-description">${row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : ''}</span></p>
-                                </div>`;
+                        return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : ''}</textarea></div>`;
                     }
                 },
                 {

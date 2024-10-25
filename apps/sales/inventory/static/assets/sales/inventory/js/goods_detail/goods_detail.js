@@ -62,10 +62,13 @@ $(document).ready(function () {
     function loadMainTable(category_list=[], product_list=[], warehouse_list=[], status_list=[]) {
         $main_table.DataTable().clear().destroy()
         $main_table.DataTableDefault({
-            // dom: '',
+            styleDom: 'hide-foot',
             rowIdx: true,
             paging: false,
             useDataServer: true,
+            scrollY: '60vh',
+            scrollX: true,
+            scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
                 url: $main_table.attr('data-url'),
@@ -169,6 +172,7 @@ $(document).ready(function () {
                                         data-product-id="${row?.['product']?.['id']}"
                                         data-warehouse-id="${row?.['warehouse']?.['id']}"
                                         data-goods-receipt-id="${row?.['goods_receipt']?.['id']}"
+                                        data-purchase-request-id="${row?.['goods_receipt']?.['purchase_request']?.['id']}"
                                 >
                                     <span>
                                         <span class="row-status">${status}</span>
@@ -187,12 +191,14 @@ $(document).ready(function () {
 
     loadMainTable([], [], [], $status.val());
 
-    function loadSerialTable(data, product_id, warehouse_id, goods_receipt_id) {
+    function loadSerialTable(data, product_id, warehouse_id, goods_receipt_id, purchase_request_id) {
         $table_serial.DataTable().clear().destroy()
         $table_serial.DataTableDefault({
-            dom: '',
             rowIdx: true,
             paging: false,
+            scrollY: '50vh',
+            scrollX: '100vh',
+            scrollCollapse: true,
             data: data,
             columns: [
                 {
@@ -298,6 +304,7 @@ $(document).ready(function () {
                 $table_serial.attr('data-product-id', product_id)
                 $table_serial.attr('data-warehouse-id', warehouse_id)
                 $table_serial.attr('data-goods-receipt-id', goods_receipt_id)
+                $table_serial.attr('data-purchase-request-id', purchase_request_id)
             }
         });
     }
@@ -322,7 +329,8 @@ $(document).ready(function () {
         let product_id = $(this).attr('data-product-id')
         let warehouse_id = $(this).attr('data-warehouse-id')
         let goods_receipt_id = $(this).attr('data-goods-receipt-id')
-        loadSerialTable(table_data, product_id, warehouse_id, goods_receipt_id)
+        let purchase_request_id = $(this).attr('data-purchase-request-id')
+        loadSerialTable(table_data, product_id, warehouse_id, goods_receipt_id, purchase_request_id)
     })
 
     function LoadDate(ele, is_null=false) {
@@ -376,6 +384,7 @@ $(document).ready(function () {
         frm.dataForm['product_id'] = frmEle.find('#table-serial').attr('data-product-id')
         frm.dataForm['warehouse_id'] = frmEle.find('#table-serial').attr('data-warehouse-id')
         frm.dataForm['goods_receipt_id'] = frmEle.find('#table-serial').attr('data-goods-receipt-id')
+        frm.dataForm['purchase_request_id'] = frmEle.find('#table-serial').attr('data-purchase-request-id')
         frm.dataForm['is_serial_update'] = true
         frm.dataForm['serial_data'] = []
         $table_serial.find('tbody tr').each(function () {

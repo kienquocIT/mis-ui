@@ -23,7 +23,7 @@ function eventNodeClick(event) {
     for (let cond of data.condition){
         condition[cond.action] = cond
     }
-    for (let item of data.action) {
+    for (let item of data?.['action'] ? data?.['action'] : []) {
         let midd = ``
         // set if node type is approved/create and collab option is in-form/out-form
         if (item <= 1 && data.collaborators.option < 2 || item >= 4){
@@ -106,7 +106,15 @@ function clickConnection(connect) {
 
     // render modal popup of connection
     let data_cond = FlowJsP.getAssociate
-    data_cond = data_cond[node_in+'_'+node_out]
+    data_cond = data_cond[node_in + '_' + node_out]
+
+    let $eleAssociate = $('#node-associate');
+    let associate_temp = $eleAssociate.val();
+    if (associate_temp) {
+        let associate_data_json = JSON.parse(associate_temp);
+        data_cond = associate_data_json[node_in + '_' + node_out];
+    }
+
     condition.loadCondition($formset_cond, data_cond.condition)
 }
 
@@ -874,6 +882,7 @@ class NodeHandler {
         let state = false;
         let msgFailed = null;
         let combinedValue = this.getGroup(node_input) + '|' + this.getGroup(node_output);
+        let $trans = $('#node-trans-factory');
         switch (combinedValue) {
             case 'null|null':
                 this.appendGroupNull(node_input, node_output);
@@ -884,21 +893,23 @@ class NodeHandler {
                 state = true;
                 break;
             case 'null|right':
-                this.replaceGroup(node_input, 'right');
-                state = true;
+                //
+                // return false;
+                msgFailed = $trans.attr('data-validate-association-1');
                 break;
             case 'null|middle':
                 this.replaceGroup(node_input, 'left');
                 state = true;
                 break;
             case 'middle|null':
-                this.replaceGroup(node_output, 'right');
-                state = true;
+                //
+                // return false;
+                msgFailed = $trans.attr('data-validate-association-3');
                 break;
             case 'middle|left':
                 //
                 // return false;
-                msgFailed = "Approved Node can't connect to Node that connected Initial Node"
+                msgFailed = $trans.attr('data-validate-association-3');
                 break;
             case 'middle|right':
                 state = true;
@@ -906,7 +917,7 @@ class NodeHandler {
             case 'middle|middle':
                 // can't exist two middle node
                 // return false;
-                msgFailed = "Can't exist two Middle Node"
+                msgFailed = $trans.attr('data-validate-association-4');
                 break;
             case 'left|null':
                 this.replaceGroup(node_output, 'left');
@@ -918,7 +929,7 @@ class NodeHandler {
             case 'left|right':
                 //
                 // return false;
-                msgFailed = "Node connected Initial Node can't connect to Node connect Completed Node";
+                msgFailed = $trans.attr('data-validate-association-1');
                 break;
             case 'left|middle':
                 state = true;
@@ -930,7 +941,7 @@ class NodeHandler {
             case 'right|left':
                 //
                 // return false;
-                msgFailed = "Node connected Initial Node can't connect to Node connect Completed Node";
+                msgFailed = $trans.attr('data-validate-association-1');
                 break;
             case 'right|right':
                 state = true;
@@ -938,7 +949,7 @@ class NodeHandler {
             case 'right|middle':
                 //
                 // return false;
-                msgFailed = "Node connected Completed Node can't connect to Approved Node"
+                msgFailed = $trans.attr('data-validate-association-1');
                 break;
             default:
                 console.log('Over case with data:', combinedValue);

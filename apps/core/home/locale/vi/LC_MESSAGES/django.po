@@ -88,3 +88,31 @@ msgstr "Một ngày yên tĩnh!"
 #
 msgid "There is a delay in updating the data with new changes. Estimated within 5 minutes of change."
 msgstr "Có sự chậm trễ trong việc cập nhật những thay đổi mới. Ước tính trong vòng 5 phút kể từ khi có thay đổi."
+
+#
+msgid "Show report task"
+msgstr "Hiển thị báo cáo công việc"
+
+#
+msgid "Show summary task"
+msgstr "Hiển thị biểu đồ tổng hợp công việc"
+
+#
+msgid "Show calendar"
+msgstr "Hiển thị lịch sự kiện"
+
+#
+msgid "Show bookmark"
+msgstr "Hiển thị dấu trang"
+
+#
+msgid "Show task list"
+msgstr "Hiển thị danh sách công việc"
+
+#
+msgid "Home UI config"
+msgstr "Cấu hình giao diện trang chủ"
+
+#
+msgid "Home UI"
+msgstr "Giao diện trang chủ"

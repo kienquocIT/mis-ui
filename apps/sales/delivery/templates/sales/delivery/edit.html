@@ -194,7 +194,7 @@
                             <th>{% trans 'UoM' %}</th>
                             <th>{% trans 'Total order' %}</th>
                             <th>{% trans 'Delivery before' %}</th>
-                            <th>{% trans 'Remain' %}</th>
+                            <th>{% trans 'Undelivered' %}</th>
                             <th>{% trans 'Ready' %}</th>
                             <th class="table-handle-btn">
                             </th>
@@ -237,12 +237,13 @@
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title text-primary ml-4"><b class="title-mdl"></b></h5>
+                        <h5 class="modal-title ml-4"><b class="title-mdl"></b></h5>
                         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-12 col-md-6 col-lg-6 border-right">
+                                <span><b class="ml-5">{% trans 'Undelivered' %}: </b><b id="undelivered"></b></span>
                                 <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-wh">
                                     <table id="productStockDetail" class="table w-100">
                                         <thead>
@@ -264,48 +265,54 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
-                                <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-lot" hidden>
-                                    <table
-                                        id="datable-delivery-wh-lot"
-                                        class="table nowrap w-100"
-                                        data-url="{% url "WarehouseLotListAPI" %}"
-                                        data-url-regis="{% url "GReItemProductWarehouseLotListAPI" %}"
-                                        data-method="GET"
-                                    >
-                                        <thead>
-                                        <tr class="bg-light">
-                                            <th>{% trans 'Lot number' %}</th>
-                                            <th>{% trans 'Quantity' %}</th>
-                                            <th>{% trans 'UOM' %}</th>
-                                            <th>{% trans 'Exp date' %}</th>
-                                            <th>{% trans 'Mfg date' %}</th>
-                                            <th>{% trans 'Deliver' %}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-serial" hidden>
-                                    <table
-                                        id="datable-delivery-wh-serial"
-                                        class="table nowrap w-100"
-                                        data-url="{% url "WarehouseSerialListAPI" %}"
-                                        data-url-regis="{% url "GReItemProductWarehouseSerialListAPI" %}"
-                                        data-method="GET"
-                                    >
-                                        <thead>
-                                        <tr class="bg-light">
-                                            <th></th>
-                                            <th>{% trans 'Vendor serial no.' %}</th>
-                                            <th>{% trans 'Serial no.' %}</th>
-                                            <th>{% trans 'Warranty start' %}</th>
-                                            <th>{% trans 'Warranty end' %}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                                <div class="row">
+                                    <div class="form-check form-switch form-switch-lg">
+                                        <input type="checkbox" class="form-check-input" id="self-input">
+                                        <label class="form-check-label" for="self-input">{% trans 'Self input' %}</label>
+                                    </div>
+                                    <div data-simplebar class="nicescroll-bar" id="scroll-table-lot" hidden>
+                                        <table
+                                            id="datable-delivery-wh-lot"
+                                            class="table nowrap w-100"
+                                            data-url="{% url "WarehouseLotListAPI" %}"
+                                            data-url-regis="{% url "GReItemProductWarehouseLotListAPI" %}"
+                                            data-method="GET"
+                                        >
+                                            <thead>
+                                            <tr class="bg-light">
+                                                <th>{% trans 'Lot number' %}</th>
+                                                <th>{% trans 'Quantity' %}</th>
+                                                <th>{% trans 'UOM' %}</th>
+                                                <th>{% trans 'Exp date' %}</th>
+                                                <th>{% trans 'Mfg date' %}</th>
+                                                <th>{% trans 'Deliver' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div data-simplebar class="nicescroll-bar" id="scroll-table-serial" hidden>
+                                        <table
+                                            id="datable-delivery-wh-serial"
+                                            class="table nowrap min-w-800p w-100"
+                                            data-url="{% url "WarehouseSerialListAPI" %}"
+                                            data-url-regis="{% url "GReItemProductWarehouseSerialListAPI" %}"
+                                            data-method="GET"
+                                        >
+                                            <thead>
+                                            <tr class="bg-light">
+                                                <th></th>
+                                                <th>{% trans 'Vendor serial no.' %}</th>
+                                                <th>{% trans 'Serial no.' %}</th>
+                                                <th>{% trans 'Warranty start' %}</th>
+                                                <th>{% trans 'Warranty end' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -351,7 +358,8 @@
            data-outstock="{% trans 'Out of stock' %}"
            data-select_address="{% trans 'Select this address' %}"
            data-valid-delivery-amount="{% trans 'Exceed stock quantity' %}"
-           data-exceed-quantity="{% trans 'Exceed available quantity' %}"
+           data-exceed-available-quantity="{% trans 'Exceed available quantity' %}"
+           data-exceed-undelivered-quantity="{% trans 'Exceed undelivered quantity' %}"
            data-picked-ready="{% trans 'Picked' %}"
            data-available="{% trans 'Available' %}"
            data-title-mdl="{% trans 'Deliver product' %}"

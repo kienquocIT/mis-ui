@@ -146,8 +146,8 @@ msgid "Are you sure?"
 msgstr "Bạn có chắc?"
 
 #
-msgid "Create baseline at this moment?"
-msgstr "Tạo Đường Cơ Sở vào thời điểm này?"
+msgid "Request baseline at this moment?"
+msgstr "Trình duyệt vào thời điểm này?"
 
 #
 msgid "Yes, I am"
@@ -174,8 +174,8 @@ msgid "Created"
 msgstr "Đã tạo"
 
 #
-msgid "Added"
-msgstr "Đã thêm"
+msgid "Reopened"
+msgstr "Mở lại"
 
 #
 msgid "Finish"
@@ -244,3 +244,15 @@ msgstr "Bởi Trạng thái"
 #
 msgid "Close Project"
 msgstr "Đóng dự án"
+
+#
+msgid "Reply"
+msgstr "Trả lời"
+
+#
+msgid "in"
+msgstr "trong"
+
+#
+msgid "Project activities is empty"
+msgstr "Không có hoạt động nào"

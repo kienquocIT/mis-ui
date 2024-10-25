@@ -775,6 +775,10 @@ msgid "Abbreviation"
 msgstr "Viết tắt"
 
 #
+msgid "Currency unit"
+msgstr "Đơn vị tiền tệ"
+
+#
 msgid "Select from Employee List"
 msgstr "Chọn từ danh sách nhân viên"
 
@@ -1307,6 +1311,10 @@ msgid "invalid"
 msgstr "Không khả dụng"
 
 #
+msgid "Invalid"
+msgstr "Không khả dụng"
+
+#
 msgid "Expired"
 msgstr "Hết hạn"
 
@@ -1524,7 +1532,7 @@ msgstr "Điều khoản thanh toán"
 
 #
 msgid "Price List"
-msgstr "Danh sách giá"
+msgstr "Bảng giá"
 
 #
 msgid "Credit Limit"
@@ -1948,7 +1956,7 @@ msgid "Create Price List"
 msgstr "Tạo bảng giá"
 
 #
-msgid "Price list Name"
+msgid "Price list name"
 msgstr "Tên bảng giá"
 
 #
@@ -1960,12 +1968,16 @@ msgid "Select price list"
 msgstr "Lựa chọn bảng giá"
 
 #
-msgid "update automatically when source price list changes"
+msgid "Update automatically when source price list changes"
 msgstr "Tự động cập nhật khi bảng giá nguồn thay đổi"
 
 #
-msgid "Can delete Item in price list"
-msgstr "Có thể xóa mục này trong bảng giá"
+msgid "Updated when update automatically when source price list changes is ON"
+msgstr "Được cập nhập khi 'Tự động cập nhật khi bảng giá nguồn thay đổi' được BẬT"
+
+#
+msgid "Can delete rows in price list"
+msgstr "Có thể xóa dòng trong bảng giá"
 
 #
 msgid "Factor"
@@ -3084,8 +3096,8 @@ msgid "Switch Company"
 msgstr "Chuyển đổi công ty"
 
 #
-msgid "Manage Account"
-msgstr "Quản Lý Tài Khoản"
+msgid "Manage account"
+msgstr "Quản lý tài khoản"
 
 #
 msgid "Profile"
@@ -4346,12 +4358,12 @@ msgid "Get item from"
 msgstr "Lấy sản phẩm (chi phí) từ"
 
 #
-msgid "Save Setting"
-msgstr "Lưu cài đặt"
+msgid "Save Config"
+msgstr "Lưu cấu hình"
 
 #
-msgid "Save Item Price"
-msgstr "Lưu giá của sản phẩm (chi phí)"
+msgid "Save Price List"
+msgstr "Lưu bảng giá"
 
 #
 msgid "Delete this item ?"
@@ -4801,7 +4813,7 @@ msgstr "Website của tôi"
 
 #
 msgid "Working calendar update successfully"
-msgstr "Lịch làm việc cập nhập thành công"
+msgstr "Lịch làm việc cập nhật thành công"
 
 #
 msgid "Working year create successfully"
@@ -4817,7 +4829,7 @@ msgstr "Tạo ngày lễ thành công"
 
 #
 msgid "The holiday has been updated successfully"
-msgstr "Cập nhập ngày lễ thành công"
+msgstr "Cập nhật ngày lễ thành công"
 
 #
 msgid "The holiday deleted"
@@ -4829,7 +4841,7 @@ msgstr "Yêu cầu nghỉ phép tạo thành công"
 
 #
 msgid "Leave available update successfully"
-msgstr "danh sách số dư cập nhập thành công"
+msgstr "danh sách số dư cập nhật thành công"
 
 #
 msgid "Increase"
@@ -5414,7 +5426,7 @@ msgstr "Tải lại bản lưu trữ cuối cùng ở máy tính này"
 
 #
 msgid "Sale reports"
-msgstr "Báo cáo kinh doanh"
+msgstr "Các báo cáo kinh doanh"
 
 #
 msgid "Revenue report"
@@ -5454,7 +5466,7 @@ msgstr "Ngành nghề"
 
 #
 msgid "Update permit"
-msgstr "Cập nhập quyền"
+msgstr "Cập nhật quyền"
 
 #
 msgid "Sale Activities"
@@ -6582,7 +6594,7 @@ msgstr "Tháng bắt đầu"
 
 #
 msgid "Update period"
-msgstr "Cập nhập kỳ kế toán"
+msgstr "Cập nhật kỳ kế toán"
 
 #
 msgid "New period"
@@ -6874,11 +6886,11 @@ msgstr "Đã trả lại"
 
 #
 msgid "Inventory reports"
-msgstr "Báo cáo tồn kho"
+msgstr "Các báo cáo kho"
 
 #
 msgid "Items Detail Report"
-msgstr "Báo cáo chi tiết mặt hàng"
+msgstr "Báo cáo chi tiết hàng"
 
 #
 msgid "Add group"
@@ -7042,7 +7054,7 @@ msgstr "Tạo HĐ điện tử"
 
 #
 msgid "Update invoice"
-msgstr "Cập nhập HĐ điện tử"
+msgstr "Cập nhật HĐ điện tử"
 
 #
 msgid "View invoice"
@@ -7050,7 +7062,11 @@ msgstr "Xem HĐ điện tử"
 
 #
 msgid "Inventory Report"
-msgstr "Báo cáo tồn kho"
+msgstr "Báo cáo hàng tồn kho"
+
+#
+msgid "Inventory report"
+msgstr "Báo cáo hàng tồn kho"
 
 #
 msgid "Cumulative quantity"
@@ -7058,7 +7074,7 @@ msgstr "SL tích luỹ"
 
 #
 msgid "Cumulative cost"
-msgstr "Giá cost tích luỹ"
+msgstr "Giá vốn tích luỹ"
 
 #
 msgid "Cumulative value"
@@ -7070,7 +7086,7 @@ msgstr "Đổi - trả hàng"
 
 #
 msgid "Opening balance"
-msgstr "Tồn đầu kỳ"
+msgstr "Tồn đầu"
 
 #
 msgid "Expired date"
@@ -7125,7 +7141,7 @@ msgid "Save and apply workflow"
 msgstr "Lưu và áp dụng quy trình"
 
 #
-msgid "Save change"
+msgid "Save changes"
 msgstr "Lưu thay đổi"
 
 #
@@ -7174,7 +7190,7 @@ msgstr "Chi tiết phiếu Điều chỉnh tồn kho"
 
 #
 msgid "Inventory adjustment update"
-msgstr "Cập nhập phiếu Điều chỉnh tồn kho"
+msgstr "Cập nhật phiếu Điều chỉnh tồn kho"
 
 #
 msgid "Inventory adjustment list"
@@ -7370,11 +7386,11 @@ msgstr "Nhân viên mua hàng"
 
 #
 msgid "Purchasing reports"
-msgstr "Báo cáo mua hàng"
+msgstr "Các báo cáo mua hàng"
 
 #
 msgid "Purchase order report"
-msgstr "Báo cáo theo đơn mua hàng"
+msgstr "Báo cáo đơn mua hàng"
 
 #
 msgid "Purchasing Code"
@@ -7529,12 +7545,12 @@ msgid "Asset, tools return list"
 msgstr "Danh sách thu hồi tài sản"
 
 #
-msgid "Inventory report"
-msgstr "Báo cáo tồn kho"
+msgid "Inventory stock report"
+msgstr "Báo cáo hàng tồn kho"
 
 #
 msgid "Items detail report"
-msgstr "Báo cáo chi tiết mặt hàng"
+msgstr "Báo cáo chi tiết hàng"
 
 #
 msgid "Please cancel current quotation"
@@ -7778,7 +7794,7 @@ msgstr "Chi tiết phiếu đăng ký hàng"
 
 #
 msgid "Goods registration update"
-msgstr "Cập nhập phiếu đăng ký hàng"
+msgstr "Cập nhật phiếu đăng ký hàng"
 
 #
 msgid "Registered"
@@ -7822,7 +7838,7 @@ msgstr "SẢN PHẨM"
 
 #
 msgid "INVENTORY UOM"
-msgstr "ĐƠN VỊ KHO"
+msgstr "ĐV KHO"
 
 #
 msgid "SYSTEM DATE"
@@ -7834,15 +7850,15 @@ msgstr "NGÀY HẾT HẠN"
 
 #
 msgid "I/O quantity"
-msgstr "SL nhập/xuất"
+msgstr "SL nhập - xuất"
 
 #
 msgid "I/O cost"
-msgstr "Giá cost nhập/xuất"
+msgstr "Giá nhập - xuất"
 
 #
 msgid "I/O value"
-msgstr "Giá trị nhập/xuất"
+msgstr "Giá trị nhập - xuất"
 
 #
 msgid "Inventory UoM"
@@ -7877,8 +7893,8 @@ msgid "Roles incurred expenses"
 msgstr "Vai trò phát sinh chi phí"
 
 #
-msgid "Create Baseline"
-msgstr "Tạo Đường cơ sở"
+msgid "Request Baseline"
+msgstr "Trình duyệt"
 
 #
 msgid "not PR"
@@ -7973,8 +7989,8 @@ msgid "Expand / Collapse"
 msgstr "Thu gọn / Mở rộng"
 
 #
-msgid "Project Baseline"
-msgstr "Đường cơ sở của Dự án"
+msgid "Baseline quantity"
+msgstr "Số lượng dự án trình duyệt"
 
 #
 msgid "Budget plan"
@@ -8042,7 +8058,7 @@ msgstr "Được phép chỉnh sửa"
 
 #
 msgid "Baseline"
-msgstr "Đường cơ sở"
+msgstr "Phiếu trình duyệt"
 
 #
 msgid "Quarter Day"
@@ -8413,19 +8429,15 @@ msgid "Project home"
 msgstr "Trang chủ dự án"
 
 #
-msgid "Baseline list"
-msgstr "Danh sách đường cơ sở"
+msgid "Project quantity"
+msgstr "Số lượng dự án"
 
 #
-msgid "New project this month"
-msgstr "Dự án mới trong tháng"
+msgid "Total Tasks - Finished Tasks"
+msgstr "Tổng giao việc - Giao việc hoàn thành"
 
 #
-msgid "Project tasks"
-msgstr "Công việc dự án"
-
-#
-msgid "Project Expense"
+msgid "Project Expenses"
 msgstr "Chi phí dự án"
 
 #
@@ -8433,8 +8445,8 @@ msgid "Project Owner"
 msgstr "Phụ trách dự án"
 
 #
-msgid "Project per years"
-msgstr "Dự án trên năm"
+msgid "Project by month"
+msgstr "Dự án theo tháng"
 
 #
 msgid "Project status"
@@ -8805,16 +8817,12 @@ msgid "Consider carefully when clear balance init. The system will delete this b
 msgstr "Hãy cân nhắc cẩn thận khi xóa số dư đã khởi tạo. Hệ thống sẽ xóa số dư này sau khi kiểm tra thõa mãn các điều kiện về bảo toàn dữ liệu."
 
 #
-msgid "After the stock activities have occurred, the Inventory Reports will be run in the order of the configured accounting periods. Make sure that the Opening Balance is created before these activities take place to avoid reporting errors."
-msgstr "Sau khi các hoạt động nhập-xuất kho diễn ra, các Báo Cáo Kho sẽ chạy theo thứ tự của kì kế toán được cấu hình. Đảm bảo rằng SDDK này được khởi tạo trước khi các hoạt động nhập-xuất kho diễn ra để tránh sai sót số liệu báo cáo."
+msgid "The Opening Balance should be created before these activities take place to avoid reporting errors."
+msgstr "SDDK nên được tạo trước khi các hoạt động nhập - xuất kho diễn ra để tránh sai sót số liệu báo cáo."
 
 #
 msgid "The initial balance will be inserted from the month of starting to use the software."
 msgstr "SDDK sẽ được chèn bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
-
-#
-msgid "If the data changes after the time of starting to use the software (not recommended). Re-run all reports from that month to now to update them correctly."
-msgstr "Nếu dữ liệu có sự thay đổi sau thời gian bắt đầu sử dụng phần mềm (không khuyến khích). Hãy chạy lại tất cả các báo cáo từ tháng đó đến nay để cập nhập lại chính xác."
 
 #
 msgid "Pretax value"
@@ -8921,12 +8929,12 @@ msgid "Select Finished goods or Services"
 msgstr "Chọn Thành phẩm hoặc Dịch vụ"
 
 #
-msgid "One collaborator"
-msgstr "Một cộng tác viên"
+msgid "One collaborator actions"
+msgstr "Một cộng tác viên thao tác"
 
 #
-msgid "Many collaborators"
-msgstr "Nhiều cộng tác viên"
+msgid "Many collaborators action"
+msgstr "Nhiều cộng tác viên thao tác"
 
 #
 msgid "Config according to"
@@ -9029,12 +9037,12 @@ msgid "SALE ORDER"
 msgstr "ĐƠN HÀNG"
 
 #
-msgid "Import datatable from excel"
-msgstr "Nhập bảng từ excel"
+msgid "Import data from excel"
+msgstr "Nhập dữ liệu từ excel"
 
 #
-msgid "Make sure that the tables in your Excel file have the same COLUMN ORDER as the feature you are importing."
-msgstr "Đảm bảo rằng bảng trong file Excel của bạn có THỨ TỰ CỘT giống như chức năng cần nhập."
+msgid "The table in excel file must have the same column order as selected table."
+msgstr "Bảng trong file excel phải có thứ cột giống như bảng đã chọn."
 
 #
 msgid "From row"
@@ -9089,8 +9097,8 @@ msgid "Import status"
 msgstr "Trạng thái nhập"
 
 #
-msgid "Select datatable"
-msgstr "Chọn bảng dữ liệu"
+msgid "Datatable name"
+msgstr "Tên bảng"
 
 #
 msgid "Import Done!"
@@ -9098,7 +9106,7 @@ msgstr "Nhập liệu hoàn tất!"
 
 #
 msgid "Reload this page to see the update."
-msgstr "Tải lại trang để xem cập nhập."
+msgstr "Tải lại trang để xem cập nhật."
 
 #
 msgid "Can not import some rows"
@@ -9107,3 +9115,183 @@ msgstr "Không thể nhập liệu một số dòng"
 #
 msgid "Balance init datatable"
 msgstr "Bảng dữ liệu Số dư đầu kì"
+
+#
+msgid "Node association"
+msgstr "Liên kết trạm"
+
+#
+msgid "Self input"
+msgstr "Tự nhập"
+
+#
+msgid "Undelivered"
+msgstr "Chưa giao"
+
+#
+msgid "Start IA"
+msgstr "Bắt đầu kiểm kê"
+
+#
+msgid "Done IA"
+msgstr "Kiểm kê hoàn tất"
+
+#
+msgid "Created IA"
+msgstr "Tạo kiểm kê"
+
+#
+msgid "Start this inventory adjustment?"
+msgstr "Bắt đầu phiếu kiểm kê này?"
+
+#
+msgid "All warehousing activities on the system will be stopped (for products by warehouse in this IA) until all inventory adjustment documents are completed."
+msgstr "Mọi hoạt động nhập-xuất kho trên hệ thống sẽ bị ngừng lại (đối với các sản phẩm theo kho trong phiếu kiểm kê này) cho đến khi tất cả các phiếu kiểm kê được hoàn tất."
+
+#
+msgid "IA Created"
+msgstr "Đã tạo kiểm kê"
+
+#
+msgid "IA Working"
+msgstr "Đang kiểm kê"
+
+#
+msgid "IA Done"
+msgstr "Kiểm kê hoàn tất"
+
+#
+msgid "Done this inventory adjustment?"
+msgstr "Hoàn tất phiếu kiểm kê này?"
+
+#
+msgid "Once you are done, you can create all warehousing activities related to this IA."
+msgstr "Một khi phiếu đã hoàn tất, bạn có thể thực hiện các hoạt động nhập-xuất kho có tham chiếu tới phiếu này"
+
+#
+msgid "Now"
+msgstr "ngay bây giờ"
+
+#
+msgid "Must go through approval node"
+msgstr "Phải đi qua trạm chấp thuận"
+
+#
+msgid "No return at approval node"
+msgstr "Không quay lại tại trạm chấp thuận"
+
+#
+msgid "Cannot connect itself"
+msgstr "Không thể liên kết chính nó"
+
+#
+msgid "Project activities"
+msgstr "Hoạt động của dự án"
+
+#
+msgid "leave your comment..."
+msgstr "Viết bình luận..."
+
+#
+msgid "Project comment"
+msgstr "Bình luận"
+
+#
+msgid "Add new attribute"
+msgstr "Thêm thuộc tính"
+
+#
+msgid "Add Variant Value"
+msgstr "Thêm biến thể"
+
+#
+msgid "Attribute name"
+msgstr "Tên thuộc tính"
+
+#
+msgid "Value name"
+msgstr "Tên biến thể"
+
+#
+msgid "Balance init input"
+msgstr "Nhập SDĐK"
+
+#
+msgid "Product does not have bill of material"
+msgstr "Sản phẩm không có định mức nguyên vật liệu"
+
+#
+msgid "Select product price"
+msgstr "Chọn giá sản phẩm"
+
+#
+msgid "Select product cost"
+msgstr "Chọn giá vốn sản phẩm"
+
+#
+msgid "The document meets the following nodes. Please select one."
+msgstr "Phiếu thỏa điều kiện các trạm sau. Vui lòng chọn một trạm."
+
+#
+msgid "The document does not meet any nodes. Do you wish to continue? If yes, please select one."
+msgstr "Phiếu không thỏa điều kiện các trạm. Bạn có muốn tiếp tục? Nếu có, vui lòng chọn một trạm."
+
+#
+msgid "Select next station"
+msgstr "Chọn trạm tiếp theo"
+
+#
+msgid "The product does not have warehouse cost list. You can choose bill of material cost, standard cost or input cost."
+msgstr "Sản phẩm không có danh sách giá vốn tồn kho. Bạn có thể chọn giá định mức nguyên vật liệu, giá tiêu chuẩn hoặc tự nhập giá."
+
+#
+msgid "Load data from excel to datatable"
+msgstr "Tải dữ liệu từ excel lên bảng"
+
+#
+msgid "Export datatable to excel"
+msgstr "Xuất bảng dữ liệu ra excel"
+
+#
+msgid "Reference price list"
+msgstr "Bảng giá tham chiếu"
+
+#
+msgid "Undefined"
+msgstr "Không xác định"
+
+#
+msgid "Source/Non-empty Price List can not be deleted!"
+msgstr "Không thể xóa Bảng giá gốc / không rỗng."
+
+#
+msgid "Delete Price List?"
+msgstr "Xóa Bảng giá?"
+
+#
+msgid "For expense"
+msgstr "Cho chi phí"
+
+#
+msgid "Apply time"
+msgstr "Thời gian áp dụng"
+
+#
+msgid "the present"
+msgstr "hiện tại"
+
+#
+msgid "Config"
+msgstr "Cấu hình"
+
+#
+msgid "Price datatable"
+msgstr "Bảng giá"
+
+#
+msgid "Serial datatable"
+msgstr "Bảng serial"
+
+#
+msgid "Bill of material cost"
+msgstr "Giá định mức nguyên vật liệu"

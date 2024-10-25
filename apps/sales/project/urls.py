@@ -5,7 +5,8 @@ from apps.sales.project.views import ProjectList, ProjectCreate, ProjectCreateAP
     ProjectWorkListAPI, ProjectGroupDetailAPI, ProjectWorkDetailAPI, ProjectMemberAddAPI, ProjectMemberDetailAPI, \
     ProjectUpdateOrderAPI, ProjectTaskListAPI, ProjectGroupDDListAPI, ProjectTaskDetailAPI, ProjectWorkExpenseAPI, \
     ProjectListBaselineAPI, ProjectBaselineDetail, ProjectBaselineDetailAPI, ProjectHome, ProjectConfig, \
-    ProjectConfigAPI, ProjectExpenseListAPI, ProjectListBaseline, ProjectWorkList, ProjectActivities
+    ProjectConfigAPI, ProjectExpenseListAPI, ProjectWorkList, ProjectActivities, \
+    ProjectActivitiesListAPI, ProjectCommentListAPI, ProjectActivitiesCommentDetail, ProjectCommentDetailFlowsAPI
 
 urlpatterns = [
     # project
@@ -47,8 +48,8 @@ urlpatterns = [
     # project work expense list
     path('work-expense-list', ProjectWorkExpenseAPI.as_view(), name='ProjectWorkExpenseAPI'),
     path('project-expense-list', ProjectExpenseListAPI.as_view(), name='ProjectExpenseListAPI'),
+
     # project baseline
-    path('baseline/list', ProjectListBaseline.as_view(), name='ProjectListBaseline'),
     path('baseline/list-api', ProjectListBaselineAPI.as_view(), name='ProjectListBaselineAPI'),
     path('baseline/detail/baseline-version/<str:pk>', ProjectBaselineDetail.as_view(), name='ProjectBaselineDetail'),
     path(
@@ -60,6 +61,15 @@ urlpatterns = [
     path('config-api', ProjectConfigAPI.as_view(), name='ProjectConfigAPI'),
 
     # project activities
-    path('activities', ProjectActivities.as_view(), name='ProjectActivities'),
+    path('activities/list', ProjectActivities.as_view(), name='ProjectActivities'),
+    path(
+        'activities/comment/detail/<str:pk>', ProjectActivitiesCommentDetail.as_view(),
+        name='ProjectActivitiesCommentDetail'
+    ),
+    path('activities/list-api', ProjectActivitiesListAPI.as_view(), name='ProjectActivitiesListAPI'),
+    path('activities/comment-api', ProjectCommentListAPI.as_view(), name='ProjectCommentListAPI'),
+    path(
+        'activities/comment/detail-api/<str:pk>', ProjectCommentDetailFlowsAPI.as_view(), name='ProjectCommentDetailAPI'
+    ),
 
 ]

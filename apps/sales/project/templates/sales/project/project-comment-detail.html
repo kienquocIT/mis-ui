@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Project activities' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'comment/css/comment-custom.css' %}" rel="stylesheet" type="text/css"/>
+
+    <link href="{% static 'assets/project/css/activities.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+
+{% block pageContent %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-xs-12 wrap_comment"></div>
+        </div>
+    </div>
+    <div class="box_comment hidden">
+        {% include 'comment/extends/custom-comment-input.html' %}
+    </div>
+    {% include 'comment/extends/emoji_combobox.html' %}
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input type="hidden" id="url-factory" aria-label="url-factory"
+    data-comment-list="{% url 'ProjectActivitiesListAPI' %}"
+    data-comment-create="{% url 'ProjectCommentListAPI' %}"
+    data-comment-detail="{% url 'ProjectCommentDetailAPI' 1%}"
+    >
+    <input type="hidden" id="trans-factory" aria-label="trans-factory">
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'comment/js/plugin/txtarea-caret-position.js' %}"></script>
+
+    <script src="{% static 'comment/js/comment-custom.js' %}"></script>
+    <script src="{% static 'assets/project/js/extend/comment-custom-detail.js' %}"></script>
+{% endblock %}

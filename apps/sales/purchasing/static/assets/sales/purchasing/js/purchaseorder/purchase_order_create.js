@@ -67,6 +67,9 @@ $(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
+        // workflow init
+        WFRTControl.setWFInitialData("purchaseorder");
+
 
 // EVENTS
         // Action on change dropdown supplier

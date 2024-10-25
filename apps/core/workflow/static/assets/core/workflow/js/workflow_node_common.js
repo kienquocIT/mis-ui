@@ -286,20 +286,16 @@ class NodeLoadDataHandle {
             }
             let tableInWFExitCon = row.querySelector('.collab-in-workflow-area')?.querySelector('.table-in-workflow-exit-condition');
             if (tableInWFExitCon) {
-                let nodeActionRaw = $('#wf_action').text();
-                if (nodeActionRaw) {
-                    let nodeAction = JSON.parse(nodeActionRaw);
-                    let dataExitCon = [{"action": nodeAction[1], "min_collaborator": 0, "next_node": ""},]
-                    for (let eleChecked of row.querySelectorAll('.check-action-node:checked')) {
-                        if (parseInt($(eleChecked).attr('data-id')) === 2) {
-                            dataExitCon.push({"action": nodeAction[2], "min_collaborator": 0, "next_node": "Rejected node"});
-                        }
-                        if (parseInt($(eleChecked).attr('data-id')) === 3) {
-                            dataExitCon.push({"action": nodeAction[3], "min_collaborator": 0, "next_node": "First node"},);
-                        }
+                let dataExitCon = [{"action": 1, "min_collaborator": 0, "next_node": ""},]
+                for (let eleChecked of row.querySelectorAll('.check-action-node:checked')) {
+                    if (parseInt($(eleChecked).attr('data-id')) === 2) {
+                        dataExitCon.push({"action": 2, "min_collaborator": 0, "next_node": "Rejected node"});
                     }
-                    NodeDataTableHandle.dataTableCollabInWFExitCon($(tableInWFExitCon), dataExitCon);
+                    if (parseInt($(eleChecked).attr('data-id')) === 3) {
+                        dataExitCon.push({"action": 3, "min_collaborator": 0, "next_node": "First node"},);
+                    }
                 }
+                NodeDataTableHandle.dataTableCollabInWFExitCon($(tableInWFExitCon), dataExitCon);
             }
         }
         // init select2
@@ -1799,12 +1795,20 @@ class NodeDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<b class="table-row-action" data-row="${dataRow}">${row?.['action'] ? row?.['action'] : ''}</b>`;
+                        let nodeActionRaw = $('#wf_action').text();
+                        if (nodeActionRaw) {
+                            let nodeAction = JSON.parse(nodeActionRaw);
+                            return `<b class="table-row-action" data-row="${dataRow}">${nodeAction[row?.['action']]}</b>`;
+                        }
+                        return `<b>--</b>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
+                        if (row?.['action'] === 1) {
+                            return `<input type="text" class="form-control table-row-min-collaborator validated-number" value="${row?.['min_collaborator']}">`;
+                        }
                         return `<span class="table-row-min-collaborator">${row?.['min_collaborator']}</span>`;
                     }
                 },

@@ -2,11 +2,19 @@
 class ContractLoadDataHandle {
     static $form = $('#frm_contract_create');
     static $btnAddDoc = $('#btn-add-doc');
+    static $btnOpenAttach = $('#btn-open-attachment');
+    static $drawer = $('#drawer_contract_data');
     static $fileArea = $('#file-area');
     static $remark = $('#contract-doc-remark');
     static $attachment = $('#attachment');
     static $attachmentTmp = $('#attachment-tmp');
     static $trans = $('#app-trans-factory');
+
+    static loadCustomCss() {
+        $('.accordion-item').css({
+            'margin-bottom': 0
+        });
+    };
 
     // DOCUMENT
     static loadAddDoc() {
@@ -22,13 +30,8 @@ class ContractLoadDataHandle {
     };
 
     static loadOpenAttachFile(ele) {
-        ContractDataTableHandle.$tableDocument.DataTable().rows().every(function () {
-            let row = this.node();
-            $(row).css('background-color', '');
-        });
         let row = ele.closest('tr');
         if (row) {
-            $(row).css('background-color', '#ebfcf5');
             ContractLoadDataHandle.$fileArea[0].classList.remove('bg-light');
             let eleOrder = row.querySelector('.table-row-order');
             if (eleOrder) {
@@ -74,6 +77,9 @@ class ContractLoadDataHandle {
                 });
             }
             ContractLoadDataHandle.$attachment[0].removeAttribute('hidden');
+        }
+        if (!ContractLoadDataHandle.$drawer[0].classList.contains('open')) {
+            ContractLoadDataHandle.$btnOpenAttach.trigger('click');
         }
         return true;
     };
@@ -223,18 +229,19 @@ class ContractDataTableHandle {
                 {
                     targets: 2,
                     class: 'text-center',
-                    width: '10%',
+                    width: '15%',
                     render: (data, type, row) => {
-                        return `<div class="d-flex">
+                        return `<div class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover attach-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-attach-file')}" data-store="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-order="${row?.['order']}"><span class="icon"><i class="fas fa-paperclip"></i></span></button>
-                                    <div class="tmp-uploader" hidden></div>
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover view-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-view-file')}" hidden><span class="icon"><i class="far fa-eye"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover view-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-view-file')}"><span class="icon"><i class="far fa-eye"></i></span></button>
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-delete')}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                 </div>`;
                     }
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                ContractLoadDataHandle.loadCssToDtb(ContractDataTableHandle.$tableDocument[0].id);
             },
         });
     };
@@ -378,7 +385,10 @@ class ContractSubmitHandle {
         let dataDocParse = ContractSubmitHandle.setupDataDocument();
         _form.dataForm['document_data'] = dataDocParse?.['dataDoc'];
         _form.dataForm['attachment'] = dataDocParse?.['attachment'];
-        _form.dataForm['tinymce_content'] = ContractTinymceHandle.getContent();
+        _form.dataForm['abstract_content'] = ContractTinymceHandle.getContent('abstract_content');
+        _form.dataForm['trade_content'] = ContractTinymceHandle.getContent('trade_content');
+        _form.dataForm['legal_content'] = ContractTinymceHandle.getContent('legal_content');
+        _form.dataForm['payment_content'] = ContractTinymceHandle.getContent('payment_content');
     };
 }
 
@@ -436,9 +446,9 @@ class ContractCommonHandle {
 }
 
 class ContractTinymceHandle{
-    static initTinymce(htmlContent = '') {
+    static initTinymce(htmlContent = '', idTarget) {
         tinymce.init({
-            selector: 'textarea#inp-contents',
+            selector: `textarea#${idTarget}`,
             plugins: 'paste importcss autolink autosave save directionality code visualblocks visualchars fullscreen',
             menubar: false,  // Hide the menubar
             toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect | removeformat',
@@ -464,7 +474,7 @@ class ContractTinymceHandle{
         });
     };
 
-    static getContent() {
-        return  tinymce.get('inp-contents').getContent();
+    static getContent(idTarget) {
+        return tinymce.get(idTarget).getContent();
     };
 }

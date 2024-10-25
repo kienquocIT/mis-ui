@@ -4,10 +4,15 @@ $(function () {
 
         let formSubmit = $('#frm_contract_create');
 
+        ContractLoadDataHandle.loadCustomCss();
         ContractDataTableHandle.dataTableDocument();
         ContractDataTableHandle.dataTableFile();
+
         if (formSubmit.attr('data-method').toLowerCase() === 'post') {
-            ContractTinymceHandle.initTinymce();
+            ContractTinymceHandle.initTinymce('', 'abstract-content');
+            ContractTinymceHandle.initTinymce('', 'trade-content');
+            ContractTinymceHandle.initTinymce('', 'legal-content');
+            ContractTinymceHandle.initTinymce('', 'payment-content');
         }
         WFRTControl.setWFInitialData('contractapproval');
 

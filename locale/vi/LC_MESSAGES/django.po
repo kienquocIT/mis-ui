@@ -9242,7 +9242,7 @@ msgstr "Chọn trạm tiếp theo"
 
 #
 msgid "The product does not have warehouse cost list. You can choose bill of material cost, standard cost or input cost."
-msgstr "Sản phẩm không có danh sách giá vốn tồn kho. Bạn có thể chọn Giá định múc nguyên vật liệu, giá tiêu chuẩn hoặc tự nhập giá."
+msgstr "Sản phẩm không có danh sách giá vốn tồn kho. Bạn có thể chọn giá định mức nguyên vật liệu, giá tiêu chuẩn hoặc tự nhập giá."
 
 #
 msgid "Load data from excel to datatable"
@@ -9294,8 +9294,4 @@ msgstr "Bảng serial"
 
 #
 msgid "Bill of material cost"
-msgstr "Giá định múc nguyên vật liệu"
-
-#
-msgid "Standard cost"
-msgstr "Giá vốn tiêu chuẩn"
+msgstr "Giá định mức nguyên vật liệu"

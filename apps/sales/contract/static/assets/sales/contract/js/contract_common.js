@@ -114,6 +114,24 @@ class ContractLoadDataHandle {
                 };
                 result.push(dataAdd);
             }
+            // append custom data to .media-body
+            let txt = ContractLoadDataHandle.$trans.attr('data-old');
+            let badge = 'danger';
+            if (order === 1) {
+                txt = ContractLoadDataHandle.$trans.attr('data-current');
+                badge = 'success';
+            }
+            if (mediaBody.querySelector('.custom-file-data')) {
+                $(mediaBody.querySelector('.custom-file-data')).empty();
+                $(mediaBody.querySelector('.custom-file-data')).append(`<span class="file-date-created mr-1">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span>
+                                                                        <span class="badge badge-soft-${badge} file-is-current">${txt}</span>`);
+            } else {
+                $(mediaBody).append(`<div class="d-flex custom-file-data">
+                                        <span class="file-date-created mr-1">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span>
+                                        <span class="badge badge-soft-${badge} file-is-current">${txt}</span>
+                                    </div>`);
+            }
+            // update is_current & order
             is_current = false;
             order += 1;
         }
@@ -280,7 +298,7 @@ class ContractDataTableHandle {
                     render: (data, type, row) => {
                         let date = '';
                         if (row?.['date_created']) {
-                            date = moment(row?.['date_created']).format('DD/MM/YYYY')
+                            date = moment(row?.['date_created']).format('DD/MM/YYYY');
                         }
                         return `<span class="table-row-date">${date}</span>`;
                     }

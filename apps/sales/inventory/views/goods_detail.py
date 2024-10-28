@@ -23,18 +23,25 @@ class GoodsDetail(View):
                         {
                             "id": "table-serial-import-db",
                             "name": _("Serial datatable"),
-                            'map_with': 'table-serial',
-                            'option': [0],
-                            "col_type": "tttttttt",
+                            "map_with": 'table-serial',
+                            "option": [0],
+                            "col_type": [
+                                'input-text',
+                                'input-text',
+                                'input-text',
+                                'input-text',
+                                'input-text',
+                                'input-text',
+                            ],
                             "data_format": {
                                 "key": "data",
                                 "value_list": [
-                                    {"col_key": "vendor_serial_number", "col_index": 1},
-                                    {"col_key": "serial_number", "col_index": 2},
-                                    {"col_key": "expire_date", "col_index": 3},
-                                    {"col_key": "manufacture_date", "col_index": 4},
-                                    {"col_key": "warranty_start", "col_index": 5},
-                                    {"col_key": "warranty_end", "col_index": 6},
+                                    {"col_key": "vendor_serial_number", "col_index": 0},
+                                    {"col_key": "serial_number", "col_index": 1},
+                                    {"col_key": "expire_date", "col_index": 2},
+                                    {"col_key": "manufacture_date", "col_index": 3},
+                                    {"col_key": "warranty_start", "col_index": 4},
+                                    {"col_key": "warranty_end", "col_index": 5},
                                     {"col_key": "product_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-product-id"},
                                     {"col_key": "goods_receipt_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-goods-receipt-id"},
                                     {"col_key": "warehouse_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-warehouse-id"},
@@ -69,12 +76,12 @@ class GoodsDetailAPI(APIView):
         return resp.auto_return(status_success=status.HTTP_201_CREATED)
 
 
-class GoodsDetailAPIImportDB(APIView):
+class GoodsDetailListImportDBAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.CREATE_GOODS_DETAIL_DATA_IMPORT_DB).post(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_DETAIL_IMPORT_DB).post(request.data)
         resp.result['message'] = SaleMsg.GOODS_DETAIL_UPDATE
         return resp.auto_return(status_success=status.HTTP_201_CREATED)

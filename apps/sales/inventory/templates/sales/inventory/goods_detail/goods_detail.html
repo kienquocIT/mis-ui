@@ -136,9 +136,8 @@
                                 <div class="import-db-space">
                                     {% include 'extends/import-datatable/button-import-db.html' %}
                                     <script class="import-db-form-url"
-                                          data-get-method="POST"
-                                          data-get-url="{% url 'GoodsDetailAPIImportDB' %}"
-                                          data-get-redirect-url="{% url 'GoodsDetail' %}"
+                                          data-import-db-method="POST"
+                                          data-import-db-url="{% url 'GoodsDetailListImportDBAPI' %}"
                                     ></script>
                                     <table class="table nowrap w-100" id="table-serial">
                                         <thead class="bg-secondary-light-4">
@@ -173,13 +172,13 @@
         <thead class="sticky bg-gold-light-5">
             <tr>
                 <th>#</th>
+                <th>{% trans 'Status' %}</th>
                 <th>{% trans 'Vendor serial No.' %}</th>
                 <th>{% trans 'Serial No.' %}</th>
                 <th>{% trans 'Expired date' %}</th>
                 <th>{% trans 'Mfr date' %}</th>
                 <th>{% trans 'Warranty start' %}</th>
                 <th>{% trans 'Warranty end' %}</th>
-                <th>{% trans 'Import status' %}</th>
             </tr>
         </thead>
         <tbody></tbody>

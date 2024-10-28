@@ -54,6 +54,8 @@ $(document).ready(function () {
         },
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
+            frm.dataForm['title'] = $('#price-list-title').val();
+
             frm.dataForm['currency'] = currencySelectEle.val();
 
             if (!currencySelectEle.hasClass('tag-changed')) {

@@ -59,18 +59,33 @@ class QuotationCreate(View):
                         {
                             "id": "datable-quotation-create-product-import-db",
                             "name": _("Quotation line detail datatable"),
-                            'map_with': 'datable-quotation-create-product',
-                            'option': [1],
-                            "col_type": "tttsnmnsxt",
+                            "map_with": 'datable-quotation-create-product',
+                            "option": [1],
+                            "col_type": [
+                                'input-text',
+                                'select',
+                                'textarea',
+                                'select',
+                                'checkbox',
+                                'select',
+                                'input-number',
+                                'input-money',
+                                'input-number',
+                                'input-number'
+                            ],
                             "data_format": {
-                                "key": "product",
+                                "key": "quotation_product_import_data",
                                 "value_list": [
-                                    {"col_key": "code", "col_index": 1},
-                                    {"col_key": "uom", "col_index": 2},
-                                    {"col_key": "currency", "col_index": 3},
-                                    {"col_key": "price", "col_index": 4},
-                                    {"col_key": "price_id", "col_index": -2, "ele_id": '#script_price_id',
-                                     "get_value": False, "get_text": False, "get_attr": "data-price-id"},
+                                    {"col_key": "product_code", "col_index": 0},
+                                    {"col_key": "product_title", "col_index": 1},
+                                    {"col_key": "product_description", "col_index": 2},
+                                    {"col_key": "product_category", "col_index": 3},
+                                    {"col_key": "is_service", "col_index": 4},
+                                    {"col_key": "uom", "col_index": 5},
+                                    {"col_key": "quantity", "col_index": 6},
+                                    {"col_key": "unit_price", "col_index": 7},
+                                    {"col_key": "discount_percent", "col_index": 8},
+                                    {"col_key": "tax_percent", "col_index": 9},
                                 ]
                             }
                         }

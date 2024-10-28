@@ -2020,8 +2020,8 @@ msgid "Select price list type"
 msgstr "Chọn loại bảng giá"
 
 #
-msgid "Select an item"
-msgstr "Chọn nhiều mục"
+msgid "Select product / expense"
+msgstr "Chọn sản phẩm / chi phí"
 
 #
 msgid "Product Code"
@@ -9291,3 +9291,31 @@ msgstr "Bảng giá"
 #
 msgid "Serial datatable"
 msgstr "Bảng serial"
+
+#
+msgid "Quotation line detail datatable"
+msgstr "Bảng chi tiết Báo giá"
+
+#
+msgid "Check and load"
+msgstr "Kiểm tra và tải lên"
+
+#
+msgid "Create new one"
+msgstr "Tạo dữ liệu mới"
+
+#
+msgid "Use old"
+msgstr "Dùng dữ liệu cũ"
+
+#
+msgid "Remember this option for this field"
+msgstr "Ghi nhớ lựa chọn cho trường dữ liệu này"
+
+#
+msgid "Is service"
+msgstr "Là dịch vụ"
+
+#
+msgid "Please select one option!"
+msgstr "Hãy chọn một tùy chọn"

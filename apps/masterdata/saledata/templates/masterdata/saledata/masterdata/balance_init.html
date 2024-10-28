@@ -83,9 +83,8 @@
                 <div class="import-db-space">
                     {% include 'extends/import-datatable/button-import-db.html' %}
                     <script class="import-db-form-url"
-                            data-get-method="POST"
-                            data-get-url="{% url 'BalanceInitListAPIImportDB' %}"
-                            data-get-redirect-url="{% url 'BalanceInitList' %}"
+                            data-import-db-method="POST"
+                            data-import-db-url="{% url 'BalanceInitializationListImportDBAPI' %}"
                     ></script>
                     <table class="table nowrap w-100" id="table-balance-item"
                            data-method="GET"
@@ -176,6 +175,7 @@
         <thead class="sticky">
             <tr>
                 <th>#</th>
+                <th>{% trans 'Status' %}</th>
                 <th>{% trans 'Product' %}</th>
                 <th>{% trans 'Warehouse' %}</th>
                 <th>
@@ -187,7 +187,6 @@
                     </i>
                 </th>
                 <th>{% trans 'Pretax value' %}</th>
-                <th>{% trans 'Import status' %}</th>
             </tr>
         </thead>
         <tbody></tbody>

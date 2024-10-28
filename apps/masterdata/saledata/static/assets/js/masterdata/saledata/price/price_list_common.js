@@ -237,9 +237,12 @@ class PriceListLoadPage {
                         }
                     }
 
+                    $('#price-list-title').val(price_list_detail.title)
+
                     autoUpdateCheckBoxEle.prop('checked', price_list_detail.auto_update);
                     currencySelectEle.prop('disabled', price_list_detail.auto_update);
                     $('#btn-add-new-item').prop('disabled', price_list_detail.auto_update);
+                    $('.btn-group-import-datatable').prop('disabled', price_list_detail.auto_update);
                     if (page_type !== 1) {
                         $('#inp-factor').prop('disabled', !price_list_detail.auto_update)
                     }
@@ -298,6 +301,11 @@ class PriceListLoadPage {
                         } else {
                             timeValidEle.find('span').addClass('text-gray')
                         }
+                    }
+
+                    if (page_type) {
+                        $('.modal').find('select').prop('disabled', true)
+                        $('.modal').find('input').prop('disabled', true).prop('readonly', true)
                     }
                 }
             }).then(

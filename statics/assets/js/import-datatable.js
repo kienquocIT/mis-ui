@@ -138,9 +138,10 @@ $(document).ready(function () {
         if (data.length > 1) {
             let from_index = from_index_value ? parseInt(from_index_value) : null
             let to_index = to_index_value ? parseInt(to_index_value) : null
-            if (to_index > data.length) {
+            if (to_index >= data.length) {
                 to_index = data.length - 1
             }
+            console.log(to_index)
 
             if (from_index && to_index) {
                 PREVIEW_TABLE.find('tbody').html('')
@@ -149,25 +150,25 @@ $(document).ready(function () {
                     let tds = ``
                     for (let j = 0; j < col_type.length; j++) {
                         if (col_type[j] === 'input-text') {
-                            tds += `<td style="min-width: 200px"><input class="form-control" value="${data[i][j] ? data[i][j] : ''}"></td>`
+                            tds += `<td style="min-width: 250px"><input class="form-control" value="${data[i][j] ? data[i][j] : ''}"></td>`
                         } else if (col_type[j] === 'input-money') {
-                            tds += `<td style="min-width: 200px"><input class="form-control mask-money text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
+                            tds += `<td style="min-width: 250px"><input class="form-control mask-money text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
                         } else if (col_type[j] === 'input-money(disabled)') {
-                            tds += `<td style="min-width: 200px"><input disabled readonly class="form-control mask-money text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
+                            tds += `<td style="min-width: 250px"><input disabled readonly class="form-control mask-money text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
                         } else if (col_type[j] === 'input-number') {
-                            tds += `<td style="min-width: 150px"><input type="number" class="form-control text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
+                            tds += `<td style="min-width: 200px"><input type="number" class="form-control text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
                         } else if (col_type[j] === 'select') {
-                            tds += `<td style="min-width: 200px">
+                            tds += `<td style="min-width: 250px">
                                 <select class="form-select select2">
                                     <option selected>${data[i][j] ? data[i][j] : ''}</option>
                                 </select>
                             </td>`
                         } else if (col_type[j] === 'span') {
-                            tds += `<td style="min-width: 200px"><span>${data[i][j] ? data[i][j] : ''}</span></td>`
+                            tds += `<td style="min-width: 250px"><span>${data[i][j] ? data[i][j] : ''}</span></td>`
                         } else if (col_type[j] === 'span-money') {
-                            tds += `<td class="text-right" style="min-width: 200px"><span class="mask-money" data-init-money="${data[i][j] ? data[i][j] : 0}"></span></td>`
+                            tds += `<td class="text-right" style="min-width: 250px"><span class="mask-money" data-init-money="${data[i][j] ? data[i][j] : 0}"></span></td>`
                         } else if (col_type[j] === 'textarea') {
-                            tds += `<td style="min-width: 200px"><textarea class="form-control small">${data[i][j] ? data[i][j] : ''}</textarea></td>`
+                            tds += `<td style="min-width: 300px"><textarea class="form-control small">${data[i][j] ? data[i][j] : ''}</textarea></td>`
                         } else if (col_type[j] === 'checkbox') {
                             tds += `<td style="min-width: 100px"><input type="checkbox" class="form-check" ${data[i][j] ? 'checked' : ''}></td>`
                         } else {

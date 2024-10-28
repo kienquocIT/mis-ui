@@ -1,4 +1,4 @@
-
+$(document).ready(function () {
     const $trans_db_script = $('#import-db-trans-script')
     const $import_db_form_cfg = JSON.parse($('#import_db_form_cfg').text().trim())
     const $list_import_db = $import_db_form_cfg?.['list_import_db'] ? $import_db_form_cfg?.['list_import_db'] : []
@@ -21,8 +21,7 @@
         THIS_IMPORT_SPACE.find('table').each(function () {
             if (!target_table_id) {
                 target_table_id = $(this).attr('id')
-            }
-            else {
+            } else {
                 return false
             }
         })
@@ -55,7 +54,7 @@
             $import_progress_bar.css('width', '0%').attr('aria-valuenow', 0); // Đặt về 0%
 
             // Cập nhật thanh progress khi tệp đang được đọc
-            reader.onprogress = function(event) {
+            reader.onprogress = function (event) {
                 if (event.lengthComputable) {
                     const progress = Math.round((event.loaded / event.total) * 100);
 
@@ -88,15 +87,14 @@
                 )
             };
 
-            reader.onerror = function() {
+            reader.onerror = function () {
                 alert('Error reading file');
                 // Nếu có lỗi, ẩn thanh progress
                 $.fn.notifyB({description: "File is loaded error!"}, 'failure')
             };
 
             reader.readAsArrayBuffer(SELECTED_FILE);
-        }
-        else {
+        } else {
             if (!SELECTED_FILE) {
                 $.fn.notifyB({description: 'Please select a FILE first!'}, 'warning');
             }
@@ -114,8 +112,7 @@
         THIS_IMPORT_SPACE.find('table').each(function () {
             if (!target_table_id) {
                 target_table_id = $(this).attr('id')
-            }
-            else {
+            } else {
                 return false
             }
         })
@@ -153,42 +150,33 @@
                     for (let j = 0; j < col_type.length; j++) {
                         if (col_type[j] === 'input-text') {
                             tds += `<td style="min-width: 200px"><input class="form-control" value="${data[i][j] ? data[i][j] : ''}"></td>`
-                        }
-                        else if (col_type[j] === 'input-money') {
+                        } else if (col_type[j] === 'input-money') {
                             tds += `<td style="min-width: 200px"><input class="form-control mask-money text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
-                        }
-                        else if (col_type[j] === 'input-money(disabled)') {
+                        } else if (col_type[j] === 'input-money(disabled)') {
                             tds += `<td style="min-width: 200px"><input disabled readonly class="form-control mask-money text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
-                        }
-                        else if (col_type[j] === 'input-number') {
+                        } else if (col_type[j] === 'input-number') {
                             tds += `<td style="min-width: 150px"><input type="number" class="form-control text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
-                        }
-                        else if (col_type[j] === 'select') {
+                        } else if (col_type[j] === 'select') {
                             tds += `<td style="min-width: 200px">
                                 <select class="form-select select2">
                                     <option selected>${data[i][j] ? data[i][j] : ''}</option>
                                 </select>
                             </td>`
-                        }
-                        else if (col_type[j] === 'span') {
+                        } else if (col_type[j] === 'span') {
                             tds += `<td style="min-width: 200px"><span>${data[i][j] ? data[i][j] : ''}</span></td>`
-                        }
-                        else if (col_type[j] === 'span-money') {
+                        } else if (col_type[j] === 'span-money') {
                             tds += `<td class="text-right" style="min-width: 200px"><span class="mask-money" data-init-money="${data[i][j] ? data[i][j] : 0}"></span></td>`
-                        }
-                        else if (col_type[j] === 'textarea') {
+                        } else if (col_type[j] === 'textarea') {
                             tds += `<td style="min-width: 200px"><textarea class="form-control small">${data[i][j] ? data[i][j] : ''}</textarea></td>`
-                        }
-                        else if (col_type[j] === 'checkbox') {
+                        } else if (col_type[j] === 'checkbox') {
                             tds += `<td style="min-width: 100px"><input type="checkbox" class="form-check" ${data[i][j] ? 'checked' : ''}></td>`
-                        }
-                        else {
+                        } else {
                             tds += `<td>-</td>`
                         }
                     }
                     PREVIEW_TABLE.find('tbody').append(`<tr>
                         <td style="min-width: 80px">
-                            ${i-from_index+1}
+                            ${i - from_index + 1}
                             <button hidden type="button" class="btn btn-sm btn-icon btn-flush-secondary flush-soft-hover btn-rounded btn-del-row-import-db">
                                 <span class="btn-icon-wrap">
                                     <span class="feather-icon">
@@ -206,13 +194,12 @@
                     $.fn.initMaskMoney2()
                 }
             }
-        }
-        else {
+        } else {
             $.fn.notifyB({description: "File is empty!"}, 'warning')
         }
     }
 
-    function combinesDataImportDB(row, target_table, create_new_list=[], get_old_list=[]) {
+    function combinesDataImportDB(row, target_table, create_new_list = [], get_old_list = []) {
         // prepare data
         let col_type = target_table.attr('data-col-type').split(',')
         let col_data_format_string = target_table.attr('data-format')
@@ -228,44 +215,32 @@
             if (col_index >= 0) {
                 if (col_type[col_index] === 'input-text') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).val() ? row.find(`td:eq(${col_index + 2}) input`).val() : null
-                }
-                else if (col_type[col_index] === 'input-money') {
+                } else if (col_type[col_index] === 'input-money') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).attr('value') ? row.find(`td:eq(${col_index + 2}) input`).attr('value') : null
-                }
-                else if (col_type[col_index] === 'input-money(disabled)') {
+                } else if (col_type[col_index] === 'input-money(disabled)') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).attr('value') ? row.find(`td:eq(${col_index + 2}) input`).attr('value') : null
-                }
-                else if (col_type[col_index] === 'input-number') {
+                } else if (col_type[col_index] === 'input-number') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).val() ? row.find(`td:eq(${col_index + 2}) input`).val() : null
-                }
-                else if (col_type[col_index] === 'select') {
+                } else if (col_type[col_index] === 'select') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) select option:eq(0)`).val() ? row.find(`td:eq(${col_index + 2}) select option:eq(0)`).val() : null
-                }
-                else if (col_type[col_index] === 'span') {
+                } else if (col_type[col_index] === 'span') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) span`).text() ? row.find(`td:eq(${col_index + 2}) span`).text() : null
-                }
-                else if (col_type[col_index] === 'span-money') {
+                } else if (col_type[col_index] === 'span-money') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) span`).attr('data-init-money') ? row.find(`td:eq(${col_index + 2}) span`).attr('data-init-money') : null
-                }
-                else if (col_type[col_index] === 'textarea') {
+                } else if (col_type[col_index] === 'textarea') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) textarea`).val() ? row.find(`td:eq(${col_index + 2}) textarea`).val() : null
-                }
-                else if (col_type[col_index] === 'checkbox') {
+                } else if (col_type[col_index] === 'checkbox') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).prop('checked')
                 }
-            }
-            else {
+            } else {
                 if (col_index === -1) {
                     data_combined[key][value_list[i]['col_key']] = value_list[i]['data_default'] ? value_list[i]['data_default'] : null
-                }
-                else if (col_index === -2) {
+                } else if (col_index === -2) {
                     if (value_list[i]['get_value'] && !value_list[i]['get_text'] && value_list[i]['get_attr'] === '') {
                         data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).val() ? $(value_list[i]['ele_id']).val() : null
-                    }
-                    else if (!value_list[i]['get_value'] && value_list[i]['get_text'] && value_list[i]['get_attr'] === '') {
+                    } else if (!value_list[i]['get_value'] && value_list[i]['get_text'] && value_list[i]['get_attr'] === '') {
                         data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).text() ? $(value_list[i]['ele_id']).text() : null
-                    }
-                    else if (!value_list[i]['get_value'] && !value_list[i]['get_text'] && value_list[i]['get_attr'] !== '') {
+                    } else if (!value_list[i]['get_value'] && !value_list[i]['get_text'] && value_list[i]['get_attr'] !== '') {
                         data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).attr(value_list[i]['get_attr']) ? $(value_list[i]['ele_id']).attr(value_list[i]['get_attr']) : null
                     }
                 }
@@ -308,8 +283,7 @@
                 });
                 $.fn.notifyB({description: errs.data.errors}, 'failure');
                 return false
-            }
-            else if (type === 'load') {
+            } else if (type === 'load') {
                 let err_key = ''
                 let err_message = ''
                 for (let key in errs.data ? errs.data.errors : {}) {
@@ -371,7 +345,7 @@
         }
     }
 
-    async function processAllRows(form, table_data, type='import') {
+    async function processAllRows(form, table_data, type = 'import') {
         let frm = new SetupFormSubmit(form);
 
         // Duyệt qua từng hàng và đợi từng AJAX hoàn tất trước khi tiếp tục, nếu gặp lỗi thì ngừng
@@ -381,7 +355,7 @@
                 let data_combined = combinesDataImportDB(
                     row, table_data, APPLY_ALL_CREATE_NEW_LIST, APPLY_ALL_GET_OLD_LIST
                 )
-                let status = await processRow(row, frm, data_combined, type );   // Đợi AJAX hoàn thành cho từng hàng
+                let status = await processRow(row, frm, data_combined, type);   // Đợi AJAX hoàn thành cho từng hàng
                 if (status === false) {
                     return false
                 }
@@ -449,7 +423,7 @@
             $load_progress_bar.css('width', '0%').attr('aria-valuenow', 0); // Đặt về 0%
 
             // Cập nhật thanh progress khi tệp đang được đọc
-            reader.onprogress = function(event) {
+            reader.onprogress = function (event) {
                 if (event.lengthComputable) {
                     const progress = Math.round((event.loaded / event.total) * 100);
 
@@ -482,15 +456,14 @@
                 )
             };
 
-            reader.onerror = function() {
+            reader.onerror = function () {
                 alert('Error reading file');
                 // Nếu có lỗi, ẩn thanh progress
                 $.fn.notifyB({description: "File is loaded error!"}, 'failure')
             };
 
             reader.readAsArrayBuffer(SELECTED_FILE);
-        }
-        else {
+        } else {
             if (!SELECTED_FILE) {
                 $.fn.notifyB({description: 'Please select a FILE first!'}, 'warning');
             }
@@ -508,8 +481,7 @@
         THIS_IMPORT_SPACE.find('table').each(function () {
             if (!target_table_id) {
                 target_table_id = $(this).attr('id')
-            }
-            else {
+            } else {
                 return false
             }
         })
@@ -544,3 +516,4 @@
             });
         }
     })
+})

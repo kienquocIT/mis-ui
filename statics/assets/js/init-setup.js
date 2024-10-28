@@ -6417,6 +6417,9 @@ class FileControl {
         if (typeof ids === 'string' && ids.indexOf(id) === -1) {
             ids = FileControl.resolve_ids(ids + ',' + id)
             inputEle.val(ids);
+
+            // Manually trigger the change event
+            inputEle[0].dispatchEvent(new Event('change'));
         }
     }
 

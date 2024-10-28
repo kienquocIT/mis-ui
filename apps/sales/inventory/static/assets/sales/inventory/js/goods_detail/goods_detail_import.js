@@ -1,7 +1,7 @@
 $(document).ready(function () {
     let number_free_row = 0
 
-    $('#btn-import-datatable-from-excel').on('click', function () {
+    $('.btn-import-datatable-from-excel').on('click', function () {
         number_free_row = 0
         $('#table-serial tbody tr').each(function () {
             if (!$(this).find('.vendor_serial_number').val()) {

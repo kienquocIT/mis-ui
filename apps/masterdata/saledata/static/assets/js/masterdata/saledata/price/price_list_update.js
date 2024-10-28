@@ -2,9 +2,12 @@ $(document).ready(function () {
     // load detail price list
     let frm = $('#form-update-price-list');
     let pk = $.fn.getPkDetail();
+    $('#script_price_id').attr('data-price-id', pk)
+
     PriceListLoadPage.loadDetailPage(frm, pk);
     let load_parent = false;
-// onchange checkbox auto-update
+
+    // onchange checkbox auto-update
     autoUpdateCheckBoxEle.on('change', function () {
         if ($(this).prop("checked")) {
             if (load_parent) {
@@ -25,15 +28,18 @@ $(document).ready(function () {
                     })
             }
             currencySelectEle.prop('disabled', 'disabled');
+            currencySelectEle.addClass('tag-changed')
             canDeleteCheckBoxEle.removeAttr('disabled');
-
+            $('#inp-factor').prop('disabled', false)
         } else {
             canDeleteCheckBoxEle.prop('checked', false);
+            currencySelectEle.addClass('tag-changed')
             currencySelectEle.removeAttr('disabled');
+            $('#inp-factor').prop('disabled', true)
         }
     })
 
-// submit form setting price list
+    // submit form setting price list
     new SetupFormSubmit(frm).validate({
         rules: {
             currency: {
@@ -49,8 +55,6 @@ $(document).ready(function () {
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
             frm.dataForm['currency'] = currencySelectEle.val();
-            if (frm.dataForm['currency'].length === 0) {
-            }
 
             if (!currencySelectEle.hasClass('tag-changed')) {
                 delete frm.dataForm['currency']
@@ -68,6 +72,7 @@ $(document).ready(function () {
                 frm.dataForm['can_delete'] = false
             }
 
+            WindowControl.showLoading()
             $.fn.callAjax2({
                 url: frm.dataUrl.format_url_with_uuid(pk),
                 method: frm.dataMethod,
@@ -85,6 +90,7 @@ $(document).ready(function () {
                 },
                 (errs) => {
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    WindowControl.hideLoading()
                 })
         }
     })
@@ -104,6 +110,7 @@ $(document).ready(function () {
             },
         },
         submitHandler: function (form) {
+            WindowControl.showLoading()
             let frm = new SetupFormSubmit(form);
 
             frm.dataForm['product'] = {
@@ -129,15 +136,17 @@ $(document).ready(function () {
                 },
                 (errs) => {
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    WindowControl.hideLoading()
                 }
             )
         }
     })
 
-// form update item price
+    // form update item price
     let frm_update_item_price = $('#form-update-item-price')
     new SetupFormSubmit(frm_update_item_price).validate({
         submitHandler: function (form) {
+            WindowControl.showLoading()
             let frm = new SetupFormSubmit($(form));
             frm.dataForm['list_item'] = PriceListAction.getDataItemChangePrice()
             $.fn.callAjax2({
@@ -157,6 +166,7 @@ $(document).ready(function () {
                 },
                 (errs) => {
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    WindowControl.hideLoading()
                 })
         }
     })
@@ -177,11 +187,10 @@ $(document).ready(function () {
         }
     })
 
-
-// delete item
+    // delete item
     $(document).on('click', '.btn-del', function () {
-        let data = JSON.parse($('#data_detail').text());
-        if (data.can_delete) {
+        let data = JSON.parse($('#data_detail').text())
+        if (!data.can_delete) {
             Swal.fire({
                 icon: 'error',
                 title: transEle.data('trans-delete-item-failed'),
@@ -190,8 +199,10 @@ $(document).ready(function () {
         } else {
             Swal.fire({
                 html:
-                    '<div><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>' +
-                    `<h6 class="text-danger">${$('#base-trans-factory').data('sure-delete')}</h6>`,
+                    `<div class="mb-3">
+                        <i class="fas fa-trash-alt text-danger"></i>
+                    </div>
+                    <h6 class="text-danger">${$('#base-trans-factory').data('sure-delete')}</h6>`,
                 customClass: {
                     confirmButton: 'btn btn-outline-secondary text-danger',
                     cancelButton: 'btn btn-outline-secondary text-gray',
@@ -199,8 +210,8 @@ $(document).ready(function () {
                 },
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
+                confirmButtonText: transEle.data('trans-delete'),
+                cancelButtonText: transEle.data('trans-cancel'),
                 reverseButtons: true,
             }).then((result) => {
                 if (result.value) {
@@ -244,7 +255,7 @@ $(document).ready(function () {
 
     })
 
-// on change price in table item
+    // on change price in table item
     $(document).on('input', '#datatable-item-list input.form-control', function () {
         $(this).addClass('inp-edited');
     })
@@ -274,25 +285,15 @@ $(document).ready(function () {
         }
     })
 
-    let fragment = window.location.hash;
-
-    switch (fragment) {
-        case '#tab-setting':
-            PriceListAction.configBtnUpdate('form-update-price-list', transEle.data('trans-save-setting'));
-            break;
-        case '#tab-item-list':
-            PriceListAction.configBtnUpdate('form-update-item-price', transEle.data('trans-save-item'));
-            break;
-    }
-
-    $('#setting-nav').on('click', function () {
-        PriceListAction.configBtnUpdate('form-update-price-list', transEle.data('trans-save-setting'));
-    })
-    $('#products-nav').on('click', function () {
-        PriceListAction.configBtnUpdate('form-update-item-price', transEle.data('trans-save-item'));
-    })
-
-    $('#tab-setting input,#tab-setting select').on('change', function () {
+    $('#config-modal input, #config-modal select').on('change', function () {
         $(this).addClass('tag-changed')
     })
+
+    $(document).on('mouseenter', '#datatable-item-list tbody tr', function () {
+        $(this).addClass('bg-danger-light-5')
+        $(this).find('td:eq(0) .btn-del').prop('hidden', false);
+    }).on('mouseleave', '#datatable-item-list tbody tr', function () {
+        $(this).removeClass('bg-danger-light-5')
+        $(this).find('td:eq(0) .btn-del').prop('hidden', true);
+    });
 })

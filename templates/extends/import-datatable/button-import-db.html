@@ -14,10 +14,21 @@
         data-trans-err="{% trans 'Can not import some rows' %}"
 ></script>
 
-<div class="col-12 text-right">
-    <button id="btn-import-datatable-from-excel" data-bs-toggle="modal" data-bs-target="#modal-import-datatable-from-excel" type="button" class="btn btn-social btn-social-linkedin btn-sm">
-        <span class="icon" data-bs-toggle="tooltip" title="{% trans 'Import datatable from excel' %}">
-            <i class="bi bi-file-earmark-spreadsheet"></i>
-        </span>
-    </button>
+<div class="text-left">
+    <div class="btn-group">
+        <div class="dropdown">
+            <button type="button" class="btn-group-import-datatable btn btn-sm border-light btn-outline-light " aria-expanded="false" data-bs-toggle="dropdown"><i class="far fa-file-excel"></i></button>
+            <div role="menu" class="dropdown-menu">
+                <a hidden class="dropdown-item btn-import-datatable-from-excel" href="#" data-bs-toggle="modal" data-bs-target="#modal-import-datatable-from-excel">
+                    {% trans 'Import data from excel' %}
+                </a>
+                <a hidden class="dropdown-item btn-load-datatable-from-excel" href="#" data-bs-toggle="modal" data-bs-target="#modal-load-datatable-from-excel">
+                    {% trans 'Load data from excel to datatable' %}
+                </a>
+                <a hidden class="dropdown-item btn-export-datatable-to-excel" href="#">
+                    {% trans 'Export datatable to excel' %}
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

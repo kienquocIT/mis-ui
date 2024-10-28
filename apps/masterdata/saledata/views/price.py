@@ -255,22 +255,27 @@ class PriceListUpdate(View):
     def get(self, request, pk, *args, **kwargs):
         return {
             'data':{
-                'list_import_db_form': [
-                    {
-                        "id": "import-db-form-price",
-                        "name": _("Price datatable"),
-                        "col_type": "tttmt",
-                        "data_format": {
-                            "key": "product",
-                            "value_list": [
-                                {"col_key": "code", "col_index": 1},
-                                {"col_key": "uom", "col_index": 2},
-                                {"col_key": "price", "col_index": 3},
-                                {"col_key": "price_id","col_index": -2, "ele_id": '#tab-item-list', "get_value": False, "get_text": False, "get_attr": "price_id"},
-                            ]
+                'import_db_form_cfg': {
+                    'list_import_db': [
+                        {
+                            "id": "datatable-item-list-import-db",
+                            "name": _("Price datatable"),
+                            'map_with': 'datatable-item-list',
+                            'option': [0],
+                            "col_type": "ttttmt",
+                            "data_format": {
+                                "key": "product",
+                                "value_list": [
+                                    {"col_key": "code", "col_index": 1},
+                                    {"col_key": "uom", "col_index": 2},
+                                    {"col_key": "currency", "col_index": 3},
+                                    {"col_key": "price", "col_index": 4},
+                                    {"col_key": "price_id", "col_index": -2, "ele_id": '#script_price_id', "get_value": False, "get_text": False, "get_attr": "data-price-id"},
+                                ]
+                            }
                         }
-                    }
-                ]
+                    ]
+                }
             }
         }, status.HTTP_200_OK
 

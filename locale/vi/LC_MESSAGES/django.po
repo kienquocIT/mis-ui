@@ -9241,8 +9241,8 @@ msgid "Select next station"
 msgstr "Chọn trạm tiếp theo"
 
 #
-msgid "The product does not have cost list, please input cost."
-msgstr "Sản phẩm không có danh sách giá vốn, vui lòng nhập giá vốn."
+msgid "The product does not have warehouse cost list. You can choose bill of material cost, standard cost or input cost."
+msgstr "Sản phẩm không có danh sách giá vốn tồn kho. Bạn có thể chọn giá định mức nguyên vật liệu, giá tiêu chuẩn hoặc tự nhập giá."
 
 #
 msgid "Load data from excel to datatable"
@@ -9291,6 +9291,10 @@ msgstr "Bảng giá"
 #
 msgid "Serial datatable"
 msgstr "Bảng serial"
+
+#
+msgid "Bill of material cost"
+msgstr "Giá định mức nguyên vật liệu"
 
 #
 msgid "Quotation line detail datatable"

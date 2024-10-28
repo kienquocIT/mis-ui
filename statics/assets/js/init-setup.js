@@ -3072,7 +3072,7 @@ class WFRTControl {
 
     static getRuntimeDocData() {
         let itemEle = $('#idxRuntimeDoc');
-        if (itemEle) {
+        if (itemEle && itemEle.length > 0) {
             return JSON.parse(itemEle.val());
         }
         return {};

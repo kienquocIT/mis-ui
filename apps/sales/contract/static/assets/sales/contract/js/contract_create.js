@@ -49,7 +49,10 @@ $(function () {
                 'title',
                 'document_data',
                 'attachment',
-                'tinymce_content',
+                'abstract_content',
+                'trade_content',
+                'legal_content',
+                'payment_content',
             ]
             if (_form.dataForm) {
                 ContractCommonHandle.filterFieldList(submitFields, _form.dataForm);

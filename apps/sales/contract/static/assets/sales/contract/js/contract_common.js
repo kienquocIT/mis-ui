@@ -340,10 +340,10 @@ class ContractSubmitHandle {
         let dataDocParse = ContractSubmitHandle.setupDataDocument();
         _form.dataForm['document_data'] = dataDocParse?.['dataDoc'];
         _form.dataForm['attachment'] = dataDocParse?.['attachment'];
-        _form.dataForm['abstract_content'] = ContractTinymceHandle.getContent('abstract_content');
-        _form.dataForm['trade_content'] = ContractTinymceHandle.getContent('trade_content');
-        _form.dataForm['legal_content'] = ContractTinymceHandle.getContent('legal_content');
-        _form.dataForm['payment_content'] = ContractTinymceHandle.getContent('payment_content');
+        _form.dataForm['abstract_content'] = ContractTinymceHandle.getContent('abstract-content');
+        _form.dataForm['trade_content'] = ContractTinymceHandle.getContent('trade-content');
+        _form.dataForm['legal_content'] = ContractTinymceHandle.getContent('legal-content');
+        _form.dataForm['payment_content'] = ContractTinymceHandle.getContent('payment-content');
     };
 }
 

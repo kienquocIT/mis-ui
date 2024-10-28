@@ -68,13 +68,20 @@ class ContractLoadDataHandle {
                     data: attachmentParse,
                 });
                 // add event
-                let inputs = ContractLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
-                inputs.forEach((input) => {
-                    input.addEventListener('change', function () {
-                        let dataList = ContractLoadDataHandle.loadSetupAddFile();
+                // let inputs = ContractLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
+                // inputs.forEach((input) => {
+                //     input.addEventListener('change', function () {
+                //         let dataList = ContractLoadDataHandle.loadSetupAttach();
+                //         ContractLoadDataHandle.loadAddFile(dataList);
+                //     });
+                // });
+                let attachIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+                if (attachIds) {
+                    attachIds.addEventListener('change', function () {
+                        let dataList = ContractLoadDataHandle.loadSetupAttach();
                         ContractLoadDataHandle.loadAddFile(dataList);
                     });
-                });
+                }
             }
             ContractLoadDataHandle.$attachment[0].removeAttribute('hidden');
         }
@@ -93,47 +100,66 @@ class ContractLoadDataHandle {
         return true;
     };
 
-    static loadSetupAddFile() {
+    static loadCheckAttachUploadSuccess() {
+        let attachIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+        let attachShow = ContractLoadDataHandle.$attachment[0].querySelectorAll('.media-body');
+        if (attachIds && attachShow) {
+            if ($x.cls.file.get_val(attachIds.value, []).length === attachShow.length) {
+                ContractLoadDataHandle.loadSetupAttach();
+            } else {
+                setTimeout(ContractLoadDataHandle.loadCheckAttachUploadSuccess, 1000);  // call again after 1s if condition not pass yet
+            }
+        }
+    };
+
+    static loadSetupAttach() {
         let result = [];
         let is_current = true;
-        let order = 1;
-        for (let mediaBody of ContractLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
-            let fileName = mediaBody.querySelector('.f-item-name');
-            let fileSize = mediaBody.querySelector('.f-item-info');
-            let fileRemark = mediaBody.querySelector('.file-txt-remark');
-            if (fileName && fileSize && fileRemark) {
-                let dataAdd = {
-                    'attachment': {
-                        'file_name': fileName.innerHTML,
-                        'file_size': parseFloat(fileSize.innerHTML.replace(" KB", "")),
-                        'remarks': fileRemark.value,
-                    },
-                    'date_created': ContractCommonHandle.getCurrentDate(),
-                    'order': order,
-                    'is_current': is_current,
-                };
-                result.push(dataAdd);
-            }
-            // append custom data to .media-body
-            let txt = ContractLoadDataHandle.$trans.attr('data-old');
-            let badge = 'danger';
-            if (order === 1) {
-                txt = ContractLoadDataHandle.$trans.attr('data-current');
-                badge = 'success';
-            }
-            if (mediaBody.querySelector('.custom-file-data')) {
-                $(mediaBody.querySelector('.custom-file-data')).empty();
-                $(mediaBody.querySelector('.custom-file-data')).append(`<span class="file-date-created mr-1">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span>
-                                                                        <span class="badge badge-soft-${badge} file-is-current">${txt}</span>`);
-            } else {
-                $(mediaBody).append(`<div class="d-flex custom-file-data">
-                                        <span class="file-date-created mr-1">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span>
-                                        <span class="badge badge-soft-${badge} file-is-current">${txt}</span>
+        let count = 0;
+        let attachIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+        if (attachIds) {
+            let ids = $x.cls.file.get_val(attachIds.value, []);
+            if (ids.length > 0) {
+                for (let mediaBody of ContractLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
+                    let fileName = mediaBody.querySelector('.f-item-name');
+                    let fileSize = mediaBody.querySelector('.f-item-info');
+                    let fileRemark = mediaBody.querySelector('.file-txt-remark');
+                    if (fileName && fileSize && fileRemark) {
+                        let dataAdd = {
+                            'attachment': {
+                                'id': ids[count],
+                                'file_name': fileName.innerHTML,
+                                'file_size': parseFloat(fileSize.innerHTML.replace(" KB", "")),
+                                'remarks': fileRemark.value,
+                            },
+                            'date_created': ContractCommonHandle.getCurrentDate(),
+                            'is_current': is_current,
+                        };
+                        result.push(dataAdd);
+                    }
+                    // append custom data to .media-body
+                    let txt = ContractLoadDataHandle.$trans.attr('data-old');
+                    let badge = 'danger';
+                    let btn = `<div class="d-flex"><button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover set-current" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-set-current')}"><span class="icon"><i class="fas fa-retweet"></i></span></button></div>`;
+                    if (is_current === true) {
+                        txt = ContractLoadDataHandle.$trans.attr('data-current');
+                        badge = 'success';
+                        btn = ``;
+                    }
+                    if (mediaBody.querySelector('.custom-file-data')) {
+                        $(mediaBody.querySelector('.custom-file-data')).empty();
+                        $(mediaBody.querySelector('.custom-file-data')).append(`<div class="mt-2"><span class="file-date-created mr-1">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="badge badge-soft-${badge} file-is-current">${txt}</span></div>
+                                                                        ${btn}`);
+                    } else {
+                        $(mediaBody).append(`<div class="d-flex custom-file-data">
+                                        <div class="mt-2"><span class="file-date-created mr-1">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="badge badge-soft-${badge} file-is-current">${txt}</span></div>
+                                        ${btn}
                                     </div>`);
+                    }
+                    // update is_current & order
+                    is_current = false;
+                }
             }
-            // update is_current & order
-            is_current = false;
-            order += 1;
         }
         return result;
     };
@@ -338,6 +364,12 @@ class ContractStoreHandle {
         if (fileIds) {
             let ids = $x.cls.file.get_val(fileIds.value, []);
             if (ids.length > 0) {
+
+
+
+
+
+
                 ContractDataTableHandle.$tableFile.DataTable().rows().every(function () {
                     let row = this.node();
                     if (row.querySelector('.table-row-order')) {

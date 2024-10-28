@@ -83,14 +83,6 @@ class ContractLoadDataHandle {
     };
 
     // FILE
-    static loadAddFile(dataList) {
-        if (dataList) {
-            ContractDataTableHandle.$tableFile.DataTable().clear().draw();
-            ContractDataTableHandle.$tableFile.DataTable().rows.add(dataList).draw();
-        }
-        return true;
-    };
-
     static loadSetupAttach() {
         let result = [];
         let is_current = true;
@@ -127,6 +119,7 @@ class ContractLoadDataHandle {
 
     static loadCustomAttach() {
         let is_current = true;
+        let count = 0;
         let attachIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
         if (attachIds) {
             let ids = $x.cls.file.get_val(attachIds.value, []);
@@ -135,7 +128,7 @@ class ContractLoadDataHandle {
                     // append custom data to .media-body
                     let txt = ContractLoadDataHandle.$trans.attr('data-old');
                     let badge = 'danger';
-                    let btn = `<div class="d-flex"><button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover set-current" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-set-current')}"><span class="icon"><i class="fas fa-retweet"></i></span></button></div>`;
+                    let btn = `<div class="d-flex"><button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover set-current" data-attachment-id="${ids[count]}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-set-current')}"><span class="icon"><i class="fas fa-retweet"></i></span></button></div>`;
                     if (is_current === true) {
                         txt = ContractLoadDataHandle.$trans.attr('data-current');
                         badge = 'success';
@@ -153,44 +146,50 @@ class ContractLoadDataHandle {
                     }
                     // update is_current & order
                     is_current = false;
+                    count++;
                 }
             }
         }
         return true;
     };
 
-    static loadSetupSetCurrent(ele) {
-        let result = [];
-        let row = ele.closest('tr');
-        let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-        if (row && fileIds) {
-            let eleOrder = row.querySelector('.table-row-order');
-            if (eleOrder) {
-                if (eleOrder.getAttribute('data-row')) {
-                    let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
-                    let ids = $x.cls.file.get_val(fileIds.value, []);
-                    let id = ids[dataRow?.['order'] - 1];
-                    ids.splice(dataRow?.['order'] - 1, 1);
-                    ids.unshift(id);
-                    fileIds.value = ids.join(',');
-                    dataRow['is_current'] = true;
-                    dataRow['order'] = 1;
-                    result.push(dataRow);
-                    ContractCommonHandle.commonDeleteRow(row, ContractDataTableHandle.$tableFile);
-                }
-            }
-            let order = 2;
-            for (let eleOrder of ContractDataTableHandle.$tableFile[0].querySelectorAll('.table-row-order')) {
-                if (eleOrder.getAttribute('data-row')) {
-                    let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
-                    dataRow['is_current'] = false;
-                    dataRow['order'] = order;
-                    order += 1;
-                    result.push(dataRow);
-                }
+    static loadSetCurrent(ele) {
+        let newDataList = [];
+        let newIDList = [];
+        let attachDataList = ContractLoadDataHandle.loadSetupAttach();
+        let targetID = ele.getAttribute('data-attachment-id');
+        for (let attachData of attachDataList) {
+            if (attachData?.['attachment']?.['id'] === targetID) {
+                attachData['is_current'] = true;
+                newDataList.push(attachData?.['attachment']);
+                newIDList.push(attachData?.['attachment']?.['id']);
             }
         }
-        return result;
+        for (let attachData of attachDataList) {
+            if (attachData?.['attachment']?.['id'] !== targetID) {
+                newDataList.push(attachData?.['attachment']);
+                newIDList.push(attachData?.['attachment']?.['id']);
+            }
+        }
+        let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+        fileIds.value = newIDList.join(',');
+        // append html file again
+        ContractLoadDataHandle.$attachment.empty().html(`${ContractLoadDataHandle.$attachmentTmp.html()}`);
+        // init file again
+        new $x.cls.file(ContractLoadDataHandle.$attachment).init({
+            name: 'attachment',
+            enable_edit: true,
+            enable_download: true,
+            data: newDataList.reverse(),
+        });
+        ContractLoadDataHandle.loadCustomAttach();
+        // add event
+        let attachIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+        if (attachIds) {
+            attachIds.addEventListener('change', function () {
+                ContractLoadDataHandle.loadCustomAttach();
+            });
+        }
     };
 
     // Dtb
@@ -237,7 +236,6 @@ class ContractLoadDataHandle {
 // DataTable
 class ContractDataTableHandle {
     static $tableDocument = $('#datable-contract-document');
-    static $tableFile = $('#datable-contract-file');
 
     static dataTableDocument(data) {
         ContractDataTableHandle.$tableDocument.DataTableDefault({
@@ -285,68 +283,6 @@ class ContractDataTableHandle {
         });
     };
 
-    static dataTableFile(data) {
-        ContractDataTableHandle.$tableFile.DataTableDefault({
-            data: data ? data : [],
-            ordering: false,
-            paging: false,
-            info: false,
-            columns: [
-                {
-                    targets: 0,
-                    width: '40%',
-                    render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" data-row="${dataRow}" hidden>${row?.['order'] ? row?.['order'] : 0}</span><span class="table-row-title" data-row="${dataRow}">${row?.['attachment']?.['file_name'] ? row?.['attachment']?.['file_name'] : ''}</span>`;
-                    }
-                },
-                {
-                    targets: 1,
-                    width: '25%',
-                    render: (data, type, row) => {
-                        let txt = ContractLoadDataHandle.$trans.attr('data-old');
-                        let badge = 'danger';
-                        if (row?.['order'] === 1) {
-                            txt = ContractLoadDataHandle.$trans.attr('data-current');
-                            badge = 'success';
-                        }
-                        return `<span class="badge badge-soft-${badge} table-row-version">${txt}</span>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    width: '15%',
-                    render: (data, type, row) => {
-                        let date = '';
-                        if (row?.['date_created']) {
-                            date = moment(row?.['date_created']).format('DD/MM/YYYY');
-                        }
-                        return `<span class="table-row-date">${date}</span>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    width: '5%',
-                    render: (data, type, row) => {
-                        if (row?.['is_current'] === true) {
-                            return ``;
-                        }
-                        let disabled = '';
-                        if (ContractLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-                            disabled = 'disabled';
-                        }
-                        return `<div class="d-flex">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover set-current" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-set-current')}" ${disabled}><span class="icon"><i class="fas fa-retweet"></i></span></button>
-                                </div>`;
-                    }
-                },
-            ],
-            drawCallback: function () {
-                // add css to Dtb
-                ContractLoadDataHandle.loadCssToDtb(ContractDataTableHandle.$tableFile[0].id);
-            },
-        });
-    };
 }
 
 // Store data

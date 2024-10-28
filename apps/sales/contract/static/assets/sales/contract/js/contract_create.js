@@ -6,7 +6,6 @@ $(function () {
 
         ContractLoadDataHandle.loadCustomCss();
         ContractDataTableHandle.dataTableDocument();
-        ContractDataTableHandle.dataTableFile();
 
         if (formSubmit.attr('data-method').toLowerCase() === 'post') {
             ContractTinymceHandle.initTinymce('', 'abstract-content');
@@ -37,9 +36,8 @@ $(function () {
             ContractCommonHandle.commonDeleteRow(this.closest('tr'), ContractDataTableHandle.$tableDocument);
         });
 
-        ContractDataTableHandle.$tableFile.on('click', '.set-current', function () {
-            let dataList = ContractLoadDataHandle.loadSetupSetCurrent(this);
-            ContractLoadDataHandle.loadAddFile(dataList);
+        ContractLoadDataHandle.$attachment.on('click', '.set-current', function () {
+            ContractLoadDataHandle.loadSetCurrent(this);
         });
 
 // SUBMIT FORM

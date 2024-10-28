@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        #content-area {
+            transition: width 0.5s ease; /* Smooth transition when changing width */
+        }
+
+        #file-area {
+            transition: width 0.5s ease; /* Smooth transition when changing width */
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm_bidding_create">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <form
+            data-url="{% url 'BiddingListAPI' %}"
+            data-url-redirect="{% url 'BiddingList' %}"
+            data-method="POST"
+            id="frm_bidding_create"
+            method="post"
+    >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-md-7 col-lg-7 border-right" id="content-area">
+                <div>
+                    {% trans 'Select Sale Person' as inherit_title %}
+                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                    <div class="form-group">
+                        <label class="form-label required" for="bidding-name">{% trans 'Bid Name' %}</label>
+                        <input
+                                type="text" class="form-control"
+                                name="title"
+                                id="bidding-name"
+                                required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required"
+                               for="select-box-bidding-customer">{% trans 'Customer' %}</label>
+                        <select
+                                class="form-select"
+                                id="select-box-bidding-customer"
+                                data-url="{% url "AccountForBiddingListAPI" %}"
+                                data-method="GET"
+                                name="customer"
+                                data-keyResp="account_for_bidding_list"
+                                data-keyText="name"
+                                required
+                        ></select>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="bid-date">{% trans 'Bid Date' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="bid-date"
+                                           class="form-control" autocomplete="off" id="bid-date">
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="bid-value">{% trans 'Bid Value' %}</label>
+                                <input type="text" class="form-control" id="bid-value">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="separator"></div>
+                {#venture partner#}
+                <div>
+                    <label class="form-label fs-5" for="datable-venture">{% trans 'Joint Venture Partner' %}</label>
+                    <table
+                            id="datable-venture"
+                            class="table nowrap w-100"
+                            data-url=""
+                            data-method="GET"
+                            data-zone=""
+                    >
+                        <thead>
+                        <tr class="bg-light">
+                            <th class="w-5"></th>
+                            <th class="w-15">{% trans 'Partner Code' %}</th>
+                            <th class="w-65">{% trans 'Partner Name' %}</th>
+                            <th class="w-5">{% trans 'Leader' %}</th>
+                            <th class="w-10">{% trans 'Action' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-outline-primary" id="btn-open-venture-modal"
+                            data-bs-toggle="modal" data-bs-target="#modal-venture">
+                        <span><span class="icon"><i
+                                class="fa-solid fa-plus"></i></span><span>{% trans 'Add' %}</span></span>
+                    </button>
+                </div>
+                <div class="separator"></div>
+                {#document#}
+                <div class="form-group">
+                    <label class="form-label fs-5" for="datable-document">{% trans 'Required Documents' %}</label>
+                    <table
+                            id="datable-document"
+                            class="table nowrap w-100"
+                            data-url=""
+                            data-method="GET"
+                            data-zone=""
+                    >
+                        <thead>
+                        <tr class="bg-light">
+                            <th class="w-5"></th>
+                            <th class="w-75">{% trans 'Document name' %}</th>
+                            <th class="w-20">{% trans 'Action' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-outline-primary" id="btn-open-document-modal"
+                            data-bs-toggle="modal" data-bs-target="#modal-document">
+                        <span><span class="icon"><i
+                                class="fa-solid fa-plus"></i></span><span>{% trans 'Add' %}</span></span>
+                    </button>
+                </div>
+                {#abstract#}
+                <div class="form-group">
+                    <label class="form-label fs-5" for="inp-contents">{% trans 'Abstract' %}</label>
+                    <textarea class="form-control" id="inp-contents"></textarea>
+                </div>
+            </div>
+            <div class="col-12 col-md-5 col-lg-5" id="file-area">
+                <div class="form-group">
+                    <label class="form-label" for="bidding-doc-remark">{% trans 'Description' %}</label>
+                    <textarea class="form-control" rows="3" id="bidding-doc-remark" name="remarks" readonly></textarea>
+                </div>
+                <label class="form-label">{% trans 'Attachment' %}</label>
+                <div id="attachment" hidden>
+                    {% include 'extends/files/all.html' %}
+                </div>
+                <div id="attachment-tmp" hidden>
+                    {% include 'extends/files/all.html' %}
+                </div>
+                <table
+                        id="datable-bidding-file"
+                        class="table nowrap w-100"
+                        {#                    data-url=""#}
+                        data-method="GET"
+                        data-zone="attachment"
+                >
+                    <thead>
+                    <tr class="bg-light">
+                        <th>{% trans 'File name' %}</th>
+                        <th>{% trans 'Date' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+
+    <div class="p-3 mt-5">
+        <h6>{% trans 'Comments' %}</h6>
+        <button class="btn btn-primary" id="btn-show-comment">{% trans 'Load comments' %}</button>
+        <div id="comment-group" style="display:none;">
+            {% include 'comment/list.html' %}
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-venture" tabindex="-1" role="dialog" aria-labelledby="modal-venture"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Select joint venture partner' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table nowrap w-100"
+                            {#                                   data-method="GET"#}
+                            {#                                   data-url="{% url 'GoodsDetailAPI' %}"#}
+                           id="venture-modal-table"
+                    >
+                        <thead>
+                        <tr class="bg-light">
+                            <th class="w-10">{% trans 'Action' %}</th>
+                            <th class="w-10">{% trans 'Code' %}</th>
+                            <th class="w-80">{% trans 'Name' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="button" id="btn-add-venture" class="btn btn-primary"
+                            data-bs-dismiss="modal">{% trans 'Add' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-document" tabindex="-1" role="dialog" aria-labelledby="modal-document" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Select required documents' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                        <label class="form-label fs-6"
+                               for="document-modal-table">{% trans 'Masterdata Documents' %}</label>
+                        <table class="table nowrap w-100"
+                                {#                                   data-method="GET"#}
+                                {#                                   data-url="{% url 'GoodsDetailAPI' %}"#}
+                               id="document-modal-table"
+                        >
+                            <thead>
+                            <tr class="bg-light">
+                                <th class="w-10">{% trans 'Action' %}</th>
+                                <th class="w-90">{% trans 'Name' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <div class="separator"></div>
+                        <label class="form-label fs-6"
+                               for="document-modal-table-manual">{% trans 'Manual Documents' %}</label>
+                        <table class="table nowrap w-100"
+                                {#                                   data-method="GET"#}
+                                {#                                   data-url="{% url 'GoodsDetailAPI' %}"#}
+                               id="document-modal-table-manual"
+                        >
+                            <thead>
+                            <tr class="bg-light">
+                                <th class="w-10">{% trans 'Action' %}</th>
+                                <th class="w-90">{% trans 'Name' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-outline-primary" id="btn-add-document-manual">
+                            <span><span class="icon"><i
+                                    class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
+                        </button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="button" id="btn-add-document" class="btn btn-primary"
+                            data-bs-dismiss="modal">{% trans 'Add' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input
+            type="text"
+            id="app-trans-factory"
+
+    >
+    <input
+            type="text"
+            id="app-url-factory"
+            data-md-account="{% url 'AccountForBiddingListAPI' %}"
+            data-md-document="{% url 'DocumentMasterDataBiddingListAPI' %}"
+    >
+    <input
+            type="text"
+            id="data-init-customer"
+            data-url="{% url "AccountForBiddingListAPI" %}"
+            data-method="GET"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/sales/bidding/js/bidding_common.js' %}"></script>
+    <script src="{% static 'assets/sales/bidding/js/bidding_create.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
+{% endblock %}

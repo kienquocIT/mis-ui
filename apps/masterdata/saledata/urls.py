@@ -14,6 +14,7 @@ from apps.masterdata.saledata.views.balance_init import BalanceInitList, Balance
 from apps.masterdata.saledata.views.budget_plan_config import BudgetPlanConfigList, BudgetPlanConfigListAPI, \
     ListCanViewCompanyBudgetPlanAPI, ListCanLockBudgetPlanAPI
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
+from apps.masterdata.saledata.views.document import DocumentTypeMasterDataListAPI, DocumentTypeMasterDataList
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
     ExpenseDetailAPI, ExpenseForSaleListAPI, ExpenseUpdate
 from apps.masterdata.saledata.views.expense_item import ExpenseItemList, ExpenseItemListAPI, ExpenseItemDetailAPI
@@ -356,4 +357,9 @@ urlpatterns += [
         'masterdata/import-balance-data-init-db/api/<str:pk>', ImportBalanceInitDBAPIViews.as_view(),
         name='ImportBalanceInitDBAPIViews'
     ),
+]
+
+urlpatterns += [
+    path('masterdata/document-type/list', DocumentTypeMasterDataList.as_view(), name='DocumentTypeMasterDataList'),
+    path('masterdata/document-type/api', DocumentTypeMasterDataListAPI.as_view(), name='DocumentTypeMasterDataListAPI'),
 ]

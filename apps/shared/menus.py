@@ -129,6 +129,10 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Price', code='id_menu_master_data_price', view_name='PriceMasterDataList',
                 icon='<i class="bi bi-currency-exchange"></i>',
+            ),
+            MenuCommon(
+                name='Document', code='id_menu_master_data_document', view_name='DocumentTypeMasterDataList',
+                icon='<i class="bi bi-currency-exchange"></i>',
             )
         ]
     )
@@ -298,6 +302,10 @@ class MenusCRM:
     QUOTATION = MenuCommon(
         name='Quotation', code='menu_quotation_list', view_name='QuotationList',
         icon='<i class="fas fa-file-invoice-dollar"></i>',
+    )
+    BIDDING = MenuCommon(
+        name='Bidding', code='menu_bidding_list', view_name='BiddingList',
+        icon='<i class="fas fa-yin-yang"></i>',
     )
     SALE_ORDER = MenuCommon(
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
@@ -749,6 +757,7 @@ class SpaceItem:
                 MenusCRM.ACCOUNT,
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
+                MenusCRM.BIDDING,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,
                 MenusCRM.WORK_ORDER,

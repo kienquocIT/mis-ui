@@ -344,6 +344,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_ADD_FROM_PRICE_LIST_IMPORT = StringUrl('saledata/create-product-from-price-list-import')
     DELETE_CURRENCY_FROM_PRICE_LIST = StringUrl('saledata/delete-currency-from-price-list/{pk}')
 
+    # masterdata/document
+    DOCUMENT_TYPE_LIST = StringUrl('saledata/document-type')
+
     # payment terms
     PAYMENT_TERMS = StringUrl('saledata/masterdata/config/payment-term')
 
@@ -375,6 +378,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     QUOTATION_INDICATOR_DETAIL = StringUrl('quotation/indicator')
     QUOTATION_INDICATOR_RESTORE = StringUrl('quotation/indicator-restore')
 
+    # Bidding
+    BIDDING_LIST = StringUrl('bidding/list')
+    ACCOUNT_FOR_BIDDING_LIST = StringUrl('bidding/account-list')
+    DOCUMENT_MASTERDATA_BIDDING_LIST = StringUrl('bidding/document-list')
     # address
     COUNTRIES = StringUrl('base/location/countries')
     CITIES = StringUrl('base/location/cities')

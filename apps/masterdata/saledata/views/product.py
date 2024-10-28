@@ -336,3 +336,16 @@ class UnitOfMeasureOfGroupLaborListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.UOM_OF_GROUP_LABOR_LIST).get(params)
         return resp.auto_return(key_success='uom_of_group_labor')
+
+
+class ProductQuotationListLoadDBAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        data = request.data  # noqa
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_QUOTATION_LOAD_DB).post(data)
+        return resp.auto_return()

@@ -166,12 +166,12 @@
                         <div class="tab-content" id="tab-content-quotation-product">
                             <div class="tab-pane fade show active" id="tab_line_detail" data-zone="quotation_products_data">
                                 <div class="row import-db-space">
-{#                                    {% include 'extends/import-datatable/button-import-db.html' %}#}
+                                    {% include 'extends/import-datatable/button-import-db.html' %}
                                     <script class="import-db-form-url"
-                                          data-get-method="POST"
-                                          data-get-url="{% url 'ProductAddFromPriceListImportAPI'%}"
-                                          data-get-redirect-url="{% url 'PriceListDetail' '0'%}"
+                                          data-import-db-method="POST"
+                                          data-import-db-url="{% url 'ProductQuotationListLoadDBAPI'%}"
                                     ></script>
+                                    <script class="import_data_rows">[]</script>
                                     <table
                                             id="datable-quotation-create-product"
                                             class="table nowrap min-w-1600p w-100 mb-5"
@@ -882,13 +882,17 @@
         <thead class="sticky">
             <tr>
                 <th>#</th>
-                <th>{% trans 'Code' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Product Code' %}</th>
+                <th>{% trans 'Product Name' %}</th>
+                <th>{% trans 'Description' %}</th>
+                <th>{% trans 'Product category' %}</th>
+                <th>{% trans 'Is service' %}</th>
                 <th>{% trans 'UoM' %}</th>
-                <th>
-                    {% trans 'Currency unit' %} ({% trans 'Example' %}: VND)
-                </th>
-                <th>{% trans 'Price' %}</th>
-                <th>{% trans 'Import status' %}</th>
+                <th>{% trans 'Quantity' %}</th>
+                <th>{% trans 'Unit Price' %}</th>
+                <th>{% trans 'Discount' %} (%)</th>
+                <th>{% trans 'Tax' %}</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -1057,5 +1061,7 @@
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
 
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
+
+    <script src="{% static 'assets/js/xlsx-0.18.5.full.min.js' %}"></script>
     <script src="{% static 'assets/js/import-datatable.js' %}"></script>
 {% endblock %}

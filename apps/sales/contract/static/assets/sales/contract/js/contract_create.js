@@ -27,9 +27,9 @@ $(function () {
             ContractLoadDataHandle.loadAddDoc();
         });
 
-        ContractDataTableHandle.$tableDocument.on('click', '.attach-file', function () {
+        ContractDataTableHandle.$tableDocument.on('click', '.open-attach', function () {
             ContractStoreHandle.storeAttachment();
-            ContractLoadDataHandle.loadOpenAttachFile(this);
+            ContractLoadDataHandle.loadOpenAttach(this);
         });
 
         ContractDataTableHandle.$tableDocument.on('click', '.del-row', function () {

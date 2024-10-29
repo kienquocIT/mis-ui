@@ -23,6 +23,10 @@ $(function () {
             });
         }
 
+        ContractLoadDataHandle.$boxOpp.on('change', function () {
+            ContractLoadDataHandle.loadDataByOpp();
+        });
+
         ContractLoadDataHandle.$btnAddDoc.on('click', function () {
             ContractLoadDataHandle.loadAddDoc();
         });
@@ -47,6 +51,10 @@ $(function () {
             ContractSubmitHandle.setupDataSubmit(_form);
             let submitFields = [
                 'title',
+                'opportunity_id',
+                'opportunity_data',
+                'employee_inherit_id',
+                'employee_inherit_data',
                 'document_data',
                 'attachment',
                 'abstract_content',

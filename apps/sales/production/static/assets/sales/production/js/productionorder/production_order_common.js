@@ -52,13 +52,66 @@ class ProdOrderLoadDataHandle {
         return true;
     };
 
+    static loadProductData() {
+        let fnData = [];
+        WindowControl.showLoading();
+        $.fn.callAjax2({
+                'url': ProdOrderLoadDataHandle.$boxProd.attr('data-url'),
+                'method': 'GET',
+                'data': {
+                    'general_product_types_mapped__is_finished_goods': true,
+                    'bom_product__isnull': false,
+                    'bom_product__opportunity_id__isnull': true
+                },
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                        let data1 = data.product_sale_list;
+                        $.fn.callAjax2({
+                                'url': ProdOrderLoadDataHandle.$boxProd.attr('data-url'),
+                                'method': 'GET',
+                                'data': {
+                                    'general_product_types_mapped__is_goods': true,
+                                    'bom_product__isnull': false,
+                                    'bom_product__opportunity_id__isnull': true
+                                },
+                                'isDropdown': true,
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                                        let data2 = data.product_sale_list;
+                                        fnData = data1.concat(data2);
+                                        fnData.push({
+                                            'id': '',
+                                            'title': 'Select...',
+                                        });
+                                        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, fnData);
+                                        WindowControl.hideLoading();
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        )
+    }
+
     static loadInitPage() {
         // date
         ProdOrderLoadDataHandle.$dateCreated.val(ProdOrderCommonHandle.getCurrentDate());
         // select2
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxType, ProdOrderLoadDataHandle.dataType);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true, 'bom_product__isnull': false, 'bom_product__opportunity_id__isnull': true});
+        ProdOrderLoadDataHandle.loadProductData();
+        // ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true, 'bom_product__isnull': false, 'bom_product__opportunity_id__isnull': true});
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});

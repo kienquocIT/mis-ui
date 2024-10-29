@@ -542,10 +542,10 @@ class WorkOrderLoadDataHandle {
         WorkOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data?.['bom_data']));
         WorkOrderLoadDataHandle.$title.val(data?.['title']);
         if (data?.['opportunity_data']?.['id']) {
-            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxOpp, [data?.['opportunity_data']], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxOpp, [data?.['opportunity_data']], {}, null, false, {'res1': 'code', 'res2': 'title'});
         }
         if (data?.['employee_inherit_data']?.['id']) {
-            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxEmp, [data?.['employee_inherit_data']], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxEmp, [data?.['employee_inherit_data']], {}, null, false, {'res1': 'code', 'res2': 'title'});
         }
         if (data?.['sale_order_data']?.['id']) {
             WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxSO, [data?.['sale_order_data']], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});

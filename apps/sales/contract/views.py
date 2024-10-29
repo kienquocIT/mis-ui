@@ -50,6 +50,7 @@ class ContractApprovalCreate(View):
             'employee_current': request.user.employee_current_data,
             'input_mapping_properties': InputMappingProperties.CONTRACT_APPROVAL_DATA_MAP,
             'form_id': 'frm_contract_create',
+            'list_from_app': 'contract.contractapproval.create',
         }
         return ctx, status.HTTP_200_OK
 
@@ -104,6 +105,7 @@ class ContractApprovalUpdate(View):
             'employee_current': request.user.employee_current_data,
             'input_mapping_properties': InputMappingProperties.CONTRACT_APPROVAL_DATA_MAP,
             'form_id': 'frm_contract_create',
+            'list_from_app': 'contract.contractapproval.edit',
 
         }
         return ctx, status.HTTP_200_OK

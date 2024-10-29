@@ -1,12 +1,63 @@
 // Load data
 class ContractLoadDataHandle {
     static $form = $('#frm_contract_create');
+    static $boxOpp = $('#opportunity_id');
+    static $boxEmp = $('#employee_inherit_id');
     static $btnAddDoc = $('#btn-add-doc');
+    static $btnOpenAttach = $('#btn-open-attachment');
+    static $drawer = $('#drawer_contract_data');
     static $fileArea = $('#file-area');
     static $remark = $('#contract-doc-remark');
     static $attachment = $('#attachment');
     static $attachmentTmp = $('#attachment-tmp');
     static $trans = $('#app-trans-factory');
+    static $url = $('#app-url-factory');
+
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
+    };
+
+    static loadCustomCss() {
+        $('.accordion-item').css({
+            'margin-bottom': 0
+        });
+    };
+
+    static loadDataByOpp() {
+        if (ContractLoadDataHandle.$boxOpp.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(ContractLoadDataHandle.$boxOpp, ContractLoadDataHandle.$boxOpp.val());
+            if (dataSelected) {
+                ContractLoadDataHandle.$boxEmp[0].setAttribute('readonly', 'true');
+                ContractLoadDataHandle.$boxEmp.empty();
+                ContractLoadDataHandle.$boxEmp.initSelect2({
+                    data: dataSelected?.['sale_person'],
+                    'allowClear': true,
+                });
+            }
+        } else {
+            ContractLoadDataHandle.$boxEmp[0].removeAttribute('readonly');
+        }
+        return true;
+    };
 
     // DOCUMENT
     static loadAddDoc() {
@@ -21,14 +72,9 @@ class ContractLoadDataHandle {
         return true;
     };
 
-    static loadOpenAttachFile(ele) {
-        ContractDataTableHandle.$tableDocument.DataTable().rows().every(function () {
-            let row = this.node();
-            $(row).css('background-color', '');
-        });
+    static loadOpenAttach(ele) {
         let row = ele.closest('tr');
         if (row) {
-            $(row).css('background-color', '#ebfcf5');
             ContractLoadDataHandle.$fileArea[0].classList.remove('bg-light');
             let eleOrder = row.querySelector('.table-row-order');
             if (eleOrder) {
@@ -36,7 +82,6 @@ class ContractLoadDataHandle {
             }
             ContractLoadDataHandle.$remark[0].removeAttribute('readonly');
             ContractLoadDataHandle.$remark.val('');
-            ContractLoadDataHandle.loadAddFile([]);
             let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
             if (fileIds) {
                 fileIds.value = "";
@@ -44,13 +89,14 @@ class ContractLoadDataHandle {
             if (ele.getAttribute('data-store') && fileIds) {
                 let dataStore = JSON.parse(ele.getAttribute('data-store'));
                 ContractLoadDataHandle.$remark.val(dataStore?.['remark']);
-                ContractLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
                 let ids = [];
                 for (let fileData of dataStore?.['attachment_data']) {
                     ids.push(fileData?.['attachment']?.['id']);
                 }
                 let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-                fileIds.value = ids.join(',');
+                if (fileIds) {
+                    fileIds.value = ids.join(',');
+                }
                 let attachmentParse = [];
                 for (let attachData of dataStore?.['attachment_data']) {
                     attachmentParse.push(attachData?.['attachment']);
@@ -62,90 +108,135 @@ class ContractLoadDataHandle {
                     name: 'attachment',
                     enable_edit: true,
                     enable_download: true,
-                    data: attachmentParse,
+                    data: attachmentParse.reverse(),
                 });
+                ContractLoadDataHandle.loadCustomAttach();
                 // add event
-                let inputs = ContractLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
-                inputs.forEach((input) => {
-                    input.addEventListener('change', function () {
-                        let dataList = ContractLoadDataHandle.loadSetupAddFile();
-                        ContractLoadDataHandle.loadAddFile(dataList);
+                let attachIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+                if (attachIds) {
+                    attachIds.addEventListener('change', function () {
+                        ContractLoadDataHandle.loadCustomAttach();
                     });
-                });
+                }
             }
             ContractLoadDataHandle.$attachment[0].removeAttribute('hidden');
+        }
+        if (!ContractLoadDataHandle.$drawer[0].classList.contains('open')) {
+            ContractLoadDataHandle.$btnOpenAttach.trigger('click');
         }
         return true;
     };
 
     // FILE
-    static loadAddFile(dataList) {
-        if (dataList) {
-            ContractDataTableHandle.$tableFile.DataTable().clear().draw();
-            ContractDataTableHandle.$tableFile.DataTable().rows.add(dataList).draw();
+    static loadSetupAttach() {
+        let result = [];
+        let is_current = true;
+        let count = 0;
+        let attachIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+        if (attachIds) {
+            let ids = $x.cls.file.get_val(attachIds.value, []);
+            if (ids.length > 0) {
+                for (let mediaBody of ContractLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
+                    let fileName = mediaBody.querySelector('.f-item-name');
+                    let fileSize = mediaBody.querySelector('.f-item-info');
+                    let fileRemark = mediaBody.querySelector('.file-txt-remark');
+                    if (fileName && fileSize && fileRemark) {
+                        let dataAdd = {
+                            'attachment': {
+                                'id': ids[count],
+                                'file_name': fileName.innerHTML,
+                                'file_size': parseFloat(fileSize.innerHTML.replace(" KB", "")),
+                                'remarks': fileRemark.value,
+                            },
+                            'date_created': ContractCommonHandle.getCurrentDate(),
+                            'is_current': is_current,
+                        };
+                        result.push(dataAdd);
+                    }
+                    // update is_current
+                    is_current = false;
+                    count++;
+                }
+            }
+        }
+        return result;
+    };
+
+    static loadCustomAttach() {
+        let is_current = true;
+        let count = 0;
+        let attachIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+        if (attachIds) {
+            let ids = $x.cls.file.get_val(attachIds.value, []);
+            if (ids.length > 0) {
+                for (let mediaBody of ContractLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
+                    // append custom data to .media-body
+                    let txt = ContractLoadDataHandle.$trans.attr('data-old');
+                    let badge = 'danger';
+                    let btn = `<div class="d-flex"><button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover set-current" data-attachment-id="${ids[count]}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-set-current')}"><span class="icon"><i class="fas fa-retweet"></i></span></button></div>`;
+                    if (is_current === true) {
+                        txt = ContractLoadDataHandle.$trans.attr('data-current');
+                        badge = 'success';
+                        btn = ``;
+                    }
+                    if (mediaBody.querySelector('.custom-file-data')) {
+                        $(mediaBody.querySelector('.custom-file-data')).empty();
+                        $(mediaBody.querySelector('.custom-file-data')).append(`<div class="mt-2"><span class="file-date-created mr-1">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="badge badge-soft-${badge} file-is-current">${txt}</span></div>
+                                                                        ${btn}`);
+                    } else {
+                        $(mediaBody).append(`<div class="d-flex custom-file-data">
+                                        <div class="mt-2"><span class="file-date-created mr-1">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="badge badge-soft-${badge} file-is-current">${txt}</span></div>
+                                        ${btn}
+                                    </div>`);
+                    }
+                    // update is_current & order
+                    is_current = false;
+                    count++;
+                }
+            }
         }
         return true;
     };
 
-    static loadSetupAddFile() {
-        let result = [];
-        let is_current = true;
-        let order = 1;
-        for (let mediaBody of ContractLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
-            let fileName = mediaBody.querySelector('.f-item-name');
-            let fileSize = mediaBody.querySelector('.f-item-info');
-            let fileRemark = mediaBody.querySelector('.file-txt-remark');
-            if (fileName && fileSize && fileRemark) {
-                let dataAdd = {
-                    'attachment': {
-                        'file_name': fileName.innerHTML,
-                        'file_size': parseFloat(fileSize.innerHTML.replace(" KB", "")),
-                        'remarks': fileRemark.value,
-                    },
-                    'date_created': ContractCommonHandle.getCurrentDate(),
-                    'order': order,
-                    'is_current': is_current,
-                };
-                result.push(dataAdd);
+    static loadSetCurrent(ele) {
+        let newDataList = [];
+        let newIDList = [];
+        let attachDataList = ContractLoadDataHandle.loadSetupAttach();
+        let targetID = ele.getAttribute('data-attachment-id');
+        for (let attachData of attachDataList) {
+            if (attachData?.['attachment']?.['id'] === targetID) {
+                attachData['is_current'] = true;
+                newDataList.push(attachData?.['attachment']);
+                newIDList.push(attachData?.['attachment']?.['id']);
             }
-            is_current = false;
-            order += 1;
         }
-        return result;
-    };
-
-    static loadSetupSetCurrent(ele) {
-        let result = [];
-        let row = ele.closest('tr');
+        for (let attachData of attachDataList) {
+            if (attachData?.['attachment']?.['id'] !== targetID) {
+                newDataList.push(attachData?.['attachment']);
+                newIDList.push(attachData?.['attachment']?.['id']);
+            }
+        }
         let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-        if (row && fileIds) {
-            let eleOrder = row.querySelector('.table-row-order');
-            if (eleOrder) {
-                if (eleOrder.getAttribute('data-row')) {
-                    let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
-                    let ids = $x.cls.file.get_val(fileIds.value, []);
-                    let id = ids[dataRow?.['order'] - 1];
-                    ids.splice(dataRow?.['order'] - 1, 1);
-                    ids.unshift(id);
-                    fileIds.value = ids.join(',');
-                    dataRow['is_current'] = true;
-                    dataRow['order'] = 1;
-                    result.push(dataRow);
-                    ContractCommonHandle.commonDeleteRow(row, ContractDataTableHandle.$tableFile);
-                }
-            }
-            let order = 2;
-            for (let eleOrder of ContractDataTableHandle.$tableFile[0].querySelectorAll('.table-row-order')) {
-                if (eleOrder.getAttribute('data-row')) {
-                    let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
-                    dataRow['is_current'] = false;
-                    dataRow['order'] = order;
-                    order += 1;
-                    result.push(dataRow);
-                }
-            }
+        if (fileIds) {
+            fileIds.value = newIDList.join(',');
         }
-        return result;
+        // append html file again
+        ContractLoadDataHandle.$attachment.empty().html(`${ContractLoadDataHandle.$attachmentTmp.html()}`);
+        // init file again
+        new $x.cls.file(ContractLoadDataHandle.$attachment).init({
+            name: 'attachment',
+            enable_edit: true,
+            enable_download: true,
+            data: newDataList.reverse(),
+        });
+        ContractLoadDataHandle.loadCustomAttach();
+        // add event
+        let attachIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+        if (attachIds) {
+            attachIds.addEventListener('change', function () {
+                ContractLoadDataHandle.loadCustomAttach();
+            });
+        }
     };
 
     // Dtb
@@ -163,9 +254,37 @@ class ContractLoadDataHandle {
     // DETAIL
     static loadDetail(data) {
         $('#contract-title').val(data?.['title']);
+        if (data?.['opportunity_data']?.['id']) {
+            ContractLoadDataHandle.loadInitS2(ContractLoadDataHandle.$boxOpp, [data?.['opportunity_data']], {}, null, false, {'res1': 'code', 'res2': 'title'});
+        }
+        if (data?.['employee_inherit_data']?.['id']) {
+            ContractLoadDataHandle.loadInitS2(ContractLoadDataHandle.$boxEmp, [data?.['employee_inherit_data']], {}, null, false, {'res1': 'code', 'res2': 'title'});
+        }
         ContractLoadDataHandle.setupDetailDocAttach(data);
         ContractDataTableHandle.$tableDocument.DataTable().rows.add(data?.['document_data']).draw();
-        ContractTinymceHandle.initTinymce(data?.['tinymce_content']);
+        ContractDataTableHandle.$tableDocument.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.open-attach') && row.querySelector('.file-preview-link')) {
+                if (row.querySelector('.open-attach').getAttribute('data-store')) {
+                    let dataStore = JSON.parse(row.querySelector('.open-attach').getAttribute('data-store'));
+                    for (let attachmentData of dataStore?.['attachment_data']) {
+                        if (attachmentData?.['is_current'] === true) {
+                            if (attachmentData?.['attachment']?.['id']) {
+                                let url = ContractLoadDataHandle.$url.attr('data-preview-attach').format_url_with_uuid(attachmentData?.['attachment']?.['id']);
+                                row.querySelector('.file-preview-link').setAttribute('href', url);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        ContractLoadDataHandle.loadReadOnlyDisabled(ContractDataTableHandle.$tableDocument);
+        ContractTinymceHandle.initTinymce(data?.['abstract_content'], 'abstract-content');
+        ContractTinymceHandle.initTinymce(data?.['trade_content'], 'trade-content');
+        ContractTinymceHandle.initTinymce(data?.['legal_content'], 'legal-content');
+        ContractTinymceHandle.initTinymce(data?.['payment_content'], 'payment-content');
+        return true;
     };
 
     static setupDetailDocAttach(data) {
@@ -187,12 +306,26 @@ class ContractLoadDataHandle {
         }
     };
 
+    static loadReadOnlyDisabled($table) {
+        if (ContractLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            for (let ele of $table[0].querySelectorAll('.table-row-title')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of $table[0].querySelectorAll('.open-attach')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of $table[0].querySelectorAll('.del-row')) {
+                ele.setAttribute('disabled', 'true');
+            }
+        }
+        return true;
+    };
+
 }
 
 // DataTable
 class ContractDataTableHandle {
     static $tableDocument = $('#datable-contract-document');
-    static $tableFile = $('#datable-contract-file');
 
     static dataTableDocument(data) {
         ContractDataTableHandle.$tableDocument.DataTableDefault({
@@ -213,125 +346,42 @@ class ContractDataTableHandle {
                     targets: 1,
                     width: '60%',
                     render: (data, type, row) => {
-                        let readonly = '';
-                        if (ContractLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-                            readonly = 'readonly';
-                        }
-                        return `<input type="text" class="form-control table-row-title" value="${row?.['title'] ? row?.['title'] : ''}" required ${readonly}>`;
+                        return `<input type="text" class="form-control table-row-title" value="${row?.['title'] ? row?.['title'] : ''}" required>`;
                     }
                 },
                 {
                     targets: 2,
                     class: 'text-center',
-                    width: '10%',
+                    width: '15%',
                     render: (data, type, row) => {
-                        return `<div class="d-flex">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover attach-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-attach-file')}" data-store="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-order="${row?.['order']}"><span class="icon"><i class="fas fa-paperclip"></i></span></button>
-                                    <div class="tmp-uploader" hidden></div>
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover view-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-view-file')}" hidden><span class="icon"><i class="far fa-eye"></i></span></button>
+                        return `<div class="d-flex justify-content-center">
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover open-attach" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-attach-file')}" data-store="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-order="${row?.['order']}"><span class="icon"><i class="fas fa-paperclip"></i></span></button>
+                                    <a class="file-preview-link" href="/attachment/preview/000c7563-0eb5-45d0-94fb-f0f46186f325" target="_blank">
+                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover view-current" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-view-file')}"><span class="icon"><i class="far fa-eye"></i></span></button>
+                                    </a>
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-delete')}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                 </div>`;
                     }
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                ContractLoadDataHandle.loadCssToDtb(ContractDataTableHandle.$tableDocument[0].id);
             },
         });
     };
 
-    static dataTableFile(data) {
-        ContractDataTableHandle.$tableFile.DataTableDefault({
-            data: data ? data : [],
-            ordering: false,
-            paging: false,
-            info: false,
-            columns: [
-                {
-                    targets: 0,
-                    width: '40%',
-                    render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" data-row="${dataRow}" hidden>${row?.['order'] ? row?.['order'] : 0}</span><span class="table-row-title" data-row="${dataRow}">${row?.['attachment']?.['file_name'] ? row?.['attachment']?.['file_name'] : ''}</span>`;
-                    }
-                },
-                {
-                    targets: 1,
-                    width: '25%',
-                    render: (data, type, row) => {
-                        let txt = ContractLoadDataHandle.$trans.attr('data-old');
-                        let badge = 'danger';
-                        if (row?.['order'] === 1) {
-                            txt = ContractLoadDataHandle.$trans.attr('data-current');
-                            badge = 'success';
-                        }
-                        return `<span class="badge badge-soft-${badge} table-row-version">${txt}</span>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    width: '15%',
-                    render: (data, type, row) => {
-                        let date = '';
-                        if (row?.['date_created']) {
-                            date = moment(row?.['date_created']).format('DD/MM/YYYY')
-                        }
-                        return `<span class="table-row-date">${date}</span>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    width: '5%',
-                    render: (data, type, row) => {
-                        if (row?.['is_current'] === true) {
-                            return ``;
-                        }
-                        let disabled = '';
-                        if (ContractLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-                            disabled = 'disabled';
-                        }
-                        return `<div class="d-flex">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover set-current" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-set-current')}" ${disabled}><span class="icon"><i class="fas fa-retweet"></i></span></button>
-                                </div>`;
-                    }
-                },
-            ],
-            drawCallback: function () {
-                // add css to Dtb
-                ContractLoadDataHandle.loadCssToDtb(ContractDataTableHandle.$tableFile[0].id);
-            },
-        });
-    };
 }
 
 // Store data
 class ContractStoreHandle {
     static storeAttachment() {
         let dataStore = {};
-        let fileData = [];
         dataStore['remark'] = ContractLoadDataHandle.$remark.val();
-        let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-        if (fileIds) {
-            let ids = $x.cls.file.get_val(fileIds.value, []);
-            if (ids.length > 0) {
-                ContractDataTableHandle.$tableFile.DataTable().rows().every(function () {
-                    let row = this.node();
-                    if (row.querySelector('.table-row-order')) {
-                        if (row.querySelector('.table-row-order').getAttribute('data-row')) {
-                            let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
-                            if (!dataRow?.['id']) {
-                                dataRow['attachment']['id'] = ids[dataRow?.['order'] - 1];
-                                row.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
-                            }
-                            fileData.push(dataRow);
-                        }
-                    }
-                })
-            }
-        }
-        dataStore['attachment_data'] = fileData;
+        dataStore['attachment_data'] = ContractLoadDataHandle.loadSetupAttach();
         let doc = ContractLoadDataHandle.$fileArea.attr('data-doc');
         if (doc) {
-            let btnStore = ContractDataTableHandle.$tableDocument[0].querySelector(`.attach-file[data-order="${doc}"]`);
+            let btnStore = ContractDataTableHandle.$tableDocument[0].querySelector(`.open-attach[data-order="${doc}"]`);
             if (btnStore) {
                 btnStore.setAttribute('data-store', JSON.stringify(dataStore));
             }
@@ -349,7 +399,7 @@ class ContractSubmitHandle {
             let row = this.node();
             let eleOrd = row.querySelector('.table-row-order');
             let eleTitle = row.querySelector('.table-row-title');
-            let btnAttach = row.querySelector('.attach-file');
+            let btnAttach = row.querySelector('.open-attach');
             if (eleOrd && eleTitle && btnAttach) {
                 let attachment_data = [];
                 let attachment = [];
@@ -374,11 +424,28 @@ class ContractSubmitHandle {
     };
 
     static setupDataSubmit(_form) {
+        if (ContractLoadDataHandle.$boxOpp.val()) {
+            _form.dataForm['opportunity_id'] = ContractLoadDataHandle.$boxOpp.val();
+            let data = SelectDDControl.get_data_from_idx(ContractLoadDataHandle.$boxOpp, ContractLoadDataHandle.$boxOpp.val());
+            if (data) {
+                _form.dataForm['opportunity_data'] = data;
+            }
+        }
+        if (ContractLoadDataHandle.$boxEmp.val()) {
+            _form.dataForm['employee_inherit_id'] = ContractLoadDataHandle.$boxEmp.val();
+            let data = SelectDDControl.get_data_from_idx(ContractLoadDataHandle.$boxEmp, ContractLoadDataHandle.$boxEmp.val());
+            if (data) {
+                _form.dataForm['employee_inherit_data'] = data;
+            }
+        }
         ContractStoreHandle.storeAttachment();
         let dataDocParse = ContractSubmitHandle.setupDataDocument();
         _form.dataForm['document_data'] = dataDocParse?.['dataDoc'];
         _form.dataForm['attachment'] = dataDocParse?.['attachment'];
-        _form.dataForm['tinymce_content'] = ContractTinymceHandle.getContent();
+        _form.dataForm['abstract_content'] = ContractTinymceHandle.getContent('abstract-content');
+        _form.dataForm['trade_content'] = ContractTinymceHandle.getContent('trade-content');
+        _form.dataForm['legal_content'] = ContractTinymceHandle.getContent('legal-content');
+        _form.dataForm['payment_content'] = ContractTinymceHandle.getContent('payment-content');
     };
 }
 
@@ -436,9 +503,9 @@ class ContractCommonHandle {
 }
 
 class ContractTinymceHandle{
-    static initTinymce(htmlContent = '') {
+    static initTinymce(htmlContent = '', idTarget) {
         tinymce.init({
-            selector: 'textarea#inp-contents',
+            selector: `textarea#${idTarget}`,
             plugins: 'paste importcss autolink autosave save directionality code visualblocks visualchars fullscreen',
             menubar: false,  // Hide the menubar
             toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect | removeformat',
@@ -464,7 +531,7 @@ class ContractTinymceHandle{
         });
     };
 
-    static getContent() {
-        return  tinymce.get('inp-contents').getContent();
+    static getContent(idTarget) {
+        return tinymce.get(idTarget).getContent();
     };
 }

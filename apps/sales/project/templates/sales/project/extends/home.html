@@ -14,7 +14,7 @@
         <div class="home-action">
             <div class="btn-group btn-group-rounded">
                 <a href="{% url 'ProjectList' %}" class="btn btn-outline-secondary">{% trans 'List' %}</a>
-                <a href="{% url 'ProjectListBaseline' %}" class="btn btn-outline-secondary">{% trans 'Baseline list' %}</a>
+                <a href="{% url 'ProjectActivities' %}" class="btn btn-outline-secondary">{% trans 'Project activities' %}</a>
             </div>
             <a href="{% url 'ProjectCreate' %}">
                 <button class="btn btn-outline-primary" type="button">
@@ -33,7 +33,7 @@
             <div class="col-lg-4 col-sm-6 col-xl-3">
                 <div class="card card-sm card_new_prj">
                     <div class="card-body bg-main b-radius">
-                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'New project this month' %}</span>
+                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project quantity' %}</span>
                         <div class="d-flex align-items-end justify-content-between position-relative">
                             <div class="heading_cards"><p class="d-inline-block mr-1">0</p>{% trans 'Project' %}</div>
                             <div class="percent_block r-0 w-auto">
@@ -46,7 +46,7 @@
             <div class="col-lg-4 col-sm-6 col-xl-3">
                 <div class="card card-sm card_baseline">
                     <div class="card-body bg-main b-radius">
-                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project Baseline' %}</span>
+                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Baseline quantity' %}</span>
                         <div class="d-flex align-items-end justify-content-between position-relative">
                             <div class="heading_cards"><p class="d-inline-block mr-1">0</p>{% trans 'Baseline' %}</div>
                             <div class="percent_block r-0 w-auto">
@@ -59,9 +59,9 @@
             <div class="col-lg-4 col-sm-6 col-xl-3">
                 <div class="card card-sm card_tasks">
                     <div class="card-body bg-main b-radius">
-                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project tasks' %}</span>
+                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Total Tasks - Finished Tasks' %}</span>
                         <div class="d-flex align-items-center justify-content-between position-relative">
-                            <div class="heading_cards"><p class="d-inline-block mr-1">0</p>{% trans 'all' %}</div>
+                            <div class="heading_cards"><p class="d-inline-block mr-1">0</p>{% trans 'Tasks' %}</div>
                             <div class="percent_block r-0 w-50p">
                                 <div id="pie_chart_2" class="d-flex pie-chart-task"></div>
                             </div>
@@ -72,7 +72,7 @@
             <div class="col-lg-4 col-sm-6 col-xl-3">
                 <div class="card card-sm card_expense">
                     <div class="card-body bg-main b-radius">
-                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project Expense' %}</span>
+                        <span class="d-block font-2 font-weight-500 text-uppercase mb-2">{% trans 'Project Expenses' %}</span>
                         <div class="d-flex align-items-center justify-content-between position-relative">
                             <div class="heading_cards">
                                 ~ <span class="span-money"></span>
@@ -100,7 +100,7 @@
             <!-- project per year card block -->
             <div class="col-xs-12 col-md-6 mb-5">
                 <div class="bg-main p-4 style-box css-skeleton">
-                    <label class="font-3 font-weight-bold mb-2 txt-gray">{% trans 'Project per years' %}</label>
+                    <label class="font-3 font-weight-bold mb-2 txt-gray">{% trans 'Project by month' %}</label>
                     <h6 class="font-2 chart_heading txt-gray"></h6>
                     <div id="prj_chart_year">
                         <span></span>
@@ -122,7 +122,7 @@
             <!-- project expense card block -->
             <div class="col-xs-12 col-md-6">
                 <div class="bg-main p-4 style-box css-skeleton">
-                    <label class="font-3 font-weight-bold mb-2 txt-gray">{% trans 'Project Expense' %}</label>
+                    <label class="font-3 font-weight-bold mb-2 txt-gray">{% trans 'Project Expenses' %}</label>
                     <h6 class="font-2 chart_heading pro_expense txt-gray">{% trans 'Unit' %}: <span></span></h6>
                     <div id="prj_chart_expense">
                         <span></span>

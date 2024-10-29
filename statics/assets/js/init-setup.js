@@ -2239,7 +2239,10 @@ class WFRTControl {
                         let saveStatus = eleChecked.getAttribute('data-status');
                         if (saveStatus) {
                             _form.dataForm['system_status'] = parseInt(saveStatus);
-                            if (_form.dataForm['system_status'] === 1) {
+                            if (_form.dataForm['system_status'] === 0) {  // draft
+                                WFRTControl.callAjaxWFCreate(_form);
+                            }
+                            if (_form.dataForm['system_status'] === 1) {  // WF
                                 WFRTControl.submitCheckAssociation(_form, associationData, 0);
                             }
                         }
@@ -2727,6 +2730,9 @@ class WFRTControl {
                                     if (window.location.href.includes('/create')) {
                                         WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                                     }
+                                    if (window.location.href.includes('/update/') && !globeWFRuntimeID) {
+                                        WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                                    }
                                     // association handler
                                     WFRTControl.setAssociateCreate(workflow_current['association']);
                                 }
@@ -2811,7 +2817,7 @@ class WFRTControl {
         if (isEditAllZone === 'true') {
             if (window.location.href.includes('/update/')) {
                 let idFormID = globeFormMappedZone;
-                if (idFormID) {
+                if (idFormID && globeWFRuntimeID) {
                     DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
                     $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
                         DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
@@ -2974,11 +2980,10 @@ class WFRTControl {
                 })
             }
             // add button save at zones
-            // idFormID
-            if (zonesData.length > 0) {  // check if user has zone edit then show button save at zones
+            if (zonesData.length > 0) {  // check if user has zones && doc in WF runtime then show button save at zone
                 if (window.location.href.includes('/update/')) {
                     let idFormID = globeFormMappedZone;
-                    if (idFormID) {
+                    if (idFormID && globeWFRuntimeID) {
                         DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
                         $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
                             DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
@@ -3072,7 +3077,7 @@ class WFRTControl {
 
     static getRuntimeDocData() {
         let itemEle = $('#idxRuntimeDoc');
-        if (itemEle) {
+        if (itemEle && itemEle.length > 0) {
             return JSON.parse(itemEle.val());
         }
         return {};
@@ -6412,6 +6417,9 @@ class FileControl {
         if (typeof ids === 'string' && ids.indexOf(id) === -1) {
             ids = FileControl.resolve_ids(ids + ',' + id)
             inputEle.val(ids);
+
+            // Manually trigger the change event
+            inputEle[0].dispatchEvent(new Event('change'));
         }
     }
 
@@ -6425,6 +6433,9 @@ class FileControl {
                         ids.replace(id, '')
                     )
                 );
+
+                // Manually trigger the change event
+                inputEle[0].dispatchEvent(new Event('change'));
             }
         } else {
             Swal.fire({

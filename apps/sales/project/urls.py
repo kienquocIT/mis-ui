@@ -5,7 +5,7 @@ from apps.sales.project.views import ProjectList, ProjectCreate, ProjectCreateAP
     ProjectWorkListAPI, ProjectGroupDetailAPI, ProjectWorkDetailAPI, ProjectMemberAddAPI, ProjectMemberDetailAPI, \
     ProjectUpdateOrderAPI, ProjectTaskListAPI, ProjectGroupDDListAPI, ProjectTaskDetailAPI, ProjectWorkExpenseAPI, \
     ProjectListBaselineAPI, ProjectBaselineDetail, ProjectBaselineDetailAPI, ProjectHome, ProjectConfig, \
-    ProjectConfigAPI, ProjectExpenseListAPI, ProjectListBaseline, ProjectWorkList, ProjectActivities, \
+    ProjectConfigAPI, ProjectExpenseListAPI, ProjectWorkList, ProjectActivities, \
     ProjectActivitiesListAPI, ProjectCommentListAPI, ProjectActivitiesCommentDetail, ProjectCommentDetailFlowsAPI
 
 urlpatterns = [
@@ -48,8 +48,8 @@ urlpatterns = [
     # project work expense list
     path('work-expense-list', ProjectWorkExpenseAPI.as_view(), name='ProjectWorkExpenseAPI'),
     path('project-expense-list', ProjectExpenseListAPI.as_view(), name='ProjectExpenseListAPI'),
+
     # project baseline
-    path('baseline/list', ProjectListBaseline.as_view(), name='ProjectListBaseline'),
     path('baseline/list-api', ProjectListBaselineAPI.as_view(), name='ProjectListBaselineAPI'),
     path('baseline/detail/baseline-version/<str:pk>', ProjectBaselineDetail.as_view(), name='ProjectBaselineDetail'),
     path(

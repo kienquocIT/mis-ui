@@ -1,10 +1,9 @@
 import json
-
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 from apps.shared.constant import SYSTEM_STATUS
 
@@ -54,6 +53,45 @@ class QuotationCreate(View):
             'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
             'form_id': 'frm_quotation_create',
             'list_from_app': 'quotation.quotation.create',
+            'data': {
+                'import_db_form_cfg': {
+                    'list_import_db': [
+                        {
+                            "id": "datable-quotation-create-product-import-db",
+                            "name": _("Quotation line detail datatable"),
+                            "map_with": 'datable-quotation-create-product',
+                            "option": [1],
+                            "col_type": [
+                                'input-text',
+                                'input-text',
+                                'textarea',
+                                'input-text',
+                                'checkbox',
+                                'input-text',
+                                'input-number',
+                                'input-money',
+                                'input-number',
+                                'input-number'
+                            ],
+                            "data_format": {
+                                "key": "quotation_product_import_data",
+                                "value_list": [
+                                    {"col_key": "product_code", "col_index": 0},
+                                    {"col_key": "product_title", "col_index": 1},
+                                    {"col_key": "product_description", "col_index": 2},
+                                    {"col_key": "product_category", "col_index": 3},
+                                    {"col_key": "is_service", "col_index": 4},
+                                    {"col_key": "uom", "col_index": 5},
+                                    {"col_key": "quantity", "col_index": 6},
+                                    {"col_key": "unit_price", "col_index": 7},
+                                    {"col_key": "discount_percent", "col_index": 8},
+                                    {"col_key": "tax_percent", "col_index": 9},
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
         }
         return ctx, status.HTTP_200_OK
 

@@ -255,22 +255,32 @@ class PriceListUpdate(View):
     def get(self, request, pk, *args, **kwargs):
         return {
             'data':{
-                'list_import_db_form': [
-                    {
-                        "id": "import-db-form-price",
-                        "name": _("Price datatable"),
-                        "col_type": "tttmt",
-                        "data_format": {
-                            "key": "product",
-                            "value_list": [
-                                {"col_key": "code", "col_index": 1},
-                                {"col_key": "uom", "col_index": 2},
-                                {"col_key": "price", "col_index": 3},
-                                {"col_key": "price_id","col_index": -2, "ele_id": '#tab-item-list', "get_value": False, "get_text": False, "get_attr": "price_id"},
-                            ]
+                'import_db_form_cfg': {
+                    'list_import_db': [
+                        {
+                            "id": "datatable-item-list-import-db",
+                            "name": _("Price datatable"),
+                            "map_with": 'datatable-item-list',
+                            "option": [0],
+                            "col_type": [
+                                'input-text',
+                                'input-text',
+                                'input-text',
+                                'input-money'
+                            ],
+                            "data_format": {
+                                "key": "product",
+                                "value_list": [
+                                    {"col_key": "code", "col_index": 0},
+                                    {"col_key": "uom", "col_index": 1},
+                                    {"col_key": "currency", "col_index": 2},
+                                    {"col_key": "price", "col_index": 3},
+                                    {"col_key": "price_id", "col_index": -2, "ele_id": '#script_price_id', "get_value": False, "get_text": False, "get_attr": "data-price-id"},
+                                ]
+                            }
                         }
-                    }
-                ]
+                    ]
+                }
             }
         }, status.HTTP_200_OK
 
@@ -365,7 +375,7 @@ class ProductAddFromPriceListAPI(APIView):
         return resp.auto_return()
 
 
-class ProductAddFromPriceListImportAPI(APIView):
+class PriceListItemListImportDBAPI(APIView):
     permission_classes = [IsAuthenticated]  # noqa
 
     @mask_view(
@@ -374,7 +384,7 @@ class ProductAddFromPriceListImportAPI(APIView):
     )
     def post(self, request, *arg, **kwargs):
         data = request.data  # noqa
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_ADD_FROM_PRICE_LIST_IMPORT).post(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST_ITEM_IMPORT_DB).post(data)
         return resp.auto_return()
 
 

@@ -1545,6 +1545,7 @@ class QuotationLoadDataHandle {
     };
 
     static loadCostProduct(eleProduct) {
+        // wh cost > bom cost > standard cost
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
         if (productData) {
             if (productData?.['id']) {
@@ -1566,7 +1567,15 @@ class QuotationLoadDataHandle {
                             if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
                                 let elePrice = eleProduct.closest('tr').querySelector('.table-row-price');
                                 let btnSCost = eleProduct.closest('tr').querySelector('.btn-select-cost');
+                                let costBom = 0;
+                                let costStandard = 0;
+                                let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+                                    if (productData) {
+                                        costStandard = productData?.['standard_price'];
+                                    }
                                 if (data.bom_order_list.length > 0) {
+                                    costBom = data.bom_order_list[0]?.['sum_price'];
+
                                     if (elePrice) {
                                         elePrice.setAttribute('disabled', 'true');
                                         $(elePrice).attr('value', String(data.bom_order_list[0]?.['sum_price']));
@@ -1576,9 +1585,8 @@ class QuotationLoadDataHandle {
                                             btnSCost.setAttribute('disabled', 'true');
                                         }
                                     }
-                                } else {
-                                    QuotationLoadDataHandle.loadCostWHProduct(eleProduct);
                                 }
+                                QuotationLoadDataHandle.loadCostWHProduct(eleProduct, {'costBom': costBom, 'costStandard': costStandard});
                             }
                             WindowControl.hideLoading();
                         }
@@ -1588,8 +1596,7 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadCostWHProduct(eleProduct) {
-        let formSubmit = $('#frm_quotation_create');
+    static loadCostWHProduct(eleProduct, costBomStandardData) {
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
         let row = eleProduct.closest('tr');
         if (productData && row) {
@@ -1610,6 +1617,14 @@ class QuotationLoadDataHandle {
                             $(modalBody).empty();
                             let htmlCostList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><i class="fas fa-cube mr-2"></i><b>${productData?.['title']}</b></div>`;
                             if (dataDetail?.['cost_list']) {
+                                let checkedBom = '';
+                                let checkedStandard = '';
+                                if (row.querySelector(`.input-group-price[data-cost-wh-id="bom"]`)) {
+                                    checkedBom = 'checked';
+                                }
+                                if (row.querySelector(`.input-group-price[data-cost-wh-id="standard"]`)) {
+                                    checkedStandard = 'checked';
+                                }
                                 if (Array.isArray(dataDetail?.['cost_list']) && dataDetail?.['cost_list'].length > 0) {
                                     for (let costData of dataDetail?.['cost_list']) {
                                         let checked = '';
@@ -1626,25 +1641,29 @@ class QuotationLoadDataHandle {
                                                         <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
                                                     </div>`;
                                     }
-                                    $(modalBody).append(`${htmlCostList}`);
                                 } else {
                                     htmlCostList += `<p>${QuotationLoadDataHandle.transEle.attr('data-product-no-cost')}</p>`;
-                                    $(modalBody).append(`${htmlCostList}`);
-                                    let elePrice = row.querySelector('.table-row-price');
-                                    let btnSCost = row.querySelector('.btn-select-cost');
-                                    if (elePrice) {
-                                        if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                                            if (productData?.['standard_price'] > 0) {
-                                                $(elePrice).attr('value', productData?.['standard_price']);
-                                            } else {
-                                                elePrice.removeAttribute('disabled');
-                                            }
-                                        }
-                                    }
-                                    if (btnSCost) {
-                                        btnSCost.setAttribute('disabled', 'true');
-                                    }
                                 }
+                                htmlCostList += `<hr>`;
+                                htmlCostList += `<div class="d-flex justify-content-between">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="form-check">
+                                                            <input type="radio" class="form-check-input table-row-price-option" data-value="${parseFloat(costBomStandardData?.['costBom'])}" data-wh="${JSON.stringify({'id': 'bom'}).replace(/"/g, "&quot;")}" ${checkedBom}>
+                                                        </div>
+                                                        <span class="mr-5">${QuotationLoadDataHandle.transEle.attr('data-cost-bom')}</span>
+                                                    </div>
+                                                    <span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costBom'])}"></span>
+                                                </div>`;
+                                htmlCostList += `<div class="d-flex justify-content-between">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="form-check">
+                                                            <input type="radio" class="form-check-input table-row-price-option" data-value="${parseFloat(costBomStandardData?.['costStandard'])}" data-wh="${JSON.stringify({'id': 'standard'}).replace(/"/g, "&quot;")}" ${checkedStandard}>
+                                                        </div>
+                                                        <span class="mr-5">${QuotationLoadDataHandle.transEle.attr('data-cost-standard')}</span>
+                                                    </div>
+                                                    <span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costStandard'])}"></span>
+                                                </div>`;
+                                $(modalBody).append(`${htmlCostList}`);
                             }
                             QuotationLoadDataHandle.loadEventCheckbox(QuotationLoadDataHandle.$costModal);
                             $.fn.initMaskMoney2();
@@ -2823,7 +2842,6 @@ class QuotationDataTableHandle {
                                                 value="${row?.['product_cost_price']}"
                                                 data-return-type="number"
                                                 data-zone="${dataZone}"
-                                                disabled
                                             >
                                             <button
                                                 type="button"

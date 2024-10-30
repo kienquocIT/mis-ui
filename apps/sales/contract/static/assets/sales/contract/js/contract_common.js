@@ -1,6 +1,8 @@
 // Load data
 class ContractLoadDataHandle {
     static $form = $('#frm_contract_create');
+    static $boxOpp = $('#opportunity_id');
+    static $boxEmp = $('#employee_inherit_id');
     static $btnAddDoc = $('#btn-add-doc');
     static $btnOpenAttach = $('#btn-open-attachment');
     static $drawer = $('#drawer_contract_data');
@@ -9,11 +11,52 @@ class ContractLoadDataHandle {
     static $attachment = $('#attachment');
     static $attachmentTmp = $('#attachment-tmp');
     static $trans = $('#app-trans-factory');
+    static $url = $('#app-url-factory');
+
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
+    };
 
     static loadCustomCss() {
         $('.accordion-item').css({
             'margin-bottom': 0
         });
+    };
+
+    static loadDataByOpp() {
+        if (ContractLoadDataHandle.$boxOpp.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(ContractLoadDataHandle.$boxOpp, ContractLoadDataHandle.$boxOpp.val());
+            if (dataSelected) {
+                ContractLoadDataHandle.$boxEmp[0].setAttribute('readonly', 'true');
+                ContractLoadDataHandle.$boxEmp.empty();
+                ContractLoadDataHandle.$boxEmp.initSelect2({
+                    data: dataSelected?.['sale_person'],
+                    'allowClear': true,
+                });
+            }
+        } else {
+            ContractLoadDataHandle.$boxEmp[0].removeAttribute('readonly');
+        }
+        return true;
     };
 
     // DOCUMENT
@@ -29,7 +72,7 @@ class ContractLoadDataHandle {
         return true;
     };
 
-    static loadOpenAttachFile(ele) {
+    static loadOpenAttach(ele) {
         let row = ele.closest('tr');
         if (row) {
             ContractLoadDataHandle.$fileArea[0].classList.remove('bg-light');
@@ -51,7 +94,9 @@ class ContractLoadDataHandle {
                     ids.push(fileData?.['attachment']?.['id']);
                 }
                 let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-                fileIds.value = ids.join(',');
+                if (fileIds) {
+                    fileIds.value = ids.join(',');
+                }
                 let attachmentParse = [];
                 for (let attachData of dataStore?.['attachment_data']) {
                     attachmentParse.push(attachData?.['attachment']);
@@ -172,7 +217,9 @@ class ContractLoadDataHandle {
             }
         }
         let fileIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-        fileIds.value = newIDList.join(',');
+        if (fileIds) {
+            fileIds.value = newIDList.join(',');
+        }
         // append html file again
         ContractLoadDataHandle.$attachment.empty().html(`${ContractLoadDataHandle.$attachmentTmp.html()}`);
         // init file again
@@ -207,9 +254,37 @@ class ContractLoadDataHandle {
     // DETAIL
     static loadDetail(data) {
         $('#contract-title').val(data?.['title']);
+        if (data?.['opportunity_data']?.['id']) {
+            ContractLoadDataHandle.loadInitS2(ContractLoadDataHandle.$boxOpp, [data?.['opportunity_data']], {}, null, false, {'res1': 'code', 'res2': 'title'});
+        }
+        if (data?.['employee_inherit_data']?.['id']) {
+            ContractLoadDataHandle.loadInitS2(ContractLoadDataHandle.$boxEmp, [data?.['employee_inherit_data']], {}, null, false, {'res1': 'code', 'res2': 'title'});
+        }
         ContractLoadDataHandle.setupDetailDocAttach(data);
         ContractDataTableHandle.$tableDocument.DataTable().rows.add(data?.['document_data']).draw();
-        ContractTinymceHandle.initTinymce(data?.['tinymce_content']);
+        ContractDataTableHandle.$tableDocument.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.open-attach') && row.querySelector('.file-preview-link')) {
+                if (row.querySelector('.open-attach').getAttribute('data-store')) {
+                    let dataStore = JSON.parse(row.querySelector('.open-attach').getAttribute('data-store'));
+                    for (let attachmentData of dataStore?.['attachment_data']) {
+                        if (attachmentData?.['is_current'] === true) {
+                            if (attachmentData?.['attachment']?.['id']) {
+                                let url = ContractLoadDataHandle.$url.attr('data-preview-attach').format_url_with_uuid(attachmentData?.['attachment']?.['id']);
+                                row.querySelector('.file-preview-link').setAttribute('href', url);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        ContractLoadDataHandle.loadReadOnlyDisabled(ContractDataTableHandle.$tableDocument);
+        ContractTinymceHandle.initTinymce(data?.['abstract_content'], 'abstract-content');
+        ContractTinymceHandle.initTinymce(data?.['trade_content'], 'trade-content');
+        ContractTinymceHandle.initTinymce(data?.['legal_content'], 'legal-content');
+        ContractTinymceHandle.initTinymce(data?.['payment_content'], 'payment-content');
+        return true;
     };
 
     static setupDetailDocAttach(data) {
@@ -229,6 +304,21 @@ class ContractLoadDataHandle {
                 }
             }
         }
+    };
+
+    static loadReadOnlyDisabled($table) {
+        if (ContractLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            for (let ele of $table[0].querySelectorAll('.table-row-title')) {
+                ele.setAttribute('readonly', 'true');
+            }
+            for (let ele of $table[0].querySelectorAll('.open-attach')) {
+                ele.setAttribute('disabled', 'true');
+            }
+            for (let ele of $table[0].querySelectorAll('.del-row')) {
+                ele.setAttribute('disabled', 'true');
+            }
+        }
+        return true;
     };
 
 }
@@ -256,11 +346,7 @@ class ContractDataTableHandle {
                     targets: 1,
                     width: '60%',
                     render: (data, type, row) => {
-                        let readonly = '';
-                        if (ContractLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-                            readonly = 'readonly';
-                        }
-                        return `<input type="text" class="form-control table-row-title" value="${row?.['title'] ? row?.['title'] : ''}" required ${readonly}>`;
+                        return `<input type="text" class="form-control table-row-title" value="${row?.['title'] ? row?.['title'] : ''}" required>`;
                     }
                 },
                 {
@@ -269,8 +355,10 @@ class ContractDataTableHandle {
                     width: '15%',
                     render: (data, type, row) => {
                         return `<div class="d-flex justify-content-center">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover attach-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-attach-file')}" data-store="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-order="${row?.['order']}"><span class="icon"><i class="fas fa-paperclip"></i></span></button>
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover view-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-view-file')}"><span class="icon"><i class="far fa-eye"></i></span></button>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover open-attach" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-attach-file')}" data-store="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-order="${row?.['order']}"><span class="icon"><i class="fas fa-paperclip"></i></span></button>
+                                    <a class="file-preview-link" href="/attachment/preview/000c7563-0eb5-45d0-94fb-f0f46186f325" target="_blank">
+                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover view-current" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-view-file')}"><span class="icon"><i class="far fa-eye"></i></span></button>
+                                    </a>
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${ContractLoadDataHandle.$trans.attr('data-delete')}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                 </div>`;
                     }
@@ -293,7 +381,7 @@ class ContractStoreHandle {
         dataStore['attachment_data'] = ContractLoadDataHandle.loadSetupAttach();
         let doc = ContractLoadDataHandle.$fileArea.attr('data-doc');
         if (doc) {
-            let btnStore = ContractDataTableHandle.$tableDocument[0].querySelector(`.attach-file[data-order="${doc}"]`);
+            let btnStore = ContractDataTableHandle.$tableDocument[0].querySelector(`.open-attach[data-order="${doc}"]`);
             if (btnStore) {
                 btnStore.setAttribute('data-store', JSON.stringify(dataStore));
             }
@@ -311,7 +399,7 @@ class ContractSubmitHandle {
             let row = this.node();
             let eleOrd = row.querySelector('.table-row-order');
             let eleTitle = row.querySelector('.table-row-title');
-            let btnAttach = row.querySelector('.attach-file');
+            let btnAttach = row.querySelector('.open-attach');
             if (eleOrd && eleTitle && btnAttach) {
                 let attachment_data = [];
                 let attachment = [];
@@ -336,6 +424,20 @@ class ContractSubmitHandle {
     };
 
     static setupDataSubmit(_form) {
+        if (ContractLoadDataHandle.$boxOpp.val()) {
+            _form.dataForm['opportunity_id'] = ContractLoadDataHandle.$boxOpp.val();
+            let data = SelectDDControl.get_data_from_idx(ContractLoadDataHandle.$boxOpp, ContractLoadDataHandle.$boxOpp.val());
+            if (data) {
+                _form.dataForm['opportunity_data'] = data;
+            }
+        }
+        if (ContractLoadDataHandle.$boxEmp.val()) {
+            _form.dataForm['employee_inherit_id'] = ContractLoadDataHandle.$boxEmp.val();
+            let data = SelectDDControl.get_data_from_idx(ContractLoadDataHandle.$boxEmp, ContractLoadDataHandle.$boxEmp.val());
+            if (data) {
+                _form.dataForm['employee_inherit_data'] = data;
+            }
+        }
         ContractStoreHandle.storeAttachment();
         let dataDocParse = ContractSubmitHandle.setupDataDocument();
         _form.dataForm['document_data'] = dataDocParse?.['dataDoc'];

@@ -23,13 +23,17 @@ $(function () {
             });
         }
 
+        ContractLoadDataHandle.$boxOpp.on('change', function () {
+            ContractLoadDataHandle.loadDataByOpp();
+        });
+
         ContractLoadDataHandle.$btnAddDoc.on('click', function () {
             ContractLoadDataHandle.loadAddDoc();
         });
 
-        ContractDataTableHandle.$tableDocument.on('click', '.attach-file', function () {
+        ContractDataTableHandle.$tableDocument.on('click', '.open-attach', function () {
             ContractStoreHandle.storeAttachment();
-            ContractLoadDataHandle.loadOpenAttachFile(this);
+            ContractLoadDataHandle.loadOpenAttach(this);
         });
 
         ContractDataTableHandle.$tableDocument.on('click', '.del-row', function () {
@@ -47,6 +51,10 @@ $(function () {
             ContractSubmitHandle.setupDataSubmit(_form);
             let submitFields = [
                 'title',
+                'opportunity_id',
+                'opportunity_data',
+                'employee_inherit_id',
+                'employee_inherit_data',
                 'document_data',
                 'attachment',
                 'abstract_content',

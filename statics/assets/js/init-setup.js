@@ -6433,6 +6433,9 @@ class FileControl {
                         ids.replace(id, '')
                     )
                 );
+
+                // Manually trigger the change event
+                inputEle[0].dispatchEvent(new Event('change'));
             }
         } else {
             Swal.fire({

@@ -9323,3 +9323,11 @@ msgstr "Là dịch vụ"
 #
 msgid "Please select one option!"
 msgstr "Hãy chọn một tùy chọn"
+
+#
+msgid "Select materials/components"
+msgstr "Chọn Vật liệu/Linh kiện"
+
+#
+msgid "Select tools"
+msgstr "Chọn Công cụ"

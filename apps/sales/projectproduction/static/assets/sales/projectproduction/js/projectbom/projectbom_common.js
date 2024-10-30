@@ -14,6 +14,11 @@ const replacement_material_table = $('#replacement-material-table')
 const replacement_material_table_warning = $('#replacement-material-table-warning')
 let REPLACEMENT_ROW = null
 
+const select_material_table = $('#select-material-table')
+const select_tool_table = $('#select-tool-table')
+let MATERIAL_ROW = null
+let TOOL_ROW = null
+
 //// COMMON
 
 class ProjectBOMLoadPage {
@@ -105,7 +110,7 @@ class ProjectBOMLoadTab {
     static LoadProcessDescriptionTable(data_list=[], option='create') {
         process_description_table.DataTable().clear().destroy()
         process_description_table.DataTableDefault({
-            dom: "t",  // t đại diện cho Table, không xóa, xóa không scroll được
+            dom: 't',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
@@ -377,18 +382,133 @@ class ProjectBOMLoadTab {
             }
         })
     }
+    static LoadMaterialSelectTable(selected_list=[]) {
+        select_material_table.DataTable().clear().destroy()
+        select_material_table.DataTableDefault({
+            useDataServer: true,
+            dom: 't',
+            rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            scrollX: '100vh',
+            scrollY: '65vh',
+            scrollCollapse: true,
+            ajax: {
+                url: select_material_table.attr('data-url'),
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        return resp.data['material_list'] ? resp.data['material_list'].filter(function (item) {
+                            return !selected_list.includes(item.id)
+                        }) : [];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    className: 'text-center',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'text-center',
+                    'render': (data, type, row) => {
+                        return `<div class="form-check">
+                                    <input type="checkbox"
+                                        data-material-id="${row?.['id']}"
+                                        data-material-code="${row?.['code']}"
+                                        data-material-title="${row?.['title']}"
+                                        data-material-standard-price="${row?.['standard_price']}"
+                                        class="form-check-input material-checkbox">
+                                    <label class="form-check-label"></label>
+                                </div>`;
+                    }
+                },
+                {
+                    className: '',
+                    'render': (data, type, row) => {
+                        return `<span class="badge badge-light w-100">${row?.['code']}</span>`;
+                    }
+                },
+                {
+                    className: '',
+                    'render': (data, type, row) => {
+                        return `<span class="text-muted">${row?.['title']}</span>`;
+                    }
+                },
+                {
+                    className: '',
+                    'render': (data, type, row) => {
+                        return `<input disabled type="number" value="0" class="form-control material-quantity">`;
+                    }
+                },
+                {
+                    className: '',
+                    'render': (data, type, row) => {
+                        return `<select disabled data-group-id="${row?.['general_uom_group']}" class="form-select select2 material-uom"></select>`;
+                    }
+                },
+                {
+                    className: '',
+                    'render': (data, type, row) => {
+                        return `<input disabled type="number" value="${row?.['standard_price']}" class="form-control material-unit-price">`;
+                    }
+                },
+                {
+                    className: '',
+                    'render': (data, type, row) => {
+                        return `<input disabled type="number" value="0" class="form-control material-subtotal-price">`;
+                    }
+                },
+                {
+                    className: 'text-center',
+                    'render': () => {
+                        return `<div class="form-check">
+                                    <input type="checkbox" disabled class="form-check-input material-disassemble">
+                                </div>`;
+                    }
+                },
+                {
+                    className: '',
+                    'render': (data, type, row) => {
+                        return `<textarea disabled class="form-control material-note small"></textarea>`;
+                    }
+                },
+            ],
+            initComplete: function () {
+                select_material_table.find('tbody tr').each(function () {
+                    ProjectBOMLoadTab.LoadUOM($(this).find('.material-uom'), $(this).find('.material-uom').attr('data-group-id'))
+                })
+                for (let i = 0; i < selected_list.length; i++) {
+                    select_material_table.find('tbody tr').each(function () {
+                        if ($(this).find('.material-checkbox').attr('data-material-id') === selected_list[i]?.['material_id']) {
+                            $(this).find('.material-checkbox').prop('checked', true)
+                            $(this).find('.material-quantity').val(selected_list[i]?.['quantity']).prop('disabled', false)
+                            $(this).find('.material-uom').prop('disabled', false)
+                            ProjectBOMLoadTab.LoadUOM($(this).find('.material-uom'), selected_list[i]?.['uom_data']?.['group_id'], selected_list[i]?.['uom_data'])
+                            $(this).find('.material-disassemble').prop('disabled', false).prop('checked', selected_list[i]?.['disassemble'])
+                            $(this).find('.material-note').val(selected_list[i]?.['note']).prop('disabled', false)
+                        }
+                    })
+                }
+            }
+        });
+    }
     static LoadMaterialReplacementTable(data_list=[], root_material_id=null, selected_list=[]) {
         replacement_material_table.DataTable().clear().destroy()
         if (root_material_id) {
             replacement_material_table_warning.prop('hidden', true)
             replacement_material_table.DataTableDefault({
                 useDataServer: true,
-                styleDom: 'hide-foot',
+                dom: 't',
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
                 scrollX: '100vh',
-                scrollY: '30vh',
+                scrollY: '50vh',
                 scrollCollapse: true,
                 ajax: {
                     url: replacement_material_table.attr('data-url'),
@@ -481,12 +601,12 @@ class ProjectBOMLoadTab {
             replacement_material_table_warning.prop('hidden', false)
             replacement_material_table.DataTableDefault({
                 useDataServer: false,
-                styleDom: 'hide-foot',
+                dom: 't',
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
                 scrollX: '100vh',
-                scrollY: '30vh',
+                scrollY: '50vh',
                 scrollCollapse: true,
                 data: [],
                 columns: [
@@ -615,6 +735,99 @@ class ProjectBOMLoadTab {
             }
         })
     }
+    static LoadToolSelectTable(selected_list=[]) {
+        select_tool_table.DataTable().clear().destroy()
+        select_tool_table.DataTableDefault({
+            useDataServer: true,
+            dom: 't',
+            rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            scrollX: '100vh',
+            scrollY: '65vh',
+            scrollCollapse: true,
+            ajax: {
+                url: select_tool_table.attr('data-url'),
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        return resp.data['tool_list'] ? resp.data['tool_list'].filter(function (item) {
+                            return !selected_list.includes(item.id)
+                        }) : [];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    className: 'text-center',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'text-center',
+                    'render': (data, type, row) => {
+                        return `<div class="form-check">
+                                    <input type="checkbox"
+                                        data-tool-id="${row?.['id']}"
+                                        data-tool-code="${row?.['code']}"
+                                        data-tool-title="${row?.['title']}"
+                                        class="form-check-input tool-checkbox">
+                                    <label class="form-check-label"></label>
+                                </div>`;
+                    }
+                },
+                {
+                    className: '',
+                    'render': (data, type, row) => {
+                        return `<span class="badge badge-light w-100">${row?.['code']}</span>`;
+                    }
+                },
+                {
+                    className: '',
+                    'render': (data, type, row) => {
+                        return `<span class="text-muted">${row?.['title']}</span>`;
+                    }
+                },
+                {
+                    className: '',
+                    'render': (data, type, row) => {
+                        return `<input disabled type="number" value="0" class="form-control tool-quantity">`;
+                    }
+                },
+                {
+                    className: '',
+                    'render': (data, type, row) => {
+                        return `<select disabled data-group-id="${row?.['general_uom_group']}" class="form-select select2 tool-uom"></select>`;
+                    }
+                },
+                {
+                    className: '',
+                    'render': (data, type, row) => {
+                        return `<textarea disabled class="form-control tool-note small"></textarea>`;
+                    }
+                },
+            ],
+            initComplete: function () {
+                select_tool_table.find('tbody tr').each(function () {
+                    ProjectBOMLoadTab.LoadUOM($(this).find('.tool-uom'), $(this).find('.tool-uom').attr('data-group-id'))
+                })
+                for (let i = 0; i < selected_list.length; i++) {
+                    select_tool_table.find('tbody tr').each(function () {
+                        if ($(this).find('.tool-checkbox').attr('data-tool-id') === selected_list[i]?.['tool_id']) {
+                            $(this).find('.tool-checkbox').prop('checked', true)
+                            $(this).find('.tool-quantity').val(selected_list[i]?.['quantity']).prop('disabled', false)
+                            $(this).find('.tool-uom').prop('disabled', false)
+                            ProjectBOMLoadTab.LoadUOM($(this).find('.tool-uom'), selected_list[i]?.['uom_data']?.['group_id'], selected_list[i]?.['uom_data'])
+                            $(this).find('.tool-note').val(selected_list[i]?.['note']).prop('disabled', false)
+                        }
+                    })
+                }
+            }
+        });
+    }
 }
 
 class ProjectBOMAction {
@@ -719,7 +932,10 @@ class ProjectBOMAction {
                 <td class="text-center">${index}</td>
                 <td colspan="9">
                     <span class="material-group mr-2">${task_name}</span>
-                    <button type="button" class="add-new-material btn btn-icon btn-rounded btn-flush-primary flush-soft-hover">
+                    <button type="button"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#select-material-modal"
+                            class="add-new-material btn btn-icon btn-rounded btn-flush-primary flush-soft-hover">
                         <span class="icon"><i class="far fa-plus-square"></i></span>
                     </button>
                 </td>
@@ -786,7 +1002,10 @@ class ProjectBOMAction {
                 <td class="text-center">${index}</td>
                 <td colspan="6">
                     <span class="tool-group mr-2">${task_name}</span>
-                    <button type="button" class="add-new-tool btn btn-icon btn-rounded btn-flush-primary flush-soft-hover">
+                    <button type="button"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#select-tool-modal"
+                            class="add-new-tool btn btn-icon btn-rounded btn-flush-primary flush-soft-hover">
                         <span class="icon"><i class="far fa-plus-square"></i></span>
                     </button>
                 </td>
@@ -917,7 +1136,7 @@ class ProjectBOMHandle {
         frm.dataForm['bom_material_component_data'] = bom_material_component_data
         frm.dataForm['bom_tool_data'] = bom_tool_data
 
-        console.log(frm.dataForm)
+        // console.log(frm.dataForm)
         return frm
     }
     static LoadDetailBOM(option) {
@@ -1079,10 +1298,12 @@ $(document).on("click", '.labor-price-option', function () {
 // MATERIAL
 
 $(document).on("click", '.add-new-material', function () {
-    let row_index = $(this).closest('tr').find('td:eq(0)').text()
-    let new_material_row = ProjectBOMAction.Create_material_row(row_index)
-    $(this).closest('tr').after(new_material_row)
-    ProjectBOMLoadTab.LoadMaterial(new_material_row.find('.material-item'))
+    MATERIAL_ROW = $(this).closest('tr')
+    let selected_list = []
+    material_table.find(`tbody .${MATERIAL_ROW.attr('class')}`).each(function () {
+        selected_list.push($(this).find('.material-item').val())
+    })
+    ProjectBOMLoadTab.LoadMaterialSelectTable(selected_list)
 })
 
 $(document).on("click", '.del-row-material', function () {
@@ -1116,7 +1337,7 @@ $(document).on("change", '.material-quantity', function () {
 
 $('#btn-get-replacement-material').on('click', function () {
     let replacement_data = []
-    $('#replacement-material-table').find('tbody tr').each(function () {
+    replacement_material_table.find('tbody tr').each(function () {
         let row = $(this)
         if (row.find('.replacement-checkbox').prop('checked')) {
             replacement_data.push({
@@ -1132,15 +1353,94 @@ $('#btn-get-replacement-material').on('click', function () {
     $('#replacement-material-modal').modal('hide')
 })
 
+$(document).on("change", '.material-checkbox', function () {
+    let is_checked = $(this).prop('checked')
+    $(this).closest('tr').find('.material-quantity').val(0).prop('disabled', !is_checked)
+    $(this).closest('tr').find('.material-uom').empty().prop('disabled', !is_checked)
+    $(this).closest('tr').find('.material-disassemble').prop('checked', false).prop('disabled', !is_checked)
+    $(this).closest('tr').find('.material-note').val('').prop('disabled', !is_checked)
+})
+
+$('#btn-get-selected-material').on('click', function () {
+    select_material_table.find('tbody tr').each(function () {
+        let row = $(this)
+        if (row.find('.material-checkbox').prop('checked')) {
+            let row_index = MATERIAL_ROW.find('td:eq(0)').text()
+            let new_material_row = ProjectBOMAction.Create_material_row(row_index)
+            MATERIAL_ROW.after(new_material_row)
+            new_material_row.find('.material-code').text(row.find('.material-checkbox').attr('data-material-code'))
+            ProjectBOMLoadTab.LoadMaterial(
+                new_material_row.find('.material-item'),
+                {
+                    'id': row.find('.material-checkbox').attr('data-material-id'),
+                    'code': row.find('.material-checkbox').attr('data-material-code'),
+                    'title': row.find('.material-checkbox').attr('data-material-title'),
+                }
+            )
+            new_material_row.find('.material-quantity').val(row.find('.material-quantity').val())
+            ProjectBOMLoadTab.LoadUOM(
+                new_material_row.find('.material-uom'),
+                row.find('.material-uom').attr('data-group-id'),
+                SelectDDControl.get_data_from_idx(row.find('.material-uom'), row.find('.material-uom').val())
+            )
+            let quantity = parseFloat(row.find('.material-quantity').val())
+            let standard_price = parseFloat(row.find('.material-checkbox').attr('data-material-standard-price'))
+            new_material_row.find('.material-unit-price').attr('value', standard_price)
+            new_material_row.find('.material-subtotal-price').attr('value', standard_price * quantity)
+            $.fn.initMaskMoney2()
+            new_material_row.find('.material-disassemble').prop('checked', row.find('.material-disassemble').prop('checked'))
+            new_material_row.find('.material-note').val(row.find('.material-note').val())
+        }
+    })
+    $('#select-material-modal').offcanvas('hide')
+})
+
 // TOOL
 
 $(document).on("click", '.add-new-tool', function () {
-    let row_index = $(this).closest('tr').find('td:eq(0)').text()
-    let new_tool_row = ProjectBOMAction.Create_tool_row(row_index)
-    $(this).closest('tr').after(new_tool_row)
-    ProjectBOMLoadTab.LoadTool(new_tool_row.find('.tool-item'))
+    TOOL_ROW = $(this).closest('tr')
+    let selected_list = []
+    tools_table.find(`tbody .${TOOL_ROW.attr('class')}`).each(function () {
+        selected_list.push($(this).find('.tool-item').val())
+    })
+    ProjectBOMLoadTab.LoadToolSelectTable(selected_list)
 })
 
 $(document).on("click", '.del-row-tool', function () {
     $(this).closest('tr').remove()
+})
+
+$(document).on("change", '.tool-checkbox', function () {
+    let is_checked = $(this).prop('checked')
+    $(this).closest('tr').find('.tool-quantity').val(0).prop('disabled', !is_checked)
+    $(this).closest('tr').find('.tool-uom').empty().prop('disabled', !is_checked)
+    $(this).closest('tr').find('.tool-note').val('').prop('disabled', !is_checked)
+})
+
+$('#btn-get-selected-tool').on('click', function () {
+    select_tool_table.find('tbody tr').each(function () {
+        let row = $(this)
+        if (row.find('.tool-checkbox').prop('checked')) {
+            let row_index = TOOL_ROW.find('td:eq(0)').text()
+            let new_tool_row = ProjectBOMAction.Create_tool_row(row_index)
+            TOOL_ROW.after(new_tool_row)
+            new_tool_row.find('.tool-code').text(row.find('.tool-checkbox').attr('data-tool-code'))
+            ProjectBOMLoadTab.LoadMaterial(
+                new_tool_row.find('.tool-item'),
+                {
+                    'id': row.find('.tool-checkbox').attr('data-tool-id'),
+                    'code': row.find('.tool-checkbox').attr('data-tool-code'),
+                    'title': row.find('.tool-checkbox').attr('data-tool-title'),
+                }
+            )
+            new_tool_row.find('.tool-quantity').val(row.find('.tool-quantity').val())
+            ProjectBOMLoadTab.LoadUOM(
+                new_tool_row.find('.tool-uom'),
+                row.find('.tool-uom').attr('data-group-id'),
+                SelectDDControl.get_data_from_idx(row.find('.tool-uom'), row.find('.tool-uom').val())
+            )
+            new_tool_row.find('.tool-note').val(row.find('.tool-note').val())
+        }
+    })
+    $('#select-tool-modal').offcanvas('hide')
 })

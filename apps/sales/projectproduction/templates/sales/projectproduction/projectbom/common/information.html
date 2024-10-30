@@ -10,20 +10,8 @@
     }
 </style>
 
-<div class="row">
-    <div class="col-12 col-md-6 col-lg-4">
-        <div class="form-group">
-            <label for="project" class="form-label required">{% trans 'Opportunity' %}</label>
-            <select class="form-select select2" id="project" data-url="{% url 'OpportunityListAPI' %}"></select>
-        </div>
-    </div>
-    <div class="col-12 col-md-4 col-lg-4">
-        <div class="form-group">
-            <label for="employee-inherit" class="form-label required">{% trans 'Employee inherit' %}</label>
-            <select disabled class="form-select select2" id="employee-inherit"></select>
-        </div>
-    </div>
-</div>
+{% trans 'Select Sale Person' as inherit_title %}
+{% include 'extends/the-documents/bastion.html' with auto_select_current_employee=False show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True inherit_disabled=True %}
 
 <div class="row mt-3">
     <div class="col-12 col-md-12 col-lg-4">

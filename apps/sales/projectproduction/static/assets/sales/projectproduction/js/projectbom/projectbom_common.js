@@ -1,7 +1,7 @@
 const script_url = $('#script-url')
 const script_trans = $('#script-trans')
-const opp_mapped_select = $('#project')
-const employeeInheritEle = $('#employee-inherit')
+const opp_mapped_select = $('#opportunity_id')
+const employeeInheritEle = $('#employee_inherit_id')
 const productEle = $('#product')
 const priceEle = $('#price')
 const timeEle = $('#time')
@@ -22,36 +22,13 @@ let TOOL_ROW = null
 //// COMMON
 
 class ProjectBOMLoadPage {
-    static LoadOpportunity(ele, data) {
-        ele.initSelect2({
-            ajax: {
-                data: {
-                    'list_from_app': 'production.bom.create',
-                    'is_close_lost': false,
-                    'is_deal_close': false
-                },
-                url: ele.attr('data-url'),
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp];
-            },
-            data: (data ? data : null),
-            keyResp: 'opportunity_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-            ProjectBOMLoadPage.LoadInherit(employeeInheritEle, selected?.['sale_person'])
-        })
-    }
     static LoadInherit(ele, data) {
         if (data) {
             ele.initSelect2({
                 data: data,
                 keyId: 'id',
                 keyText: 'full_name',
-            })
+            }).trigger('change')
         }
         else {
             ele.empty()
@@ -1047,7 +1024,6 @@ class ProjectBOMAction {
 
 class ProjectBOMHandle {
     static LoadPage() {
-        ProjectBOMLoadPage.LoadOpportunity(opp_mapped_select)
         ProjectBOMLoadPage.LoadFinishGoodsAndServices(productEle)
         ProjectBOMLoadTab.LoadProcessDescriptionTable()
         ProjectBOMLoadTab.LoadLaborSummaryTable()
@@ -1148,10 +1124,28 @@ class ProjectBOMHandle {
                     data = data['bom_detail'];
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    // console.log(data)
+                    console.log(data)
 
-                    ProjectBOMLoadPage.LoadOpportunity(opp_mapped_select, data?.['opportunity'])
-                    opp_mapped_select.trigger('change')
+                    new $x.cls.bastionField({
+                        has_opp: true,
+                        has_inherit: true,
+                        data_inherit: [{
+                            "id": data?.['opportunity']?.['sale_person']?.['id'],
+                            "full_name": data?.['opportunity']?.['sale_person']?.['full_name'] || '',
+                            "first_name": data?.['opportunity']?.['sale_person']?.['first_name'] || '',
+                            "last_name": data?.['opportunity']?.['sale_person']?.['last_name'] || '',
+                            "email": data?.['opportunity']?.['sale_person']?.['email'] || '',
+                            "is_active": data?.['opportunity']?.['sale_person']?.['is_active'] || false,
+                            "selected": true,
+                        }],
+                        data_opp: [{
+                            "id": data?.['opportunity']?.['id'] || '',
+                            "title": data?.['opportunity']?.['title'] || '',
+                            "code": data?.['opportunity']?.['code'] || '',
+                            "selected": true,
+                        }]
+                    }).init();
+
                     ProjectBOMLoadPage.LoadFinishGoodsAndServices(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
                     timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
@@ -1227,6 +1221,12 @@ function Clean_MaterialTable_ToolTable() {
         ProjectBOMLoadTab.LoadToolTable()
     }
 }
+
+
+$(document).on("change", '#opportunity_id', function () {
+    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+    ProjectBOMLoadPage.LoadInherit(employeeInheritEle, selected?.['sale_person'])
+})
 
 // PROCESS
 

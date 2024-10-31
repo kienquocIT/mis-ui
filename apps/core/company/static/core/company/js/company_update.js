@@ -49,7 +49,7 @@ $(document).ready(function () {
         `;
 
         toastr.options = {
-            "closeButton": true,  // Disable the default close button
+            "closeButton": false,  // Disable the default close button
             "positionClass": "toast-top-right",
             "timeOut": 0, // Toastr will not auto-hide
             "extendedTimeOut": 0, // Extended timeout also set to 0

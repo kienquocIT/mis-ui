@@ -508,7 +508,7 @@ $(document).ready(function () {
         if (!init) {
             let dataParam = {}
             if ($month_filter.prop('checked') && $month_select.val()) {
-                dataParam['month_list'] = JSON.stringify([$month_select.val()])
+                dataParam['month_list'] = JSON.stringify([parseInt($month_select.val()) + parseInt(current_period?.['space_month'])])
             }
             else if ($quarter_filter.prop('checked') && $quarter_select.val()) {
                 dataParam['month_list'] = JSON.stringify(getQuarterMonth($quarter_select.val()))

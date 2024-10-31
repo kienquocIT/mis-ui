@@ -8,6 +8,19 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 from apps.shared.constant import SYSTEM_STATUS
 
+def create_bidding(request, url, msg):
+    resp = ServerAPI(user=request.user, url=url).post(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    return resp.auto_return()
+
+def update_contract(request, url, pk, msg):
+    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    return resp.auto_return()
 
 # Create your views here.
 class BiddingList(View):
@@ -32,6 +45,17 @@ class BiddingListAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.BIDDING_LIST).get(data)
         return resp.auto_return(key_success='bidding_list')
 
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_bidding(
+            request=request,
+            url=ApiURL.BIDDING_LIST,
+            msg=SaleMsg.BIDDING_CREATE
+        )
+
 class BiddingCreate(View):
     @mask_view(
         auth_require=True,
@@ -42,6 +66,63 @@ class BiddingCreate(View):
     def get(self, request, *args, **kwargs):
         ctx = { }
         return ctx, status.HTTP_200_OK
+
+class BiddingDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/bidding/bidding_detail.html',
+        menu_active='menu_bidding_list',
+        breadcrumb='BIDDING_DETAIL_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {
+            'data': {'doc_id': pk},
+        }, status.HTTP_200_OK
+
+class BiddingUpdate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/bidding/bidding_update.html',
+        menu_active='menu_bidding_list',
+        breadcrumb='BIDDING_UPDATE_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {
+            'data': {'doc_id': pk},
+        }, status.HTTP_200_OK
+
+class BiddingDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.BIDDING_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.BIDDING_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update_contract(
+            request=request,
+            url=ApiURL.BIDDING_DETAIL,
+            pk=pk,
+            msg=SaleMsg.BIDDING_CREATE
+        )
 
 class AccountForBiddingListAPI(APIView):
     @mask_view(auth_require=True, is_api=True)

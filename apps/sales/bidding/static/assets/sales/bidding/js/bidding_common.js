@@ -10,6 +10,7 @@ class BiddingLoadDataHandle {
     static $customerInitEle = $('#data-init-customer')
     static $opportunitySelectEle = $('#opportunity_id');
     static $salePersonSelectEle = $('#employee_inherit_id');
+    static $transScript = $('#trans-script')
 
     static loadAddVenture(data) {
         BiddingDataTableHandle.$tableVenture.DataTable().clear().draw();
@@ -21,10 +22,6 @@ class BiddingLoadDataHandle {
     };
 
     static loadAddDocument(data) {
-        // let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-        // if (fileIds) {
-        //     fileIds.value = "";
-        // }
         BiddingDataTableHandle.$tableDocument.DataTable().clear().draw();
         for (const dataRow of data) {
             let TotalOrder = BiddingDataTableHandle.$tableDocument[0].querySelectorAll('.table-row-order').length;
@@ -35,7 +32,6 @@ class BiddingLoadDataHandle {
 
     static loadAddDocumentManual() {
         let TotalOrder = BiddingDataTableHandle.$tableDocumentModalManual[0].querySelectorAll('.table-row-order').length;
-        console.log(TotalOrder)
         let order = TotalOrder + 1;
         let dataAdd = {
             "id": order + "manual",
@@ -69,10 +65,7 @@ class BiddingLoadDataHandle {
                 }
             }
         )
-        let selectEle = BiddingLoadDataHandle.$customerEle;
-        selectEle.initSelect2({
-            data: {"is_customer_account": true},
-        })
+        return true
     };
 
     static loadDataByOpportunity() {
@@ -94,6 +87,23 @@ class BiddingLoadDataHandle {
         }
     };
 
+    //CSS
+    static loadCssToDtb(tableID) {
+        let tableIDWrapper = tableID + '_wrapper';
+        let tableWrapper = document.getElementById(tableIDWrapper);
+        if (tableWrapper) {
+            let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+            if (headerToolbar) {
+                headerToolbar.classList.add('hidden');
+            }
+            let footerToolbar = tableWrapper.querySelector('.tbl-footer-toolbar');
+            if (footerToolbar) {
+                footerToolbar.classList.add('hidden');
+            }
+        }
+    };
+
+    // FILE
     static loadOpenAttachFile(ele) {
         BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
             let row = this.node();
@@ -103,7 +113,7 @@ class BiddingLoadDataHandle {
         if (row) {
             $(row).css('background-color', '#ebfcf5');
             BiddingLoadDataHandle.$fileArea[0].classList.remove('bg-light');
-            let eleId = row.querySelector('.table-row-order').getAttribute('data-id');
+            let eleId = row.querySelector('.table-row-order').getAttribute('data-doctype-id');
             if (eleId) {
                 BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
             }
@@ -151,7 +161,6 @@ class BiddingLoadDataHandle {
         return true;
     };
 
-    // FILE
     static loadAddFile(dataList) {
         if (dataList) {
             BiddingDataTableHandle.$tableFile.DataTable().clear().draw();
@@ -184,16 +193,98 @@ class BiddingLoadDataHandle {
         return result;
     };
 
+    //DETAIL
+    static loadDetail(data) {
+        BiddingLoadDataHandle.$customerEle[0].setAttribute('readonly', 'true');
+        $('#bidding-name').val(data?.['title']);
+        $('#bid-value').val(data?.['bid_value']);
+        BiddingTinymceHandle.initTinymce(data?.['tinymce_content'])
+        $('#bid-date').each(function () {
+            $(this).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                autoApply: true,
+                autoUpdateInput: false,
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('YYYY-MM-DD'));
+            });
+            let dateData = data?.['bid_date']
+            if (dateData) {
+                dateData = $x.fn.reformatData(dateData, $x.cls.datetime.defaultFormatDate, 'DD/MM/YYYY', moment().format('DD/MM/YYYY'));
+            }
+            $(this).val(dateData).trigger('change');
+        })
+        new $x.cls.bastionField({
+            has_opp: true,
+            has_inherit: true,
+            data_inherit: [{
+                "id": data?.['employee_inherit']?.['id'],
+                "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                "code": data?.['employee_inherit']?.['code'] || '',
+                "selected": true,
+            }],
+            data_opp: [{
+                "id": data?.['opportunity']?.['id'] || '',
+                "title": data?.['opportunity']?.['title'] || '',
+                "code": data?.['opportunity']?.['code'] || '',
+                "selected": true,
+            }]
+        }).init();
+        BiddingLoadDataHandle.$customerEle.initSelect2({
+            data: data?.['customer'],
+        });
+        BiddingLoadDataHandle.$customerEle.trigger('change');
+        for (let i=0;i<data?.['venture_partner']?.length;i++){
+            data['venture_partner'][i]['order'] = i+1
+        }
+        BiddingDataTableHandle.dataTableVenture(data?.['venture_partner'], data['isDetail'])
+        for (let i=0;i<data?.['attachment_m2m']?.length;i++){
+            data['attachment_m2m'][i]['isManual'] = data['attachment_m2m'][i]['document_type'] === null;
+        }
+        for (let i=0;i<data?.['attachment_m2m']?.length;i++){
+            if (data['attachment_m2m'][i]['isManual']){
+                data['attachment_m2m'][i]['document_type'] = data['attachment_m2m'][i]['id']
+            }
+        }
+        BiddingLoadDataHandle.setupDetailDocAttach(data?.['attachment_m2m'])
+        BiddingDataTableHandle.dataTableDocument(data?.['attachment_m2m'], data['isDetail'])
+        BiddingDataTableHandle.dataTableDocumentModal(data?.['attachment_m2m'])
+    };
+
+    static setupDetailDocAttach(data) {
+        if (data?.['document_data']) {
+            for (let dataDoc of data?.['document_data']) {
+                if (dataDoc?.['attachment_data']) {
+                    for (let attachData of dataDoc?.['attachment_data']) {
+                        if (data?.['attachment']) {
+                            for (let attach of data?.['attachment']) {
+                                if (attachData?.['attachment']?.['id'] === attach?.['id']) {
+                                    attachData['attachment'] = attach;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
 }
 
 class BiddingDataTableHandle {
     static $tableVentureModal = $('#venture-modal-table');
     static $tableDocumentModal = $('#document-modal-table');
     static $tableDocumentModalManual = $('#document-modal-table-manual');
-    static $tableVenture = $('#datable-venture');
-    static $tableDocument = $('#datable-document');
+    static $tableVenture = $('#datatable-venture');
+    static $tableDocument = $('#datatable-document');
     static $url = $('#app-url-factory');
-    static $tableFile = $('#datable-bidding-file');
+    static $tableFile = $('#datatable-bidding-file');
 
     static dataTableVentureModal(data) {
         BiddingDataTableHandle.$tableVentureModal.DataTableDefault({
@@ -222,7 +313,6 @@ class BiddingDataTableHandle {
                     width: '10%',
                     class: 'text-center',
                     render: (data, type, row) => {
-                        // console.log(row.id)
                         return `<input type="checkbox" class="form-check-checkbox" data-id="${row.id}">`;
                     }
                 },
@@ -230,7 +320,6 @@ class BiddingDataTableHandle {
                     targets: 1,
                     width: '10%',
                     render: (data, type, row) => {
-                        // console.log(row)
                         return `<div class="table-row-code">${row.code}</div>`;
                     }
                 },
@@ -241,13 +330,13 @@ class BiddingDataTableHandle {
                         return `<div class="table-row-title">${row.name}</div>`;
                     }
                 },
-            ]
+            ],
         })
     }
 
     static dataTableDocumentModal(data) {
-        let manualData = data?.filter(item => item.isManual === true)
-        let masterData = data?.filter(item => item.isManual === false)
+        let manualData = data ? data.filter(item => item.isManual === true) : []
+        let checkedMasterDoc = data ? data.filter(item => item.isManual === false) : []
         BiddingDataTableHandle.$tableDocumentModal.DataTableDefault({
             useDataServer: true,
             ajax: {
@@ -263,16 +352,14 @@ class BiddingDataTableHandle {
             },
             ordering: false,
             paging: false,
-            scrollY: '15vh',
-            scrollX: true,
-            scrollCollapse: true,
             columns: [
                 {
                     targets: 0,
                     width: '10%',
                     class: 'text-center',
                     render: (data, type, row) => {
-                        return `<input type="checkbox" class="form-check-checkbox table-row-order" data-id=${row?.id}>`;
+                        let checked = checkedMasterDoc.find(item=>item.document_type===row.id) ? 'checked' : ''
+                        return `<input type="checkbox" class="form-check-checkbox table-row-order" data-id=${row?.id} ${checked}>`;
                     }
                 },
                 {
@@ -284,15 +371,14 @@ class BiddingDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                BiddingLoadDataHandle.loadCssToDtb(BiddingDataTableHandle.$tableDocumentModal[0].id);
             },
         })
         BiddingDataTableHandle.$tableDocumentModalManual.DataTableDefault({
             data: manualData ? manualData : [],
             ordering: false,
             paging: false,
-            scrollY: '15vh',
-            scrollX: true,
-            scrollCollapse: true,
             columns: [
                 {
                     targets: 0,
@@ -311,11 +397,13 @@ class BiddingDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                // add css to Dtb
+                BiddingLoadDataHandle.loadCssToDtb(BiddingDataTableHandle.$tableDocumentModalManual[0].id);
             },
         })
     }
 
-    static dataTableVenture(data) {
+    static dataTableVenture(data, isDetail=false) {
         BiddingDataTableHandle.$tableVenture.DataTableDefault({
             data: data ? data : [],
             ordering: false,
@@ -326,7 +414,7 @@ class BiddingDataTableHandle {
                     targets: 0,
                     width: '5%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row.order}</span>`;
+                        return `<span class="table-row-order" data-partner_account="${row?.partner_account}">${row.order}</span>`;
                     }
                 },
                 {
@@ -348,7 +436,8 @@ class BiddingDataTableHandle {
                     width: '5%',
                     class: 'text-center',
                     render: (data, type, row) => {
-                        return `<input type="checkbox" class="form-check-checkbox venture-checkbox">`;
+                        let checked = row?.["is_leader"] ? "checked" : ""
+                        return `<input type="checkbox" class="form-check-checkbox venture-checkbox" ${checked}>`;
                     }
                 },
                 {
@@ -368,10 +457,18 @@ class BiddingDataTableHandle {
                     $('.venture-checkbox').not(this).prop('checked', false);
                 });
             },
+            initComplete: function (){
+                BiddingDataTableHandle.$tableVenture.find('tbody tr').each(function (){
+                    if (isDetail){
+                        $(this).find(".venture-checkbox").prop("disabled", true)
+                        $(this).find("button").prop("disabled", true)
+                    }
+                })
+            }
         })
     }
 
-    static dataTableDocument(data) {
+    static dataTableDocument(data, isDetail=false) {
         BiddingDataTableHandle.$tableDocument.DataTableDefault({
             data: data ? data : [],
             ordering: false,
@@ -382,7 +479,7 @@ class BiddingDataTableHandle {
                     targets: 0,
                     width: '5%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-order" data-id=${row?.id}>${row?.order}</span>`;
+                        return `<span class="table-row-order" data-doctype-id=${row?.document_type} data-id=${row?.id}>${row?.order}</span>`;
                     }
                 },
                 {
@@ -406,6 +503,7 @@ class BiddingDataTableHandle {
                                         data-store="${JSON.stringify(row).replace(/"/g, "&quot;")}" 
                                         data-order="${row?.['order']}"
                                         data-id = "${row?.['id']}"
+                                        data-doctype-id="${row?.document_type}"
                                     >
                                             <span class="icon"><i class="fas fa-paperclip"></i></span>
                                     </button>
@@ -423,6 +521,13 @@ class BiddingDataTableHandle {
             ],
             drawCallback: function () {
             },
+            initComplete: function (){
+                BiddingDataTableHandle.$tableDocument.find('tbody tr').each(function (){
+                    if (isDetail){
+                        $(this).find(".del-row").prop("disabled", true)
+                    }
+                })
+            }
         })
     }
 
@@ -496,7 +601,7 @@ class BiddingStoreHandle {
         dataStore['attachment_data'] = fileData;
         let doc = BiddingLoadDataHandle.$fileArea.attr('doc-id');
         if (doc) {
-            let btnStore = BiddingDataTableHandle.$tableDocument[0].querySelector(`.attach-file[data-id="${doc}"]`);
+            let btnStore = BiddingDataTableHandle.$tableDocument[0].querySelector(`.attach-file[data-doctype-id="${doc}"]`);
             if (btnStore) {
                 btnStore.setAttribute('data-store', JSON.stringify(dataStore));
             }
@@ -547,6 +652,13 @@ class BiddingCommonHandle {
         let year = currentDate.getFullYear();
         return `${year}-${month}-${day}`;
     }
+
+     static filterFieldList(field_list, data_json) {
+        for (let key in data_json) {
+            if (!field_list.includes(key)) delete data_json[key]
+        }
+        return data_json;
+    }
 }
 
 class BiddingSubmitHandle {
@@ -559,19 +671,24 @@ class BiddingSubmitHandle {
             let eleTitle = row.querySelector('.table-row-title');
             let btnAttach = row.querySelector('.attach-file');
             let isManual= this.data().isManual
+            let document_type_id = !isManual ? this.data().document_type : null
+            let id = this.data().id
+            let remark = ''
             if (eleOrd && eleTitle && btnAttach) {
                 let attachment_data = [];
                 if (btnAttach.getAttribute('data-store')) {
                     let dataStore = JSON.parse(btnAttach.getAttribute('data-store'));
+                    remark = dataStore['remark']
                     attachment_data = dataStore?.['attachment_data'];
                     for (let attach of dataStore?.['attachment_data']) {
                         attachmentAll.push(attach?.['attachment']?.['id']);
                     }
                 }
                 result.push({
-                    'title': eleTitle.value,
-                    'remark': BiddingLoadDataHandle.$remark.val(),
-                    // 'attachment': attachment,
+                    'id': id,
+                    'title': eleTitle.innerHTML,
+                    'remark':remark,
+                    'document_type': document_type_id,
                     'attachment_data': attachment_data,
                     'order': parseInt(eleOrd.innerHTML),
                     'isManual': isManual
@@ -580,14 +697,16 @@ class BiddingSubmitHandle {
         });
         return {'dataDoc': result, 'attachment': attachmentAll}
     };
+
     static setupDataPartner(){
         let result = [];
         BiddingDataTableHandle.$tableVenture.DataTable().rows().every(function () {
             let data = {}
             let row = this.node();
             let isLeader = row.querySelector('.venture-checkbox').checked;
-            data['id'] = this.data().id;
-            data['isLeader'] = isLeader;
+            data['id'] = this.data().id ? this.data().id : null
+            data['partner_account'] = this.data().partner_account;
+            data['is_leader'] = isLeader;
             result.push(data)
         })
         return result
@@ -601,6 +720,13 @@ class BiddingSubmitHandle {
         _form.dataForm['attachment'] = dataDocParse?.['attachment'];
         _form.dataForm['venture_partner'] = dataPartner
         _form.dataForm['tinymce_content'] = BiddingTinymceHandle.getContent();
+        if(!_form.dataForm?.['bid_date']){
+            _form.dataForm['bid_date']=null
+        } else {
+            let tmpDate = _form.dataForm['bid_date'];
+            _form.dataForm['bid_date'] = tmpDate.split('/').reverse().join('-');
+        }
+        _form.dataForm['bid_value'] = $('#bid-value').attr('value')
     };
 }
 
@@ -608,14 +734,11 @@ class BiddingTinymceHandle {
     static initTinymce(htmlContent = '') {
         tinymce.init({
             selector: 'textarea#inp-contents',
-            plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code ' +
-                'visualblocks visualchars fullscreen image link media template codesample table charmap hr ' +
-                'pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern ' +
-                'noneditable help charmap quickbars emoticons',
+            plugins: 'paste importcss autolink autosave save directionality code visualblocks visualchars fullscreen lists',
             menubar: false,  // Hide the menubar
-            toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect | removeformat | alignleft aligncenter alignright alignjustify | numlist bullist',
+            toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | numlist bullist | removeformat',
             toolbar_sticky: true,
-            autosave_ask_before_unload: true,
+            autosave_ask_before_unload: false,
             autosave_interval: '30s',
             autosave_prefix: '{path}{query}-{id}-',
             autosave_restore_when_empty: false,

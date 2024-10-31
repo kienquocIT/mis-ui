@@ -1,0 +1,161 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12 col-lg-7 border-right" id="content-area">
+        <!-- bidding data -->
+        <div>
+            {% trans 'Select Opportunity' as inherit_title %}
+            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+            <div class="form-group">
+                <label class="form-label required" for="bid-name">{% trans 'Bidding Name' %}</label>
+                <input type="text" class="form-control" name="title" id="bid-name" required >
+            </div>
+            <div class="form-group">
+                <label class="form-label required"
+                       for="select-box-bidding-customer">{% trans 'Customer' %}</label>
+                <select
+                        class="form-select"
+                        id="select-box-bidding-customer"
+                        data-url="{% url "AccountForBiddingListAPI" %}"
+                        data-method="GET"
+                        name="customer"
+                        data-keyResp="account_for_bidding_list"
+                        data-keyText="name"
+                        required
+                ></select>
+            </div>
+            <div class="row">
+                <div class="col-12 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label" for="bid-date">{% trans 'Bidding Date' %}</label>
+                        <div class="input-affix-wrapper">
+                            <input type="text" name="bid_date"
+                                   class="form-control" autocomplete="off" id="bid-date">
+                            <div class="input-suffix">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label" for="bid-value">{% trans 'Bid Value' %}</label>
+                        <input type="text" class="form-control mask-money" id="bid-value" name="bid_value">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="separator"></div>
+
+        <!-- venture partner -->
+        <div>
+            <label class="form-label fs-5" for="datatable-venture">{% trans 'Joint Venture Partner' %}</label>
+            <table
+                    id="datatable-venture"
+                    class="table nowrap w-100"
+            >
+                <thead>
+                    <tr class="bg-light">
+                        <th class="w-5"></th>
+                        <th class="w-15">{% trans 'Partner Code' %}</th>
+                        <th class="w-65">{% trans 'Partner Name' %}</th>
+                        <th class="w-5">{% trans 'Leader' %}</th>
+                        <th class="w-10">{% trans 'Action' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-primary" id="btn-open-venture-modal"
+                    data-bs-toggle="modal" data-bs-target="#modal-venture">
+                <span>
+                    <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                    <span>{% trans 'Add' %}</span>
+                </span>
+            </button>
+        </div>
+        <div class="separator"></div>
+
+        <!-- document -->
+        <div class="form-group">
+            <label class="form-label fs-5" for="datatable-document">{% trans 'Required Documents' %}</label>
+            <table
+                    id="datatable-document"
+                    class="table nowrap w-100"
+            >
+                <thead>
+                    <tr class="bg-light">
+                        <th class="w-5"></th>
+                        <th class="w-75">{% trans 'Document name' %}</th>
+                        <th class="w-20">{% trans 'Action' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-primary" id="btn-open-document-modal"
+                    data-bs-toggle="modal" data-bs-target="#modal-document">
+                <span>
+                    <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                    <span>{% trans 'Add' %}</span>
+                </span>
+            </button>
+        </div>
+
+         <!-- abstract -->
+        <div class="form-group">
+            <label class="form-label fs-5" for="inp-contents">{% trans 'Abstract' %}</label>
+            <textarea class="form-control" id="inp-contents"></textarea>
+        </div>
+    </div>
+    <div class="col-12 col-lg-5" id="file-area">
+        <!-- description -->
+        <div class="form-group">
+            <label class="form-label" for="bidding-doc-remark">{% trans 'Description' %}</label>
+            <textarea class="form-control" rows="3" id="bidding-doc-remark" name="remarks" readonly></textarea>
+        </div>
+        <!-- attachment -->
+        <label class="form-label">{% trans 'Attachment' %}</label>
+        <div id="attachment" hidden>
+            {% include 'extends/files/all.html' %}
+        </div>
+        <div id="attachment-tmp" hidden>
+            {% include 'extends/files/all.html' %}
+        </div>
+        <!-- table file -->
+        <table
+                id="datatable-bidding-file"
+                class="table nowrap w-100"
+                data-zone="attachment"
+        >
+            <thead>
+                <tr class="bg-light">
+                    <th>{% trans 'File name' %}</th>
+                    <th>{% trans 'Date' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% block dataHiddenGroup %}
+    <script id="trans-script"
+            data-trans-confirm-delete="{% trans 'Deleting Document Will Empty File Data!' %}"
+            data-trans-delete="{% trans 'Delete' %}"
+            data-trans-cancel="{% trans 'Cancel' %}"
+    ></script>
+    <input
+            type="text"
+            id="app-url-factory"
+            data-md-account="{% url 'AccountForBiddingListAPI' %}"
+            data-md-document="{% url 'DocumentMasterDataBiddingListAPI' %}"
+    >
+    <input
+            type="text"
+            id="data-init-customer"
+            data-url="{% url "AccountForBiddingListAPI" %}"
+            data-method="GET"
+    >
+{% endblock %}

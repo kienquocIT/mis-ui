@@ -146,7 +146,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     QUOTATION_UPDATE_PAGE = BreadcrumbChildren(_('Quotation update'))
 
     # Bidding
-    BIDDING_LIST_PAGE = BreadcrumbChildren(_('Bidding'), 'BiddingList')
+    BIDDING_LIST_PAGE = BreadcrumbChildren(_('Bidding list'), 'BiddingList')
     BIDDING_CREATE_PAGE = BreadcrumbChildren(_('Bidding create'), 'BiddingCreate')
 
     # Shipping
@@ -661,6 +661,8 @@ class BreadcrumbView:
         BreadcrumbItem.BIDDING_LIST_PAGE
     ]
     BIDDING_CREATE_PAGE = BIDDING_LIST_PAGE + [BreadcrumbItem.BIDDING_CREATE_PAGE]
+    BIDDING_DETAIL_PAGE = BIDDING_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    BIDDING_UPDATE_PAGE = BIDDING_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Shipping
     SHIPPING_LIST_PAGE = [

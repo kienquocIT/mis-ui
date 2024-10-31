@@ -5,16 +5,18 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_bidding_create">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
-        </span>
-    </button>
+    <a href="{% url 'BiddingUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon"><i class="fa-regular fa-pen-to-square"></i></span>
+            </span>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
     <form
-            data-url="{% url 'BiddingListAPI' %}"
+            data-url="{% url 'BiddingDetailAPI' pk=pk%}"
             data-url-redirect="{% url 'BiddingList' %}"
             data-method="POST"
             id="frm_bidding_create"
@@ -38,6 +40,20 @@
     <!-- modal !-->
     {% include 'sales/bidding/common/modal.html' %}
 {% endblock %}
+{% block dataHiddenGroup %}
+    <input
+            type="text"
+            id="app-url-factory"
+            data-md-account="{% url 'AccountForBiddingListAPI' %}"
+            data-md-document="{% url 'DocumentMasterDataBiddingListAPI' %}"
+    >
+    <input
+            type="text"
+            id="data-init-customer"
+            data-url="{% url "AccountForBiddingListAPI" %}"
+            data-method="GET"
+    >
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
@@ -45,5 +61,5 @@
     <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/sales/bidding/js/bidding_common.js' %}"></script>
-    <script src="{% static 'assets/sales/bidding/js/bidding_create.js' %}"></script>
+    <script src="{% static 'assets/sales/bidding/js/bidding_detail.js' %}"></script>
 {% endblock %}

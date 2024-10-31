@@ -3,20 +3,31 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        #content-area {
+            transition: width 0.5s ease; /* Smooth transition when changing width */
+        }
+
+        #file-area {
+            transition: width 0.5s ease; /* Smooth transition when changing width */
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="frm_bidding_create">
         <span>
             <span>{% trans 'Save' %}</span>
-            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
         </span>
     </button>
 {% endblock %}
 {% block pageContent %}
     <form
-            data-url="{% url 'BiddingListAPI' %}"
+            data-url="{% url 'BiddingDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'BiddingList' %}"
-            data-method="POST"
+            data-method="PUT"
             id="frm_bidding_create"
             method="post"
     >
@@ -37,13 +48,15 @@
 
     <!-- modal !-->
     {% include 'sales/bidding/common/modal.html' %}
+
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
-    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/sales/bidding/js/bidding_common.js' %}"></script>
     <script src="{% static 'assets/sales/bidding/js/bidding_create.js' %}"></script>
+    <script src="{% static 'assets/sales/bidding/js/bidding_detail.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
 {% endblock %}

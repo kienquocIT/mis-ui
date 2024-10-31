@@ -27,8 +27,8 @@ $(document).ready(function () {
             name: 'attachment',
             enable_edit: true,
         });
-        BiddingDataTableHandle.dataTableDocument({},false);
-        BiddingDataTableHandle.dataTableVenture({},false);
+        BiddingDataTableHandle.dataTableDocument({}, false);
+        BiddingDataTableHandle.dataTableVenture({}, false);
         BiddingDataTableHandle.dataTableFile();
         BiddingDataTableHandle.dataTableDocumentModal();
         BiddingTinymceHandle.initTinymce()
@@ -39,13 +39,12 @@ $(document).ready(function () {
     }
 
     BiddingDataTableHandle.dataTableVentureModal();
-    BiddingLoadDataHandle.loadInitCustomer();
 
     BiddingLoadDataHandle.$opportunitySelectEle.on('change', function () {
-            BiddingLoadDataHandle.loadDataByOpportunity();
-        });
+        BiddingLoadDataHandle.loadDataByOpportunity();
+    });
 
-    BiddingLoadDataHandle.$btnAddVenture.on('click', function(e){
+    BiddingLoadDataHandle.$btnAddVenture.on('click', function (e) {
         data = []
         $("#venture-modal-table .form-check-checkbox:checked").each(function (e) {
             let selectedRow = $(this).closest("tr");
@@ -111,7 +110,7 @@ $(document).ready(function () {
         })
     });
 
-    BiddingLoadDataHandle.$btnAddDoc.on('click',function(){
+    BiddingLoadDataHandle.$btnAddDoc.on('click', function () {
         data = []
         $("#document-modal-table .form-check-checkbox:checked").each(function (e) {
             let selectedRow = $(this).closest("tr");
@@ -136,39 +135,37 @@ $(document).ready(function () {
         BiddingLoadDataHandle.loadAddDocument(data);
     })
 
-    BiddingLoadDataHandle.$btnAddDocManual.on('click',function(){
+    BiddingLoadDataHandle.$btnAddDocManual.on('click', function () {
         BiddingLoadDataHandle.loadAddDocumentManual();
     })
 
-    formSubmit.submit(function (e) {
-        e.preventDefault();
-        let _form = new SetupFormSubmit(formSubmit);
-        BiddingSubmitHandle.setupDataSubmit(_form);
-        let submitFields = [
-            'title',
-            'attachment',
-            'opportunity_id',
-            'document_data',
-            'venture_partner' ,
-            'customer',
-            'bid_value' ,
-            'bid_date',
-            'employee_inherit_id',
-            'tinymce_content'
-        ]
-        if (_form.dataForm) {
-            BiddingCommonHandle.filterFieldList(submitFields, _form.dataForm);
-        }
-        // WFRTControl.callWFSubmitForm(_form);
-        WindowControl.showLoading();
+    let validator = SetupFormSubmit.call_validate(formSubmit, {
+        onsubmit: true,
+        submitHandler: function (form, event) {
+            let _form = new SetupFormSubmit(formSubmit);
+            BiddingSubmitHandle.setupDataSubmit(_form)
+            let submitFields = [
+                'title',
+                'attachment',
+                'opportunity',
+                'document_data',
+                'venture_partner',
+                'bid_value' ,
+                'bid_date',
+                'employee_inherit_id',
+                'tinymce_content'
+            ]
+            if (_form.dataForm) {
+                BiddingCommonHandle.filterFieldList(submitFields, _form.dataForm);
+            }
             $.fn.callAjax2(
                 {
-                    'url': _form.dataUrl,
-                    'method': _form.dataMethod,
+                    'url': formSubmit.attr('data-url'),
+                    'method': 'POST',
                     'data': _form.dataForm,
+                    'isLoading': true
                 }
-            ).then(
-                (resp) => {
+            ).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data && (data['status'] === 201 || data['status'] === 200)) {
                         $.fn.notifyB({description: data.message}, 'success');
@@ -177,11 +174,10 @@ $(document).ready(function () {
                         }, 3000);
                     }
                 }, (err) => {
-                    setTimeout(() => {
-                        WindowControl.hideLoading();
-                    }, 1000)
-                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                    $.fn.switcherResp(err);
+                    validator.showErrors(err?.data?.errors || {});
                 }
             )
-    });
+        }
+    })
 })

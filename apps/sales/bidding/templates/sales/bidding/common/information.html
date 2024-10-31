@@ -4,32 +4,23 @@
     <div class="col-12 col-lg-7 border-right" id="content-area">
         <!-- bidding data -->
         <div>
-            {% trans 'Select Opportunity' as inherit_title %}
+            {% trans 'Select Sale Person' as inherit_title %}
             {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
             <div class="form-group">
                 <label class="form-label required" for="bid-name">{% trans 'Bidding Name' %}</label>
                 <input type="text" class="form-control" name="title" id="bid-name" required >
             </div>
             <div class="form-group">
-                <label class="form-label required"
-                       for="select-box-bidding-customer">{% trans 'Customer' %}</label>
-                <select
-                        class="form-select"
-                        id="select-box-bidding-customer"
-                        data-url="{% url "AccountForBiddingListAPI" %}"
-                        data-method="GET"
-                        name="customer"
-                        data-keyResp="account_for_bidding_list"
-                        data-keyText="name"
-                        required
-                ></select>
+                <label class="form-label"
+                       for="bidding-customer">{% trans 'Customer' %}</label>
+                <input readonly disabled type="text" class="form-control form-control-line" name="bidding-customer" id="bidding-customer" >
             </div>
             <div class="row">
                 <div class="col-12 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label" for="bid-date">{% trans 'Bidding Date' %}</label>
+                        <label class="form-label required" for="bid-date">{% trans 'Bidding Date' %}</label>
                         <div class="input-affix-wrapper">
-                            <input type="text" name="bid_date"
+                            <input required type="text" name="bid_date"
                                    class="form-control" autocomplete="off" id="bid-date">
                             <div class="input-suffix">
                                 <i class="fas fa-calendar-alt"></i>
@@ -39,8 +30,8 @@
                 </div>
                 <div class="col-12 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label" for="bid-value">{% trans 'Bid Value' %}</label>
-                        <input type="text" class="form-control mask-money" id="bid-value" name="bid_value">
+                        <label class="form-label required" for="bid-value">{% trans 'Bid Value' %}</label>
+                        <input required type="text" class="form-control mask-money" id="bid-value" name="bid_value">
                     </div>
                 </div>
             </div>
@@ -151,11 +142,5 @@
             id="app-url-factory"
             data-md-account="{% url 'AccountForBiddingListAPI' %}"
             data-md-document="{% url 'DocumentMasterDataBiddingListAPI' %}"
-    >
-    <input
-            type="text"
-            id="data-init-customer"
-            data-url="{% url "AccountForBiddingListAPI" %}"
-            data-method="GET"
     >
 {% endblock %}

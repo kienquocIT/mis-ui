@@ -18,7 +18,6 @@
             data-url-redirect="{% url 'BiddingList' %}"
             data-method="POST"
             id="frm_bidding_create"
-            method="post"
     >
         {% csrf_token %}
         {% include 'sales/bidding/common/information.html' %}

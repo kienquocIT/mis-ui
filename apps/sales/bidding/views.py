@@ -64,7 +64,9 @@ class BiddingCreate(View):
         breadcrumb='BIDDING_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        ctx = { }
+        ctx = {
+            # "list_from_app": 'bidding.bidding.create',
+        }
         return ctx, status.HTTP_200_OK
 
 class BiddingDetail(View):
@@ -93,6 +95,7 @@ class BiddingUpdate(View):
     def get(self, request, pk, *args, **kwargs):
         return {
             'data': {'doc_id': pk},
+            # "list_from_app": 'bidding.bidding.edit',
         }, status.HTTP_200_OK
 
 class BiddingDetailAPI(APIView):

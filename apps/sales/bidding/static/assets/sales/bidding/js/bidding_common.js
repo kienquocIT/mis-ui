@@ -6,8 +6,7 @@ class BiddingLoadDataHandle {
     static $attachmentTmp = $('#attachment-tmp');
     static $remark = $('#bidding-doc-remark');
     static $fileArea = $('#file-area');
-    static $customerEle = $('#select-box-bidding-customer')
-    static $customerInitEle = $('#data-init-customer')
+    static $customerEle = $('#bidding-customer')
     static $opportunitySelectEle = $('#opportunity_id');
     static $salePersonSelectEle = $('#employee_inherit_id');
     static $transScript = $('#trans-script')
@@ -40,50 +39,12 @@ class BiddingLoadDataHandle {
         BiddingDataTableHandle.$tableDocumentModalManual.DataTable().row.add(dataAdd).draw().node();
     }
 
-    static loadInitCustomer() {
-        let result = {};
-        let ele = BiddingLoadDataHandle.$customerInitEle;
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('account_for_bidding_list') && Array.isArray(data.account_for_bidding_list)) {
-                        for (let customer of data.account_for_bidding_list) {
-                            if (!result.hasOwnProperty(customer?.['id'])) {
-                                result[customer?.['id']] = customer;
-                            }
-                        }
-                        ele.val(JSON.stringify(result));
-                    }
-                }
-            }
-        )
-        return true
-    };
-
     static loadDataByOpportunity() {
-        BiddingLoadDataHandle.$customerEle[0].setAttribute('readonly', 'true');
         if ($(BiddingLoadDataHandle.$opportunitySelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(BiddingLoadDataHandle.$opportunitySelectEle, $(BiddingLoadDataHandle.$opportunitySelectEle).val());
             if (dataSelected) {
-                if (BiddingLoadDataHandle.$customerInitEle.val()) {
-                    let initCustomer = JSON.parse(BiddingLoadDataHandle.$customerInitEle.val());
-                    BiddingLoadDataHandle.$customerEle.empty();
-                    BiddingLoadDataHandle.$customerEle.initSelect2({
-                        data: initCustomer?.[dataSelected?.['customer']?.['id']],
-                    });
-                    BiddingLoadDataHandle.$customerEle.trigger('change');
-                }
+                BiddingLoadDataHandle.$customerEle.val(dataSelected?.['customer']?.['title'])
             }
-        }else {
-            BiddingLoadDataHandle.$customerEle[0].removeAttribute('readonly')
         }
     };
 
@@ -727,6 +688,8 @@ class BiddingSubmitHandle {
             _form.dataForm['bid_date'] = tmpDate.split('/').reverse().join('-');
         }
         _form.dataForm['bid_value'] = $('#bid-value').attr('value')
+        _form.dataForm['opportunity'] = _form.dataForm['opportunity_id']
+        delete _form.dataForm['opportunity_id']
     };
 }
 

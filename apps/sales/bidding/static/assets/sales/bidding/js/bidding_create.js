@@ -158,10 +158,11 @@ $(document).ready(function () {
             if (_form.dataForm) {
                 BiddingCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
+            WindowControl.showLoading()
             $.fn.callAjax2(
                 {
                     'url': formSubmit.attr('data-url'),
-                    'method': 'POST',
+                    'method': _form.dataMethod,
                     'data': _form.dataForm,
                     'isLoading': true
                 }
@@ -174,6 +175,7 @@ $(document).ready(function () {
                         }, 3000);
                     }
                 }, (err) => {
+                    WindowControl.hideLoading()
                     $.fn.switcherResp(err);
                     validator.showErrors(err?.data?.errors || {});
                 }

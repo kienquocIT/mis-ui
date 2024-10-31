@@ -22,7 +22,7 @@ $(document).ready(function () {
                     BiddingLoadDataHandle.$opportunitySelectEle.prop('disabled',true)
                     BiddingLoadDataHandle.$salePersonSelectEle.prop('disabled',true)
                     $('#bid-name').prop('disabled',true)
-                    $('#select-box-bidding-customer').prop('disabled',true)
+                    $('#bidding-customer').prop('disabled',true)
                     $('#bid-date').prop('disabled',true)
                     $('#bid-value').prop('disabled',true)
                     $('#btn-open-venture-modal').prop('disabled',true)

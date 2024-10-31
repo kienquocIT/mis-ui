@@ -156,8 +156,7 @@ class BiddingLoadDataHandle {
 
     //DETAIL
     static loadDetail(data) {
-        BiddingLoadDataHandle.$customerEle[0].setAttribute('readonly', 'true');
-        $('#bidding-name').val(data?.['title']);
+        $('#bid-name').val(data?.['title']);
         $('#bid-value').val(data?.['bid_value']);
         BiddingTinymceHandle.initTinymce(data?.['tinymce_content'])
         $('#bid-date').each(function () {
@@ -197,10 +196,7 @@ class BiddingLoadDataHandle {
                 "selected": true,
             }]
         }).init();
-        BiddingLoadDataHandle.$customerEle.initSelect2({
-            data: data?.['customer'],
-        });
-        BiddingLoadDataHandle.$customerEle.trigger('change');
+        BiddingLoadDataHandle.$customerEle.val(data?.['customer']?.['title'])
         for (let i=0;i<data?.['venture_partner']?.length;i++){
             data['venture_partner'][i]['order'] = i+1
         }

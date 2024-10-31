@@ -29,7 +29,6 @@
             data-url-redirect="{% url 'BiddingList' %}"
             data-method="PUT"
             id="frm_bidding_create"
-            method="post"
     >
         {% csrf_token %}
         {% include 'sales/bidding/common/information.html' %}

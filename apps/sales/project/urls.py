@@ -6,7 +6,8 @@ from apps.sales.project.views import ProjectList, ProjectCreate, ProjectCreateAP
     ProjectUpdateOrderAPI, ProjectTaskListAPI, ProjectGroupDDListAPI, ProjectTaskDetailAPI, ProjectWorkExpenseAPI, \
     ProjectListBaselineAPI, ProjectBaselineDetail, ProjectBaselineDetailAPI, ProjectHome, ProjectConfig, \
     ProjectConfigAPI, ProjectExpenseListAPI, ProjectWorkList, ProjectActivities, \
-    ProjectActivitiesListAPI, ProjectCommentListAPI, ProjectActivitiesCommentDetail, ProjectCommentDetailFlowsAPI
+    ProjectActivitiesListAPI, ProjectCommentListAPI, ProjectActivitiesCommentDetail, ProjectCommentDetailFlowsAPI, \
+    ProjectTaskList, ProjectTaskListAllAPI
 
 urlpatterns = [
     # project
@@ -42,7 +43,9 @@ urlpatterns = [
         '<str:pk_pj>/member/update-api/<str:pk_member>', ProjectMemberDetailAPI.as_view(), name='ProjectMemberUpdateAPI'
     ),
     # project task
-    path('task-list', ProjectTaskListAPI.as_view(), name='ProjectTaskListAPI'),
+    path('task/list', ProjectTaskList.as_view(), name='ProjectTaskList'),
+    path('task/list/api', ProjectTaskListAPI.as_view(), name='ProjectTaskListAPI'),
+    path('task/list-all/api', ProjectTaskListAllAPI.as_view(), name='ProjectTaskListAllAPI'),
     path('task-link/<str:pk>', ProjectTaskDetailAPI.as_view(), name='ProjectTaskDetailAPI'),
 
     # project work expense list

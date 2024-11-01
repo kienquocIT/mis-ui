@@ -92,7 +92,7 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         prepareDataAndRenderHTML(data);
-                        NodeLoadDataHandle.loadDetailNode(data?.['node']);
+                        NodeLoadDataHandle.loadDetail(data?.['node']);
                         // clickEditForm();
                         // UpdateFormSubmit();
                     }

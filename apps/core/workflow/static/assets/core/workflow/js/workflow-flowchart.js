@@ -207,7 +207,8 @@ class JSPlumbsHandle {
                     clsSys = 'control-system'
                     bg = 'bg-blue-light-5';
                 }
-                strHTMLDragNode += `<div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" `
+                strHTMLDragNode += `<div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" data-bs-toggle="modal"
+                            data-bs-target="#nodeModal" `
                     + `title="${item.title}">` + `<p class="drag-title" contentEditable="true" `
                     + `title="${item.remark}">${item.title}</p></div>`;
             }
@@ -322,7 +323,11 @@ class JSPlumbsHandle {
                     for (let idx in DEFAULT_NODE_LIST) {
                         let item = DEFAULT_NODE_LIST[idx]
                         if (item.order === parseInt(ui.draggable.attr('data-drag'))) {
-                            if (item.hasOwnProperty('code_node_system')) sys_code = item.code_node_system.toLowerCase()
+                            if (item.hasOwnProperty('code_node_system')) {
+                                if (item?.['code_node_system'] !== null) {
+                                    sys_code = item.code_node_system.toLowerCase();
+                                }
+                            }
                             break;
                         }
                     }
@@ -617,7 +622,7 @@ class JSPlumbsHandle {
 
     init() {
         // get node list from func node
-        this.setNodeList = NodeSubmitHandle.setupDataSubmit(true);
+        this.setNodeList = NodeSubmitHandle.setupDataFlowChart();
         this.setNodeState = this.nodeData;
         let $form = $('#form-create_workflow');
         if (['GET', 'PUT'].includes($form.attr('data-method'))){

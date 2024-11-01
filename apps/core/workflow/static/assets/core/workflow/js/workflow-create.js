@@ -8,12 +8,6 @@ $(function () {
             'allowClear': true,
         });
 
-        // init DataTable
-        if (formSubmit.attr('data-method') === 'POST') {
-            initTableZone();
-            NodeLoadDataHandle.loadSystemNode();
-        }
-
         // form submit
         formSubmit.submit(function (e) {
             e.preventDefault()
@@ -130,97 +124,54 @@ $(function () {
 
 
         // NODE EVENTS
-        NodeLoadDataHandle.btnAddNode.on('click', function () {
-            NodeLoadDataHandle.loadAddRowTableNode();
-            NodeLoadDataHandle.nodeModalTitleEle.val("");
-            NodeLoadDataHandle.nodeModalDescriptionEle.val("");
+        NodeLoadDataHandle.$btnNewNode.on('click', function () {
+            NodeLoadDataHandle.$btnSaveNode[0].setAttribute('data-save-type', '0');
+            NodeLoadDataHandle.$btnSaveNode[0].removeAttribute('data-order');
         });
 
-        NodeDataTableHandle.tableNode.on('click', '.check-action-node', function () {
-            NodeLoadDataHandle.loadCheckGroupAction(this);
-            NodeLoadDataHandle.loadDoneFailAction(this);
+        $('#node_dragbox').on('click', '.control', function() {
+            NodeLoadDataHandle.$btnSaveNode[0].setAttribute('data-save-type', '1');
+            NodeLoadDataHandle.$btnSaveNode[0].setAttribute('data-order', this.getAttribute('data-drag'));
         });
 
-        NodeDataTableHandle.tableNode.on('change', '.box-list-source', function () {
-            NodeLoadDataHandle.loadAreaByListSource(this);
+        NodeLoadDataHandle.$modalNode.on('shown.bs.modal', function () {
+            NodeLoadDataHandle.loadModalNode();
+            NodeLoadDataHandle.loadModalNodeDetail();
         });
 
-        NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-all', function () {
-            if (this.checked === true) {
-                NodeValidateHandle.validateZoneEditAll(this);
-            }
-            if (this.checked === true) {
-                let eleZoneDD = this.closest('.dropdown-zone');
-                for (let eleCheckbox of eleZoneDD.querySelectorAll('.checkbox-node-zone')) {
-                    eleCheckbox.checked = false;
-                }
-            }
+        NodeLoadDataHandle.$modalNode.on('hidden.bs.modal', function () {
+            NodeLoadDataHandle.loadResetModal();
         });
 
-        NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone', function () {
-            if (this.checked === true) {
-                NodeValidateHandle.validateZoneEdit(this);
-                let zoneAllData = this.closest('.collab-area').querySelector('.checkbox-node-zone-all');
-                if (zoneAllData) {
-                    zoneAllData.checked = false;
-                }
-            }
-            NodeLoadDataHandle.loadZoneShow(this);
+        NodeLoadDataHandle.$modalNode.on('click', '.checkbox-action', function () {
+            NodeLoadDataHandle.loadCheckActionGr(this);
+            NodeLoadDataHandle.loadActionShow();
         });
 
-        NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-hidden', function () {
-            if (this.checked === true) {
-                NodeValidateHandle.validateZoneHidden(this);
-            }
-            NodeLoadDataHandle.loadZoneHiddenShow(this);
+        NodeLoadDataHandle.$boxSource.on('change', function () {
+            NodeLoadDataHandle.loadCollabArea();
         });
 
-        NodeDataTableHandle.tableNode.on('click', '.button-add-out-form-employee', function () {
-            NodeLoadDataHandle.loadOutFormEmployeeShow(this);
+        NodeLoadDataHandle.$modalNode.on('click', '.btn-save-out-form-employee', function () {
+            NodeLoadDataHandle.loadOFEmpShow();
         });
 
-        NodeDataTableHandle.tableNode.on('change', '.box-in-workflow-company', function () {
-            let boxRole = this.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-role');
-            $(boxRole).empty();
-            NodeLoadDataHandle.loadBoxRole($(boxRole));
-            let boxEmployee = this.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-employee');
-            $(boxEmployee).empty();
-            NodeLoadDataHandle.loadBoxEmployee($(boxEmployee));
+        NodeLoadDataHandle.$boxInWFOpt.on('change', function () {
+            NodeLoadDataHandle.loadInWFArea();
         });
 
-        NodeDataTableHandle.tableNode.on('change', '.box-in-workflow-role', function () {
-            let boxEmployee = this.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-employee');
-            $(boxEmployee).empty();
-            NodeLoadDataHandle.loadBoxEmployee($(boxEmployee));
+        NodeLoadDataHandle.$modalNode.on('click', '.checkbox-zone-edit-all, .checkbox-zone-edit, .checkbox-zone-hidden', function () {
+            NodeLoadDataHandle.loadCheckZone(this);
         });
 
-        NodeDataTableHandle.tableNode.on('change', '.box-in-workflow-option', function () {
-            NodeLoadDataHandle.loadInWFArea(this);
+        NodeLoadDataHandle.$modalNode.on('click', '.btn-save-in-workflow-employee', function () {
+            NodeLoadDataHandle.loadInWFShow();
         });
 
-        NodeDataTableHandle.tableNode.on('click', '.button-add-in-workflow-employee', function () {
-            let row = this.closest('tr');
-            let check = NodeLoadDataHandle.loadCheckNextNode(row);
-            if (check === true) {
-                NodeLoadDataHandle.loadInWFEmployeeShow(this);
-            }
-        });
+        NodeLoadDataHandle.$btnSaveNode.on('click', function () {
+            NodeStoreHandle.storeNode();
 
-        NodeDataTableHandle.tableNode.on('click', '.btn-add-collab-create', function () {
-            NodeLoadDataHandle.loadDoneFailCollab(this);
         });
-
-        NodeDataTableHandle.tableNode.on('click', '.del-row-in-wf-emp', function () {
-            let row = this.closest('tr');
-            let $table = $(this.closest('.table-in-workflow-employee'));
-            deleteWFNodeRowTable(row, $table);
-        });
-
-        NodeDataTableHandle.tableNode.on('click', '.del-row', function () {
-            let row = this.closest('tr');
-            deleteWFNodeRowTable(row, NodeDataTableHandle.tableNode);
-        });
-
 
     });
 });

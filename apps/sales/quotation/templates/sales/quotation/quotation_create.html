@@ -166,7 +166,7 @@
                         <div class="tab-content" id="tab-content-quotation-product">
                             <div class="tab-pane fade show active" id="tab_line_detail" data-zone="quotation_products_data">
                                 <div class="row import-db-space">
-{#                                    {% include 'extends/import-datatable/button-import-db.html' %}#}
+                                    {% include 'extends/import-datatable/button-import-db.html' %}
                                     <script class="import-db-form-url"
                                           data-import-db-method="POST"
                                           data-import-db-url="{% url 'ProductQuotationListLoadDBAPI'%}"
@@ -911,7 +911,6 @@
         data-apply="{% trans 'Apply' %}"
         data-refreshed="{% trans 'Data is refreshed.' %}"
         data-valid="{% trans "Valid" %}"
-        data-required-product="{% trans "Product is required" %}"
         data-required-expense="{% trans "Expense is required" %}"
         data-required-product-uom="{% trans "Product unit of measure is required" %}"
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
@@ -936,6 +935,10 @@
         data-product-no-cost="{% trans "The product does not have warehouse cost list. You can choose bill of material cost, standard cost or input cost." %}"
         data-cost-bom="{% trans "Bill of material cost" %}"
         data-cost-standard="{% trans "Standard cost" %}"
+        data-required-customer="{% trans "Customer is required" %}"
+        data-required-contact="{% trans "Contact is required" %}"
+        data-required-payment="{% trans "Payment is required" %}"
+        data-required-product="{% trans "Product is required" %}"
     >
     <input
         type="text"

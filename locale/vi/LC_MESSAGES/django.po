@@ -9351,3 +9351,21 @@ msgstr "Bạn có thể xem danh sách Kì kế toán ở Space Setting"
 #
 msgid "Create new Period year"
 msgstr "Tạo mới Kì kế toán"
+
+#
+msgid "First doc"
+msgstr "Phiếu đầu tiên"
+
+#
+msgid "Previous doc"
+msgstr "Phiếu trước đó"
+
+
+#
+msgid "Next doc"
+msgstr "Phiếu tiếp theo"
+
+
+#
+msgid "Last doc"
+msgstr "Phiếu cuối cùng"

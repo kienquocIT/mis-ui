@@ -512,8 +512,7 @@ $(document).ready(function () {
         let all_success = await processAllRows($load_db_form, $load_db_form_select_table, 'load').then();
         if (all_success) {
             Swal.fire({
-                html: `<h5 class="text-success">${$trans_db_script.attr('data-trans-done')}</h5>
-                       <h6 class="text-muted">${$trans_db_script.attr('data-trans-reload')}</h6>`,
+                html: `<h5 class="text-success">${$trans_db_script.attr('data-trans-done')}</h5>`,
             });
         }
     })

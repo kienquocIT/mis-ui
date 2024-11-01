@@ -251,6 +251,9 @@ $(document).ready(function () {
                             data: 'code',
                             className: 'wrap-text w-20',
                             render: (data, type, row, meta) => {
+                                if (row?.['is_default']) {
+                                    return `<span class="badge badge-secondary">${data}</span>`
+                                }
                                 return `<span class="badge badge-primary">${data}</span>`
                             }
                         },
@@ -258,7 +261,10 @@ $(document).ready(function () {
                             data: 'title',
                             className: 'wrap-text w-40',
                             render: (data, type, row, meta) => {
-                                return `<b class="text-primary">${data}</b>`
+                                if (row?.['is_default']) {
+                                    return `<span class="text-secondary fw-bold">${data}</span>`
+                                }
+                                return `<span class="text-primary fw-bold">${data}</span>`
                             }
                         },
                         {

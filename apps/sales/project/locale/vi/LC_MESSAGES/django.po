@@ -20,3 +20,7 @@ msgstr ""
 #
 msgid "Close date"
 msgstr "Ngày đóng dự án"
+
+#
+msgid "Project task list"
+msgstr "Danh sách Giao việc"

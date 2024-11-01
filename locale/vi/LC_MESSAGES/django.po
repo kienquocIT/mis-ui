@@ -9323,3 +9323,31 @@ msgstr "Là dịch vụ"
 #
 msgid "Please select one option!"
 msgstr "Hãy chọn một tùy chọn"
+
+#
+msgid "General Price"
+msgstr "Giá general"
+
+#
+msgid "Select materials/components"
+msgstr "Chọn Vật liệu/Linh kiện"
+
+#
+msgid "Select tools"
+msgstr "Chọn Công cụ"
+
+#
+msgid "Company system settings need a Period year to match."
+msgstr "Những cấu hình hệ thống Công ty cần kết nối với một Kì kế toán."
+
+#
+msgid "You need to create current Period year before Update Company setting."
+msgstr "Bạn cần tạo Kì kế toán hiện tại trước khi cập nhập cấu hình Công ty"
+
+#
+msgid "You can see Period year list in Setting space."
+msgstr "Bạn có thể xem danh sách Kì kế toán ở Space Setting"
+
+#
+msgid "Create new Period year"
+msgstr "Tạo mới Kì kế toán"

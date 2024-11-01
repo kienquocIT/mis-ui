@@ -69,7 +69,9 @@ class ProjectBOMCreate(View):
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {
+            'list_from_app': 'production.bom.create',
+        }, status.HTTP_200_OK
 
 
 class ProjectBOMDetail(View):
@@ -91,7 +93,9 @@ class ProjectBOMUpdate(View):
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {
+            'list_from_app': 'production.bom.edit',
+        }, status.HTTP_200_OK
 
 
 class ProjectBOMListAPI(APIView):

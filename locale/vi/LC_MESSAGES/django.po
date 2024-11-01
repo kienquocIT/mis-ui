@@ -99,11 +99,11 @@ msgstr "Chọn công ty của bạn"
 
 #
 msgid "Phone"
-msgstr "Số Điện Thoại"
+msgstr "SĐT"
 
 #
 msgid "Contact to phone number"
-msgstr "Số điện thoại liên lạc"
+msgstr "SĐT liên lạc"
 
 #
 msgid "User Name"
@@ -392,11 +392,11 @@ msgstr "Email của người đại diện"
 
 #
 msgid "Phone Number"
-msgstr "Số Điện Thoại"
+msgstr "SĐT"
 
 #
 msgid "Phone number of Representative"
-msgstr "Số điện thoại của người đại diện"
+msgstr "SĐT của người đại diện"
 
 #
 msgid "Add"
@@ -1416,7 +1416,7 @@ msgstr "Chức danh"
 
 #
 msgid "Phone number"
-msgstr "Số điện thoại"
+msgstr "SĐT"
 
 #
 msgid "Email address"
@@ -6954,7 +6954,7 @@ msgstr "SL đơn hàng"
 
 #
 msgid "Revenue average"
-msgstr "Doanh thu trung bình"
+msgstr "Doanh thu TB"
 
 #
 msgid "OPENING"

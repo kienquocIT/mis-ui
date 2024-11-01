@@ -384,7 +384,7 @@ class HomeChart {
         const _prjStatus = {
             1: $.fn.gettext('Created'),
             2: $.fn.gettext('Reopened'),
-            3: $.fn.gettext('Finish'),
+            3: $.fn.gettext('Finished'),
             4: $.fn.gettext('Closed'),
         }
         var optionsStt = {

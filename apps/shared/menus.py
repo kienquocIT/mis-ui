@@ -189,7 +189,8 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-chalkboard-teacher"></i>',
             ),
             MenuCommon(
-                name='Revenue plan config', code='id_menu_master_data_revenue_plan_config', view_name='RevenuePlanConfigList',
+                name='Revenue plan config', code='id_menu_master_data_revenue_plan_config',
+                view_name='RevenuePlanConfigList',
                 icon='<i class="fas fa-hand-holding-usd"></i>',
             ),
             MenuCommon(
@@ -228,7 +229,8 @@ class MenusCoreConfigurations:
         ]
     )
     INVENTORY_DATA_CONFIG = MenuCommon(
-        name='Inventory interact config', code='menu_inventory_interact_config', view_name='InventoryInteractConfigList',
+        name='Inventory interact config', code='menu_inventory_interact_config',
+        view_name='InventoryInteractConfigList',
         icon='<i class="fa-solid fa-arrow-right-to-bracket"></i>'
     )
 
@@ -441,7 +443,8 @@ class MenusInventory:
     )
 
     INVENTORY = MenuCommon(
-        name='Inventory activities', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-store"></i>',
+        name='Inventory activities', code='menu_inventory_activities', view_name='',
+        icon='<i class="fas fa-store"></i>',
         child=[
             MenuCommon(
                 name='WareHouses', code='menu_warehouse_list', view_name='WareHouseList',
@@ -696,6 +699,21 @@ class MenusProduction:
     )
 
 
+class MenusHRM:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_hrm_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    HUMAN_RESOURCES = MenuCommon(
+        name='Human resources', code='menu_human_resources', view_name='', icon='<i class="fa-solid fa-person"></i>',
+        child=[
+            MenuCommon(
+                name='Employee data', code='menu_employee_data_list', view_name='HRMEmployeeList',
+                icon='<i class="fa-solid fa-user-check"></i>',
+            ),
+        ]
+    )
+
+
 # Space Setup
 class SpaceCommon:
     name: str  # 'Sale'
@@ -796,7 +814,10 @@ class SpaceItem:
             'HRM',
             'hrm',
             icon='<i class="fa-solid fa-user-tag"></i>',
-            menus=[],
+            menus=[
+                MenusHRM.HOME,
+                MenusHRM.HUMAN_RESOURCES,
+            ],
         ),
         'inventory': SpaceCommon(
             'Inventory',

@@ -400,6 +400,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCTION_REPORT_LIST_PAGE = BreadcrumbChildren(_('Production report'), 'ProductionReportList')
     WORK_ORDER_LIST_PAGE = BreadcrumbChildren(_('Work order'), 'WorkOrderList')
 
+    # HRM
+    HRM_EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('HRM\Employee'), 'HRMEmployeeList')
+    HRM_EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('HRM\Employee Create'), 'HRMEmployeeCreate')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1028,3 +1032,9 @@ class BreadcrumbView:
     WORK_ORDER_CREATE_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     WORK_ORDER_DETAIL_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     WORK_ORDER_UPDATE_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    HRM_EMPLOYEE_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.HRM_EMPLOYEE_LIST_PAGE
+    ]
+    HRM_EMPLOYEE_CREATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]

@@ -850,7 +850,8 @@ class ProjectWorkExpenseHandle {
     }
 
     static appendChildTable(trElm, workID, bomID='') {
-        const $formElm = $('#project_form'), check_page_version = $formElm.hasClass('baseline_version');
+        const $formElm = $('#project_form');
+        let check_page_version = $formElm.hasClass('baseline_version');
         let baseline_data = $formElm.data('baseline_data');
         let dtlSub = `<table id="expense_child_${workID}" class="table nowrap w-100 min-w-1768p mb-5"><thead></thead><tbody></tbody></table>`,
             $addBtn = `<button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="dropdown"><span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${$.fn.gettext("New")}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span></button>`
@@ -868,6 +869,7 @@ class ProjectWorkExpenseHandle {
         trElm.after(
             `<tr class="work-expense-wrap"><td colspan="4"><div class="WE-content hidden-simple">${$addBtn + dtlSub}</div></td></tr>`
         );
+        if ($('#SystemStatusInput').val() === "4") check_page_version = true
         const $URLFactory = $('#url-factory');
         let crtTable = $('#expense_child_' + workID).DataTableDefault({
             info: false,

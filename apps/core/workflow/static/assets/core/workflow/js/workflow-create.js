@@ -8,6 +8,8 @@ $(function () {
             'allowClear': true,
         });
 
+        NodeLoadDataHandle.loadInitEmpData();
+
         // form submit
         formSubmit.submit(function (e) {
             e.preventDefault()

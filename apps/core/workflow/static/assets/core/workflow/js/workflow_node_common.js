@@ -2,6 +2,7 @@
 class NodeLoadDataHandle {
     static $form = $('#form-create_workflow');
 
+    static $initEmp = $('#data-init-employee');
     static $btnNewNode = $('#btn-new-node');
     static $btnSaveNode = $('#btn-save-node');
     static $modalNode = $('#nodeModal');
@@ -98,8 +99,23 @@ class NodeLoadDataHandle {
     };
 
     static loadInitEmpData() {
-
-    }
+        $.fn.callAjax2({
+                'url': NodeLoadDataHandle.$initEmp.attr('data-url'),
+                'method': "GET",
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+                        NodeLoadDataHandle.$initEmp.val(JSON.stringify(data?.['employee_list']));
+                    }
+                }
+            }
+        )
+        return true;
+    };
 
     static loadModalNode() {
         NodeLoadDataHandle.loadDDAction();
@@ -107,7 +123,7 @@ class NodeLoadDataHandle {
         NodeLoadDataHandle.loadZone();
         NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxSource, NodeLoadDataHandle.dataSource, {}, NodeLoadDataHandle.$modalNode);
 
-        NodeDataTableHandle.dataTableCollabOutFormEmployee();
+        NodeDataTableHandle.dataTableCollabOutFormEmployee(JSON.parse(NodeLoadDataHandle.$initEmp.val()));
         NodeDataTableHandle.dataTableCollabInWFEmployee();
         NodeDataTableHandle.dataTableCollabInWFExitCon();
         NodeLoadDataHandle.$boxSource.val('').trigger('change');
@@ -215,14 +231,14 @@ class NodeLoadDataHandle {
                             if (data?.['collab_out_form']?.['zone']) {
                                 if (data?.['collab_out_form']?.['zone'].length > 0) {
                                     for (let eleCheck of NodeLoadDataHandle.$modalNode[0].querySelector('#collab-area-1').querySelectorAll('.checkbox-zone-edit')) {
-                                        eleCheck.checked = data?.['collab_out_form']?.['zone'].includes(eleCheck.getAttribute('data-id'));
+                                        eleCheck.checked = data?.['collab_out_form']?.['zone'].includes(parseInt(eleCheck.getAttribute('data-id')));
                                     }
                                 }
                             }
                             if (data?.['collab_out_form']?.['zone_hidden']) {
                                 if (data?.['collab_out_form']?.['zone_hidden'].length > 0) {
                                     for (let eleCheck of NodeLoadDataHandle.$modalNode[0].querySelector('#collab-area-1').querySelectorAll('.checkbox-zone-hidden')) {
-                                        eleCheck.checked = data?.['collab_out_form']?.['zone_hidden'].includes(eleCheck.getAttribute('data-id'));
+                                        eleCheck.checked = data?.['collab_out_form']?.['zone_hidden'].includes(parseInt(eleCheck.getAttribute('data-id')));
                                     }
                                 }
                             }
@@ -257,9 +273,10 @@ class NodeLoadDataHandle {
     };
 
     static loadCollabElements() {
-        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFOpt, NodeLoadDataHandle.dataInWFOption, {}, $('#inWFCanvas'));
-        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFPos, NodeLoadDataHandle.dataInWFPosition, {}, $('#inWFCanvas'));
-        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFEmp);
+        let $canvas = $('#inWFCanvas');
+        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFOpt, NodeLoadDataHandle.dataInWFOption, {}, $canvas);
+        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFPos, NodeLoadDataHandle.dataInWFPosition, {}, $canvas);
+        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFEmp, JSON.parse(NodeLoadDataHandle.$initEmp.val()), {}, $canvas);
         return true;
     };
 
@@ -528,20 +545,9 @@ class NodeDataTableHandle {
     static $tableInWF = $('#table-in-workflow');
     static $tableInWFExitCon = $('#table-in-workflow-exit-condition');
 
-    static dataTableCollabOutFormEmployee($table, data) {
+    static dataTableCollabOutFormEmployee(data) {
         NodeDataTableHandle.$tableOFEmp.not('.dataTable').DataTableDefault({
             data: data ? data : [],
-            ajax: {
-                url: NodeDataTableHandle.$tableOFEmp.attr('data-url'),
-                type: 'GET',
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && resp.data.hasOwnProperty('employee_list')) {
-                        return resp.data['employee_list'] ? resp.data['employee_list'] : []
-                    }
-                    throw Error('Call data raise errors.')
-                },
-            },
             pageLength: 8,
             columns: [
                 {
@@ -589,7 +595,7 @@ class NodeDataTableHandle {
         });
     };
 
-    static dataTableCollabInWFEmployee($table, data) {
+    static dataTableCollabInWFEmployee(data) {
         NodeDataTableHandle.$tableInWF.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             ordering: false,
@@ -680,7 +686,7 @@ class NodeDataTableHandle {
         });
     };
 
-    static dataTableCollabInWFExitCon($table, data) {
+    static dataTableCollabInWFExitCon(data) {
         NodeDataTableHandle.$tableInWFExitCon.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             ordering: false,

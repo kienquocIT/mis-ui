@@ -392,12 +392,12 @@ class JSPlumbsHandle {
                     that_cls.setCommitNodeList = temp
 
                     // handle event on click node
-                    $('#' + is_id).off().on("mousedown", function (evt) {
-                        _MOUSE_POSITION = evt.pageX + evt.pageY
-                    }).on("mouseup", function (evt) {
-                        let temp = evt.pageX + evt.pageY;
-                        if (_MOUSE_POSITION === temp) eventNodeClick(evt)
-                    })
+                    // $('#' + is_id).off().on("mousedown", function (evt) {
+                    //     _MOUSE_POSITION = evt.pageX + evt.pageY
+                    // }).on("mouseup", function (evt) {
+                    //     let temp = evt.pageX + evt.pageY;
+                    //     if (_MOUSE_POSITION === temp) eventNodeClick(evt)
+                    // })
                 }
 
             });
@@ -471,12 +471,12 @@ class JSPlumbsHandle {
                         // disable node drag in left side
                         numID.draggable("disable");
                         // add event click for node of right side
-                        $('#' + is_id).off().on("mousedown", function (evt) {
-                            _MOUSE_POSITION = evt.pageX + evt.pageY
-                        }).on("mouseup", function (evt) {
-                            let temp = evt.pageX + evt.pageY;
-                            if (_MOUSE_POSITION === temp) eventNodeClick(evt)
-                        })
+                        // $('#' + is_id).off().on("mousedown", function (evt) {
+                        //     _MOUSE_POSITION = evt.pageX + evt.pageY
+                        // }).on("mouseup", function (evt) {
+                        //     let temp = evt.pageX + evt.pageY;
+                        //     if (_MOUSE_POSITION === temp) eventNodeClick(evt)
+                        // })
                     })
                 }) // end do while suspended
 

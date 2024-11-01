@@ -9351,3 +9351,19 @@ msgstr "Bạn có thể xem danh sách Kì kế toán ở Space Setting"
 #
 msgid "Create new Period year"
 msgstr "Tạo mới Kì kế toán"
+
+#
+msgid "Customer is required"
+msgstr "Khách hàng là bắt buộc"
+
+#
+msgid "Contact is required"
+msgstr "Liên hệ là bắt buộc"
+
+#
+msgid "Payment is required"
+msgstr "Thanh toán là bắt buộc"
+
+#
+msgid "Product is required"
+msgstr "Sản phẩm là bắt buộc"

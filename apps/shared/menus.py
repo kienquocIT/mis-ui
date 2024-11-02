@@ -663,6 +663,10 @@ class MenusProject:
         name='Project activities', code='menu_project_activities', view_name='ProjectActivities',
         icon='<i class="fa-solid fa-fire-flame-curved"></i>',
     )
+    TASKS = MenuCommon(
+        name='Project task list', code='menu_project_task_list', view_name='ProjectTaskList',
+        icon='<i class="fa-solid fa-list"></i>',
+    )
 
 
 class MenusProduction:
@@ -829,6 +833,7 @@ class SpaceItem:
                 MenusProject.HOME,
                 MenusProject.LIST,
                 MenusProject.ACTIVITIES,
+                MenusProject.TASKS,
             ]
         ),
         'report': SpaceCommon(

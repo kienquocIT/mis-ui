@@ -4205,7 +4205,7 @@ class indicatorHandle {
         if (formSubmit[0].classList.contains('sale-order')) {
             is_sale_order = true;
         }
-        QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+        QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order, 1);
         let data_form = _form.dataForm;
         let dataDetailCopy = {};
         let eleDetailCopy = $('#data-copy-quotation-detail');
@@ -4228,7 +4228,7 @@ class indicatorHandle {
                 // special case: tab cost depend on tab detail
                 if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
                     QuotationLoadDataHandle.loadDataTableCost();
-                    QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+                    QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order, 1);
                     data_form = _form.dataForm;
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
@@ -6231,7 +6231,7 @@ class QuotationSubmitHandle {
         return result;
     };
 
-    static setupDataSubmit(_form, is_sale_order = false) {
+    static setupDataSubmit(_form, is_sale_order = false, type = 0) {
         let quotation_products_data = 'quotation_products_data';
         let quotation_costs_data = 'quotation_costs_data';
         let quotation_expenses_data = 'quotation_expenses_data';
@@ -6257,6 +6257,20 @@ class QuotationSubmitHandle {
             if (data) {
                 _form.dataForm['customer'] = data?.['id'];
                 _form.dataForm['customer_data'] = data;
+            }
+        }
+        if (type === 0) {
+            if (!QuotationLoadDataHandle.customerSelectEle.val()) {
+                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-customer')}, 'failure');
+                return false;
+            }
+            if (!QuotationLoadDataHandle.contactSelectEle.val()) {
+                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-contact')}, 'failure');
+                return false;
+            }
+            if (!QuotationLoadDataHandle.paymentSelectEle.val()) {
+                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-payment')}, 'failure');
+                return false;
             }
         }
 
@@ -6297,6 +6311,12 @@ class QuotationSubmitHandle {
                 if (!_form.dataForm['total_product_revenue_before_tax']) {
                     _form.dataForm['total_product_revenue_before_tax'] = 0;
                 }
+            }
+        }
+        if (type === 0) {
+            if (quotation_products_data_setup.length <= 0) {
+                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-product')}, 'failure');
+                return false;
             }
         }
         // COST
@@ -6412,6 +6432,7 @@ class QuotationSubmitHandle {
                 _form.dataForm['payment_term_data'] = dataSelected;
             }
         }
+        return _form;
     };
 }
 

@@ -915,7 +915,10 @@ $(function () {
             let _form = new SetupFormSubmit(formSubmit);
             // Load again indicator when Submit
             indicatorHandle.loadIndicator();
-            QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+            let result = QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+            if (result === false) {
+                return false;
+            }
             let keyHidden = WFRTControl.getZoneHiddenKeyData();
             if (keyHidden) {
                 if (keyHidden.length > 0) {

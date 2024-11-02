@@ -54,7 +54,9 @@ function getProjData(opts, strTrigger, page=1, prj = []){
                         $(document).trigger(strTrigger)
                     }
                 },
-                (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+                (err) =>
+                    console.log('error call data: ', err.data.status)
+                // $.fn.notifyB({description: err.data.errors}, 'failure')
             )
     };
 
@@ -322,7 +324,9 @@ class HomeChart {
         for (let item of data){
             const dateStart = new Date(item.start_date);
             const dateFinish = new Date(item.finish_date);
-            const dateClose = item?.['date_close'] ? new Date(item['date_close']) : null;
+            // nếu ngày finish lớn hơn ngày current thì null, else ngày close là ngày hiện tại
+            const dateClose = item?.['date_close'] ? new Date(item['date_close']) :
+                dateFinish.getTime() > new Date().getTime() ? null : new Date();
 
             const startY = dateStart.getFullYear();
             const finishY = dateFinish.getFullYear();
@@ -380,7 +384,7 @@ class HomeChart {
         const _prjStatus = {
             1: $.fn.gettext('Created'),
             2: $.fn.gettext('Reopened'),
-            3: $.fn.gettext('Finish'),
+            3: $.fn.gettext('Finished'),
             4: $.fn.gettext('Closed'),
         }
         var optionsStt = {

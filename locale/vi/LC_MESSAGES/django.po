@@ -9353,6 +9353,23 @@ msgid "Create new Period year"
 msgstr "Tạo mới Kì kế toán"
 
 #
+msgid "Customer is required"
+msgstr "Khách hàng là bắt buộc"
+
+#
+msgid "Contact is required"
+msgstr "Liên hệ là bắt buộc"
+
+#
+msgid "Payment is required"
+msgstr "Thanh toán là bắt buộc"
+
+#
+msgid "Product is required"
+msgstr "Sản phẩm là bắt buộc"
+msgstr "Tạo mới Kì kế toán"
+
+#
 msgid "First doc"
 msgstr "Phiếu đầu tiên"
 

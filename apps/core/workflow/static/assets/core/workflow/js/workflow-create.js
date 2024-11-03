@@ -175,5 +175,9 @@ $(function () {
 
         });
 
+        NodeDataTableHandle.$tableInWFExitCon.on('change', '.table-row-min-collab', function () {
+            NodeLoadDataHandle.loadChangeExitCon(this);
+        });
+
     });
 });

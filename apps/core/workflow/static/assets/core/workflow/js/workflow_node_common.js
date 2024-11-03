@@ -125,7 +125,33 @@ class NodeLoadDataHandle {
 
         NodeDataTableHandle.dataTableCollabOutFormEmployee(JSON.parse(NodeLoadDataHandle.$initEmp.val()));
         NodeDataTableHandle.dataTableCollabInWFEmployee();
-        NodeDataTableHandle.dataTableCollabInWFExitCon();
+        let nodeActionRaw = $('#wf_action').text();
+        if (nodeActionRaw) {
+            let nodeAction = JSON.parse(nodeActionRaw);
+            let dataExitCon = [
+                {'id': 1, 'title': nodeAction[1], 'next_node': NodeLoadDataHandle.transEle.attr('data-node-completed')},
+                {'id': 2, 'title': nodeAction[2], 'next_node': NodeLoadDataHandle.transEle.attr('data-node-completed')},
+                {'id': 3, 'title': nodeAction[3], 'next_node': ''},
+            ]
+            NodeDataTableHandle.dataTableCollabInWFExitCon(dataExitCon);
+        }
+        NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.table-row-action')) {
+                if (row.querySelector('.table-row-action').getAttribute('data-row')) {
+                    let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
+                    if ([2, 3].includes(dataRow?.['id'])) {
+                        if (row.querySelector('.table-row-min-collab')) {
+                            NodeLoadDataHandle.loadInitS2($(row.querySelector('.table-row-min-collab')), [
+                                {'id': '', 'title': 'Select...',},
+                                {'id': 1, 'title': '0',},
+                                {'id': 'else', 'title': 'Else',},
+                            ], {}, NodeLoadDataHandle.$modalNode);
+                        }
+                    }
+                }
+            }
+        });
         NodeLoadDataHandle.$boxSource.val('').trigger('change');
         return true;
     };
@@ -517,6 +543,33 @@ class NodeLoadDataHandle {
         return true;
     };
 
+    static loadChangeExitCon(ele) {
+        if (parseInt(ele.value) <= NodeDataTableHandle.$tableInWF.DataTable().data().count()) {
+            NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row.querySelector('.table-row-action')) {
+                    if (row.querySelector('.table-row-action').getAttribute('data-row')) {
+                        let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
+                        if ([2, 3].includes(dataRow?.['id'])) {
+                            if (row.querySelector('.table-row-min-collab')) {
+                                let value = NodeDataTableHandle.$tableInWF.DataTable().data().count() + 1 - parseInt(ele.value);
+                                NodeLoadDataHandle.loadInitS2($(row.querySelector('.table-row-min-collab')), [
+                                    {'id': '', 'title': 'Select...',},
+                                    {'id': value, 'title': String(value),},
+                                    {'id': 'else', 'title': 'Else',},
+                                ], {}, NodeLoadDataHandle.$modalNode);
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            ele.value = '0';
+            return false;
+        }
+        return true;
+    }
+
     // dbt
     static loadCssToDtb(tableID) {
         let tableIDWrapper = tableID + '_wrapper';
@@ -698,27 +751,22 @@ class NodeDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        let nodeActionRaw = $('#wf_action').text();
-                        if (nodeActionRaw) {
-                            let nodeAction = JSON.parse(nodeActionRaw);
-                            return `<b class="table-row-action" data-row="${dataRow}">${nodeAction[row?.['action']]}</b>`;
-                        }
-                        return `<b>--</b>`;
+                        return `<b class="table-row-action" data-row="${dataRow}">${row?.['title']}</b>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if (row?.['action'] === 1) {
-                            return `<input type="text" class="form-control table-row-min-collaborator validated-number" value="${row?.['min_collaborator']}">`;
+                        if (row?.['id'] === 1) {
+                            return `<input type="text" class="form-control table-row-min-collab validated-number" value="${row?.['min_collab'] ? row?.['min_collab'] : 0}">`;
                         }
-                        return `<span class="table-row-min-collaborator">${row?.['min_collaborator']}</span>`;
+                        return `<select class="form-select table-row-min-collab"></select>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-next-node">${row?.['next_node']}</span>`;
+                        return `<p class="table-row-next-node">${row?.['next_node']} (${row?.['title']})</p>`;
                     }
                 },
             ],

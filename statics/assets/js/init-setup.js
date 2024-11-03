@@ -1545,7 +1545,8 @@ class ListeningEventController {
             tags: true,
             tokenSeparators: [',', ' ']
         });
-        $('#modalRaiseTicket').on('shown.bs.modal', function () {
+        const modal$ = $('#modalRaiseTicket');
+        modal$.on('shown.bs.modal', function () {
             $('#ticket-email').val($('#email-request-owner').text());
             $('#ticket-email-auto').val($('#email-request-owner').text());
             $('#ticket-location-raise').val(window.location);
@@ -1575,42 +1576,47 @@ class ListeningEventController {
         });
 
         let ticketFrm = $('#frm-send-a-ticket');
-        ticketFrm.submit(function (event) {
-            event.preventDefault();
 
-            let urlData = $(this).attr('data-url');
-            let methodData = $(this).attr('data-method');
+        SetupFormSubmit.validate(
+            ticketFrm,
+            {
+                submitHandler: function (form, event){
+                    event.preventDefault();
 
-            let formData = new FormData(this);
-            formData.append("attachments", document.getElementById('ticket-attachments').files);
+                    let formData = new FormData(form[0]);
+                    formData.append("attachments", document.getElementById('ticket-attachments').files);
 
-            WindowControl.showLoading();
-            $.ajax({
-                url: urlData, // point to server-side URL
-                dataType: 'json', // what to expect back from server
-                cache: false,
-                contentType: false,
-                processData: false, //data: {'data': form_data, 'csrfmiddlewaretoken': csrf_token},
-                data: formData,
-                type: methodData,
-                success: function (resp) { // display success response
-                    let data = $.fn.switcherResp(resp)
-                    ticketFrm.find('input').attr('readonly', 'readonly');
-                    ticketFrm.find('textarea').attr('readonly', 'readonly');
-                    $('#staticTicketResp').val(data?.ticket?.code).closest('.form-group').removeClass('hidden');
-                    $.fn.notifyB({
-                        'description': $.fn.transEle.attr('data-success')
-                    }, 'success')
-                    WindowControl.hideLoading();
+                    WindowControl.showLoading();
+                    $.ajax({
+                        url: $(form).data('url'), // point to server-side URL
+                        type: $(form).data('method'),
+                        dataType: 'json', // what to expect back from server
+                        cache: false,
+                        contentType: false,
+                        processData: false, //data: {'data': form_data, 'csrfmiddlewaretoken': csrf_token},
+                        data: formData,
+                        success: function (resp) { // display success response
+                            let data = $.fn.switcherResp(resp)
+                            ticketFrm.find('input').attr('readonly', 'readonly');
+                            ticketFrm.find('textarea').attr('readonly', 'readonly');
+                            $('#staticTicketResp').val(data?.ticket?.code).closest('.form-group').removeClass('hidden');
+                            const link$ = modal$.find('.link-ticket-detail');
+                            link$.attr('href', link$.attr('href').replaceAll('__code__', data?.ticket?.code));
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('Successful'),
+                            }, 'success')
+                            WindowControl.hideLoading();
+                        },
+                        error: function (response) {
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('Failed'),
+                            }, 'failure');
+                            WindowControl.hideLoading();
+                        }
+                    });
                 },
-                error: function (response) {
-                    $.fn.notifyB({
-                        'description': 'Try again!'
-                    }, 'failure');
-                    WindowControl.hideLoading();
-                }
-            });
-        });
+            }
+        )
     }
 
     dataTable() {
@@ -5220,13 +5226,13 @@ class WindowControl {
             if (loadingTitleKeepDefault === true) {
                 let loadingTitleAction = opts?.['loadingTitleAction'] || 'GET';
                 if (loadingTitleAction === 'GET') {
-                    title += $.fn.transEle.attr('data-loading');
+                    title += $.fn.gettext('Loading');
                 } else if (loadingTitleAction === 'CREATE') {
-                    title += $.fn.transEle.attr('data-loading-creating');
+                    title += $.fn.gettext('Creating');
                 } else if (loadingTitleAction === 'UPDATE') {
-                    title += $.fn.transEle.attr('data-loading-updating');
+                    title += $.fn.gettext("Updating");
                 } else if (loadingTitleAction === "DELETE") {
-                    title += $.fn.transEle.attr('data-loading-deleting');
+                    title += $.fn.gettext("Deleting")
                 }
             }
             let loadingTitleMore = opts?.['loadingTitleMore'] || '';
@@ -5248,7 +5254,7 @@ class WindowControl {
         Swal.fire({
             icon: 'info',
             title: resolve_title(),
-            text: `${$.fn.transEle.attr('data-wait')}...`,
+            text: `${$.fn.gettext('Please wait')}...`,
             allowOutsideClick: false,
             showConfirmButton: false,
             timerProgressBar: true,

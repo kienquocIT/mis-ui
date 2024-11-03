@@ -30,6 +30,26 @@ msgid "Failed"
 msgstr "Thất bại"
 
 #
+msgid "Loading"
+msgstr "Đang tải"
+
+#
+msgid "Creating"
+msgstr "Đang tạo"
+
+#
+msgid "Updating"
+msgstr "Đang cập nhật"
+
+#
+msgid "Deleting"
+msgstr "Đang xoá"
+
+#
+msgid "Please wait"
+msgstr "Vui lòng đợi"
+
+#
 msgid "Some apps will not work correctly"
 msgstr "Một số ứng dụng sẽ không hoạt động"
 

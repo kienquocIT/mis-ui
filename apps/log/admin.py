@@ -1,3 +1,5 @@
+import re
+
 from django.contrib import admin
 from django import forms
 from django.utils.html import format_html
@@ -22,8 +24,8 @@ class ImageModelInline(admin.TabularInline):
     def preview(self, obj):
         return format_html(
             '<div id="lightgallery"><a href="{}" data-lg-size="1600-2400"><img src="{}" height="50" /></a></div>',
-            obj.img.url,
-            obj.img.url,
+            re.sub(r"^/media/", "/django-admin-media/", obj.img.url),
+            re.sub(r"^/media/", "/django-admin-media/", obj.img.url),
         )
 
     preview.short_description = 'Preview'
@@ -32,7 +34,17 @@ class ImageModelInline(admin.TabularInline):
 class TicketLogForm(forms.ModelForm):
     class Meta:
         model = TicketLog
-        fields = ("code", "user", "title", "hash_tags", "resolve_state")
+        fields = (
+            "code", "user", "title", "hash_tags",
+            "resolve_state", "resolve_date", "resolve_msg",
+        )
+
+
+FIELDS_HAS_CHANGE_TICKET = [
+    'resolve_state',
+    'resolve_date',
+    'resolve_msg',
+]
 
 
 @admin.register(TicketLog)
@@ -51,7 +63,7 @@ class TicketLogAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return [field.name for field in obj._meta.fields if field.name != 'resolve_state']
+            return [field.name for field in obj._meta.fields if field.name not in FIELDS_HAS_CHANGE_TICKET]
         return []
 
     class Media:

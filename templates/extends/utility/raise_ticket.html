@@ -46,11 +46,11 @@
                     <!-- hidden input -->
                     <div class="form-group">
                         <label
-                                for="ticket-email" class="form-label"
+                                for="ticket-email" class="form-label required"
                         >{% trans 'Email' %}</label>
                         <input
                                 class="form-control" type="text" id="ticket-email"
-                                name="email_input"
+                                name="email_input" required
                         />
                     </div>
                     <div class="form-group">
@@ -70,20 +70,6 @@
                                 type="text" class="form-control" id="ticket-title"
                                 name="title"
                         />
-                    </div>
-                    <div class="form-group">
-                        <label
-                                for="ticket-hash-tag" class="form-label required"
-                        >{% trans 'Hash Tag' %}</label>
-                        <select
-                                name="hash_tags" id="ticket-hash-tag" class="form-control"
-                                multiple="multiple"
-                        >
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
-                        <small class="text-muted">{% trans 'Allow input new tag' %}</small>
                     </div>
                     <div class="form-group">
                         <label
@@ -110,21 +96,29 @@
                     <div class="form-group hidden">
                         <label
                                 for="staticTicketResp" class="form-label"
-                        >{% trans 'Code Ticket' %}</label>
+                        >{% trans 'Code report' %}</label>
                         <input
                                 type="text" readonly
                                 class="form-control-plaintext text-danger"
                                 id="staticTicketResp"
                         >
+                        <small class="form-text">
+                            <a
+                                    class="link-ticket-detail"
+                                    href="{% url 'TicketDetailView' code='__code__' %}"
+                            >
+                                {% trans 'Detail' %}
+                            </a>
+                        </small>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button
-                            type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            type="button" class="btn btn-secondary no-transform" data-bs-dismiss="modal"
                     >{% trans 'Close' %}</button>
                     <button
-                            type="submit" class="btn btn-primary"
-                    >{% trans 'Send a ticket' %}</button>
+                            type="submit" class="btn btn-primary no-transform"
+                    >{% trans 'Send report' %}</button>
                 </div>
             </form>
         </div>

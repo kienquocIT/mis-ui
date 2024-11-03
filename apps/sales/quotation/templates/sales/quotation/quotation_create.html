@@ -17,6 +17,12 @@
 {% endblock %}
 
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'QuotationListAPI' %}"
+        data-url-create="{% url 'QuotationCreate' %}"
+        data-url-detail="{% url 'QuotationDetail' '0' %}"
+        data-key-return="quotation_list"
+    ></script>
     {{ data.data.import_db_form_cfg | json_script:"import_db_form_cfg" }}
 
     <div class="row">
@@ -1064,4 +1070,5 @@
 
     <script src="{% static 'assets/js/xlsx-0.18.5.full.min.js' %}"></script>
     <script src="{% static 'assets/js/import-datatable.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

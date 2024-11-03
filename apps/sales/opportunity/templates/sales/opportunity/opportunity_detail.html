@@ -28,6 +28,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'OpportunityListAPI' %}"
+        data-url-create="{% url 'OpportunityList' %}"
+        data-url-detail="{% url 'OpportunityDetail' '0' %}"
+        data-key-return="opportunity_list"
+    ></script>
     <script id="trans-script"
             data-trans-activity-cancelled="{% trans 'Cancelled' %}"
             data-trans-alert-cancel-call-log="{% trans 'Cancel this call log ?' %}"
@@ -713,4 +719,5 @@
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_detail.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

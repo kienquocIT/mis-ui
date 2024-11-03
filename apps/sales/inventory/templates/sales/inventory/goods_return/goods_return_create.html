@@ -17,6 +17,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'GoodsReturnListAPI' %}"
+        data-url-create="{% url 'GoodsReturnCreate' %}"
+        data-url-detail="{% url 'GoodsReturnDetail' '0' %}"
+        data-key-return="goods_return_list"
+    ></script>
     <script id="script-url"
             data-url-delivery="{% url 'DeliveryListForGoodsReturnAPI' %}"
             data-url-warehouse="{% url 'WareHouseListAPI' %}"
@@ -251,4 +257,5 @@
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_return/goods_return_common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_return/goods_return_create.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

@@ -19,6 +19,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'ReturnAdvanceListAPI' %}"
+        data-url-create="{% url 'ReturnAdvanceCreate' %}"
+        data-url-detail="{% url 'ReturnAdvanceDetail' '0' %}"
+        data-key-return="return_advances"
+    ></script>
     <table id="dtbReturnAdvance" class="table nowrap w-100 mb-5" data-method="GET"
            data-url="{% url "ReturnAdvanceListAPI" %}"
            data-url-detail="{% url "ReturnAdvanceDetail" pk=0 %}"
@@ -44,4 +50,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static "assets/js/return_advance/return_advance_list.js" %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

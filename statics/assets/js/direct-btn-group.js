@@ -3,7 +3,15 @@ $(document).ready(function () {
     const $direct_previous = $('#direct-previous')
     const $direct_next = $('#direct-next')
     const $direct_last = $('#direct-last')
+    const $direct_create = $('#direct-create')
     const $direct_btn_group_url = $('#direct-btn-group-url')
+
+    if ($direct_btn_group_url) {
+        $('#btn-group-direct').prop('hidden', false)
+    }
+    else {
+        $('#btn-group-direct').remove()
+    }
 
     $direct_first.on('click', function () {
         let dataParam = {'direct_first': true}
@@ -127,5 +135,14 @@ $(document).ready(function () {
                     $.fn.notifyB({'description': 'Can not find the next record.'}, 'warning');
                 }
             })
+    })
+
+    $direct_create.on('click', function () {
+        if ($direct_btn_group_url.attr('data-url-create')) {
+            window.location.href = $direct_btn_group_url.attr('data-url-create')
+        }
+        else {
+            $.fn.notifyB({'description': 'Can not find the create new doc URL.'}, 'warning');
+        }
     })
 })

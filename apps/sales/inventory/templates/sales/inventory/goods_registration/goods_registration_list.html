@@ -6,6 +6,12 @@
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'GoodsRegistrationListAPI' %}"
+        data-url-create="{% url 'GoodsRegistrationList' %}"
+        data-url-detail="{% url 'GoodsRegistrationDetail' '0' %}"
+        data-key-return="goods_registration_list"
+    ></script>
     <script id="script-trans"
             data-trans-general-registration="{% trans 'GENERAL REGISTRATION' %}"
             data-trans-general-registration-info="{% trans 'Open to see Stock information of non-project products' %}"
@@ -49,4 +55,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/inventory/js/goods_registration/goods_registration_list.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

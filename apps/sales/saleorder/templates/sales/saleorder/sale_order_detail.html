@@ -20,6 +20,12 @@
 {% endblock %}
 
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'SaleOrderListAPI' %}"
+        data-url-create="{% url 'SaleOrderCreate' %}"
+        data-url-detail="{% url 'SaleOrderDetail' '0' %}"
+        data-key-return="sale_order_list"
+    ></script>
     {% include 'printer/print.html' %}
 
     <div class="row">
@@ -782,6 +788,7 @@
     <script src="{% static 'assets/sales/quotation/js/quotation_detail.js' %}"></script>
 
     <script src="{% static 'printer/print.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 
     <script>
         $(document).ready(function () {

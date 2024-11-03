@@ -20,6 +20,12 @@
 {% endblock %}
 
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'OpportunityListAPI' %}"
+        data-url-create="{% url 'OpportunityList' %}"
+        data-url-detail="{% url 'OpportunityDetail' '0' %}"
+        data-key-return="opportunity_list"
+    ></script>
     <input type="hidden" id="data-customer">
     <input type="hidden" id="data-sale-person">
     <input type="hidden" id="employee_current_id" value="{{ request.user.employee_current_data.id }}">
@@ -144,4 +150,5 @@
 {% block jsFooter %}
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_list.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

@@ -20,12 +20,6 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    {% include 'extends/direct_btn_group.html' %}
-    <script id="direct-btn-group-url"
-            data-url-list-api="{% url 'ProductListAPI' %}"
-            data-url-detail="{% url 'ProductDetail' '0' %}"
-            data-key-return="product_list"
-    ></script>
     <button id="save-account" class="btn btn-outline-primary" type="submit" form="form-update-product">
         <span>
             <span>{% trans 'Save' %}</span>
@@ -36,6 +30,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'ProductListAPI' %}"
+        data-url-create="{% url 'ProductCreate' %}"
+        data-url-detail="{% url 'ProductDetail' '0' %}"
+        data-key-return="product_list"
+    ></script>
     <script id="url_script"
         data-url-currency="{% url 'CurrencyListAPI' %}"
         data-url-unit="{% url 'BaseUnitListAPI' %}"

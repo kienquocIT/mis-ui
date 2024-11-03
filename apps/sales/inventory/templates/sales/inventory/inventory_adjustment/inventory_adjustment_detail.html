@@ -24,6 +24,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'InventoryAdjustmentListAPI' %}"
+        data-url-create="{% url 'InventoryAdjustmentCreate' %}"
+        data-url-detail="{% url 'InventoryAdjustmentDetail' '0' %}"
+        data-key-return="inventory_adjustment_list"
+    ></script>
     {% include 'printer/print.html' %}
 
     <script id="trans_script"
@@ -90,6 +96,7 @@
     <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_detail.js' %}"></script>
 
     <script src="{% static 'printer/print.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
     <script>
         $(document).ready(function () {
             $('#print-document').on('click', function () {

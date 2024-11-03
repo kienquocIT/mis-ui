@@ -1,6 +1,6 @@
 {% load static i18n %}
 
-<div class="btn-group border rounded mr-3" role="group">
+<div id="btn-group-direct" hidden class="btn-group border-primary rounded mr-3" style="border: 1px dashed" role="group">
     <button type="button"
             id="direct-first"
             class="btn flush-soft-hover btn-icon btn-flush-primary btn-xs"
@@ -8,7 +8,7 @@
             data-bs-placement="left"
             title="{% trans 'First doc' %}"
     >
-        <span class="icon"><i class="fas fa-angle-double-left"></i></span>
+        <span class="fw-bold fs-6">F</span>
     </button>
     <button type="button"
             id="direct-previous"
@@ -17,7 +17,17 @@
             data-bs-placement="left"
             title="{% trans 'Previous doc' %}"
     >
-        <span class="icon"><i class="fas fa-angle-left"></i></span>
+        <span class="icon"><i class="fas fa-chevron-left"></i></span>
+    </button>
+    <button type="button"
+            id="direct-create"
+            class="btn flush-soft-hover btn-icon btn-flush-primary btn-xs"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="{% trans 'Create' %}"
+            {% if not pk %}hidden{% endif %}
+    >
+        <span class="icon"><i class="fas fa-plus"></i></span>
     </button>
     <button type="button"
             id="direct-next"
@@ -26,7 +36,7 @@
             data-bs-placement="right"
             title="{% trans 'Next doc' %}"
     >
-        <span class="icon"><i class="fas fa-angle-right"></i></span>
+        <span class="icon"><i class="fas fa-chevron-right"></i></span>
     </button>
     <button type="button"
             id="direct-last"
@@ -35,6 +45,6 @@
             data-bs-placement="right"
             title="{% trans 'Last doc' %}"
     >
-        <span class="icon"><i class="fas fa-angle-double-right"></i></span>
+        <span class="fw-bold fs-6">L</span>
     </button>
 </div>

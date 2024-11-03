@@ -19,6 +19,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'AdvancePaymentListAPI' %}"
+        data-url-create="{% url 'AdvancePaymentCreate' %}"
+        data-url-detail="{% url 'AdvancePaymentDetail' '0' %}"
+        data-key-return="advance_payment_list"
+    ></script>
     <script id="script-url"
             data-url-opp-list="{% url "OpportunityListAPI" %}"
             data-url-quo-list="{% url "QuotationListAPI" %}"
@@ -74,4 +80,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/advancepayment/advance_payment_list.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

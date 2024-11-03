@@ -36,3 +36,5 @@ if not settings.USE_S3:
 
 # check breadcrumb view exist and reverse successful.
 BreadcrumbView.check_view_name()
+
+handler404 = 'apps.core.home.views.view_render_not_found'

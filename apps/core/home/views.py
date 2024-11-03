@@ -60,7 +60,15 @@ class NotFoundView(View):
         template='extends/systems/404.html',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        ctx = {}
+        if request.user:
+            if request.user.company:
+                ctx = {
+                    'user_id': request.user.id.hex,
+                    'company_code': request.user.company.code,
+                    'company_title': request.user.company.title,
+                }
+        return ctx, status.HTTP_200_OK
 
 
 class ServerMaintainView(View):
@@ -256,15 +264,17 @@ class GatewayViewNameListView(APIView):
 class GatewayViewNameParseView(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, view_name, **kwargs):
+        is_redirect = TypeCheck.get_bool(
+            request.query_params.get('redirect', False)
+        )
         if view_name:
-            is_redirect = TypeCheck.get_bool(
-                request.query_params.get('redirect', False)
-            )
             link_data = ReverseUrlCommon.get_link_by_name(view_name=view_name)
             if link_data:
                 if is_redirect is True:
                     return redirect(link_data)
                 return {'url': link_data}, status.HTTP_200_OK
+        if is_redirect is True:
+            return redirect(reverse('NotFoundView'))
         return {}, status.HTTP_404_NOT_FOUND
 
 

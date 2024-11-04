@@ -1486,15 +1486,14 @@ class GRDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<div class="d-flex align-items-center ml-2">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input table-row-checkbox" 
-                                                data-id="${row?.['id']}"
-                                            >
-                                        </div>
-                                        <span class="table-row-item">${row?.['product_data']?.['title']}</span>
+                        return `<div class="form-check form-check-lg">
+                                    <input 
+                                        type="radio" 
+                                        class="form-check-input table-row-checkbox" 
+                                        id="po-pro-${row?.['purchase_order_product_id'].replace(/-/g, "")}"
+                                        data-id="${row?.['id']}"
+                                    >
+                                    <label class="form-check-label table-row-item" for="po-pro-${row?.['purchase_order_product_id'].replace(/-/g, "")}">${row?.['product_data']?.['title']}</label>
                                 </div>`;
                     }
                 },
@@ -1561,15 +1560,14 @@ class GRDataTableHandle {
                                 prTxt = row?.['production_report_data']?.['code'];
                             }
                         }
-                        return `<div class="d-flex align-items-center ml-2">
-                                    <div class="form-check">
-                                        <input 
-                                            type="radio" 
-                                            class="form-check-input table-row-checkbox" 
-                                            data-id="${prID}" 
-                                        >
-                                    </div>
-                                    <span class="table-row-item">${prTxt}</span>
+                        return `<div class="form-check form-check-lg">
+                                    <input 
+                                        type="radio" 
+                                        class="form-check-input table-row-checkbox" 
+                                        id="pr-${prID.replace(/-/g, "")}"
+                                        data-id="${prID}" 
+                                    >
+                                    <label class="form-check-label table-row-item" for="pr-${prID.replace(/-/g, "")}">${prTxt}</label>
                                 </div>`;
                     }
                 },
@@ -1621,15 +1619,14 @@ class GRDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<div class="d-flex align-items-center ml-2">
-                                    <div class="form-check">
-                                        <input 
-                                            type="radio" 
-                                            class="form-check-input table-row-checkbox" 
-                                            data-id="${row?.['warehouse_id']}" 
-                                        >
-                                    </div>
-                                    <span class="table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>
+                        return `<div class="form-check form-check-lg">
+                                    <input 
+                                        type="radio" 
+                                        class="form-check-input table-row-checkbox" 
+                                        id="wh-${row?.['warehouse_id'].replace(/-/g, "")}"
+                                        data-id="${row?.['warehouse_id']}" 
+                                    >
+                                    <label class="form-check-label table-row-code" for="wh-${row?.['warehouse_id'].replace(/-/g, "")}">${row?.['code'] ? row?.['code'] : ''}</label>
                                 </div>`;
                     }
                 },
@@ -2000,14 +1997,10 @@ class GRDataTableHandle {
                     render: (data, type, row) => {
                         if (row?.['title'] && row?.['code']) {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                            return `<div class="d-flex align-items-center">
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input table-row-checkbox" data-row="${dataRow}">
-                                        </div>
-                                        <div>
-                                            <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
-                                            <span class="table-row-title">${row?.['title']}</span>
-                                        </div>
+                            return `<div class="form-check form-check-lg">
+                                        <input type="checkbox" class="form-check-input table-row-checkbox" id="report-${row?.['id'].replace(/-/g, "")}" data-row="${dataRow}">
+                                        <label class="form-check-label table-row-title" for="report-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                        <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
                                     </div>`;
                         }
                         return `<span>--</span>`;

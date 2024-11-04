@@ -2535,12 +2535,12 @@ class WFRTControl {
         htmlCustom += `<div class="d-flex mb-5">${commonImg}<span>${commonTxt}</span></div>`;
         for (let associate of AssociationData) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <i class="fas fa-cubes mr-2"></i>
-                                    <span class="mr-2">${associate?.['node_out']?.['title']}</span>
-                                </div>
                                 <div class="form-check form-check-theme ms-3">
-                                    <input type="radio" class="form-check-input checkbox-next-association" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
+                                    <input type="radio" class="form-check-input checkbox-next-association" id="associate-${associate?.['id'].replace(/-/g, "")}" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
+                                    <label class="form-check-label mr-2" for="associate-${associate?.['id'].replace(/-/g, "")}">${associate?.['node_out']?.['title']}</label>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <i class="fas fa-cubes"></i>
                                 </div>
                             </div>`;
         }
@@ -2551,13 +2551,13 @@ class WFRTControl {
         let htmlCustom = ``;
         for (let collab of collabOutForm) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <i class="fas fa-user mr-2"></i>
-                                    <span class="mr-2">${collab?.['full_name']}</span>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="radio" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
+                                    <label class="form-check-label mr-2" for="collab-${collab?.['id'].replace(/-/g, "")}">${collab?.['full_name']}</label>
                                     <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                                 </div>
-                                <div class="form-check form-check-theme ms-3">
-                                    <input type="radio" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
+                                <div class="d-flex justify-content-end">
+                                    <i class="fas fa-user"></i>
                                 </div>
                             </div>`;
         }
@@ -2568,8 +2568,8 @@ class WFRTControl {
         let htmlCustom = ``;
         let statusList = [0, 1];
         let statusMapIcon = {
-            0: "far fa-list-alt mr-2",
-            1: "fas fa-sitemap mr-2",
+            0: "far fa-list-alt",
+            1: "fas fa-sitemap",
         };
         let statusMapText = {
             0: $.fn.transEle.attr('data-save-draft'),
@@ -2581,12 +2581,12 @@ class WFRTControl {
         };
         for (let status of statusList) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
-                                <div class="d-flex align-items-center">
-                                    <i class="${statusMapIcon[status]} ${statusMapColor[status]}"></i>
-                                    <label class="form-check-label" for="save-type-${status}">${statusMapText[status]}</label>
-                                </div>
                                 <div class="form-check form-check-theme ms-3">
                                     <input type="radio" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}">
+                                    <label class="form-check-label" for="save-type-${status}">${statusMapText[status]}</label>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <i class="${statusMapIcon[status]} ${statusMapColor[status]}"></i>
                                 </div>
                             </div>`;
         }

@@ -3,7 +3,8 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FileUploadParser, FormParser
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.log.models import TicketLog
+from apps.shared import mask_view, ServerAPI, ApiURL, TypeCheck
 from apps.log.seriallizers import TicketErrorCreateSerializer
 
 __all__ = [
@@ -16,6 +17,7 @@ __all__ = [
     'MyNotifyPageView',
     'MailLogView',
     'MailLogAPI',
+    'TicketDetailView',
 ]
 
 from apps.shared.msg import BaseMsg
@@ -38,6 +40,25 @@ class TicketErrorCreateAPI(APIView):
             obj = ser.save()
             return {'detail': 'Success', 'ticket': {'id': str(obj.id), 'code': str(obj.code)}}, status.HTTP_200_OK
         return {'errors': ser.errors}, status.HTTP_400_BAD_REQUEST
+
+
+class TicketDetailView(View):
+    @mask_view(
+        login_require=True,
+        template='log/ticket/detail.html',
+    )
+    def get(self, request, *args, code, **kwargs):
+        if code:
+            try:
+                obj = TicketLog.objects.get(code=code)
+            except TicketLog.DoesNotExist:
+                pass
+            else:
+                ctx = {
+                    'obj': obj
+                }
+                return ctx, status.HTTP_200_OK
+        return {}, status.HTTP_404_NOT_FOUND
 
 
 class ActivityLogListAPI(APIView):

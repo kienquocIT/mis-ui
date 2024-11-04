@@ -178,8 +178,8 @@ msgid "Reopened"
 msgstr "Mở lại"
 
 #
-msgid "Finish"
-msgstr "Hoàn thành"
+msgid "Finished"
+msgstr "Đã hoàn thành"
 
 #
 msgid "Closed"

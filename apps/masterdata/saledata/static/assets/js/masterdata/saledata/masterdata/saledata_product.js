@@ -1,44 +1,6 @@
 $(document).ready(function () {
     let url_update;
 
-    $("#tab-select-table a.product-and-expense").on("click", function () {
-        $('.btn-show-modal').attr('data-bs-target', '#modal-product-and-expense')
-        let section = $(this).attr('data-collapse');
-        switch (section) {
-            case 'section_product_type':
-                loadProductType()
-                break;
-            case 'section_product_category':
-                loadProDuctCategory()
-                break;
-        }
-        $(".lookup-data").hide()
-        let id_tag = `#` + section
-        $('#modal-product-and-expense h5').text($(this).text());
-        $(id_tag).show();
-        $('#form-create-product-and-expense').attr('data-lookup', $(this).attr('data-collapse'));
-    })
-
-    $("#tab-select-table a.unit-measure").on("click", function () {
-        $('.btn-show-modal').attr('data-bs-target', '#modal-unit-measure')
-        let section = $(this).attr('data-collapse')
-        $(".lookup-data").hide()
-        let id_tag = `#` + section
-        $('#modal-unit-measure h5').text($(this).text());
-        $(id_tag).show();
-        loadUnitOfMeasure();
-    })
-
-    $("#tab-select-table a.unit-measure-group").on("click", function () {
-        $('.btn-show-modal').attr('data-bs-target', '#modal-unit-measure-group')
-        let section = $(this).attr('data-collapse')
-        $(".lookup-data").hide()
-        let id_tag = `#` + section
-        $('#modal-unit-measure-group h5').text($(this).text());
-        $(id_tag).show();
-        loadUnitOfMeasureGroup();
-    })
-
     function loadProductType() {
         let tbl = $('#datatable-product-type-list');
         let frm = new SetupFormSubmit(tbl);
@@ -362,7 +324,7 @@ $(document).ready(function () {
     loadUnitOfMeasureGroup()
     loadUnitOfMeasure()
 
-    // change select box unit measure group
+// change select box unit measure group
     $('#select-box-unit-measure-group').on('change', function () {
         let obj = SelectDDControl.get_data_from_idx($(this), $(this).val());
         let data_referenced = obj?.['referenced_unit']?.['title'];
@@ -709,81 +671,6 @@ $(document).ready(function () {
         }
     })
 
-// load detail Product Type
-    $(document).on('click', '#datatable-product-type-list .btn-detail', function () {
-        let url = $('#form-edit-product-and-expense').attr('data-url-product-type')
-        url_update = url.replace(0, $(this).attr('data-id'));
-
-        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_type')) {
-                        $('#inp-edit-code').val(data?.['product_type'].code);
-                        $('#inp-edit-name').val(data?.['product_type'].title);
-                        $('#inp-edit-description').val(data?.['product_type'].description);
-                    }
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            }
-        )
-    })
-
-// load detail Product Category
-    $(document).on('click', '#datatable-product-category-list .btn-detail', function () {
-        let url = $('#form-edit-product-and-expense').attr('data-url-product-category')
-        url_update = url.replace(0, $(this).attr('data-id'));
-        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET',
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category')) {
-                        $('#inp-edit-code').val(data.product_category.code);
-                        $('#inp-edit-name').val(data.product_category.title);
-                        $('#inp-edit-description').val(data.product_category.description);
-                    }
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            }
-        )
-    })
-
-// load detail UoM Group
-    $(document).on('click', '#datatable-unit-measure-group-list .btn-detail', function () {
-        let url = $('#form-edit-unit-measure-group').attr('data-url')
-        url_update = url.replace(0, $(this).attr('data-id'));
-        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET',
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
-                        $('#inp-code-uom-group').val(data.uom_group.code);
-                        $('#inp-edit-name-uom-group').val(data.uom_group.title);
-                    }
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            }
-        )
-    })
-
 // submit form update product and expense
     let frm_edit_product_expense = $('#form-edit-product-and-expense')
     new SetupFormSubmit(frm_edit_product_expense).validate({
@@ -852,20 +739,5 @@ $(document).ready(function () {
                 }
             )
         }
-    })
-
-    $('.btn-show-modal').on('click', function () {
-        $('#modal-product-and-expense .form-control').val('');
-        $('#modal-unit-measure-group .form-control').val('');
-
-        if ($(this).attr('data-bs-target') === '#modal-unit-measure') {
-            loadSelectBoxUnitMeasureGroup($('#select-box-unit-measure-group'));
-            $('#modal-unit-measure .form-control').val('');
-            $('#modal-unit-measure .form-select').val('');
-            $('#label-referenced-unit').text('');
-            $('#notify-area').prop('hidden', true);
-            $('#check-referenced-unit').prop('checked', false);
-        }
-
     })
 })

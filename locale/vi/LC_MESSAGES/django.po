@@ -9387,6 +9387,9 @@ msgstr "Thanh toán là bắt buộc"
 #
 msgid "Product is required"
 msgstr "Sản phẩm là bắt buộc"
+
+#
+msgid "Create new Period year"
 msgstr "Tạo mới Kì kế toán"
 
 #

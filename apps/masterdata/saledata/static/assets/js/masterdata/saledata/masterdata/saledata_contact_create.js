@@ -26,27 +26,27 @@ $(document).ready(function () {
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-15',
+                    className: 'wrap-text w-10',
                     render: (data) => {
-                        return `<span class="badge badge-primary">${data}</span>`
+                        return `<span class="badge badge-primary w-70">${data}</span>`
                     }
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-40',
+                    className: 'wrap-text w-30',
                     render: (data) => {
-                        return `<b class="text-primary">${data}</b>`
+                        return `${data}`
                     }
                 },
                 {
                     data: 'description',
-                    className: 'wrap-text w-30',
+                    className: 'wrap-text w-45',
                     render: (data) => {
                         return `<span class="initial-wrap">${data}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text w-10',
+                    className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
                         let url = $('#url-factory').data('salutation-detail').format_url_with_uuid(row?.['id'])
                         return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-salutation"
@@ -100,27 +100,27 @@ $(document).ready(function () {
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text w-15',
+                        className: 'wrap-text w-10',
                         render: (data) => {
-                            return `<span class="badge badge-primary">${data}</span>`
+                            return `<span class="badge badge-primary w-70">${data}</span>`
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text w-40',
+                        className: 'wrap-text w-30',
                         render: (data) => {
-                            return `<b class="text-primary">${data}</b>`
+                            return `${data}`
                         }
                     },
                     {
                         data: 'description',
-                        className: 'wrap-text w-30',
+                        className: 'wrap-text w-45',
                         render: (data) => {
                             return `<span class="initial-wrap">${data}</span>`
                         }
                     },
                     {
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text text-right w-10',
                         render: (data, type, row) => {
                             let url = $('#url-factory').data('interest-detail').format_url_with_uuid(row.id)
                             return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-interest"
@@ -158,8 +158,8 @@ $(document).ready(function () {
         modal.find('#code-update-salutation').val($(this).attr('data-code'))
         modal.find('#name-update-salutation').val($(this).attr('data-title'))
         modal.find('#description-update-salutation').val($(this).attr('data-description'))
-        let url = frm_update_salutation.attr('data-url')
-        frm_update_salutation.attr('data-url', url.replace('/0', `/${$(this).attr('data-id')}`))
+        let raw_url = frm_update_salutation.attr('data-url-raw')
+        frm_update_salutation.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
     })
 
     new SetupFormSubmit(form_create_salutation).validate({
@@ -229,8 +229,8 @@ $(document).ready(function () {
         modal.find('#code-update-interest').val($(this).attr('data-code'))
         modal.find('#name-update-interest').val($(this).attr('data-title'))
         modal.find('#description-update-interest').val($(this).attr('data-description'))
-        let url = frm_update_interest.attr('data-url')
-        frm_update_interest.attr('data-url', url.replace('/0', `/${$(this).attr('data-id')}`))
+        let raw_url = frm_update_interest.attr('data-url-raw')
+        frm_update_interest.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
     })
 
     new SetupFormSubmit(form_create_interest).validate({

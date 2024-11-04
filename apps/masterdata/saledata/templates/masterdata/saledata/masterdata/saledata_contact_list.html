@@ -10,15 +10,14 @@
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <div class="col-4 col-md-4 col-lg-4">
+        <div class="col-4 col-md-2 col-lg-2">
             <div class="list-group" id="list-tab" role="tablist">
                 <a class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list" href="#section-salutation" role="tab" aria-controls="list-home">{% trans 'Salutations' %}</a>
                 <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#section-interests" role="tab" aria-controls="list-profile">{% trans 'Interests' %}</a>
             </div>
         </div>
-        <div class="col-1 col-md-1 col-lg-1"></div>
-        <div class="col-12 col-md-7 col-lg-7">
-            <div class="tab-content" id="nav-tabContent">
+        <div class="col-12 col-md-10 col-lg-10">
+            <div class="tab-content border rounded p-5 m-0" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="section-salutation" role="tabpanel">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#modal-new-salutation">
                         <button class="btn btn-sm btn-outline-primary btn-modal">
@@ -165,13 +164,13 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Edit salutation" %}</h5>
+                    <h5 class="modal-title">{% trans "Edit" %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-update-salutation" data-method="PUT" data-url="{% url 'SalutationDetailAPI' pk=0 %}">
+                    <form id="form-update-salutation" data-method="PUT" data-url-raw="{% url 'SalutationDetailAPI' pk=0 %}" data-url="{% url 'SalutationDetailAPI' pk=0 %}">
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
@@ -207,13 +206,13 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Edit interest" %}</h5>
+                    <h5 class="modal-title">{% trans "Edit" %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-update-interest" data-method="PUT" data-url="{% url 'InterestDetailAPI' pk=0 %}">
+                    <form id="form-update-interest" data-method="PUT" data-url-raw="{% url 'InterestDetailAPI' pk=0 %}" data-url="{% url 'InterestDetailAPI' pk=0 %}">
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">

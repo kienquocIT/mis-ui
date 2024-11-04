@@ -129,9 +129,9 @@ class NodeLoadDataHandle {
         if (nodeActionRaw) {
             let nodeAction = JSON.parse(nodeActionRaw);
             let dataExitCon = [
-                {'id': 1, 'title': nodeAction[1], 'next_node': NodeLoadDataHandle.transEle.attr('data-node-completed')},
-                {'id': 2, 'title': nodeAction[2], 'next_node': NodeLoadDataHandle.transEle.attr('data-node-completed')},
-                {'id': 3, 'title': nodeAction[3], 'next_node': ''},
+                {'action': 1, 'title': nodeAction[1], 'next_node': NodeLoadDataHandle.transEle.attr('data-node-completed')},
+                {'action': 2, 'title': nodeAction[2], 'next_node': NodeLoadDataHandle.transEle.attr('data-node-completed')},
+                {'action': 3, 'title': nodeAction[3], 'next_node': ''},
             ]
             NodeDataTableHandle.dataTableCollabInWFExitCon(dataExitCon);
         }
@@ -140,7 +140,7 @@ class NodeLoadDataHandle {
             if (row.querySelector('.table-row-action')) {
                 if (row.querySelector('.table-row-action').getAttribute('data-row')) {
                     let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
-                    if ([2, 3].includes(dataRow?.['id'])) {
+                    if ([2, 3].includes(dataRow?.['action'])) {
                         if (row.querySelector('.table-row-min-collab')) {
                             NodeLoadDataHandle.loadInitS2($(row.querySelector('.table-row-min-collab')), [
                                 {'id': '', 'title': 'Select...',},
@@ -544,13 +544,27 @@ class NodeLoadDataHandle {
     };
 
     static loadChangeExitCon(ele) {
+        if (ele.closest('tr')) {
+            if (ele.closest('tr').querySelector('.table-row-action')) {
+                if (ele.closest('tr').querySelector('.table-row-action').getAttribute('data-row')) {
+                    let dataRow = JSON.parse(ele.closest('tr').querySelector('.table-row-action').getAttribute('data-row'));
+                    if (dataRow?.['action'] === 1) {
+                        NodeLoadDataHandle.loadChangeExitConApproved(ele);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    static loadChangeExitConApproved(ele) {
         if (parseInt(ele.value) <= NodeDataTableHandle.$tableInWF.DataTable().data().count()) {
             NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
                 let row = this.node();
                 if (row.querySelector('.table-row-action')) {
                     if (row.querySelector('.table-row-action').getAttribute('data-row')) {
                         let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
-                        if ([2, 3].includes(dataRow?.['id'])) {
+                        if ([2, 3].includes(dataRow?.['action'])) {
                             if (row.querySelector('.table-row-min-collab')) {
                                 let value = NodeDataTableHandle.$tableInWF.DataTable().data().count() + 1 - parseInt(ele.value);
                                 NodeLoadDataHandle.loadInitS2($(row.querySelector('.table-row-min-collab')), [
@@ -565,10 +579,10 @@ class NodeLoadDataHandle {
             });
         } else {
             ele.value = '0';
+            $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-exceed-collab')}, 'failure');
             return false;
         }
-        return true;
-    }
+    };
 
     // dbt
     static loadCssToDtb(tableID) {
@@ -757,7 +771,7 @@ class NodeDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if (row?.['id'] === 1) {
+                        if (row?.['action'] === 1) {
                             return `<input type="text" class="form-control table-row-min-collab validated-number" value="${row?.['min_collab'] ? row?.['min_collab'] : 0}">`;
                         }
                         return `<select class="form-select table-row-min-collab"></select>`;
@@ -871,12 +885,23 @@ class NodeStoreHandle {
         if (NodeLoadDataHandle.$boxSource.val() === '2') {
             dataStore['option_collaborator'] = 2;
             dataStore['collab_in_workflow'] = [];
+            dataStore['condition'] = [];
             NodeDataTableHandle.$tableInWF.DataTable().rows().every(function () {
                 let row = this.node();
                 if (row.querySelector('.table-row-title')) {
                     if (row.querySelector('.table-row-title').getAttribute('data-row')) {
                         let dataRow = JSON.parse(row.querySelector('.table-row-title').getAttribute('data-row'));
                         dataStore['collab_in_workflow'].push(dataRow);
+                    }
+                }
+            });
+            NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row.querySelector('.table-row-action') && row.querySelector('.table-row-min-collab')) {
+                    if (row.querySelector('.table-row-action').getAttribute('data-row')) {
+                        let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
+                        dataRow['min_collab'] = $(row.querySelector('.table-row-min-collab')).val();
+                        dataStore['condition'].push(dataRow);
                     }
                 }
             });

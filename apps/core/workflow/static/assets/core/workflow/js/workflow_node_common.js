@@ -125,6 +125,7 @@ class NodeLoadDataHandle {
 
         NodeDataTableHandle.dataTableCollabOutFormEmployee(JSON.parse(NodeLoadDataHandle.$initEmp.val()));
         NodeDataTableHandle.dataTableCollabInWFEmployee();
+        NodeDataTableHandle.dataTableCollabInWFExitCon();
         let nodeActionRaw = $('#wf_action').text();
         if (nodeActionRaw) {
             let nodeAction = JSON.parse(nodeActionRaw);
@@ -133,7 +134,8 @@ class NodeLoadDataHandle {
                 {'action': 2, 'title': nodeAction[2], 'next_node': NodeLoadDataHandle.transEle.attr('data-node-completed')},
                 {'action': 3, 'title': nodeAction[3], 'next_node': ''},
             ]
-            NodeDataTableHandle.dataTableCollabInWFExitCon(dataExitCon);
+            NodeDataTableHandle.$tableInWFExitCon.DataTable().clear().draw();
+            NodeDataTableHandle.$tableInWFExitCon.DataTable().rows.add(dataExitCon).draw();
         }
         NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
             let row = this.node();
@@ -144,7 +146,7 @@ class NodeLoadDataHandle {
                         if (row.querySelector('.table-row-min-collab')) {
                             NodeLoadDataHandle.loadInitS2($(row.querySelector('.table-row-min-collab')), [
                                 {'id': '', 'title': 'Select...',},
-                                {'id': 1, 'title': '0',},
+                                {'id': '1', 'title': '0',},
                                 {'id': 'else', 'title': 'Else',},
                             ], {}, NodeLoadDataHandle.$modalNode);
                         }
@@ -272,8 +274,34 @@ class NodeLoadDataHandle {
                         if (data?.['option_collaborator'] === 2) {
                             NodeDataTableHandle.$tableInWF.DataTable().clear().draw();
                             NodeDataTableHandle.$tableInWF.DataTable().rows.add(data?.['collab_in_workflow']).draw();
-                        }
 
+                            let approvedVal = 0;
+                            NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
+                                let row = this.node();
+                                if (row.querySelector('.table-row-action') && row.querySelector('.table-row-min-collab')) {
+                                    if (row.querySelector('.table-row-action').getAttribute('data-row')) {
+                                        let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
+                                        for (let dataCon of data?.['condition']) {
+                                            if (dataRow?.['action'] === dataCon?.['action']) {
+                                                if (dataRow?.['action'] === 1) {
+                                                    $(row.querySelector('.table-row-min-collab')).val(dataCon?.['min_collab']);
+                                                    approvedVal = dataCon?.['min_collab'];
+                                                }
+                                                if ([2, 3].includes(dataRow?.['action'])) {
+                                                    let value = NodeDataTableHandle.$tableInWF.DataTable().data().count() + 1 - parseInt(approvedVal);
+                                                    NodeLoadDataHandle.loadInitS2($(row.querySelector('.table-row-min-collab')), [
+                                                        {'id': '', 'title': 'Select...',},
+                                                        {'id': String(value), 'title': String(value),},
+                                                        {'id': 'else', 'title': 'Else',},
+                                                    ], {}, NodeLoadDataHandle.$modalNode);
+                                                    $(row.querySelector('.table-row-min-collab')).val(dataCon?.['min_collab']).trigger('change');
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
                     }
                     break;
                 }
@@ -555,7 +583,7 @@ class NodeLoadDataHandle {
             }
         }
         return true;
-    }
+    };
 
     static loadChangeExitConApproved(ele) {
         if (parseInt(ele.value) <= NodeDataTableHandle.$tableInWF.DataTable().data().count()) {
@@ -569,7 +597,7 @@ class NodeLoadDataHandle {
                                 let value = NodeDataTableHandle.$tableInWF.DataTable().data().count() + 1 - parseInt(ele.value);
                                 NodeLoadDataHandle.loadInitS2($(row.querySelector('.table-row-min-collab')), [
                                     {'id': '', 'title': 'Select...',},
-                                    {'id': value, 'title': String(value),},
+                                    {'id': String(value), 'title': String(value),},
                                     {'id': 'else', 'title': 'Else',},
                                 ], {}, NodeLoadDataHandle.$modalNode);
                             }
@@ -922,222 +950,6 @@ class NodeSubmitHandle {
         return NodeLoadDataHandle.dataNode;
     };
 
-    // static setupDataSubmit(is_flowchart = false) {
-    //     let result = [];
-    //     let table = NodeDataTableHandle.tableNode;
-    //     let field_list = [
-    //         'title',
-    //         'code',
-    //         'remark',
-    //         'actions',
-    //         'option_collaborator',
-    //         'zone_initial_node',
-    //         'zone_hidden_initial_node',
-    //         'order',
-    //         'is_system',
-    //         'code_node_system',
-    //         'condition',
-    //         'collab_in_form',
-    //         'collab_out_form',
-    //         'collab_in_workflow',
-    //         'coordinates',
-    //         'is_edit_all_zone',
-    //     ];
-    //     for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-    //         let total_in_runtime = 1;
-    //         let total_config = 1;
-    //         let row = table[0].tBodies[0].rows[i];
-    //         let eleTitle = row?.querySelector('.table-row-title');
-    //         if (eleTitle) {
-    //             let dataRowRaw = eleTitle.getAttribute('data-row');
-    //             if (dataRowRaw) {
-    //                 let dataRow = JSON.parse(dataRowRaw);
-    //                 // setup data actions on Node
-    //                 let actions = [];
-    //                 for (let eleChecked of row.querySelectorAll('.check-action-node:checked')) {
-    //                     actions.push(parseInt($(eleChecked).attr('data-id')));
-    //                 }
-    //                 dataRow['actions'] = actions;
-    //                 let modalCollab = row.querySelector('.modal-collab');
-    //                 if (dataRow?.['is_system'] === true) { // SYSTEM NODES
-    //                     if (dataRow?.['code'] === 'initial') {
-    //                         let initialArea = modalCollab.querySelector('.collab-initial-area');
-    //                         // check data actions
-    //                         if (dataRow['actions'].length <= 0) {
-    //                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-    //                             return false;
-    //                         }
-    //                         let zoneAllData = initialArea.querySelector('.checkbox-node-zone-all');
-    //                         if (zoneAllData) {
-    //                             if (zoneAllData.checked === true) {
-    //                                 dataRow['is_edit_all_zone'] = true;
-    //                                 dataRow['zone_initial_node'] = [];
-    //                             } else {
-    //                                 dataRow['is_edit_all_zone'] = false;
-    //                                 let zone_initial_node = [];
-    //                                 for (let eleChecked of initialArea.querySelectorAll('.checkbox-node-zone:checked')) {
-    //                                     zone_initial_node.push(parseInt($(eleChecked).attr('data-id')));
-    //                                 }
-    //                                 dataRow['zone_initial_node'] = zone_initial_node;
-    //                             }
-    //                         }
-    //                         let zone_hidden_initial_node = [];
-    //                         for (let eleChecked of initialArea.querySelectorAll('.checkbox-node-zone-hidden:checked')) {
-    //                             zone_hidden_initial_node.push(parseInt($(eleChecked).attr('data-id')));
-    //                         }
-    //                         dataRow['zone_hidden_initial_node'] = zone_hidden_initial_node;
-    //                     } else if (dataRow?.['code'] === 'approved') {
-    //                         dataRow['order'] = (table[0].tBodies[0].rows.length - 1);
-    //                     } else if (dataRow?.['code'] === 'completed') {
-    //                         dataRow['order'] = table[0].tBodies[0].rows.length;
-    //                     }
-    //                 } else { // COLLAB NODES
-    //                     // setup title & remark node collab
-    //                     if (eleTitle.value) {
-    //                         dataRow['title'] = eleTitle.value;
-    //                     } else {
-    //                         $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-    //                         return false;
-    //                     }
-    //                     let eleRemark = row?.querySelector('.table-row-remark');
-    //                     if (eleRemark) {
-    //                         dataRow['remark'] = eleRemark.value;
-    //                     }
-    //                     // check data actions
-    //                     if (dataRow['actions'].length <= 0) {
-    //                         $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-    //                         return false;
-    //                     }
-    //                     // reset data collab_in_form, collab_out_form, collab_in_workflow when update
-    //                     dataRow['collab_in_form'] = {};
-    //                     dataRow['collab_out_form'] = {};
-    //                     dataRow['collab_in_workflow'] = [];
-    //                     // setup data collab depend on option_collaborator
-    //                     let boxListSource = modalCollab.querySelector('.box-list-source');
-    //                     if ($(boxListSource).val() === '1') { // In Form
-    //                         dataRow['option_collaborator'] = 0;
-    //                         let dataInForm = {};
-    //                         let IFArea = modalCollab.querySelector('.collab-in-form-area');
-    //                         if ($(IFArea?.querySelector('.box-in-form-property')).val()) {
-    //                             dataInForm['app_property'] = $(IFArea?.querySelector('.box-in-form-property')).val();
-    //                         } else {
-    //                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-    //                             return false;
-    //                         }
-    //                         let zoneAllData = IFArea.querySelector('.checkbox-node-zone-all');
-    //                         if (zoneAllData) {
-    //                             if (zoneAllData.checked === true) {
-    //                                 dataInForm['is_edit_all_zone'] = true;
-    //                                 dataInForm['zone'] = [];
-    //                             } else {
-    //                                 dataInForm['is_edit_all_zone'] = false;
-    //                                 if ($(IFArea?.querySelector('.node-zone-submit')).val()) {
-    //                                     dataInForm['zone'] = JSON.parse($(IFArea?.querySelector('.node-zone-submit')).val());
-    //                                 }
-    //                             }
-    //                         }
-    //                         if ($(IFArea?.querySelector('.node-zone-hidden-submit')).val()) {
-    //                             dataInForm['zone_hidden'] = JSON.parse($(IFArea?.querySelector('.node-zone-hidden-submit')).val());
-    //                         }
-    //                         dataRow['collab_in_form'] = dataInForm;
-    //                     } else if ($(boxListSource).val() === '2') { // Out Form
-    //                         dataRow['option_collaborator'] = 1;
-    //                         let dataOutForm = {};
-    //                         let OFArea = modalCollab.querySelector('.collab-out-form-area');
-    //                         if ($(OFArea?.querySelector('.node-out-form-employee-submit')).val()) {
-    //                             dataOutForm['employee_list'] = JSON.parse($(OFArea?.querySelector('.node-out-form-employee-submit')).val());
-    //                         } else {
-    //                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-    //                             return false;
-    //                         }
-    //                         let zoneAllData = OFArea.querySelector('.checkbox-node-zone-all');
-    //                         if (zoneAllData) {
-    //                             if (zoneAllData.checked === true) {
-    //                                 dataOutForm['is_edit_all_zone'] = true;
-    //                                 dataOutForm['zone'] = [];
-    //                             } else {
-    //                                 dataOutForm['is_edit_all_zone'] = false;
-    //                                 if ($(OFArea?.querySelector('.node-zone-submit')).val()) {
-    //                                     dataOutForm['zone'] = JSON.parse($(OFArea?.querySelector('.node-zone-submit')).val());
-    //                                 }
-    //                             }
-    //                         }
-    //                         if ($(OFArea?.querySelector('.node-zone-hidden-submit')).val()) {
-    //                             dataOutForm['zone_hidden'] = JSON.parse($(OFArea?.querySelector('.node-zone-hidden-submit')).val());
-    //                         }
-    //                         if (dataOutForm <= 0) {
-    //                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-    //                             return false;
-    //                         }
-    //                         dataRow['collab_out_form'] = dataOutForm;
-    //                         if (is_flowchart === true) {
-    //                             total_config = dataOutForm?.['employee_list'].length;
-    //                         }
-    //                     } else if ($(boxListSource).val() === '3') { // In Workflow
-    //                         dataRow['option_collaborator'] = 2;
-    //                         let dataInWF = [];
-    //                         let InWFArea = modalCollab?.querySelector('.collab-in-workflow-area');
-    //                         let tableInWF = InWFArea?.querySelector('.table-in-workflow-employee');
-    //                         $(tableInWF).DataTable().rows().every(function () {
-    //                             let rowInWF = this.node();
-    //                             let dataRowInWFRaw = rowInWF?.querySelector('.table-row-title').getAttribute('data-row');
-    //                             if (dataRowInWFRaw) {
-    //                                 let dataRowInWF = JSON.parse(dataRowInWFRaw);
-    //                                 let zone = [];
-    //                                 let zone_hidden = [];
-    //                                 let is_edit_all_zone = false;
-    //                                 if (dataRowInWF?.['is_edit_all_zone'] === true) {
-    //                                     is_edit_all_zone = true;
-    //                                 } else {
-    //                                     for (let zoneData of dataRowInWF?.['zone']) {  // In WF employee has different zones => need to for every row to get zones
-    //                                         zone.push(parseInt(zoneData?.['id']));
-    //                                     }
-    //                                 }
-    //                                 for (let zoneData of dataRowInWF?.['zone_hidden']) {  // In WF employee has different zones => need to for every row to get zones
-    //                                     zone_hidden.push(parseInt(zoneData?.['id']));
-    //                                 }
-    //                                 if (dataRowInWF?.['in_wf_option']) {
-    //                                     if (dataRowInWF?.['employee']?.['id'] || dataRowInWF?.['position_choice']?.['id']) {
-    //                                         dataInWF.push({
-    //                                             'in_wf_option': dataRowInWF?.['in_wf_option'],
-    //                                             'employee': dataRowInWF?.['employee']?.['id'] ? dataRowInWF?.['employee']?.['id'] : null,
-    //                                             'position_choice': dataRowInWF?.['position_choice']?.['id'] ? dataRowInWF?.['position_choice']?.['id'] : null,
-    //                                             'zone': zone,
-    //                                             'zone_hidden': zone_hidden,
-    //                                             'is_edit_all_zone': is_edit_all_zone,
-    //                                         })
-    //                                     } else {
-    //                                         $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-    //                                         return false;
-    //                                     }
-    //                                 }
-    //                             }
-    //                         });
-    //                         if (dataInWF <= 0) {
-    //                             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
-    //                             return false;
-    //                         }
-    //                         dataRow['collab_in_workflow'] = dataInWF;
-    //                         if (is_flowchart === true) {
-    //                             total_in_runtime = dataInWF.length;
-    //                             total_config = dataInWF.length;
-    //                         }
-    //                     }
-    //                 }
-    //                 filterFieldList(field_list, dataRow);
-    //                 if (is_flowchart === true) {
-    //                     dataRow['collaborators'] = {
-    //                         'option': dataRow?.['option_collaborator'],
-    //                         'total_in_runtime': total_in_runtime,
-    //                         'total_config': total_config,
-    //                     }
-    //                 }
-    //                 result.push(dataRow);
-    //             }
-    //         }
-    //     }
-    //     return result;
-    // };
 }
 
 

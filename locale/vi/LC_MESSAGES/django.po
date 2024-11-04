@@ -7290,7 +7290,7 @@ msgstr "Mã YCMH"
 
 #
 msgid "Merge same product in 1 line, convert to reference unit if there is more 1 UOM"
-msgstr "Gộp các sản phẩm giống nhau, chuyển đổi về cùng một đơn vị"
+msgstr "Gộp các sản phẩm giống nhau, chuyển đổi về cùng một đơn vị tiêu chuẩn"
 
 #
 msgid "Default all"
@@ -9389,10 +9389,6 @@ msgid "Product is required"
 msgstr "Sản phẩm là bắt buộc"
 
 #
-msgid "Create new Period year"
-msgstr "Tạo mới Kì kế toán"
-
-#
 msgid "First doc"
 msgstr "Phiếu đầu tiên"
 
@@ -9400,12 +9396,34 @@ msgstr "Phiếu đầu tiên"
 msgid "Previous doc"
 msgstr "Phiếu trước đó"
 
-
 #
 msgid "Next doc"
 msgstr "Phiếu tiếp theo"
 
-
 #
 msgid "Last doc"
 msgstr "Phiếu cuối cùng"
+
+#
+msgid "Interest"
+msgstr "Sở thích"
+
+#
+msgid "Product Types"
+msgstr "Loại sản phẩm"
+
+#
+msgid "Product Categories"
+msgstr "Danh mục sản phẩm"
+
+#
+msgid "Unit Of Measures"
+msgstr "Đơn vị tính"
+
+#
+msgid "Unit Of Measure Groups"
+msgstr "Nhóm đơn vị tính"
+
+#
+msgid "Reference Unit"
+msgstr "Đơn vị tiêu chuẩn"

@@ -1,57 +1,5 @@
 $(document).ready(function () {
-
     let url_update;
-
-    const column_product_expense = [
-        {
-            className: 'wrap-text w-10',
-            render: (data, type, row, meta) => {
-                return '';
-            }
-        },
-        {
-            data: 'code',
-            className: 'wrap-text w-30',
-            render: (data, type, row) => {
-                if (row.is_default) {
-                    return `<span class="badge badge-secondary">${row.code}</span>`
-                } else {
-                    return `<span class="badge badge-primary">${row.code}</span>`
-                }
-            }
-        },
-        {
-            data: 'title',
-            className: 'wrap-text w-45',
-            render: (data, type, row, meta) => {
-                if (!row?.['is_default']) {
-                    return `<span class="text-primary"><b>${data}</b></span>`
-                }
-                return `<span><b>${data}</b></span>`
-            }
-        },
-        {
-            data: 'description',
-            className: 'wrap-text w-35',
-            render: (data, type, row, meta) => {
-                return `<span class="initial-wrap">${data}</span>`
-            }
-        },
-        {
-            className: 'wrap-text w-10',
-            render: (data, type, row, meta) => {
-                if (!row?.['is_default']) {
-                    return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
-                               data-id="${row.id}" data-bs-toggle="modal"
-                               data-bs-target="#modal-detail-product-and-expense" data-bs-placement="top" title="" 
-                               data-bs-original-title="Edit">
-                               <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
-                            </a>`
-                }
-                return ``
-            }
-        }
-    ]
 
     $("#tab-select-table a.product-and-expense").on("click", function () {
         $('.btn-show-modal').attr('data-bs-target', '#modal-product-and-expense')
@@ -92,121 +40,215 @@ $(document).ready(function () {
     })
 
     function loadProductType() {
-        if (!$.fn.DataTable.isDataTable('#datatable-product-type-list')) {
-            let tbl = $('#datatable-product-type-list');
-            let frm = new SetupFormSubmit(tbl);
-            tbl.DataTableDefault(
-                {
-                    useDataServer: true,
-                    rowIdx: true,
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('product_type_list')) {
-                                return resp.data['product_type_list'] ? resp.data['product_type_list'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columns: column_product_expense,
+        let tbl = $('#datatable-product-type-list');
+        let frm = new SetupFormSubmit(tbl);
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('product_type_list')) {
+                        return resp.data['product_type_list'] ? resp.data['product_type_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
                 },
-            );
-        }
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return '';
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        if (row?.['is_default']) {
+                            return `<span class="badge badge-secondary w-70">${row?.['code']}</span>`
+                        } else {
+                            return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
+                        }
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text w-30',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `${data}`
+                        }
+                        return `<b>${data}</b>`
+                    }
+                },
+                {
+                    data: 'description',
+                    className: 'wrap-text w-35',
+                    render: (data) => {
+                        return `<span class="initial-wrap">${data}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-10',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                       data-id="${row?.['id']}" data-bs-toggle="modal"
+                                       data-bs-target="#modal-detail-product-and-expense"
+                                       data-bs-placement="top" title=""
+                                       >
+                                       <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                                    </a>`
+                        }
+                        return ``
+                    }
+                }
+            ],
+        });
     }
 
     function loadProDuctCategory() {
-        if (!$.fn.DataTable.isDataTable('#datatable-product-category-list')) {
-            let tbl = $('#datatable-product-category-list');
-            let frm = new SetupFormSubmit(tbl);
-            tbl.DataTableDefault(
-                {
-                    useDataServer: true,
-                    rowIdx: true,
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('product_category_list')) {
-                                return resp.data['product_category_list'] ? resp.data['product_category_list'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columns: column_product_expense,
+        let tbl = $('#datatable-product-category-list');
+        let frm = new SetupFormSubmit(tbl);
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('product_category_list')) {
+                        return resp.data['product_category_list'] ? resp.data['product_category_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
                 },
-            );
-        }
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return '';
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        if (row?.['is_default']) {
+                            return `<span class="badge badge-secondary w-70">${row?.['code']}</span>`
+                        } else {
+                            return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
+                        }
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text w-30',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `${data}`
+                        }
+                        return `<b>${data}</b>`
+                    }
+                },
+                {
+                    data: 'description',
+                    className: 'wrap-text w-35',
+                    render: (data) => {
+                        return `<span class="initial-wrap">${data}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-10',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                       data-id="${row?.['id']}" data-bs-toggle="modal"
+                                       data-bs-target="#modal-detail-product-and-expense"
+                                       data-bs-placement="top" title=""
+                                       >
+                                       <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                                    </a>`
+                        }
+                        return ``
+                    }
+                }
+            ],
+        });
     }
 
     function loadUnitOfMeasureGroup() {
-        if (!$.fn.DataTable.isDataTable('#datatable-unit-measure-group-list')) {
-            let tbl = $('#datatable-unit-measure-group-list');
-            let frm = new SetupFormSubmit(tbl);
-            tbl.DataTableDefault(
-                {
-                    useDataServer: true,
-                    rowIdx: true,
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('unit_of_measure_group')) {
-                                return resp.data['unit_of_measure_group'] ? resp.data['unit_of_measure_group'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
+        let tbl = $('#datatable-unit-measure-group-list');
+        let frm = new SetupFormSubmit(tbl);
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault(
+            {
+                useDataServer: true,
+                rowIdx: true,
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('unit_of_measure_group')) {
+                            return resp.data['unit_of_measure_group'] ? resp.data['unit_of_measure_group'] : []
+                        }
+                        throw Error('Call data raise errors.')
                     },
-                    columns: [
-                        {
-                            className: 'wrap-text w-10',
-                            render: (data, type, row, meta) => {
-                                return '';
-                            }
-                        },
-                        {
-                            data: 'code',
-                            className: 'wrap-text w-30',
-                            render: (data, type, row) => {
-                                if (row.is_default) {
-                                    return `<span class="badge badge-secondary">${row.code}</span>`
-                                } else {
-                                    return `<span class="badge badge-primary">${row.code}</span>`
-                                }
-                            }
-                        },
-                        {
-                            data: 'title',
-                            className: 'wrap-text w-50',
-                            render: (data, type, row, meta) => {
-                                if (row.is_default) {
-                                    return `<span><b>${row.title}</b></span>`
-                                } else {
-                                    return `<span class="text-primary"><b>${row.title}</b></span>`
-                                }
-                            }
-                        },
-                        {
-                            className: 'wrap-text w-10',
-                            render: (data, type, row, meta) => {
-                                if (!row.is_default) {
-                                    return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
-                                               data-id="${row.id}" data-bs-toggle="modal"
-                                               data-bs-target="#modal-detail-unit-measure-group" data-bs-placement="top" title="" 
-                                               data-bs-original-title="Edit">
-                                               <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
-                                            </a>`
-                                }
-                                return ``
+                },
+                columns: [
+                    {
+                        className: 'wrap-text w-5',
+                        render: () => {
+                            return '';
+                        }
+                    },
+                    {
+                        data: 'code',
+                        className: 'wrap-text w-15',
+                        render: (data, type, row) => {
+                            if (row?.['is_default']) {
+                                return `<span class="badge badge-secondary w-70">${row?.['code']}</span>`
+                            } else {
+                                return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
                             }
                         }
-                    ],
-                },
-            );
-        }
+                    },
+                    {
+                        data: 'title',
+                        className: 'wrap-text w-70',
+                        render: (data, type, row, meta) => {
+                            if (row?.['is_default']) {
+                                return `<b>${data}</b>`
+                            } else {
+                                return `${data}`
+                            }
+                        }
+                    },
+                    {
+                        className: 'wrap-text text-right w-10',
+                        render: (data, type, row, meta) => {
+                            if (!row?.['is_default']) {
+                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                           data-id="${row?.['id']}" data-bs-toggle="modal"
+                                           data-bs-target="#modal-detail-unit-measure-group"
+                                           data-bs-placement="top" title="" 
+                                           >
+                                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                                        </a>`
+                            }
+                            return ``
+                        }
+                    }
+                ],
+            },
+        );
     }
 
     function loadUnitOfMeasure() {
@@ -295,8 +337,9 @@ $(document).ready(function () {
                             render: (data, type, row, meta) => {
                                 return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
                                            data-id="${row.id}" data-bs-toggle="modal"
-                                           data-bs-target="#modal-detail-unit-measure" data-bs-placement="top" title="" 
-                                           data-bs-original-title="Edit">
+                                           data-bs-target="#modal-detail-unit-measure"
+                                           data-bs-placement="top" title=""
+                                           >
                                            <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
                                         </a>`
                             }
@@ -531,8 +574,8 @@ $(document).ready(function () {
                         $('#inp-ratio-unit').val(data.unit_of_measure.ratio);
                         $('#label-edit-referenced-unit').text(`* ` + data.unit_of_measure.group?.['referenced_unit_title']);
                         loadSelectBoxUnitMeasureGroup($('#select-box-edit-uom-group'), data.unit_of_measure.group);
-                        $('#group-referenced-unit-name').val(data.unit_of_measure.ratio);
-                        $('#group-id').val(data.unit_of_measure.group.id);
+                        $('#group-referenced-unit-name').text(data.unit_of_measure.ratio);
+                        $('#group-id').text(data.unit_of_measure.group.id);
                         $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
 
                         let check_reference_unit = $('#check-edit-unit');
@@ -574,8 +617,8 @@ $(document).ready(function () {
         let checkReferenceUnit = $('#check-edit-unit');
 
         ratioEle.val('');
-        if ($(this).find('option:selected').val() === groupIdEle.val()) {
-            ratioEle.val($('#group-referenced-unit-name').val());
+        if ($(this).find('option:selected').val() === groupIdEle.text()) {
+            ratioEle.val($('#group-referenced-unit-name').text());
         }
 
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
@@ -588,7 +631,7 @@ $(document).ready(function () {
                 $('#notify-area-edit-label').text('');
                 $('#notify-area-edit').prop('hidden', true);
             } else {
-                if ($(this).find('option:selected').val() !== groupIdEle.val()) {
+                if ($(this).find('option:selected').val() !== groupIdEle.text()) {
                     $('#label-edit-referenced-unit').text(`* ` + data_referenced)
                     checkReferenceUnit.prop('checked', false);
                     checkReferenceUnit.prop('disabled', true);
@@ -615,7 +658,7 @@ $(document).ready(function () {
             $('#inp-ratio-unit').val('1');
             $('#ratio-edit-area').prop('hidden', true);
         } else {
-            $('#inp-ratio-unit').val($('#group-referenced-unit-name').val());
+            $('#inp-ratio-unit').val($('#group-referenced-unit-name').text());
             $('#ratio-edit-area').prop('hidden', false);
         }
     })
@@ -730,7 +773,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
-                        $('#inp-code-uomgroup').val(data.uom_group.code);
+                        $('#inp-code-uom-group').val(data.uom_group.code);
                         $('#inp-edit-name-uom-group').val(data.uom_group.title);
                     }
                 }

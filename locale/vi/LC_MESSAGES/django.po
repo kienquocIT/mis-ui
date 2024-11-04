@@ -99,11 +99,11 @@ msgstr "Chọn công ty của bạn"
 
 #
 msgid "Phone"
-msgstr "Số Điện Thoại"
+msgstr "SĐT"
 
 #
 msgid "Contact to phone number"
-msgstr "Số điện thoại liên lạc"
+msgstr "SĐT liên lạc"
 
 #
 msgid "User Name"
@@ -392,11 +392,11 @@ msgstr "Email của người đại diện"
 
 #
 msgid "Phone Number"
-msgstr "Số Điện Thoại"
+msgstr "SĐT"
 
 #
 msgid "Phone number of Representative"
-msgstr "Số điện thoại của người đại diện"
+msgstr "SĐT của người đại diện"
 
 #
 msgid "Add"
@@ -1416,7 +1416,7 @@ msgstr "Chức danh"
 
 #
 msgid "Phone number"
-msgstr "Số điện thoại"
+msgstr "SĐT"
 
 #
 msgid "Email address"
@@ -3120,6 +3120,22 @@ msgid "Raise a ticket"
 msgstr "Xảy ra một vấn đề"
 
 #
+msgid "Send report"
+msgstr "Gửi báo cáo"
+
+#
+msgid "Report this issue"
+msgstr "Báo cáo vấn đề này"
+
+#
+msgid "Code report"
+msgstr "Mã báo cáo"
+
+#
+msgid "You can reach out to our support team through the following channels"
+msgstr "Bạn có thể liên hệ với nhóm hỗ trợ của chúng tôi thông qua các kênh sau"
+
+#
 msgid "Terms & Conditions"
 msgstr "Điều Khoản và Điều Kiện"
 
@@ -4605,8 +4621,12 @@ msgid "Return to home"
 msgstr "Trở về trang chủ"
 
 #
-msgid "Sorry, the requested page cannot be found. Try finding with another name."
-msgstr "Xin lỗi, không thể tìm thấy trang được yêu cầu. Hãy thử tìm với một tên khác."
+msgid "Sorry, the requested page cannot be found."
+msgstr "Xin lỗi, không thể tìm thấy trang được yêu cầu."
+
+#
+msgid "Try finding with another name."
+msgstr "Hãy thử tìm với một tên khác."
 
 #
 msgid "Server is temporarily unable to handle the request. This may be due to the server being overloaded or down for maintenance."
@@ -6954,7 +6974,7 @@ msgstr "SL đơn hàng"
 
 #
 msgid "Revenue average"
-msgstr "Doanh thu trung bình"
+msgstr "Doanh thu TB"
 
 #
 msgid "OPENING"
@@ -9367,3 +9387,22 @@ msgstr "Thanh toán là bắt buộc"
 #
 msgid "Product is required"
 msgstr "Sản phẩm là bắt buộc"
+msgstr "Tạo mới Kì kế toán"
+
+#
+msgid "First doc"
+msgstr "Phiếu đầu tiên"
+
+#
+msgid "Previous doc"
+msgstr "Phiếu trước đó"
+
+
+#
+msgid "Next doc"
+msgstr "Phiếu tiếp theo"
+
+
+#
+msgid "Last doc"
+msgstr "Phiếu cuối cùng"

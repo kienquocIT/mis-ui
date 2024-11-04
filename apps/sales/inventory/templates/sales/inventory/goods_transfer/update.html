@@ -38,6 +38,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'GoodsTransferListAPI' %}"
+        data-url-create="{% url 'GoodsTransferCreate' %}"
+        data-url-detail="{% url 'GoodsTransferDetail' '0' %}"
+        data-key-return="goods_transfer_list"
+    ></script>
     {% include 'printer/print.html' %}
     {{ data.is_project | json_script:"is_project" }}
     <script id="trans-script"
@@ -262,4 +268,5 @@
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_transfer/common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_transfer/update.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

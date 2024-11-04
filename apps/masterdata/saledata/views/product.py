@@ -97,6 +97,19 @@ class ProductCategoryDetailAPI(APIView):
         return resp.auto_return(key_success='product_category')
 
 
+class BaseUnitListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ITEM_UNIT_LIST).get(params)
+        return resp.auto_return(key_success='base_unit_list')
+
+
 class UnitOfMeasureListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -199,12 +212,7 @@ class ProductCreate(View):
         perm_check=PermCheck(url=ApiURL.PRODUCT_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
-        resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        resp1 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
-        return {
-                   'unit': resp0.result,
-                   'currency_list': resp1.result,
-        }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class ProductQuickCreateAPI(APIView):
@@ -254,12 +262,7 @@ class ProductDetail(View):
         menu_active='menu_product_detail',
     )
     def get(self, request, *args, **kwargs):
-        resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        resp1 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
-        result = {
-            'unit': resp0.result,
-            'currency_list': resp1.result,
-        }
+        result = {}
         return result, status.HTTP_200_OK
 
 
@@ -273,12 +276,7 @@ class ProductUpdate(View):
         menu_active='menu_product_update',
     )
     def get(self, request, *args, **kwargs):
-        resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        resp1 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
-        result = {
-            'unit': resp0.result,
-            'currency_list': resp1.result,
-        }
+        result = {}
         return result, status.HTTP_200_OK
 
 

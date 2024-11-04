@@ -28,6 +28,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'AdvancePaymentListAPI' %}"
+        data-url-create="{% url 'AdvancePaymentCreate' %}"
+        data-url-detail="{% url 'AdvancePaymentDetail' '0' %}"
+        data-key-return="advance_payment_list"
+    ></script>
     <script id="script-url"
             data-trans-unplanned="{% trans 'Unplanned expenses' %}"
             data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
@@ -60,4 +66,5 @@
     <script src="{% static "assets/js/advancepayment/advance_payment_common.js" %}"></script>
     <script src="{% static "assets/js/advancepayment/advance_payment_create.js" %}"></script>
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

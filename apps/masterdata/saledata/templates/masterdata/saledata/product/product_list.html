@@ -19,6 +19,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'ProductListAPI' %}"
+        data-url-create="{% url 'ProductCreate' %}"
+        data-url-detail="{% url 'ProductDetail' '0' %}"
+        data-key-return="product_list"
+    ></script>
     <div id="section-product-list">
         <table id="datatable_product_list" class="table nowrap w-100 mb-5" data-url="{% url "ProductListAPI" %}"
                data-method="GET" data-url-detail="{% url "ProductDetail" pk=0%}"
@@ -39,4 +45,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/product/product_list.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

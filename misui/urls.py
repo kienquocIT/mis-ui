@@ -10,7 +10,7 @@ from .jsi18n import JavaScriptCatalogCustomize
 
 urlpatterns = \
     [
-        path('system-admin/', admin.site.urls),
+        path('django-admin/', admin.site.urls),
         path('', include('apps.core.home.urls')),
         path('', include('apps.core.urls')),
         path('', include('apps.masterdata.urls')),
@@ -21,6 +21,8 @@ urlpatterns = \
         path('site-config/', include('apps.web_builder.urls.config')),
         path("jsi18n/<str:packages>", JavaScriptCatalogCustomize.as_view(), name="javascript-catalog"),
     ]
+
+urlpatterns += static('django-admin-media/', document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
@@ -35,3 +37,5 @@ if not settings.USE_S3:
 
 # check breadcrumb view exist and reverse successful.
 BreadcrumbView.check_view_name()
+
+handler404 = 'apps.core.home.views.view_render_not_found'

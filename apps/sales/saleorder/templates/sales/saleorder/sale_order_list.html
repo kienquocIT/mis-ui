@@ -11,6 +11,12 @@
 {% endblock %}
 
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'SaleOrderListAPI' %}"
+        data-url-create="{% url 'SaleOrderCreate' %}"
+        data-url-detail="{% url 'SaleOrderDetail' '0' %}"
+        data-key-return="sale_order_list"
+    ></script>
     <input type="hidden" id="sale-order-link"
            data-link-update="{% url 'SaleOrderDetail' 1 %}"
            data-link-list="{% url 'SaleOrderList' %}"
@@ -60,4 +66,5 @@
 
 {% block jsFooter %}
     <script src="{% static 'assets/sales/saleorder/js/sale_order_list.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

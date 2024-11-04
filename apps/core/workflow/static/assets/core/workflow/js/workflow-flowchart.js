@@ -203,11 +203,15 @@ class JSPlumbsHandle {
                 let item = DEFAULT_NODE_LIST[val];
                 let clsSys = '';
                 let bg = '';
+                let clsModal = "modal";
                 if (item?.['is_system'] === true) {
                     clsSys = 'control-system'
                     bg = 'bg-blue-light-5';
+                    if (["approved", "completed"].includes(item?.['code'])) {
+                        clsModal = "";
+                    }
                 }
-                strHTMLDragNode += `<div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" data-bs-toggle="modal"
+                strHTMLDragNode += `<div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" data-bs-toggle="${clsModal}"
                             data-bs-target="#nodeModal" `
                     + `title="${item.title}">` + `<p class="drag-title" contentEditable="true" `
                     + `title="${item.remark}">${item.title}</p></div>`;

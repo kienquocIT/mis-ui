@@ -207,7 +207,7 @@ class NodeLoadDataHandle {
                         }
                     }
 
-                    if (data?.['order'] === 1) {
+                    if (data?.['order'] === 1) {  // node initial
                         NodeLoadDataHandle.$titleNode[0].setAttribute('readonly', 'true');
                         NodeLoadDataHandle.$remarkNode[0].setAttribute('readonly', 'true');
                         NodeLoadDataHandle.$nodeSysArea[0].removeAttribute('hidden');
@@ -220,7 +220,8 @@ class NodeLoadDataHandle {
                             NodeLoadDataHandle.$nodeSysArea[0].querySelector('.checkbox-zone-edit-all').checked = true;
                         }
                     }
-                    if (data?.['order'] !== 1) {
+
+                    if (data?.['order'] !== 1) {  // node custom
                         NodeLoadDataHandle.$nodeCusArea[0].removeAttribute('hidden');
                         if (NodeLoadDataHandle.$modalNode[0].querySelector('.checkbox-action[data-id="0"]')) {
                             if (NodeLoadDataHandle.$modalNode[0].querySelector('.checkbox-action[data-id="0"]').closest('.form-check')) {
@@ -439,9 +440,14 @@ class NodeLoadDataHandle {
 
     static loadCheckZone(ele) {
         if (ele.checked === true) {
-            let sysNodeArea = ele.closest('#node-system-area');
+            let sysNodeArea = ele.closest('#node-system-area');  // system node (initial node)
             if (sysNodeArea) {
                 if (ele.classList.contains('checkbox-zone-edit-all')) {
+                    if (sysNodeArea.querySelector(`.checkbox-zone-hidden:checked`)) {
+                        ele.checked = false;
+                        $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-hidden-exist')}, 'failure');
+                        return false;
+                    }
                     for (let eleCheck of sysNodeArea.querySelectorAll('.checkbox-zone-edit')) {
                         eleCheck.checked = false;
                     }
@@ -458,6 +464,11 @@ class NodeLoadDataHandle {
                     }
                 }
                 if (ele.classList.contains('checkbox-zone-hidden')) {
+                    if (sysNodeArea.querySelector('.checkbox-zone-edit-all:checked')) {
+                        ele.checked = false;
+                        $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-edit-all')}, 'failure');
+                        return false;
+                    }
                     let dataId = ele.getAttribute('data-id');
                     if (sysNodeArea.querySelector(`.checkbox-zone-edit[data-id="${dataId}"]:checked`)) {
                         ele.checked = false;
@@ -466,9 +477,15 @@ class NodeLoadDataHandle {
                     }
                 }
             }
-            let collabArea = ele.closest('.collab-area');
+
+            let collabArea = ele.closest('.collab-area');  // custom node
             if (collabArea) {
                 if (ele.classList.contains('checkbox-zone-edit-all')) {
+                    if (collabArea.querySelector(`.checkbox-zone-hidden:checked`)) {
+                        ele.checked = false;
+                        $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-hidden-exist')}, 'failure');
+                        return false;
+                    }
                     for (let eleCheck of collabArea.querySelectorAll('.checkbox-zone-edit')) {
                         eleCheck.checked = false;
                     }
@@ -485,6 +502,11 @@ class NodeLoadDataHandle {
                     }
                 }
                 if (ele.classList.contains('checkbox-zone-hidden')) {
+                    if (collabArea.querySelector('.checkbox-zone-edit-all:checked')) {
+                        ele.checked = false;
+                        $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-valid-zone-edit-all')}, 'failure');
+                        return false;
+                    }
                     let dataId = ele.getAttribute('data-id');
                     if (collabArea.querySelector(`.checkbox-zone-edit[data-id="${dataId}"]:checked`)) {
                         ele.checked = false;
@@ -579,6 +601,9 @@ class NodeLoadDataHandle {
                     if (dataRow?.['action'] === 1) {
                         NodeLoadDataHandle.loadChangeExitConApproved(ele);
                     }
+                    if ([2, 3].includes(dataRow?.['action'])) {
+                        NodeLoadDataHandle.loadChangeExitConElse(ele, dataRow?.['action']);
+                    }
                 }
             }
         }
@@ -586,21 +611,19 @@ class NodeLoadDataHandle {
     };
 
     static loadChangeExitConApproved(ele) {
-        if (parseInt(ele.value) <= NodeDataTableHandle.$tableInWF.DataTable().data().count()) {
+        if (parseInt($(ele).val()) <= NodeDataTableHandle.$tableInWF.DataTable().data().count()) {
             NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
                 let row = this.node();
-                if (row.querySelector('.table-row-action')) {
+                if (row.querySelector('.table-row-action') && row.querySelector('.table-row-min-collab')) {
                     if (row.querySelector('.table-row-action').getAttribute('data-row')) {
                         let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
                         if ([2, 3].includes(dataRow?.['action'])) {
-                            if (row.querySelector('.table-row-min-collab')) {
-                                let value = NodeDataTableHandle.$tableInWF.DataTable().data().count() + 1 - parseInt(ele.value);
-                                NodeLoadDataHandle.loadInitS2($(row.querySelector('.table-row-min-collab')), [
-                                    {'id': '', 'title': 'Select...',},
-                                    {'id': String(value), 'title': String(value),},
-                                    {'id': 'else', 'title': 'Else',},
-                                ], {}, NodeLoadDataHandle.$modalNode);
-                            }
+                            let value = NodeDataTableHandle.$tableInWF.DataTable().data().count() + 1 - parseInt($(ele).val());
+                            NodeLoadDataHandle.loadInitS2($(row.querySelector('.table-row-min-collab')), [
+                                {'id': '', 'title': 'Select...',},
+                                {'id': String(value), 'title': String(value),},
+                                {'id': 'else', 'title': 'Else',},
+                            ], {}, NodeLoadDataHandle.$modalNode);
                         }
                     }
                 }
@@ -610,6 +633,30 @@ class NodeLoadDataHandle {
             $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-exceed-collab')}, 'failure');
             return false;
         }
+        return true;
+    };
+
+    static loadChangeExitConElse(ele, actionType) {
+        if (parseInt($(ele).val()) <= NodeDataTableHandle.$tableInWF.DataTable().data().count()) {
+            NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row.querySelector('.table-row-action') && row.querySelector('.table-row-min-collab')) {
+                    if (row.querySelector('.table-row-action').getAttribute('data-row')) {
+                        let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
+                        if ([2, 3].includes(dataRow?.['action'])) {
+                            if (dataRow?.['action'] !== actionType) {
+                                if ($(ele).val() !== 'else') {
+                                    $(row.querySelector('.table-row-min-collab')).val('else').trigger('change');
+                                } else {
+
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        return true;
     };
 
     // dbt
@@ -824,6 +871,8 @@ class NodeDataTableHandle {
 // Store data
 class NodeStoreHandle {
     static storeNode() {
+        let initLength = NodeLoadDataHandle.dataNode.length;
+
         if (NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-save-type')) {
             if (NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-save-type') === '0') {  // new
                 let newData = NodeStoreHandle.storeSetup();
@@ -855,7 +904,9 @@ class NodeStoreHandle {
                     }
                 }
             }
-            FlowJsP.init();
+            if (NodeLoadDataHandle.dataNode.length !== initLength) {
+                FlowJsP.init();
+            }
         }
         return true;
     };

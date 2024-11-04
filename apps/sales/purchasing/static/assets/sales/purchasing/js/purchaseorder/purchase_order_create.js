@@ -303,10 +303,22 @@ $(function () {
         });
 
 // SUBMIT FORM
-        formSubmit.submit(function (e) {
-            e.preventDefault();
+        SetupFormSubmit.validate(formSubmit, {
+            rules: {
+                title: {
+                    required: true,
+                },
+            },
+            errorClass: 'is-invalid cl-red',
+            submitHandler: submitHandlerFunc
+        });
+
+        function submitHandlerFunc() {
             let _form = new SetupFormSubmit(formSubmit);
-            POSubmitHandle.setupDataSubmit(_form);
+            let result = POSubmitHandle.setupDataSubmit(_form);
+            if (result === false) {
+                return false;
+            }
             let submitFields = [
                 'title',
                 'purchase_requests_data',
@@ -342,8 +354,7 @@ $(function () {
                 }
             }
             WFRTControl.callWFSubmitForm(_form);
-        });
-
+        }
 
 
     });

@@ -74,8 +74,17 @@ $(function () {
 
 
 // SUBMIT FORM
-        formSubmit.submit(function (e) {
-            e.preventDefault();
+        SetupFormSubmit.validate(formSubmit, {
+            rules: {
+                title: {
+                    required: true,
+                },
+            },
+            errorClass: 'is-invalid cl-red',
+            submitHandler: submitHandlerFunc
+        });
+
+        function submitHandlerFunc() {
             let _form = new SetupFormSubmit(formSubmit);
             let result = ProdOrderSubmitHandle.setupDataSubmit(_form);
             if (result === false) {
@@ -107,8 +116,7 @@ $(function () {
                 ProdOrderCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
             WFRTControl.callWFSubmitForm(_form);
-        });
-
+        }
 
 
     });

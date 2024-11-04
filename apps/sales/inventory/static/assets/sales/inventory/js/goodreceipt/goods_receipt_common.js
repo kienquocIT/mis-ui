@@ -2637,6 +2637,10 @@ class GRSubmitHandle {
         if (products_data_setup.length > 0) {
             _form.dataForm['gr_products_data'] = products_data_setup;
         }
+        if (products_data_setup.length <= 0) {
+            $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-required-product')}, 'failure');
+            return false;
+        }
         let tableWrapper = document.getElementById('datable-good-receipt-line-detail-po_wrapper');
         if (tableWrapper) {
             let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
@@ -2663,6 +2667,7 @@ class GRSubmitHandle {
         if (_form.dataForm.hasOwnProperty('attachment')) {
           _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);
         }
+        return _form.dataForm;
     };
 }
 

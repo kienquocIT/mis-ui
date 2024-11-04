@@ -2530,6 +2530,10 @@ class POSubmitHandle {
         if (products_data_setup.length > 0) {
             _form.dataForm['purchase_order_products_data'] = products_data_setup;
         }
+        if (products_data_setup.length <= 0) {
+            $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-required-product')}, 'failure');
+            return false;
+        }
         let tableWrapper = document.getElementById('datable-purchase-order-product-add_wrapper');
         if (POLoadDataHandle.PRDataEle.val()) {
             tableWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
@@ -2554,6 +2558,7 @@ class POSubmitHandle {
         if (_form.dataForm.hasOwnProperty('attachment')) {
           _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);
         }
+        return _form.dataForm;
     };
 }
 

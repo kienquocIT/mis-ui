@@ -19,6 +19,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'LeadListAPI' %}"
+        data-url-create="{% url 'LeadCreate' %}"
+        data-url-detail="{% url 'LeadDetail' '0' %}"
+        data-key-return="lead_list"
+    ></script>
     <input type="hidden" id="employee_current_id" value="{{ request.user.employee_current_data.id }}">
     {{ data.stage_list | json_script:"stage_list" }}
     <script id="script-trans"
@@ -303,4 +309,5 @@
 {% block jsFooter %}
     <script src="{% static 'assets/sales/lead/js/lead_common.js' %}"></script>
     <script src="{% static 'assets/sales/lead/js/lead_detail.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

@@ -15,6 +15,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'PurchaseRequestListAPI' %}"
+        data-url-create="{% url 'PurchaseRequestList' %}"
+        data-url-detail="{% url 'PurchaseRequestDetail' '0' %}"
+        data-key-return="purchase_request_list"
+    ></script>
     {{ data.data.employee_current | json_script:"employee_current" }}
     <script id="script-url"
             data-url-pr-config-so="{% url 'PurchaseRequestConfigAPI' %}"
@@ -43,4 +49,5 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/pr_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/pr_create.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

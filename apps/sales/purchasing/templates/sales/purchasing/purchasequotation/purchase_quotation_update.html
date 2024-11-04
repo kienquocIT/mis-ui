@@ -26,6 +26,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'PurchaseQuotationListAPI' %}"
+        data-url-create="{% url 'PurchaseQuotationCreate' %}"
+        data-url-detail="{% url 'PurchaseQuotationDetail' '0' %}"
+        data-key-return="purchase_quotation_list"
+    ></script>
     <script id="url-script"
             data-url-tax="{% url "TaxListAPI" %}"
             data-url-product="{% url "ProductListAPI" %}"
@@ -193,4 +199,5 @@
 
     <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_update.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

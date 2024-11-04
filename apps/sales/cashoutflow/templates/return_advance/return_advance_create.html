@@ -18,6 +18,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'ReturnAdvanceListAPI' %}"
+        data-url-create="{% url 'ReturnAdvanceCreate' %}"
+        data-url-detail="{% url 'ReturnAdvanceDetail' '0' %}"
+        data-key-return="return_advances"
+    ></script>
     {{ data.data.employee_current | json_script:"employee_current" }}
     <script id="script-url">
     </script>
@@ -37,4 +43,5 @@
 
     <script src="{% static "assets/js/return_advance/return_advance_common.js" %}"></script>
     <script src="{% static "assets/js/return_advance/return_advance_create.js" %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

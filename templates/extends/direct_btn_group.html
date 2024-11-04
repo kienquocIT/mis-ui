@@ -1,6 +1,6 @@
 {% load static i18n %}
 
-<div id="btn-group-direct" hidden class="btn-group mr-3" role="group">
+<div id="btn-group-direct" hidden class="btn-group" role="group">
     <button type="button"
             id="direct-first"
             class="btn btn-rounded flush-soft-hover btn-icon btn-soft-primary btn-xs mr-1"
@@ -20,16 +20,6 @@
         <span class="icon"><i class="fas fa-caret-left"></i></span>
     </button>
     <button type="button"
-            id="direct-create"
-            class="btn btn-rounded flush-soft-hover btn-icon btn-soft-primary btn-xs mr-1"
-            data-bs-toggle="tooltip"
-            data-bs-placement="bottom"
-            title="{% trans 'Create' %}"
-            {% if not pk %}hidden{% endif %}
-    >
-        <span class="icon"><i class="fas fa-plus"></i></span>
-    </button>
-    <button type="button"
             id="direct-next"
             class="btn btn-rounded flush-soft-hover btn-icon btn-soft-primary btn-xs mr-1"
             data-bs-toggle="tooltip"
@@ -46,5 +36,15 @@
             title="{% trans 'Last doc' %}"
     >
         <span class="icon"><i class="fas fa-forward"></i></span>
+    </button>
+    <button type="button"
+            id="direct-create"
+            class="btn btn-rounded flush-soft-hover btn-icon btn-soft-primary btn-xs"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="{% trans 'Create' %}"
+            {% if not pk %}hidden{% endif %}
+    >
+        <span class="icon"><i class="fas fa-plus"></i></span>
     </button>
 </div>

@@ -8,10 +8,12 @@ from apps.log.views import (
     MyNotifyAllAPI,
     MyNotifyCleanAllAPI, MyNotifyPageView,
     MailLogView, MailLogAPI,
+    TicketDetailView,
 )
 
 urlpatterns = [
     path('ticket/create', TicketErrorCreateAPI.as_view(), name='TicketErrorCreateAPI'),
+    path('ticket/detail/<str:code>', TicketDetailView.as_view(), name='TicketDetailView'),
     path('activities', ActivityLogListAPI.as_view(), name='ActivityLogListAPI'),
     path('notifications', MyNotifyPageView.as_view(), name='MyNotifyPageView'),
     path('notify/me/all', MyNotifyAllAPI.as_view(), name='MyNotifyAllAPI'),

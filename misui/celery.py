@@ -31,3 +31,8 @@ app.conf.beat_schedule = {
         'schedule': crontab(minute=30, hour=23),
     }
 }
+
+
+app.conf.timezone = 'Asia/Ho_Chi_Minh'
+# python manage.py migrate django_celery_results zero
+# python manage.py migrate django_celery_results

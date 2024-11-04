@@ -89,7 +89,8 @@
                             <h3>{{ company_title }}</h3>
                             <small>{{ tenant_title }}</small>
                             <h1 class="display-4 fw-bold mb-2">404</h1>
-                            <p class="p-lg">{% trans 'Sorry, the requested page cannot be found. Try finding with another name.' %}</p>
+                            <p class="p-lg">{% trans 'Sorry, the requested page cannot be found.' %}</p>
+                            <p class="p-lg">{% trans 'Try finding with another name.' %}</p>
                             {% if path_redirect %}
                                 <a href="{{ path_redirect }}" class="btn btn-primary mt-4">{% trans 'Return to home' %}</a>
                             {% else %}

@@ -8,6 +8,8 @@ $(function () {
             'allowClear': true,
         });
 
+        initTableZone();
+
         NodeLoadDataHandle.loadInitEmpData();
 
         // form submit

@@ -6441,7 +6441,7 @@ class QuotationSubmitHandle {
                 _form.dataForm['payment_term_data'] = dataSelected;
             }
         }
-        return _form;
+        return _form.dataForm;
     };
 }
 

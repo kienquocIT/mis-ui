@@ -2583,10 +2583,10 @@ class WFRTControl {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
                                 <div class="d-flex align-items-center">
                                     <i class="${statusMapIcon[status]} ${statusMapColor[status]}"></i>
-                                    <span class="${statusMapColor[status]}">${statusMapText[status]}</span>
+                                    <label class="form-check-label" for="save-type-${status}">${statusMapText[status]}</label>
                                 </div>
                                 <div class="form-check form-check-theme ms-3">
-                                    <input type="radio" class="form-check-input checkbox-save-status" data-status="${status}">
+                                    <input type="radio" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}">
                                 </div>
                             </div>`;
         }

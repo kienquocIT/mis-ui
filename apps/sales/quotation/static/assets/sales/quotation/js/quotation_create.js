@@ -872,19 +872,30 @@ $(function () {
 
 
 // Submit form quotation + sale order
-        formSubmit.submit(function (e) {
-            e.preventDefault();
+        SetupFormSubmit.validate(formSubmit, {
+            rules: {
+                title: {
+                    required: true,
+                },
+                employee_inherit_id: {
+                    required: true,
+                },
+            },
+            errorClass: 'is-invalid cl-red',
+            submitHandler: submitHandlerFunc
+        });
+
+        function submitHandlerFunc() {
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
                 QuotationPromotionHandle.callPromotion(1);
                 // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal
                 // Submit Form normal
-                submitForm($(this));
+                submitForm(formSubmit);
             }
-        });
+        }
 
-// function check again promotion before submit
         function submitCheckPromotion() {
             let valueCheck = $('#quotation-check-promotion').val();
             if (valueCheck) {
@@ -899,15 +910,7 @@ $(function () {
             }
         }
 
-// WORKFLOW
-
-        // events on btn action WF zone (depend on business rule)
-        $('#btn-active-edit-zone-wf').on('click', function () {
-            QuotationCheckConfigHandle.checkConfig(0);
-        });
-
-// Main Function Submit
-        function submitForm(formSubmit) {
+         function submitForm(formSubmit) {
             let is_sale_order = false;
             if (formSubmit[0].classList.contains('sale-order')) {
                 is_sale_order = true;
@@ -1051,6 +1054,13 @@ $(function () {
             }
             WFRTControl.callWFSubmitForm(_form);
         }
+
+// WORKFLOW
+
+        // events on btn action WF zone (depend on business rule)
+        $('#btn-active-edit-zone-wf').on('click', function () {
+            QuotationCheckConfigHandle.checkConfig(0);
+        });
 
         $('#btn-remove-promotion').on('click', function() {
             $('#quotation-check-promotion').val("");

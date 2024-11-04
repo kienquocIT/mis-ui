@@ -4,10 +4,16 @@ CONTRACT_APPROVAL_DATA_MAP = {
     'title': FieldMapCommon(
         name_mapping=['title'],
     ).data,
-    'document_data': FieldMapCommon(
-        name_mapping=['document_data'],
+    'abstract_content': FieldMapCommon(
+        name_mapping=['abstract_content'],
     ).data,
-    'attachment': FieldMapCommon(
-        name_mapping=['attachment'],
+    'trade_content': FieldMapCommon(
+        name_mapping=['trade_content'],
+    ).data,
+    'legal_content': FieldMapCommon(
+        name_mapping=['legal_content'],
+    ).data,
+    'payment_content': FieldMapCommon(
+        name_mapping=['payment_content'],
     ).data,
 }

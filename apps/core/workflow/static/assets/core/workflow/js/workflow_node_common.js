@@ -998,6 +998,28 @@ class NodeSubmitHandle {
     };
 
     static setupDataSubmit() {
+        for (let node of NodeLoadDataHandle.dataNode) {
+            let txt = NodeLoadDataHandle.transEle.attr('data-complete-node') + " (" + node?.['title'] + ")";
+            if (node?.['is_system'] === false) {
+                if (node?.['option_collaborator'] === 1) {
+                    if (node?.['collab_out_form']?.['employee_list']) {
+                        if (node?.['collab_out_form']?.['employee_list'].length <= 0) {
+                            $.fn.notifyB({description: txt}, 'failure');
+                            return false;
+                        }
+                    } else {
+                        $.fn.notifyB({description: txt}, 'failure');
+                        return false;
+                    }
+                }
+                if (node?.['option_collaborator'] === 2) {
+                    if (node?.['collab_in_workflow'].length <= 0) {
+                        $.fn.notifyB({description: txt}, 'failure');
+                        return false;
+                    }
+                }
+            }
+        }
         return NodeLoadDataHandle.dataNode;
     };
 

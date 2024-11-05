@@ -593,6 +593,35 @@ class NodeLoadDataHandle {
         return true;
     };
 
+    static loadExitConDefault() {
+        if (NodeDataTableHandle.$tableInWF.DataTable().data().count() > 0) {
+            NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row.querySelector('.table-row-action') && row.querySelector('.table-row-min-collab')) {
+                    if (row.querySelector('.table-row-action').getAttribute('data-row')) {
+                        let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
+                        if (dataRow?.['action'] === 1) {
+                            $(row.querySelector('.table-row-min-collab')).val(String(NodeDataTableHandle.$tableInWF.DataTable().data().count())).trigger('change');
+                        }
+                    }
+                }
+            });
+            NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row.querySelector('.table-row-action') && row.querySelector('.table-row-min-collab')) {
+                    if (row.querySelector('.table-row-action').getAttribute('data-row')) {
+                        let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
+                        if (dataRow?.['action'] === 2) {
+                            let value = NodeDataTableHandle.$tableInWF.DataTable().data().count() + 1 - NodeDataTableHandle.$tableInWF.DataTable().data().count();
+                            $(row.querySelector('.table-row-min-collab')).val(String(value)).trigger('change');
+                        }
+                    }
+                }
+            });
+        }
+        return true;
+    }
+
     static loadChangeExitCon(ele) {
         if (ele.closest('tr')) {
             if (ele.closest('tr').querySelector('.table-row-action')) {
@@ -824,6 +853,8 @@ class NodeDataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 NodeLoadDataHandle.loadCssToDtb(NodeDataTableHandle.$tableInWF[0].id);
+                // load change exit condition default
+                NodeLoadDataHandle.loadExitConDefault();
             },
         });
     };

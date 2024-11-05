@@ -1789,7 +1789,7 @@ msgstr "Chỉnh sửa Danh xưng"
 
 #
 msgid "Tax Category"
-msgstr "Loại thuế"
+msgstr "Danh mục thuế"
 
 #
 msgid "Selling rate"
@@ -2601,15 +2601,15 @@ msgstr "Tạo tài khoản"
 
 #
 msgid "Master Data Contact"
-msgstr "Liên hệ dùng chung"
+msgstr "Dữ liệu liên hệ dùng chung"
 
 #
 msgid "Master Data Account"
-msgstr "Tài khoản dùng chung"
+msgstr "Dữ liệu tài khoản dùng chung"
 
 #
 msgid "Master Data Product"
-msgstr "Sản phẩm dùng chung"
+msgstr "Dữ liệu sản phẩm dùng chung"
 
 #
 msgid "Product list"
@@ -9427,3 +9427,15 @@ msgstr "Nhóm đơn vị tính"
 #
 msgid "Reference Unit"
 msgstr "Đơn vị tiêu chuẩn"
+
+#
+msgid "Tax Categories"
+msgstr "Danh mục thuế"
+
+#
+msgid "Currencies"
+msgstr "Tiền tệ"
+
+#
+msgid "Master data price"
+msgstr "Dữ liệu tiền tệ dùng chung"

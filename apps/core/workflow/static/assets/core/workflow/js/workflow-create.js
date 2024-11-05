@@ -13,8 +13,17 @@ $(function () {
         NodeLoadDataHandle.loadInitEmpData();
 
         // form submit
-        formSubmit.submit(function (e) {
-            e.preventDefault()
+        SetupFormSubmit.validate(formSubmit, {
+            rules: {
+                title: {
+                    required: true,
+                },
+            },
+            errorClass: 'is-invalid cl-red',
+            submitHandler: submitHandlerFunc
+        });
+
+        function submitHandlerFunc() {
             let _form = new SetupFormSubmit(formSubmit);
             let dataZone = $('#table_workflow_zone').DataTable().data().toArray();
             _form.dataForm['zone'] = dataZone;
@@ -64,17 +73,17 @@ $(function () {
             if (associate_temp) {
                 let associate_data_submit = [];
                 let associate_data_json = JSON.parse(associate_temp);
-                    for (let key in associate_data_json) {
-                        let item = associate_data_json[key]
-                        if (typeof item.node_in === "object") {
-                            // case from detail page update workflow if node_in is not order number
-                            item.node_in = item.node_in.order
-                            item.node_out = item.node_out.order
-                        }
-                        if (item?.['node_in'] && item?.['node_out']) {
-                            associate_data_submit.push(item);
-                        }
+                for (let key in associate_data_json) {
+                    let item = associate_data_json[key]
+                    if (typeof item.node_in === "object") {
+                        // case from detail page update workflow if node_in is not order number
+                        item.node_in = item.node_in.order
+                        item.node_out = item.node_out.order
                     }
+                    if (item?.['node_in'] && item?.['node_out']) {
+                        associate_data_submit.push(item);
+                    }
+                }
                 if (associate_data_submit.length <= 0) {  // check required data association
                     $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-association')}, 'failure');
                     return false;
@@ -109,23 +118,29 @@ $(function () {
             else _form.dataForm['actions_rename'] = []
 
             let csr = $("[name=csrfmiddlewaretoken]").val()
-
-            $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                            $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
-                        $.fn.notifyB({description: "Workflow create fail"}, 'failure')
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': _form.dataUrl,
+                    'method': _form.dataMethod,
+                    'data': _form.dataForm,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: data.message}, 'success')
+                        $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
                     }
-                )
-        });
-
+                },
+                (errs) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: errs?.data?.errors || errs?.message}, 'failure');
+                }
+            )
+        }
 
         // NODE EVENTS
         NodeLoadDataHandle.$btnNewNode.on('click', function () {

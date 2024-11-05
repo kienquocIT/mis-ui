@@ -8950,7 +8950,7 @@ msgstr "Chọn Thành phẩm hoặc Dịch vụ"
 
 #
 msgid "Choose one collaborator actions"
-msgstr "Chọn một cộng tác viên để thao tác"
+msgstr "Chọn một cộng tác viên thao tác"
 
 #
 msgid "Many collaborators action"
@@ -9439,3 +9439,31 @@ msgstr "Tiền tệ"
 #
 msgid "Master data price"
 msgstr "Dữ liệu tiền tệ dùng chung"
+
+#
+msgid "Node configuration"
+msgstr "Cấu hình trạm"
+
+#
+msgid "Select action"
+msgstr "Chọn thao tác"
+
+#
+msgid "Actions at node"
+msgstr "Thao tác trên trạm"
+
+#
+msgid "Collaborators at node"
+msgstr "Cộng tác viên của trạm"
+
+#
+msgid "Collaborator list"
+msgstr "Danh sách cộng tác viên"
+
+#
+msgid "Exit condition"
+msgstr "Điều kiện thoát trạm"
+
+#
+msgid "Min collaborators"
+msgstr "CTV tối thiểu"

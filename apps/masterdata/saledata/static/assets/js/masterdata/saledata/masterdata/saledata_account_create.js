@@ -282,7 +282,6 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-account-type').modal('hide')
-                        $('#modal-update-account-type form')[0].reset()
                         loadAccountType()
                     }
                 },
@@ -355,7 +354,6 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-account-group').modal('hide')
-                        $('#modal-update-account-group form')[0].reset()
                         loadAccountGroup()
                     }
                 },
@@ -428,7 +426,6 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-industry').modal('hide')
-                        $('#modal-update-industry form')[0].reset()
                         loadIndustry()
                     }
                 },

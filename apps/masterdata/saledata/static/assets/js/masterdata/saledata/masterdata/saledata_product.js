@@ -388,7 +388,6 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-product-type').modal('hide')
-                        $('#modal-update-product-type form')[0].reset()
                         loadProductType()
                     }
                 },
@@ -461,7 +460,6 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-product-category').modal('hide')
-                        $('#modal-update-product-category form')[0].reset()
                         loadProductCategory()
                     }
                 },
@@ -533,7 +531,6 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-uom-group').modal('hide')
-                        $('#modal-update-uom-group form')[0].reset()
                         loadUnitOfMeasureGroup()
                     }
                 },
@@ -694,6 +691,7 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-new-uom').modal('hide');
+                        $('#modal-new-uom form')[0].reset()
                         location.reload()
                     }
                 },

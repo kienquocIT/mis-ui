@@ -847,11 +847,9 @@ class QuotationLoadDataHandle {
                                     }
                                 }
                                 htmlPriceList += `<div class="d-flex justify-content-between align-items-center">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="form-check">
-                                                            <input type="radio" class="form-check-input table-row-price-option" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" ${checked}>
-                                                        </div>
-                                                        <span>${priceData?.['title']}</span>
+                                                    <div class="form-check form-check-lg">
+                                                        <input type="radio" class="form-check-input table-row-price-option" id="price-${priceData?.['id'].replace(/-/g, "")}" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" ${checked}>
+                                                        <label class="form-check-label" for="price-${priceData?.['id'].replace(/-/g, "")}">${priceData?.['title']}</label>
                                                     </div>
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         <span class="mask-money mr-2" data-init-money="${parseFloat(priceData?.['value'])}"></span>
@@ -1641,11 +1639,9 @@ class QuotationLoadDataHandle {
                                             checked = 'checked';
                                         }
                                         htmlCostList += `<div class="d-flex justify-content-between">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="form-check">
-                                                                <input type="radio" class="form-check-input table-row-price-option" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}" ${checked}>
-                                                            </div>
-                                                            <span class="mr-5">${costData?.['warehouse']?.['title']}</span>
+                                                        <div class="form-check form-check-lg">
+                                                            <input type="radio" class="form-check-input table-row-price-option" id="cost-${costData?.['warehouse']?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}" ${checked}>
+                                                            <label class="form-check-label" for="cost-${costData?.['warehouse']?.['id'].replace(/-/g, "")}">${costData?.['warehouse']?.['title']}</label>
                                                         </div>
                                                         <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
                                                     </div>`;
@@ -1655,20 +1651,16 @@ class QuotationLoadDataHandle {
                                 }
                                 htmlCostList += `<hr>`;
                                 htmlCostList += `<div class="d-flex justify-content-between">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="form-check">
-                                                            <input type="radio" class="form-check-input table-row-price-option" data-value="${parseFloat(costBomStandardData?.['costBom'])}" data-wh="${JSON.stringify({'id': 'bom'}).replace(/"/g, "&quot;")}" ${checkedBom}>
-                                                        </div>
-                                                        <span class="mr-5">${QuotationLoadDataHandle.transEle.attr('data-cost-bom')}</span>
+                                                    <div class="form-check form-check-lg">
+                                                        <input type="radio" class="form-check-input table-row-price-option" id="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costBom'])}" data-wh="${JSON.stringify({'id': 'bom'}).replace(/"/g, "&quot;")}" ${checkedBom}>
+                                                        <label class="form-check-label" for="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}">${QuotationLoadDataHandle.transEle.attr('data-cost-bom')}</label>
                                                     </div>
                                                     <span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costBom'])}"></span>
                                                 </div>`;
                                 htmlCostList += `<div class="d-flex justify-content-between">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="form-check">
-                                                            <input type="radio" class="form-check-input table-row-price-option" data-value="${parseFloat(costBomStandardData?.['costStandard'])}" data-wh="${JSON.stringify({'id': 'standard'}).replace(/"/g, "&quot;")}" ${checkedStandard}>
-                                                        </div>
-                                                        <span class="mr-5">${QuotationLoadDataHandle.transEle.attr('data-cost-standard')}</span>
+                                                    <div class="form-check form-check-lg">
+                                                        <input type="radio" class="form-check-input table-row-price-option" id="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costStandard'])}" data-wh="${JSON.stringify({'id': 'standard'}).replace(/"/g, "&quot;")}" ${checkedStandard}>
+                                                        <label class="form-check-label" for="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}">${QuotationLoadDataHandle.transEle.attr('data-cost-standard')}</label>
                                                     </div>
                                                     <span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costStandard'])}"></span>
                                                 </div>`;
@@ -5984,6 +5976,9 @@ class QuotationSubmitHandle {
                     if ($(elePrice).attr('data-wh')) {
                         let dataWH = JSON.parse($(elePrice).attr('data-wh'));
                         rowData['warehouse_id'] = dataWH?.['id'];
+                        if (["bom", "standard"].includes(rowData['warehouse_id'])) {
+                            delete rowData['warehouse_id'];
+                        }
                         rowData['warehouse_data'] = dataWH;
                     }
                 }

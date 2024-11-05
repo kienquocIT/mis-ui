@@ -71,29 +71,24 @@ $(function () {
         WFRTControl.setWFInitialData(appCode);
 
 
-// Action on change dropdown opportunity
         QuotationLoadDataHandle.opportunitySelectEle.on('change', function () {
             QuotationLoadDataHandle.loadDataByOpportunity();
         });
 
-// Action on change dropdown customer
         QuotationLoadDataHandle.customerSelectEle.on('change', function () {
             QuotationLoadDataHandle.loadDataByCustomer();
         });
 
-// Action on change dropdown sale person
         QuotationLoadDataHandle.salePersonSelectEle.on('change', function () {
             QuotationLoadDataHandle.loadDataBySalePerson();
         });
 
-// Action on click dropdown price list
         tabPrice.on('click', function() {
             if (!boxPriceList[0].innerHTML) {
                 QuotationLoadDataHandle.loadBoxQuotationPrice();
             }
         });
 
-// Action on click dropdown payment term
         QuotationLoadDataHandle.paymentSelectEle.on('click', function () {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         });
@@ -102,7 +97,6 @@ $(function () {
             QuotationLoadDataHandle.loadChangePaymentTerm();
         });
 
-// Action on click dropdown contact
         boxQuotation.on('click', function() {
             if (!$(this)[0].innerHTML) {
                 let opp_id = null;
@@ -122,12 +116,10 @@ $(function () {
             QuotationLoadDataHandle.loadReInitDataTableProduct();
         });
 
-// Action on add group title
         btnAddProductGr.on('click', function () {
             QuotationLoadDataHandle.loadAddRowProductGr();
         });
 
-// Action on click button add product
         btnAddProduct.on('click', function (e) {
             QuotationLoadDataHandle.loadModalSProduct();
             indicatorHandle.loadIndicator();
@@ -137,7 +129,6 @@ $(function () {
             QuotationLoadDataHandle.loadNewProduct();
         });
 
-// Action on click select2 product
         tableProduct.on('click', '.table-row-item-area', function () {
            QuotationLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
         });
@@ -212,7 +203,6 @@ $(function () {
             )
         });
 
-// Action on delete row product
         tableProduct.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -230,8 +220,7 @@ $(function () {
             QuotationLoadDataHandle.loadSetWFRuntimeZone();
         });
 
-// Action on click price list's option
-         tableProduct.on('click', '.btn-select-price', function () {
+        tableProduct.on('click', '.btn-select-price', function () {
             if (this.closest('tr')) {
                 if (this.closest('tr').querySelector('.table-row-item')) {
                     QuotationLoadDataHandle.loadPriceProduct(this.closest('tr').querySelector('.table-row-item'));
@@ -274,7 +263,6 @@ $(function () {
             }
         });
 
-// ******** Action on change data of table row PRODUCT => calculate data for row & calculate data total
         tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
@@ -321,7 +309,6 @@ $(function () {
             }
         });
 
-// Action on table row group title
         tableProduct.on('click', '.table-row-group', function () {
             let row = this.closest('tr');
             $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
@@ -359,7 +346,6 @@ $(function () {
             QuotationStoreDataHandle.storeProduct(row);
         });
 
-// Action on change discount rate on Total of product
         $('input[type=text].quotation-create-product-discount').on('change', function () {
             validateNumber(this);
             // Delete all promotion rows
@@ -379,17 +365,14 @@ $(function () {
             QuotationLoadDataHandle.loadReInitDataTableExpense();
         });
 
-// Action on click button add expense
         $('#btn-add-expense-quotation-create').on('click', function (e) {
             QuotationLoadDataHandle.loadAddRowExpense();
         });
 
-// Action on click button add internal labor
         $('#btn-add-labor-quotation-create').on('click', function (e) {
             QuotationLoadDataHandle.loadAddRowLabor();
         });
 
-// Action on delete row expense
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -399,7 +382,6 @@ $(function () {
             QuotationCalculateCaseHandle.updateTotal(tableExpense[0]);
         });
 
-// Action on click price list's option
         tableExpense.on('click', '.table-row-price-option', function () {
             let priceValRaw = $(this)[0].getAttribute('data-value');
             if (priceValRaw) {
@@ -413,7 +395,6 @@ $(function () {
             }
         });
 
-// ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
         tableExpense.on('change', '.table-row-item, .table-row-labor-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
             if (this.classList.contains('table-row-labor-item')) {
@@ -444,7 +425,6 @@ $(function () {
             }
         });
 
-// ******** Action on change data of table row COST => calculate data for row & calculate data total
         tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
@@ -452,7 +432,6 @@ $(function () {
             }
         });
 
-// Action on click price list's option
         tableCost.on('click', '.btn-select-cost', function () {
             if (this.closest('tr')) {
                 if (this.closest('tr').querySelector('.table-row-item')) {
@@ -492,12 +471,10 @@ $(function () {
             }
         });
 
-// Action on click button collapse
         $('#btn-collapse').click(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
-// Action on click choose shipping
         modalShipping.on('click', '.choose-shipping', function () {
             // Enable other buttons
             $('.choose-shipping').prop('disabled', false);
@@ -516,7 +493,6 @@ $(function () {
             }
         });
 
-// Action on click choose billing
         modalBilling.on('click', '.choose-billing', function () {
             // Enable other buttons
             $('.choose-billing').prop('disabled', false);
@@ -558,14 +534,12 @@ $(function () {
             }
         });
 
-// Action on check quotation for copy
         tableCopyQuotation.on('click', '.table-row-check', function () {
             tableCopyQuotation.find('.table-row-check').prop('checked', false);
             $(this).prop('checked', true);
             QuotationLoadDataHandle.loadAPIDetailQuotation($(this)[0].getAttribute('data-id'));
         });
 
-// Action on click button select quotation for copy
         $('#btn-select-quotation-copy').on('click', function() {
             tableCopyQuotation[0].setAttribute('hidden', true);
             tableCopyQuotation.DataTable().clear().draw();
@@ -583,7 +557,6 @@ $(function () {
             $('#btn-quotation-copy-confirm')[0].removeAttribute('hidden')
         });
 
-// Action on check copy option
         divCopyOption.on('change', '.check-option', function() {
             if ($(this)[0].checked === false) {
                 tableCopyQuotationProduct[0].removeAttribute('hidden');
@@ -592,12 +565,10 @@ $(function () {
             }
         });
 
-// Action on confirm copy quotation
         $('#btn-quotation-copy-confirm').on('click', function () {
             QuotationLoadDataHandle.loadSetupCopy(this);
         });
 
-// Load data quotation COPY TO sale order when sale order page CREATE loaded
         function prepareDataCopyTo() {
             let eleDataCopy = $('#data-init-quotation-copy-to');
             if (eleDataCopy) {

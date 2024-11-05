@@ -1,50 +1,50 @@
 {% load static i18n %}
 
-<div id="btn-group-direct" hidden class="btn-group border-primary rounded mr-3" style="border: 1px dashed" role="group">
+<div id="btn-group-direct" hidden class="btn-group mr-3" role="group">
     <button type="button"
             id="direct-first"
-            class="btn flush-soft-hover btn-icon btn-flush-primary btn-xs"
+            class="btn btn-rounded flush-soft-hover btn-icon btn-soft-primary btn-xs mr-1"
             data-bs-toggle="tooltip"
-            data-bs-placement="left"
+            data-bs-placement="bottom"
             title="{% trans 'First doc' %}"
     >
-        <span class="fw-bold fs-6">F</span>
+        <span class="icon"><i class="fas fa-backward"></i></span>
     </button>
     <button type="button"
             id="direct-previous"
-            class="btn flush-soft-hover btn-icon btn-flush-primary btn-xs"
+            class="btn btn-rounded flush-soft-hover btn-icon btn-soft-primary btn-xs mr-1"
             data-bs-toggle="tooltip"
-            data-bs-placement="left"
+            data-bs-placement="bottom"
             title="{% trans 'Previous doc' %}"
     >
-        <span class="icon"><i class="fas fa-chevron-left"></i></span>
+        <span class="icon"><i class="fas fa-caret-left"></i></span>
+    </button>
+    <button type="button"
+            id="direct-next"
+            class="btn btn-rounded flush-soft-hover btn-icon btn-soft-primary btn-xs mr-1"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="{% trans 'Next doc' %}"
+    >
+        <span class="icon"><i class="fas fa-caret-right"></i></span>
+    </button>
+    <button type="button"
+            id="direct-last"
+            class="btn btn-rounded flush-soft-hover btn-icon btn-soft-primary btn-xs mr-1"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="{% trans 'Last doc' %}"
+    >
+        <span class="icon"><i class="fas fa-forward"></i></span>
     </button>
     <button type="button"
             id="direct-create"
-            class="btn flush-soft-hover btn-icon btn-flush-primary btn-xs"
+            class="btn btn-rounded flush-soft-hover btn-icon btn-soft-primary btn-xs"
             data-bs-toggle="tooltip"
             data-bs-placement="bottom"
             title="{% trans 'Create' %}"
             {% if not pk %}hidden{% endif %}
     >
         <span class="icon"><i class="fas fa-plus"></i></span>
-    </button>
-    <button type="button"
-            id="direct-next"
-            class="btn flush-soft-hover btn-icon btn-flush-primary btn-xs"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            title="{% trans 'Next doc' %}"
-    >
-        <span class="icon"><i class="fas fa-chevron-right"></i></span>
-    </button>
-    <button type="button"
-            id="direct-last"
-            class="btn flush-soft-hover btn-icon btn-flush-primary btn-xs"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            title="{% trans 'Last doc' %}"
-    >
-        <span class="fw-bold fs-6">L</span>
     </button>
 </div>

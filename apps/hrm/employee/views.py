@@ -1,7 +1,8 @@
 from django.views import View
 from rest_framework import status
+from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI
+from apps.shared import mask_view, ServerAPI, ApiURL
 
 
 class HRMEmployeeList(View):
@@ -24,3 +25,14 @@ class HRMEmployeeCreate(View):
     )
     def get(self, request, *args, **kwargs):
         return ServerAPI.empty_200()
+
+
+class HRMEmployeeNotMapHRM(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.HRM_EMPLOYEE_NOT_MAP_HRM).get(request.query_params.dict())
+        return resp.auto_return(key_success='empl_not_map')

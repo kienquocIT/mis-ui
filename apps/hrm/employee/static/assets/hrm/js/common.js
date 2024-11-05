@@ -12,9 +12,10 @@ function callDetailData(url, method) {
 }
 
 class EmployeeHRMInit {
-    static groupSelectEle = $('#select-box-group-employee');
-    static roleSelectEle = $('#select-box-role-employee');
+
     static userSelectEle = $('#select-box-user');
+    static empSelectEle = $('#select-box-employee');
+
     static dobEle = $('#employee-dob');
     static dateJoinedEle = $('#employee-date-joined');
     static firstNameEle = $('#employee-first-name');
@@ -46,22 +47,12 @@ class EmployeeHRMInit {
         });
     }
 
-    static loadRoleList(roleData) {
-        let ele = EmployeeHRMInit.roleSelectEle;
-        ele.initSelect2({
-            data: roleData,
-            multiple: true,
-            closeOnSelect: false,
-            disabled: !(ele.attr('data-url')),
-        });
-    }
-
-    static loadGroupList(groupData) {
-        let ele = EmployeeHRMInit.groupSelectEle;
-        ele.initSelect2({
-            data: groupData,
-            'allowClear': true,
-            disabled: !(ele.attr('data-url')),
+    static loadEmpList(empData){
+        EmployeeHRMInit.empSelectEle.initSelect2({
+            allowClear: true,
+            keyId: 'employee--id',
+            keyText: 'employee--full_name',
+            data: (empData ? {'employee': empData} : null),
         })
     }
 
@@ -91,10 +82,6 @@ class EmployeeHRMInit {
 
     static combinesForm(frmIdx, hasPermit = true) {
         let frm = new SetupFormSubmit($(frmIdx));
-        // if (hasPermit === true) frm.dataForm['permission_by_configured'] = new HandlePermissions().combinesData()['data'];
-        // frm.dataForm['is_active'] = frm.dataForm['is_active'] === 'on';
-        // frm.dataForm['is_admin_company'] = frm.dataForm['is_admin_company'] === 'on';
-        // frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
         frm.dataForm['date_joined'] = moment($('#employee-date-joined').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
         frm.dataForm['dob'] = $('#employee-dob').val() ? moment($('#employee-dob').val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null
         frm.dataForm['role'] = EmployeeHRMInit.roleSelectEle.val()

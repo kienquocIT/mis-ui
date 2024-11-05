@@ -1,7 +1,7 @@
 $(document).ready(function () {
+
     EmployeeHRMInit.loadUserList();
-    EmployeeHRMInit.loadGroupList();
-    EmployeeHRMInit.loadRoleList();
+    EmployeeHRMInit.loadEmpList();
     EmployeeHRMInit.loadDob();
     EmployeeHRMInit.loadDateJoined();
     SetupFormSubmit.validate(

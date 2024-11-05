@@ -50,132 +50,231 @@
             <div class="tab-pane fade show active" id="tab-info">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-12 col-md-4 col-lg-3">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Avatar' %}</label>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label"
+                                       for="select-box-empl_hr">{% trans 'Empl ID' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <div class="dropdown input-prefix">
+                                        <i class="fas fa-info-circle text-blue"
+                                           data-bs-toggle="dropdown"
+                                           data-dropdown-animation
+                                           aria-haspopup="true"
+                                           aria-expanded="false"
+                                           disabled></i>
+                                        <div class="dropdown-menu w-210p mt-2"></div>
                                     </div>
+                                    <select class="form-select" id="select-box-employee"
+                                            data-url="{% url 'HRMEmployeeNotMapHRMAPI' %}?"
+                                            data-method="GET"
+                                            data-params="{is_mapped=false}"
+                                            data-keyResp="empl_not_map"
+                                            name="employee"
+                                    >
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-8 col-lg-9">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label class="form-label" for="select-box-user">{% trans 'User link to the employee' %}</label>
-                                        <div class="input-affix-wrapper">
-                                            <div class="dropdown input-prefix">
-                                                <i class="fas fa-info-circle text-blue"
-                                                   data-bs-toggle="dropdown"
-                                                   data-dropdown-animation
-                                                   aria-haspopup="true"
-                                                   aria-expanded="false"
-                                                   disabled></i>
-                                                <div class="dropdown-menu w-210p mt-2"></div>
-                                            </div>
-                                            <select class="form-select" id="select-box-user"
-                                                    data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
-                                                    data-method="GET"
-                                                    data-keyResp="company_user_list"
-                                                    name="user"
-                                            >
-                                            </select>
-                                        </div>
+                        <div class="col-12 col-md-12 col-lg-4"></div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label"
+                                       for="select-box-user">{% trans 'User ID' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <div class="dropdown input-prefix">
+                                        <i class="fas fa-info-circle text-blue"
+                                           data-bs-toggle="dropdown"
+                                           data-dropdown-animation
+                                           aria-haspopup="true"
+                                           aria-expanded="false"
+                                           disabled></i>
+                                        <div class="dropdown-menu w-210p mt-2"></div>
                                     </div>
+                                    <select class="form-select" id="select-box-user"
+                                            data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
+                                            data-method="GET"
+                                            data-keyResp="company_user_list"
+                                            name="user"
+                                    >
+                                    </select>
                                 </div>
-                                <div class="col-12 col-md-12 col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-label required" for="employee-code">{% trans 'Employee Code' %}</label>
-                                        <input oninput="this.value=this.value.toUpperCase()" type="text" class="form-control" name="code" id="employee-code" required>
-                                    </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required"
+                                       for="employee-first_name">{% trans 'First Name' %}</label>
+                                <input type="text" class="form-control" placeholder="Nguyen" name="first_name"
+                                       id="employee-first_name" required>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-9 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label"
+                                       for="employee-middle_name">{% trans 'Middle Name' %}</label>
+                                <input type="text" placeholder="Van" class="form-control" name="middle_name"
+                                       id="employee-middle_name">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required"
+                                       for="employee-last_name">{% trans 'Last Name' %}</label>
+                                <input type="text" class="form-control" placeholder="A" name="last_name"
+                                       id="employee-last_name" required>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required"
+                                       for="employee-date-joined">{% trans 'Date Joined' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input class="form-control pl-2" type="text" id="employee-date-joined" name="date_joined"
+                                           required/>
+                                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                                 </div>
-                                <div class="col-12 col-md-9 col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-label required" for="employee-last-name">{% trans 'Surname and Middle Names' %}</label>
-                                        <input type="text" placeholder="Nguyen Van" class="form-control" name="last_name" id="employee-last-name" required>
-                                    </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <fieldset>
+                                <legend><span>{% trans 'Personal infomation' %}</span></legend>
+                            </fieldset>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label"
+                                       for="employee-citizen_id">{% trans 'Citizen ID' %}</label>
+                                <input type="text" class="form-control" placeholder="A" name="citizen_id"
+                                       id="employee-citizen_id">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-doi">{% trans 'Date of issue' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input class="form-control" id="employee-doi" type="text" name="date_of_issue"/>
+                                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                                 </div>
-                                <div class="col-12 col-md-3 col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-label required" for="employee-first-name">{% trans 'First Name' %}</label>
-                                        <input type="text" class="form-control" placeholder="A" name="first_name" id="employee-first-name" required>
-                                    </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="place_of_issue">{% trans 'Place of issue' %}</label>
+                                <select class="form-select" name="place_of_issue" id="place_of_issue"
+                                        data-url="{% url 'CityListAPI' %}" data-method="GET"
+                                        data-keyResp="city_list"></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-dob">{% trans 'Date of Birthday' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input class="form-control" id="employee-dob" type="text" name="dob"/>
+                                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                                 </div>
-                                <div class="col-12">
-                                    <fieldset>
-                                        <legend><span>{% trans 'Personal infomation' %}</span></legend>
-                                    </fieldset>
-                                </div>
-                                <div class="col-12 col-md-3 col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-label required" for="employee-citizen_id">{% trans 'Citizen ID' %}</label>
-                                        <input type="text" class="form-control" placeholder="A" name="citizen_id" id="employee-citizen_id">
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-12 col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-label" for="employee-doi">{% trans 'Date of Issue' %}</label>
-                                        <input class="form-control" id="employee-doi" type="text" name="doi"/>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <fieldset>
-                                        <legend><span>{% trans 'Contact' %}</span></legend>
-                                    </fieldset>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label class="form-label required" for="employee-email">{% trans 'Email' %}</label>
-                                        <input type="email" class="form-control" placeholder="customer@mtsolution.com.vn" name="email" id="employee-email" required>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-12 col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-label required" for="employee-phone">{% trans 'Phone' %}</label>
-                                        <input type="text" class="form-control" name="phone" id="employee-phone" required>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-12 col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-label" for="select-box-group-employee">{% trans 'Department' %}</label>
-                                        <select class="form-select" name="group" id="select-box-group-employee" data-url="{% url 'GroupListAPI' %}" data-method="GET" data-keyResp="group_list"></select>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-12 col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-label" for="employee-dob">{% trans 'Date of Birthday' %}</label>
-                                        <input class="form-control" id="employee-dob" type="text" name="dob"/>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-12 col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-label required" for="employee-date-joined">{% trans 'Date Joined' %}</label>
-                                        <input class="form-control" type="text" id="employee-date-joined" name="date_joined" required/>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-12 col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-label" for="select-box-role-employee">{% trans 'Role' %}</label>
-                                        <select class="form-control" multiple name="role" id="select-box-role-employee" data-url="{% url 'RoleListAPI' %}" data-method="GET" data-keyResp="role_list"></select>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-12 col-lg-12">
-                                    <div class="form-group">
-                                        <div class="form-check form-switch">
-                                            <input type="checkbox" class="form-check-input" name="is_admin_company" id="idx_is_admin_company">
-                                            <label class="form-check-label" for="idx_is_admin_company">{% trans 'Is admin' %}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-12 col-lg-12">
-                                    <div class="form-group">
-                                        <div class="form-check form-switch">
-                                            <input type="checkbox" class="form-check-input" name="is_active" id="is_active" checked required>
-                                            <label class="form-label required" for="is_active">{% trans 'Active the employee after created' %}</label>
-                                        </div>
-                                    </div>
-                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-pob">{% trans 'Place of birth' %}</label>
+                                <input class="form-control" id="employee-pob" type="text" name="place_of_birth"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-nationality">{% trans 'Nationality' %}</label>
+                                <select class="form-select" name="nationality" id="employee-nationality"
+                                        data-url="{% url 'CountryListAPI' %}" data-method="GET"
+                                        data-keyResp="countries"></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-poo">{% trans 'Place of origin' %}</label>
+                                <select class="form-select" name="place_of_origin" id="employee-poo"
+                                        data-url="{% url 'CityListAPI' %}" data-method="GET"
+                                        data-keyResp="city_list"></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-ethnicity">{% trans 'Ethnicity' %}</label>
+                                <input class="form-control" id="employee-ethnicity" type="text" name="ethnicity"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-religion">{% trans 'Religion' %}</label>
+                                <input class="form-control" id="employee-religion" type="text" name="religion"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-gender">{% trans 'Gender' %}</label>
+                                <select class="form-select" name="gender" id="employee-gender"></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-mstt">{% trans 'Marital status' %}</label>
+                                <select class="form-select" name="marital_status" id="employee-mstt"></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4"></div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-ban">{% trans 'Bank account No' %}</label>
+                                <input class="form-control" id="employee-ban" type="text" name="bank_acc_no"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-acc_name">{% trans 'Account name' %}</label>
+                                <input class="form-control" id="employee-acc_name" type="text" name="acc_name"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-bank_name">{% trans 'Bank name' %}</label>
+                                <input class="form-control" id="employee-bank_name" type="text" name="bank_name"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="employee-tax_code">{% trans 'Taxcode' %}</label>
+                                <input class="form-control" id="employee-tax_code" type="text" name="tax_code"/>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <fieldset>
+                                <legend><span>{% trans 'Contact' %}</span></legend>
+                            </fieldset>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="employee-email">{% trans 'Email' %}</label>
+                                <input type="email" class="form-control" placeholder="customer@mtsolution.com.vn"
+                                       name="email" id="employee-email" required>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="employee-phone">{% trans 'Phone' %}</label>
+                                <input type="text" class="form-control" name="phone" id="employee-phone" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label"
+                                       for="employee-permanent_address">{% trans 'Permanent address' %}</label>
+                                <input type="text" class="form-control" name="permanent_address" id="employee-permanent_address">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label"
+                                       for="employee-current_resident">{% trans 'Current resident' %}</label>
+                                <input type="text" class="form-control" name="current_resident" id="employee-current_resident">
                             </div>
                         </div>
                     </div>

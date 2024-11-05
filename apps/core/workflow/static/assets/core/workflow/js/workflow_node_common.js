@@ -421,12 +421,12 @@ class NodeLoadDataHandle {
         let zoneData = NodeLoadDataHandle.loadZoneData();
         for (let key in zoneData) {
             htmlEdit += `<div class="form-check form-check-lg">
-                            <input type="checkbox" class="form-check-input checkbox-zone-edit" data-id="${key}">
-                            <label class="form-check-label zone-title">${zoneData?.[key]}</label>
+                            <input type="checkbox" class="form-check-input checkbox-zone-edit" id="zone-edit-${key}" data-id="${key}">
+                            <label class="form-check-label zone-title" for="zone-edit-${key}">${zoneData?.[key]}</label>
                         </div>`;
             htmlHidden += `<div class="form-check form-check-lg">
-                            <input type="checkbox" class="form-check-input checkbox-zone-hidden" data-id="${key}">
-                            <label class="form-check-label zone-title">${zoneData?.[key]}</label>
+                            <input type="checkbox" class="form-check-input checkbox-zone-hidden" id="zone-hidden-${key}" data-id="${key}">
+                            <label class="form-check-label zone-title" for="zone-hidden-${key}">${zoneData?.[key]}</label>
                         </div>`;
         }
         for (let ele of NodeLoadDataHandle.$modalNode[0].querySelectorAll('.zone-edit')) {

@@ -3,15 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Master Data Item' %}{% endblock %}
 {% block cssHeader %}
-    <style>
-        select, input, textarea {
-            margin-bottom: 10px;
-        }
-    </style>
-    <link
-            href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}"
-            rel="stylesheet" type="text/css"
-    />
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -206,7 +198,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-create-category" data-method="POST" data-url="{% url "ProductCategoryListAPI" %}">
+                    <form id="form-create-product-category" data-method="POST" data-url="{% url "ProductCategoryListAPI" %}">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-lg-3">
@@ -284,13 +276,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-create-unit-measure" data-method="POST" data-url="{% url "UnitOfMeasureListAPI" %}">
+                    <form id="form-create-uom" data-method="POST" data-url="{% url "UnitOfMeasureListAPI" %}">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="select-box-unit-measure-group" class="form-label required">{% trans "Select Group" %}</label>
-                                    <select id="select-box-unit-measure-group" class="select2 form-select" data-method="GET"
+                                    <label for="select-box-uom-group" class="form-label required">{% trans "Select Group" %}</label>
+                                    <select id="select-box-uom-group" class="select2 form-select" data-method="GET"
                                             data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"
                                             data-keyResp="unit_of_measure_group"
                                     ></select>
@@ -309,7 +301,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="inp-code-uom" class="form-label required">{% trans "Code" %}</label>
-                                    <input id="inp-code-uom" class="form-control" type="text" name="code" readonly oninput="this.value=this.value.toUpperCase()">
+                                    <input id="inp-code-uom" class="form-control" type="text" name="code" oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -330,13 +322,13 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="name-unit" class="form-label required">{% trans "Name" %}</label>
-                                    <input required class="form-control" type="text" name="title" readonly id="name-unit">
+                                    <input required class="form-control" type="text" name="title" id="name-unit">
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="form-group">
                                     <label for="inp-rounding" class="form-label required">{% trans "Rounding" %}</label>
-                                    <input class="form-control" type="number" name="rounding" id="inp-rounding" min="0" step="0.001" value="5" readonly>
+                                    <input class="form-control" type="number" name="rounding" id="inp-rounding" min="0" step="0.001" value="5">
                                 </div>
                             </div>
                         </div>
@@ -349,7 +341,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" form="form-create-unit-measure" class="btn btn-primary">{% trans 'Save' %}</button>
+                    <button type="submit" form="form-create-uom" class="btn btn-primary">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>
@@ -365,13 +357,16 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-edit-product-type" data-method="PUT" data-url="{% url "ProductTypeDetailAPI" pk=0 %}">
+                    <form id="form-update-product-type"
+                          data-method="PUT"
+                          data-url-raw="{% url "ProductTypeDetailAPI" pk=0 %}"
+                          data-url="{% url "ProductTypeDetailAPI" pk=0 %}">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-3">
                                 <div class="form-group">
                                     <label for="inp-edit-code-product-type" class="form-label required">{% trans "Code" %}</label>
-                                    <input required class="form-control form-control-line" type="text" name="code" id="inp-edit-code-product-type" oninput="this.value=this.value.toUpperCase()">
+                                    <input readonly class="form-control form-control-line" type="text" name="code" id="inp-edit-code-product-type" oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="col-9">
@@ -391,7 +386,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" form="form-edit-product-type" class="btn btn-primary">{% trans 'Save' %}</button>
+                    <button type="submit" form="form-update-product-type" class="btn btn-primary">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>
@@ -407,13 +402,16 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-edit-product-category" data-method="PUT" data-url="{% url "ProductTypeDetailAPI" pk=0 %}">
+                    <form id="form-update-product-category"
+                          data-method="PUT"
+                          data-url-raw="{% url "ProductCategoryDetailAPI" pk=0 %}"
+                          data-url="{% url "ProductCategoryDetailAPI" pk=0 %}">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-3">
                                 <div class="form-group">
                                     <label for="inp-edit-code-product-category" class="form-label required">{% trans "Code" %}</label>
-                                    <input required class="form-control form-control-line" type="text" name="code" id="inp-edit-code-product-category" oninput="this.value=this.value.toUpperCase()">
+                                    <input readonly class="form-control form-control-line" type="text" name="code" id="inp-edit-code-product-category" oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="col-9">
@@ -433,7 +431,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" form="form-edit-product-category" class="btn btn-primary">{% trans 'Save' %}</button>
+                    <button type="submit" form="form-update-product-category" class="btn btn-primary">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>
@@ -449,13 +447,17 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-edit-uom-group" data-method="PUT" data-url="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}">
+                    <form id="form-update-uom-group"
+                          data-method="PUT"
+                          data-url-raw="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
+                          data-url="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
+                          >
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-3">
                                 <div class="form-group">
-                                    <label for="inp-code-uom-group" class="form-label required">{% trans "Code" %}</label>
-                                    <input required class="form-control form-control-line" type="text" name="code" id="inp-code-uom-group" oninput="this.value=this.value.toUpperCase()">
+                                    <label for="inp-edit-code-uom-group" class="form-label required">{% trans "Code" %}</label>
+                                    <input readonly class="form-control form-control-line" type="text" name="code" id="inp-edit-code-uom-group" oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="col-9">
@@ -469,7 +471,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" class="btn btn-primary" form="form-edit-uom-group">{% trans 'Save' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-update-uom-group">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>
@@ -485,15 +487,18 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-edit-uom" data-method="PUT" data-url="{% url "UnitOfMeasureDetailAPI" pk=0 %}">
+                    <form id="form-update-uom"
+                          data-method="PUT"
+                          data-url-raw="{% url "UnitOfMeasureDetailAPI" pk=0 %}"
+                          data-url="{% url "UnitOfMeasureDetailAPI" pk=0 %}"
+                    >
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-6" id="select-group-div">
                                 <div class="form-group">
                                     <label for="select-box-edit-uom-group" class="form-label required">{% trans "Select Group" %}</label>
-                                    <script id="group-id" disabled hidden></script>
-                                    <select disabled
-                                            class="select2 form-select"
+                                    <input id="group-id" disabled hidden>
+                                    <select class="select2 form-select"
                                             data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
                                             id="select-box-edit-uom-group"
                                             name="group" data-keyResp="unit_of_measure_group">
@@ -513,7 +518,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="inp-code-uom-update" class="form-label required">{% trans "Code" %}</label>
-                                    <input readonly class="form-control form-control-line form-control-line" type="text" name="code" id="inp-code-uom-update">
+                                    <input readonly class="form-control form-control-line" type="text" name="code" id="inp-code-uom-update">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -554,7 +559,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" form="form-edit-uom" class="btn btn-primary">{% trans 'Save' %}</button>
+                    <button type="submit" form="form-update-uom" class="btn btn-primary">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>

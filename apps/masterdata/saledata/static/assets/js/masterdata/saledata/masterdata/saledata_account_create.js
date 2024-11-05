@@ -77,7 +77,6 @@ $(document).ready(function () {
             ],
         })
     }
-
     function loadAccountGroup() {
         let tbl = $('#datatable-account-group-list')
         let frm = new SetupFormSubmit(tbl)
@@ -147,7 +146,6 @@ $(document).ready(function () {
             ],
         })
     }
-
     function loadIndustry() {
         let tbl = $('#datatable-industry-list')
         let frm = new SetupFormSubmit(tbl)
@@ -253,7 +251,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp)
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-new-account-type').modal('hide')
                         $('#modal-new-account-type form')[0].reset()
                         loadAccountType()
@@ -282,7 +280,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp)
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-account-type').modal('hide')
                         $('#modal-update-account-type form')[0].reset()
                         loadAccountType()
@@ -326,7 +324,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp)
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-new-account-group').modal('hide')
                         $('#modal-new-account-group form')[0].reset()
                         loadAccountGroup()
@@ -355,7 +353,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp)
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-account-group').modal('hide')
                         $('#modal-update-account-group form')[0].reset()
                         loadAccountGroup()
@@ -399,7 +397,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp)
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-new-industry').modal('hide')
                         $('#modal-new-industry form')[0].reset()
                         loadIndustry()
@@ -428,7 +426,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp)
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-industry').modal('hide')
                         $('#modal-update-industry form')[0].reset()
                         loadIndustry()

@@ -6,7 +6,7 @@ $(document).ready(function () {
     const $direct_create = $('#direct-create')
     const $direct_btn_group_url = $('#direct-btn-group-url')
 
-    if ($direct_btn_group_url) {
+    if ($direct_btn_group_url.length > 0) {
         $('#btn-group-direct').prop('hidden', false)
     }
     else {

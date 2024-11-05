@@ -5976,6 +5976,9 @@ class QuotationSubmitHandle {
                     if ($(elePrice).attr('data-wh')) {
                         let dataWH = JSON.parse($(elePrice).attr('data-wh'));
                         rowData['warehouse_id'] = dataWH?.['id'];
+                        if (["bom", "standard"].includes(rowData['warehouse_id'])) {
+                            delete rowData['warehouse_id'];
+                        }
                         rowData['warehouse_data'] = dataWH;
                     }
                 }

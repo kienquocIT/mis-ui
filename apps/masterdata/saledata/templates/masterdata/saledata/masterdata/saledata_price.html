@@ -129,20 +129,42 @@
                     </table>
                 </div>
                 <div class="tab-pane fade lookup-data" id="section-payment-terms">
-                    <table id="datatable-payment-terms" class="table nowrap w-100 mb-5"
+                    <div class="row mb-3">
+                        <div class="col-lg-3 col-xs-12">
+                            <button class="btn btn-flush-success" data-bs-toggle="modal" data-bs-target="#modal-add-table" type="button">
+                                <span>
+                                    <span class="icon">
+                                        <i class="far fa-plus-square"></i>
+                                    </span>
+                                    <span>{% trans 'Add new line' %}</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary" type="button" id="btn-save-payment">
+                        <span>
+                            <span>{% trans 'Save' %}</span>
+                            <span class="icon">
+                                <i class="fa-regular fa-floppy-disk"></i>
+                            </span>
+                        </span>
+                    </button>
+                    <table id="datatable-payment-terms" class="table nowrap w-100"
+                           data-method="GET"
                            data-url="{% url "PaymentsTermsListAPI" %}"
-                           data-method="GET" data-redirect="{% url 'PriceMasterDataList' %}#section-payment-terms"
-                    >
+                           data-redirect="{% url 'PriceMasterDataList' %}">
                         <thead>
-                            <th>#</th>
-                            <th>{% trans "Name" %}
-                                <i class="fas fa-info-circle icon-info"
-                                   data-bs-toggle="tooltip" data-bs-placement="bottom" title=""
-                                   data-bs-original-title="{% trans 'Click on title to move detail page.' %}."></i>
-                            </th>
-                            <th>{% trans 'Code' %}</th>
-                            <th>{% trans "Transaction Type" %}</th>
-                            <th></th>
+                            <tr>
+                                <th></th>
+                                <th>{% trans "Name" %}
+                                    <i class="fas fa-info-circle icon-info"
+                                       data-bs-toggle="tooltip" data-bs-placement="bottom" title=""
+                                       data-bs-original-title="{% trans 'Click on title to move detail page.' %}."></i>
+                                </th>
+                                <th>{% trans 'Code' %}</th>
+                                <th>{% trans "Transaction Type" %}</th>
+                                <th></th>
+                            </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -187,35 +209,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-lg-3 col-xs-12">
-                                <button
-                                        class="btn btn-flush-success"
-                                        data-bs-toggle="modal" data-bs-target="#modal-add-table"
-                                        type="button"
-                                >
-                                    <span><span class="icon"><i class="far fa-plus-square"></i></span><span>{% trans 'Add new line' %}</span></span>
-                                </button>
-                            </div>
-                        </div>
-                        <button class="btn btn-outline-primary" type="button" id="btn-save-payment" style="display: none">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
-            </span>
-        </span>
-    </button>
-                        <a href="#" id="btn-back-payment" style="display: none">
-                            <button class="btn btn-outline-primary">
-                            <span>
-                                <span>{% trans 'Add' %}</span>
-                                <span class="icon">
-                                    <i class="fa-solid fa-plus"></i>
-                                </span>
-                            </span>
-                            </button>
-                        </a>
                         <div class="row">
                             <table id="table_terms" class="table nowrap w-100 mb-5">
                                 <thead>
@@ -486,11 +479,7 @@
         </div>
     </div>
 
-
-
-    <div class="modal fade" id="modal-add-table" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalCenter"
-         aria-hidden="true">
+    <div class="modal fade" id="modal-add-table" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -501,30 +490,27 @@
                 </div>
                 <div class="modal-body">
                     <form method="get">
-                        <div class="invalid-feedback text-danger mb-2">
-                        </div>
+                        <div class="invalid-feedback text-danger mb-2"></div>
                         <div class="row">
                             <div class="form-group col-6">
-                                <label class="form-label">{% trans "Unit Type" %}</label>
+                                <label for="select-box-unit-type" class="form-label">{% trans "Unit Type" %}</label>
                                 <select class="form-select" id="select-box-unit-type" name="unit_type" required>
                                     <option value="" disabled selected hidden>{% trans 'Select option' %}...</option>
                                     {% for u in data.pay_terms_unit %}
                                         <option value="{{ u.value }}">{{ u.text }}</option>
                                     {% endfor %}
                                 </select>
-
                             </div>
                             <div class="form-group col-6">
                                 <label class="form-label">{% trans "Value" %}</label>
-                                <input class="form-control" type="text" name="value"
-                                       placeholder="40">
+                                <input class="form-control" type="text" name="value" placeholder="40">
                                 <input name="value_amount" placeholder="40,000" type="text"
                                        class="form-control mask-money hidden" data-return-type="text">
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-6">
-                                <label class="form-label">{% trans "Day Type" %}</label>
+                                <label for="select-box-day-type" class="form-label">{% trans "Day Type" %}</label>
                                 <select class="form-select" id="select-box-day-type" name="day_type" required>
                                     <option value="" disabled selected hidden>{% trans 'Select option' %}...</option>
                                     {% for t in data.pay_teams_type %}
@@ -542,7 +528,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">{% trans "After" %}</label>
+                            <label for="select-box-after" class="form-label">{% trans "After" %}</label>
                             <select id="select-box-after" class="form-select" name="after" required>
                                 <option value="" disabled selected hidden>{% trans 'Select option' %}...</option>
                                 {% for a in data.pay_teams_after %}
@@ -553,14 +539,14 @@
                         <input type="hidden" id="is_edited">
                     </form>
                     <div class="modal-footer">
-                        <button type="reset" class="btn btn-secondary"
-                                data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                         <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <input type="hidden" id="trans-factory"
            data-terms-value="{% trans 'Value is required!' %}"
            data-terms-day_type="{% trans 'Day type is required!' %}"
@@ -578,8 +564,7 @@
            data-trans-sale="{% trans 'Sale' %}"
            data-trans-purchase="{% trans 'Purchase' %}"
     >
-    <input type="hidden" id="url-factory"
-           data-detail="{% url 'PaymentsTermsDetailAPI' 1 %}">
+    <input type="hidden" id="url-factory" data-detail="{% url 'PaymentsTermsDetailAPI' 1 %}">
 {% endblock %}
 {% block jsFooter %}
     <!-- Select2 -->

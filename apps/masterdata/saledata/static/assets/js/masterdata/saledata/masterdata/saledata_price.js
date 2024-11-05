@@ -2,6 +2,18 @@ let term_type_list = [];
 let PercentCount = 0;
 let $transElm = $('#trans-factory');
 $(document).ready(function () {
+    function loadBaseCurrency() {
+        let ele = $('#currency_name');
+        ele.initSelect2({
+            data: {},
+            templateResult: function (state) {
+                return $(`<span>${state.data?.code} - ${state.text}</span>`);
+            },
+        }).on('change', function () {
+            let currency = SelectDDControl.get_data_from_idx($(this), $(this).val());
+            $('#abbreviation-id').val(currency.code);
+        })
+    }
     function loadCurrency() {
         let tbl = $('#datatable-currency');
         let frm = new SetupFormSubmit(tbl);
@@ -141,7 +153,7 @@ $(document).ready(function () {
                         if (row?.['is_default']) {
                             return ``
                         } else {
-                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail btn-update-tax-category"
+                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-tax-category"
                                        data-id="${row?.['id']}"
                                        data-code="${row?.['code']}"
                                        data-title="${row?.['title']}"
@@ -257,7 +269,39 @@ $(document).ready(function () {
         });
     }
 
+    loadBaseCurrency()
+    loadCurrency()
+    loadTax()
+    loadTaxCategory()
+
     let form_create_currency = $('#form-create-currency')
+
+    $(document).on("click", '#sync-from-VCB-button', function () {
+        $('#datatable-currency tbody tr td:nth-child(4)').each(function () {
+            if ($(this).find('span').hasClass('badge') === false) {
+                $(this).html('<div class="spinner-border text-primary" role="status" style="height: 15px; width: 15px;"></div>');
+            }
+        });
+        $.fn.callAjax2({
+            'url': $(this).attr('data-url'),
+            'method': 'PUT',
+            'data': {'name': '1'}
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    console.log(data)
+                    $.fn.notifyB({description: 'Sync successfully!'}, 'success');
+                    setTimeout(function () {
+                        $('#datatable-currency').DataTable().ajax.reload();
+                    }, 0);
+                }
+            },
+            (errs) => {
+                $.fn.notifyB({description: 'Sync Failed!'}, 'failure');
+            }
+        )
+    });
 
     new SetupFormSubmit(form_create_currency).validate({
         rules: {
@@ -372,6 +416,19 @@ $(document).ready(function () {
 
     let form_create_tax = $('#form-create-tax')
     let form_update_tax = $('#form-update-tax')
+
+    $('#select-box-type').initSelect2({
+        data: [
+            {
+                'id': '0',
+                'title': $transElm.data('trans-sale'),
+            },
+            {
+                'id': '1',
+                'title': $transElm.data('trans-purchase'),
+            }
+        ]
+    })
 
     $(document).on('click', '.btn-update-tax', function () {
         let raw_url = form_update_tax.attr('data-url-raw')
@@ -504,101 +561,6 @@ $(document).ready(function () {
             )
         }
     })
-
-
-    $('#btn-back-payment').on('click', function () {
-        $('#btn-save-payment').hide();
-        $(this).hide();
-        $('#section-payment-terms').show();
-        $('#section-create-payment-terms').hide();
-        $('#btn-show-modal-create').show();
-    })
-
-    $('#select-box-category-create').initSelect2();
-
-    // load Base Currency (Master data)
-    function loadBaseCurrency() {
-        let ele = $('#currency_name');
-        ele.initSelect2({
-            data: {},
-            templateResult: function (state) {
-                return $(`<span>${state.data?.code} - ${state.text}</span>`);
-            },
-        }).on('change', function () {
-            let currency = SelectDDControl.get_data_from_idx($(this), $(this).val());
-            $('#abbreviation-id').val(currency.code);
-        })
-    }
-
-    loadBaseCurrency()
-    loadCurrency()
-    loadTax()
-    loadTaxCategory()
-
-    $('#select-box-type').initSelect2({
-        data: [
-            {
-                'id': '0',
-                'title': $transElm.data('trans-sale'),
-            },
-            {
-                'id': '1',
-                'title': $transElm.data('trans-purchase'),
-            }
-        ]
-    })
-
-    let url_detail = ''
-
-// show detail currency
-    $(document).on('click', '#datatable-currency .btn-detail', function () {
-        $('#currency-title').closest('div').find('span').text('*')
-        $('#currency-abbreviation').closest('div').find('span').text('*')
-        url_detail = $('#form-update-currency').attr('data-url').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency')) {
-                        $('#currency-title').val(data.currency.title);
-                        $('#currency-abbreviation').val(data.currency.abbreviation);
-                        $('#currency-rate').val(data.currency.rate);
-                    }
-                }
-            })
-    })
-
-
-    // sync selling rate from VietComBank
-    $(document).on("click", '#sync-from-VCB-button', function () {
-        $('#datatable-currency tbody tr td:nth-child(4)').each(function () {
-            if ($(this).find('span').hasClass('badge') === false) {
-                $(this).html('<div class="spinner-border text-primary" role="status" style="height: 15px; width: 15px;"></div>');
-            }
-        });
-        $.fn.callAjax2({
-            'url': $(this).attr('data-url'),
-            'method': 'PUT',
-            'data': {'name': '1'}
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    console.log(data)
-                    $.fn.notifyB({description: 'Sync successfully!'}, 'success');
-                    setTimeout(function () {
-                        $('#datatable-currency').DataTable().ajax.reload();
-                    }, 0);
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: 'Sync Failed!'}, 'failure');
-            }
-        )
-    });
 
     // PAYMENTS TERMS handle
 
@@ -998,7 +960,6 @@ $(document).ready(function () {
         $modalForm.removeClass('was-validate');
         $modalForm.find('.form-select').removeClass('is-invalid')
     })
-
     // form create submit
     $('#btn-save-payment').off().on('click', function () {
         let $form = $('#form-create-payment-term')

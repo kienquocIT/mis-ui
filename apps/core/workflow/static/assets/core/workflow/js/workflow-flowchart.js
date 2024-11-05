@@ -394,21 +394,13 @@ class JSPlumbsHandle {
                     let temp = that_cls.getCommitNode
                     temp[numID] = DEFAULT_NODE_LIST[numID]
                     that_cls.setCommitNodeList = temp
-
-                    // handle event on click node
-                    // $('#' + is_id).off().on("mousedown", function (evt) {
-                    //     _MOUSE_POSITION = evt.pageX + evt.pageY
-                    // }).on("mouseup", function (evt) {
-                    //     let temp = evt.pageX + evt.pageY;
-                    //     if (_MOUSE_POSITION === temp) eventNodeClick(evt)
-                    // })
                 }
 
             });
 
             // check if workflow detail or edit page show flowchart
             let $form = $('#form-create_workflow');
-            if (['GET', 'PUT'].includes($form.attr('data-method'))) {
+            if (['get', 'put'].includes($form.attr('data-method').toLowerCase())) {
                 instance.doWhileSuspended(function () {
                     $('#flowchart_workflow .clone').each(function () {
                         let is_id = $(this).attr('id')
@@ -474,13 +466,6 @@ class JSPlumbsHandle {
 
                         // disable node drag in left side
                         numID.draggable("disable");
-                        // add event click for node of right side
-                        // $('#' + is_id).off().on("mousedown", function (evt) {
-                        //     _MOUSE_POSITION = evt.pageX + evt.pageY
-                        // }).on("mouseup", function (evt) {
-                        //     let temp = evt.pageX + evt.pageY;
-                        //     if (_MOUSE_POSITION === temp) eventNodeClick(evt)
-                        // })
                     })
                 }) // end do while suspended
 

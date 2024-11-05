@@ -121,7 +121,7 @@ class NodeLoadDataHandle {
         NodeLoadDataHandle.loadDDAction();
         NodeLoadDataHandle.loadActionShow();
         NodeLoadDataHandle.loadZone();
-        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxSource, NodeLoadDataHandle.dataSource, {}, NodeLoadDataHandle.$modalNode);
+        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxSource, NodeLoadDataHandle.dataSource);
 
         NodeDataTableHandle.dataTableCollabOutFormEmployee(JSON.parse(NodeLoadDataHandle.$initEmp.val()));
         NodeDataTableHandle.dataTableCollabInWFEmployee();
@@ -343,8 +343,8 @@ class NodeLoadDataHandle {
             let nodeAction = JSON.parse(txtAction);
             for (let key in nodeAction) {
                 htmlActions += `<div class="form-check form-check-lg">
-                                    <input type="checkbox" class="form-check-input checkbox-action" data-id="${key}">
-                                    <label class="form-check-label action-title">${nodeAction[key]}</label>
+                                    <input type="checkbox" class="form-check-input checkbox-action" id="action-${key}" data-id="${key}">
+                                    <label class="form-check-label action-title" for="action-${key}">${nodeAction[key]}</label>
                                 </div>`;
             }
             $ele.empty().append(`<div data-simplebar class="nicescroll-bar">${htmlActions}</div>`);
@@ -719,7 +719,7 @@ class NodeDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span>`;
+                        return `<span class="badge badge-light badge-outline">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span>`;
                     }
                 },
                 {
@@ -727,7 +727,7 @@ class NodeDataTableHandle {
                     render: (data, type, row) => {
                         if (row.hasOwnProperty('role') && Array.isArray(row?.['role'])) {
                             let result = [];
-                            row?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-pink mb-1 mr-1">` + item?.['title'] + `</span>`) : null);
+                            row?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-light badge-outline mb-1 mr-1">` + item?.['title'] + `</span>`) : null);
                             return result.join(" ");
                         }
                         return '';
@@ -772,7 +772,7 @@ class NodeDataTableHandle {
                             if (dataEmp) {
                                 if (dataEmp.hasOwnProperty('role') && Array.isArray(dataEmp?.['role'])) {
                                     let result = [];
-                                    dataEmp?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-soft-pink mb-1 mr-1">${item?.['title']}</span>`) : null);
+                                    dataEmp?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-light badge-outline mb-1 mr-1">${item?.['title']}</span>`) : null);
                                     return result.join(" ");
                                 }
                             }

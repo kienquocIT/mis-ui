@@ -594,31 +594,38 @@ class NodeLoadDataHandle {
     };
 
     static loadExitConDefault() {
-        if (NodeDataTableHandle.$tableInWF.DataTable().data().count() > 0) {
-            NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
-                let row = this.node();
-                if (row.querySelector('.table-row-action') && row.querySelector('.table-row-min-collab')) {
-                    if (row.querySelector('.table-row-action').getAttribute('data-row')) {
-                        let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
-                        if (dataRow?.['action'] === 1) {
-                            $(row.querySelector('.table-row-min-collab')).val(String(NodeDataTableHandle.$tableInWF.DataTable().data().count())).trigger('change');
-                        }
-                    }
-                }
-            });
-            NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
-                let row = this.node();
-                if (row.querySelector('.table-row-action') && row.querySelector('.table-row-min-collab')) {
-                    if (row.querySelector('.table-row-action').getAttribute('data-row')) {
-                        let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
-                        if (dataRow?.['action'] === 2) {
-                            let value = NodeDataTableHandle.$tableInWF.DataTable().data().count() + 1 - NodeDataTableHandle.$tableInWF.DataTable().data().count();
-                            $(row.querySelector('.table-row-min-collab')).val(String(value)).trigger('change');
-                        }
-                    }
-                }
-            });
+        let approvedVal = 0;
+        let rejectedVal = 0;
+        if (NodeDataTableHandle.$tableInWF.DataTable().data().count() === 0) {
+            approvedVal = 0;
+            rejectedVal = 0;
         }
+        if (NodeDataTableHandle.$tableInWF.DataTable().data().count() > 0) {
+            approvedVal = NodeDataTableHandle.$tableInWF.DataTable().data().count();
+            rejectedVal = NodeDataTableHandle.$tableInWF.DataTable().data().count() + 1 - NodeDataTableHandle.$tableInWF.DataTable().data().count();
+        }
+        NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.table-row-action') && row.querySelector('.table-row-min-collab')) {
+                if (row.querySelector('.table-row-action').getAttribute('data-row')) {
+                    let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
+                    if (dataRow?.['action'] === 1) {
+                        $(row.querySelector('.table-row-min-collab')).val(String(approvedVal)).trigger('change');
+                    }
+                }
+            }
+        });
+        NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.table-row-action') && row.querySelector('.table-row-min-collab')) {
+                if (row.querySelector('.table-row-action').getAttribute('data-row')) {
+                    let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
+                    if (dataRow?.['action'] === 2) {
+                        $(row.querySelector('.table-row-min-collab')).val(String(rejectedVal)).trigger('change');
+                    }
+                }
+            }
+        });
         return true;
     }
 
@@ -844,9 +851,8 @@ class NodeDataTableHandle {
                     targets: 4,
                     render: () => {
                         return `<div class="actions-btn">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover edit-row-in-wf-emp" hidden><span class="icon"><i class="far fa-edit"></i></span></button>
-                                    <button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover del-row-in-wf-emp"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>
-                                </div>`
+                                    <button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>
+                                </div>`;
                     }
                 },
             ],
@@ -1069,7 +1075,7 @@ function filterFieldList(field_list, data_json) {
     return data_json;
 }
 
-function deleteWFNodeRowTable(currentRow, $table) {
+function delWFNodeRowTable(currentRow, $table) {
     // Get the index of the current row within the DataTable
     let rowIndex = $table.DataTable().row(currentRow).index();
     let row = $table.DataTable().row(rowIndex);

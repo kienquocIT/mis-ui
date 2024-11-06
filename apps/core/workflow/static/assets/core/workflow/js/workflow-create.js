@@ -183,6 +183,11 @@ $(function () {
             NodeLoadDataHandle.loadCheckZone(this);
         });
 
+        NodeLoadDataHandle.$modalNode.on('click', '.del-row', function () {
+            delWFNodeRowTable(this.closest('tr'), NodeDataTableHandle.$tableInWF);
+            NodeLoadDataHandle.loadExitConDefault();
+        });
+
         NodeLoadDataHandle.$modalNode.on('click', '.btn-save-in-workflow-employee', function () {
             NodeLoadDataHandle.loadInWFShow();
         });

@@ -1032,6 +1032,10 @@ class NodeSubmitHandle {
         for (let node of NodeLoadDataHandle.dataNode) {
             let txt = NodeLoadDataHandle.transEle.attr('data-complete-node') + " (" + node?.['title'] + ")";
             if (node?.['is_system'] === false) {
+                if (node?.['actions'].length <= 0) {
+                    $.fn.notifyB({description: txt}, 'failure');
+                    return false;
+                }
                 if (node?.['option_collaborator'] === 1) {
                     if (node?.['collab_out_form']?.['employee_list']) {
                         if (node?.['collab_out_form']?.['employee_list'].length <= 0) {

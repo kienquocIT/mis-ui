@@ -882,14 +882,14 @@ $(function () {
         }
 
          function submitForm(formSubmit) {
-            let is_sale_order = false;
-            if (formSubmit[0].classList.contains('sale-order')) {
-                is_sale_order = true;
-            }
-            let _form = new SetupFormSubmit(formSubmit);
+             let is_sale_order = false;
+             if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                 is_sale_order = true;
+             }
+             let _form = new SetupFormSubmit(formSubmit);
             // Load again indicator when Submit
             indicatorHandle.loadIndicator();
-            let result = QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+            let result = QuotationSubmitHandle.setupDataSubmit(_form);
             if (result === false) {
                 return false;
             }
@@ -899,12 +899,12 @@ $(function () {
                     // special case: loadCost if products is not in hidden zones
                     if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
                         QuotationLoadDataHandle.loadDataTableCost();
-                        QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+                        QuotationSubmitHandle.setupDataSubmit(_form);
                         QuotationLoadDataHandle.loadSetWFRuntimeZone();
                     }
                 } else {
                     QuotationLoadDataHandle.loadDataTableCost();
-                    QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+                    QuotationSubmitHandle.setupDataSubmit(_form);
                 }
             }
             let submitFields = [
@@ -913,6 +913,7 @@ $(function () {
                 'customer',
                 'customer_data',
                 'contact',
+                'contact_data',
                 'employee_inherit_id',
                 'payment_term',
                 'payment_term_data',
@@ -958,7 +959,9 @@ $(function () {
                     'title',
                     'opportunity_id',
                     'customer',
+                    'customer_data',
                     'contact',
+                    'contact_data',
                     'employee_inherit_id',
                     'payment_term',
                     'payment_term_data',

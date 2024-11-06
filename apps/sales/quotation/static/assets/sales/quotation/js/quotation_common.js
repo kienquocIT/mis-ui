@@ -1584,12 +1584,12 @@ class QuotationLoadDataHandle {
                                     costBom = data.bom_order_list[0]?.['sum_price'];
 
                                     if (elePrice) {
-                                        elePrice.setAttribute('disabled', 'true');
+                                        // elePrice.setAttribute('disabled', 'true');
                                         $(elePrice).attr('value', String(data.bom_order_list[0]?.['sum_price']));
                                         QuotationLoadDataHandle.loadSetWFRuntimeZone();
                                         $.fn.initMaskMoney2();
                                         if (btnSCost) {
-                                            btnSCost.setAttribute('disabled', 'true');
+                                            // btnSCost.setAttribute('disabled', 'true');
                                         }
                                     }
                                 }
@@ -1975,9 +1975,8 @@ class QuotationLoadDataHandle {
             }
             QuotationLoadDataHandle.loadBoxQuotationCustomer(data?.['customer']);
         }
-        if (data?.['contact']) {
-            data['contact']['fullname'] = data['contact']['title'];
-            QuotationLoadDataHandle.loadBoxQuotationContact(data?.['contact']);
+        if (data?.['contact_data']) {
+            QuotationLoadDataHandle.loadBoxQuotationContact(data?.['contact_data']);
         }
         if (data?.['payment_term_data']) {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term_data'])
@@ -4202,7 +4201,7 @@ class indicatorHandle {
         if (formSubmit[0].classList.contains('sale-order')) {
             is_sale_order = true;
         }
-        QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order, 1);
+        QuotationSubmitHandle.setupDataSubmit(_form, 1);
         let data_form = _form.dataForm;
         let dataDetailCopy = {};
         let eleDetailCopy = $('#data-copy-quotation-detail');
@@ -4225,7 +4224,7 @@ class indicatorHandle {
                 // special case: tab cost depend on tab detail
                 if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
                     QuotationLoadDataHandle.loadDataTableCost();
-                    QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order, 1);
+                    QuotationSubmitHandle.setupDataSubmit(_form, 1);
                     data_form = _form.dataForm;
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
@@ -6231,7 +6230,11 @@ class QuotationSubmitHandle {
         return result;
     };
 
-    static setupDataSubmit(_form, is_sale_order = false, type = 0) {
+    static setupDataSubmit(_form, type = 0) {
+        let is_sale_order = false;
+        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+            is_sale_order = true;
+        }
         let quotation_products_data = 'quotation_products_data';
         let quotation_costs_data = 'quotation_costs_data';
         let quotation_expenses_data = 'quotation_expenses_data';
@@ -6257,6 +6260,13 @@ class QuotationSubmitHandle {
             if (data) {
                 _form.dataForm['customer'] = data?.['id'];
                 _form.dataForm['customer_data'] = data;
+            }
+        }
+        if (QuotationLoadDataHandle.contactSelectEle.val()) {
+            let data = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.contactSelectEle, QuotationLoadDataHandle.contactSelectEle.val());
+            if (data) {
+                _form.dataForm['contact'] = data?.['id'];
+                _form.dataForm['contact_data'] = data;
             }
         }
         if (type === 0) {

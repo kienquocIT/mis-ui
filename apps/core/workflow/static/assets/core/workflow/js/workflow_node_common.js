@@ -1060,6 +1060,10 @@ class NodeSubmitHandle {
     static setupDataSubmit() {
         for (let node of NodeLoadDataHandle.dataNode) {
             let txt = NodeLoadDataHandle.transEle.attr('data-complete-node') + " (" + node?.['title'] + ")";
+            if (node?.['title'] === "") {
+                $.fn.notifyB({description: txt}, 'failure');
+                return false;
+            }
             if (node?.['is_system'] === false) {
                 if (node?.['actions'].length <= 0) {
                     $.fn.notifyB({description: txt}, 'failure');

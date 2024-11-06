@@ -928,13 +928,36 @@ class NodeStoreHandle {
                     for (let i = 0; i < NodeLoadDataHandle.dataNode.length; i++) {
                         if (NodeLoadDataHandle.dataNode[i]?.['order'] === parseInt(NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-order'))) {
                             let data = NodeStoreHandle.storeSetup();
-                            if (NodeLoadDataHandle.dataNode[i]?.['order'] === 1) {
+                            if (NodeLoadDataHandle.dataNode[i]?.['order'] === 1) {  // initial node
                                 if (data?.['actions'])
                                 NodeLoadDataHandle.dataNode[i]['actions'] = data?.['actions'];
                             }
-                            if (NodeLoadDataHandle.dataNode[i]?.['order'] > 1) {
+                            if (NodeLoadDataHandle.dataNode[i]?.['order'] > 1) {  // custom node
+                                let isEditTitle = false;
+                                if (NodeLoadDataHandle.dataNode[i]?.['title'] !== data?.['title']) {
+                                    isEditTitle = true;
+                                }
+
                                 NodeLoadDataHandle.dataNode[i] = data;
                                 NodeLoadDataHandle.dataNode[i]['order'] = parseInt(NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-order'));
+
+                                // if edit title then change node's title in left & right of flowchart
+                                if (isEditTitle === true) {
+                                    let $dragBox = $('#node_dragbox');
+                                    let control = $dragBox[0].querySelector(`.control[data-drag="${NodeLoadDataHandle.dataNode[i]['order']}"]`);
+                                    if (control) {
+                                        if (control.querySelector('.drag-title')) {
+                                            control.querySelector('.drag-title').innerHTML = NodeLoadDataHandle.dataNode[i]['title'];
+                                        }
+                                    }
+                                    let $flowchart = $('#flowchart_workflow');
+                                    let clone = $flowchart[0].querySelector(`.clone[data-drag="${NodeLoadDataHandle.dataNode[i]['order']}"]`);
+                                    if (clone) {
+                                        if (clone.querySelector('.drag-title')) {
+                                            clone.querySelector('.drag-title').innerHTML = NodeLoadDataHandle.dataNode[i]['title'];
+                                        }
+                                    }
+                                }
                             }
                             break;
                         }

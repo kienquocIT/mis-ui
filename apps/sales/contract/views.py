@@ -89,6 +89,7 @@ class ContractApprovalDetail(View):
     def get(self, request, pk, *args, **kwargs):
         return {
                    'data': {'doc_id': pk},
+                   'input_mapping_properties': InputMappingProperties.CONTRACT_APPROVAL_DATA_MAP,
                }, status.HTTP_200_OK
 
 

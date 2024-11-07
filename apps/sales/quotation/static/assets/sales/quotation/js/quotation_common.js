@@ -426,7 +426,7 @@ class QuotationLoadDataHandle {
             data: dataDD,
         });
         // add css to select2_rendered
-        QuotationLoadDataHandle.loadCssS2($ele, '230px');
+        QuotationLoadDataHandle.loadCssS2($ele, '260px');
     };
 
     static loadBtnAddProductS2(row) {
@@ -730,7 +730,7 @@ class QuotationLoadDataHandle {
         QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
         QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
         // add css to select2_rendered
-        QuotationLoadDataHandle.loadCssS2($(newRow.querySelector('.table-row-item')), '230px');
+        QuotationLoadDataHandle.loadCssS2($(newRow.querySelector('.table-row-item')), '260px');
 
         $(newRow.querySelector('.table-row-item')).trigger('change');
         $(newRow.querySelector('.table-row-item')).attr('data-product-id', data?.['id']);
@@ -1100,6 +1100,7 @@ class QuotationLoadDataHandle {
                 $(row).find('td:eq(1)').attr('colspan', 2);
             }
             if (row.querySelector('.table-row-item')) {
+                QuotationLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '260px');
                 QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
@@ -2234,6 +2235,7 @@ class QuotationLoadDataHandle {
                     if (table[0].id === "datable-quotation-create-product") {  // PRODUCT
                         if (row.querySelector('.table-row-item')) {
                             QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
+                            QuotationLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '260px');
                             QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                         }
                     }
@@ -2365,8 +2367,9 @@ class QuotationLoadDataHandle {
             ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.btn-select-price')) {
-            ele.setAttribute('disabled', 'true');
+            ele.removeAttribute('disabled');
         }
+        QuotationLoadDataHandle.$btnSavePrice[0].setAttribute('disabled', 'true');
         for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
             ele.setAttribute('disabled', 'true');
         }
@@ -2450,7 +2453,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '17%',
+                    width: '18%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
@@ -2506,7 +2509,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '12%',
+                    width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2575,7 +2578,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '17%',
+                    width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2681,7 +2684,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '14%',
+                    width: '12%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2705,7 +2708,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: '1.30208333333%',
+                    width: '1%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2720,6 +2723,9 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
+            },
         });
     };
 

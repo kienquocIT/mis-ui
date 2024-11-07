@@ -1,4 +1,4 @@
-$(document).ready(function() {
+// $(document).ready(function() {
     const trans_script = $('#trans-script')
     const url_script = $('#url-script')
     const control_acc = $('#control-acc')
@@ -95,12 +95,12 @@ $(document).ready(function() {
                         className: 'wrap-text w-20',
                         render: (data, type, row) => {
                             let expand_btn = `<button data-acc-id="${row?.['id']}" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm btn-collapse-acc-sub-list">
-                    <span class="icon"><i class="bi bi-caret-down-fill"></i></span>
-                </button>`
+                                <span class="icon"><i class="bi bi-caret-down-fill"></i></span>
+                            </button>`
                             return `
-                    <span data-root-id="${row?.['parent_account'] ? row?.['parent_account'] : ''}" class="text-primary ${row?.['parent_account'] ? `ml-${(row?.['level'] - 1) * 2}` : 'fw-bold'}">${row?.['acc_code'] ? row?.['acc_code'] : ''}</span>
-                    ${row?.['parent_account'] ? '' : expand_btn}
-                `;
+                                <span data-root-id="${row?.['parent_account'] ? row?.['parent_account'] : ''}" class="text-primary fw-bold ${row?.['parent_account'] ? `ml-${(row?.['level'] - 1) * 3}` : ''}">${row?.['acc_code'] ? row?.['acc_code'] : ''}</span>
+                                ${row?.['has_child'] ? expand_btn : ''}
+                            `;
                         }
                     },
                     {
@@ -127,11 +127,12 @@ $(document).ready(function() {
                     {
                         className: 'wrap-text text-right w-10',
                         render: (data, type, row) => {
-                            let drag_btn = `<a class="btn btn-icon btn-flush-secondary btn-rounded flush-soft-hover drag-handle">
-                               <span class="btn-icon-wrap drag-handle"><span class="feather-icon text-secondary drag-handle">
-                                   <i class="fas fa-grip-horizontal drag-handle"></i>
-                               </span></span>
-                            </a>`
+                            // let drag_btn = `<a class="btn btn-icon btn-flush-secondary btn-rounded flush-soft-hover drag-handle">
+                            //    <span class="btn-icon-wrap drag-handle"><span class="feather-icon text-secondary drag-handle">
+                            //        <i class="fas fa-grip-horizontal drag-handle"></i>
+                            //    </span></span>
+                            // </a>`
+                            let drag_btn = ''
                             return `${row?.['parent_account'] ? drag_btn : ''}
                                     <a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-detail-account"
                                        data-bs-toggle="modal"
@@ -274,6 +275,11 @@ $(document).ready(function() {
 
     InitTable(list_table[0], {'acc_type': 1}, url_script.attr('data-url-get-account-list'), 'GET')
 
+    $('.list-group-item').on('click', function () {
+        let index = parseInt($(this).attr('id').split('-')[1])
+        InitTable(list_table[index-1], {'acc_type': index}, url_script.attr('data-url-get-account-list'), 'GET')
+    })
+
     $(document).on('click', '.btn-collapse-acc-sub-list', function () {
         $(`span[data-root-id="${$(this).attr('data-acc-id')}"]`).closest('tr').toggleClass('hidden')
         if ($(this).find('i').attr('class') === 'bi bi-caret-up-fill') {
@@ -331,4 +337,4 @@ $(document).ready(function() {
     account_select.on('change', function () {
         control_acc.prop('disabled', !$(this).prop('checked'))
     })
-})
+// })

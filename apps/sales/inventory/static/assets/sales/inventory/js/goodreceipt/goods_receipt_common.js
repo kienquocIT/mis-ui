@@ -1870,7 +1870,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '17%',
+                    width: '18%',
                     render: (data, type, row) => {
                         return `<div class="row table-row-item-area">
                                         <div class="col-12 col-md-12 col-lg-12">
@@ -1881,7 +1881,7 @@ class GRDataTableHandle {
                                                 data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
                                                 data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
                                                 data-keyResp="product_sale_list"
-                                                disabled
+                                                readonly
                                             >
                                             </select>
                                         </div>
@@ -1890,7 +1890,7 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '12%',
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : ''}</textarea></div>`;
                     }

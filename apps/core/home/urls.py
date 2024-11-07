@@ -7,6 +7,7 @@ from apps.core.home.views import (
     DocPinedListAPI, DocPinedDetailAPI,
     GatewayMiddleListView, GatewayMiddleDetailView, GatewayViewNameListView, GatewayViewNameParseView, DefaultDataView,
     OutLayoutNotFoundView, OutLayoutServerOff, ResolveNotifyItemAPI, GatewayPKMiddleDetailView, HomeCalendarAPI,
+    GatewayMiddleCreateView,
 )
 
 urlpatterns = [
@@ -29,6 +30,10 @@ urlpatterns = [
     path('gateway/reverse-url/views', GatewayViewNameListView.as_view(), name='GatewayViewNameListView'),
     path(
         'gateway/reverse-url/view/<str:view_name>', GatewayViewNameParseView.as_view(), name='GatewayViewNameParseView'
+    ),
+    path(
+        'gateway/reverse-url/create/<str:plan>/<str:app>', GatewayMiddleCreateView.as_view(),
+        name='GatewayMiddleCreateView'
     ),
     path(
         'gateway/reverse-url/list/<str:plan>/<str:app>', GatewayMiddleListView.as_view(),

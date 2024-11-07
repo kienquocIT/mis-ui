@@ -46,4 +46,7 @@ PAYMENT_DATA_MAP = {
     'attachment': FieldMapCommon(
         name_mapping=['attachment'],
     ).data,
+    'payment_value': FieldMapCommon(
+        name_mapping=['payment_value'],
+    ).data,
 }

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.http import HttpResponseNotAllowed
 from django.utils import translation
 
 
@@ -27,15 +28,11 @@ class CustomMiddleware:
         # One-time configuration and initialization.
 
     def __call__(self, request):
+        if request.method not in ['GET', 'POST', 'PUT', 'DELETE']:
+            return HttpResponseNotAllowed([])
+
         self.process_request(request)
-
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
         response = self.get_response(request)
-
-        # Code to be executed for each request/response after
-        # the view is called.
-
         return response
 
     @classmethod
@@ -45,6 +42,3 @@ class CustomMiddleware:
         else:
             language = header_language(request)
         translation.activate(language)
-
-    # def process_exception(self, request, exception):
-    #     ...

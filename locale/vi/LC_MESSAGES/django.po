@@ -99,11 +99,11 @@ msgstr "Chọn công ty của bạn"
 
 #
 msgid "Phone"
-msgstr "Số Điện Thoại"
+msgstr "SĐT"
 
 #
 msgid "Contact to phone number"
-msgstr "Số điện thoại liên lạc"
+msgstr "SĐT liên lạc"
 
 #
 msgid "User Name"
@@ -392,11 +392,11 @@ msgstr "Email của người đại diện"
 
 #
 msgid "Phone Number"
-msgstr "Số Điện Thoại"
+msgstr "SĐT"
 
 #
 msgid "Phone number of Representative"
-msgstr "Số điện thoại của người đại diện"
+msgstr "SĐT của người đại diện"
 
 #
 msgid "Add"
@@ -1416,7 +1416,7 @@ msgstr "Chức danh"
 
 #
 msgid "Phone number"
-msgstr "Số điện thoại"
+msgstr "SĐT"
 
 #
 msgid "Email address"
@@ -1789,7 +1789,7 @@ msgstr "Chỉnh sửa Danh xưng"
 
 #
 msgid "Tax Category"
-msgstr "Loại thuế"
+msgstr "Danh mục thuế"
 
 #
 msgid "Selling rate"
@@ -2601,15 +2601,15 @@ msgstr "Tạo tài khoản"
 
 #
 msgid "Master Data Contact"
-msgstr "Liên hệ dùng chung"
+msgstr "Dữ liệu liên hệ dùng chung"
 
 #
 msgid "Master Data Account"
-msgstr "Tài khoản dùng chung"
+msgstr "Dữ liệu tài khoản dùng chung"
 
 #
 msgid "Master Data Product"
-msgstr "Sản phẩm dùng chung"
+msgstr "Dữ liệu sản phẩm dùng chung"
 
 #
 msgid "Product list"
@@ -2714,10 +2714,6 @@ msgstr "Phiên đăng nhập đã hết hạn"
 #
 msgid "Login page"
 msgstr "Trang đăng nhập"
-
-#
-msgid "Internal Server Errors"
-msgstr "Đã có lỗi xảy ra"
 
 #
 msgid "Username and password are incorrect."
@@ -4100,10 +4096,6 @@ msgstr "Phân quyền"
 
 msgid "Limited"
 msgstr "Giới hạn"
-
-#
-msgid "Unlimited"
-msgstr "Không giới hạn"
 
 #
 msgid "Data of this tab will be used on 'Permission` tab after saving."
@@ -6974,7 +6966,7 @@ msgstr "SL đơn hàng"
 
 #
 msgid "Revenue average"
-msgstr "Doanh thu trung bình"
+msgstr "Doanh thu TB"
 
 #
 msgid "OPENING"
@@ -7290,7 +7282,7 @@ msgstr "Mã YCMH"
 
 #
 msgid "Merge same product in 1 line, convert to reference unit if there is more 1 UOM"
-msgstr "Gộp các sản phẩm giống nhau, chuyển đổi về cùng một đơn vị"
+msgstr "Gộp các sản phẩm giống nhau, chuyển đổi về cùng một đơn vị tiêu chuẩn"
 
 #
 msgid "Default all"
@@ -8949,12 +8941,12 @@ msgid "Select Finished goods or Services"
 msgstr "Chọn Thành phẩm hoặc Dịch vụ"
 
 #
-msgid "One collaborator actions"
-msgstr "Một cộng tác viên thao tác"
+msgid "Choose one collaborator actions"
+msgstr "Chọn một cộng tác viên thao tác"
 
 #
 msgid "Many collaborators action"
-msgstr "Nhiều cộng tác viên thao tác"
+msgstr "Nhiều cộng tác viên cùng thao tác"
 
 #
 msgid "Config according to"
@@ -9387,3 +9379,83 @@ msgstr "Thanh toán là bắt buộc"
 #
 msgid "Product is required"
 msgstr "Sản phẩm là bắt buộc"
+
+#
+msgid "First doc"
+msgstr "Phiếu đầu tiên"
+
+#
+msgid "Previous doc"
+msgstr "Phiếu trước đó"
+
+#
+msgid "Next doc"
+msgstr "Phiếu tiếp theo"
+
+#
+msgid "Last doc"
+msgstr "Phiếu cuối cùng"
+
+#
+msgid "Interest"
+msgstr "Sở thích"
+
+#
+msgid "Product Types"
+msgstr "Loại sản phẩm"
+
+#
+msgid "Product Categories"
+msgstr "Danh mục sản phẩm"
+
+#
+msgid "Unit Of Measures"
+msgstr "Đơn vị tính"
+
+#
+msgid "Unit Of Measure Groups"
+msgstr "Nhóm đơn vị tính"
+
+#
+msgid "Reference Unit"
+msgstr "Đơn vị tiêu chuẩn"
+
+#
+msgid "Tax Categories"
+msgstr "Danh mục thuế"
+
+#
+msgid "Currencies"
+msgstr "Tiền tệ"
+
+#
+msgid "Master data price"
+msgstr "Dữ liệu tiền tệ dùng chung"
+
+#
+msgid "Node configuration"
+msgstr "Cấu hình trạm"
+
+#
+msgid "Select action"
+msgstr "Chọn thao tác"
+
+#
+msgid "Actions at node"
+msgstr "Thao tác trên trạm"
+
+#
+msgid "Collaborators at node"
+msgstr "Cộng tác viên của trạm"
+
+#
+msgid "Collaborator list"
+msgstr "Danh sách cộng tác viên"
+
+#
+msgid "Exit condition"
+msgstr "Điều kiện thoát trạm"
+
+#
+msgid "Min collaborators"
+msgstr "CTV tối thiểu"

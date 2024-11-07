@@ -30,6 +30,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'PaymentListAPI' %}"
+        data-url-create="{% url 'PaymentCreate' %}"
+        data-url-detail="{% url 'PaymentDetail' '0' %}"
+        data-key-return="payment_list"
+    ></script>
     {% include 'printer/print.html' %}
     <script id="script-trans"
             data-trans-payment-value="{% trans 'Payment value' %}"
@@ -130,4 +136,5 @@
     <script src="{% static 'vendors/jquery-steps/build/jquery.steps.min.js' %}" type="text/javascript"></script>
     <script src="{% static "assets/js/payment/payment_common.js" %}"></script>
     <script src="{% static "assets/js/payment/payment_update.js" %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

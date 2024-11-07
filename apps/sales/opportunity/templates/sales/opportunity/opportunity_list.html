@@ -51,7 +51,15 @@
         <tbody>
         </tbody>
     </table>
+{% endblock %}
 
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-url-config="{% url 'OpportunityConfigAPI' %}"
+    >
+{% endblock %}
+
+{% block modalData %}
     <div
             class="modal fade"
             id="createOpportunityModalForms"
@@ -128,20 +136,60 @@
                             >
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary"
-                                form="form-create_opportunity">{% trans 'Save' %}</button>
+                        <div class="form-group mb-3">
+                            <label for="inp-process" class="form-label">{% trans 'Process' %}</label>
+                            <select
+                                    name="process"
+                                    id="inp-process"
+                                    class="form-select"
+                                    data-url="{% url 'ProcessListAPI' %}"
+                                    data-keyResp="process_list"
+                            ></select>
+                        </div>
                     </form>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button
+                            type="submit"
+                            class="btn btn-primary"
+                            form="form-create_opportunity"
+                    >
+                        {% trans 'Save' %}
+                    </button>
+            </div>
             </div>
         </div>
     </div>
 {% endblock %}
-{% block dataHiddenGroup %}
-    <input type="text" id="url-factory"
-           data-url-config="{% url 'OpportunityConfigAPI' %}"
-    >
-{% endblock %}
+
 {% block jsFooter %}
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_list.js' %}"></script>
+    <script>
+        $(document).ready(function (){
+            const urlParams = new URLSearchParams(window.location.search);
+            const inpProcess$ = $('#inp-process');
+            const process_id = urlParams.get('create__process');
+            const process_title = urlParams.get('create__process_name');
+            if (process_id && process_title){
+                $('#createOpportunityModalForms').modal('show');
+                inpProcess$.initSelect2({
+                    ajax: {
+                        url: inpProcess$.data('url'),
+                        method: 'GET',
+                    },
+                    data: [
+                        {
+                            'id': process_id,
+                            'title': process_title,
+                            selected: true,
+                        }
+                    ],
+                    allowClear: true,
+                    keyResp: 'process_list',
+                })
+            }
+        })
+    </script>
 {% endblock %}

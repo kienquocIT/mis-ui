@@ -16,6 +16,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'PurchaseRequestListAPI' %}"
+        data-url-create="{% url 'PurchaseRequestList' %}"
+        data-url-detail="{% url 'PurchaseRequestDetail' '0' %}"
+        data-key-return="purchase_request_list"
+    ></script>
     <div class="row">
         <div class="col-12">
             <table id="datatable-purchase-request" class="table nowrap w-100 mb-5"
@@ -85,4 +91,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/pr_list.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

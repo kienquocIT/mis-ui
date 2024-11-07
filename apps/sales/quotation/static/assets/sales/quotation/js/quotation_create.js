@@ -71,29 +71,24 @@ $(function () {
         WFRTControl.setWFInitialData(appCode);
 
 
-// Action on change dropdown opportunity
         QuotationLoadDataHandle.opportunitySelectEle.on('change', function () {
             QuotationLoadDataHandle.loadDataByOpportunity();
         });
 
-// Action on change dropdown customer
         QuotationLoadDataHandle.customerSelectEle.on('change', function () {
             QuotationLoadDataHandle.loadDataByCustomer();
         });
 
-// Action on change dropdown sale person
         QuotationLoadDataHandle.salePersonSelectEle.on('change', function () {
             QuotationLoadDataHandle.loadDataBySalePerson();
         });
 
-// Action on click dropdown price list
         tabPrice.on('click', function() {
             if (!boxPriceList[0].innerHTML) {
                 QuotationLoadDataHandle.loadBoxQuotationPrice();
             }
         });
 
-// Action on click dropdown payment term
         QuotationLoadDataHandle.paymentSelectEle.on('click', function () {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         });
@@ -102,7 +97,6 @@ $(function () {
             QuotationLoadDataHandle.loadChangePaymentTerm();
         });
 
-// Action on click dropdown contact
         boxQuotation.on('click', function() {
             if (!$(this)[0].innerHTML) {
                 let opp_id = null;
@@ -122,12 +116,10 @@ $(function () {
             QuotationLoadDataHandle.loadReInitDataTableProduct();
         });
 
-// Action on add group title
         btnAddProductGr.on('click', function () {
             QuotationLoadDataHandle.loadAddRowProductGr();
         });
 
-// Action on click button add product
         btnAddProduct.on('click', function (e) {
             QuotationLoadDataHandle.loadModalSProduct();
             indicatorHandle.loadIndicator();
@@ -137,7 +129,6 @@ $(function () {
             QuotationLoadDataHandle.loadNewProduct();
         });
 
-// Action on click select2 product
         tableProduct.on('click', '.table-row-item-area', function () {
            QuotationLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
         });
@@ -212,7 +203,6 @@ $(function () {
             )
         });
 
-// Action on delete row product
         tableProduct.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -230,8 +220,7 @@ $(function () {
             QuotationLoadDataHandle.loadSetWFRuntimeZone();
         });
 
-// Action on click price list's option
-         tableProduct.on('click', '.btn-select-price', function () {
+        tableProduct.on('click', '.btn-select-price', function () {
             if (this.closest('tr')) {
                 if (this.closest('tr').querySelector('.table-row-item')) {
                     QuotationLoadDataHandle.loadPriceProduct(this.closest('tr').querySelector('.table-row-item'));
@@ -274,7 +263,6 @@ $(function () {
             }
         });
 
-// ******** Action on change data of table row PRODUCT => calculate data for row & calculate data total
         tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
@@ -321,7 +309,6 @@ $(function () {
             }
         });
 
-// Action on table row group title
         tableProduct.on('click', '.table-row-group', function () {
             let row = this.closest('tr');
             $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
@@ -359,7 +346,6 @@ $(function () {
             QuotationStoreDataHandle.storeProduct(row);
         });
 
-// Action on change discount rate on Total of product
         $('input[type=text].quotation-create-product-discount').on('change', function () {
             validateNumber(this);
             // Delete all promotion rows
@@ -379,17 +365,14 @@ $(function () {
             QuotationLoadDataHandle.loadReInitDataTableExpense();
         });
 
-// Action on click button add expense
         $('#btn-add-expense-quotation-create').on('click', function (e) {
             QuotationLoadDataHandle.loadAddRowExpense();
         });
 
-// Action on click button add internal labor
         $('#btn-add-labor-quotation-create').on('click', function (e) {
             QuotationLoadDataHandle.loadAddRowLabor();
         });
 
-// Action on delete row expense
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -399,7 +382,6 @@ $(function () {
             QuotationCalculateCaseHandle.updateTotal(tableExpense[0]);
         });
 
-// Action on click price list's option
         tableExpense.on('click', '.table-row-price-option', function () {
             let priceValRaw = $(this)[0].getAttribute('data-value');
             if (priceValRaw) {
@@ -413,7 +395,6 @@ $(function () {
             }
         });
 
-// ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
         tableExpense.on('change', '.table-row-item, .table-row-labor-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
             if (this.classList.contains('table-row-labor-item')) {
@@ -444,7 +425,6 @@ $(function () {
             }
         });
 
-// ******** Action on change data of table row COST => calculate data for row & calculate data total
         tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
@@ -452,7 +432,6 @@ $(function () {
             }
         });
 
-// Action on click price list's option
         tableCost.on('click', '.btn-select-cost', function () {
             if (this.closest('tr')) {
                 if (this.closest('tr').querySelector('.table-row-item')) {
@@ -492,12 +471,10 @@ $(function () {
             }
         });
 
-// Action on click button collapse
         $('#btn-collapse').click(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
-// Action on click choose shipping
         modalShipping.on('click', '.choose-shipping', function () {
             // Enable other buttons
             $('.choose-shipping').prop('disabled', false);
@@ -516,7 +493,6 @@ $(function () {
             }
         });
 
-// Action on click choose billing
         modalBilling.on('click', '.choose-billing', function () {
             // Enable other buttons
             $('.choose-billing').prop('disabled', false);
@@ -558,14 +534,12 @@ $(function () {
             }
         });
 
-// Action on check quotation for copy
         tableCopyQuotation.on('click', '.table-row-check', function () {
             tableCopyQuotation.find('.table-row-check').prop('checked', false);
             $(this).prop('checked', true);
             QuotationLoadDataHandle.loadAPIDetailQuotation($(this)[0].getAttribute('data-id'));
         });
 
-// Action on click button select quotation for copy
         $('#btn-select-quotation-copy').on('click', function() {
             tableCopyQuotation[0].setAttribute('hidden', true);
             tableCopyQuotation.DataTable().clear().draw();
@@ -583,7 +557,6 @@ $(function () {
             $('#btn-quotation-copy-confirm')[0].removeAttribute('hidden')
         });
 
-// Action on check copy option
         divCopyOption.on('change', '.check-option', function() {
             if ($(this)[0].checked === false) {
                 tableCopyQuotationProduct[0].removeAttribute('hidden');
@@ -592,12 +565,10 @@ $(function () {
             }
         });
 
-// Action on confirm copy quotation
         $('#btn-quotation-copy-confirm').on('click', function () {
             QuotationLoadDataHandle.loadSetupCopy(this);
         });
 
-// Load data quotation COPY TO sale order when sale order page CREATE loaded
         function prepareDataCopyTo() {
             let eleDataCopy = $('#data-init-quotation-copy-to');
             if (eleDataCopy) {
@@ -650,7 +621,6 @@ $(function () {
             }
         }
 
-// Load init Opportunity
         QuotationLoadDataHandle.loadInitOpportunity();
 
 // PROMOTION
@@ -659,7 +629,6 @@ $(function () {
             QuotationPromotionHandle.callPromotion(0);
         });
 
-// Action click Apply Promotion
         tablePromotion.on('click', '.apply-promotion', function () {
             $(this).prop('disabled', true);
             deletePromotionRows(tableProduct, true, false);
@@ -746,7 +715,6 @@ $(function () {
             QuotationDataTableHandle.loadTableQuotationShipping();
         });
 
-// Action click Apply Shipping
         tableShipping.on('click', '.apply-shipping', function () {
             $(this).prop('disabled', true);
             // Delete all promotion rows
@@ -868,23 +836,92 @@ $(function () {
             deleteRow(this.closest('tr'), tablePS);
         });
 
+// IMPORT TABLE
+        $('#modal-load-datatable-from-excel .btn-gradient-primary').on('click', function () {
+            let import_data_rows = $('#tab_line_detail').find('.import_data_rows');
+            let dataIP = [];
+            if (import_data_rows.text()) {
+                dataIP = JSON.parse(import_data_rows.text());
+            }
+            if (dataIP.length > 0) {
+                let listProdID = [];
+                let JSonProd = {};
+                let result = [];
+                for (let data of dataIP) {
+                    listProdID.push(data?.['product']?.['id']);
+                    JSonProd[data?.['product']?.['id']] = data;
+                }
+                if (listProdID.length > 0) {
+                    WindowControl.showLoading();
+                    $.fn.callAjax2({
+                            'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
+                            'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
+                            'data': {'id__in': listProdID.join(',')},
+                            'isDropdown': true,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                                    let order = 1;
+                                    for (let dataProd of data?.['product_sale_list']) {
+                                        let dataPush = {'product_data': dataProd, 'order': order};
+                                        if (JSonProd.hasOwnProperty(dataProd?.['id'])) {
+                                            dataPush['uom_data'] = JSonProd[dataProd?.['id']]?.['uom'];
+                                            dataPush['tax_data'] = JSonProd[dataProd?.['id']]?.['tax'];
+                                            dataPush['product_quantity'] = JSonProd[dataProd?.['id']]?.['quantity'];
+                                            dataPush['product_unit_price'] = JSonProd[dataProd?.['id']]?.['unit_price'];
+                                            dataPush['product_tax_value'] = JSonProd[dataProd?.['id']]?.['tax_value'];
+                                            dataPush['product_discount_value'] = 0;
+                                            dataPush['product_subtotal_price'] = JSonProd[dataProd?.['id']]?.['subtotal_price'];
+                                        }
+                                        order++;
+                                        result.push(dataPush);
+                                    }
+                                    tableProduct.DataTable().clear().draw();
+                                    // load table product
+                                    tableProduct.DataTable().rows.add(result).draw();
+                                    QuotationLoadDataHandle.loadReInitDataTableProduct();
+                                    $('#modal-load-datatable-from-excel').modal('hide');
+                                    WindowControl.hideLoading();
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        });
+
 
 
 
 // Submit form quotation + sale order
-        formSubmit.submit(function (e) {
-            e.preventDefault();
+        SetupFormSubmit.validate(formSubmit, {
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 100,
+                },
+                employee_inherit_id: {
+                    required: true,
+                },
+            },
+            errorClass: 'is-invalid cl-red',
+            submitHandler: submitHandlerFunc
+        });
+
+        function submitHandlerFunc() {
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
                 QuotationPromotionHandle.callPromotion(1);
                 // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal
                 // Submit Form normal
-                submitForm($(this));
+                submitForm(formSubmit);
             }
-        });
+        }
 
-// function check again promotion before submit
         function submitCheckPromotion() {
             let valueCheck = $('#quotation-check-promotion').val();
             if (valueCheck) {
@@ -899,23 +936,15 @@ $(function () {
             }
         }
 
-// WORKFLOW
-
-        // events on btn action WF zone (depend on business rule)
-        $('#btn-active-edit-zone-wf').on('click', function () {
-            QuotationCheckConfigHandle.checkConfig(0);
-        });
-
-// Main Function Submit
-        function submitForm(formSubmit) {
-            let is_sale_order = false;
-            if (formSubmit[0].classList.contains('sale-order')) {
-                is_sale_order = true;
-            }
-            let _form = new SetupFormSubmit(formSubmit);
+         function submitForm(formSubmit) {
+             let is_sale_order = false;
+             if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                 is_sale_order = true;
+             }
+             let _form = new SetupFormSubmit(formSubmit);
             // Load again indicator when Submit
             indicatorHandle.loadIndicator();
-            let result = QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+            let result = QuotationSubmitHandle.setupDataSubmit(_form);
             if (result === false) {
                 return false;
             }
@@ -925,20 +954,24 @@ $(function () {
                     // special case: loadCost if products is not in hidden zones
                     if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
                         QuotationLoadDataHandle.loadDataTableCost();
-                        QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+                        QuotationSubmitHandle.setupDataSubmit(_form);
                         QuotationLoadDataHandle.loadSetWFRuntimeZone();
                     }
                 } else {
                     QuotationLoadDataHandle.loadDataTableCost();
-                    QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
+                    QuotationSubmitHandle.setupDataSubmit(_form);
                 }
             }
             let submitFields = [
+                // process
+                'process',
+                //
                 'title',
                 'opportunity_id',
                 'customer',
                 'customer_data',
                 'contact',
+                'contact_data',
                 'employee_inherit_id',
                 'payment_term',
                 'payment_term_data',
@@ -984,7 +1017,9 @@ $(function () {
                     'title',
                     'opportunity_id',
                     'customer',
+                    'customer_data',
                     'contact',
+                    'contact_data',
                     'employee_inherit_id',
                     'payment_term',
                     'payment_term_data',
@@ -1051,6 +1086,13 @@ $(function () {
             }
             WFRTControl.callWFSubmitForm(_form);
         }
+
+// WORKFLOW
+
+        // events on btn action WF zone (depend on business rule)
+        $('#btn-active-edit-zone-wf').on('click', function () {
+            QuotationCheckConfigHandle.checkConfig(0);
+        });
 
         $('#btn-remove-promotion').on('click', function() {
             $('#quotation-check-promotion').val("");

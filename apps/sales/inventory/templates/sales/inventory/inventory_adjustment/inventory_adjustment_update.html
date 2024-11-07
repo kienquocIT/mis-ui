@@ -22,6 +22,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'InventoryAdjustmentListAPI' %}"
+        data-url-create="{% url 'InventoryAdjustmentCreate' %}"
+        data-url-detail="{% url 'InventoryAdjustmentDetail' '0' %}"
+        data-key-return="inventory_adjustment_list"
+    ></script>
     <script id="url_script"
             data-url-warehouse-product-list="{% url 'WareHouseListForInventoryAdjustmentAPI' %}"
     ></script>
@@ -88,4 +94,5 @@
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_update.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

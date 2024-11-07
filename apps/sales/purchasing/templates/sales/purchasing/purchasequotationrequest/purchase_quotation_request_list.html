@@ -23,6 +23,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'PurchaseQuotationRequestListAPI' %}"
+        data-url-create="{% url 'PurchaseQuotationRequestList' %}"
+        data-url-detail="{% url 'PurchaseQuotationRequestDetail' '0' %}"
+        data-key-return="purchase_quotation_request_list"
+    ></script>
     <div id="section-advance-list">
         <table id="datatable_pqr_list" class="table nowrap w-100 mb-5" data-method="GET"
                data-url="{% url 'PurchaseQuotationRequestListAPI' %}"
@@ -73,4 +79,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/purchasing/js/purchasequotationrequest/purchase_quotation_request_list.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

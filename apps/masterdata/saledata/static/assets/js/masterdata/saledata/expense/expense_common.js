@@ -61,7 +61,7 @@ function appendHtmlForPriceList(dataTree, ele, count) {
             if (dataTree[i].item.auto_update === true) {
                 ele.find('ul').append(`<div class="row">
                             <div class="col-6">
-                                <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                                <div class="form-check form-check-inline mt-2 ml-5">
                                     <input class="form-check-input" type="checkbox"
                                         value="option1" data-id="` + dataTree[i].item.id + `" disabled>
                                     <label class="form-check-label">` + dataTree[i].item.title + `<span class="ml-2 ` + fg_class + `">(` + dataTree[i].item.status + `)</span></label>
@@ -74,7 +74,7 @@ function appendHtmlForPriceList(dataTree, ele, count) {
             } else {
                 ele.find('ul').append(`<div class="row">
                             <div class="col-6">
-                                <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                                <div class="form-check form-check-inline mt-2 ml-5">
                                     <input class="form-check-input" type="checkbox"
                                         value="option1" data-id="` + dataTree[i].item.id + `">
                                     <label class="form-check-label">` + dataTree[i].item.title + `<span class="ml-2 ` + fg_class + `">(` + dataTree[i].item.status + `)</span></label>
@@ -88,7 +88,7 @@ function appendHtmlForPriceList(dataTree, ele, count) {
         } else {
             ele.find('ul').append(`<div class="row">
                 <div class="col-6">
-                    <div class="form-check form-check-inline mt-2 ml-5 inp-can-edit">
+                    <div class="form-check form-check-inline mt-2 ml-5">
                         <input class="form-check-input" type="checkbox"
                             value="option1" data-id="` + dataTree[i].item.id + `">
                         <label class="form-check-label required">` + dataTree[i].item.title + `<span class="ml-2 ` + fg_class + `">(` + dataTree[i].item.status + `)</span></label>

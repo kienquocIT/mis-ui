@@ -47,7 +47,7 @@
 }
 
 #tab_next_node #node_dragbox {
-    width: 30%;
+    width: 26%;
     border: solid 1px #cdcdcd;
     /*height: 75vh;*/
     border-radius: 10px;
@@ -73,13 +73,13 @@
 .wrap-flowchart .control,
 .wrap-flowchart .clone {
     /*background: white;*/
-    padding: 12px 10px;
+    padding: 10px 10px;
     margin-bottom: 10px;
     border: solid 1px #298dff;
     border-radius: 8px;
     display: flex;
-    width: 106px;
-    height: 106px;
+    width: 107px;
+    height: 107px;
     align-items: center;
     justify-content: center;
     position: relative;
@@ -110,7 +110,7 @@
 }
 
 #tab_next_node .wrap-flowchart_wf {
-    width: calc(70% - 12px);
+    width: calc(74% - 12px);
     border: solid 1px #cdcdcd;
     border-radius: 10px;
     height: 75vh;

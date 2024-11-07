@@ -32,6 +32,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'PaymentListAPI' %}"
+        data-url-create="{% url 'PaymentCreate' %}"
+        data-url-detail="{% url 'PaymentDetail' '0' %}"
+        data-key-return="payment_list"
+    ></script>
     {% include 'printer/print.html' %}
     <script id="script-trans"
             data-trans-payment-value="{% trans 'Payment value' %}"
@@ -81,6 +87,7 @@
     <script src="{% static "assets/js/payment/payment_detail.js" %}"></script>
 
     <script src="{% static 'printer/print.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
     <script>
         $(document).ready(function () {
             $('#print-document').on('click', function () {

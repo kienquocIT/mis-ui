@@ -1568,6 +1568,11 @@ class PaymentHandle {
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
+        let paymentVal = $('#total-value').valCurrency();
+        if (paymentVal) {
+            frm.dataForm['payment_value'] = parseFloat(paymentVal);
+        }
+
         // console.log(frm)
         return frm
     }

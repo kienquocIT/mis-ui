@@ -49,4 +49,7 @@ ADVANCE_DATA_MAP = {
     'attachment': FieldMapCommon(
         name_mapping=['attachment'],
     ).data,
+    'advance_value': FieldMapCommon(
+        name_mapping=['advance_value'],
+    ).data,
 }

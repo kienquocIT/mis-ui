@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+
+{% block pageContent %}
+    <div class="container">
+        <form id="form-chatbot" data-url="{% url 'ChatbotAPI' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="inp-question" class="form-label">{% trans 'Question' %}</label>
+                <textarea type="text" class="form-control" name="message" id="inp-question" maxlength="200"></textarea>
+            </div>
+            <button class="btn btn-primary">{% trans 'Send' %}</button>
+        </form>
+        <div class="w-100 p-5" id="answer-list">
+            <p>{% trans 'Answer' %}</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/marked/marked.min.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            const form$ = $('#form-chatbot');
+            const answer$ = $('#answer-list');
+
+            function containsHTML(content) {
+                const htmlTagPattern = /<[^>]+>/;
+                return htmlTagPattern.test(content);
+            }
+
+            function containsMarkdown(content) {
+                const markdownPattern = /(\*\*|__|\*|_|#|\`\`\`)/;
+                return markdownPattern.test(content);
+            }
+
+            SetupFormSubmit.validate(form$, {
+                submitHandler: (form, event) => {
+                    event.preventDefault();
+                    const fm = new SetupFormSubmit(form$);
+                    $.fn.callAjax2({
+                        url: $(form).data('url'),
+                        method: 'POST',
+                        data: fm.dataForm,
+                        isLoading: true,
+                    }).then(
+                        resp => {
+                            const data = $.fn.switcherResp(resp);
+                            if (data) {
+                                const answer = data?.['answer'] || {};
+                                if (answer) {
+                                    const content = answer?.['choices']?.[0]?.['message']?.['content'] || $.fn.gettext('The answer is not found');
+                                    if (containsHTML(content)) {
+                                        answer$.html(content);
+                                    } else if (containsMarkdown(content)) {
+                                        answer$.html(marked.parse(content));
+                                    } else {
+                                        answer$.text(content);
+                                    }
+                                }
+                            }
+                        },
+                        errs => $.fn.switcherResp(errs),
+                    )
+                }
+            })
+        })
+    </script>
+{% endblock %}

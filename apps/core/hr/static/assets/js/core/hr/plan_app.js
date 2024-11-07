@@ -124,7 +124,7 @@ class HandlePlanApp {
                             license_used += (row?.['mathAdd'] || 0);
                         }
                         return `
-                            <span class="badge badge-indigo">${license_used >= 0 ? license_used : 0} / ${typeof license_quantity == 'number' ? license_quantity : globeMsgUnlimited}</span>
+                            <span class="badge badge-indigo">${license_used >= 0 ? license_used : 0} / ${typeof license_quantity == 'number' ? license_quantity : $.fn.gettext('Unlimited')}</span>
                         `;
                     }
                 }

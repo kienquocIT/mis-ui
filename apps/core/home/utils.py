@@ -28,7 +28,7 @@ class ReverseUrlCommon:
         return None
 
     @classmethod
-    def get_link(cls, plan, app, pk=None) -> any:
+    def get_link(cls, plan, app, pk=None, is_create=None) -> any:
         if pk in [0, '0']:
             pk = None
 
@@ -43,6 +43,10 @@ class ReverseUrlCommon:
                     try:
                         if pk:
                             return reverse(views_of_app['detail'], kwargs={views_of_app['key_pk']: pk})
+                        if is_create:
+                            if views_of_app.get('create', None):
+                                return reverse(views_of_app['create'])
+                            return None
                         return reverse(views_of_app['list'])
                     except NoReverseMatch as _err:
                         pass
@@ -54,9 +58,10 @@ class ReverseUrlCommon:
             return cls.get_link(plan=APP_ID_MAP_PLAN_APP[app_id]['plan'], app=APP_ID_MAP_PLAN_APP[app_id]['app'], pk=pk)
         return None
 
-    def __init__(self, list_view_name, detail_view_name, key_pk=None):
+    def __init__(self, list_view_name, detail_view_name, create_view_name=None, key_pk=None):
         self.list_view_name = list_view_name
         self.detail_view_name = detail_view_name
+        self.create_view_name = create_view_name
         self.key_pk = key_pk if key_pk else 'pk'
 
     @property
@@ -64,6 +69,7 @@ class ReverseUrlCommon:
         return {
             'list': self.list_view_name,
             'detail': self.detail_view_name,
+            'create': self.create_view_name,
             'key_pk': self.key_pk
         }
 
@@ -103,7 +109,11 @@ PLAN_APP_OF_SALE = {
         # ).data,
     },
     'quotation': {
-        'quotation': ReverseUrlCommon(list_view_name='QuotationList', detail_view_name='QuotationDetail').data,
+        'quotation': ReverseUrlCommon(
+            list_view_name='QuotationList',
+            detail_view_name='QuotationDetail',
+            create_view_name='QuotationCreate',
+        ).data,
     },
     'saleorder': {
         'saleorder': ReverseUrlCommon(list_view_name='SaleOrderList', detail_view_name='SaleOrderDetail').data,

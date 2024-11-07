@@ -26,6 +26,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'PurchaseQuotationRequestListAPI' %}"
+        data-url-create="{% url 'PurchaseQuotationRequestList' %}"
+        data-url-detail="{% url 'PurchaseQuotationRequestDetail' '0' %}"
+        data-key-return="purchase_quotation_request_list"
+    ></script>
     <script id="data-url-script"
             data-pqr-type="1"
             data-url-product="{% url 'ProductListAPI' %}"
@@ -234,4 +240,5 @@
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchasequotationrequest/purchase_quotation_request_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchasequotationrequest/purchase_quotation_request_create_manual.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

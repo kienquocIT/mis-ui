@@ -1227,6 +1227,11 @@ class APHandle {
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
+        let advanceVal = $('#total-value').valCurrency();
+        if (advanceVal) {
+            frm.dataForm['advance_value'] = parseFloat(advanceVal);
+        }
+
         // console.log(frm)
         return frm
     }

@@ -1,5 +1,5 @@
 class BiddingLoadDataHandle {
-    static $btnAddVenture = $('#btn-add-venture')
+    static $btnAddAccount = $('#btn-add-account')
     static $btnAddDoc = $('#btn-add-document')
     static $btnAddDocManual = $('#btn-add-document-manual')
     static $attachment = $('#attachment');
@@ -10,7 +10,10 @@ class BiddingLoadDataHandle {
     static $opportunitySelectEle = $('#opportunity_id');
     static $salePersonSelectEle = $('#employee_inherit_id');
     static $transScript = $('#trans-script')
-
+    static $docDataScript = $('#doc-data-script')
+    static $btnOpenDocModal = $('#btn-open-document-modal')
+    static $btnOpenPartnerModal = $('#btn-open-partner-modal')
+    static $btnOpenBidderModal = $('#btn-open-bidder-modal')
     static loadAddVenture(data) {
         BiddingDataTableHandle.$tableVenture.DataTable().clear().draw();
         for (const dataRow of data) {
@@ -19,14 +22,34 @@ class BiddingLoadDataHandle {
             BiddingDataTableHandle.$tableVenture.DataTable().row.add(dataRow).draw().node();
         }
     };
-
+    static loadAddBidder(data) {
+        BiddingDataTableHandle.$tableBidder.DataTable().clear().draw();
+        for (const dataRow of data) {
+            let TotalOrder = BiddingDataTableHandle.$tableBidder[0].querySelectorAll('.table-row-order').length;
+            dataRow.order = TotalOrder + 1;
+            BiddingDataTableHandle.$tableBidder.DataTable().row.add(dataRow).draw().node();
+        }
+    };
     static loadAddDocument(data) {
+        let dataDocList = JSON.parse(BiddingLoadDataHandle.$docDataScript.attr('data-doc-list') || '[]')
         BiddingDataTableHandle.$tableDocument.DataTable().clear().draw();
         for (const dataRow of data) {
             let TotalOrder = BiddingDataTableHandle.$tableDocument[0].querySelectorAll('.table-row-order').length;
             dataRow.order = TotalOrder + 1;
             BiddingDataTableHandle.$tableDocument.DataTable().row.add(dataRow).draw().node();
+            if(dataDocList.isManual){
+                if (!dataDocList.find(item => item?.['id'] === dataRow.id)){
+                    dataDocList.push(dataRow);
+                }
+            } else {
+                if (!dataDocList.find(item => item?.['document_type'] === dataRow.document_type)){
+                    dataDocList.push(dataRow);
+                }
+            }
         }
+
+        BiddingLoadDataHandle.$docDataScript.attr('data-doc-list',JSON.stringify(dataDocList))
+
     };
 
     static loadAddDocumentManual() {
@@ -69,15 +92,21 @@ class BiddingLoadDataHandle {
         BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
             let row = this.node();
             $(row).css('background-color', '');
+            $('#btn-attach-invite-doc').closest('.form-control').css('background-color', '');
         });
         let row = ele.closest('tr');
         if (row) {
             $(row).css('background-color', '#ebfcf5');
             BiddingLoadDataHandle.$fileArea[0].classList.remove('bg-light');
-            let eleId = row.querySelector('.table-row-order').getAttribute('data-doctype-id');
-            if (eleId) {
-                BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
+            let eleId = ''
+            let isManual = row.querySelector('.attach-file').getAttribute('data-is-manual')
+            if (isManual==='false'){
+                eleId = row.querySelector('.attach-file').getAttribute('data-doctype-id');
+            } else {
+                eleId = row.querySelector('.attach-file').getAttribute('data-id');
             }
+            BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
+            BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-is-manual', isManual);
             BiddingLoadDataHandle.$remark[0].removeAttribute('readonly');
             BiddingLoadDataHandle.$remark.val('');
             BiddingLoadDataHandle.loadAddFile([]);
@@ -119,7 +148,6 @@ class BiddingLoadDataHandle {
             }
             BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
         }
-        return true;
     };
 
     static loadAddFile(dataList) {
@@ -151,13 +179,16 @@ class BiddingLoadDataHandle {
             }
             order += 1;
         }
+        console.log(result)
         return result;
     };
 
     //DETAIL
     static loadDetail(data) {
+        console.log(data)
         $('#bid-name').val(data?.['title']);
-        $('#bid-value').val(data?.['bid_value']);
+        $('#bid-value').attr('value', data?.['bid_value']);
+        $('#bid-bond-value').attr('value', data?.['bid_bond_value']);
         BiddingTinymceHandle.initTinymce(data?.['tinymce_content'])
         $('#bid-date').each(function () {
             $(this).daterangepicker({
@@ -197,21 +228,43 @@ class BiddingLoadDataHandle {
             }]
         }).init();
         BiddingLoadDataHandle.$customerEle.val(data?.['customer']?.['title'])
+        let securityType = data?.['security_type']
+        let bidStatus = data?.['bid_status']
+        $(`input[name="security_type"][value="${securityType}"]`).prop('checked', true)
+        $(`input[name="bid_status"][value="${bidStatus}"]`).prop('checked', true)
+        if (bidStatus===2){
+            let causeOfLost = data?.['cause_of_lost']
+            $('#cause-of-lost').attr('hidden',false)
+            $('input[name="cause_of_lost"]').each(function () {
+                let val = parseInt($(this).val())
+                if(causeOfLost.includes(val)){
+                    $(this).prop('checked',true)
+                }
+                if(val===4){
+                    $(`input[name="other_cause"]`).val(data?.['other_cause'])
+                }
+            })
+
+        }
         for (let i=0;i<data?.['venture_partner']?.length;i++){
             data['venture_partner'][i]['order'] = i+1
+        }for (let i=0;i<data?.['other_bidder']?.length;i++){
+            data['other_bidder'][i]['order'] = i+1
         }
         BiddingDataTableHandle.dataTableVenture(data?.['venture_partner'], data['isDetail'])
-        for (let i=0;i<data?.['attachment_m2m']?.length;i++){
-            data['attachment_m2m'][i]['isManual'] = data['attachment_m2m'][i]['document_type'] === null;
+        BiddingDataTableHandle.dataTableBidder(data?.['other_bidder'], data['isDetail'])
+        let bids = data?.['attachment_m2m'].filter(item => item['is_invite_doc'] !== true)
+
+        for (let i=0;i<bids?.length;i++){
+            bids[i]['isManual'] = data['attachment_m2m'][i]['document_type'] === null;
         }
-        for (let i=0;i<data?.['attachment_m2m']?.length;i++){
-            if (data['attachment_m2m'][i]['isManual']){
-                data['attachment_m2m'][i]['document_type'] = data['attachment_m2m'][i]['id']
-            }
-        }
-        BiddingLoadDataHandle.setupDetailDocAttach(data?.['attachment_m2m'])
-        BiddingDataTableHandle.dataTableDocument(data?.['attachment_m2m'], data['isDetail'])
-        BiddingDataTableHandle.dataTableDocumentModal(data?.['attachment_m2m'])
+        BiddingLoadDataHandle.setupDetailDocAttach(data['attachment_m2m'])
+        BiddingDataTableHandle.dataTableDocument(bids, data['isDetail'])
+        let dataBiddingDocument = data?.['attachment_m2m'].find(item => item['is_invite_doc'] === true)
+        $('#btn-attach-invite-doc').attr('data-store', JSON.stringify(dataBiddingDocument))
+        BiddingDataTableHandle.dataTableDocumentModal(bids)
+        BiddingLoadDataHandle.$docDataScript.attr('data-doc-list', JSON.stringify(data['attachment_m2m']))
+        $.fn.initMaskMoney2()
     };
 
     static setupDetailDocAttach(data) {
@@ -235,23 +288,41 @@ class BiddingLoadDataHandle {
 }
 
 class BiddingDataTableHandle {
-    static $tableVentureModal = $('#venture-modal-table');
+    static $tableAccountModal = $('#account-modal-table');
     static $tableDocumentModal = $('#document-modal-table');
     static $tableDocumentModalManual = $('#document-modal-table-manual');
     static $tableVenture = $('#datatable-venture');
+    static $tableBidder = $('#datatable-bidder');
     static $tableDocument = $('#datatable-document');
     static $url = $('#app-url-factory');
     static $tableFile = $('#datatable-bidding-file');
 
-    static dataTableVentureModal(data) {
-        BiddingDataTableHandle.$tableVentureModal.DataTableDefault({
+    static dataTableAccountModal(isPartner) {
+        let data = isPartner ?  {"is_partner_account": true} : {"is_competitor_account": true}
+        let ids = []
+        if(isPartner){
+            let partnerAccountId = BiddingDataTableHandle.$tableVenture.find('.table-row-order').data('partner_account');
+            if (partnerAccountId) {
+                ids.push(partnerAccountId);
+            }
+        } else {
+            let bidderAccountId = BiddingDataTableHandle.$tableBidder.find('.table-row-order').data('bidder_account');
+            if (bidderAccountId) {
+                ids.push(bidderAccountId);
+            }
+        }
+        if ($.fn.DataTable.isDataTable(BiddingDataTableHandle.$tableAccountModal)) {
+            BiddingDataTableHandle.$tableAccountModal.DataTable().destroy();
+        }
+        BiddingDataTableHandle.$tableAccountModal.DataTableDefault({
             useDataServer: true,
             ajax: {
                 url: BiddingDataTableHandle.$url.attr('data-md-account'),
                 type: "GET",
-                data: {"is_partner_account": true},
+                data: data,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
+                    console.log(data)
                     if (data && resp.data.hasOwnProperty('account_for_bidding_list')) {
                         return resp.data['account_for_bidding_list'] ? resp.data['account_for_bidding_list'] : []
                     }
@@ -270,7 +341,8 @@ class BiddingDataTableHandle {
                     width: '10%',
                     class: 'text-center',
                     render: (data, type, row) => {
-                        return `<input type="checkbox" class="form-check-checkbox" data-id="${row.id}">`;
+                        let checked = ids.includes(row.id) ? "checked":""
+                        return `<input data-type=${isPartner ? "partner" : "bidder"} type="checkbox" class="form-check-checkbox" data-id="${row.id}" ${checked}>`;
                     }
                 },
                 {
@@ -330,6 +402,7 @@ class BiddingDataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 BiddingLoadDataHandle.loadCssToDtb(BiddingDataTableHandle.$tableDocumentModal[0].id);
+
             },
         })
         BiddingDataTableHandle.$tableDocumentModalManual.DataTableDefault({
@@ -342,7 +415,7 @@ class BiddingDataTableHandle {
                     width: '10%',
                     class: 'text-center',
                     render: (data, type, row) => {
-                        return `<input type="checkbox" class="form-check-checkbox table-row-order" data-id=${row?.id} checked>`;
+                        return `<input type="checkbox" class="form-check-checkbox table-row-order" data-row-id=${row?.id} checked>`;
                     }
                 },
                 {
@@ -425,6 +498,65 @@ class BiddingDataTableHandle {
         })
     }
 
+    static dataTableBidder(data) {
+        BiddingDataTableHandle.$tableBidder.DataTableDefault({
+            data: data ? data : [],
+            ordering: false,
+            paging: false,
+            info: false,
+            columns: [
+                {
+                    targets: 0,
+                    width: '5%',
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order" data-bidder_account="${row?.bidder_account}">${row.order}</span>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '15%',
+                    render: (data, type, row) => {
+                        return `<div class="table-row-code">${row.code}</div>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    width: '65%',
+                    render: (data, type, row) => {
+                        return `<div class="table-row-title">${row.title}</div>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '5%',
+                    class: 'text-center',
+                    render: (data, type, row) => {
+                        let checked = row?.["is_won"] ? "checked" : ""
+                        return `<input type="checkbox" class="form-check-checkbox bidder-checkbox" ${checked}>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    class: 'text-center',
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" >
+                                    <span class="icon"><i class="far fa-trash-alt"></i></span>
+                                </button>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                $('.bidder-checkbox').on('change', function () {
+                    // Deselect all other checkboxes
+                    $('.bidder-checkbox').not(this).prop('checked', false);
+                });
+            },
+            initComplete: function (){
+            }
+        })
+    }
+
     static dataTableDocument(data, isDetail=false) {
         BiddingDataTableHandle.$tableDocument.DataTableDefault({
             data: data ? data : [],
@@ -436,7 +568,7 @@ class BiddingDataTableHandle {
                     targets: 0,
                     width: '5%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-order" data-doctype-id=${row?.document_type} data-id=${row?.id}>${row?.order}</span>`;
+                        return `<span class="table-row-order">${row?.order}</span>`;
                     }
                 },
                 {
@@ -461,6 +593,7 @@ class BiddingDataTableHandle {
                                         data-order="${row?.['order']}"
                                         data-id = "${row?.['id']}"
                                         data-doctype-id="${row?.document_type}"
+                                        data-is-manual=${row?.isManual}
                                     >
                                             <span class="icon"><i class="fas fa-paperclip"></i></span>
                                     </button>
@@ -524,6 +657,11 @@ class BiddingDataTableHandle {
 // Store data
 class BiddingStoreHandle {
     static storeAttachment() {
+        let isInviteDoc = false
+        let doc = BiddingLoadDataHandle.$fileArea.attr('doc-id');
+        if (doc === 'btn-attach-invite-doc'){
+            isInviteDoc = true
+        }
         let dataStore = {};
         let fileData = [];
         dataStore['remark'] = BiddingLoadDataHandle.$remark.val();
@@ -556,14 +694,40 @@ class BiddingStoreHandle {
             }
         }
         dataStore['attachment_data'] = fileData;
-        let doc = BiddingLoadDataHandle.$fileArea.attr('doc-id');
+
+        let isManual = BiddingLoadDataHandle.$fileArea.attr('doc-is-manual');
+        let dataDocList = JSON.parse(BiddingLoadDataHandle.$docDataScript.attr('data-doc-list') || '[]')
+
+        if(isInviteDoc){
+            let btnStore = $('#btn-attach-invite-doc')
+            let doc_data = dataDocList.find(item => item.id === doc)
+            if(doc_data){
+                doc_data['attachment_data'] = fileData
+            }
+            btnStore.attr('data-store', JSON.stringify(dataStore));
+            BiddingLoadDataHandle.$docDataScript.attr('data-doc-list',JSON.stringify(dataDocList))
+            return
+        }
         if (doc) {
-            let btnStore = BiddingDataTableHandle.$tableDocument[0].querySelector(`.attach-file[data-doctype-id="${doc}"]`);
+            let btnStore = null
+            if(isManual==='false'){
+               let doc_data = dataDocList.find(item => item.document_type === doc)
+                if(doc_data){
+                    doc_data['attachment_data'] = fileData
+                }
+                btnStore = BiddingDataTableHandle.$tableDocument[0].querySelector(`.attach-file[data-doctype-id="${doc}"]`);
+            } else {
+                let doc_data = dataDocList.find(item => item.id === doc)
+                if(doc_data){
+                    doc_data['attachment_data'] = fileData
+                }
+                btnStore = BiddingDataTableHandle.$tableDocument[0].querySelector(`.attach-file[data-id="${doc}"]`);
+            }
             if (btnStore) {
                 btnStore.setAttribute('data-store', JSON.stringify(dataStore));
             }
+            BiddingLoadDataHandle.$docDataScript.attr('data-doc-list',JSON.stringify(dataDocList))
         }
-        return true;
     };
 }
 
@@ -629,7 +793,6 @@ class BiddingSubmitHandle {
             let btnAttach = row.querySelector('.attach-file');
             let isManual= this.data().isManual
             let document_type_id = !isManual ? this.data().document_type : null
-            let id = this.data().id
             let remark = ''
             if (eleOrd && eleTitle && btnAttach) {
                 let attachment_data = [];
@@ -642,7 +805,6 @@ class BiddingSubmitHandle {
                     }
                 }
                 result.push({
-                    'id': id,
                     'title': eleTitle.innerHTML,
                     'remark':remark,
                     'document_type': document_type_id,
@@ -652,6 +814,26 @@ class BiddingSubmitHandle {
                 })
             }
         });
+        let attachment_data = []
+        let btnAttach = $('#btn-attach-invite-doc');
+        let remark = ''
+        if (btnAttach.attr('data-store')) {
+            let dataStore = JSON.parse(btnAttach.attr('data-store'));
+            remark = dataStore['remark']
+            attachment_data = dataStore?.['attachment_data'];
+            for (let attach of dataStore?.['attachment_data']) {
+                attachmentAll.push(attach?.['attachment']?.['id']);
+            }
+        }
+        result.push({
+            'title': '',
+            'remark':remark,
+            'attachment_data': attachment_data,
+            'is_invite_doc': true,
+            'isManual': true,
+            'document_type': null,
+            'order': 1
+        })
         return {'dataDoc': result, 'attachment': attachmentAll}
     };
 
@@ -669,13 +851,45 @@ class BiddingSubmitHandle {
         return result
     }
 
+    static setupDataBidder(){
+        let result = [];
+        BiddingDataTableHandle.$tableBidder.DataTable().rows().every(function () {
+            let data = {}
+            let row = this.node();
+            let isWon = row.querySelector('.bidder-checkbox').checked;
+            data['id'] = this.data().id ? this.data().id : null
+            data['bidder_account'] = this.data().bidder_account;
+            data['is_won'] = isWon;
+            result.push(data)
+        })
+        return result
+    }
+
+    static setupDataResult(){
+        let data = {}
+        data["id"] =  $.fn.getPkDetail()
+        data["other_bidder"] = BiddingSubmitHandle.setupDataBidder()
+        let causeOfLost = []
+         $('input[name="cause_of_lost"]').each(function () {
+            if ($(this).is(':checked')) {
+                causeOfLost.push($(this).val());
+            }
+        });
+        data["cause_of_lost"] = causeOfLost
+        data["bid_status"] = $('input[name="bid_status"]:checked').val();
+        data["other_cause"] = $('input[name="other_cause"]').val();
+        return data
+    }
+
     static setupDataSubmit(_form) {
         BiddingStoreHandle.storeAttachment();
         let dataDocParse = BiddingSubmitHandle.setupDataDocument();
         let dataPartner = BiddingSubmitHandle.setupDataPartner();
+        let dataOtherBidder = BiddingSubmitHandle.setupDataBidder()
         _form.dataForm['document_data'] = dataDocParse?.['dataDoc'];
         _form.dataForm['attachment'] = dataDocParse?.['attachment'];
         _form.dataForm['venture_partner'] = dataPartner
+        _form.dataForm['other_bidder'] = dataOtherBidder
         _form.dataForm['tinymce_content'] = BiddingTinymceHandle.getContent();
         if(!_form.dataForm?.['bid_date']){
             _form.dataForm['bid_date']=null
@@ -684,8 +898,16 @@ class BiddingSubmitHandle {
             _form.dataForm['bid_date'] = tmpDate.split('/').reverse().join('-');
         }
         _form.dataForm['bid_value'] = $('#bid-value').attr('value')
+        _form.dataForm['bid_bond_value'] = $('#bid-bond-value').attr('value')
         _form.dataForm['opportunity'] = _form.dataForm['opportunity_id']
         delete _form.dataForm['opportunity_id']
+        let causeOfLost = []
+         $('input[name="cause_of_lost"]').each(function () {
+            if ($(this).is(':checked')) {
+                causeOfLost.push($(this).val());
+            }
+        });
+        _form.dataForm['cause_of_lost'] = causeOfLost
     };
 }
 

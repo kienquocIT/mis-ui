@@ -1,19 +1,27 @@
 {% load i18n %}
 
-<div class="row">
+<div class="row pb-10">
     <div class="col-12 col-lg-7 border-right" id="content-area">
         <!-- bidding data -->
         <div>
             {% trans 'Select Sale Person' as inherit_title %}
-            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
-            <div class="form-group">
-                <label class="form-label required" for="bid-name">{% trans 'Bidding Name' %}</label>
-                <input type="text" class="form-control" name="title" id="bid-name" required >
+            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True opp_required=True %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label required" for="bid-name">{% trans 'Bidding Name' %}</label>
+                        <input type="text" class="form-control" name="title" id="bid-name" required >
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label class="form-label"
-                       for="bidding-customer">{% trans 'Customer' %}</label>
-                <input readonly disabled type="text" class="form-control form-control-line" name="bidding-customer" id="bidding-customer" >
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label"
+                               for="bidding-customer">{% trans 'Customer' %}</label>
+                        <input readonly disabled type="text" class="form-control form-control-line" name="bidding-customer" id="bidding-customer" >
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-12 col-lg-6">
@@ -31,10 +39,65 @@
                 <div class="col-12 col-lg-6">
                     <div class="form-group">
                         <label class="form-label required" for="bid-value">{% trans 'Bid Value' %}</label>
-                        <input required type="text" class="form-control mask-money" id="bid-value" name="bid_value">
+                        <input required class="form-control mask-money" id="bid-value" name="bid_value">
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-12 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label" for="bid-bond-value">{% trans 'Bid Bond Value' %}</label>
+                        <input class="form-control mask-money" id="bid-bond-value" name="bid_bond_value">
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 flex align-content-center">
+                    <div class="row">
+                        <div class="col-6 mt-lg-3">
+                            <div class="form-check">
+                                <input disabled readonly class="form-check-input" type="radio" name="security_type" id="bid-guarantee" value="2">
+                                <label class="form-check-label" for="bid-guarantee">
+                                    Letter of guarantee
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-6 mt-lg-3">
+                            <div class="form-check">
+                                <input disabled readonly class="form-check-input" type="radio" name="security_type" id="bid-deposit" value="1">
+                                <label class="form-check-label" for="bid-deposit">
+                                    Deposit
+                                </label>
+                            </div>
+                        </div>
+                    </div >
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="form-control rounded-5">
+                        <div class="row px-3">
+                            <div class="col-8">
+                                <label class="col-form-label required">{% trans 'Bidding Document' %}</label>
+                            </div>
+                            <div class="col-4 text-right">
+                                <button
+                                    id ="btn-attach-invite-doc"
+                                    type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover attach-file"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="bottom"
+                                    data-store=""
+                                    data-id="btn-attach-invite-doc"
+                                    data-is-manual="true"
+                                >
+                                        <span class="icon"><i class="fas fa-paperclip"></i></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <div class="separator"></div>
 
@@ -57,8 +120,8 @@
                 <tbody>
                 </tbody>
             </table>
-            <button type="button" class="btn btn-outline-primary" id="btn-open-venture-modal"
-                    data-bs-toggle="modal" data-bs-target="#modal-venture">
+            <button type="button" class="btn btn-outline-primary" id="btn-open-partner-modal"
+                    data-bs-toggle="modal" data-bs-target="#modal-account">
                 <span>
                     <span class="icon"><i class="fa-solid fa-plus"></i></span>
                     <span>{% trans 'Add' %}</span>
@@ -67,39 +130,167 @@
         </div>
         <div class="separator"></div>
 
-        <!-- document -->
-        <div class="form-group">
-            <label class="form-label fs-5" for="datatable-document">{% trans 'Required Documents' %}</label>
-            <table
-                    id="datatable-document"
-                    class="table nowrap w-100"
-            >
-                <thead>
-                    <tr class="bg-light">
-                        <th class="w-5"></th>
-                        <th class="w-75">{% trans 'Document name' %}</th>
-                        <th class="w-20">{% trans 'Action' %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button type="button" class="btn btn-outline-primary" id="btn-open-document-modal"
-                    data-bs-toggle="modal" data-bs-target="#modal-document">
-                <span>
-                    <span class="icon"><i class="fa-solid fa-plus"></i></span>
-                    <span>{% trans 'Add' %}</span>
-                </span>
-            </button>
+        <!-- tabs -->
+        <!-- tabs navigation -->
+        <div class="row">
+            <ul class="nav nav-light nav-tabs" id="bidding-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_bids">
+                        <span class="nav-link-text">{% trans 'Bids' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_result">
+                        <span class="nav-link-text">{% trans 'Result' %}</span>
+                    </a>
+                </li>
+            </ul>
         </div>
 
-         <!-- abstract -->
-        <div class="form-group">
-            <label class="form-label fs-5" for="inp-contents">{% trans 'Abstract' %}</label>
-            <textarea class="form-control" id="inp-contents"></textarea>
+        <!-- tabs content -->
+        <div class="tab-content" id="tab-content-bidding">
+            <div class="tab-pane fade show active" id="tab_bids" data-zone="bids_data">
+                <!-- document -->
+                <div class="form-group">
+                    <label class="form-label fs-5" for="datatable-document">{% trans 'Required Documents' %}</label>
+                    <table
+                            id="datatable-document"
+                            class="table nowrap w-100"
+                    >
+                        <thead>
+                            <tr class="bg-light">
+                                <th class="w-5"></th>
+                                <th class="w-75">{% trans 'Document name' %}</th>
+                                <th class="w-20">{% trans 'Action' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-outline-primary" id="btn-open-document-modal"
+                            data-bs-toggle="modal" data-bs-target="#modal-document">
+                        <span>
+                            <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                            <span>{% trans 'Add' %}</span>
+                        </span>
+                    </button>
+                </div>
+
+                 <!-- abstract -->
+                <div class="form-group">
+                    <label class="form-label fs-5" for="inp-contents">{% trans 'Abstract' %}</label>
+                    <textarea class="form-control" id="inp-contents"></textarea>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="tab_result" data-zone="results_data" disabled>
+
+                <!-- other bidder -->
+                <div>
+                    <div class="row">
+                        <div class="col-12 col-lg-10">
+                            <label class="form-label fs-5" for="datatable-bidder">{% trans 'Other Bidder' %}</label>
+                        </div>
+                        <div class="col-12 col-lg-2 text-right">
+                            <button class="btn btn-outline-primary" type="button" id="btn-save-result" disabled>
+                                <span>
+                                    <span>{% trans 'Save result' %}</span>
+                                    <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <table
+                            id="datatable-bidder"
+                            class="table nowrap w-100"
+                    >
+                        <thead>
+                            <tr class="bg-light">
+                                <th class="w-5"></th>
+                                <th class="w-15">{% trans 'Partner Code' %}</th>
+                                <th class="w-65">{% trans 'Partner Name' %}</th>
+                                <th class="w-5">{% trans 'Won' %}</th>
+                                <th class="w-10">{% trans 'Action' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <button disabled type="button" class="btn btn-outline-primary" id="btn-open-bidder-modal"
+                            data-bs-toggle="modal" data-bs-target="#modal-account">
+                        <span>
+                            <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                            <span>{% trans 'Add' %}</span>
+                        </span>
+                    </button>
+                </div>
+                <div class="separator"></div>
+
+                <!-- bids result status -->
+                <div class="row">
+                    <div class="col-12 col-lg-6">
+                        <div class="row">
+                            <div class="col-12">
+                                <label class="form-label">{% trans 'Bids result' %}</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-6 mt-lg-3">
+                                    <div class="form-check">
+                                        <input disabled class="form-check-input" type="radio" name="bid_status" id="bid-status-won" value="1">
+                                        <label class="form-check-label" for="bid-status-won">
+                                            Won
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6 mt-lg-3">
+                                    <div class="form-check">
+                                        <input disabled class="form-check-input" type="radio" name="bid_status" id="bid-status-lost" value="2">
+                                        <label class="form-check-label" for="bid-status-lost">
+                                            Lost
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div >
+                    </div>
+                    <div class="col-12 col-lg-6" id="cause-of-lost" hidden>
+                        <div class="form-group">
+                            <label class="form-label" >{% trans 'Cause of lost' %}</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cause-withdrawal" name="cause_of_lost" value="1">
+                                <label class="form-check-label" for="cause-withdrawal">{% trans 'Bids withdrawal' %}</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cause-price" name="cause_of_lost" value="2">
+                                <label class="form-check-label" for="cause-price">{% trans 'Higher bid price' %}</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cause-non-compliance" name="cause_of_lost" value="3">
+                                <label class="form-check-label" for="cause-non-compliance">{% trans 'Non-compliance' %}</label>
+                            </div>
+
+                             <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cause-other" name="cause_of_lost" value="4">
+                                <label class="form-check-label" for="cause-other">{% trans 'Other reasons' %}</label>
+                            </div>
+
+                            <div class="form-group mt-2">
+                                <label class="form-check-label" for="cause-other-input" hidden></label>
+                                <input  id="cause-other-input" type="text" class="form-control" name="other_cause" placeholder="Please specify" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
     </div>
-    <div class="col-12 col-lg-5" id="file-area">
+    <div class="col-12 col-lg-5" id="file-area" style="position: sticky; top: 0; align-self: start">
         <!-- description -->
         <div class="form-group">
             <label class="form-label" for="bidding-doc-remark">{% trans 'Description' %}</label>
@@ -136,11 +327,19 @@
             data-trans-confirm-delete="{% trans 'Deleting Document Will Empty File Data!' %}"
             data-trans-delete="{% trans 'Delete' %}"
             data-trans-cancel="{% trans 'Cancel' %}"
+            data-trans-modal-venture-title = "{% trans 'Select Joint Venture Partner' %}"
+            data-trans-modal-bidder-title = "{% trans 'Select Other Bidder' %}"
     ></script>
     <input
+            hidden
             type="text"
             id="app-url-factory"
             data-md-account="{% url 'AccountForBiddingListAPI' %}"
             data-md-document="{% url 'DocumentMasterDataBiddingListAPI' %}"
+            data-md-result = "{% url 'BiddingResultAPI'%}"
     >
+    <script id="doc-data-script"
+        data-doc-list="[]"
+    ></script>
+    {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}

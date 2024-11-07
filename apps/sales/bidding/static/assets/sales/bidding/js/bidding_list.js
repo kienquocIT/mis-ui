@@ -32,7 +32,7 @@ $(document).ready(function () {
                         width: '20%',
                         render: (data, type, row) => {
                             const link = urlDetail.replace('0', row.id);
-                            return `<span class="text-primary fw-bold">${row?.['title']}</span> ${$x.fn.buttonLinkBlank(link)}`
+                            return `<a href=${link} class="text-primary fw-bold">${row?.['title']}</a> ${$x.fn.buttonLinkBlank(link)}`
                         }
                     },
                     {
@@ -65,13 +65,13 @@ $(document).ready(function () {
                                 transScript.attr('data-trans-waiting'),
                                 transScript.attr('data-trans-won'),
                                 transScript.attr('data-trans-lost'),
-                            ][parseInt(row?.['status'])]
+                            ][parseInt(row?.['bid_status'])]
 
                             let color = [
                                 'badge badge-soft-warning',
                                 'badge badge-soft-success',
                                 'badge badge-soft-danger',
-                            ][parseInt(row?.['status'])]
+                            ][parseInt(row?.['bid_status'])]
 
                             return `<span class="${color}">${sttTxt}</span>`;
                         }

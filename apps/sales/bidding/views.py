@@ -65,7 +65,9 @@ class BiddingCreate(View):
     )
     def get(self, request, *args, **kwargs):
         ctx = {
-            # "list_from_app": 'bidding.bidding.create',
+            "list_from_app": 'bidding.bidding.create',
+            'input_mapping_properties': InputMappingProperties.BIDDING_DATA_MAP,
+            'form_id': 'frm_bidding_create'
         }
         return ctx, status.HTTP_200_OK
 
@@ -81,6 +83,9 @@ class BiddingDetail(View):
     def get(self, request, pk, *args, **kwargs):
         return {
             'data': {'doc_id': pk},
+            'input_mapping_properties': InputMappingProperties.BIDDING_DATA_MAP,
+            'form_id': 'frm_bidding_create',
+            'employee_current': request.user.employee_current_data,
         }, status.HTTP_200_OK
 
 class BiddingUpdate(View):
@@ -95,18 +100,13 @@ class BiddingUpdate(View):
     def get(self, request, pk, *args, **kwargs):
         return {
             'data': {'doc_id': pk},
-            # "list_from_app": 'bidding.bidding.edit',
+            "list_from_app": 'bidding.bidding.edit',
+            'input_mapping_properties': InputMappingProperties.BIDDING_DATA_MAP,
+            'form_id': 'frm_bidding_create',
+            'employee_current': request.user.employee_current_data,
         }, status.HTTP_200_OK
 
 class BiddingDetailAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.BIDDING_DETAIL.push_id(pk)).get()
-        return resp.auto_return()
-
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -127,13 +127,25 @@ class BiddingDetailAPI(APIView):
             msg=SaleMsg.BIDDING_CREATE
         )
 
+class BiddingResultAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_bidding(
+            request=request,
+            url=ApiURL.BIDDING_RESULT,
+            msg=SaleMsg.BIDDING_CREATE
+        )
+
 class AccountForBiddingListAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        filter = request.query_params.dict()
+        data = request.query_params.dict()
         # if 'account_types_mapped__account_type_order' in filter:
         #     filter['account_types_mapped__account_type_order'] = int(filter['account_types_mapped__account_type_order'])
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.ACCOUNT_FOR_BIDDING_LIST).get(filter)
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.ACCOUNT_FOR_BIDDING_LIST).get(data)
         return resp.auto_return(key_success='account_for_bidding_list')
 
 class DocumentMasterDataBiddingListAPI(APIView):

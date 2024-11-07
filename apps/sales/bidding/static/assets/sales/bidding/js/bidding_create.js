@@ -1,6 +1,6 @@
 $(document).ready(function () {
     let formSubmit = $('#frm_bidding_create');
-
+    let transScript = $('#trans-script')
     $('#bid-date').each(function () {
         $(this).daterangepicker({
             singleDatePicker: true,
@@ -38,24 +38,39 @@ $(document).ready(function () {
         });
     }
 
-    BiddingDataTableHandle.dataTableVentureModal();
+    BiddingLoadDataHandle.$btnOpenPartnerModal.on('click', function () {
+        let title = transScript.attr('data-trans-modal-venture-title')
+        $('#modal-account').find('.modal-title').html(title)
+        $('#modal-account').attr('data-type', 'partner')
+        BiddingDataTableHandle.dataTableAccountModal(true);
+    })
 
     BiddingLoadDataHandle.$opportunitySelectEle.on('change', function () {
         BiddingLoadDataHandle.loadDataByOpportunity();
     });
 
-    BiddingLoadDataHandle.$btnAddVenture.on('click', function (e) {
+    BiddingLoadDataHandle.$btnAddAccount.on('click', function (e) {
         data = []
-        $("#venture-modal-table .form-check-checkbox:checked").each(function (e) {
+        $("#account-modal-table .form-check-checkbox:checked").each(function (e) {
             let selectedRow = $(this).closest("tr");
             let id = $(this).data('id');
-            data.push({
-                "partner_account": id,
-                "code": selectedRow.find(".table-row-code").text(),
-                "title": selectedRow.find(".table-row-title").text(),
-            })
+            let type = $(this).data('type');
+            if (type === "partner"){
+                data.push({
+                    "partner_account": id,
+                    "code": selectedRow.find(".table-row-code").text(),
+                    "title": selectedRow.find(".table-row-title").text(),
+                })
+                BiddingLoadDataHandle.loadAddVenture(data)
+            } else if(type === "bidder"){
+                data.push({
+                    "bidder_account": id,
+                    "code": selectedRow.find(".table-row-code").text(),
+                    "title": selectedRow.find(".table-row-title").text(),
+                })
+                BiddingLoadDataHandle.loadAddBidder(data)
+            }
         })
-        BiddingLoadDataHandle.loadAddVenture(data)
     })
 
     BiddingDataTableHandle.$tableVenture.on('click', '.del-row', function () {
@@ -63,13 +78,23 @@ $(document).ready(function () {
 
         let rowData = BiddingDataTableHandle.$tableVenture.DataTable().row(row).data();
 
-        let checkbox = BiddingDataTableHandle.$tableVentureModal.find(`input[type="checkbox"][data-id="${rowData.partner_account}"]`);
+        let checkbox = BiddingDataTableHandle.$tableAccountModal.find(`input[type="checkbox"][data-id="${rowData.partner_account}"]`);
         if (checkbox.length) {
             checkbox.prop('checked', false);
         }
-
         BiddingCommonHandle.commonDeleteRow(row, BiddingDataTableHandle.$tableVenture);
+    });
 
+    BiddingDataTableHandle.$tableBidder.on('click', '.del-row', function () {
+        let row = $(this).closest('tr');
+
+        let rowData = BiddingDataTableHandle.$tableBidder.DataTable().row(row).data();
+
+        let checkbox = BiddingDataTableHandle.$tableAccountModal.find(`input[type="checkbox"][data-id="${rowData.bidder_account}"]`);
+        if (checkbox.length) {
+            checkbox.prop('checked', false);
+        }
+        BiddingCommonHandle.commonDeleteRow(row, BiddingDataTableHandle.$tableBidder);
     });
 
     BiddingDataTableHandle.$tableDocument.on('click', '.del-row', function () {
@@ -95,7 +120,7 @@ $(document).ready(function () {
                 let row = $(this).closest('tr');
                 let rowData = BiddingDataTableHandle.$tableDocument.DataTable().row(row).data();
                 if (rowData.isManual) {
-                    let checkbox = BiddingDataTableHandle.$tableDocumentModalManual.find(`input[type="checkbox"][data-id="${rowData.document_type}"]`);
+                    let checkbox = BiddingDataTableHandle.$tableDocumentModalManual.find(`input[type="checkbox"][data-row-id="${rowData.id}"]`);
                     if (checkbox.length) {
                         checkbox.prop('checked', false);
                     }
@@ -110,28 +135,46 @@ $(document).ready(function () {
         })
     });
 
+    BiddingLoadDataHandle.$btnOpenDocModal.on('click',function (){
+        BiddingStoreHandle.storeAttachment()
+    })
+
     BiddingLoadDataHandle.$btnAddDoc.on('click', function () {
         data = []
+        let dataDocList = JSON.parse(BiddingLoadDataHandle.$docDataScript.attr('data-doc-list') || '[]')
+        console.log(dataDocList)
         $("#document-modal-table .form-check-checkbox:checked").each(function (e) {
             let selectedRow = $(this).closest("tr");
             let document_type = $(this).data('id');
+            let attachmentData =[]
+            if (dataDocList.find(item => item?.['document_type'] === document_type)){
+                attachmentData = dataDocList.find(item => item?.['document_type'] === document_type ).attachment_data
+            }
+
             data.push({
                 "document_type": document_type,
                 "title": selectedRow.find(".table-row-title").text(),
-                "attachment_data": [],
+                "attachment_data": attachmentData,
                 "isManual": false
             })
         })
         $("#document-modal-table-manual .form-check-checkbox:checked").each(function (e) {
             let selectedRow = $(this).closest("tr");
-            let document_type = $(this).data('id');
+            let id = $(this).data('row-id');
+            let attachmentData =[]
+            if (dataDocList.find(item => item?.['id'] === id)){
+                attachmentData = dataDocList.find(item => item?.['id'] === id).attachment_data
+            }
+
             data.push({
-                "document_type": document_type,
+                "id": id,
                 "title": selectedRow.find(".table-row-title").val(),
-                "attachment_data": [],
+                "attachment_data": attachmentData,
                 "isManual": true
             })
         })
+
+        BiddingLoadDataHandle.$fileArea.attr('doc-id',null);
         BiddingLoadDataHandle.loadAddDocument(data);
     })
 
@@ -139,11 +182,109 @@ $(document).ready(function () {
         BiddingLoadDataHandle.loadAddDocumentManual();
     })
 
+    $('#btn-attach-invite-doc').on('click', function () {
+        BiddingStoreHandle.storeAttachment()
+        BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
+            let row = this.node();
+            $(row).css('background-color', '');
+        });
+        $(this).closest('.form-control').css('background-color', '#ebfcf5');
+        let eleId = this.id
+        let isManual = this.getAttribute('data-is-manual')
+        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
+        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-is-manual', isManual);
+        BiddingLoadDataHandle.$remark[0].removeAttribute('readonly');
+        BiddingLoadDataHandle.$remark.val('');
+        BiddingLoadDataHandle.loadAddFile([]);
+        let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+        if (fileIds) {
+            fileIds.value = "";
+        }
+        if(!this.getAttribute('data-store')){
+            let data = {
+                "id": eleId,
+                "title": '',
+                "attachment_data": [],
+                "isManual": true
+            }
+            this.setAttribute('data-store', JSON.stringify(data))
+        }
+         if (fileIds) {
+             let dataStore = JSON.parse(this.getAttribute('data-store'));
+            BiddingLoadDataHandle.$remark.val(dataStore?.['remark']);
+            BiddingLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
+            let ids = [];
+            for (let fileData of dataStore?.['attachment_data']) {
+                ids.push(fileData?.['attachment']?.['id']);
+            }
+            let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+            fileIds.value = ids.join(',');
+            let attachmentParse = [];
+            for (let attachData of dataStore?.['attachment_data']) {
+                attachmentParse.push(attachData?.['attachment']);
+            }
+            // append html file again
+            BiddingLoadDataHandle.$attachment.empty().html(`${BiddingLoadDataHandle.$attachmentTmp.html()}`);
+            // init file again
+            new $x.cls.file(BiddingLoadDataHandle.$attachment).init({
+                name: 'attachment',
+                enable_edit: true,
+                enable_download: true,
+                data: attachmentParse,
+            });
+            // add event
+            let inputs = BiddingLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
+
+            inputs.forEach((input) => {
+                input.addEventListener('change', function () {
+                    let dataList = BiddingLoadDataHandle.loadSetupAddFile();
+                    BiddingLoadDataHandle.loadAddFile(dataList);
+                });
+            });
+         }
+         BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
+    });
+
+    $('#bid-bond-value').on('focus',function () {
+        $('#bid-guarantee').attr('disabled',false)
+        $('#bid-guarantee').attr('readonly',false)
+        $('#bid-deposit').attr('disabled',false)
+        $('#bid-deposit').attr('readonly',false)
+    })
+
     let validator = SetupFormSubmit.call_validate(formSubmit, {
+        rules: {
+            security_type: {
+                required: function (element) {
+                    const bidBondValue = $("#bid-bond-value").attr('value');
+                    const isSecurityChecked = $("input[name='security_type']:checked").length === 0
+                    return bidBondValue && isSecurityChecked
+                }
+            },
+            cause_of_lost: {
+                required: function (element) {
+                    const isLostStatusChecked = $("#bid-status-lost").is(":checked");
+                    const isCauseChecked = $("input[name='cause_of_lost']:checked").length === 0;
+                    return isLostStatusChecked && isCauseChecked
+                }
+            },
+        },
+        messages: {
+            security_type: {
+                required: "Please select a security type if Bid Bond Value has data."
+            },
+            cause_of_lost: {
+                required: "Please select at least a cause of lost if bid is lost."
+            }
+        },
         onsubmit: true,
         submitHandler: function (form, event) {
+            const bidBondValue = $("#bid-bond-value").attr('value');
+            const isSecurityChecked = $("input[name='security_type']:checked").length === 0
+            console.log(bidBondValue && isSecurityChecked)
             let _form = new SetupFormSubmit(formSubmit);
             BiddingSubmitHandle.setupDataSubmit(_form)
+
             let submitFields = [
                 'title',
                 'attachment',
@@ -153,33 +294,42 @@ $(document).ready(function () {
                 'bid_value' ,
                 'bid_date',
                 'employee_inherit_id',
-                'tinymce_content'
+                'tinymce_content',
+                'security_type',
+                'cause_of_lost',
+                'other_bidder',
+                'other_cause',
+                'bid_bond_value',
+                'bid_status'
             ]
             if (_form.dataForm) {
                 BiddingCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
-            WindowControl.showLoading()
-            $.fn.callAjax2(
-                {
-                    'url': formSubmit.attr('data-url'),
-                    'method': _form.dataMethod,
-                    'data': _form.dataForm,
-                    'isLoading': true
-                }
-            ).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && (data['status'] === 201 || data['status'] === 200)) {
-                        $.fn.notifyB({description: data.message}, 'success');
-                        setTimeout(() => {
-                            window.location.replace(_form.dataUrlRedirect);
-                        }, 3000);
-                    }
-                }, (err) => {
-                    WindowControl.hideLoading()
-                    $.fn.switcherResp(err);
-                    validator.showErrors(err?.data?.errors || {});
-                }
-            )
-        }
+            console.log(_form)
+            WFRTControl.callWFSubmitForm(_form)
+            // WindowControl.showLoading();
+            // $.fn.callAjax2(
+            //     {
+            //         'url': _form.dataUrl,
+            //         'method': _form.dataMethod,
+            //         'data': _form.dataForm,
+            //     }
+            // ).then(
+            //     (resp) => {
+            //         let data = $.fn.switcherResp(resp);
+            //         if (data && (data['status'] === 201 || data['status'] === 200)) {
+            //             $.fn.notifyB({description: data.message}, 'success');
+            //             setTimeout(() => {
+            //                 window.location.replace(_form.dataUrlRedirect);
+            //             }, 3000);
+            //         }
+            //     }, (err) => {
+            //         setTimeout(() => {
+            //             WindowControl.hideLoading();
+            //         }, 1000)
+            //         $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            //     }
+            // )
+        },
     })
 })

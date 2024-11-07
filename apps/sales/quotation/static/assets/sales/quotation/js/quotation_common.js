@@ -1100,6 +1100,7 @@ class QuotationLoadDataHandle {
                 $(row).find('td:eq(1)').attr('colspan', 2);
             }
             if (row.querySelector('.table-row-item')) {
+                QuotationLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '230px');
                 QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
@@ -2720,6 +2721,9 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
+            },
         });
     };
 

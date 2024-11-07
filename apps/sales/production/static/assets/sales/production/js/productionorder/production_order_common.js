@@ -7,9 +7,13 @@ class ProdOrderLoadDataHandle {
     static $dateStart = $('#date-start');
     static $dateEnd = $('#date-end');
     static $dateCreated = $('#date-created');
+    static $outsourcingArea = $('#outsourcing-area');
+
     static $boxType = $('#box-type');
     static $boxStatus = $('#box-status');
     static $boxProd = $('#box-product');
+    static $boxSupplier = $('#box-supplier');
+    static $boxPO = $('#box-po');
     static $boxUOM = $('#box-uom');
     static $boxWH = $('#box-warehouse');
     static $boxSO = $('#box-so');
@@ -112,6 +116,8 @@ class ProdOrderLoadDataHandle {
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
         ProdOrderLoadDataHandle.loadProductData();
         // ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true, 'bom_product__isnull': false, 'bom_product__opportunity_id__isnull': true});
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSupplier);
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxPO);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
@@ -165,13 +171,13 @@ class ProdOrderLoadDataHandle {
                         if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
                             ProdOrderDataTableHandle.$tableMain.DataTable().clear().draw();
                             if (data.bom_order_list.length > 0) {
-                                ProdOrderLoadDataHandle.loadAddDtbRows(ProdOrderLoadDataHandle.loadSetupBOM(data.bom_order_list[0]));
                                 let multi = 1;
                                 if (ProdOrderLoadDataHandle.$quantity) {
                                     multi = parseInt(ProdOrderLoadDataHandle.$quantity.val());
                                 }
                                 ProdOrderLoadDataHandle.$time.val(`${data.bom_order_list[0]?.['sum_time'] * multi}`);
                                 ProdOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data.bom_order_list[0]));
+                                ProdOrderLoadDataHandle.loadAddDtbRows(ProdOrderLoadDataHandle.loadSetupBOM(data.bom_order_list[0]));
                             }
                             WindowControl.hideLoading();
                         }
@@ -179,6 +185,7 @@ class ProdOrderLoadDataHandle {
                 }
             )
         }
+        return true;
     };
 
     static loadGetDataBOM() {
@@ -190,31 +197,48 @@ class ProdOrderLoadDataHandle {
 
     static loadSetupBOM(data) {
         let result = [];
+        ProdOrderLoadDataHandle.$outsourcingArea[0].setAttribute('hidden', 'true');
         let BOMtype = parseFloat(ProdOrderLoadDataHandle.$boxType.val());
-        for (let task of data?.['bom_task']) {  // task
-            let tool_list = [];
-            for (let tool of data?.['bom_tool']) {
-                if (tool?.['bom_task']?.['id'] === task?.['id']) {
-                    tool_list.push(tool?.['product_data']);
-                }
-            }
-            task['is_task'] = true;
-            task['task_order'] = task?.['order'];
-            task['tool_data'] = tool_list;
-            result.push(task);
-            for (let material of data?.['bom_material']) {
-                if (material?.['bom_task']?.['id'] === task?.['id']) {
-                    material['task_order'] = task?.['order'];
-                    if ([0, 1].includes(BOMtype)) {
-                        result.push(material);
+        if (data?.['for_outsourcing'] === false) {
+            for (let task of data?.['bom_task']) {  // task
+                let tool_list = [];
+                for (let tool of data?.['bom_tool']) {
+                    if (tool?.['bom_task']?.['id'] === task?.['id']) {
+                        tool_list.push(tool?.['product_data']);
                     }
-                    if (BOMtype === 2) {
-                        if (material?.['is_disassembly'] === true) {
+                }
+                task['is_task'] = true;
+                task['task_order'] = task?.['order'];
+                task['tool_data'] = tool_list;
+                result.push(task);
+                for (let material of data?.['bom_material']) {
+                    if (material?.['bom_task']?.['id'] === task?.['id']) {
+                        material['task_order'] = task?.['order'];
+                        if ([0, 1].includes(BOMtype)) {
                             result.push(material);
+                        }
+                        if (BOMtype === 2) {
+                            if (material?.['is_disassembly'] === true) {
+                                result.push(material);
+                            }
                         }
                     }
                 }
             }
+        }
+        if (data?.['for_outsourcing'] === true) {
+            for (let material of data?.['bom_material']) {
+                if ([0, 1].includes(BOMtype)) {
+                    result.push(material);
+                }
+                if (BOMtype === 2) {
+                    if (material?.['is_disassembly'] === true) {
+                        result.push(material);
+                    }
+                }
+            }
+            // ProdOrderLoadDataHandle.$quantity.val(quantity);
+            ProdOrderLoadDataHandle.$outsourcingArea[0].removeAttribute('hidden');
         }
         return result;
     };
@@ -244,10 +268,10 @@ class ProdOrderLoadDataHandle {
                 let cls = '';
                 if (dataRow?.['task_order']) {
                     cls = 'cl-' + String(dataRow?.['task_order']);
+                    row.classList.add(cls);
+                    row.classList.add('collapse');
+                    row.classList.add('show');
                 }
-                row.classList.add(cls);
-                row.classList.add('collapse');
-                row.classList.add('show');
             }
         }
         return true;

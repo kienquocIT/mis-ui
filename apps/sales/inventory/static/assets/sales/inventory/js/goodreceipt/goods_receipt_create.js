@@ -222,6 +222,7 @@ $(function () {
             rules: {
                 title: {
                     required: true,
+                    maxlength: 100,
                 },
             },
             errorClass: 'is-invalid cl-red',

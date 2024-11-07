@@ -25,6 +25,17 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'ProductListAPI' %}"
+        data-url-create="{% url 'ProductCreate' %}"
+        data-url-detail="{% url 'ProductDetail' '0' %}"
+        data-key-return="product_list"
+    ></script>
+    <script id="url_script"
+            data-url-currency="{% url 'CurrencyListAPI' %}"
+            data-url-unit="{% url 'BaseUnitListAPI' %}"
+    >
+    </script>
     <form id="form-create-product"
           data-method="POST"
           data-url="{% url "ProductListAPI" %}"
@@ -40,4 +51,5 @@
     <script src="{% static "vendors/dropify/dist/js/dropify.min.js" %}"></script>
     <script src="{% static "assets/js/masterdata/saledata/product/product_common.js" %}"></script>
     <script src="{% static "assets/js/masterdata/saledata/product/product_create.js" %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

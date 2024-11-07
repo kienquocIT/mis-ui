@@ -10,7 +10,7 @@ from apps.masterdata.saledata.views.accounts import (
     AccountDetail, AccountGroupListAPI, AccountGroupCreateAPI, AccountGroupDetailAPI, AccountForSaleListAPI
 )
 from apps.masterdata.saledata.views.balance_init import BalanceInitList, BalanceInitListAPI, \
-    ImportBalanceInitDBAPIViews, BalanceInitListAPIImportDB
+    ImportBalanceInitDBAPIViews, BalanceInitializationListImportDBAPI
 from apps.masterdata.saledata.views.budget_plan_config import BudgetPlanConfigList, BudgetPlanConfigListAPI, \
     ListCanViewCompanyBudgetPlanAPI, ListCanLockBudgetPlanAPI
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
@@ -26,13 +26,13 @@ from apps.masterdata.saledata.views.product import (
     UnitOfMeasureGroupListAPI, UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ProductCategoryDetailAPI,
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
     ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI, ProductForSaleDetailAPI,
-    ProductQuickCreateAPI
+    ProductQuickCreateAPI, ProductQuotationListLoadDBAPI, BaseUnitListAPI
 )
 from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
     CurrencyDetailAPI, SyncSellingRateWithVCB, PriceList, PriceListAPI, PriceListDetail, PriceDetailAPI,
     UpdateProductForPriceListAPI, PriceListDeleteProductAPI, ProductAddFromPriceListAPI, DeleteCurrencyFromPriceListAPI,
-    PriceDeleteAPI, PriceListUpdate
+    PriceDeleteAPI, PriceListUpdate, PriceListItemListImportDBAPI
 )
 from apps.masterdata.saledata.views.revenue_plan_config import RevenuePlanConfigList, RevenuePlanConfigListAPI
 from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, \
@@ -152,6 +152,7 @@ urlpatterns = [
         'masterdata/product-category/api/<str:pk>', ProductCategoryDetailAPI.as_view(),
         name='ProductCategoryDetailAPI'
     ),
+    path('base-unit/api', BaseUnitListAPI.as_view(), name='BaseUnitListAPI'),
     path(
         'masterdata/unit-of-measure/list/api', UnitOfMeasureListAPI.as_view(), name='UnitOfMeasureListAPI'
     ),
@@ -227,6 +228,16 @@ urlpatterns = [
         'create-product-from-price-list/api/<str:pk>',
         ProductAddFromPriceListAPI.as_view(),
         name='ProductAddFromPriceListAPI'
+    ),
+    path(
+        'price-list-item-import-db/api',
+        PriceListItemListImportDBAPI.as_view(),
+        name='PriceListItemListImportDBAPI'
+    ),
+    path(
+        'product-quotation-load-db/api',
+        ProductQuotationListLoadDBAPI.as_view(),
+        name='ProductQuotationListLoadDBAPI'
     ),
     path(
         'delete-currency-from-price-list/api/<str:pk>',
@@ -330,8 +341,9 @@ urlpatterns += [
         name='BalanceInitListAPI'
     ),
     path(
-        'balance-init-import-db/api', BalanceInitListAPIImportDB.as_view(),
-        name='BalanceInitListAPIImportDB'
+        'balance-init-import-db/api',
+        BalanceInitializationListImportDBAPI.as_view(),
+        name='BalanceInitializationListImportDBAPI'
     ),
 ]
 

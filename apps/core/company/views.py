@@ -72,7 +72,13 @@ class CompanyUpdate(View):
         menu_active='menu_company_update'
     )
     def get(self, request, pk, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PERIODS_CONFIG_LIST).get()
+        print(resp.result)
+        return {
+            'data': {
+                'current_period': resp.result
+            }
+        }, status.HTTP_200_OK
 
 
 class CompanyListAPI(APIView):

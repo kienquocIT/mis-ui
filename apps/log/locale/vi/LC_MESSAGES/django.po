@@ -18,3 +18,25 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
+msgid "Status of resolution"
+msgstr "Trạng thái giải quyết"
+
+#
+msgid "Done"
+msgstr "Hoàn tất"
+
+#
+msgid "In progress"
+msgstr "Đang xử lý"
+
+#
+msgid "Feedback"
+msgstr "Phản hồi"
+
+#
+msgid "Date of resolution"
+msgstr "Thời gian giải quyết"
+
+#
+msgid "Message after resolved"
+msgstr "Lời nhắn sau khi giải quyết xong"

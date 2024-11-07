@@ -17,6 +17,14 @@
 {% endblock %}
 
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'QuotationListAPI' %}"
+        data-url-create="{% url 'QuotationCreate' %}"
+        data-url-detail="{% url 'QuotationDetail' '0' %}"
+        data-key-return="quotation_list"
+    ></script>
+    {{ data.data.import_db_form_cfg | json_script:"import_db_form_cfg" }}
+
     <div class="row">
         <div class="col-12 col-md-6 col-lg-6">
             <ul class="nav nav-line nav-tabs nav-light justify-content-start quotation-tabs">
@@ -157,19 +165,19 @@
                     <div class="row">
                         <div class="row">
                             <ul class="nav nav-light nav-tabs" id="quotation-tabs">
-                                <li class="nav-item tab-detail">
+                                <li class="nav-item tab-detail" data-zone="quotation_products_data">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
                                         <span class="nav-link-text">{% trans 'Product' %}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item tab-cost">
+                                <li class="nav-item tab-cost" data-zone="quotation_costs_data">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_cost">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-dollar-sign"></i></span>
                                         <span class="nav-link-text">{% trans 'Cost' %}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item tab-expense">
+                                <li class="nav-item tab-expense" data-zone="quotation_expenses_data">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_expense">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-hand-holding-usd"></i></span>
                                         <span class="nav-link-text">{% trans 'Expense' %}</span>
@@ -185,14 +193,17 @@
                         </div>
 
                         <div class="tab-content" id="tab-content-quotation-product">
-                            <div
-                                    class="tab-pane fade show active" id="tab_line_detail"
-                                    data-zone="quotation_products_data"
-                            >
-                                <div class="row">
+                            <div class="tab-pane fade show active" id="tab_line_detail">
+                                <div class="row import-db-space">
+                                    {% include 'extends/import-datatable/button-import-db.html' %}
+                                    <script class="import-db-form-url"
+                                          data-import-db-method="POST"
+                                          data-import-db-url="{% url 'ProductQuotationListLoadDBAPI'%}"
+                                    ></script>
+                                    <script class="import_data_rows">[]</script>
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap min-w-1680p w-100 mb-5"
+                                            class="table nowrap min-w-1600p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr class="bg-light">
@@ -307,15 +318,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12 col-md-6 col-lg-6">
-                                        <button
-                                                type="button" class="btn btn-outline-primary" aria-expanded="false"
-                                                data-bs-toggle="dropdown" data-zone="quotation_products_data"
-                                        >
-                                            <span><span class="icon"><i
-                                                    class="fa-solid fa-plus"
-                                            ></i></span><span>{% trans 'New' %}</span><span class="icon"><i
-                                                    class="fas fa-angle-down fs-8 text-light"
-                                            ></i></span></span>
+                                        <button type="button" class="btn btn-outline-primary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="quotation_products_data">
+                                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'Add' %}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
                                         </button>
                                         <div class="dropdown-menu w-210p">
                                             <a
@@ -429,7 +433,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab_cost" data-zone="quotation_costs_data">
+                            <div class="tab-pane fade" id="tab_cost">
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-cost"
@@ -511,7 +515,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab_expense" data-zone="quotation_expenses_data">
+                            <div class="tab-pane fade" id="tab_expense">
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-expense"
@@ -814,7 +818,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title text-primary"><b>{% trans 'Select Quotation' %}</b></h5>
+                            <h5 class="modal-title"><b>{% trans 'Select Quotation' %}</b></h5>
                             <button
                                     type="button"
                                     class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
@@ -1017,12 +1021,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button
-                                    type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                            >{% trans 'Close' %}</button>
-                            <button
-                                    type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-save-product"
-                            >{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-save-product" data-zone="quotation_products_data">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -1032,12 +1032,11 @@
             <div
                     class="modal fade" id="selectProductModal" tabindex="-1"
                     role="dialog" aria-labelledby="selectProductModal"
-                    aria-hidden="true"
             >
                 <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title text-primary"><b>{% trans 'Select product' %}</b></h5>
+                            <h5 class="modal-title"><b>{% trans 'Select product' %}</b></h5>
                             <button
                                     type="button"
                                     class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
@@ -1045,6 +1044,9 @@
                             ><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
                         <div class="modal-body">
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addQuickProduct" data-zone="quotation_products_data">
+                                <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
+                            </button>
                             <table
                                     id="table-select-product"
                                     class="table nowrap w-100 mb-5"
@@ -1063,55 +1065,117 @@
                             </table>
                         </div>
                         <div class="modal-footer">
-                            <button
-                                    type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                            >{% trans 'Close' %}</button>
-                            <button
-                                    type="button" class="btn btn-primary" id="btn-save-select-product"
-                                    data-bs-dismiss="modal"
-                            >{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-product" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                    class="modal fade" id="selectPriceModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectPriceModal"
+            >
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select product price' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-price" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                    class="modal fade" id="selectCostModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectCostModal"
+            >
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select product cost' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_costs_data">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-cost" data-bs-dismiss="modal" data-zone="quotation_costs_data">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </form>
+
+    {% include 'extends/import-datatable/modal-import-db.html' %}
+    <table hidden data-table-id="datable-quotation-create-product-import-db" class="nowrap w-100 table mt-1">
+        <thead class="sticky">
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Product Code' %}</th>
+                <th>{% trans 'Product Name' %}</th>
+                <th>{% trans 'Description' %}</th>
+                <th>{% trans 'Product category' %}</th>
+                <th>{% trans 'Is service' %}</th>
+                <th>{% trans 'UoM' %}</th>
+                <th>{% trans 'Quantity' %}</th>
+                <th>{% trans 'Unit Price' %}</th>
+                <th>{% trans 'Discount' %} (%)</th>
+                <th>{% trans 'Tax' %}</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 {% endblock %}
 
 {% block dataHiddenGroup %}
     <input
-            type="text"
-            id="app-trans-factory"
-            data-check-if-shipping-address="{% trans 'Please select shipping address' %}"
-            data-select-address="{% trans 'Select this address' %}"
-            data-view-detail-info="{% trans 'View detail' %}"
-            data-btn-close="{% trans 'Close' %}"
-            data-more-information="{% trans 'More information' %}"
-            data-apply="{% trans 'Apply' %}"
-            data-refreshed="{% trans 'Data is refreshed.' %}"
-            data-valid="{% trans "Valid" %}"
-            data-required-product="{% trans "Product is required" %}"
-            data-required-expense="{% trans "Expense is required" %}"
-            data-required-product-uom="{% trans "Product unit of measure is required" %}"
-            data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
-            data-copy-successfully="{% trans "Copy successfully" %}"
-            data-validate-ss-role="{% trans "Opportunity is disabled because employee in short sales roles" %}"
-            data-add-new="{% trans "Add new" %}"
-            data-promotion="{% trans "Promotion" %}"
-            data-shipping="{% trans "Shipping fee" %}"
-            data-valid-price-uom="{% trans "Price is not valid for unit of measure" %}"
-            data-supplied-purchase="{% trans "Purchasing" %}"
-            data-supplied-make="{% trans "Making" %}"
-            data-discount-bt="{% trans "Discount before tax" %}"
-            data-discount-at="{% trans "Discount after tax" %}"
-            data-discount-product="{% trans "Discount on product" %}"
-            data-gift="{% trans "Gift" %}"
-            data-available="{% trans "Available" %}"
-            data-unavailable="{% trans "Unavailable" %}"
-            data-product-note-1="{% trans "Selected" %}"
-            data-product-note-2="{% trans "The product is in the design stage for another project" %}"
-            data-product-note-3="{% trans "The product does not have project BOM" %}"
-            data-product-note-4="{% trans "The product is only used for project sale" %}"
+        type="text"
+        id="app-trans-factory"
+        data-check-if-shipping-address="{% trans 'Please select shipping address' %}"
+        data-select-address="{% trans 'Select this address' %}"
+        data-view-detail-info="{% trans 'View detail' %}"
+        data-btn-close="{% trans 'Close' %}"
+        data-more-information="{% trans 'More information' %}"
+        data-apply="{% trans 'Apply' %}"
+        data-refreshed="{% trans 'Data is refreshed.' %}"
+        data-valid="{% trans "Valid" %}"
+        data-required-expense="{% trans "Expense is required" %}"
+        data-required-product-uom="{% trans "Product unit of measure is required" %}"
+        data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
+        data-copy-successfully="{% trans "Copy successfully" %}"
+        data-validate-ss-role="{% trans "Opportunity is disabled because employee in short sales roles" %}"
+        data-add-new="{% trans "Add new" %}"
+        data-promotion="{% trans "Promotion" %}"
+        data-shipping="{% trans "Shipping fee" %}"
+        data-valid-price-uom="{% trans "Price is not valid for unit of measure" %}"
+        data-supplied-purchase="{% trans "Purchasing" %}"
+        data-supplied-make="{% trans "Making" %}"
+        data-discount-bt="{% trans "Discount before tax" %}"
+        data-discount-at="{% trans "Discount after tax" %}"
+        data-discount-product="{% trans "Discount on product" %}"
+        data-gift="{% trans "Gift" %}"
+        data-available="{% trans "Available" %}"
+        data-unavailable="{% trans "Unavailable" %}"
+        data-product-note-1="{% trans "Selected" %}"
+        data-product-note-2="{% trans "The product is in the design stage for another project" %}"
+        data-product-note-3="{% trans "The product does not have project BOM" %}"
+        data-product-note-4="{% trans "The product is only used for project sale" %}"
+        data-product-no-cost="{% trans "The product does not have warehouse cost list. You can choose bill of material cost, standard cost or input cost." %}"
+        data-cost-bom="{% trans "Bill of material cost" %}"
+        data-cost-standard="{% trans "Standard cost" %}"
+        data-required-customer="{% trans "Customer is required" %}"
+        data-required-contact="{% trans "Contact is required" %}"
+        data-required-payment="{% trans "Payment is required" %}"
+        data-required-product="{% trans "Product is required" %}"
     >
     <input
             type="text"
@@ -1269,4 +1333,8 @@
             }).init();
         })
     </script>
+
+    <script src="{% static 'assets/js/xlsx-0.18.5.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/import-datatable.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

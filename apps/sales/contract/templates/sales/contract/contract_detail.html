@@ -26,72 +26,123 @@
     >
         {% csrf_token %}
         <div class="row">
-            <div class="col-12 col-md-7 col-lg-7 border-right">
-                <div class="form-group">
-                    <label class="form-label required" for="contract-title">{% trans 'Title' %}</label>
-                    <input
-                            type="text" class="form-control"
-                            name="title"
-                            id="contract-title"
-                            required
-                            readonly
-                    >
-                </div>
-                <label class="form-label required">{% trans 'Document' %}</label>
-                <table
-                    id="datable-contract-document"
-                    class="table nowrap w-100"
-                    data-url=""
-                    data-method="GET"
-                    data-zone="document_data"
+            {% trans 'Select Sale Person' as inherit_title %}
+            {% include 'extends/the-documents/bastion.html' with has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
+            <div class="form-group">
+                <label class="form-label required" for="contract-title">{% trans 'Title' %}</label>
+                <input
+                        type="text" class="form-control"
+                        name="title"
+                        id="contract-title"
+                        readonly
                 >
-                    <thead>
-                    <tr class="bg-light">
-                        <th></th>
-                        <th>{% trans 'Document name' %}</th>
-                        <th>{% trans 'Action' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-                <div class="form-group">
-                    <label class="form-label" for="inp-contents">{% trans 'Abstract' %}</label>
-                    <textarea class="form-control" id="inp-contents"></textarea>
+            </div>
+            <label class="form-label required">{% trans 'Document' %}</label>
+            <table
+                id="datable-contract-document"
+                class="table nowrap w-100"
+                data-url=""
+                data-method="GET"
+                data-zone="document_data"
+            >
+                <thead>
+                <tr class="bg-light">
+                    <th></th>
+                    <th>{% trans 'Document name' %}</th>
+                    <th>{% trans 'Action' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row" id="tabs-area">
+            <ul class="nav nav-light nav-tabs">
+                <li class="nav-item" data-zone="abstract_content">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_abstract">
+                        <span class="nav-icon-wrap mr-1"><i class="fas fa-file-contract"></i></span>
+                        <span class="nav-link-text">{% trans 'Abstract' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-zone="trade_content">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_trade">
+                        <span class="nav-icon-wrap mr-1"><i class="fas fa-file-invoice-dollar"></i></span>
+                        <span class="nav-link-text">{% trans 'Trade review' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-zone="legal_content">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_legal">
+                        <span class="nav-icon-wrap mr-1"><i class="fas fa-balance-scale"></i></span>
+                        <span class="nav-link-text">{% trans 'Legal review' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-zone="payment_content">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_payment">
+                        <span class="nav-icon-wrap mr-1"><i class="fas fa-receipt"></i></span>
+                        <span class="nav-link-text">{% trans 'Payment review' %}</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab_abstract">
+                    <textarea class="form-control" id="abstract-content"></textarea>
+                </div>
+                <div class="tab-pane fade" id="tab_trade">
+                    <textarea class="form-control" id="trade-content"></textarea>
+                </div>
+                <div class="tab-pane fade" id="tab_legal">
+                    <textarea class="form-control" id="legal-content"></textarea>
+                </div>
+                <div class="tab-pane fade" id="tab_payment">
+                    <textarea class="form-control" id="payment-content"></textarea>
                 </div>
             </div>
-            <div class="col-12 col-md-5 col-lg-5" id="file-area">
-                <div class="form-group">
-                    <label class="form-label" for="contract-doc-remark">{% trans 'Description' %}</label>
-                    <textarea class="form-control" rows="3" id="contract-doc-remark" name="remarks" readonly></textarea>
+
+        </div>
+
+
+        <button class="btn btn-outline-primary ntt-drawer-toggle-link btn-create-todo"
+                id="btn-open-attachment"
+                type="button"
+                data-drawer-target="#drawer_contract_data"
+                data-drawer-active="false"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                data-bs-original-title="{% trans 'Create' %}"
+                hidden
+        >
+        </button>
+        <div
+                data-simplebar
+                class="ntt-drawer ntt-drawer-right nicescroll-bar"
+                data-drawer-width="600"
+                data-drawer-push="true"
+                id="drawer_contract_data"
+        >
+            <div class="ntt-drawer-header h-40p">
+                <div>
+                    <span class="ntt-drawer-header-text">{% trans 'Attachment' %}</span>
                 </div>
-                <label class="form-label">{% trans 'Attachment' %}</label>
-                <div id="attachment" hidden>
-                    {% include 'extends/files/all.html' %}
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lgb ntt-drawer-close" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="ntt-drawer-body">
+                <div class="row" id="file-area">
+                    <div class="form-group">
+                        <label class="form-label" for="contract-doc-remark">{% trans 'Description' %}</label>
+                        <textarea class="form-control" rows="3" id="contract-doc-remark" name="remarks" readonly></textarea>
+                    </div>
+                    <label class="form-label">{% trans 'Attachment' %}</label>
+                    <div id="attachment" hidden>
+                        {% include 'extends/files/all.html' %}
+                    </div>
+                    <div id="attachment-tmp" hidden>
+                        {% include 'extends/files/all.html' %}
+                    </div>
                 </div>
-                <div id="attachment-tmp" hidden>
-                    {% include 'extends/files/all.html' %}
-                </div>
-                <table
-                    id="datable-contract-file"
-                    class="table nowrap w-100"
-                    data-url=""
-                    data-method="GET"
-                    data-zone="attachment"
-                >
-                    <thead>
-                    <tr class="bg-light">
-                        <th>{% trans 'File name' %}</th>
-                        <th>{% trans 'Version' %}</th>
-                        <th>{% trans 'Date' %}</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
             </div>
         </div>
+
     </form>
 
     <div class="p-3 mt-5">
@@ -117,6 +168,7 @@
     <input
         type="text"
         id="app-url-factory"
+        data-preview-attach="{% url 'AttachmentPreview' 1 %}"
     >
     {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}
@@ -124,11 +176,10 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/sales/contract/js/contract_common.js' %}"></script>
     <script src="{% static 'assets/sales/contract/js/contract_create.js' %}"></script>
     <script src="{% static 'assets/sales/contract/js/contract_detail.js' %}"></script>
-    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script>
         $(document).ready(function (){
             $('#btn-show-comment').on('click', function (){

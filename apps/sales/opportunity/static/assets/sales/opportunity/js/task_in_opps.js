@@ -157,11 +157,11 @@ class checklistHandle {
     }
 }
 
-function TaskSubmitFunc(platform, callBackFunc) {
+function TaskSubmitFuncOpps(platform, callBackFunc) {
     let _form = new SetupFormSubmit(platform);
     let formData = _form.dataForm
-    const start_date = new Date(formData.start_date).getDate()
-    const end_date = new Date(formData.end_date).getDate()
+    const start_date = new Date(moment(formData.start_date, 'DD/MM/YYYY')).getTime()
+    const end_date = new Date(moment(formData.end_date, 'DD/MM/YYYY')).getTime()
     if (end_date < start_date) {
         $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
         return false
@@ -208,9 +208,7 @@ function TaskSubmitFunc(platform, callBackFunc) {
         'url': url,
         'method': 'POST',
         'data': formData,
-        'sweetAlertOpts': {
-            'allowOutsideClick': true
-        }
+        'sweetAlertOpts': { 'allowOutsideClick': true}
     }).then(
         (resp) => {
             const data = $.fn.switcherResp(resp);
@@ -227,7 +225,7 @@ function TaskSubmitFunc(platform, callBackFunc) {
 }
 
 class Task_in_opps {
-    static init(opps_info, selfCallBack) {
+    static init(opps_info) {
         let $empElm = $('#employee_inherit_id')
         const $form = $('#formOpportunityTask')
 
@@ -247,7 +245,7 @@ class Task_in_opps {
                 locale: {
                     format: 'DD/MM/YYYY'
                 }
-            })
+            }).val('').trigger('change')
         })
 
         // init ASSIGNER
@@ -346,13 +344,5 @@ class Task_in_opps {
         // init attachment
         new $x.cls.file($('#attachment')).init({'name': 'attach'});
 
-        // validate form
-        $form.on('submit', function(e){
-            e.preventDefault();
-            SetupFormSubmit.validate($form, {
-                errorClass: 'is-invalid cl-red',
-                submitHandler: TaskSubmitFunc($form, selfCallBack)
-            })
-        });
     }
 }

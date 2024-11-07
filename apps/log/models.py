@@ -33,6 +33,8 @@ class TicketLog(models.Model):
     hash_tags = models.TextField()
 
     resolve_state = models.BooleanField(default=False)
+    resolve_date = models.DateTimeField(null=True)
+    resolve_msg = models.TextField(blank=True)
 
     date_created = models.DateTimeField(verbose_name='date created', default=timezone.now, editable=False)
 

@@ -1146,8 +1146,6 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
 }
 
 .table-responsive-x-100-y-max thead tr {
-    background-color: white;
-    color: black;
     position: sticky;
     top: 0;
 }
@@ -1159,8 +1157,6 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
 }
 
 .table-responsive-x100-y35 thead tr {
-    background-color: white;
-    color: black;
     position: sticky;
     top: 0;
     z-index: 9999;
@@ -1173,8 +1169,6 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
 }
 
 .table-responsive-x100-y50 thead tr {
-    background-color: white;
-    color: black;
     position: sticky;
     top: 0;
     z-index: 9999;

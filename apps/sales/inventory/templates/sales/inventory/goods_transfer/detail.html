@@ -40,6 +40,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'GoodsTransferListAPI' %}"
+        data-url-create="{% url 'GoodsTransferCreate' %}"
+        data-url-detail="{% url 'GoodsTransferDetail' '0' %}"
+        data-key-return="goods_transfer_list"
+    ></script>
     {% include 'printer/print.html' %}
     {{ data.is_project | json_script:"is_project" }}
     <script id="trans-script"
@@ -275,6 +281,7 @@
     <script src="{% static 'assets/sales/inventory/js/goods_transfer/detail.js' %}"></script>
 
     <script src="{% static 'printer/print.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
     <script>
         $(document).ready(function () {
             $('#print-document').on('click', function () {

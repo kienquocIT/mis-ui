@@ -45,6 +45,9 @@ $(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
+        // workflow init
+        WFRTControl.setWFInitialData("goodsreceipt");
+
         GRLoadDataHandle.typeSelectEle.on('change', function () {
             GRLoadDataHandle.loadCustomAreaByType();
         });
@@ -215,10 +218,23 @@ $(function () {
         });
 
 // SUBMIT FORM
-        formSubmit.submit(function (e) {
-            e.preventDefault();
+        SetupFormSubmit.validate(formSubmit, {
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 100,
+                },
+            },
+            errorClass: 'is-invalid cl-red',
+            submitHandler: submitHandlerFunc
+        });
+
+        function submitHandlerFunc() {
             let _form = new SetupFormSubmit(formSubmit);
-            GRSubmitHandle.setupDataSubmit(_form);
+            let result = GRSubmitHandle.setupDataSubmit(_form);
+            if (result === false) {
+                return false;
+            }
             let submitFields = [
                 'goods_receipt_type',
                 'title',
@@ -257,7 +273,7 @@ $(function () {
                 filterFieldList(submitFields, _form.dataForm);
             }
             WFRTControl.callWFSubmitForm(_form);
-        });
+        }
 
 
     });

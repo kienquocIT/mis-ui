@@ -89,7 +89,6 @@ $(document).ready(function () {
         periodMonthEle.empty();
         periodMonthEle.initSelect2({
             data: data,
-            allowClear: true,
             templateResult: function (state) {
                 let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
                 return $(`<span>${state.text} ${groupHTML}</span>`);
@@ -97,10 +96,10 @@ $(document).ready(function () {
         });
     }
 
-    function LoadPeriod(data) {
-        periodEle.initSelect2({
+    function LoadPeriod(ele, data) {
+        ele.initSelect2({
             ajax: {
-                url: periodEle.attr('data-url'),
+                url: ele.attr('data-url'),
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
@@ -117,13 +116,13 @@ $(document).ready(function () {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            let selected_option = SelectDDControl.get_data_from_idx(periodEle, periodEle.val())
+            let selected_option = SelectDDControl.get_data_from_idx(ele, ele.val())
             if (selected_option) {
                 getMonthOrder(selected_option['space_month'], selected_option?.['fiscal_year'])
             }
         })
     }
-    LoadPeriod(current_period)
+    LoadPeriod(periodEle, current_period)
 
     function LoadItemsSelectBox(ele, data) {
         ele.initSelect2({
@@ -167,23 +166,27 @@ $(document).ready(function () {
 
     function LoadProjectSelectBox(ele, data) {
         ele.prop('disabled', $is_project !== 'true')
-        ele.initSelect2({
-            allowClear: true,
-            ajax: {
-                url: ele.attr('data-url') + `?has_regis=1`,
-                method: 'GET',
-            },
-            templateResult: function(data) {
-                let ele = $('<div class="row"></div>');
-                ele.append(`<div class="col-9"><span class="badge badge-soft-primary">${data.data?.['code']}</span>&nbsp;&nbsp;&nbsp;${data.data?.['title']}</div>
+        ele.closest('.project-filter').prop('hidden', $is_project !== 'true')
+        if ($is_project === 'true') {
+            ele.initSelect2({
+                allowClear: true,
+                ajax: {
+                    url: ele.attr('data-url') + `?has_regis=1`,
+                    method: 'GET',
+                },
+                templateResult: function (data) {
+                    let ele = $('<div class="row"></div>');
+                    ele.append(`<div class="col-9"><span class="badge badge-soft-primary">${data.data?.['code']}</span>&nbsp;&nbsp;&nbsp;${data.data?.['title']}</div>
                             <div class="col-3"><span class="badge badge-soft-blue badge-sm">${data.data?.['opportunity']?.['code']}</span></div>`);
-                return ele;
-            },
-            data: (data ? data : null),
-            keyResp: 'sale_order_list',
-            keyId: 'id',
-            keyText: 'code',
-        }).on('change', function () {})
+                    return ele;
+                },
+                data: (data ? data : null),
+                keyResp: 'sale_order_list',
+                keyId: 'id',
+                keyText: 'code',
+            }).on('change', function () {
+            })
+        }
     }
     LoadProjectSelectBox(project_select_Ele)
 
@@ -191,14 +194,17 @@ $(document).ready(function () {
         table.DataTable().clear().destroy()
         let sale_order_code_list = []
         table.DataTableDefault({
-            dom: '',
+            styleDom: 'hide-foot',
+            scrollY: '64vh',
+            scrollX: true,
+            scrollCollapse: true,
             ordering: false,
             paging: false,
             reloadCurrency: true,
             data: data_list,
             columns: [
                 {
-                    className: '',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['sale_order_code']) {
                             if (!sale_order_code_list.includes(`${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']}`)) {
@@ -210,11 +216,11 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: '',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
                             if (row?.['warehouse_title']) {
-                                return `<button type="button" data-bs-toggle="modal" data-bs-target="#view-prd-wh" data-wh-id="${row?.['warehouse_id']}" class="prd-wh-view btn btn-primary btn-rounded w-25">
+                                return `<button type="button" data-bs-toggle="modal" data-bs-target="#view-prd-wh" data-wh-id="${row?.['warehouse_id']}" class="prd-wh-view btn btn-primary btn-sm btn-rounded w-25">
                                             <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="Click to see detail this warehouse">${row?.['warehouse_code']}</span>
                                         </button>&nbsp;
                                         <span class="text-primary ${row?.['type']}"><b>${row?.['warehouse_title']}</b></span>`
@@ -222,11 +228,21 @@ $(document).ready(function () {
                         }
                         if (row?.['type'] === 'product_row') {
                             let html = `
-                                    <span class="badge badge-light badge-pill w-25">
-                                        ${row?.['product_code']}
-                                    </span>&nbsp;
-                                    <span class="${row?.['type']}">${row?.['product_title']}</span>&nbsp;
-                                    `
+                                <a tabindex="0" href="#"
+                                    data-bs-placement="top"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover focus"
+                                    data-bs-html="true"
+                                    data-bs-content="
+                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-code')}</span>: <span class='badge badge-primary badge-sm'>${row?.['product_code']}</span>
+                                    <br>
+                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-vm')}</span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}<span>
+                                    "
+                                    class="popover-prd text-secondary">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                                <span class="${row?.['type']}">${row?.['product_title']}</span>&nbsp;
+                            `
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
                             }
@@ -239,7 +255,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'product_row') {
                             return `<span class="text-secondary">${row?.['uom_title']}</span>`
@@ -248,7 +264,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             return `<span>${row?.['date']}</span>`
@@ -257,7 +273,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             if (row?.['lot_number']) {
@@ -268,7 +284,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'text-center',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             if (row?.['expired_date']) {
@@ -279,97 +295,98 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
-                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-opening-quantity-span wh-open-quantity-${row?.['warehouse_id']}">0</span></b>`
+                            return `
+                                <div class="row">
+                                    <div class="col-4"><span class="text-primary fw-bold wh-opening-quantity-span wh-open-quantity-${row?.['warehouse_id']}">0</span></div>
+                                    <div class="col-8"><span class="text-primary fw-bold wh-opening-value-span mask-money wh-open-value-${row?.['warehouse_id']}" data-init-money="0"></span></div>
+                                </div>
+                                `
                         }
                         if (row?.['type'] === 'product_row') {
-                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill opening-quantity-span prd-open-quantity-${row?.['warehouse_id']}">${row?.['prd_open_quantity']}</span>`
+                            return `
+                                <div class="row">
+                                    <div class="col-4"><span class="text-secondary opening-quantity-span prd-open-quantity-${row?.['warehouse_id']}">${row?.['prd_open_quantity']}</span></div>
+                                    <div class="col-8"><span class="text-secondary opening-value-span mask-money prd-open-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_open_value']}"></span></div>
+                                </div>`
                         }
                         return ``
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
-                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-opening-value-span mask-money wh-open-value-${row?.['warehouse_id']}" data-init-money="0"></span></b>`
+                            return `
+                                <div class="row">
+                                    <div class="col-4"><span class="text-primary fw-bold wh-in-quantity-span wh-in-quantity-${row?.['warehouse_id']}">0</span></div>
+                                    <div class="col-8"><span class="text-primary fw-bold wh-in-value-span wh-in-value-${row?.['warehouse_id']} mask-money" data-init-money="0"></span></div>
+                                </div>
+                            `
                         }
                         if (row?.['type'] === 'product_row') {
-                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill opening-value-span mask-money prd-open-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_open_value']}"></span>`
+                            return `
+                                <div class="row">
+                                    <div class="col-4"><span class="text-secondary in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['prd_in_quantity']}</span></div>
+                                    <div class="col-8"><span class="text-secondary in-quantity-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_in_value']}"></span></div>
+                                </div>
+                            `
                         }
-                        return ``
+                        return `
+                                <div class="row">
+                                    <div class="col-4"><span class="text-secondary in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['in_quantity']}</span></div>
+                                    <div class="col-8"><span class="text-secondary in-quantity-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['in_value']}"></span></div>
+                                </div>
+                        `
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
-                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill text-primary wh-in-quantity-span wh-in-quantity-${row?.['warehouse_id']}">0</span></b>`
+                            return `
+                                <div class="row">
+                                    <div class="col-4"><span class="text-primary fw-bold wh-out-quantity-span wh-out-quantity-${row?.['warehouse_id']}">0</span></div>
+                                    <div class="col-8"><span class="text-primary fw-bold wh-out-value-span mask-money wh-out-value-${row?.['warehouse_id']}" data-init-money="0"></span></div>
+                                </div>
+                            `
                         }
                         if (row?.['type'] === 'product_row') {
-                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['prd_in_quantity']}</span>`
+                            return `                                
+                                <div class="row">
+                                    <div class="col-4"><span class="text-secondary out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['prd_out_quantity']}</span></div>
+                                    <div class="col-8"><span class="text-secondary out-quantity-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_out_value']}"></span></div>
+                                </div>
+                            `
                         }
-                        return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['in_quantity']}</span>`
+                        return `                                
+                            <div class="row">
+                                <div class="col-4"><span class="text-secondary out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['out_quantity']}</span></div>
+                                <div class="col-8"><span class="text-secondary out-quantity-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['out_value']}"></span></div>
+                            </div>
+                        `
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
-                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-in-value-span mask-money wh-in-value-${row?.['warehouse_id']}" data-init-money="0"></span></b>`
+                            return `
+                                <div class="row">
+                                    <div class="col-4"><span class="text-primary fw-bold wh-ending-quantity-span wh-end-quantity-${row?.['warehouse_id']}">0</span></div>
+                                    <div class="col-8"><span class="text-primary fw-bold wh-ending-value-span mask-money wh-end-value-${row?.['warehouse_id']}" data-init-money="0"></span></div>
+                                </div>
+                            `
                         }
                         if (row?.['type'] === 'product_row') {
-                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill in-quantity-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_in_value']}"></span>`
-                        }
-                        return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill in-quantity-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['in_value']}"></span>`
-                    }
-                },
-                {
-                    className: 'text-right',
-                    render: (data, type, row) => {
-                        if (row?.['type'] === 'warehouse_row') {
-                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-out-quantity-span wh-out-quantity-${row?.['warehouse_id']}">0</span></b>`
-                        }
-                        if (row?.['type'] === 'product_row') {
-                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['prd_out_quantity']}</span>`
-                        }
-                        return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['out_quantity']}</span>`
-                    }
-                },
-                {
-                    className: 'text-right',
-                    render: (data, type, row) => {
-                        if (row?.['type'] === 'warehouse_row') {
-                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-out-value-span mask-money wh-out-value-${row?.['warehouse_id']}" data-init-money="0"></span></b>`
-                        }
-                        if (row?.['type'] === 'product_row') {
-                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill out-quantity-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_out_value']}"></span>`
-                        }
-                        return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill out-quantity-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['out_value']}"></span>`
-                    }
-                },
-                {
-                    className: 'text-right',
-                    render: (data, type, row) => {
-                        if (row?.['type'] === 'warehouse_row') {
-                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-ending-quantity-span wh-end-quantity-${row?.['warehouse_id']}">0</span></b>`
-                        }
-                        if (row?.['type'] === 'product_row') {
-                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill ending-quantity-span prd-end-quantity-${row?.['warehouse_id']}">${row?.['prd_end_quantity']}</span>`
-                        }
-                        return ``
-                    }
-                },
-                {
-                    className: 'text-right',
-                    render: (data, type, row) => {
-                        if (row?.['type'] === 'warehouse_row') {
-                            return `<b><span style="font-size: medium" class="badge badge-soft-primary badge-outline badge-pill wh-ending-value-span mask-money wh-end-value-${row?.['warehouse_id']}" data-init-money="0"></span></b>`
-                        }
-                        if (row?.['type'] === 'product_row') {
-                            return `<span style="font-size: medium; border: none" class="badge badge-secondary badge-outline badge-pill ending-value-span mask-money prd-end-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_end_value']}"></span>`
+                            return `                                
+                                <div class="row">
+                                    <div class="col-4"><span class="text-secondary ending-quantity-span prd-end-quantity-${row?.['warehouse_id']}">${row?.['prd_end_quantity']}</span></div>
+                                    <div class="col-8"><span class="text-secondary ending-value-span mask-money prd-end-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_end_value']}"></span></div>
+                                </div>
+                            `
                         }
                         return ``
                     }
@@ -377,48 +394,10 @@ $(document).ready(function () {
             ],
             initComplete: function(settings, json) {
                 table.find('tbody tr').each(function () {
-                    $(this).find('td:eq(0)').css({
-                        'min-width': 'fit-content'
-                    })
-                    $(this).find('td:eq(1)').css({
-                        'min-width': '400px'
-                    })
-                    $(this).find('td:eq(2)').css({
-                        'min-width': '80px'
-                    })
-                    $(this).find('td:eq(3)').css({
-                        'min-width': '100px'
-                    })
-                    $(this).find('td:eq(4)').css({
-                        'min-width': '100px'
-                    })
-                    $(this).find('td:eq(5)').css({
-                        'min-width': '100px'
-                    })
-                    $(this).find('td:eq(6)').css({
-                        'min-width': '50px'
-                    })
-                    $(this).find('td:eq(7)').css({
-                        'min-width': '200px'
-                    })
-                    $(this).find('td:eq(8)').css({
-                        'min-width': '50px'
-                    })
-                    $(this).find('td:eq(9)').css({
-                        'min-width': '200px'
-                    })
-                    $(this).find('td:eq(10)').css({
-                        'min-width': '50px'
-                    })
-                    $(this).find('td:eq(11)').css({
-                        'min-width': '200px'
-                    })
-                    $(this).find('td:eq(12)').css({
-                        'min-width': '50px'
-                    })
-                    $(this).find('td:eq(13)').css({
-                        'min-width': '200px'
-                    })
+                    if ($(this).find('.prd-wh-view').length > 0) {
+                        $(this).addClass('bg-primary-light-5')
+                        $(this).addClass('fixed-row')
+                    }
                 })
 
                 let sum_wh_open_quantity = 0;
@@ -502,35 +481,32 @@ $(document).ready(function () {
                     })
                 }
 
-                $('#table-inventory-report #opening-total-quantity').text(sum_wh_open_quantity)
-                $('#table-inventory-report #opening-total-value').attr('data-init-money', sum_wh_open_value)
-                $('#table-inventory-report #in-total-quantity').text(sum_wh_in_quantity)
-                $('#table-inventory-report #in-total-value').attr('data-init-money', sum_wh_in_value)
-                $('#table-inventory-report #out-total-quantity').text(sum_wh_out_quantity)
-                $('#table-inventory-report #out-total-value').attr('data-init-money', sum_wh_out_value)
-                $('#table-inventory-report #ending-total-quantity').text(sum_wh_end_quantity)
-                $('#table-inventory-report #ending-total-value').attr('data-init-money', sum_wh_end_value)
-
-                // group project
-                table.find("tr th:eq(0)").prop('hidden', sale_order_code_list.length === 0)
-                table.find("tr").each(function () {
-                    $(this).find('td:eq(0)').prop('hidden', sale_order_code_list.length === 0)
-                })
-
-                table.find("tr th:eq(3)").prop('hidden', !table_detail)
-                table.find("tr th:eq(4)").prop('hidden', !table_detail)
-                table.find("tr th:eq(5)").prop('hidden', !table_detail)
-                table.find("tr").each(function () {
-                    $(this).find('td:eq(3)').prop('hidden', !table_detail)
-                    $(this).find('td:eq(4)').prop('hidden', !table_detail)
-                    $(this).find('td:eq(5)').prop('hidden', !table_detail)
-                })
+                $('.opening-total-quantity').text(sum_wh_open_quantity)
+                $('.opening-total-value').attr('data-init-money', sum_wh_open_value)
+                $('.in-total-quantity').text(sum_wh_in_quantity)
+                $('.in-total-value').attr('data-init-money', sum_wh_in_value)
+                $('.out-total-quantity').text(sum_wh_out_quantity)
+                $('.out-total-value').attr('data-init-money', sum_wh_out_value)
+                $('.ending-total-quantity').text(sum_wh_end_quantity)
+                $('.ending-total-value').attr('data-init-money', sum_wh_end_value)
 
                 if (!table_detail) {
                     $('.detail_row').each(function () {
                         $(this).closest('tr').remove()
                     })
+
+                    table.DataTable().column(3).visible(false)
+                    table.DataTable().column(4).visible(false)
+                    table.DataTable().column(5).visible(false)
                 }
+
+                if (sale_order_code_list.length === 0) {
+                    table.DataTable().column(0).visible(false)
+                    $('#product-col').css({
+                        'border-top-left-radius': 'calc(0.5rem - 1px)'
+                    })
+                }
+
                 for (const so_code_class of sale_order_code_list) {
                     let number_row = table.find(`.${so_code_class}`).length + 1
                     table.find(`.${so_code_class}:eq(0)`).closest('tr').before(`
@@ -545,6 +521,10 @@ $(document).ready(function () {
                     })
                 }
                 MatchTooltip()
+
+                const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+                const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+                $('.popover-prd:first-child').trigger('hover')
             },
         });
     }
@@ -627,10 +607,8 @@ $(document).ready(function () {
     }
 
     $('#btn-view').on('click', function () {
-        $('table thead #thead-value').find('span').text('0')
-        $('table thead #thead-value').find('span').attr('data-init-money', 0)
-        $('table tbody').html('')
-        table_inventory_report.closest('div').prop('hidden', false)
+        $('#thead-value').find('span').text('0')
+        $('#thead-value').find('span').attr('data-init-money', 0)
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
             let dataParam = {}
@@ -679,8 +657,6 @@ $(document).ready(function () {
                         }
                     }
                     results_data.sort((a, b) => (a.warehouse.code > b.warehouse.code) ? 1 : -1)
-                    $('#btn-collapse').trigger('click')
-                    table_inventory_report.find('tbody').html('')
                     let table_inventory_report_wh_row = []
                     let table_inventory_report_data = []
                     for (const warehouse_activities of results_data) {
@@ -691,49 +667,51 @@ $(document).ready(function () {
                                 }
                                 table_inventory_report_data.push({
                                     'type': 'warehouse_row',
-                                    'warehouse_id': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : ''}`,
-                                    'warehouse_code': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : ''}`,
-                                    'warehouse_title': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : ''}`,
+                                    'warehouse_id': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : '',
+                                    'warehouse_code': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : '',
+                                    'warehouse_title': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : '',
                                 })
                                 table_inventory_report_data.push({
                                     'type': 'product_row',
-                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
-                                    'product_code': `${warehouse_activities?.['product']?.['code']}`,
-                                    'product_title': `${warehouse_activities?.['product']?.['title']}`,
-                                    'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
-                                    'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
-                                    'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
-                                    'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
-                                    'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
-                                    'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
-                                    'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
-                                    'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
-                                    'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
-                                    'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
-                                    'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`,
+                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
+                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
+                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
+                                    'product_code': warehouse_activities?.['product']?.['code'],
+                                    'product_title': warehouse_activities?.['product']?.['title'],
+                                    'vm': warehouse_activities?.['product']?.['valuation_method'],
+                                    'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
+                                    'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
+                                    'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
+                                    'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
+                                    'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
+                                    'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
+                                    'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
+                                    'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
+                                    'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
+                                    'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
+                                    'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'],
                                 })
                             }
                             else {
                                 table_inventory_report_data.push({
                                     'type': 'product_row',
-                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
-                                    'product_code': `${warehouse_activities?.['product']?.['code']}`,
-                                    'product_title': `${warehouse_activities?.['product']?.['title']}`,
-                                    'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
-                                    'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
-                                    'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
-                                    'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
-                                    'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
-                                    'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
-                                    'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
-                                    'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
-                                    'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
-                                    'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
-                                    'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`,
+                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
+                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
+                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
+                                    'product_code': warehouse_activities?.['product']?.['code'],
+                                    'product_title': warehouse_activities?.['product']?.['title'],
+                                    'vm': warehouse_activities?.['product']?.['valuation_method'],
+                                    'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
+                                    'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
+                                    'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
+                                    'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
+                                    'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
+                                    'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
+                                    'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
+                                    'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
+                                    'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
+                                    'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
+                                    'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'],
                                 })
                             }
                         }
@@ -745,48 +723,50 @@ $(document).ready(function () {
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'warehouse_row',
-                                        'warehouse_id': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : ''}`,
-                                        'warehouse_code': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : ''}`,
-                                        'warehouse_title': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : ''}`,
+                                        'warehouse_id': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : '',
+                                        'warehouse_code': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : '',
+                                        'warehouse_title': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : '',
                                     })
                                     table_inventory_report_data.push({
                                         'type': 'product_row',
-                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
-                                        'product_code': `${warehouse_activities?.['product']?.['code']}`,
-                                        'product_title': `${warehouse_activities?.['product']?.['title']}`,
-                                        'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
-                                        'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
-                                        'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
-                                        'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
-                                        'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
-                                        'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
-                                        'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
-                                        'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
-                                        'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
-                                        'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
-                                        'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`
+                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
+                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
+                                        'product_code': warehouse_activities?.['product']?.['code'],
+                                        'product_title': warehouse_activities?.['product']?.['title'],
+                                        'vm': warehouse_activities?.['product']?.['valuation_method'],
+                                        'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
+                                        'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
+                                        'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
+                                        'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
+                                        'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
+                                        'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
+                                        'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
+                                        'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
+                                        'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
+                                        'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
+                                        'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value']
                                     })
                                 } else {
                                     table_inventory_report_data.push({
                                         'type': 'product_row',
-                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
-                                        'product_code': `${warehouse_activities?.['product']?.['code']}`,
-                                        'product_title': `${warehouse_activities?.['product']?.['title']}`,
-                                        'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
-                                        'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
-                                        'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
-                                        'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
-                                        'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
-                                        'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
-                                        'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
-                                        'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
-                                        'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
-                                        'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
-                                        'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`
+                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
+                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
+                                        'product_code': warehouse_activities?.['product']?.['code'],
+                                        'product_title': warehouse_activities?.['product']?.['title'],
+                                        'vm': warehouse_activities?.['product']?.['valuation_method'],
+                                        'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
+                                        'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
+                                        'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
+                                        'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
+                                        'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
+                                        'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
+                                        'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
+                                        'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
+                                        'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
+                                        'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
+                                        'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value']
                                     })
                                 }
                             }
@@ -825,10 +805,8 @@ $(document).ready(function () {
     $('#btn-view').trigger('click')
 
     $('#btn-view-detail').on('click', function () {
-        $('table thead #thead-value').find('span').text('0')
-        $('table thead #thead-value').find('span').attr('data-init-money', 0)
-        $('table tbody').html('')
-        table_inventory_report.closest('div').prop('hidden', false)
+        $('#thead-value').find('span').text('0')
+        $('#thead-value').find('span').attr('data-init-money', 0)
         if (periodMonthEle.val()) {
             WindowControl.showLoading();
             let dataParam = {}
@@ -877,8 +855,6 @@ $(document).ready(function () {
                         }
                     }
                     results_data.sort((a, b) => (a.warehouse.code > b.warehouse.code) ? 1 : -1)
-                    $('#btn-collapse').trigger('click')
-                    table_inventory_report.find('tbody').html('')
                     let table_inventory_report_wh_row = []
                     let table_inventory_report_data = []
                     for (const warehouse_activities of results_data) {
@@ -889,28 +865,29 @@ $(document).ready(function () {
                                 }
                                 table_inventory_report_data.push({
                                     'type': 'warehouse_row',
-                                    'warehouse_id': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : ''}`,
-                                    'warehouse_code': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : ''}`,
-                                    'warehouse_title': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : ''}`,
+                                    'warehouse_id': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : '',
+                                    'warehouse_code': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : '',
+                                    'warehouse_title': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : '',
                                 })
                                 table_inventory_report_data.push({
                                     'type': 'product_row',
-                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
-                                    'product_code': `${warehouse_activities?.['product']?.['code']}`,
-                                    'product_title': `${warehouse_activities?.['product']?.['title']}`,
-                                    'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
-                                    'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
-                                    'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
-                                    'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
-                                    'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
-                                    'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
-                                    'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
-                                    'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
-                                    'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
-                                    'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
-                                    'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`,
+                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
+                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
+                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
+                                    'product_code': warehouse_activities?.['product']?.['code'],
+                                    'product_title': warehouse_activities?.['product']?.['title'],
+                                    'vm': warehouse_activities?.['product']?.['valuation_method'],
+                                    'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
+                                    'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
+                                    'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
+                                    'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
+                                    'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
+                                    'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
+                                    'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
+                                    'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
+                                    'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
+                                    'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
+                                    'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'],
                                 })
                                 for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                     let bg_in = ''
@@ -931,10 +908,13 @@ $(document).ready(function () {
                                         bg_out = 'badge-soft-orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                        bg_in = 'badge-soft-purple small gtf-in'
+                                        bg_in = 'badge-soft-purple gtf-in'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                        bg_out = 'badge-soft-purple small gtf-out'
+                                        bg_out = 'badge-soft-purple gtf-out'
+                                    }
+                                    if (activity?.['trans_title'] === 'Balance init input') {
+                                        bg_in = 'badge-soft-secondary'
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
@@ -955,22 +935,23 @@ $(document).ready(function () {
                             else {
                                 table_inventory_report_data.push({
                                     'type': 'product_row',
-                                    'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                    'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                    'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
-                                    'product_code': `${warehouse_activities?.['product']?.['code']}`,
-                                    'product_title': `${warehouse_activities?.['product']?.['title']}`,
-                                    'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
-                                    'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
-                                    'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
-                                    'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
-                                    'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
-                                    'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
-                                    'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
-                                    'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
-                                    'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
-                                    'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
-                                    'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`,
+                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
+                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
+                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
+                                    'product_code': warehouse_activities?.['product']?.['code'],
+                                    'product_title': warehouse_activities?.['product']?.['title'],
+                                    'vm': warehouse_activities?.['product']?.['valuation_method'],
+                                    'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
+                                    'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
+                                    'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
+                                    'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
+                                    'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
+                                    'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
+                                    'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
+                                    'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
+                                    'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
+                                    'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
+                                    'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'],
                                 })
                                 for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                     let bg_in = ''
@@ -991,10 +972,13 @@ $(document).ready(function () {
                                         bg_out = 'badge-soft-orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                        bg_in = 'badge-soft-purple small gtf-in'
+                                        bg_in = 'badge-soft-purple gtf-in'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                        bg_out = 'badge-soft-purple small gtf-out'
+                                        bg_out = 'badge-soft-purple gtf-out'
+                                    }
+                                    if (activity?.['trans_title'] === 'Balance init input') {
+                                        bg_in = 'badge-soft-secondary'
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
@@ -1021,28 +1005,29 @@ $(document).ready(function () {
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'warehouse_row',
-                                        'warehouse_id': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : ''}`,
-                                        'warehouse_code': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : ''}`,
-                                        'warehouse_title': `${Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : ''}`,
+                                        'warehouse_id': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : '',
+                                        'warehouse_code': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : '',
+                                        'warehouse_title': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : '',
                                     })
                                     table_inventory_report_data.push({
                                         'type': 'product_row',
-                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
-                                        'product_code': `${warehouse_activities?.['product']?.['code']}`,
-                                        'product_title': `${warehouse_activities?.['product']?.['title']}`,
-                                        'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
-                                        'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
-                                        'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
-                                        'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
-                                        'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
-                                        'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
-                                        'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
-                                        'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
-                                        'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
-                                        'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
-                                        'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`
+                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
+                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
+                                        'product_code': warehouse_activities?.['product']?.['code'],
+                                        'product_title': warehouse_activities?.['product']?.['title'],
+                                        'vm': warehouse_activities?.['product']?.['valuation_method'],
+                                        'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
+                                        'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
+                                        'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
+                                        'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
+                                        'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
+                                        'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
+                                        'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
+                                        'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
+                                        'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
+                                        'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
+                                        'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value']
                                     })
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                     let bg_in = ''
@@ -1063,10 +1048,13 @@ $(document).ready(function () {
                                         bg_out = 'badge-soft-orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                        bg_in = 'badge-soft-purple small gtf-in'
+                                        bg_in = 'badge-soft-purple gtf-in'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                        bg_out = 'badge-soft-purple small gtf-out'
+                                        bg_out = 'badge-soft-purple gtf-out'
+                                    }
+                                    if (activity?.['trans_title'] === 'Balance init input') {
+                                        bg_in = 'badge-soft-secondary'
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
@@ -1086,22 +1074,23 @@ $(document).ready(function () {
                                 } else {
                                     table_inventory_report_data.push({
                                         'type': 'product_row',
-                                        'warehouse_id': `${warehouse_activities?.['warehouse']?.['id']}`,
-                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                        'warehouse_title': `${warehouse_activities?.['warehouse']?.['title']}`,
-                                        'product_code': `${warehouse_activities?.['product']?.['code']}`,
-                                        'product_title': `${warehouse_activities?.['product']?.['title']}`,
-                                        'product_lot_number': `${warehouse_activities?.['product']?.['lot_number']}`,
-                                        'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
-                                        'uom_title': `${warehouse_activities?.['product']?.['uom']?.['title']}`,
-                                        'prd_open_quantity': `${warehouse_activities?.['stock_activities']?.['opening_balance_quantity']}`,
-                                        'prd_open_value': `${warehouse_activities?.['stock_activities']?.['opening_balance_value']}`,
-                                        'prd_in_quantity': `${warehouse_activities?.['stock_activities']?.['sum_in_quantity']}`,
-                                        'prd_in_value': `${warehouse_activities?.['stock_activities']?.['sum_in_value']}`,
-                                        'prd_out_quantity': `${warehouse_activities?.['stock_activities']?.['sum_out_quantity']}`,
-                                        'prd_out_value': `${warehouse_activities?.['stock_activities']?.['sum_out_value']}`,
-                                        'prd_end_quantity': `${warehouse_activities?.['stock_activities']?.['ending_balance_quantity']}`,
-                                        'prd_end_value': `${warehouse_activities?.['stock_activities']?.['ending_balance_value']}`
+                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
+                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
+                                        'product_code': warehouse_activities?.['product']?.['code'],
+                                        'product_title': warehouse_activities?.['product']?.['title'],
+                                        'vm': warehouse_activities?.['product']?.['valuation_method'],
+                                        'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
+                                        'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
+                                        'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
+                                        'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
+                                        'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
+                                        'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
+                                        'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
+                                        'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
+                                        'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
+                                        'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
+                                        'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value']
                                     })
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                     let bg_in = ''
@@ -1122,10 +1111,13 @@ $(document).ready(function () {
                                         bg_out = 'badge-soft-orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                        bg_in = 'badge-soft-purple small gtf-in'
+                                        bg_in = 'badge-soft-purple gtf-in'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                        bg_out = 'badge-soft-purple small gtf-out'
+                                        bg_out = 'badge-soft-purple gtf-out'
+                                    }
+                                    if (activity?.['trans_title'] === 'Balance init input') {
+                                        bg_in = 'badge-soft-secondary'
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
@@ -1204,15 +1196,20 @@ $(document).ready(function () {
                 $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-gis'))
             }
-            if ($(this).attr('class').includes('badge-soft-purple small gtf-in')) {
+            if ($(this).attr('class').includes('badge-soft-purple gtf-in')) {
                 $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
                 $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-gtf')} (${trans_script.attr('data-trans-gtf-in')})`)
             }
-            if ($(this).attr('class').includes('badge-soft-purple small gtf-out')) {
+            if ($(this).attr('class').includes('badge-soft-purple gtf-out')) {
                 $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
                 $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-gtf')} (${trans_script.attr('data-trans-gtf-out')})`)
+            }
+            if ($(this).attr('class').includes('badge-soft-secondary')) {
+                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
+                $(this).closest('tr').attr('data-bs-placement', 'top')
+                $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-bii')}`)
             }
         })
         table_inventory_report.find('.no-info').each(function () {
@@ -1379,5 +1376,22 @@ $(document).ready(function () {
 
     $('#print-qr-lot').on('click', function () {
         printQRLot('QR-lot-img-div')
+    })
+
+    $('#btn-reset').on('click', function () {
+        items_select_Ele.empty()
+        warehouses_select_Ele.empty()
+        periodMonthEle.empty()
+        let current_period = {}
+        if (current_period_Ele.text() !== '') {
+            current_period = JSON.parse(current_period_Ele.text())
+            getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
+            periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+        }
+    })
+    $('#btn-filter').on('click', function () {
+        LoadItemsSelectBox(items_select_Ele)
+        LoadWarehouseSelectBox(warehouses_select_Ele)
+        LoadProjectSelectBox(project_select_Ele)
     })
 })

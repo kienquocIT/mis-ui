@@ -5,8 +5,9 @@ from apps.sales.project.views import ProjectList, ProjectCreate, ProjectCreateAP
     ProjectWorkListAPI, ProjectGroupDetailAPI, ProjectWorkDetailAPI, ProjectMemberAddAPI, ProjectMemberDetailAPI, \
     ProjectUpdateOrderAPI, ProjectTaskListAPI, ProjectGroupDDListAPI, ProjectTaskDetailAPI, ProjectWorkExpenseAPI, \
     ProjectListBaselineAPI, ProjectBaselineDetail, ProjectBaselineDetailAPI, ProjectHome, ProjectConfig, \
-    ProjectConfigAPI, ProjectExpenseListAPI, ProjectListBaseline, ProjectWorkList, ProjectActivities, \
-    ProjectActivitiesListAPI, ProjectCommentListAPI
+    ProjectConfigAPI, ProjectExpenseListAPI, ProjectWorkList, ProjectActivities, \
+    ProjectActivitiesListAPI, ProjectCommentListAPI, ProjectActivitiesCommentDetail, ProjectCommentDetailFlowsAPI, \
+    ProjectTaskList, ProjectTaskListAllAPI
 
 urlpatterns = [
     # project
@@ -42,14 +43,16 @@ urlpatterns = [
         '<str:pk_pj>/member/update-api/<str:pk_member>', ProjectMemberDetailAPI.as_view(), name='ProjectMemberUpdateAPI'
     ),
     # project task
-    path('task-list', ProjectTaskListAPI.as_view(), name='ProjectTaskListAPI'),
+    path('task/list', ProjectTaskList.as_view(), name='ProjectTaskList'),
+    path('task/list/api', ProjectTaskListAPI.as_view(), name='ProjectTaskListAPI'),
+    path('task/list-all/api', ProjectTaskListAllAPI.as_view(), name='ProjectTaskListAllAPI'),
     path('task-link/<str:pk>', ProjectTaskDetailAPI.as_view(), name='ProjectTaskDetailAPI'),
 
     # project work expense list
     path('work-expense-list', ProjectWorkExpenseAPI.as_view(), name='ProjectWorkExpenseAPI'),
     path('project-expense-list', ProjectExpenseListAPI.as_view(), name='ProjectExpenseListAPI'),
+
     # project baseline
-    path('baseline/list', ProjectListBaseline.as_view(), name='ProjectListBaseline'),
     path('baseline/list-api', ProjectListBaselineAPI.as_view(), name='ProjectListBaselineAPI'),
     path('baseline/detail/baseline-version/<str:pk>', ProjectBaselineDetail.as_view(), name='ProjectBaselineDetail'),
     path(
@@ -62,7 +65,14 @@ urlpatterns = [
 
     # project activities
     path('activities/list', ProjectActivities.as_view(), name='ProjectActivities'),
+    path(
+        'activities/comment/detail/<str:pk>', ProjectActivitiesCommentDetail.as_view(),
+        name='ProjectActivitiesCommentDetail'
+    ),
     path('activities/list-api', ProjectActivitiesListAPI.as_view(), name='ProjectActivitiesListAPI'),
     path('activities/comment-api', ProjectCommentListAPI.as_view(), name='ProjectCommentListAPI'),
+    path(
+        'activities/comment/detail-api/<str:pk>', ProjectCommentDetailFlowsAPI.as_view(), name='ProjectCommentDetailAPI'
+    ),
 
 ]

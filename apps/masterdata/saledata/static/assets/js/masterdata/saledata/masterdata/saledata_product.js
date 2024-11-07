@@ -1,320 +1,547 @@
 $(document).ready(function () {
-
-    let url_update;
-
-    const column_product_expense = [
-        {
-            className: 'wrap-text w-10',
-            render: (data, type, row, meta) => {
-                return '';
-            }
-        },
-        {
-            data: 'code',
-            className: 'wrap-text w-30',
-            render: (data, type, row) => {
-                if (row.is_default) {
-                    return `<span class="badge badge-secondary">${row.code}</span>`
-                } else {
-                    return `<span class="badge badge-primary">${row.code}</span>`
-                }
-            }
-        },
-        {
-            data: 'title',
-            className: 'wrap-text w-45',
-            render: (data, type, row, meta) => {
-                if (!row?.['is_default']) {
-                    return `<span class="text-primary"><b>${data}</b></span>`
-                }
-                return `<span><b>${data}</b></span>`
-            }
-        },
-        {
-            data: 'description',
-            className: 'wrap-text w-35',
-            render: (data, type, row, meta) => {
-                return `<span class="initial-wrap">${data}</span>`
-            }
-        },
-        {
-            className: 'wrap-text w-10',
-            render: (data, type, row, meta) => {
-                if (!row?.['is_default']) {
-                    return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
-                               data-id="${row.id}" data-bs-toggle="modal"
-                               data-bs-target="#modal-detail-product-and-expense" data-bs-placement="top" title="" 
-                               data-bs-original-title="Edit">
-                               <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
-                            </a>`
-                }
-                return ``
-            }
-        }
-    ]
-
-    $("#tab-select-table a.product-and-expense").on("click", function () {
-        $('.btn-show-modal').attr('data-bs-target', '#modal-product-and-expense')
-        let section = $(this).attr('data-collapse');
-        switch (section) {
-            case 'section_product_type':
-                loadProductType()
-                break;
-            case 'section_product_category':
-                loadProDuctCategory()
-                break;
-        }
-        $(".lookup-data").hide()
-        let id_tag = `#` + section
-        $('#modal-product-and-expense h5').text($(this).text());
-        $(id_tag).show();
-        $('#form-create-product-and-expense').attr('data-lookup', $(this).attr('data-collapse'));
-    })
-
-    $("#tab-select-table a.unit-measure").on("click", function () {
-        $('.btn-show-modal').attr('data-bs-target', '#modal-unit-measure')
-        let section = $(this).attr('data-collapse')
-        $(".lookup-data").hide()
-        let id_tag = `#` + section
-        $('#modal-unit-measure h5').text($(this).text());
-        $(id_tag).show();
-        loadUnitOfMeasure();
-    })
-
-    $("#tab-select-table a.unit-measure-group").on("click", function () {
-        $('.btn-show-modal').attr('data-bs-target', '#modal-unit-measure-group')
-        let section = $(this).attr('data-collapse')
-        $(".lookup-data").hide()
-        let id_tag = `#` + section
-        $('#modal-unit-measure-group h5').text($(this).text());
-        $(id_tag).show();
-        loadUnitOfMeasureGroup();
-    })
-
     function loadProductType() {
-        if (!$.fn.DataTable.isDataTable('#datatable-product-type-list')) {
-            let tbl = $('#datatable-product-type-list');
-            let frm = new SetupFormSubmit(tbl);
-            tbl.DataTableDefault(
-                {
-                    useDataServer: true,
-                    rowIdx: true,
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('product_type_list')) {
-                                return resp.data['product_type_list'] ? resp.data['product_type_list'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columns: column_product_expense,
+        let tbl = $('#datatable-product-type-list');
+        let frm = new SetupFormSubmit(tbl);
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('product_type_list')) {
+                        return resp.data['product_type_list'] ? resp.data['product_type_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
                 },
-            );
-        }
-    }
-
-    function loadProDuctCategory() {
-        if (!$.fn.DataTable.isDataTable('#datatable-product-category-list')) {
-            let tbl = $('#datatable-product-category-list');
-            let frm = new SetupFormSubmit(tbl);
-            tbl.DataTableDefault(
+            },
+            columns: [
                 {
-                    useDataServer: true,
-                    rowIdx: true,
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('product_category_list')) {
-                                return resp.data['product_category_list'] ? resp.data['product_category_list'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columns: column_product_expense,
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return '';
+                    }
                 },
-            );
-        }
+                {
+                    data: 'code',
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        if (row?.['is_default']) {
+                            return `<span class="badge badge-secondary w-70">${row?.['code']}</span>`
+                        } else {
+                            return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
+                        }
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text w-30',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `${data}`
+                        }
+                        return `<b>${data}</b>`
+                    }
+                },
+                {
+                    data: 'description',
+                    className: 'wrap-text w-35',
+                    render: (data) => {
+                        return `<span class="initial-wrap">${data}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-10',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-product-type"
+                                       data-id="${row?.['id']}"
+                                       data-code="${row?.['code']}"
+                                       data-title="${row?.['title']}"
+                                       data-description="${row?.['description']}"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#modal-update-product-type"
+                                       data-bs-placement="top" title=""
+                                       >
+                                       <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                                    </a>`
+                        }
+                        return ``
+                    }
+                }
+            ],
+        });
     }
-
+    function loadProductCategory() {
+        let tbl = $('#datatable-product-category-list');
+        let frm = new SetupFormSubmit(tbl);
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('product_category_list')) {
+                        return resp.data['product_category_list'] ? resp.data['product_category_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return '';
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        if (row?.['is_default']) {
+                            return `<span class="badge badge-secondary w-70">${row?.['code']}</span>`
+                        } else {
+                            return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
+                        }
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text w-30',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `${data}`
+                        }
+                        return `<b>${data}</b>`
+                    }
+                },
+                {
+                    data: 'description',
+                    className: 'wrap-text w-35',
+                    render: (data) => {
+                        return `<span class="initial-wrap">${data}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-10',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-product-category"
+                                       data-id="${row?.['id']}"
+                                       data-code="${row?.['code']}"
+                                       data-title="${row?.['title']}"
+                                       data-description="${row?.['description']}"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#modal-update-product-category"
+                                       data-bs-placement="top" title=""
+                                       >
+                                       <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                                    </a>`
+                        }
+                        return ``
+                    }
+                }
+            ],
+        });
+    }
     function loadUnitOfMeasureGroup() {
-        if (!$.fn.DataTable.isDataTable('#datatable-unit-measure-group-list')) {
-            let tbl = $('#datatable-unit-measure-group-list');
-            let frm = new SetupFormSubmit(tbl);
-            tbl.DataTableDefault(
+        let tbl = $('#datatable-unit-measure-group-list');
+        let frm = new SetupFormSubmit(tbl);
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('unit_of_measure_group')) {
+                        return resp.data['unit_of_measure_group'] ? resp.data['unit_of_measure_group'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
                 {
-                    useDataServer: true,
-                    rowIdx: true,
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('unit_of_measure_group')) {
-                                return resp.data['unit_of_measure_group'] ? resp.data['unit_of_measure_group'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columns: [
-                        {
-                            className: 'wrap-text w-10',
-                            render: (data, type, row, meta) => {
-                                return '';
-                            }
-                        },
-                        {
-                            data: 'code',
-                            className: 'wrap-text w-30',
-                            render: (data, type, row) => {
-                                if (row.is_default) {
-                                    return `<span class="badge badge-secondary">${row.code}</span>`
-                                } else {
-                                    return `<span class="badge badge-primary">${row.code}</span>`
-                                }
-                            }
-                        },
-                        {
-                            data: 'title',
-                            className: 'wrap-text w-50',
-                            render: (data, type, row, meta) => {
-                                if (row.is_default) {
-                                    return `<span><b>${row.title}</b></span>`
-                                } else {
-                                    return `<span class="text-primary"><b>${row.title}</b></span>`
-                                }
-                            }
-                        },
-                        {
-                            className: 'wrap-text w-10',
-                            render: (data, type, row, meta) => {
-                                if (!row.is_default) {
-                                    return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
-                                               data-id="${row.id}" data-bs-toggle="modal"
-                                               data-bs-target="#modal-detail-unit-measure-group" data-bs-placement="top" title="" 
-                                               data-bs-original-title="Edit">
-                                               <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
-                                            </a>`
-                                }
-                                return ``
-                            }
-                        }
-                    ],
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return '';
+                    }
                 },
-            );
-        }
+                {
+                    data: 'code',
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        if (row?.['is_default']) {
+                            return `<span class="badge badge-secondary w-70">${row?.['code']}</span>`
+                        } else {
+                            return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
+                        }
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text w-70',
+                    render: (data, type, row) => {
+                        if (row?.['is_default']) {
+                            return `<b>${data}</b>`
+                        } else {
+                            return `${data}`
+                        }
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-10',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-uom-group"
+                                       data-id="${row?.['id']}"
+                                       data-code="${row?.['code']}"
+                                       data-title="${row?.['title']}"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#modal-update-uom-group"
+                                       data-bs-placement="top" title="" 
+                                       >
+                                       <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                                    </a>`
+                        }
+                        return ``
+                    }
+                }
+            ],
+        });
     }
-
     function loadUnitOfMeasure() {
-        if (!$.fn.DataTable.isDataTable('#datatable-unit-measure-list')) {
-            let tbl = $('#datatable-unit-measure-list');
-            let frm = new SetupFormSubmit(tbl);
-            tbl.DataTableDefault({
-                    paging: false,
-                    useDataServer: true,
-                    columnDefs: [{
-                        "searchable": false,
-                        "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-                    },
-                        {
-                            targets: [3],
-                            visible: false
-                        }
-                    ],
-                    rowIdx: true,
-                    rowGroup: {
-                        dataSrc: 'group.title'
-                    },
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('unit_of_measure')) {
-                                return resp.data['unit_of_measure'] ? resp.data['unit_of_measure'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columns: [
-                        {
-                            className: 'wrap-text w-5',
-                            render: (data, type, row, meta) => {
-                                return '';
-                            }
-                        },
-                        {
-                            data: 'code',
-                            className: 'wrap-text w-20',
-                            render: (data, type, row, meta) => {
-                                return `<span class="badge badge-primary">${data}</span>`
-                            }
-                        },
-                        {
-                            data: 'title',
-                            className: 'wrap-text w-40',
-                            render: (data, type, row, meta) => {
-                                return `<b class="text-primary">${data}</b>`
-                            }
-                        },
-                        {
-                            data: 'group',
-                            className: 'wrap-text ',
-                            render: (data, type, row, meta) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data.title
-                                )
-                            }
-                        },
-                        {
-                            data: 'is_referenced_unit',
-                            className: 'wrap-text w-25 text-center',
-                            render: (data, type, row, meta) => {
-                                if (row.group.hasOwnProperty('is_referenced_unit')) {
-                                    if (row.group.is_referenced_unit === true) {
-                                        return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`;
-                                    } else {
-                                        return ``;
-                                    }
-                                }
-                                return '';
-                            }
-                        },
-                        {
-                            className: 'wrap-text w-10',
-                            render: (data, type, row, meta) => {
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
-                                           data-id="${row.id}" data-bs-toggle="modal"
-                                           data-bs-target="#modal-detail-unit-measure" data-bs-placement="top" title="" 
-                                           data-bs-original-title="Edit">
-                                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
-                                        </a>`
-                            }
-                        }
-                    ],
+        let tbl = $('#datatable-unit-measure-list');
+        let frm = new SetupFormSubmit(tbl);
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            paging: false,
+            useDataServer: true,
+            columnDefs: [
+                {
+                    "searchable": false,
+                    "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
                 },
-            );
-        }
-    }
-
-    function loadSelectBoxUnitMeasureGroup(ele, data) {
-        ele.val('')
-        ele.initSelect2({
-            data: data
+                {
+                    targets: [3],
+                    visible: false
+                }
+            ],
+            rowIdx: true,
+            rowGroup: {
+                dataSrc: 'group.title'
+            },
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('unit_of_measure')) {
+                        return resp.data['unit_of_measure'] ? resp.data['unit_of_measure'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return '';
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        if (row?.['is_default']) {
+                            return `<span class="badge badge-secondary w-70">${data}</span>`
+                        }
+                        return `<span class="badge badge-primary w-70">${data}</span>`
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text w-30',
+                    render: (data, type, row) => {
+                        if (row?.['is_default']) {
+                            return `<b>${data}</b>`
+                        }
+                        return `${data}`
+                    }
+                },
+                {
+                    data: 'group',
+                    className: 'wrap-text ',
+                    render: (data) => {
+                        return `${data?.['title']}`
+                    }
+                },
+                {
+                    data: 'is_referenced_unit',
+                    className: 'wrap-text w-40 text-center',
+                    render: (data, type, row) => {
+                        if (row.group.hasOwnProperty('is_referenced_unit')) {
+                            if (row.group.is_referenced_unit === true) {
+                                return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`;
+                            } else {
+                                return ``;
+                            }
+                        }
+                        return '';
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-10',
+                    render: (data, type, row) => {
+                        return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-uom"
+                                    data-id="${row?.['id']}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modal-update-uom"
+                                    data-bs-placement="top" title="">
+                                <span class="btn-icon-wrap">
+                                    <span class="feather-icon text-primary">
+                                        <i data-feather="edit"></i>
+                                    </span>
+                                </span>
+                            </a>`
+                    }
+                }
+            ],
         })
+    }
+    function loadSelectBoxUnitMeasureGroup(ele, data) {
+        ele.empty()
+        ele.initSelect2({data: data})
     }
 
     loadProductType()
-    loadProDuctCategory()
+    loadProductCategory()
     loadUnitOfMeasureGroup()
     loadUnitOfMeasure()
 
-    // change select box unit measure group
-    $('#select-box-unit-measure-group').on('change', function () {
+    let frm_create_product_type = $('#form-create-product-type')
+    let frm_update_product_type = $('#form-update-product-type')
+
+    $(document).on("click", '.btn-update-product-type', function () {
+        let modal = $('#modal-update-product-type')
+        modal.find('#inp-edit-code-product-type').val($(this).attr('data-code'))
+        modal.find('#inp-edit-name-product-type').val($(this).attr('data-title'))
+        modal.find('#inp-edit-description-product-type').val($(this).attr('data-description'))
+        let raw_url = frm_update_product_type.attr('data-url-raw')
+        frm_update_product_type.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
+    })
+
+    new SetupFormSubmit(frm_create_product_type).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-new-product-type').modal('hide')
+                        $('#modal-new-product-type form')[0].reset()
+                        loadProductType()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+
+    new SetupFormSubmit(frm_update_product_type).validate({
+        rules: {
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-update-product-type').modal('hide')
+                        loadProductType()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+
+    let frm_create_product_category = $('#form-create-product-category')
+    let frm_update_product_category = $('#form-update-product-category')
+
+    $(document).on("click", '.btn-update-product-category', function () {
+        let modal = $('#modal-update-product-category')
+        modal.find('#inp-edit-code-product-category').val($(this).attr('data-code'))
+        modal.find('#inp-edit-name-product-category').val($(this).attr('data-title'))
+        modal.find('#inp-edit-description-product-category').val($(this).attr('data-description'))
+        let raw_url = frm_update_product_category.attr('data-url-raw')
+        frm_update_product_category.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
+    })
+
+    new SetupFormSubmit(frm_create_product_category).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-new-product-category').modal('hide')
+                        $('#modal-new-product-category form')[0].reset()
+                        loadProductCategory()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+
+    new SetupFormSubmit(frm_update_product_category).validate({
+        rules: {
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-update-product-category').modal('hide')
+                        loadProductCategory()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+
+    let frm_create_uom_group = $('#form-create-uom-group')
+    let frm_update_uom_group = $('#form-update-uom-group')
+
+    $(document).on("click", '.btn-update-uom-group', function () {
+        let modal = $('#modal-update-uom-group')
+        modal.find('#inp-edit-code-uom-group').val($(this).attr('data-code'))
+        modal.find('#inp-edit-name-uom-group').val($(this).attr('data-title'))
+        let raw_url = frm_update_uom_group.attr('data-url-raw')
+        frm_update_uom_group.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
+    })
+
+    new SetupFormSubmit(frm_create_uom_group).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-new-uom-group').modal('hide')
+                        $('#modal-new-uom-group form')[0].reset()
+                        loadUnitOfMeasureGroup()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+
+    new SetupFormSubmit(frm_update_uom_group).validate({
+        rules: {
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-update-uom-group').modal('hide')
+                        loadUnitOfMeasureGroup()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+
+    $('#select-box-uom-group').on('change', function () {
         let obj = SelectDDControl.get_data_from_idx($(this), $(this).val());
         let data_referenced = obj?.['referenced_unit']?.['title'];
         let group_name = $(this).find('option:selected').attr('group-name');
@@ -328,7 +555,6 @@ $(document).ready(function () {
         let ratio_ele = $('#ratio-unit');
         let label_ele = $('#label-referenced-unit');
         let checkbox_ele = $('#check-referenced-unit');
-        console.log(data_referenced)
         if (!data_referenced) {
             $('#inp-code').prop('readonly', false);
             name_unit_ele.prop('readonly', false);
@@ -367,200 +593,6 @@ $(document).ready(function () {
         }
     })
 
-    $('#check-referenced-unit').on('change', function () {
-        let data_referenced = $('#select-box-unit-measure-group').find('option:selected').attr('data-referenced');
-        $('#label-referenced-unit').text(`* ` + data_referenced);
-        let ratioEle = $('#ratio-unit');
-        if (this.checked) {
-            ratioEle.val('1');
-            ratioEle.prop('readonly', true);
-        } else {
-            ratioEle.val('');
-            ratioEle.prop('readonly', false);
-        }
-    })
-
-// Submit form product and expense
-    let form_create = $('#form-create-product-and-expense');
-    new SetupFormSubmit(form_create).validate({
-        rules: {
-            title: {
-                required: true,
-            }
-        },
-        submitHandler: function (form) {
-            let frm = new SetupFormSubmit($(form));
-            let frm_data = frm.dataForm;
-            let lookup = $(form).attr('data-lookup');
-            let data_url = ''
-            if (lookup === 'section_product_type') {
-                data_url = $('#form-create-product-and-expense').attr('data-url-product-type');
-            } else if (lookup === 'section_product_category') {
-                data_url = $('#form-create-product-and-expense').attr('data-url-product-category');
-            }
-            $.fn.callAjax2({
-                'url': data_url,
-                'method': frm.dataMethod,
-                'data': frm_data,
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Tạo mới"}, 'success')
-                        $('#modal-product-and-expense').modal('hide');
-                        if (lookup === 'section_product_type') {
-                            $('#datatable-product-type-list').DataTable().ajax.reload();
-                        } else if (lookup === 'section_product_category') {
-                            $('#datatable-product-category-list').DataTable().ajax.reload();
-                        }
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
-        }
-    })
-
-// submit form create unit measure group
-    let frm_unit_measure_group = $('#form-create-unit-measure-group');
-    new SetupFormSubmit(frm_unit_measure_group).validate({
-        rules: {
-            title: {
-                required: true,
-            }
-        },
-        submitHandler: function (form) {
-            let frm = new SetupFormSubmit($(form));
-            let frm_data = frm.dataForm;
-            let data_url = frm.dataUrl;
-            $.fn.callAjax2({
-                'url': data_url,
-                'method': frm.dataMethod,
-                'data': frm_data,
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Tạo mới"}, 'success')
-                        $('#modal-unit-measure-group').modal('hide');
-                        $('#datatable-unit-measure-group-list').DataTable().ajax.reload();
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
-        }
-    })
-
-// submit form unit measure
-    let frm_unit_measure = $('#form-create-unit-measure');
-    new SetupFormSubmit(frm_unit_measure).validate({
-        rules: {
-            title: {
-                required: true,
-            },
-            group: {
-                required: true,
-            },
-            code: {
-                required: true,
-            },
-            ratio: {
-                required: true,
-                number: true,
-                min: 0.000001,
-            }
-        },
-        submitHandler: function (form) {
-            let frm = new SetupFormSubmit($(form));
-            let frm_data = frm.dataForm;
-            let data_url = frm.dataUrl;
-
-            frm_data['is_referenced_unit'] = $('#check-referenced-unit').prop('checked');
-
-            $.fn.callAjax2({
-                'url': data_url,
-                'method': frm.dataMethod,
-                'data': frm_data,
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Tạo mới"}, 'success')
-                        $('#modal-unit-measure').modal('hide');
-                        if (frm_data['is_referenced_unit']) {
-                            location.reload()
-                        }
-                        else {
-                            $('#datatable-unit-measure-list').DataTable().ajax.reload();
-                        }
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
-        }
-    })
-
-// load detail uom
-    $(document).on('click', '#datatable-unit-measure-list .btn-detail', function () {
-        let url = $('#form-edit-unit-measure').attr('data-url')
-        url_update = url.replace(0, $(this).attr('data-id'))
-        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                        console.log(data.unit_of_measure)
-                        $('#inp-code-uom').val(data.unit_of_measure.code);
-                        $('#inp-edit-name-unit').val(data.unit_of_measure.title);
-                        $('#inp-rounding-edit').val(data.unit_of_measure?.['rounding']);
-                        $('#inp-ratio-unit').val(data.unit_of_measure.ratio);
-                        $('#label-edit-referenced-unit').text(`* ` + data.unit_of_measure.group?.['referenced_unit_title']);
-                        loadSelectBoxUnitMeasureGroup($('#select-box-edit-uom-group'), data.unit_of_measure.group);
-                        $('#group-referenced-unit-name').val(data.unit_of_measure.ratio);
-                        $('#group-id').val(data.unit_of_measure.group.id);
-                        $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
-
-                        let check_reference_unit = $('#check-edit-unit');
-
-                        if (data.unit_of_measure.group.is_referenced_unit === true) {
-                            check_reference_unit.prop('checked', true);
-                            $('#select-box-edit-uom-group-div').prop('hidden', true);
-
-                            $('#ratio-edit-area').prop('hidden', true);
-
-
-                            $('#inp-edit-uom-group-div').prop('hidden', false);
-                            check_reference_unit.prop('disabled', true);
-                        } else {
-                            check_reference_unit.prop('checked', false);
-                            $('#select-box-edit-uom-group-div').prop('hidden', false);
-
-
-                            $('#ratio-edit-area').prop('hidden', false);
-
-
-                            $('#inp-edit-uom-group-div').prop('hidden', true);
-                            check_reference_unit.prop('disabled', false);
-                        }
-                    }
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            }
-        )
-    })
-
-// change select UoM Group in modal detail
     $('#select-box-edit-uom-group').on('change', function () {
         $('#ratio-edit-area').prop('hidden', false);
         let groupIdEle = $('#group-id');
@@ -568,8 +600,8 @@ $(document).ready(function () {
         let checkReferenceUnit = $('#check-edit-unit');
 
         ratioEle.val('');
-        if ($(this).find('option:selected').val() === groupIdEle.val()) {
-            ratioEle.val($('#group-referenced-unit-name').val());
+        if ($(this).val() === groupIdEle.val()) {
+            ratioEle.val($('#group-referenced-unit-name').text());
         }
 
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
@@ -582,7 +614,7 @@ $(document).ready(function () {
                 $('#notify-area-edit-label').text('');
                 $('#notify-area-edit').prop('hidden', true);
             } else {
-                if ($(this).find('option:selected').val() !== groupIdEle.val()) {
+                if ($(this).find('option:selected').val() !== groupIdEle.text()) {
                     $('#label-edit-referenced-unit').text(`* ` + data_referenced)
                     checkReferenceUnit.prop('checked', false);
                     checkReferenceUnit.prop('disabled', true);
@@ -603,20 +635,33 @@ $(document).ready(function () {
         }
     })
 
-// checkbox in Modal edit UOM
+    $('#check-referenced-unit').on('change', function () {
+        let data_referenced = $('#select-box-uom-group').find('option:selected').attr('data-referenced');
+        $('#label-referenced-unit').text(`* ` + data_referenced);
+        let ratioEle = $('#ratio-unit');
+        if (this.checked) {
+            ratioEle.val('1');
+            ratioEle.prop('readonly', true);
+        } else {
+            ratioEle.val('');
+            ratioEle.prop('readonly', false);
+        }
+    })
+
     $('#check-edit-unit').on('click', function () {
         if (this.checked) {
             $('#inp-ratio-unit').val('1');
             $('#ratio-edit-area').prop('hidden', true);
         } else {
-            $('#inp-ratio-unit').val($('#group-referenced-unit-name').val());
+            $('#inp-ratio-unit').val($('#group-referenced-unit-name').text());
             $('#ratio-edit-area').prop('hidden', false);
         }
     })
 
-//submit form edit uom
-    let frm_edit_uom = $('#form-edit-unit-measure')
-    new SetupFormSubmit(frm_edit_uom).validate({
+    let frm_create_uom = $('#form-create-uom');
+    let frm_update_uom = $('#form-update-uom')
+
+    new SetupFormSubmit(frm_create_uom).validate({
         rules: {
             title: {
                 required: true,
@@ -635,22 +680,19 @@ $(document).ready(function () {
         },
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
-            let frm_data = frm.dataForm;
-            if ($('#check-edit-unit').prop('checked') === true) {
-                frm_data['is_referenced_unit'] = 'on';
-            }
-            frm_data['group'] = $('#select-box-edit-uom-group').find('option:selected').val();
+            frm.dataForm['is_referenced_unit'] = $('#check-referenced-unit').prop('checked');
             $.fn.callAjax2({
-                'url': url_update,
+                'url': frm.dataUrl,
                 'method': frm.dataMethod,
-                'data': frm_data,
+                'data': frm.dataForm,
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('msg-update')}, 'success')
-                        $('#modal-detail-unit-measure').modal('hide');
-                        $('#datatable-unit-measure-list').DataTable().ajax.reload();
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-new-uom').modal('hide');
+                        $('#modal-new-uom form')[0].reset()
+                        location.reload()
                     }
                 },
                 (errs) => {
@@ -660,111 +702,32 @@ $(document).ready(function () {
         }
     })
 
-// load detail Product Type
-    $(document).on('click', '#datatable-product-type-list .btn-detail', function () {
-        let url = $('#form-edit-product-and-expense').attr('data-url-product-type')
-        url_update = url.replace(0, $(this).attr('data-id'));
-
-        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_type')) {
-                        $('#inp-edit-code').val(data?.['product_type'].code);
-                        $('#inp-edit-name').val(data?.['product_type'].title);
-                        $('#inp-edit-description').val(data?.['product_type'].description);
-                    }
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            }
-        )
-    })
-
-// load detail Product Category
-    $(document).on('click', '#datatable-product-category-list .btn-detail', function () {
-        let url = $('#form-edit-product-and-expense').attr('data-url-product-category')
-        url_update = url.replace(0, $(this).attr('data-id'));
-        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET',
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category')) {
-                        $('#inp-edit-code').val(data.product_category.code);
-                        $('#inp-edit-name').val(data.product_category.title);
-                        $('#inp-edit-description').val(data.product_category.description);
-                    }
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            }
-        )
-    })
-
-// load detail UoM Group
-    $(document).on('click', '#datatable-unit-measure-group-list .btn-detail', function () {
-        let url = $('#form-edit-unit-measure-group').attr('data-url')
-        url_update = url.replace(0, $(this).attr('data-id'));
-        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET',
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
-                        $('#inp-code-uomgroup').val(data.uom_group.code);
-                        $('#inp-edit-name-uom-group').val(data.uom_group.title);
-                    }
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            }
-        )
-    })
-
-// submit form update product and expense
-    let frm_edit_product_expense = $('#form-edit-product-and-expense')
-    new SetupFormSubmit(frm_edit_product_expense).validate({
+    new SetupFormSubmit(frm_update_uom).validate({
         rules: {
-            code: {
-                required: true,
-            },
             title: {
                 required: true,
+            },
+            ratio: {
+                required: true,
+                number: true,
+                min: 0.000001,
             }
         },
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
-            let frm_data = frm.dataForm;
+            frm.dataForm['is_referenced_unit'] =$('#check-edit-unit').prop('checked');
+            frm.dataForm['group'] = $('#select-box-edit-uom-group').find('option:selected').val();
             $.fn.callAjax2({
-                'url': url_update,
+                'url': frm.dataUrl,
                 'method': frm.dataMethod,
-                'data': frm_data,
+                'data': frm.dataForm,
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('msg-update')}, 'success')
-                        $('#modal-detail-product-and-expense').modal('hide');
-                        let activeEle = $('#tab-select-table li a.active');
-                        if (activeEle.attr('data-collapse') === 'section_product_type') {
-                            $('#datatable-product-type-list').DataTable().ajax.reload();
-                        } else if (activeEle.attr('data-collapse') === 'section_product_category') {
-                            $('#datatable-product-category-list').DataTable().ajax.reload();
-                        }
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-update-uom').modal('hide');
+                        location.reload()
                     }
                 },
                 (errs) => {
@@ -774,49 +737,43 @@ $(document).ready(function () {
         }
     })
 
-// submit form update uom group
-    let frm_edit_uom_group = $('#form-edit-unit-measure-group')
-    new SetupFormSubmit(frm_edit_uom_group).validate({
-        rules: {
-            title: {
-                required: true,
+    $(document).on('click', '.btn-update-uom', function () {
+        let raw_url = frm_update_uom.attr('data-url-raw')
+        frm_update_uom.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
+
+        let ajax_uom_detail = $.fn.callAjax2({
+            url: frm_update_uom.attr('data-url'),
+            data: {},
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('unit_of_measure')) {
+                    return data?.['unit_of_measure'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
             }
-        },
-        submitHandler: function (form) {
-            let frm = new SetupFormSubmit($(form));
-            let frm_data = frm.dataForm;
-            $.fn.callAjax2({
-                'url': url_update,
-                'method': frm.dataMethod,
-                'data': frm_data
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('msg-update')}, 'success')
-                        $('#modal-detail-unit-measure-group').modal('hide');
-                        $('#datatable-unit-measure-group-list').DataTable().ajax.reload();
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
-        }
-    })
+        )
 
-    $('.btn-show-modal').on('click', function () {
-        $('#modal-product-and-expense .form-control').val('');
-        $('#modal-unit-measure-group .form-control').val('');
+        Promise.all([ajax_uom_detail]).then(
+            (results) => {
+                let data = results[0];
+                $('#inp-code-uom-update').val(data?.['code']);
+                $('#inp-edit-name-unit').val(data?.['title']);
+                $('#inp-rounding-edit').val(data?.['rounding']);
+                $('#inp-ratio-unit').val(data?.['ratio']);
+                $('#label-edit-referenced-unit').text(`* ` + data?.['group']?.['referenced_unit_title']);
+                loadSelectBoxUnitMeasureGroup($('#select-box-edit-uom-group'), data?.['group']);
+                $('#group-referenced-unit-name').text(data?.['ratio']);
+                $('#group-id').val(data?.['group']?.['id']);
 
-        if ($(this).attr('data-bs-target') === '#modal-unit-measure') {
-            loadSelectBoxUnitMeasureGroup($('#select-box-unit-measure-group'));
-            $('#modal-unit-measure .form-control').val('');
-            $('#modal-unit-measure .form-select').val('');
-            $('#label-referenced-unit').text('');
-            $('#notify-area').prop('hidden', true);
-            $('#check-referenced-unit').prop('checked', false);
-        }
-
+                let check_reference_unit = $('#check-edit-unit')
+                let is_unit = data?.['group']?.['is_referenced_unit']
+                $('#ratio-edit-area').prop('hidden', is_unit);
+                check_reference_unit.prop('disabled', is_unit).prop('checked', is_unit)
+            })
     })
 })

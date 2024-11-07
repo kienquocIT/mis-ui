@@ -659,13 +659,13 @@ class MenusProject:
         name='Project list', code='menu_project', view_name='ProjectList',
         icon='<i class="fa-solid fa-bars-progress"></i>',
     )
-    BASELINE = MenuCommon(
-        name='Baseline', code='menu_baseline_list', view_name='ProjectListBaseline',
-        icon='<i class="bi bi-signpost-fill"></i>',
-    )
     ACTIVITIES = MenuCommon(
         name='Project activities', code='menu_project_activities', view_name='ProjectActivities',
         icon='<i class="fa-solid fa-fire-flame-curved"></i>',
+    )
+    TASKS = MenuCommon(
+        name='Project task list', code='menu_project_task_list', view_name='ProjectTaskList',
+        icon='<i class="fa-solid fa-list"></i>',
     )
 
 
@@ -832,8 +832,8 @@ class SpaceItem:
             menus=[
                 MenusProject.HOME,
                 MenusProject.LIST,
-                MenusProject.BASELINE,
                 MenusProject.ACTIVITIES,
+                MenusProject.TASKS,
             ]
         ),
         'report': SpaceCommon(
@@ -901,10 +901,10 @@ class SpaceGroup:
     SPACE = SpaceCommon(
         'Space', 'space', child=[
             SpaceItem.mapping['crm'],
-            SpaceItem.mapping['kms'],
+            # SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
             SpaceItem.mapping['forms'],
-            SpaceItem.mapping['hrm'],
+            # SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],
             SpaceItem.mapping['purchase'],
             SpaceItem.mapping['production'],

@@ -23,6 +23,12 @@
 {% endblock %}
 
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'PurchaseOrderListAPI' %}"
+        data-url-create="{% url 'PurchaseOrderCreate' %}"
+        data-url-detail="{% url 'PurchaseOrderDetail' '0' %}"
+        data-key-return="purchase_order_list"
+    ></script>
     <table
             id="table_purchase_order_list"
             class="table nowrap w-100 mb-5"
@@ -66,7 +72,6 @@
     {{ data.gr_status|json_script:'gr_status' }}
 {% endblock %}
 {% block jsFooter %}
-
-
     <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_list.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

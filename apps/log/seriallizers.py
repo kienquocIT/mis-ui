@@ -10,6 +10,12 @@ from apps.shared import RandomGenerate
 
 
 class TicketErrorCreateSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(allow_null=True, allow_blank=True, required=False)
+    hash_tags = serializers.ListSerializer(
+        allow_null=True, allow_empty=True, required=False,
+        child=serializers.CharField(max_length=50)
+    )
+
     def create(self, validated_data):
         user_obj = self.context.get('user_obj', None)
         attachments = self.context.get('attachments', [])

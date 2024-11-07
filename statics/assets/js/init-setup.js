@@ -801,6 +801,11 @@ class NotifyController {
                         }
                     } else {
                         base$.removeClass('mention');
+
+                        // handle when notify is project activities
+                        if (data.doc_app === 'project.activities'){
+                            base$.find('.item-data-msg').html(data.title);
+                        }
                     }
                     break
             }
@@ -1541,7 +1546,8 @@ class ListeningEventController {
             tags: true,
             tokenSeparators: [',', ' ']
         });
-        $('#modalRaiseTicket').on('shown.bs.modal', function () {
+        const modal$ = $('#modalRaiseTicket');
+        modal$.on('shown.bs.modal', function () {
             $('#ticket-email').val($('#email-request-owner').text());
             $('#ticket-email-auto').val($('#email-request-owner').text());
             $('#ticket-location-raise').val(window.location);
@@ -1571,42 +1577,47 @@ class ListeningEventController {
         });
 
         let ticketFrm = $('#frm-send-a-ticket');
-        ticketFrm.submit(function (event) {
-            event.preventDefault();
 
-            let urlData = $(this).attr('data-url');
-            let methodData = $(this).attr('data-method');
+        SetupFormSubmit.validate(
+            ticketFrm,
+            {
+                submitHandler: function (form, event){
+                    event.preventDefault();
 
-            let formData = new FormData(this);
-            formData.append("attachments", document.getElementById('ticket-attachments').files);
+                    let formData = new FormData(form[0]);
+                    formData.append("attachments", document.getElementById('ticket-attachments').files);
 
-            WindowControl.showLoading();
-            $.ajax({
-                url: urlData, // point to server-side URL
-                dataType: 'json', // what to expect back from server
-                cache: false,
-                contentType: false,
-                processData: false, //data: {'data': form_data, 'csrfmiddlewaretoken': csrf_token},
-                data: formData,
-                type: methodData,
-                success: function (resp) { // display success response
-                    let data = $.fn.switcherResp(resp)
-                    ticketFrm.find('input').attr('readonly', 'readonly');
-                    ticketFrm.find('textarea').attr('readonly', 'readonly');
-                    $('#staticTicketResp').val(data?.ticket?.code).closest('.form-group').removeClass('hidden');
-                    $.fn.notifyB({
-                        'description': $.fn.transEle.attr('data-success')
-                    }, 'success')
-                    WindowControl.hideLoading();
+                    WindowControl.showLoading();
+                    $.ajax({
+                        url: $(form).data('url'), // point to server-side URL
+                        type: $(form).data('method'),
+                        dataType: 'json', // what to expect back from server
+                        cache: false,
+                        contentType: false,
+                        processData: false, //data: {'data': form_data, 'csrfmiddlewaretoken': csrf_token},
+                        data: formData,
+                        success: function (resp) { // display success response
+                            let data = $.fn.switcherResp(resp)
+                            ticketFrm.find('input').attr('readonly', 'readonly');
+                            ticketFrm.find('textarea').attr('readonly', 'readonly');
+                            $('#staticTicketResp').val(data?.ticket?.code).closest('.form-group').removeClass('hidden');
+                            const link$ = modal$.find('.link-ticket-detail');
+                            link$.attr('href', link$.attr('href').replaceAll('__code__', data?.ticket?.code));
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('Successful'),
+                            }, 'success')
+                            WindowControl.hideLoading();
+                        },
+                        error: function (response) {
+                            $.fn.notifyB({
+                                'description': $.fn.gettext('Failed'),
+                            }, 'failure');
+                            WindowControl.hideLoading();
+                        }
+                    });
                 },
-                error: function (response) {
-                    $.fn.notifyB({
-                        'description': 'Try again!'
-                    }, 'failure');
-                    WindowControl.hideLoading();
-                }
-            });
-        });
+            }
+        )
     }
 
     dataTable() {
@@ -2109,43 +2120,12 @@ class WFRTControl {
     }
 
     static callActionApprove(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect) {
-        let collabOutForm = WFRTControl.getCollabOutFormData();
-        if (collabOutForm && collabOutForm.length > 0) {
-            Swal.fire({
-                title: $.fn.transEle.attr('data-select-next-node-collab'),
-                html: String(WFRTControl.setupHTMLSelectCollab(collabOutForm)),
-                allowOutsideClick: false,
-                showConfirmButton: true,
-                confirmButtonText: $.fn.transEle.attr('data-confirm'),
-                showCancelButton: true,
-                cancelButtonText: $.fn.transEle.attr('data-cancel'),
-                didOpen: () => {
-                    // Add event listener after the modal is shown
-                    let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.addEventListener('click', function () {
-                            let checked = checkbox.checked;
-                            for (let eleCheck of checkboxes) {
-                                eleCheck.checked = false;
-                            }
-                            checkbox.checked = checked;
-                        });
-                    });
-                }
-            }).then((result) => {
-                if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                    let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
-                    if (eleChecked) {
-                        dataSubmit['next_node_collab_id'] = eleChecked.getAttribute('data-id');
-                        return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
-                    } else {
-                        return "You need to select one person!";
-                    }
-                }
-            });
-        } else {
-            return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
+        let dataRTConfig = {
+            'urlBase': urlBase, 'taskID': taskID, 'dataSuccessReload': dataSuccessReload, 'urlRedirect': urlRedirect
         }
+        // check next node
+        let associationData = WFAssociateControl.checkNextNode(WFRTControl.getRuntimeDocData());
+        WFRTControl.submitCheckAssociation(dataSubmit, associationData, 1, dataRTConfig);
     }
 
     static callWFSubmitForm(_form) {
@@ -2186,6 +2166,8 @@ class WFRTControl {
             return true;
         }
         if (!IDRuntime) {  // create document, run WF by @decorator_run_workflow in API
+            // check next node
+            let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
             // select save status before select collaborator
             Swal.fire({
                 title: $.fn.transEle.attr('data-select-save-status'),
@@ -2215,7 +2197,12 @@ class WFRTControl {
                         let saveStatus = eleChecked.getAttribute('data-status');
                         if (saveStatus) {
                             _form.dataForm['system_status'] = parseInt(saveStatus);
-                            WFRTControl.submitCheckCollabNextNode(_form);
+                            if (_form.dataForm['system_status'] === 0) {  // draft
+                                WFRTControl.callAjaxWFCreate(_form);
+                            }
+                            if (_form.dataForm['system_status'] === 1) {  // WF
+                                WFRTControl.submitCheckAssociation(_form, associationData, 0);
+                            }
                         }
                     } else {
                         $.fn.notifyB({description: $.fn.transEle.attr('data-need-one-option')}, 'failure');
@@ -2300,6 +2287,145 @@ class WFRTControl {
         )
     }
 
+    static submitActionApprove(dataRTConfig, dataSubmit) {
+        let urlBase = dataRTConfig?.['urlBase'];
+        let taskID = dataRTConfig?.['taskID'];
+        let dataSuccessReload = dataRTConfig?.['dataSuccessReload'];
+        let urlRedirect = dataRTConfig?.['urlRedirect'];
+        let collabOutForm = WFRTControl.getCollabOutFormData();
+        if (collabOutForm && collabOutForm.length > 0) {
+            Swal.fire({
+                title: $.fn.transEle.attr('data-select-next-node-collab'),
+                html: String(WFRTControl.setupHTMLSelectCollab(collabOutForm)),
+                allowOutsideClick: false,
+                showConfirmButton: true,
+                confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                showCancelButton: true,
+                cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                didOpen: () => {
+                    // Add event listener after the modal is shown
+                    let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.addEventListener('click', function () {
+                            let checked = checkbox.checked;
+                            for (let eleCheck of checkboxes) {
+                                eleCheck.checked = false;
+                            }
+                            checkbox.checked = checked;
+                        });
+                    });
+                }
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                    let eleChecked = document.querySelector('.checkbox-next-node-collab:checked');
+                    if (eleChecked) {
+                        dataSubmit['next_node_collab_id'] = eleChecked.getAttribute('data-id');
+                        return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
+                    } else {
+                        return "You need to select one person!";
+                    }
+                }
+            });
+        } else {
+            return WFRTControl.callAjaxActionWF(urlBase, taskID, dataSubmit, dataSuccessReload, urlRedirect);
+        }
+    }
+
+    static submitCheckAssociation(_form, associationData, submitType, dataRTConfig = {}) {
+        let dataSubmit = {};
+        let typeCheck = 0;  // 0: pass condition, 1: fail condition
+        if (submitType === 0) {
+            dataSubmit = _form.dataForm;
+        }
+        if (submitType === 1) {
+            dataSubmit = _form;
+        }
+        if (associationData.hasOwnProperty('check') && associationData.hasOwnProperty('data')) {
+            if (associationData?.['data'].length <= 0) {  // Not apply WF
+                if (submitType === 0) {
+                    WFRTControl.submitCheckCollabNextNode(_form);
+                    return true;
+                }
+                if (submitType === 1) {
+                    WFRTControl.submitActionApprove(dataRTConfig, dataSubmit);
+                    return true;
+                }
+            }
+            if (associationData?.['data'].length === 1) {
+                if (associationData?.['check'] === true) {
+                    dataSubmit['next_association_id'] = associationData?.['data'][0]?.['id'];
+                    if (submitType === 0) {
+                        WFRTControl.setCollabOFCreate(associationData?.['data'][0]?.['node_out']?.['collab_out_form']);
+                        WFRTControl.submitCheckCollabNextNode(_form);
+                        return true;
+                    }
+                    if (submitType === 1) {
+                        WFRTControl.setCollabOFRuntime(associationData?.['data'][0]?.['node_out']?.['collab_out_form']);
+                        WFRTControl.submitActionApprove(dataRTConfig, dataSubmit);
+                        return true;
+                    }
+                }
+                if (associationData?.['check'] === false) {
+                    typeCheck = 1;
+                }
+            }
+            if (associationData?.['data'].length > 1) {
+                if (associationData?.['check'] === false) {
+                    typeCheck = 1;
+                }
+            }
+            // select association
+            Swal.fire({
+                title: $.fn.transEle.attr('data-select-association'),
+                html: String(WFRTControl.setupHTMLSelectAssociation(associationData?.['data'], typeCheck)),
+                allowOutsideClick: false,
+                showConfirmButton: true,
+                confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                showCancelButton: true,
+                cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                didOpen: () => {
+                    // Add event listener after the modal is shown
+                    let checkboxes = document.querySelectorAll('.checkbox-next-association');
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.addEventListener('click', function () {
+                            let checked = checkbox.checked;
+                            for (let eleCheck of checkboxes) {
+                                eleCheck.checked = false;
+                            }
+                            checkbox.checked = checked;
+                        });
+                    });
+                }
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                    let eleChecked = document.querySelector('.checkbox-next-association:checked');
+                    if (eleChecked) {
+                        if (eleChecked.getAttribute('data-detail')) {
+                            let association = JSON.parse(eleChecked.getAttribute('data-detail'));
+                            dataSubmit['next_association_id'] = association?.['id'];
+                            if (submitType === 0) {
+                                WFRTControl.setCollabOFCreate(association?.['node_out']?.['collab_out_form']);
+                                WFRTControl.submitCheckCollabNextNode(_form);
+                                return true;
+                            }
+                            if (submitType === 1) {
+                                WFRTControl.setCollabOFRuntime(association?.['node_out']?.['collab_out_form']);
+                                WFRTControl.submitActionApprove(dataRTConfig, dataSubmit);
+                                return true;
+                            }
+                        }
+                    } else {
+                        $.fn.notifyB({description: $.fn.transEle.attr('data-need-one-option')}, 'failure');
+                        return false;
+                    }
+                }
+            });
+        } else {
+            $.fn.notifyB({description: $.fn.transEle.attr('data-no-next-node')}, 'failure');
+            return false;
+        }
+    }
+
     static submitCheckCollabNextNode(_form) {
         let collabOutForm = WFRTControl.getCollabOutFormData();
         if (collabOutForm && collabOutForm.length > 0) {  // Have collaborator -> select collaborator then submit
@@ -2346,17 +2472,44 @@ class WFRTControl {
         }
     }
 
+    static setupHTMLSelectAssociation(AssociationData, type) {
+        let htmlCustom = ``;
+        let commonTxt = $.fn.transEle.attr('data-select-association-type-1');
+        let commonImg = `<i class="fas fa-check-circle text-info"></i>`;
+        if (type === 1) {
+            commonTxt = $.fn.transEle.attr('data-select-association-type-2');
+            commonImg = `<i class="fas fa-exclamation-triangle text-danger"></i>`;
+        }
+        let typeMapTxt = {
+            1: $.fn.transEle.attr('data-node-type-1'),
+            2: $.fn.transEle.attr('data-node-type-2'),
+        }
+        htmlCustom += `<div class="d-flex mb-5">${commonImg}<span>${commonTxt}</span></div>`;
+        for (let associate of AssociationData) {
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="radio" class="form-check-input checkbox-next-association" id="associate-${associate?.['id'].replace(/-/g, "")}" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
+                                    <label class="form-check-label mr-2" for="associate-${associate?.['id'].replace(/-/g, "")}">${associate?.['node_out']?.['title']}</label>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <i class="fas fa-cubes"></i>
+                                </div>
+                            </div>`;
+        }
+        return htmlCustom;
+    }
+
     static setupHTMLSelectCollab(collabOutForm) {
         let htmlCustom = ``;
         for (let collab of collabOutForm) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-user mr-2"></i>
-                                    <span class="mr-2">${collab?.['full_name']}</span>
+                                <div class="form-check form-check-theme ms-3">
+                                    <input type="radio" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
+                                    <label class="form-check-label mr-2" for="collab-${collab?.['id'].replace(/-/g, "")}">${collab?.['full_name']}</label>
                                     <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                                 </div>
-                                <div class="form-check form-check-theme ms-3">
-                                    <input type="radio" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
+                                <div class="d-flex justify-content-end">
+                                    <i class="fas fa-user"></i>
                                 </div>
                             </div>`;
         }
@@ -2367,8 +2520,8 @@ class WFRTControl {
         let htmlCustom = ``;
         let statusList = [0, 1];
         let statusMapIcon = {
-            0: "far fa-list-alt mr-2",
-            1: "fas fa-sitemap mr-2",
+            0: "far fa-list-alt",
+            1: "fas fa-sitemap",
         };
         let statusMapText = {
             0: $.fn.transEle.attr('data-save-draft'),
@@ -2376,16 +2529,16 @@ class WFRTControl {
         };
         let statusMapColor = {
             0: "text-secondary",
-            1: "text-primary",
+            1: "text-secondary",
         };
         for (let status of statusList) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
-                                <div class="d-flex align-items-center">
-                                    <i class="${statusMapIcon[status]} ${statusMapColor[status]}"></i>
-                                    <span class="${statusMapColor[status]}">${statusMapText[status]}</span>
-                                </div>
                                 <div class="form-check form-check-theme ms-3">
-                                    <input type="radio" class="form-check-input checkbox-save-status" data-status="${status}">
+                                    <input type="radio" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}">
+                                    <label class="form-check-label" for="save-type-${status}">${statusMapText[status]}</label>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <i class="${statusMapIcon[status]} ${statusMapColor[status]}"></i>
                                 </div>
                             </div>`;
         }
@@ -2504,8 +2657,8 @@ class WFRTControl {
                                 }
                             }
                         }
-                        // collab out form handler
-                        WFRTControl.setCollabOFRuntime(actionMySelf['collab_out_form']);
+                        // association handler
+                        WFRTControl.setAssociateRuntime(actionMySelf?.['association']);
                     }
                 }
             })
@@ -2535,8 +2688,11 @@ class WFRTControl {
                                     if (window.location.href.includes('/create')) {
                                         WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                                     }
-                                    // collab out form handler
-                                    WFRTControl.setCollabOFCreate(workflow_current['collab_out_form']);
+                                    if (window.location.href.includes('/update/') && !globeWFRuntimeID) {
+                                        WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                                    }
+                                    // association handler
+                                    WFRTControl.setAssociateCreate(workflow_current['association']);
                                 }
                             }
                             if (WFconfig?.['mode'] === 0) {
@@ -2619,7 +2775,7 @@ class WFRTControl {
         if (isEditAllZone === 'true') {
             if (window.location.href.includes('/update/')) {
                 let idFormID = globeFormMappedZone;
-                if (idFormID) {
+                if (idFormID && globeWFRuntimeID) {
                     DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
                     $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
                         DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
@@ -2772,7 +2928,7 @@ class WFRTControl {
                                 pageEle.find(findText).each(function () {
                                     let optsSetZone = {'add_empty_value': true};
                                     $(this).changePropertiesElementIsZone(optsSetZone);
-                                    $(this).find('input, select, textarea, button, span, p').each(function (event) {
+                                    $(this).find('input, select, textarea, button, span, p, li').each(function (event) {
                                         $(this).changePropertiesElementIsZone(optsSetZone);
                                     });
                                 })
@@ -2782,11 +2938,10 @@ class WFRTControl {
                 })
             }
             // add button save at zones
-            // idFormID
-            if (zonesData.length > 0) {  // check if user has zone edit then show button save at zones
+            if (zonesData.length > 0) {  // check if user has zones && doc in WF runtime then show button save at zone
                 if (window.location.href.includes('/update/')) {
                     let idFormID = globeFormMappedZone;
-                    if (idFormID) {
+                    if (idFormID && globeWFRuntimeID) {
                         DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
                         $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
                             DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
@@ -2834,7 +2989,7 @@ class WFRTControl {
                                 pageEle.find(findText).each(function () {
                                     let optsSetZone = {'add_empty_value': true};
                                     $(this).changePropertiesElementIsZone(optsSetZone);
-                                    $(this).find('input, select, textarea, button, span, p').each(function (event) {
+                                    $(this).find('input, select, textarea, button, span, p, li').each(function (event) {
                                         $(this).changePropertiesElementIsZone(optsSetZone);
                                     });
                                 })
@@ -2878,9 +3033,17 @@ class WFRTControl {
         }
     }
 
+    static getRuntimeDocData() {
+        let itemEle = $('#idxRuntimeDoc');
+        if (itemEle && itemEle.length > 0) {
+            return JSON.parse(itemEle.val());
+        }
+        return {};
+    }
+
     static getZoneData() {
         let itemEle = $('#idxZonesData');
-        if (itemEle) {
+        if (itemEle && itemEle.length > 0) {
             return JSON.parse(itemEle.text());
         }
         return [];
@@ -2934,6 +3097,38 @@ class WFRTControl {
         }
     }
 
+    static getAssociateData() {
+        // typeWF 0: dataCreate, 1: dataRuntime
+        let typeWF = 0;
+        if (window.location.href.includes('/detail/')) {
+            typeWF = 1;
+        }
+        if (window.location.href.includes('/update/')) {
+            let eleStatus = $('#systemStatus');
+            if (eleStatus && eleStatus.length > 0) {
+                if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+                    typeWF = 1;
+                }
+            }
+        }
+        let $associateCreate = $('#idxAssociateCreate');
+        let dataCreate = [];
+        let $associateRuntime = $('#idxAssociateRuntime');
+        let dataRuntime = [];
+        if ($associateCreate && $associateCreate.length > 0) {
+            dataCreate = JSON.parse($associateCreate.text());
+        }
+        if ($associateRuntime && $associateRuntime.length > 0) {
+            dataRuntime = JSON.parse($associateRuntime.text());
+        }
+        if (typeWF === 0) {
+            return dataCreate;
+        }
+        if (typeWF === 1) {
+            return dataRuntime;
+        }
+    }
+
     static getZoneKeyData() {
         let itemEle = $('#idxZonesKeyData');
         if (itemEle) {
@@ -2956,6 +3151,17 @@ class WFRTControl {
             return JSON.parse(itemEle.text());
         }
         return [];
+    }
+
+    static setRuntimeDoc(docData) {
+        if (typeof docData === 'object' && docData !== null) {
+            let $RuntimeDoc = $('#idxRuntimeDoc');
+            if ($RuntimeDoc && $RuntimeDoc.length > 0) {
+                $RuntimeDoc.val(`${JSON.stringify(docData)}`);
+            } else {
+                $('html').append(`<input class="hidden" id="idxRuntimeDoc" value="${JSON.stringify(docData).replace(/"/g, "&quot;")}">`);
+            }
+        }
     }
 
     static setZoneData(zonesData) {
@@ -3002,6 +3208,28 @@ class WFRTControl {
                 $collab.empty().html(`${JSON.stringify(collabOutFormData)}`);
             } else {
                 $('html').append(`<script class="hidden" id="idxCollabOFCreate">${JSON.stringify(collabOutFormData)}</script>`);
+            }
+        }
+    }
+
+    static setAssociateRuntime(associateData) {
+        if (associateData && Array.isArray(associateData)) {
+            let $associate = $('#idxAssociateRuntime');
+            if ($associate && $associate.length > 0) {
+                $associate.empty().html(`${JSON.stringify(associateData)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxAssociateRuntime">${JSON.stringify(associateData)}</script>`);
+            }
+        }
+    }
+
+    static setAssociateCreate(associateData) {
+        if (associateData && Array.isArray(associateData)) {
+            let $associate = $('#idxAssociateCreate');
+            if ($associate && $associate.length > 0) {
+                $associate.empty().html(`${JSON.stringify(associateData)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxAssociateCreate">${JSON.stringify(associateData)}</script>`);
             }
         }
     }
@@ -3055,6 +3283,7 @@ class WFRTControl {
 
     static compareStatusShowPageAction(resultDetail) {
         let $realActions = $('#idxRealAction');
+        WFRTControl.setRuntimeDoc(resultDetail);
         switch (resultDetail?.['system_status']) {
             case 1:  // created
                 $realActions.addClass('hidden');
@@ -3076,7 +3305,6 @@ class WFRTControl {
             default:
                 break
         }
-        // $('#idxRealAction').removeClass('hidden');
     }
 
     static changePropertiesElementIsZone(ele$, opts) {
@@ -3177,12 +3405,210 @@ class WFRTControl {
                         $(ele$).attr('hidden', 'true');
                     }
                 }
+                if ($(ele$).is('li')) {  // if <li>
+                    $(ele$).attr('hidden', 'true');
+                    if ($(ele$).hasClass('nav-item')) {  // check if <li> is nav-item then find tab-pane removeCls "show"
+                        let $navLink = $(ele$).find('.nav-link');
+                        if ($navLink && $navLink.length > 0) {
+                            let href = $navLink.attr('href');
+                            if (href.includes("#")) {
+                                href = href.replace("#", "");
+                                let $tabPane = $(`.tab-pane[id="${href}"]`);
+                                if ($tabPane && $tabPane.length > 0) {
+                                    $tabPane.removeClass("show");
+                                    $tabPane.removeClass("active");
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         // active border for <select2>
         if ($(ele$).is("select") && $(ele$).hasClass("select2-hidden-accessible"))
             WFRTControl.changePropertiesElementIsZone($(ele$).next('.select2-container').find('.select2-selection'), config)
     }
+
+}
+
+class WFAssociateControl {
+    // Handle every thing about Runtime Association
+
+    static checkNextNode(dataForm) {
+        let result = [];
+        let associateData = WFRTControl.getAssociateData().reverse();
+        if (associateData.length === 1) {  // check node system
+            if (["approved"].includes(associateData[0]?.['node_out']?.['code'])) {
+                return {'check': true, 'data': associateData};
+            }
+        }
+        for (let assoData of associateData) {  // many nodes, check condition
+            let check = false;
+            let listLogic = [];
+            for (let condition of assoData?.['condition']) {
+                if (Array.isArray(condition)) {
+                    let checkSub = false;
+                    let listLogicSub = [];
+                    for (let subCond of condition) {
+                        listLogicSub.push(WFAssociateControl.compareLogic(subCond, dataForm));
+                    }
+                    if (listLogicSub.length === 0) {
+                        listLogic.push(true);
+                    } else {
+                        if (listLogicSub.length % 2 !== 0) {
+                            checkSub = WFAssociateControl.evaluateLogic(listLogicSub);
+                        } else {
+                            listLogicSub.pop();
+                            if (listLogicSub.length === 1) {
+                                checkSub = listLogicSub[0];
+                            } else {
+                                checkSub = WFAssociateControl.evaluateLogic(listLogicSub);
+                            }
+                        }
+                        listLogic.push(checkSub);
+                    }
+                } else {
+                    listLogic.push(WFAssociateControl.compareLogic(condition, dataForm));
+                }
+            }
+            if (listLogic.length === 0) {
+                result.push(assoData);
+            } else {
+                if (listLogic.length % 2 !== 0) {
+                    check = WFAssociateControl.evaluateLogic(listLogic);
+                } else {
+                    listLogic.pop();
+                    if (listLogic.length === 1) {
+                        check = listLogic[0];
+                    } else {
+                        check = WFAssociateControl.evaluateLogic(listLogic);
+                    }
+                }
+                if (check === true) {
+                    result.push(assoData);
+                }
+            }
+        }
+        if (result.length > 0) {  // return result (have association pass condition)
+            return {'check': true, 'data': result};
+        }
+        return {'check': false, 'data': associateData};  // return associateData (not any association pass condition)
+    };
+
+    static compareLogic(condition, dataForm) {
+        let left = null;
+        let right = null;
+        if (typeof condition === 'object' && condition !== null) {
+            if (condition?.['left_cond']) {
+                left = WFAssociateControl.findKey(dataForm, condition?.['left_cond']?.['code']);
+            }
+            if (condition?.['right_cond']) {
+                right = condition?.['right_cond'];
+                if (condition?.['left_cond']?.['type'] === 5) {
+                    if (condition?.['right_cond']?.['id']) {
+                        right = condition?.['right_cond']?.['id'];
+                    }
+                }
+                if (condition?.['left_cond']?.['type'] === 6) {
+                    right = parseFloat(condition?.['right_cond']);
+                }
+            }
+            if (left !== null && right !== null) {
+                let isMatch = false;
+                if (condition?.['operator'] === 'is') {
+                    if (Array.isArray(left)) {
+                        isMatch = left.includes(right);
+                        return isMatch;
+                    }
+                    if (typeof left === 'string') {
+                        isMatch = left === right;
+                        return isMatch;
+                    }
+                }
+                if (condition?.['operator'] === 'contains') {
+                    if (Array.isArray(left)) {
+                        isMatch = left.includes(right);
+                        return isMatch;
+                    }
+                }
+                if (condition?.['operator'] === 'not_contains') {
+                    if (Array.isArray(left)) {
+                        isMatch = !left.includes(right);
+                        return isMatch;
+                    }
+                }
+                if (condition?.['operator'] === '=') {
+                    isMatch = left === right;  // Strict equality
+                    return isMatch;
+                }
+                if (condition?.['operator'] === '<') {
+                    isMatch = left < right;  // Less than
+                    return isMatch;
+                }
+                if (condition?.['operator'] === '<=') {
+                    isMatch = left <= right;  // Less than or equal to
+                    return isMatch;
+                }
+                if (condition?.['operator'] === '>') {
+                    isMatch = left > right;  // Greater than
+                    return isMatch;
+                }
+                if (condition?.['operator'] === '>=') {
+                    isMatch = left >= right;  // Greater than or equal to
+                    return isMatch;
+                }
+                if (condition?.['operator'] === '!=') {
+                    isMatch = left !== right;  // Not equal
+                    return isMatch;
+                }
+            }
+        }
+        if (typeof condition === 'string') {
+            if (["AND", "OR"].includes(condition)) {
+                return condition.toLowerCase();
+            }
+        }
+
+    };
+
+    static findKey(dataForm, key) {
+        if (!key.includes("__")) {
+            return dataForm?.[key];
+        }
+        let listSub = key.split("__");
+        return listSub.reduce((acc, curr) => {
+            if (Array.isArray(acc)) {
+                // If the current accumulator is an array, use flatMap to continue reduction
+                return acc.flatMap(item => {
+                    if (Array.isArray(item?.[curr])) {
+                        // If the current item is also an array, return the array itself
+                        return item?.[curr];
+                    } else {
+                        // If the item is not an array, proceed normally
+                        return item?.[curr];
+                    }
+                });
+            } else {
+                // Regular reduction step if `acc` is not an array
+                return acc?.[curr];
+            }
+        }, dataForm);
+    }
+
+    static evaluateLogic(conditions) {
+        let result = conditions[0];  // Start with the first value
+        for (let i = 1; i < conditions.length; i += 2) {
+            let operator = conditions[i];     // Get the operator ("and" or "or")
+            let nextValue = conditions[i + 1];  // Get the next value (true/false)
+            // Apply the logical operator
+            if (operator === "and") {
+                result = result && nextValue;
+            } else if (operator === "or") {
+                result = result || nextValue;
+            }
+        }
+        return result;
+    };
 
 }
 
@@ -4902,13 +5328,13 @@ class WindowControl {
             if (loadingTitleKeepDefault === true) {
                 let loadingTitleAction = opts?.['loadingTitleAction'] || 'GET';
                 if (loadingTitleAction === 'GET') {
-                    title += $.fn.transEle.attr('data-loading');
+                    title += $.fn.gettext('Loading');
                 } else if (loadingTitleAction === 'CREATE') {
-                    title += $.fn.transEle.attr('data-loading-creating');
+                    title += $.fn.gettext('Creating');
                 } else if (loadingTitleAction === 'UPDATE') {
-                    title += $.fn.transEle.attr('data-loading-updating');
+                    title += $.fn.gettext("Updating");
                 } else if (loadingTitleAction === "DELETE") {
-                    title += $.fn.transEle.attr('data-loading-deleting');
+                    title += $.fn.gettext("Deleting")
                 }
             }
             let loadingTitleMore = opts?.['loadingTitleMore'] || '';
@@ -4930,7 +5356,7 @@ class WindowControl {
         Swal.fire({
             icon: 'info',
             title: resolve_title(),
-            text: `${$.fn.transEle.attr('data-wait')}...`,
+            text: `${$.fn.gettext('Please wait')}...`,
             allowOutsideClick: false,
             showConfirmButton: false,
             timerProgressBar: true,
@@ -6126,6 +6552,9 @@ class FileControl {
         if (typeof ids === 'string' && ids.indexOf(id) === -1) {
             ids = FileControl.resolve_ids(ids + ',' + id)
             inputEle.val(ids);
+
+            // Manually trigger the change event
+            inputEle[0].dispatchEvent(new Event('change'));
         }
     }
 
@@ -6139,6 +6568,9 @@ class FileControl {
                         ids.replace(id, '')
                     )
                 );
+
+                // Manually trigger the change event
+                inputEle[0].dispatchEvent(new Event('change'));
             }
         } else {
             Swal.fire({

@@ -1,7 +1,8 @@
-let urlEle = $('#url-factory');
 $(document).ready(function () {
+    let urlEle = $('#url-factory');
     let selectCurrencyEle = $('#select-box-currency');
     let priceListSelectEle = $('#select-box-price-list');
+    let trans_script = $('#trans-script');
     $('#select-box-type').initSelect2();
 
     function loadPriceList(ele, data) {
@@ -41,12 +42,13 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
+                        className: 'w-5',
                         render: () => {
                             return ``;
                         }
                     }, {
                         data: 'title',
-                        className: 'w-55',
+                        className: 'w-35',
                         render: (data, type, row) => {
                             return `<a class="btn-detail" href="${urlEle.data('url-detail').format_url_with_uuid(row.id)}">
                                         <span><b>${data}</b></span>
@@ -55,41 +57,57 @@ $(document).ready(function () {
                         }
                     }, {
                         data: 'price_list_type',
-                        className: 'text-center w-20',
+                        className: 'text-center w-15',
                         render: (data) => {
                             if (data.value === 0) {
-                                return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-danger badge-pill">${data.name}</span>`
+                                return `<span class="text-primary">${trans_script.attr('data-trans-for-sale')}</span>`
                             } else if (data.value === 1) {
-                                return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-indigo badge-pill">${data.name}</span>`
+                                return `<span class="text-danger">${trans_script.attr('data-trans-for-purchase')}</span>`
                             } else if (data.value === 2) {
-                                return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-green badge-pill">${data.name}</span>`
+                                return `<span class="text-blue">${trans_script.attr('data-trans-for-expense')}</span>`
                             } else {
                                 return ''
                             }
                         }
                     }, {
-                        data: 'status',
                         className: 'text-center w-20',
-                        render: (data) => {
-                            let badge_type;
-                            if (data === 'Valid') {
-                                badge_type = 'text-success'
-                            } else if (data === 'Invalid') {
-                                badge_type = 'text-orange'
-                            } else if (data === 'Expired') {
-                                badge_type = 'text-danger'
-                            } else {
-                                badge_type = 'text-gray'
+                        render: (data, type, row) => {
+                            let start_time = moment(row?.['valid_time_start'].split(' ')[0]).format('DD/MM/YYYY')
+                            let end_time = moment(row?.['valid_time_end'].split(' ')[0]).format('DD/MM/YYYY')
+                            if (row.is_default === false) {
+                                return `<span class="text-muted">${start_time} - ${end_time}</span>`
                             }
-
-                            return `<span class="${badge_type}">${data}</span>`;
+                            else {
+                                return `<span class="text-muted">${start_time} - ${trans_script.attr('data-trans-now')}</span>`
+                            }
                         }
                     }, {
-                        className: 'action-center w-5',
+                        data: 'status',
+                        className: 'text-center w-15',
+                        render: (data) => {
+                            let badge_type = ''
+                            let badge_text = ''
+                            if (data === 'Valid') {
+                                badge_type = 'badge badge-soft-success w-70'
+                                badge_text = trans_script.attr('data-trans-valid')
+                            } else if (data === 'Invalid') {
+                                badge_type = 'badge badge-soft-orange w-70'
+                                badge_text = trans_script.attr('data-trans-invalid')
+                            } else if (data === 'Expired') {
+                                badge_type = 'badge badge-soft-danger w-70'
+                                badge_text = trans_script.attr('data-trans-expired')
+                            } else {
+                                badge_type = 'badge badge-soft-gray w-70'
+                                badge_text = trans_script.attr('data-trans-undefined')
+                            }
+                            return `<span class="${badge_type}">${badge_text}</span>`;
+                        }
+                    }, {
+                        className: 'text-right w-10',
                         render: (data, type, row) => {
                             if (row.is_default === false) {
-                                return `<a data-method="DELETE" data-id="${row.id}" class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button delete-price-list-btn">
-                                    <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>
+                                return `<a data-method="DELETE" data-id="${row.id}" class="btn btn-icon btn-del btn btn-icon btn-flush-secondary flush-soft-hover btn-rounded del-button delete-price-list-btn">
+                                    <span class="btn-icon-wrap"><span class="feather-icon"><i class="fas fa-trash-alt"></i></span></span>
                                     </a>`;
                             } else {
                                 return ``
@@ -229,9 +247,13 @@ $(document).ready(function () {
     $('#valid_time').val('')
 
     $(document).on("click", '.delete-price-list-btn', function () {
-
         Swal.fire({
-            html: '<div><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>' + '<h6 class="text-danger">Delete Price List ?</h6>',
+            html: `<div class="mb-3">
+                        <i class="fas fa-trash-alt text-danger"></i>
+                   </div>
+                   <h6 class="text-danger">
+                        ${trans_script.attr('data-trans-confirm-delete')}
+                   </h6>`,
             customClass: {
                 confirmButton: 'btn btn-outline-secondary text-danger',
                 cancelButton: 'btn btn-outline-secondary text-gray',
@@ -239,8 +261,8 @@ $(document).ready(function () {
             },
             showCancelButton: true,
             buttonsStyling: false,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
+            confirmButtonText: trans_script.attr('data-trans-delete'),
+            cancelButtonText: trans_script.attr('data-trans-cancel'),
             reverseButtons: true,
         }).then((result) => {
             if (result.value) {
@@ -259,7 +281,7 @@ $(document).ready(function () {
                     }
                 }, () => {
                     Swal.fire({
-                        html: '<div><h6 class="text-danger mb-0">Source/Non-empty Price List can not be deleted!</h6></div>',
+                        html: `<div><h6 class="text-danger mb-0">${trans_script.attr('data-trans-notify')}</h6></div>`,
                         customClass: {
                             content: 'text-center',
                             confirmButton: 'btn btn-primary',
@@ -270,5 +292,4 @@ $(document).ready(function () {
             }
         })
     });
-
 })

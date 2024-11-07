@@ -1088,13 +1088,14 @@ class APAction {
         let tax_rate = 0;
         if (tr.find('.expense-tax-select-box').val()) {
             let tax_selected = JSON.parse($('#' + tr.find('.expense-tax-select-box').attr('data-idx-data-loaded')).text())[tr.find('.expense-tax-select-box').val()];
-            tax_rate = tax_selected.rate;
+            tax_rate = tax_selected?.['rate'];
         }
         $.fn.initMaskMoney2();
         if (unit_price.attr('value') && quantity.val()) {
             let subtotal_value = parseFloat(unit_price.attr('value')) * parseFloat(quantity.val())
             subtotal.attr('value', subtotal_value);
-            subtotal_after_tax.attr('value', subtotal_value + subtotal_value * tax_rate / 100);
+            let tax_value = subtotal_value * tax_rate / 100
+            subtotal_after_tax.attr('value', subtotal_value + parseFloat(tax_value.toFixed(0)));
         }
         else {
             unit_price.attr('value', '');
@@ -1225,6 +1226,11 @@ class APHandle {
         frm.dataForm['ap_item_list'] = ap_item_list
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
+        let advanceVal = $('#total-value').valCurrency();
+        if (advanceVal) {
+            frm.dataForm['advance_value'] = parseFloat(advanceVal);
+        }
 
         // console.log(frm)
         return frm

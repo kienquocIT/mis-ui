@@ -4,6 +4,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from django.utils.translation import gettext_lazy as _
 from apps.shared import mask_view, ApiURL, ServerAPI, MDConfigMsg, PermCheck
 
 PAYMENTS_TERMS_UNIT = [
@@ -252,7 +253,36 @@ class PriceListUpdate(View):
         perm_check=PermCheck(url=ApiURL.PRICE_DETAIL, method='PUT', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {
+            'data':{
+                'import_db_form_cfg': {
+                    'list_import_db': [
+                        {
+                            "id": "datatable-item-list-import-db",
+                            "name": _("Price datatable"),
+                            "map_with": 'datatable-item-list',
+                            "option": [0],
+                            "col_type": [
+                                'input-text',
+                                'input-text',
+                                'input-text',
+                                'input-money'
+                            ],
+                            "data_format": {
+                                "key": "product",
+                                "value_list": [
+                                    {"col_key": "code", "col_index": 0},
+                                    {"col_key": "uom", "col_index": 1},
+                                    {"col_key": "currency", "col_index": 2},
+                                    {"col_key": "price", "col_index": 3},
+                                    {"col_key": "price_id", "col_index": -2, "ele_id": '#script_price_id', "get_value": False, "get_text": False, "get_attr": "data-price-id"},
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }, status.HTTP_200_OK
 
 
 class PriceListAPI(APIView):
@@ -342,6 +372,19 @@ class ProductAddFromPriceListAPI(APIView):
     def put(self, request, pk, *arg, **kwargs):
         data = request.data  # noqa
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_ADD_FROM_PRICE_LIST.fill_key(pk=pk)).put(data)
+        return resp.auto_return()
+
+
+class PriceListItemListImportDBAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        data = request.data  # noqa
+        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST_ITEM_IMPORT_DB).post(data)
         return resp.auto_return()
 
 

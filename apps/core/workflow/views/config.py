@@ -12,8 +12,8 @@ WORKFLOW_ACTION = {
     1: WorkflowMsg.ACTION_APPROVED,
     2: WorkflowMsg.ACTION_REJECT,
     3: WorkflowMsg.ACTION_RETURN,
-    4: WorkflowMsg.ACTION_RECEIVE,
-    5: WorkflowMsg.ACTION_TODO,
+    # 4: WorkflowMsg.ACTION_RECEIVE,
+    # 5: WorkflowMsg.ACTION_TODO,
 }
 
 WORKFLOW_TYPE = {
@@ -47,8 +47,10 @@ WORKFLOW_TYPE = {
     5: [
         {"value": "is", "text": WorkflowMsg.MATH_TYPE_IS},
         {"value": "is_not", "text": WorkflowMsg.MATH_TYPE_IS_NOT},
-        {"value": "is_empty", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
-        {"value": "is_not_empty", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
+        {"value": "contains", "text": WorkflowMsg.MATH_TYPE_CONTAINS},
+        {"value": "not_contains", "text": WorkflowMsg.MATH_TYPE_NOT_CONTAINS},
+        # {"value": "is_empty", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
+        # {"value": "is_not_empty", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
     ],
     6: [
         {"value": "=", "text": "="},
@@ -57,8 +59,8 @@ WORKFLOW_TYPE = {
         {"value": "<", "text": "<"},
         {"value": ">=", "text": "≥"},
         {"value": "<=", "text": "≤"},
-        {"value": "is_empty", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
-        {"value": "is_not_empty", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
+        # {"value": "is_empty", "text": WorkflowMsg.MATH_TYPE_IS_EMPTY},
+        # {"value": "is_not_empty", "text": WorkflowMsg.MATH_TYPE_IS_NOT_EMPTY},
     ],
 
 }

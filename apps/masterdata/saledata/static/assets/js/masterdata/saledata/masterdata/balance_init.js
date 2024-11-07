@@ -125,7 +125,6 @@ $(document).ready(function () {
                     let selected = SelectDDControl.get_data_from_idx(ele, ele.val())
                     ele.closest('tr').find('.item-uom').text(selected?.['inventory_uom']?.['title'])
                     if (selected?.['general_traceability_method'] === 2) {
-                        console.log(selected)
                         $('.item-quantity').val('').prop('disabled', false)
                         loadRowSN(parseFloat(selected?.['inventory_uom']?.['ratio']))
                     }

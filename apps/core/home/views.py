@@ -62,7 +62,28 @@ class NotFoundView(View):
         template='extends/systems/404.html',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        ctx = {}
+        if request.user:
+            if request.user.company:
+                ctx = {
+                    'user_id': request.user.id.hex,
+                    'company_code': request.user.company.code,
+                    'company_title': request.user.company.title,
+                }
+        return ctx, status.HTTP_200_OK
+
+
+def view_render_not_found(request, *args, **kwargs):
+    ctx = {}
+    if request.user:
+        if request.user.company:
+            ctx = {
+                'user_id': request.user.id.hex,
+                'company_code': request.user.company.code,
+                'company_title': request.user.company.title,
+            }
+        return render(request, template_name='extends/systems/404.html', context=ctx)
+    return redirect(reverse('OutLayoutNotFoundView'))
 
 
 class ServerMaintainView(View):

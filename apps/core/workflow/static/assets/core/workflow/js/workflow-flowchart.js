@@ -23,7 +23,7 @@ function eventNodeClick(event) {
     for (let cond of data.condition){
         condition[cond.action] = cond
     }
-    for (let item of data.action) {
+    for (let item of data?.['action'] ? data?.['action'] : []) {
         let midd = ``
         // set if node type is approved/create and collab option is in-form/out-form
         if (item <= 1 && data.collaborators.option < 2 || item >= 4){
@@ -102,11 +102,19 @@ function clickConnection(connect) {
     $("#next-node-association .formsets").html('')
     $('#form-create-condition [name="node_in"]').val(node_in)
     $('#form-create-condition [name="node_out"]').val(node_out)
-    // $("#next-node-association").modal('show');
+    $("#next-node-association").modal('show');
 
     // render modal popup of connection
     let data_cond = FlowJsP.getAssociate
-    data_cond = data_cond[node_in+'_'+node_out]
+    data_cond = data_cond[node_in + '_' + node_out]
+
+    let $eleAssociate = $('#node-associate');
+    let associate_temp = $eleAssociate.val();
+    if (associate_temp) {
+        let associate_data_json = JSON.parse(associate_temp);
+        data_cond = associate_data_json[node_in + '_' + node_out];
+    }
+
     condition.loadCondition($formset_cond, data_cond.condition)
 }
 
@@ -195,11 +203,16 @@ class JSPlumbsHandle {
                 let item = DEFAULT_NODE_LIST[val];
                 let clsSys = '';
                 let bg = '';
+                let clsModal = "modal";
                 if (item?.['is_system'] === true) {
                     clsSys = 'control-system'
                     bg = 'bg-blue-light-5';
+                    if (["approved", "completed"].includes(item?.['code'])) {
+                        clsModal = "";
+                    }
                 }
-                strHTMLDragNode += `<div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" `
+                strHTMLDragNode += `<div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" data-bs-toggle="${clsModal}"
+                            data-bs-target="#nodeModal" `
                     + `title="${item.title}">` + `<p class="drag-title" contentEditable="true" `
                     + `title="${item.remark}">${item.title}</p></div>`;
             }
@@ -314,13 +327,17 @@ class JSPlumbsHandle {
                     for (let idx in DEFAULT_NODE_LIST) {
                         let item = DEFAULT_NODE_LIST[idx]
                         if (item.order === parseInt(ui.draggable.attr('data-drag'))) {
-                            if (item.hasOwnProperty('code_node_system')) sys_code = item.code_node_system.toLowerCase()
+                            if (item.hasOwnProperty('code_node_system')) {
+                                if (item?.['code_node_system'] !== null) {
+                                    sys_code = item.code_node_system.toLowerCase();
+                                }
+                            }
                             break;
                         }
                     }
                     if (sys_code !== 'completed')
                         instance.addEndpoint(is_id, {
-                            endpoint: ["Dot", {radius: 4}],
+                            endpoint: ["Dot", {radius: 5}],
                             anchor: ["Bottom", "BottomRight", "BottomLeft"],
                             isSource: true,
                             connectorOverlays: [
@@ -347,7 +364,7 @@ class JSPlumbsHandle {
                     //
                     if (sys_code !== 'initial')
                         instance.addEndpoint(is_id, {
-                            endpoint: ["Rectangle", {width: 8, height: 8}],
+                            endpoint: ["Rectangle", {width: 10, height: 10}],
                             anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
                             isTarget: true,
                             connectorOverlays: [
@@ -377,21 +394,13 @@ class JSPlumbsHandle {
                     let temp = that_cls.getCommitNode
                     temp[numID] = DEFAULT_NODE_LIST[numID]
                     that_cls.setCommitNodeList = temp
-
-                    // handle event on click node
-                    $('#' + is_id).off().on("mousedown", function (evt) {
-                        _MOUSE_POSITION = evt.pageX + evt.pageY
-                    }).on("mouseup", function (evt) {
-                        let temp = evt.pageX + evt.pageY;
-                        if (_MOUSE_POSITION === temp) eventNodeClick(evt)
-                    })
                 }
 
             });
 
             // check if workflow detail or edit page show flowchart
             let $form = $('#form-create_workflow');
-            if (['GET', 'PUT'].includes($form.attr('data-method'))) {
+            if (['get', 'put'].includes($form.attr('data-method').toLowerCase())) {
                 instance.doWhileSuspended(function () {
                     $('#flowchart_workflow .clone').each(function () {
                         let is_id = $(this).attr('id')
@@ -400,7 +409,7 @@ class JSPlumbsHandle {
                         let sys_code = DEFAULT_NODE_LIST[$(this).data('drag')].code_node_system
                         if (sys_code !== 'completed')
                             instance.addEndpoint(is_id, {
-                                endpoint: ["Dot", {radius: 4}],
+                                endpoint: ["Dot", {radius: 5}],
                                 anchor: ["Bottom", "BottomRight", "BottomLeft"],
                                 isSource: true,
                                 connectorOverlays: [
@@ -427,7 +436,7 @@ class JSPlumbsHandle {
                         //
                         if (sys_code !== 'initial')
                             instance.addEndpoint(is_id, {
-                                endpoint: ["Rectangle", {width: 8, height: 8}],
+                                endpoint: ["Rectangle", {width: 10, height: 10}],
                                 anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
                                 // anchor: "Perimeter",
                                 isTarget: true,
@@ -457,13 +466,6 @@ class JSPlumbsHandle {
 
                         // disable node drag in left side
                         numID.draggable("disable");
-                        // add event click for node of right side
-                        $('#' + is_id).off().on("mousedown", function (evt) {
-                            _MOUSE_POSITION = evt.pageX + evt.pageY
-                        }).on("mouseup", function (evt) {
-                            let temp = evt.pageX + evt.pageY;
-                            if (_MOUSE_POSITION === temp) eventNodeClick(evt)
-                        })
                     })
                 }) // end do while suspended
 
@@ -487,7 +489,7 @@ class JSPlumbsHandle {
                             ]
                         ],
                         anchors: ["Bottom", "Top"],
-                        endpoint: ["Dot", {radius: 4}],
+                        endpoint: ["Dot", {radius: 5}],
                         endpointStyle: {fill: "#374986", opacity: ".8"},
                         paintStyle: {stroke: "#eaeaea", strokeWidth: 3},
                         hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
@@ -609,7 +611,7 @@ class JSPlumbsHandle {
 
     init() {
         // get node list from func node
-        this.setNodeList = NodeSubmitHandle.setupDataSubmit(true);
+        this.setNodeList = NodeSubmitHandle.setupDataFlowChart();
         this.setNodeState = this.nodeData;
         let $form = $('#form-create_workflow');
         if (['GET', 'PUT'].includes($form.attr('data-method'))){

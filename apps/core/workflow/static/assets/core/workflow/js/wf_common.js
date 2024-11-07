@@ -209,7 +209,7 @@ $(document).ready(function () {
         if (btn_href === '#tab_next_node') {
             FlowJsP.init()
         } else if (btn_href === '#tab_node') {
-            NodeLoadDataHandle.loadZoneDDAllTable();
+            // NodeLoadDataHandle.loadZoneDDAllTable();
         }
     })
 
@@ -217,7 +217,7 @@ $(document).ready(function () {
     $select_box.on("select2:select", function (e) {
         $next_btn.prop('disabled', false);
         $next_btn.on('click', () => $prev_btn.prop('disabled', false))
-        $('#property_list_choices').attr('data-params', JSON.stringify({application: e.params.data.id, is_sale_indicator: false, parent_n__isnull: true}))
+        $('#property_list_choices').attr('data-params', JSON.stringify({application: e.params.data.id, is_wf_zone: true}))
     });
 
     // button create new zone

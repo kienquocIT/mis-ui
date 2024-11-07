@@ -33,6 +33,11 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'comment/js/plugin/txtarea-caret-position.js' %}"></script>
-
     <script src="{% static 'comment/js/comment-custom.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            // run init comment custom
+            CommentHandle.init();
+        });
+    </script>
 {% endblock %}

@@ -341,6 +341,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCTS_FOR_PRICE_LIST = StringUrl('saledata/update-products-for-price-list/{pk}')
     PRICE_LIST_DELETE_PRODUCT = StringUrl('saledata/delete-products-for-price-list/{pk}')
     PRODUCT_ADD_FROM_PRICE_LIST = StringUrl('saledata/create-product-from-price-list/{pk}')
+    PRICE_LIST_ITEM_IMPORT_DB = StringUrl('saledata/price-list-item-import-db')
+    PRODUCT_QUOTATION_LOAD_DB = StringUrl('saledata/product-quotation-load-db')
     DELETE_CURRENCY_FROM_PRICE_LIST = StringUrl('saledata/delete-currency-from-price-list/{pk}')
 
     # payment terms
@@ -507,7 +509,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_DETAIL_LIST = StringUrl('inventory/goods-detail/list')
     GOODS_DETAIL_DETAIL = StringUrl('inventory/goods-detail/{pk}')
     CREATE_UPDATE_GOODS_DETAIL_DATA = StringUrl('inventory/create-update-goods-detail-data/list')
-    CREATE_GOODS_DETAIL_DATA_IMPORT_DB = StringUrl('inventory/create-goods-detail-data-import-db/list')
+    GOODS_DETAIL_IMPORT_DB = StringUrl('inventory/goods-detail-import-db')
 
     INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
     INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')
@@ -585,7 +587,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_INVENTORY_COST_LIST = StringUrl('report/inventory-cost-report/list')
     REPORT_INVENTORY_STOCK_LIST = StringUrl('report/inventory-stock-report/list')
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
-    BALANCE_INIT_LIST_IMPORT_DB = StringUrl('report/balance-init-import-db/list')
+    BALANCE_INIT_IMPORT_DB = StringUrl('report/balance-init-import-db')
     REPORT_INVENTORY_COST_WH_DETAIL = StringUrl('report/inventory-cost-warehouse-detail')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
     PO_REPORT_LIST = StringUrl('report/po-report/list')
@@ -691,13 +693,15 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROJECT_MEMBER_DETAIL = StringUrl('project/{pk}/member/detail/{pk_member}')
     PROJECT_UPDATE_ORDER = StringUrl('project/update-order/{pk}')
     PROJECT_TASK_LIST = StringUrl('project/assign-task-list')
+    PROJECT_TASK_LIST_ALL = StringUrl('project/assign-task-list/all')
     PROJECT_TASK_LINK = StringUrl('project/assign-task-link/{pk}')
     PROJECT_EXPENSE_LIST = StringUrl('project/project-expense-home-list')
     PROJECT_WORK_EXPENSE_LIST = StringUrl('project/work-expense-list')
     PROJECT_BASELINE = StringUrl('project/baseline/list')
     PROJECT_BASELINE_DETAIL = StringUrl('project/baseline/detail')
-    PROJECT_NEWS_LIST = StringUrl('project/news')
     PROJECT_COMMENT_LIST = StringUrl('project/new/{news_id}/comments')
+    PROJECT_NEWS_LIST = StringUrl('project/news')
+    PROJECT_NEWS_COMMENT_FLOWS = StringUrl('project/news/comment/{pk}/flows')
 
     # Folder
     FOLDER_LIST = StringUrl('attachment/folder/list')

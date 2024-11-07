@@ -17,7 +17,8 @@ def ticket_push_notify(ticket_id):
         hash_tags=str(ticket_obj.hash_tags),
         date_created=str(ticket_obj.date_created),
         email=str(ticket_obj.email),
-        user_info=json.dumps(ticket_obj.user_info, indent=4),
+        location_raise=str(ticket_obj.location_raise),
+        # user_info=json.dumps(ticket_obj.user_info, indent=4),
     )
     TeleBotPushNotify().send_msg(msg=msg)
     for instance in TicketLogAttachments.objects.filter(ticket=ticket_obj):

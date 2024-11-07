@@ -430,15 +430,15 @@ class OpportunityLoadDetail {
         if (data.hasOwnProperty('opportunity_config_stage')) {
             list_stage = sortStage(data?.['opportunity_config_stage']);
             dict_stage = list_stage.reduce((obj, item) => {
-                obj[item.id] = item;
+                obj[item?.['id']] = item;
                 return obj;
             }, {});
 
             list_stage.reverse().map(function (item) {
                 ele.prepend(html);
                 let ele_first_stage = ele.find('.sub-stage').first();
-                ele_first_stage.attr('data-id', item.id);
-                ele_first_stage.find('.stage-indicator').text(item.indicator);
+                ele_first_stage.attr('data-id', item?.['id']);
+                ele_first_stage.find('.stage-indicator').text(item?.['indicator']);
                 if (item?.['is_closed_lost']) {
                     ele_first_stage.find('.dropdown').remove();
                     ele_first_stage.addClass('stage-lost')
@@ -2089,9 +2089,12 @@ function sortStage(list_stage) {
         return a.win_rate - b.win_rate;
     });
     list_result.push(object_lost);
-    if (delivery)
+    if (delivery) {
         list_result.push(delivery);
-    list_result.push(object_close);
+    }
+    // if (object_close) {
+        list_result.push(object_close);
+    // }
 
     return list_result
 }

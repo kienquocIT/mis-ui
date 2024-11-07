@@ -175,6 +175,75 @@ class PaymentLoadPage {
 }
 
 class PaymentAction {
+    static ReadMoneyVND(num) {
+        let xe0 = [
+            '',
+            'một',
+            'hai',
+            'ba',
+            'bốn',
+            'năm',
+            'sáu',
+            'bảy',
+            'tám',
+            'chín'
+        ]
+        let xe1 = [
+            '',
+            'mười',
+            'hai mươi',
+            'ba mươi',
+            'bốn mươi',
+            'năm mươi',
+            'sáu mươi',
+            'bảy mươi',
+            'tám mươi',
+            'chín mươi'
+        ]
+        let xe2 = [
+            '',
+            'một trăm',
+            'hai trăm',
+            'ba trăm',
+            'bốn trăm',
+            'năm trăm',
+            'sáu trăm',
+            'bảy trăm',
+            'tám trăm',
+            'chín trăm'
+        ]
+
+        let result = ""
+        let str_n = String(num)
+        let len_n = str_n.length
+
+        if (len_n === 1) {
+            result = xe0[num]
+        }
+        else if (len_n === 2) {
+            if (num === 10) {
+                result = "mười"
+            }
+            else {
+                result = xe1[parseInt(str_n[0])] + " " + xe0[parseInt(str_n[1])]
+            }
+        }
+        else if (len_n === 3) {
+            result = xe2[parseInt(str_n[0])] + " " + PaymentAction.ReadMoneyVND(parseInt(str_n.substring(1, len_n)))
+        }
+        else if (len_n <= 6) {
+            result = PaymentAction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 3))) + " nghìn " + PaymentAction.ReadMoneyVND(parseInt(str_n.substring(len_n - 3, len_n)))
+        }
+        else if (len_n <= 9) {
+            result = PaymentAction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 6))) + " triệu " + PaymentAction.ReadMoneyVND(parseInt(str_n.substring(len_n - 6, len_n)))
+        }
+        else if (len_n <= 12) {
+            result = PaymentAction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 9))) + " tỷ " + PaymentAction.ReadMoneyVND(parseInt(str_n.substring(len_n - 9, len_n)))
+        }
+
+        result = String(result.trim())
+        return result;
+    }
     static ChangeRowPrice(tr) {
         let unit_price = tr.find('.expense-unit-price-input')
         let quantity = tr.find('.expense_quantity');
@@ -186,15 +255,39 @@ class PaymentAction {
             tax_rate = tax_selected?.['rate'] ? tax_selected?.['rate'] : 0;
         }
         if (unit_price.attr('value') && quantity.val()) {
-            let subtotal_value = parseFloat(unit_price.attr('value')) * parseInt(quantity.val())
+            let subtotal_value = parseFloat(unit_price.attr('value')) * parseFloat(quantity.val())
             subtotal.attr('value', subtotal_value);
-            subtotal_after_tax.attr('value', subtotal_value + subtotal_value * tax_rate / 100);
-        } else {
+            let tax_value = subtotal_value * tax_rate / 100
+            subtotal_after_tax.attr('value', subtotal_value + parseFloat(tax_value.toFixed(0)));
+        }
+        else {
             unit_price.attr('value', 0);
             subtotal.attr('value', 0);
             subtotal_after_tax.attr('value', 0);
         }
         PaymentAction.CheckAndOpenExpandRow(tr)
+        PaymentAction.CalculateTotalPrice();
+        $.fn.initMaskMoney2();
+    }
+    static CalculateTotalPrice() {
+        let sum_subtotal = 0
+        $('.expense-subtotal-price').each(function () {
+            sum_subtotal += $(this).attr('value') ? parseFloat($(this).attr('value')) : 0
+        });
+        let sum_subtotal_price_after_tax = 0;
+        $('.expense-subtotal-price-after-tax').each(function () {
+            sum_subtotal_price_after_tax += $(this).attr('value') ? parseFloat($(this).attr('value')) : 0
+        });
+        let sum_tax = sum_subtotal_price_after_tax - sum_subtotal;
+        $('#pretax-value').attr('value', sum_subtotal);
+        $('#taxes-value').attr('value', sum_tax);
+        $('#total-value').attr('value', sum_subtotal_price_after_tax);
+        let total_value_by_words = PaymentAction.ReadMoneyVND(sum_subtotal_price_after_tax) + ' đồng'
+        total_value_by_words = total_value_by_words.charAt(0).toUpperCase() + total_value_by_words.slice(1)
+        if (total_value_by_words[total_value_by_words.length - 1] === ',') {
+            total_value_by_words = total_value_by_words.substring(0, total_value_by_words.length - 1) + ' đồng'
+        }
+        $('#total-value-by-words').val(total_value_by_words)
         $.fn.initMaskMoney2();
     }
     static SumAPItemsCast() {
@@ -430,6 +523,7 @@ class PaymentLoadTab {
                         PaymentAction.CheckAndOpenExpandRow($(this), data_list[index])
                         $('.btn-add-payment-value').prop('disabled', option==='detail');
                     })
+                    PaymentAction.CalculateTotalPrice();
                 }
             }
         });
@@ -1473,6 +1567,11 @@ class PaymentHandle {
         frm.dataForm['payment_item_list'] = payment_item_list
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
+        let paymentVal = $('#total-value').valCurrency();
+        if (paymentVal) {
+            frm.dataForm['payment_value'] = parseFloat(paymentVal);
+        }
 
         // console.log(frm)
         return frm

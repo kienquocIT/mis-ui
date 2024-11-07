@@ -86,7 +86,7 @@ class POLoadDataHandle {
             data: dataDD,
         });
         // add css to select2_rendered
-        POLoadDataHandle.loadCssS2($ele, '230px');
+        POLoadDataHandle.loadCssS2($ele, '260px');
     };
 
     static loadDataProductSelect(ele, is_change_item = true) {
@@ -1275,10 +1275,9 @@ class PODataTableHandle {
                         if ($('#frm_purchase_order_create').attr('data-method').toLowerCase() === 'get') {
                             disabled = 'disabled';
                         }
-                        let checkbox = `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row?.['id']}" ${checked} ${disabled}></div>`;
-                        return `<div class="d-flex align-items-center">
-                                    ${checkbox}
-                                    <span class="table-row-title">${row.title}</span>
+                        return `<div class="form-check form-check-lg">
+                                    <input type="checkbox" class="form-check-input table-row-checkbox" id="pr-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}" ${checked} ${disabled}>
+                                    <label class="form-check-label table-row-title" for="pr-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
                                 </div>`;
                     },
                 },
@@ -1327,21 +1326,18 @@ class PODataTableHandle {
                         if ($('#frm_purchase_order_create').attr('data-method').toLowerCase() === 'get') {
                             disabled = 'disabled';
                         }
-                        let checkbox = `<div class="form-check">
-                                            <input 
-                                                type="checkbox" 
-                                                class="form-check-input table-row-checkbox" 
-                                                data-id="${row?.['id']}" 
-                                                data-purchase-request-id="${purchase_request_id}"
-                                                data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                                ${checked}
-                                                ${disabled}
-                                            >
-                                        </div>`;
-
-                        return `<div class="d-flex align-items-center">
-                                    ${checkbox}
-                                    <span class="table-row-item" id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</span>
+                        return `<div class="form-check form-check-lg">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input table-row-checkbox" 
+                                        id="pr-pro-${row?.['product']?.['id'].replace(/-/g, "")}"
+                                        data-id="${row?.['id']}" 
+                                        data-purchase-request-id="${purchase_request_id}"
+                                        data-sale-order-product-id="${row?.['sale_order_product_id']}"
+                                        ${checked}
+                                        ${disabled}
+                                    >
+                                    <label class="form-check-label table-row-item" for="pr-pro-${row?.['product']?.['id'].replace(/-/g, "")}" id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</label>
                                 </div>`;
                     },
                 },
@@ -1418,9 +1414,9 @@ class PODataTableHandle {
                     targets: 1,
                     width: '25%',
                     render: (data, type, row) => {
-                        return `<div class="d-flex align-items-center">
-                                    <div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>
-                                    <span class="table-row-title">${row?.['product_title']}</span>
+                        return `<div class="form-check form-check-lg">
+                                    <input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row?.['id']}" checked disabled>
+                                    <label class="form-check-label table-row-title">${row?.['product_title']}</label>
                                 </div>`;
                     },
                 },
@@ -1503,13 +1499,10 @@ class PODataTableHandle {
                             if ($('#frm_purchase_order_create').attr('data-method').toLowerCase() === 'get') {
                                 disabled = 'disabled';
                             }
-                            let checkbox = `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row?.['id']}" ${checked} ${disabled}></div>`;
-                            return `<div class="d-flex align-items-center">
-                                        ${checkbox}
-                                        <div>
-                                            <span class="badge badge-soft-success table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>
-                                            <span class="table-row-title">${row?.['title']}</span>
-                                        </div>
+                            return `<div class="form-check form-check-lg">
+                                        <input type="checkbox" class="form-check-input table-row-checkbox" id="pq-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}" ${checked} ${disabled}>
+                                        <label class="form-check-label table-row-title" for="pq-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                        <span class="badge badge-soft-success table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>
                                     </div>`;
                         }
                         return `<span>--</span>`;
@@ -1558,7 +1551,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '17%',
+                    width: '18%',
                     render: (data, type, row) => {
                         return `<div class="row table-row-item-area">
                                     <div class="col-12 col-md-12 col-lg-12">
@@ -1579,11 +1572,9 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '12%',
+                    width: '15%',
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
-                                </div>`;
+                        return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</textarea></div>`;
                     }
                 },
                 {
@@ -1610,7 +1601,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '6.51041666667%',
+                    width: '6%',
                     render: () => {
                         return `<div class="row">
                                     <select 
@@ -1626,7 +1617,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '6.51041666667%',
+                    width: '6%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row?.['product_quantity_order_actual']}" required>
@@ -1635,7 +1626,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '14.625%',
+                    width: '14%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <div class="dropend">
@@ -1658,7 +1649,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: '6.51041666667%',
+                    width: '6%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <select 
@@ -1686,7 +1677,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '13.0625%',
+                    width: '13%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -1729,7 +1720,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '17%',
+                    width: '18%',
                     render: (data, type, row) => {
                         if (row?.['is_shipping'] === true) {
                             return `<input type="text" class="form-control table-row-shipping" value="${row?.['shipping_title'] ? row?.['shipping_title'] : ''}">`;
@@ -1748,7 +1739,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '12%',
+                    width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_shipping'] === true) {
                             return `<input type="text" class="form-control table-row-description" value="">`;
@@ -1759,7 +1750,7 @@ class PODataTableHandle {
                                 des = row?.['product']?.['description'];
                             }
                         }
-                        return `<div class="row"><p class="table-row-description">${des}</p></div>`;
+                        return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${des}</textarea></div>`;
                     }
                 },
                 {
@@ -2532,6 +2523,10 @@ class POSubmitHandle {
         if (products_data_setup.length > 0) {
             _form.dataForm['purchase_order_products_data'] = products_data_setup;
         }
+        if (products_data_setup.length <= 0) {
+            $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-required-product')}, 'failure');
+            return false;
+        }
         let tableWrapper = document.getElementById('datable-purchase-order-product-add_wrapper');
         if (POLoadDataHandle.PRDataEle.val()) {
             tableWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
@@ -2556,6 +2551,7 @@ class POSubmitHandle {
         if (_form.dataForm.hasOwnProperty('attachment')) {
           _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);
         }
+        return _form.dataForm;
     };
 }
 

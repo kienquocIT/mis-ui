@@ -1,5 +1,12 @@
 $(document).ready(function(){
     const $EmTable = $('#project_tb');
+    const status_data = [
+        {txt: $.fn.gettext("Draft"), cls: "soft-secondary"},
+        {txt: $.fn.gettext("Created"), cls: "soft-primary"},
+        {txt: $.fn.gettext("Added"), cls: "soft-warning"},
+        {txt: $.fn.gettext("Finish"), cls: "soft-success"},
+        {txt: $.fn.gettext("Cancel"), cls: "soft-dark"},
+    ]
     // load employee table
     var _table = $EmTable.DataTableDefault({
         ajax: {
@@ -16,9 +23,8 @@ $(document).ready(function(){
             {
                 data: 'baseline',
                 width: '3%',
-                render:  (row, type, data) => {
-                    let btn = `<button class="btn-sh-baseline btn-flush-primary btn btn-icon btn-rounded flush-soft-hover" ${row.count === 0 ? 'disabled': ''}><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button>`
-                    return btn
+                render:  (row) => {
+                    return `<button class="btn-sh-baseline btn-flush-primary btn btn-icon btn-rounded flush-soft-hover" ${row.count === 0 ? 'disabled': ''}><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button>`
                 }
             },
             {
@@ -26,7 +32,7 @@ $(document).ready(function(){
                 width: '7%',
                 render: (row, type, data) => {
                     const url = $EmTable.attr('data-detail').format_url_with_uuid(data.id)
-                    let badge = '', btn = ''
+                    let badge = '';
                     if (data.baseline.count > 0){
                         badge = `<span class="badge-child badge-child-blue proj-badge"><img src="${
                         $('#url-factory').attr('data-img-url')}" alt="baseline">${data.baseline.count}</span>`
@@ -46,7 +52,7 @@ $(document).ready(function(){
                 data: 'employee_inherit',
                 width: '17%',
                 class: 'text-center',
-                render: (row, type, data) => {
+                render: (row) => {
                     return row ? row?.['full_name'] : '--'
                 }
             },
@@ -82,7 +88,7 @@ $(document).ready(function(){
                 data: 'works',
                 width: '5%',
                 class: 'text-center',
-                render: (row, index, data) => {
+                render: (row) => {
                     let txt = '--'
                     if (row) txt = `${row?.['all']} (${row?.['completed']})`
                     return txt
@@ -92,7 +98,7 @@ $(document).ready(function(){
                 data: 'tasks',
                 width: '5%',
                 class: 'text-center',
-                render: (row, index, data) => {
+                render: (row) => {
                     let txt = '--'
                     if (row) txt = `${row?.['all']} (${row?.['completed']})`
                     return txt
@@ -102,10 +108,10 @@ $(document).ready(function(){
                 data: 'system_status',
                 width: '8%',
                 class: 'text-center',
-                render: (row, type, data) => {
+                render: (row) => {
                     const status_data = {
                         1: {txt: $.fn.gettext("Created"), cls: "soft-primary"},
-                        2: {txt: $.fn.gettext("Added"), cls: "soft-warning"},
+                        2: {txt: $.fn.gettext("Reopened"), cls: "soft-warning"},
                         3: {txt: $.fn.gettext("Finish"), cls: "soft-success"},
                         4: {txt: $.fn.gettext("Closed"), cls: "soft-danger"},
                     }
@@ -113,7 +119,7 @@ $(document).ready(function(){
                 }
             },
         ],
-        rowCallback: function (row, data) {
+        rowCallback: function (row) {
             $('.btn-sh-baseline', row).on('click', function (e) {
                 e.preventDefault();
                 let tr = $(this).parents('tr');
@@ -134,16 +140,16 @@ $(document).ready(function(){
             for (let item of d.reverse()){
                 let url = $('#url-factory').attr('data-baseline-url').format_url_with_uuid(item.id)
                 let badge = `<span class="badge-child badge-child-blue justify-content-center">${item.version}</span>`
-                tr += `<tr><td style="width:3%;min-width:38px"></td>`+
-                    `   <td style="width:7%;min-width:63px"><a href="${url}" target="_blank"><span class="badge badge-outline badge-soft-primary position-relative">${item.code}${badge}</span><a/></td>`+
-                    `   <td style="width:25%;min-width:265px"><span>${item.title}</span></td>`+
-                    `   <td style="width:10%;text-align:center;min-width:109px"><span>${item['project_pm'].full_name}</span></td>`+
-                    `   <td style="width:15%;text-align:center;min-width:163px"><span>${moment(item.start_date).format('DD/MM/YYYY')}</span></td>`+
-                    `   <td style="width:15%;text-align:center;min-width:170px"><span>${moment(item.finish_date).format('DD/MM/YYYY')}</span></td>`+
-                    `   <td style="width:10%;text-align:center;min-width:115px"><span>${item['completion_rate']}%</span></td>`+
-                    `   <td style="width:5%;text-align:center;min-width:71px"><span>${item.works['all']} (${item.works['completed']})</span></td>`+
-                    `   <td style="width:5%;text-align:center;min-width:66.7px"><span>${item['tasks']?.['all']} (${item['tasks']?.['completed']})</span></td>`+
-                    ` <td style="width:5%;min-width:38px"></td></tr>`
+                tr += `<tr><td style="width: 3%"><button class="btn-flush-primary btn btn-icon btn-rounded flush-soft-hover"><span class="icon"></span></button></td>`+
+                    `   <td style="width: 7%"><a href="${url}" target="_blank"><span class="badge badge-outline badge-soft-primary position-relative">${item.code}${badge}</span><a/></td>`+
+                    `   <td style="width: 23.5%"><span>${item.title}</span></td>`+
+                    `   <td style="width: 16%;text-align:center"><span>${item['project_pm'].full_name}</span></td>`+
+                    `   <td style="width: 10%;text-align:center"><span>${moment(item.start_date).format('DD/MM/YYYY')}</span></td>`+
+                    `   <td style="width: 10%;text-align:center"><span>${moment(item.finish_date).format('DD/MM/YYYY')}</span></td>`+
+                    `   <td style="width: 10%;text-align:center"><span>${item['completion_rate']}%</span></td>`+
+                    `   <td style="width: 5%;text-align:center"><span>${item['works']['all']} (${item['works']['completed']})</span></td>`+
+                    `   <td style="width: 5%;text-align:center"><span>${item['tasks']?.['all']} (${item['tasks']?.['completed']})</span></td>`+
+                    ` <td style="width: 8%;text-align:center"><span class="badge badge-${status_data[item.system_status]['cls']}">${status_data[item.system_status]['txt']}</span></td></tr>`
             }
             return `<div class="wrap-baseline"><table class="table nowrap w-100 min-w-1500p">${tr}</table></div>`
         }

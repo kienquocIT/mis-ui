@@ -232,8 +232,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
         _('Purchase Request'), 'PurchaseRequestList'
     )
 
-    SALE_PROCESS_PAGE = BreadcrumbChildren(
-        _('Sale Process'), 'SaleProcess'
+    # Process
+    PROCESS_CONFIG_LIST = BreadcrumbChildren(
+        _('Process configuration'), 'ProcessList'
+    )
+    PROCESS_RUNTIME_LIST = BreadcrumbChildren(
+        _('Process runtime'), 'ProcessRuntimeListView'
     )
 
     # Expense item
@@ -780,8 +784,35 @@ class BreadcrumbView:
     ]
 
     # process
-    SALE_PROCESS_PAGE = [
-        BreadcrumbItem.SALE_PROCESS_PAGE
+    PROCESS_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST
+    ]
+    PROCESS_CREATE_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.BASTION_CREATE,
+    ]
+    PROCESS_UPDATE_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.BASTION_UPDATE,
+    ]
+    PROCESS_DETAIL_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.BASTION_DETAIL,
+    ]
+    PROCESS_RUNTIME_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.PROCESS_RUNTIME_LIST
+    ]
+    PROCESS_RUNTIME_DETAIL_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.PROCESS_RUNTIME_LIST,
+        BreadcrumbItem.BASTION_DETAIL
     ]
 
     # expense item

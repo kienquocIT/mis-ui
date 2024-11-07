@@ -1,0 +1,80 @@
+{% load i18n %}
+
+<div
+        class="modal fade" id="modalInstruction" tabindex="-1" role="dialog" aria-labelledby="modalInstruction"
+        aria-hidden="true"
+>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Instructions' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ol>
+                    <li>
+                        <h5>{% trans 'Block' %}</h5>
+                        <ul style="list-style: circle;">
+                            <li>{% trans 'Each line represents a stage.' %}</li>
+                            <li>{% trans 'The first line is the starting stage and cannot be removed.' %}</li>
+                            <li>{% trans 'The last line is the finishing stage and cannot be removed.' %}</li>
+                            <li>{% trans 'Each line contains multiple blocks. The first block represents the stage, and the remaining blocks are the features within the stage.' %}</li>
+                            <li class="stage-not-done">{% trans 'The feature blocks background colored in X are the blocks that need to be configured.' %}</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h5>{% trans 'Order' %}</h5>
+                        <ul style="list-style: circle;">
+                            <li>{% trans 'The order of arrangement and execution will be from top to bottom.' %}</li>
+                            <li><i class="fa-solid fa-arrows-up-down-left-right"></i>: {% trans 'Press and hold it to change the order of the block' %}</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h5>{% trans 'Tools' %}</h5>
+                        <p>{% trans 'Hover over the blocks to display the toolbar.' %}</p>
+                        <ul style="list-style: circle;">
+                            <li><i class="fa-solid fa-gear"></i>: {% trans "Configure the block's information." %}</li>
+                            <li><i class="fa-solid fa-square-plus"></i>: {% trans 'Add a block (Function, stage,...)' %}
+                            </li>
+                            <li><i class="fa-solid fa-trash"></i>: {% trans 'Destroy block' %}</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h5>{% trans 'Limit' %}</h5>
+                        <ul style="list-style: circle;">
+                            <li>{% trans 'A maximum of 5 Function per stage.' %}</li>
+                            <li>{% trans 'A maximum of 20 stages.' %}</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h5>{% trans 'Usage' %}</h5>
+
+                        <ul style="list-style: square;">
+                            <li>
+                                <p>{% trans 'Normal case' %}</p>
+                                <ol>
+                                    <li>{% trans 'The responsible person will configure the Process and activate it.' %}</li>
+                                    <li>{% trans "The user will access the list of Processes and select the desired Process. Then, click 'Start'." %}</li>
+                                    <li>{% trans "The system will initialize the Process object for the user. The user only needs to follow the actions that the Process allows or suggests." %}</li>
+                                    <li>{% trans "By default, only the creator of the Process object and the people in the configuration can see it. The creator of the Process object can also add people to the Process." %}</li>
+                                </ol>
+                            </li>
+                            <li>
+                                <p>{% trans 'Has opportunity case' %}</p>
+                                <ol>
+                                    <li>{% trans 'The responsible person will configure the Process and activate it.' %}</li>
+                                    <li>{% trans "When initializing an Opportunity that wants to use a Process, you need to select the desired Process." %}</li>
+                                    <li>{% trans "Then, the system will initialize the Process object and associate it with the Opportunity." %}</li>
+                                    <li>{% trans "Process objects with Opportunities will always be required to be linked to the Opportunity when creating a Function." %}</li>
+                                </ol>
+                            </li>
+                        </ul>
+
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>

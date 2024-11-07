@@ -73,28 +73,29 @@ class SetupFormSubmit {
     }
 
     static serializerObject(formSelected) {
-        const queryExclude = ':not([dont_serialize]):not([name^="DataTables_"])';
-        const query$ = formSelected.find(queryExclude);
-
-        let obj = {};
-        // case radio
-        query$.find(':input[name]:not([disabled])[type=radio]').each(function (){
-            const name = $(this).attr('name');
-            const value = $(this).attr('value');
-            const checked = $(this).prop('checked');
-            if (value !== null && value !== undefined && checked === true) obj[name] = value;
-        })
-        // another
-        query$.find(':input[name]:not([disabled]):not([type=radio])').each(function () {
-            let item = SetupFormSubmit.serializerInput($(this));
-            if (item && item.hasOwnProperty('name')){
-                if (item.name in obj) {
-                    obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
-                    obj[item.name].push(item.value);
-                } else obj[item.name] = item.value;
-            }
-        })
-        return obj;
+        // const queryExclude = ':not([dont_serialize]):not([name^="DataTables_"])';
+        // const query$ = formSelected.find(queryExclude);
+        //
+        // let obj = {};
+        // // case radio
+        // query$.find(':input[name]:not([disabled])[type=radio]').each(function (){
+        //     const name = $(this).attr('name');
+        //     const value = $(this).attr('value');
+        //     const checked = $(this).prop('checked');
+        //     if (value !== null && value !== undefined && checked === true) obj[name] = value;
+        // })
+        // // another
+        // query$.find(':input[name]:not([disabled]):not([type=radio])').each(function () {
+        //     let item = SetupFormSubmit.serializerInput($(this));
+        //     if (item && item.hasOwnProperty('name')){
+        //         if (item.name in obj) {
+        //             obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
+        //             obj[item.name].push(item.value);
+        //         } else obj[item.name] = item.value;
+        //     }
+        // })
+        // return obj;
+        return $(formSelected).serializeObject();
     }
 
     static groupDataFromPrefix(data, prefix) {
@@ -460,7 +461,7 @@ class LogController {
             let intervalShowWfHistory = setInterval(() => {
                 if (dataRuntimeCounter > 5) {
                     clearInterval(intervalShowWfHistory);
-                    this.blockDataRuntime.html(`<span class="text-danger">${globeResourceLoadFailed}</span>`).removeClass('hidden');
+                    this.blockDataRuntime.html(`<span class="text-danger">${$.fn.gettext("Failed to load resource")}</span>`).removeClass('hidden');
                     WindowControl.hideLoadingWaitResponse(this.blockDataRuntime);
                 } else {
                     dataRuntimeCounter += 1;
@@ -897,11 +898,11 @@ class FileUtils {
     static clsNameInputFile = 'input-file-upload';
 
     static _getMaxSizeDisplay() {
-        return globeMaxFileSize.replaceAll("{size}", FileUtils.numberFileSizeMiBMax);
+        return $.fn.gettext("Maximum size {size}MiB").replaceAll("{size}", FileUtils.numberFileSizeMiBMax);
     }
 
     static _getAllowMultiple() {
-        return globeAllowMultiple;
+        return $.fn.gettext("Allows uploading multiple files");
     }
 
     static _checkTypeFileAllow(file_type, accept_list) {
@@ -923,7 +924,7 @@ class FileUtils {
         if (!FileUtils._checkTypeFileAllow(file.type, acceptArr)) {
             let typeMsgErr = acceptArr.map((item) => `"${item}"`).join(", ");
             $.fn.notifyB({
-                'description': `${globeFileDeny}. <p>${globeFileAccept} ${typeMsgErr}<p>`,
+                'description': `${$.fn.gettext("File type not allowed for uploading")}. <p>${$.fn.gettext("It must be one of the following file types:")} ${typeMsgErr}<p>`,
             }, 'failure');
             return false;
         }
@@ -1712,57 +1713,6 @@ class ListeningEventController {
         FileUtils.init();
     }
 
-    avatarUpload() {
-        $('#btnUploadMyAvatar').click(function () {
-            Swal.fire({
-                html: `
-                    <h4>${$.fn.transEle.attr('data-choose-avatar-image')}</h4>
-                    <small class="text-warning">${$.fn.transEle.attr('data-allow-file-properties').format_by_idx('*.jpg *.jpeg *.png *.gif')}</small>
-                `,
-                input: 'file',
-                inputAttributes: {
-                    autocapitalize: 'off',
-                    name: 'file',
-                },
-                showCancelButton: true,
-                cancelButtonText: $.fn.transEle.attr('data-cancel'),
-                confirmButtonText: $.fn.transEle.attr('data-upload'),
-                showLoaderOnConfirm: true,
-                preConfirm: (file) => {
-                    let formData = new FormData();
-                    formData.append('file', file);
-                    return $.fn.callAjax2({
-                        url: globeUrlAvatarUpload,
-                        method: 'POST',
-                        data: formData,
-                        contentType: 'multipart/form-data',
-                        isNotify: false,
-                    }).then(
-                        (resp) => {
-                            $.fn.switcherResp(resp);
-                            return true;
-                        },
-                        (errs) => {
-                            return false;
-                        }
-                    )
-                },
-                allowOutsideClick: () => !Swal.isLoading()
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: $.fn.transEle.attr('data-success'),
-                        timer: 2000,
-                        timerProgressBar: true,
-                    }).then(() => {
-                        window.location.reload();
-                    })
-                }
-            })
-        });
-    }
-
     static tabHashUrl__parent_active(currentEle) {
         $(currentEle).closest('.nav-tabs a[data-bs-toggle="tab"]').each(function () {
             if ($(this).length > 0) {
@@ -1798,9 +1748,12 @@ class ListeningEventController {
         });
 
         $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-            if ($(this).data('not-push-tab') === null || $(this).data('not-push-tab') === undefined) {
+            if ($(this).data('push-tab')){
                 window.history.pushState(null, null, $(e.target).attr("href"));
             }
+            // if ($(this).data('not-push-tab') === null || $(this).data('not-push-tab') === undefined) {
+            //     window.history.pushState(null, null, $(e.target).attr("href"));
+            // }
         });
     }
 
@@ -1845,7 +1798,7 @@ class ListeningEventController {
             if ($(_ele).parent().attr('data-toggle') === 'tooltip' || $(_ele).parent().attr('data-bs-toggle') === 'tooltip') {
                 parentTxt = $(_ele).parent().attr('title');
             }
-            return `${parentTxt ? parentTxt + "." : ""} ${globeFileNotFoundAlt}`
+            return `${parentTxt ? parentTxt + "." : ""} ${$.fn.gettext("This image encountered an error during loading or does not exist")}`
         }
 
         let imgReplace = opts?.['imgReplace'] || globeFileNotFoundImg;
@@ -1884,7 +1837,6 @@ class ListeningEventController {
         this.dataTable();
         this.navAndMenu();
         this.activeFileUpload();
-        this.avatarUpload();
         this.tabHashUrl();  // keep it run after nttDrawer and log
         this.setValidatorDefaults();
         this.dropdownInAccordion();
@@ -3424,15 +3376,94 @@ class UtilControl {
         return data;
     }
 
+    static checkAndAddFormErrors(source$ , key, message, destination){
+        if (key && message){
+            const inp$ = source$.find(`:input[name=${key}]`);
+            if (inp$.length > 0){
+                const frm$ = inp$.closest('form');
+                if (frm$.length > 0){
+                    const formID = frm$.attr('id');
+                    if (formID){
+                        const validator = frm$.data('validator');
+                        if (validator){
+                            if (!destination.hasOwnProperty(formID)) destination[formID] = {};
+                            destination[formID][key] = message;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    static showFormErrors(formIdErrors){
+        Object.keys(formIdErrors).map(
+            formID => {
+                const form$ = $('#' + formID);
+                const validator = form$.data('validator');
+                if (validator){
+                    validator.showErrors(formIdErrors[formID]);
+                }
+            }
+        )
+    }
+
+    static showAndScrollToInputError($input) {
+        let $tabPane = $input.closest('.tab-pane');
+        let $modal = $input.closest('.modal');
+
+        if ($tabPane.length && !$tabPane.hasClass('active')) {
+            let tabId = $tabPane.attr('id');
+            $(`a[href="#${tabId}"]`).tab('show');
+        }
+
+        if ($modal.length && !$modal.hasClass('show')) {
+            $modal.modal('show');
+        }
+
+        setTimeout(function() {
+            $x.fn.scrollToIdx($input);
+        }, 200);
+    }
+
+    static makeSureOneInputErrorIsShowing(areaControl$, allInputErrors){
+        if (allInputErrors.length > 0){
+            let listInp$ = [];
+            for (let i = 0 ; i < allInputErrors.length ; i++){
+                const inp$ = areaControl$.find(`:input[name=${allInputErrors[i]}]`);
+                if (inp$.length > 0) {
+                    if (inp$.is(':visible')) {
+                        $x.fn.scrollToIdx(inp$);
+                        return;
+                    }
+                    listInp$.push(inp$);
+                }
+            }
+            if (listInp$.length > 0) {
+                for (let i = 0 ; i < listInp$.length ; i++){
+                    const insideModal = listInp$[i].closest('.modal').length > 0;
+                    const insideTab = listInp$[i].closest('.tab-content').length > 0;
+                    if (insideModal === false && insideTab === false){
+                        $x.fn.scrollToIdx(listInp$[i]);
+                        return;
+                    }
+                }
+                UtilControl.showAndScrollToInputError(listInp$[0]);
+            }
+        }
+    }
+
     static notifyErrors(errs, opts = {}) {
         let confirmOpts = $.extend(
             {
+                'areaControl': $(''),
+                'autoDetectShowErrors': true,
                 'keyNotMatch': '',
                 'replaceKey': {},
                 'isShowKey': true,
             },
             opts
         )
+        const areaControl$ = confirmOpts['areaControl'] instanceof jQuery ? confirmOpts['areaControl'] : $('');
 
         function resolveDataNotify(key, data) {
             if (confirmOpts.isShowKey === true) {
@@ -3454,13 +3485,26 @@ class UtilControl {
             return {'description': data}
         }
 
-
         if (errs) {
             if (typeof errs === 'object') {
+                let allInputErrors = [];
+                let formIdErrors = {};
                 let errors_converted = UtilControl.cleanDataNotify(errs);
                 Object.keys(errors_converted).map((key) => {
-                    jQuery.fn.notifyB(resolveDataNotify(key, errors_converted[key]), 'failure');
+                    const notifyData = resolveDataNotify(key, errors_converted[key])
+                    jQuery.fn.notifyB(notifyData, 'failure');
+                    if (confirmOpts?.['autoDetectShowErrors'] === true) {
+                        UtilControl.checkAndAddFormErrors(
+                            areaControl$,
+                            key,
+                            notifyData['description'],
+                            formIdErrors,
+                        );
+                    }
+                    allInputErrors.push(key);
                 });
+                UtilControl.showFormErrors(formIdErrors);
+                UtilControl.makeSureOneInputErrorIsShowing(areaControl$, allInputErrors);
             } else if (typeof errs === 'string') {
                 jQuery.fn.notifyB({
                     'description': errs
@@ -3637,6 +3681,16 @@ class UtilControl {
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;');
+    }
+
+    static decodeURI(txt){
+        return decodeURIComponent((txt + '').replace(/\+/g, '%20'))
+    }
+
+    static cutMaxlength(txt, maxNum){
+        txt = txt.toString();
+        if (txt.length > maxNum) return txt.slice(0, maxNum) + '...';
+        return txt;
     }
 }
 
@@ -4041,7 +4095,7 @@ class DTBControl {
 
         // append filter search class form-control-sm
         filterEle.addClass('mr-1');
-        filterEle.find('input[type="search"]').addClass('form-control w-200p');
+        filterEle.find('input[type="search"]'); // .addClass('form-control w-200p');
 
         // handle sort
         let preKeyVisible = settings.aoHeader[0].map((item) => {
@@ -4366,7 +4420,12 @@ class DTBControl {
             Object.keys(params).map(
                 (key) => {
                     let val = params[key];
-                    if (val || (!val && keyKeepEmpty.includes(key))) result[key] = val;
+                    if (
+                        val
+                        || typeof val === 'boolean'
+                        || typeof val === 'number'
+                        || keyKeepEmpty.includes(key)
+                    ) result[key] = val;
                 }
             )
         }
@@ -4770,6 +4829,18 @@ class WindowControl {
         return location.hash;
     }
 
+    static getAllParamsByKey(defaultData){
+        let urlParsed = {};
+        const sPageURL = window.location.search.substring(1);
+        const sURLVariables = sPageURL.split('&');
+        for (let i = 0; i < sURLVariables.length; i++) {
+            const sParameterName = sURLVariables[i].split('=');
+            const value = sParameterName[1] === undefined ? defaultData : UtilControl.decodeURI(sParameterName[1]);
+            urlParsed[sParameterName[0]] = value;
+        }
+        return urlParsed;
+    }
+
     static getUrlParameter(sParam, defaultData='') {
         const sPageURL = window.location.search.substring(1);
         const sURLVariables = sPageURL.split('&');
@@ -4779,10 +4850,24 @@ class WindowControl {
             sParameterName = sURLVariables[i].split('=');
 
             if (sParameterName[0] === sParam) {
-                return sParameterName[1] === undefined ? defaultData : decodeURIComponent(sParameterName[1]);
+                return sParameterName[1] === undefined ? defaultData : UtilControl.decodeURI(sParameterName[1]);
             }
         }
         return defaultData;
+    }
+
+    static getManyUrlParameters(paramKeys, defaultData = '') {
+        const urlParsed = WindowControl.getAllParamsByKey(defaultData);
+        let result = {};
+        paramKeys.map(
+            key => {
+                result[key] = defaultData;
+                if (urlParsed.hasOwnProperty(key)){
+                    result[key] = urlParsed[key];
+                }
+            }
+        )
+        return result;
     }
 
     static pushHashUrl(idHash) {
@@ -4926,14 +5011,14 @@ class WindowControl {
 
     static showForbidden(opts) {
         Swal.fire({
-            title: globeMsgHttp403,
+            title: $.fn.gettext("Forbidden"),
             icon: 'error',
-            allowOutsideClick: false,
+            allowOutsideClick: true,
             showDenyButton: true,
-            denyButtonText: globeHomePage,
+            denyButtonText: $.fn.gettext('Home Page'),
             confirmButtonColor: '#3085d6',
             showConfirmButton: true,
-            confirmButtonText: globePreviousPage,
+            confirmButtonText: $.fn.gettext('Previous page'),
             denyButtonColor: '#21b48f',
             preConfirm: function (opts) {
                 window.location.href = document.referrer;
@@ -4947,14 +5032,14 @@ class WindowControl {
 
     static showNotFound(opts) {
         Swal.fire({
-            title: globeMsgHttp404,
+            title: $.fn.gettext("Not found"),
             icon: 'question',
-            allowOutsideClick: false,
+            allowOutsideClick: true,
             showDenyButton: true,
-            denyButtonText: globeHomePage,
+            denyButtonText: $.fn.gettext('Home Page'),
             confirmButtonColor: '#3085d6',
             showConfirmButton: true,
-            confirmButtonText: globePreviousPage,
+            confirmButtonText: $.fn.gettext('Previous page'),
             denyButtonColor: '#21b48f',
             preConfirm: function (opts) {
                 window.location.href = document.referrer;
@@ -5006,14 +5091,14 @@ class WindowControl {
     static showUnauthenticated(opts, isRedirect = true) {
         if (isRedirect === true) {
             Swal.fire({
-                title: globeMsgAuthExpires,
+                title: $.fn.gettext('The session login was expired'),
                 icon: 'error',
                 allowOutsideClick: false,
                 confirmButtonColor: '#3085d6',
                 timer: 2000,
                 timerProgressBar: true,
                 showConfirmButton: true,
-                confirmButtonText: globeLoginPage,
+                confirmButtonText: $.fn.gettext('Login page'),
                 ...opts
             }).then((result) => {
                 if (result.dismiss === Swal.DismissReason.timer || result.isConfirmed || result.value) {
@@ -5024,12 +5109,12 @@ class WindowControl {
             });
         } else {
             Swal.fire({
-                title: globeMsgAuthExpires,
+                title: $.fn.gettext('The session login was expired'),
                 icon: 'error',
-                allowOutsideClick: false,
+                allowOutsideClick: true,
                 confirmButtonColor: '#3085d6',
                 showConfirmButton: true,
-                confirmButtonText: globeLoginPage,
+                confirmButtonText: $.fn.gettext('Login page'),
                 preConfirm: function (opts) {
                     return $x.fn.redirectLogin();
                 },
@@ -5040,17 +5125,17 @@ class WindowControl {
 
     static showSVErrors() {
         Swal.fire({
-            title: globeMsgHttp500,
+            title: $.fn.gettext("Internal Server Errors"),
             icon: 'error',
-            allowOutsideClick: false,
+            allowOutsideClick: true,
             showDenyButton: true,
-            denyButtonText: globeHomePage,
+            denyButtonText: $.fn.gettext('Home Page'),
             confirmButtonColor: '#3085d6',
             showConfirmButton: true,
-            confirmButtonText: globePreviousPage,
+            confirmButtonText: $.fn.gettext('Previous page'),
             denyButtonColor: '#21b48f',
             showCancelButton: true,
-            cancelButtonText: globeCancelText,
+            cancelButtonText: $.fn.gettext('Close'),
             preConfirm: function (opts) {
                 window.location.href = document.referrer;
             },
@@ -5069,7 +5154,7 @@ class WindowControl {
         return offsetTop;
     }
 
-    static scrollToIdx(idxStrOr$, parentEleStrOr$ = '#idxPageContent .simplebar-content-wrapper', timer=200) {
+    static scrollToIdx(idxStrOr$, parentEleStrOr$ = '#idxPageContent', timer=200) {
         const ele$ = idxStrOr$ instanceof jQuery ? idxStrOr$ : $(idxStrOr$);
         let parent$ = parentEleStrOr$ instanceof jQuery ? parentEleStrOr$ : $(parentEleStrOr$);
         // let offsetTop = ele$.offset().top;
@@ -5860,6 +5945,33 @@ class Beautiful {
             "brown", "gold", "light", "dark"
         ]
         return randomColor[Math.floor(Math.random() * 25)]
+    }
+
+    static randomColorHex(){
+        return "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+    }
+
+    static hexToRgb(hex) {
+        hex = hex.replace(/^#/, '');
+        let r = parseInt(hex.slice(0, 2), 16);
+        let g = parseInt(hex.slice(2, 4), 16);
+        let b = parseInt(hex.slice(4, 6), 16);
+
+        return { r, g, b };
+    }
+
+    static rgbToHex(r, g, b) {
+        return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+    }
+
+    static lightenColor(hex, factor) {
+        let { r, g, b } = Beautiful.hexToRgb(hex);
+
+        r = Math.min(255, Math.floor(r + (255 - r) * factor));
+        g = Math.min(255, Math.floor(g + (255 - g) * factor));
+        b = Math.min(255, Math.floor(b + (255 - b) * factor));
+
+        return Beautiful.rgbToHex(r, g, b);
     }
 }
 
@@ -7977,6 +8089,8 @@ let $x = {
         arrayRange: UtilControl.arrayRange,
         keepExistInOther: UtilControl.keepExistInOther,
         removeExistInOther: UtilControl.removeExistInOther,
+        decodeURI: UtilControl.decodeURI,
+        cutMaxlength: UtilControl.cutMaxlength,
 
         popKey: UtilControl.popKey,
         getKey: UtilControl.getKey,
@@ -7994,9 +8108,14 @@ let $x = {
         convertDatetimeToMoment: DateTimeControl.convertDatetimeToMoment,
 
         randomColor: Beautiful.randomColorClass,
+        randomColorHex: Beautiful.randomColorHex,
+        hexToRgb: Beautiful.hexToRgb,
+        rgbToHex: Beautiful.rgbToHex,
+        lightenColor: Beautiful.lightenColor,
 
         getHashUrl: WindowControl.getHashUrl,
         getUrlParameter: WindowControl.getUrlParameter,
+        getManyUrlParameters: WindowControl.getManyUrlParameters,
         pushHashUrl: WindowControl.pushHashUrl,
         scrollToIdx: WindowControl.scrollToIdx,
         findGetParameter: WindowControl.findGetParameter,

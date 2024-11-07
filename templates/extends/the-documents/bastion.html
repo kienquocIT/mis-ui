@@ -1,9 +1,10 @@
 {% load static i18n bastion_fields string_utils %}
-{% if has_opp == True or has_prj == True or has_inherit == True %}
+{% if has_opp == True or has_prj == True or has_inherit == True or has_process == True %}
 
     {% if not opp_title %}{% trans 'Opportunity' as opp_title %}{% endif %}
     {% if not prj_title %}{% trans 'Project' as prj_title %}{% endif %}
     {% if not inherit_title %}{% trans 'Inheritor' as inherit_title %}{% endif %}
+    {% if not process_title %}{% trans 'Process' as process_title %}{% endif %}
 
     {% override_list_form_app data.list_from_app new_list_from_app as resolve_list_from_app %}
 
@@ -36,6 +37,14 @@
             data-inherit_readonly="{{ inherit_required|parse_0_or_1 }}"
             data-inherit_hidden="{{ inherit_hidden|parse_0_or_1 }}"
             data-inherit_title="{{ inherit_title }}"
+
+            {# Process flag #}
+            data-has_process="{{ has_process|parse_0_or_1 }}"
+            data-process_disabled="{{ process_disabled|parse_0_or_1 }}"
+            data-process_required="{{ process_required|parse_0_or_1 }}"
+            data-process_readonly="{{ process_readonly|parse_0_or_1 }}"
+            data-process_hidden="{{ process_hidden|parse_0_or_1 }}"
+            data-process_title="{{ process_title }}"
     >
         <div class="accordion-item">
             {% priority_app priority_app as list_priority_app %}
@@ -49,7 +58,7 @@
                         id="btnBastionField"
                 >
                     <div class="d-flex align-items-center">
-                        <i class="fa-regular fa-star mr-2 {% if opp_required == True or prj_required == True or inherit_required == True %} text-danger {% endif %}"></i>
+                        <i class="fa-regular fa-star mr-2 {% if opp_required == True or prj_required == True or inherit_required == True or process_required == True %} text-danger {% endif %}"></i>
                         {% for item in list_priority_app %}
                             {% if item == 'opp' %}
                                 {% if has_opp == True and opp_hidden != True %}
@@ -64,6 +73,14 @@
                                     <span>
                                         <span class="{% if prj_required == True %} required {% endif %}">
                                             {{ prj_title }}
+                                        </span>
+                                    </span>
+                                {% endif %}
+                            {% elif item == 'process' %}
+                                {% if has_process == True and process_hidden != True %}
+                                    <span>
+                                        <span class="{% if process_required == True %} required {% endif %}">
+                                            {{ process_title }}
                                         </span>
                                     </span>
                                 {% endif %}
@@ -107,7 +124,7 @@
                             </div>
                         {% endif %}
                         <div class="row mt-2">
-                            {% cls_name_of_bastion_field has_opp has_prj has_inherit as clsNameBastionField %}
+                            {% cls_name_of_bastion_field has_opp has_prj has_inherit has_process as clsNameBastionField %}
 
                             {% for item in list_priority_app %}
                                 {% if item == 'opp' %}
@@ -144,10 +161,41 @@
                                             </div>
                                         </div>
                                     {% endif %}
-                                {% elif item == 'prj' %}
+                                {% elif item == 'process' %}
+                                    {% if has_process == True %}
+                                        <div class="{{ clsNameBastionField }}">
+                                            <div class="form-group">
+                                                <label
+                                                        class="form-label {% if process_required == True %} required {% endif %}"
+                                                >
+                                                    {{ process_title }}
+                                                </label>
+                                                <div class="input-group">
+                                                    <select
+                                                            name="process"
+                                                            id="process_id"
+                                                            class="form-select {% if process_hidden == True %} d-none {% endif %}"
+                                                            data-url="{% url 'ProcessRuntimeOfMeAPI' %}"
+                                                            data-method="GET"
+                                                            data-keyResp="process_runtime_list"
+                                                            data-keyText="title"
 
+                                                            data-url-info-detail="{% url 'ProcessRuntimeDetailView' pk='__pk__' %}"
+                                                            data-on-load-info="onLoadDropdownInfoProcess"
+
+                                                            {% if process_required == True %} required {% endif %}
+                                                            {% if process_disabled == True %} disabled {% endif %}
+                                                            {% if process_readonly == True %} readonly="" {% endif %}
+                                                    ></select>
+                                                    {% include 'extends/the-documents/button_info.html' %}
+                                                    {% include 'extends/the-documents/dropdown_info.html' with display_data_template="extends/the-documents/dropdown_info__process.html" %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% elif item == 'prj' %}
                                     {% if has_prj == True %}
-                                        <div class="col-xs-12">
+                                        <div class="{{ clsNameBastionField }}">
                                             <div class="form-group">
                                                 <label
                                                         for="project_id"

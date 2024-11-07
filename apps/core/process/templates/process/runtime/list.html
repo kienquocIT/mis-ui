@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block cssHeader %}
+    <style>
+        .cus-badge {
+            border: 1px solid #009659;
+            padding: 1px 5px;
+            background: #ebfcf5;
+            color: #009659;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block pageContent %}
+    <table
+            id="tbl-process-runtime-list"
+            class="table w-100 nowrap min-w-1000p"
+            data-url="{% url 'ProcessRuntimeAPI' %}"
+            data-url-detail="{% url 'ProcessRuntimeDetailView' pk='__pk__' %}"
+            data-url-config-list="{% url 'ProcessListAPI' %}"
+            data-url-process-detail="{% url 'ProcessDetail' pk='__pk__' %}"
+            data-url-employee-list="{% url 'EmployeeListAPI' %}"
+            data-url-employee-detail="{% url 'EmployeeDetail' pk='__pk__' %}"
+    >
+        <thead class="thead-primary">
+        <tr>
+            <th>#</th>
+            <th class="no-transform">{% trans 'Title' %}</th>
+            <th class="no-transform">{% trans 'Process' %}</th>
+            <th class="no-transform">{% trans 'Creator' %}</th>
+            <th class="no-transform">{% trans 'Stages current' %}</th>
+            <th class="no-transform">{% trans 'Status' %}</th>
+            <th class="no-transform">{% trans 'Date created' %}</th>
+        </tr>
+        </thead>
+    </table>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'process/runtime/list.js' %}"></script>
+{% endblock %}

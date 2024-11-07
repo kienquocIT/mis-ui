@@ -1,78 +1,164 @@
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL
-from apps.shared.msg.process import ProcessMsg
+
+from apps.shared import mask_view, ServerAPI, ApiURL, TypeCheck
+from apps.shared.apis import RespData
 
 
-class SaleProcess(View):
+class ProcessList(View):
     @mask_view(
-        auth_require=True,
-        template='core/process/sale_process.html',
-        menu_active='menu_sale_process',
-        breadcrumb='SALE_PROCESS_PAGE',
+        login_require=True,
+        template='process/config/list.html',
+        breadcrumb='PROCESS_LIST_PAGE',
+        menu_active='menu_process',
+        jsi18n='process',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
-class FunctionProcessListAPI(APIView):
+class ProcessListAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PROCESS_CONFIG_LIST).get()
+        return resp.auto_return(key_success='process_list')
+
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PROCESS_CONFIG_LIST).post(data=request.data)
+        return resp.auto_return(key_success='process_create')
+
+
+class ProcessCreate(View):
     @mask_view(
-        auth_require=True,
-        is_api=True,
+        login_require=True,
+        template='process/config/create.html',
+        breadcrumb='PROCESS_CREATE_PAGE',
+        menu_active='menu_process',
+        jsi18n='process',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.FUNCTION_PROCESS_LIST).get()
-        return resp.auto_return(key_success='function_list')
+        return {}, status.HTTP_200_OK
 
 
-class SaleProcessAPI(APIView):
+class ProcessUpdate(View):
     @mask_view(
         login_require=True,
-        auth_require=True,
-        is_api=True,
+        template='process/config/update.html',
+        breadcrumb='PROCESS_UPDATE_PAGE',
+        menu_active='menu_process',
+        jsi18n='process',
+    )
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            return {}, status.HTTP_200_OK
+        return {}, status.HTTP_404_NOT_FOUND
+
+
+class ProcessDetail(View):
+    @mask_view(
+        login_require=True,
+        template='process/config/detail.html',
+        breadcrumb='PROCESS_DETAIL_PAGE',
+        menu_active='menu_process',
+        jsi18n='process',
+    )
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            return {}, status.HTTP_200_OK
+        return {}, status.HTTP_404_NOT_FOUND
+
+
+class ProcessDetailAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.PROCESS_CONFIG_DETAIL.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).get()
+            return resp.auto_return(key_success='process_detail')
+        return RespData.resp_404()
+
+    @mask_view(login_require=True, is_api=True)
+    def put(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.PROCESS_CONFIG_DETAIL.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).put(data=request.data)
+            return resp.auto_return(key_success='process_update')
+        return RespData.resp_404()
+
+
+class ProcessRuntimeListView(View):
+    @mask_view(
+        login_require=True,
+        template='process/runtime/list.html',
+        breadcrumb='PROCESS_RUNTIME_LIST_PAGE',
+        menu_active='menu_process',
+        jsi18n='process',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PROCESS).get()
-        return resp.auto_return(key_success='process')
+        return {}, status.HTTP_200_OK
 
+
+class ProcessRuntimeOfMeAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        url = ApiURL.PROCESS_RUNTIME_LIST_OF_ME
+        resp = ServerAPI(request=request, user=request.user, url=url).get()
+        return resp.auto_return(key_success='process_runtime_list')
+
+
+class ProcessRuntimeAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        url = ApiURL.PROCESS_RUNTIME_LIST
+        resp = ServerAPI(request=request, user=request.user, url=url).get()
+        return resp.auto_return(key_success='process_runtime_list')
+
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        url = ApiURL.PROCESS_RUNTIME_LIST
+        resp = ServerAPI(request=request, user=request.user, url=url).post(data=request.data)
+        return resp.auto_return(key_success='process_runtime')
+
+
+class ProcessRuntimeDetailView(View):
     @mask_view(
         login_require=True,
-        auth_require=True,
-        is_api=True,
+        template='process/runtime/detail.html',
+        breadcrumb='PROCESS_RUNTIME_DETAIL_PAGE',
+        menu_active='menu_process',
+        jsi18n='process',
     )
-    def put(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PROCESS).put(request.data)
-        if resp.state:
-            resp.result['message'] = ProcessMsg.PROCESS_UPDATE
-            return resp.result, status.HTTP_200_OK
-        return resp.auto_return()
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            return {}, status.HTTP_200_OK
+        return {}, status.HTTP_404_NOT_FOUND
 
 
-class SkipProcessStepAPI(APIView):
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.SKIP_PROCESS_STEP.fill_key(pk=pk)).put(request.data)
-        if resp.state:
-            resp.result['message'] = ProcessMsg.PROCESS_STEP_SKIP
-            return resp.result, status.HTTP_200_OK
-        return resp.auto_return()
+class ProcessRuntimeDetailAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.PROCESS_RUNTIME_DETAIL.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).get()
+            return resp.auto_return(key_success='process_runtime_detail')
+        return RespData.resp_404()
 
 
-class SetCurrentProcessStepAPI(APIView):
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.SET_CURRENT_PROCESS_STEP.fill_key(pk=pk)).put(request.data)
-        if resp.state:
-            resp.result['message'] = ProcessMsg.PROCESS_STEP_SET_CURRENT
-            return resp.result, status.HTTP_200_OK
-        return resp.auto_return()
+class ProcessRuntimeStageAppDetailAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.PROCESS_RUNTIME_STAGES_APP_COMPLETE.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).get()
+            return resp.auto_return(key_success='stages_app_detail')
+        return RespData.resp_404()
+
+    @mask_view(login_require=True, is_api=True)
+    def put(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.PROCESS_RUNTIME_STAGES_APP_COMPLETE.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).put(data=request.data)
+            return resp.auto_return(key_success='stages_app_complete')
+        return RespData.resp_404()

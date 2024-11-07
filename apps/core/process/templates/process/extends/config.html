@@ -1,0 +1,28 @@
+{% load i18n %}
+<div class="form-group">
+    <label for="inp-title" class="form-label required">{% trans 'Title' %}</label>
+    <input type="text" class="form-control" name="title" id="inp-title" required/>
+</div>
+<div class="form-group">
+    <label for="inp-remark" class="form-label">{% trans 'Remarks' %}</label>
+    <textarea type="text" class="form-control" name="remark" id="inp-remark"></textarea>
+</div>
+<div class="row">
+    <label class="form-label mb-0">{% trans 'Apply time' %}</label>
+    <div class="col-6">
+        <div class="form-group">
+            <label for="inp-apply-start" class="form-label">{% trans 'From' %}</label>
+            <input type="text" class="form-control" name="apply_start" id="inp-apply-start"/>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <label for="inp-apply-finish" class="form-label">{% trans 'To' %}</label>
+            <input type="text" class="form-control" name="apply_finish" id="inp-apply-finish"/>
+        </div>
+    </div>
+</div>
+<div class="form-check mt-2 mb-1">
+    <input type="checkbox" class="form-check-input mt-1" id="inp-is-active" name="is_active"/>
+    <label for="inp-is-active" class="form-label">{% trans 'Active' %}</label>
+</div>

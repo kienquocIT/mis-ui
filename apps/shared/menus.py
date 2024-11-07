@@ -696,6 +696,15 @@ class MenusProduction:
     )
 
 
+class MenusFinancial:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    FINANCIAL = MenuCommon(
+        name='Account chart', code='menu_account_chart_list', view_name='AccountChartList', icon='<i class="fas fa-list-alt"></i>',
+    )
+
+
 # Space Setup
 class SpaceCommon:
     name: str  # 'Sale'
@@ -783,6 +792,15 @@ class SpaceItem:
                 MenuEOffice.ASSET_TOOLS,
                 MenuEOffice.MEETING,
             ],
+        ),
+        'financial': SpaceCommon(
+            'Financial',
+            'financial',
+            icon='<i class="fas fa-balance-scale"></i>',
+            menus=[
+                MenusFinancial.HOME,
+                MenusFinancial.FINANCIAL,
+            ]
         ),
         'forms': SpaceCommon(
             'Forms',
@@ -894,6 +912,7 @@ class SpaceGroup:
             SpaceItem.mapping['crm'],
             SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
+            SpaceItem.mapping['financial'],
             SpaceItem.mapping['forms'],
             SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],

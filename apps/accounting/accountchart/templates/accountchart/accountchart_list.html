@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Account chart List' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/dragula/dragula.min.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{#    <a href="{% url "AdvancePaymentCreate" %}">#}
+{#        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">#}
+{#            <span>#}
+{#                <span>{% trans 'Add' %}</span>#}
+{#                <span class="icon">#}
+{#                    <i class="fa-solid fa-plus"></i>#}
+{#                </span>#}
+{#            </span>#}
+{#        </button>#}
+{#    </a>#}
+{% endblock %}
+{% block pageContent %}
+    <script id="trans-script"
+            data-trans-all="{% trans 'Default all' %}"
+    ></script>
+    <script id="url-script"
+            data-url-get-account-list="{% url 'AccountChartListAPI' %}"
+    ></script>
+    <div class="row">
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="list-group" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="list-1-list" data-bs-toggle="list" href="#list-1" role="tab" aria-controls="list-1">{% trans 'Assets' %} (Assets)</a>
+                <a class="list-group-item list-group-item-action" id="list-2-list" data-bs-toggle="list" href="#list-2" role="tab" aria-controls="list-2">{% trans 'Liabilities' %} (Liabilities)</a>
+                <a class="list-group-item list-group-item-action" id="list-3-list" data-bs-toggle="list" href="#list-3" role="tab" aria-controls="list-3">{% trans "Owner's equity" %} (Owner's equity)</a>
+                <a class="list-group-item list-group-item-action" id="list-4-list" data-bs-toggle="list" href="#list-4" role="tab" aria-controls="list-4">{% trans 'Revenue' %} (Revenue)</a>
+                <a class="list-group-item list-group-item-action" id="list-5-list" data-bs-toggle="list" href="#list-5" role="tab" aria-controls="list-5">{% trans 'Costs of production, business' %} (Costs of production, business)</a>
+                <a class="list-group-item list-group-item-action" id="list-6-list" data-bs-toggle="list" href="#list-6" role="tab" aria-controls="list-6">{% trans 'Other incomes' %} (Other incomes)</a>
+                <a class="list-group-item list-group-item-action" id="list-7-list" data-bs-toggle="list" href="#list-7" role="tab" aria-controls="list-7">{% trans 'Other expenses' %} (Other expenses)</a>
+                <a class="list-group-item list-group-item-action" id="list-8-list" data-bs-toggle="list" href="#list-8" role="tab" aria-controls="list-8">{% trans 'Income summary' %} (Income summary)</a>
+            </div>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9">
+            <div class="tab-content m-0" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="list-1" role="tabpanel" aria-labelledby="list-1-list">
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="account-chart-assets-table" class="table nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>{% trans 'Account code' %}</th>
+                                        <th>{% trans 'Account name' %}</th>
+                                        <th>{% trans 'Foreign name' %}</th>
+                                        <th>{% trans 'Status' %}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="list-2" role="tabpanel" aria-labelledby="list-2-list">
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="account-chart-liabilities-table" class="table nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>{% trans 'Account code' %}</th>
+                                        <th>{% trans 'Account name' %}</th>
+                                        <th>{% trans 'Foreign name' %}</th>
+                                        <th>{% trans 'Status' %}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="list-3" role="tabpanel" aria-labelledby="list-3-list">
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="account-chart-owner-equity-table" class="table nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>{% trans 'Account code' %}</th>
+                                        <th>{% trans 'Account name' %}</th>
+                                        <th>{% trans 'Foreign name' %}</th>
+                                        <th>{% trans 'Status' %}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="list-4" role="tabpanel" aria-labelledby="list-4-list">
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="account-chart-revenue-table" class="table nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>{% trans 'Account code' %}</th>
+                                        <th>{% trans 'Account name' %}</th>
+                                        <th>{% trans 'Foreign name' %}</th>
+                                        <th>{% trans 'Status' %}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="list-5" role="tabpanel" aria-labelledby="list-5-list">
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="account-chart-costs-table" class="table nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>{% trans 'Account code' %}</th>
+                                        <th>{% trans 'Account name' %}</th>
+                                        <th>{% trans 'Foreign name' %}</th>
+                                        <th>{% trans 'Status' %}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="list-6" role="tabpanel" aria-labelledby="list-6-list">
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="account-chart-other-income-table" class="table nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>{% trans 'Account code' %}</th>
+                                        <th>{% trans 'Account name' %}</th>
+                                        <th>{% trans 'Foreign name' %}</th>
+                                        <th>{% trans 'Status' %}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="list-7" role="tabpanel" aria-labelledby="list-7-list">
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="account-chart-other-expense-table" class="table nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>{% trans 'Account code' %}</th>
+                                        <th>{% trans 'Account name' %}</th>
+                                        <th>{% trans 'Foreign name' %}</th>
+                                        <th>{% trans 'Status' %}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="list-8" role="tabpanel" aria-labelledby="list-8-list">
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="account-chart-income-summary-table" class="table nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>{% trans 'Account code' %}</th>
+                                        <th>{% trans 'Account name' %}</th>
+                                        <th>{% trans 'Foreign name' %}</th>
+                                        <th>{% trans 'Status' %}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-account-detail" tabindex="-1" role="dialog" aria-labelledby="modal-account-detail" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Account Detail' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-account" data-method="PUT" data-url="">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required">{% trans 'Type' %}</label>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" id="account-select" name="acc-type-select">
+                                                <label class="form-check-label" for="account-select">{% trans 'account' %}</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" id="title-select" name="acc-type-select" checked>
+                                                <label class="form-check-label" for="title-select">{% trans 'title' %}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="control-acc" disabled>
+                                    <label class="form-check-label" for="control-acc">{% trans 'Control account' %}</label>
+                                </div>
+                            </div>
+                            <div class="col-12 my-3">
+                                <div class="hr border"></div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="gl-account">{% trans 'G/L account' %}</label>
+                                    <input type="text" id="gl-account" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="acc-name">{% trans 'Name' %}</label>
+                                    <input type="text" id="acc-name" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="foreign-acc-name">{% trans 'Foreign name' %}</label>
+                                    <input type="text" id="foreign-acc-name" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="acc-parent">{% trans 'Parent account' %}</label>
+                                    <select id="acc-parent" class="form-select"></select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="acc-currency">{% trans 'Currency' %}</label>
+                                    <select data-method="GET" data-url="{% url 'CurrencyListAPI' %}" id="acc-currency" class="form-select"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" id="active-acc" checked>
+                                    <label class="form-check-label" for="active-acc">{% trans 'Active' %}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="button" form="form-update-account" class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/dragula/dragula.min.js' %}"></script>
+    <script src="{% static 'assets/js/accountchart/accountchart_list.js' %}"></script>
+{% endblock %}

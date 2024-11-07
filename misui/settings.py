@@ -115,6 +115,8 @@ INSTALLED_APPS = \
         'apps.eoffice.meeting',
     ] + [  # external
         'apps.web_builder',
+    ] + [
+        'apps.accounting.accountchart'
     ]
 
 INSTALLED_APPS += [

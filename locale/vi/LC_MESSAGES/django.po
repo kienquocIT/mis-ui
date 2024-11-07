@@ -9387,7 +9387,6 @@ msgstr "Thanh toán là bắt buộc"
 #
 msgid "Product is required"
 msgstr "Sản phẩm là bắt buộc"
-msgstr "Tạo mới Kì kế toán"
 
 #
 msgid "First doc"
@@ -9397,12 +9396,50 @@ msgstr "Phiếu đầu tiên"
 msgid "Previous doc"
 msgstr "Phiếu trước đó"
 
-
 #
 msgid "Next doc"
 msgstr "Phiếu tiếp theo"
 
-
 #
 msgid "Last doc"
 msgstr "Phiếu cuối cùng"
+
+#
+msgid "Assets"
+msgstr "Tài sản"
+
+#
+msgid "Liabilities"
+msgstr "Nợ phải trả"
+
+#
+msgid "Owner's equity"
+msgstr "Vốn chủ sở hữu"
+
+#
+msgid "Costs of production, business"
+msgstr "Chi phí sản xuất, kinh doanh"
+
+#
+msgid "Other incomes"
+msgstr "Thu nhập khác"
+
+#
+msgid "Other expenses"
+msgstr "Chi phí khác"
+
+#
+msgid "Income summary"
+msgstr "Xác định kết quả kinh doanh"
+
+#
+msgid "Account code"
+msgstr "Số hiệu tài khoản"
+
+#
+msgid "Account name"
+msgstr "Tên tài khoản"
+
+#
+msgid "Foreign name"
+msgstr "Tên quốc tế"

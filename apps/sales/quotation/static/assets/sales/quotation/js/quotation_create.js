@@ -847,6 +847,7 @@ $(function () {
             rules: {
                 title: {
                     required: true,
+                    maxlength: 100,
                 },
                 employee_inherit_id: {
                     required: true,

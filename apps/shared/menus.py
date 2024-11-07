@@ -892,10 +892,10 @@ class SpaceGroup:
     SPACE = SpaceCommon(
         'Space', 'space', child=[
             SpaceItem.mapping['crm'],
-            SpaceItem.mapping['kms'],
+            # SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
             SpaceItem.mapping['forms'],
-            SpaceItem.mapping['hrm'],
+            # SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],
             SpaceItem.mapping['purchase'],
             SpaceItem.mapping['production'],

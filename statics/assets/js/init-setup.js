@@ -2976,7 +2976,7 @@ class WFRTControl {
                                 pageEle.find(findText).each(function () {
                                     let optsSetZone = {'add_empty_value': true};
                                     $(this).changePropertiesElementIsZone(optsSetZone);
-                                    $(this).find('input, select, textarea, button, span, p').each(function (event) {
+                                    $(this).find('input, select, textarea, button, span, p, li').each(function (event) {
                                         $(this).changePropertiesElementIsZone(optsSetZone);
                                     });
                                 })
@@ -3037,7 +3037,7 @@ class WFRTControl {
                                 pageEle.find(findText).each(function () {
                                     let optsSetZone = {'add_empty_value': true};
                                     $(this).changePropertiesElementIsZone(optsSetZone);
-                                    $(this).find('input, select, textarea, button, span, p').each(function (event) {
+                                    $(this).find('input, select, textarea, button, span, p, li').each(function (event) {
                                         $(this).changePropertiesElementIsZone(optsSetZone);
                                     });
                                 })
@@ -3451,6 +3451,23 @@ class WFRTControl {
                 if ($(ele$).is('button')) {  // if <button> (only button that have attr data-zone)
                     if ($(ele$).attr('data-zone')) {
                         $(ele$).attr('hidden', 'true');
+                    }
+                }
+                if ($(ele$).is('li')) {  // if <li>
+                    $(ele$).attr('hidden', 'true');
+                    if ($(ele$).hasClass('nav-item')) {  // check if <li> is nav-item then find tab-pane removeCls "show"
+                        let $navLink = $(ele$).find('.nav-link');
+                        if ($navLink && $navLink.length > 0) {
+                            let href = $navLink.attr('href');
+                            if (href.includes("#")) {
+                                href = href.replace("#", "");
+                                let $tabPane = $(`.tab-pane[id="${href}"]`);
+                                if ($tabPane && $tabPane.length > 0) {
+                                    $tabPane.removeClass("show");
+                                    $tabPane.removeClass("active");
+                                }
+                            }
+                        }
                     }
                 }
             }

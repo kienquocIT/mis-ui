@@ -2,8 +2,14 @@ $(document).ready(function () {
 
     EmployeeHRMInit.loadUserList();
     EmployeeHRMInit.loadEmpList();
-    EmployeeHRMInit.loadDob();
-    EmployeeHRMInit.loadDateJoined();
+    EmployeeHRMInit.loadDate($('#employee-dob'));
+    EmployeeHRMInit.loadDate($('#employee-date-joined'));
+    EmployeeHRMInit.loadDate($('#employee-doi'));
+
+    EmployeeHRMInit.loadPOI($('#place_of_issue'));
+    EmployeeHRMInit.loadNationality();
+    EmployeeHRMInit.loadPOI($('#employee-poo'));
+
     SetupFormSubmit.validate(
         $('#frm_employee_create'),
         {

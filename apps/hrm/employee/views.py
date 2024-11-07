@@ -3,6 +3,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared.constant import GENDER_TYPE, MARITAL_STT
+from apps.shared.msg import BaseMsg
 from apps.shared.msg.hrm_employee import HRMMsg
 
 
@@ -25,7 +27,10 @@ class HRMEmployeeCreate(View):
         menu_active='menu_employee_data_list',
     )
     def get(self, request, *args, **kwargs):
-        return ServerAPI.empty_200()
+        return {
+                   'gender': GENDER_TYPE,
+                   'marital': MARITAL_STT,
+               }, ServerAPI.empty_200()
 
 
 class HRMEmployeeCreateAPI(APIView):
@@ -34,9 +39,9 @@ class HRMEmployeeCreateAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.HRM_EMPLOYEE_NOT_MAP_HRM).post(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.HRM_EMPLOYEE_INFO_LIST).post(request.data)
         if resp.state:
-            resp.result['message'] = HRMMsg.HRM_EMPLOYEE_INFO_CREATE
+            resp.result['message'] = f'{HRMMsg.HRM_EMPLOYEE_INFO} {BaseMsg.CREATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 

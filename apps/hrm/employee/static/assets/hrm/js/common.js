@@ -15,15 +15,8 @@ class EmployeeHRMInit {
 
     static userSelectEle = $('#select-box-user');
     static empSelectEle = $('#select-box-employee');
+    static ElmNationality = $('#employee-nationality');
 
-    static dobEle = $('#employee-dob');
-    static dateJoinedEle = $('#employee-date-joined');
-    static firstNameEle = $('#employee-first-name');
-    static lastNameEle = $('#employee-last-name');
-    static emailEle = $('#employee-email');
-    static phoneEle = $('#employee-phone');
-    static isAdminEle = $('#idx_is_admin_company');
-    static isActive = $('#is_active');
 
     static loadUserList(userData) {
         EmployeeHRMInit.userSelectEle.initSelect2({
@@ -56,8 +49,8 @@ class EmployeeHRMInit {
         })
     }
 
-    static loadDob(dobData) {
-        EmployeeHRMInit.dobEle.flatpickr({
+    static loadDate(elm, dobData) {
+        elm.flatpickr({
             'allowInput': true,
             'altInput': true,
             'altFormat': 'd/m/Y',
@@ -68,15 +61,21 @@ class EmployeeHRMInit {
         })
     }
 
-    static loadDateJoined(dateJoinedData) {
-        EmployeeHRMInit.dateJoinedEle.flatpickr({
-            'allowInput': true,
-            'altInput': true,
-            'altFormat': 'd/m/Y',
-            'dateFormat': 'Y-m-d',
-            'defaultDate': dateJoinedData || new Date(),
-            'locale': globeLanguage === 'vi' ? 'vn' : 'default',
-            'shorthandCurrentMonth': true,
+    static loadPOI(elm, value){
+        elm.initSelect2({
+            allowClear: true,
+            keyId: 'id',
+            keyText: 'title',
+            data: (value ? {'cities': value} : null)
+        })
+    }
+
+    static loadNationality(value){
+        EmployeeHRMInit.ElmNationality.initSelect2({
+            allowClear: true,
+            keyId: 'id',
+            keyText: 'title',
+            data: (value ? {'cities': value} : null)
         })
     }
 

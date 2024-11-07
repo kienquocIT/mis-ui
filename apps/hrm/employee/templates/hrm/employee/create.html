@@ -53,7 +53,7 @@
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label"
-                                       for="select-box-empl_hr">{% trans 'Empl ID' %}</label>
+                                       for="select-box-employee">{% trans 'Empl ID' %}</label>
                                 <div class="input-affix-wrapper">
                                     <div class="dropdown input-prefix">
                                         <i class="fas fa-info-circle text-blue"
@@ -65,7 +65,7 @@
                                         <div class="dropdown-menu w-210p mt-2"></div>
                                     </div>
                                     <select class="form-select" id="select-box-employee"
-                                            data-url="{% url 'HRMEmployeeNotMapHRMAPI' %}?"
+                                            data-url="{% url 'HRMEmployeeListAPI' %}?"
                                             data-method="GET"
                                             data-params="{'is_mapped': false}"
                                             data-keyResp="emp_not_map"
@@ -162,7 +162,7 @@
                                 <label class="form-label" for="place_of_issue">{% trans 'Place of issue' %}</label>
                                 <select class="form-select" name="place_of_issue" id="place_of_issue"
                                         data-url="{% url 'CityListAPI' %}" data-method="GET"
-                                        data-keyResp="city_list"></select>
+                                        data-keyResp="cities"></select>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
@@ -177,7 +177,8 @@
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-pob">{% trans 'Place of birth' %}</label>
-                                <input class="form-control" id="employee-pob" type="text" name="place_of_birth"/>
+                                <input class="form-control" id="employee-pob" type="text" name="place_of_birth"
+                                       placeholder="Ho Chi Minh..."/>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
@@ -193,56 +194,72 @@
                                 <label class="form-label" for="employee-poo">{% trans 'Place of origin' %}</label>
                                 <select class="form-select" name="place_of_origin" id="employee-poo"
                                         data-url="{% url 'CityListAPI' %}" data-method="GET"
-                                        data-keyResp="city_list"></select>
+                                        data-keyResp="cities"></select>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-ethnicity">{% trans 'Ethnicity' %}</label>
-                                <input class="form-control" id="employee-ethnicity" type="text" name="ethnicity"/>
+                                <input class="form-control" id="employee-ethnicity" type="text" name="ethnicity"
+                                placeholder="Kinh, Ê-đê, Dao, Tày,..."/>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-religion">{% trans 'Religion' %}</label>
-                                <input class="form-control" id="employee-religion" type="text" name="religion"/>
+                                <input class="form-control" id="employee-religion" type="text" name="religion"
+                                placeholder="Phật giáo, Đạo giáo, Kitô giáo..."/>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-gender">{% trans 'Gender' %}</label>
-                                <select class="form-select" name="gender" id="employee-gender"></select>
+                                <select class="form-select" name="gender" id="employee-gender">
+                                    <option value="" selected disabled>{% trans 'Choice gender' %}...</option>
+                                    {% for key, value in data.gender %}
+                                        <option value="{{ key }}">{{ value }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-mstt">{% trans 'Marital status' %}</label>
-                                <select class="form-select" name="marital_status" id="employee-mstt"></select>
+                                <select class="form-select" name="marital_status" id="employee-mstt">
+                                    <option value="" selected disabled>{% trans 'Choice Marital status' %}...</option>
+                                    {% for key, value in data.marital %}
+                                        <option value="{{ key }}">{{ value }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4"></div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-ban">{% trans 'Bank account No' %}</label>
-                                <input class="form-control" id="employee-ban" type="text" name="bank_acc_no"/>
+                                <input class="form-control" id="employee-ban" type="text" name="bank_acc_no"
+                                placeholder="0000 0000 0000 0000"/>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-acc_name">{% trans 'Account name' %}</label>
-                                <input class="form-control" id="employee-acc_name" type="text" name="acc_name"/>
+                                <input class="form-control" id="employee-acc_name" type="text" name="acc_name"
+                                placeholder="Nguyen Van A"/>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-bank_name">{% trans 'Bank name' %}</label>
-                                <input class="form-control" id="employee-bank_name" type="text" name="bank_name"/>
+                                <input class="form-control" id="employee-bank_name" type="text" name="bank_name"
+                                placeholder="Viettinbank..."/>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-tax_code">{% trans 'Taxcode' %}</label>
-                                <input class="form-control" id="employee-tax_code" type="text" name="tax_code"/>
+                                <input class="form-control" id="employee-tax_code" type="text" name="tax_code"
+                                placeholder="0000000000"/>
                             </div>
                         </div>
                         <div class="col-12">
@@ -260,7 +277,8 @@
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label required" for="employee-phone">{% trans 'Phone' %}</label>
-                                <input type="text" class="form-control" name="phone" id="employee-phone" required>
+                                <input type="text" class="form-control" name="phone" id="employee-phone" required
+                                placeholder="0123 456 789">
                             </div>
                         </div>
                         <div class="col-12">

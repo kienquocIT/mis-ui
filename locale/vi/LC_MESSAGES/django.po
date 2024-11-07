@@ -3821,7 +3821,7 @@ msgstr "Tổng trước thuế"
 
 #
 msgid "Money gave/transferred"
-msgstr "Tiền đã nhận / đã chi"
+msgstr "Tiền đã nhận/chi"
 
 #
 msgid "Supplier name"

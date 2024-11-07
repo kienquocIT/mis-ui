@@ -82,12 +82,9 @@ class EmployeeHRMInit {
 
     static combinesForm(frmIdx, hasPermit = true) {
         let frm = new SetupFormSubmit($(frmIdx));
-        frm.dataForm['date_joined'] = moment($('#employee-date-joined').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
-        frm.dataForm['dob'] = $('#employee-dob').val() ? moment($('#employee-dob').val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null
-        frm.dataForm['role'] = EmployeeHRMInit.roleSelectEle.val()
-
+        frm.dataForm['date_joined'] = moment(EmployeeHRMInit.dateJoinedEle.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['dob'] = EmployeeHRMInit.dobEle.val() ? moment(EmployeeHRMInit.dobEle.val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null
         if (!frm.dataForm['user']) frm.dataForm['user'] = null;
-        if (!frm.dataForm['group']) frm.dataForm['group'] = null;
 
         frm.dataForm['email_app_password'] = $('#email-app-password').attr('data-value')
 

@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared.msg.hrm_employee import HRMMsg
 
 
 class HRMEmployeeList(View):
@@ -27,6 +28,19 @@ class HRMEmployeeCreate(View):
         return ServerAPI.empty_200()
 
 
+class HRMEmployeeCreateAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.HRM_EMPLOYEE_NOT_MAP_HRM).post(request.data)
+        if resp.state:
+            resp.result['message'] = HRMMsg.HRM_EMPLOYEE_INFO_CREATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
 class HRMEmployeeNotMapHRM(APIView):
     @mask_view(
         login_require=True,
@@ -35,4 +49,6 @@ class HRMEmployeeNotMapHRM(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.HRM_EMPLOYEE_NOT_MAP_HRM).get(request.query_params.dict())
-        return resp.auto_return(key_success='empl_not_map')
+        return resp.auto_return(key_success='emp_not_map')
+
+

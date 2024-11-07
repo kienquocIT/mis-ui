@@ -9443,3 +9443,15 @@ msgstr "Tên tài khoản"
 #
 msgid "Foreign name"
 msgstr "Tên quốc tế"
+
+#
+msgid "account"
+msgstr "tài khoản"
+
+#
+msgid "title"
+msgstr "tiêu đề"
+
+#
+msgid "Parent account"
+msgstr "Tài khoản cha"

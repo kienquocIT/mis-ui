@@ -18,6 +18,13 @@ class ProcessList(View):
         return {}, status.HTTP_200_OK
 
 
+class ProcessReadyListAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PROCESS_CONFIG_READY).get()
+        return resp.auto_return(key_success='process_list')
+
+
 class ProcessListAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, **kwargs):

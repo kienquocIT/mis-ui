@@ -69,7 +69,19 @@ $(document).ready(function () {
                 className: 'min-w-150p',
                 data: 'config',
                 render: (data) => {
+                    let forOppHTML = '';
+                    if (data.for_opp === true){
+                        forOppHTML = `
+                            <span 
+                                class="icon text-primary pr-3 mr-2" 
+                                style="border-right: 1px solid #6bb4ba;"
+                                data-bs-toggle="tooltip"
+                                title="${$.fn.gettext('For Opportunity')}"
+                            ><i class="fa-regular fa-lightbulb"></i></span>
+                        `;
+                    }
                     return data ? `
+                        ${forOppHTML}
                         <a href="${tbl$.data('url-process-detail').replaceAll('__pk__', data.id)}">${data.title}</a>
                         <small class="d-inline-block text-ellipsis-multiple-2">${data?.remark || ''}</small>
                     ` : '-';
@@ -141,6 +153,7 @@ $(document).ready(function () {
             },
         ],
         rowCallback: function (row, data) {
+            $(row).find('[data-bs-toggle=tooltip]').tooltip();
             if (data?.['was_done'] === true && data?.['date_done']) {
                 $(row).addClass('table-success').css('color', 'inherit');
             }

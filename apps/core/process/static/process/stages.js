@@ -98,7 +98,7 @@ class ProcessStages {
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="inp-stage-config-title" class="form-label required">${$.fn.gettext('Title')}</label>
-                                <input type="text" class="form-control" name="title" id="inp-stage-config-title" required />
+                                <input type="text" class="form-control" name="title" id="inp-stage-config-title" required maxlength="100" />
                             </div>
                             <div class="form-group">
                                 <label for="inp-stage-config-remark" class="form-label">${$.fn.gettext('Remarks')}</label>
@@ -130,7 +130,7 @@ class ProcessStages {
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="inp-app-config-title" class="form-label required">${$.fn.gettext("Title")}</label>
-                                <input type="text" class="form-control" name="title" id="inp-app-config-title" required />
+                                <input type="text" class="form-control" name="title" id="inp-app-config-title" required maxlength="100" />
                             </div>
                             <div class="form-group">
                                 <label for="inp-app-config-remark" class="form-label">${$.fn.gettext("Remarks")}</label>

@@ -1,7 +1,8 @@
 from django.urls import path
 
 from apps.core.process.views import (
-    ProcessList, ProcessCreate, ProcessListAPI, ProcessUpdate, ProcessDetailAPI, ProcessDetail,
+    ProcessList, ProcessCreate, ProcessListAPI, ProcessReadyListAPI,
+    ProcessUpdate, ProcessDetailAPI, ProcessDetail,
     ProcessRuntimeOfMeAPI, ProcessRuntimeAPI,
     ProcessRuntimeDetailView, ProcessRuntimeListView, ProcessRuntimeDetailAPI,
     ProcessRuntimeStageAppDetailAPI,
@@ -14,6 +15,7 @@ urlpatterns = [
     path('config/detail/<str:pk>', ProcessDetail.as_view(), name='ProcessDetail'),
 
     path('config/list/api', ProcessListAPI.as_view(), name='ProcessListAPI'),
+    path('config/list/ready/api', ProcessReadyListAPI.as_view(), name='ProcessReadyListAPI'),
     path('config/detail/<str:pk>/api', ProcessDetailAPI.as_view(), name='ProcessDetailAPI'),
 
     path('runtime/list', ProcessRuntimeListView.as_view(), name='ProcessRuntimeListView'),

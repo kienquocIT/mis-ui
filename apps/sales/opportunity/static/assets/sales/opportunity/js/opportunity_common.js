@@ -1246,7 +1246,6 @@ function loadDtbOpportunityList() {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('opportunity_list')) {
-                        console.log(resp.data['opportunity_list'])
                         return resp.data['opportunity_list'] ? resp.data['opportunity_list'] : [];
                     }
                     throw Error('Call data raise errors.')
@@ -1348,6 +1347,16 @@ async function loadConfig() {
     let method = 'GET';
     let result = await callData(url, method);
     return result?.['opportunity_config'];
+}
+
+function loadConfigPromise() {
+    let url = urlEle.data('url-config');
+    let method = 'GET';
+    return callData(url, method).then(
+        result => {
+            return result?.['opportunity_config']
+        },
+    );
 }
 
 // page detail

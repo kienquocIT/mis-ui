@@ -487,6 +487,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Process
     PROCESS_CONFIG_LIST = StringUrl('process/config/list')
+    PROCESS_CONFIG_READY = StringUrl('process/config/list/ready')
     PROCESS_CONFIG_DETAIL = StringUrl('process/config/detail/{pk}')
     PROCESS_RUNTIME_LIST = StringUrl('process/runtime/list')
     PROCESS_RUNTIME_LIST_OF_ME = StringUrl('process/runtime/list/me')

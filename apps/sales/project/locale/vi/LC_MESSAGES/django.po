@@ -24,3 +24,27 @@ msgstr "Ngày đóng dự án"
 #
 msgid "Project task list"
 msgstr "Danh sách Giao việc"
+
+#
+msgid "Utilization Report"
+msgstr "Báo cáo nguồn lực"
+
+#
+msgid "Task Assignee"
+msgstr "Người nhận việc"
+
+#
+msgid "Estimated time"
+msgstr "Tổng giờ ước lượng"
+
+#
+msgid "Actual time"
+msgstr "Tổng giờ thực tế"
+
+#
+msgid "Total task"
+msgstr "Tổng giao việc"
+
+#
+msgid "Total task complete"
+msgstr "Tổng giao việc đã hoàn thành"

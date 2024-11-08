@@ -92,6 +92,8 @@ $(document).ready(function () {
                     enable_edit: false,
                     data: project['assignee_attachment'],
                 })
+                // call tab report
+                tabReport.init()
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )
@@ -101,4 +103,7 @@ $(document).ready(function () {
 
     // create baseline
     createBaseline.init()
+
+    let tabReport = new TaskReport()
+
 });

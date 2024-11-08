@@ -85,11 +85,16 @@ class ProjectDetail(View):
                 if item_id and emp_id and (item_id == emp_id):
                     can_close = True
                     break
+        unit_data = []
+        rep = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get({'group__code': 'labor'})
+        if rep.state:
+            unit_data = rep.result
         return {
                    'dependencies_list': DEPENDENCIES_TYPE,
                    'system_status': SYSTEM_STATUS,
                    'pk': pk,
-                   'can_close': can_close
+                   'can_close': can_close,
+                   'unit_data': unit_data,
                }, status.HTTP_200_OK
 
 
@@ -121,13 +126,18 @@ class ProjectEdit(View):
                 if item_id and emp_id and (item_id == emp_id):
                     can_close = True
                     break
+        unit_data = []
+        rep = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get({'group__code': 'labor'})
+        if rep.state:
+            unit_data = rep.result
         return {
                    'pk': pk,
                    'system_status': SYSTEM_STATUS,
                    'dependencies_list': DEPENDENCIES_TYPE,
                    'list_from_app': 'project.project.edit',
                    'employee_info': request.user.employee_current_data,
-                   'can_close': can_close
+                   'can_close': can_close,
+                   'unit_data': unit_data,
                }, status.HTTP_200_OK
 
 

@@ -419,6 +419,9 @@
 .bt-0{
     border-top: 0!important;
 }
+.btm-0{
+    border-bottom: 0!important;
+}
 #check_expense_modal {
     position: absolute;
     top: 50%;

@@ -1,4 +1,6 @@
 from django.urls import path
+
+from apps.masterdata.saledata.views.accounting_policies import AccountingPoliciesList, AccountingPoliciesListAPI
 from apps.masterdata.saledata.views.accounts import (
     ContactMasterDataList, SalutationCreateAPI, InterestCreateAPI,
     SalutationListAPI, InterestListAPI, AccountMasterDataList,
@@ -112,6 +114,14 @@ urlpatterns = [
         'masterdata/periodsconfig/api/<str:pk>', PeriodsConfigDetailAPI.as_view(),
         name='PeriodsConfigDetailAPI'
     ),
+      path(
+          'masterdata/accounting_policies', AccountingPoliciesList.as_view(),
+          name='AccountingPoliciesList'
+      ),
+      path(
+          'masterdata/accounting_policies/api', AccountingPoliciesListAPI.as_view(),
+          name='AccountingPoliciesListAPI'
+      ),
 ] + [
     path('contacts', ContactList.as_view(), name='ContactList'),
     path('contacts/api', ContactListAPI.as_view(), name='ContactListAPI'),

@@ -136,6 +136,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # home/company
     COMPANY_CONFIG = StringUrl('company/config')
+    ACCOUNTING_POLICIES_CONFIG = StringUrl('company/accounting-policies-config')
     COMPANY_LIST = StringUrl('company/list')
     COMPANY_DETAIL = StringUrl('company')
     COMPANY_DETAIL_LOGO = StringUrl('company/{pk}/logo')

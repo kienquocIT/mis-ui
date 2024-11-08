@@ -17,7 +17,6 @@ class PeriodsConfigList(View):
         menu_active='id_menu_master_data_periods_config',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PERIODS_CONFIG_LIST).get()
         return {}, status.HTTP_200_OK
 
 

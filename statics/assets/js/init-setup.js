@@ -2279,7 +2279,7 @@ class WFRTControl {
                     $.fn.notifyB({description: data.message}, 'success');
                     setTimeout(() => {
                         window.location.replace(_form.dataUrlRedirect);
-                    }, 3000);
+                    }, 2000);
                 }
             }, (err) => {
                 setTimeout(() => {
@@ -2580,13 +2580,14 @@ class WFRTControl {
             1: "text-secondary",
         };
         for (let status of statusList) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
-                                <div class="form-check form-check-theme ms-3">
-                                    <input type="radio" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}">
+            let checked = "";
+            if (status === 0) {
+                checked = "checked";
+            }
+            htmlCustom += `<div class="d-flex mb-5 border-bottom">
+                                <div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="radio" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}" ${checked}>
                                     <label class="form-check-label" for="save-type-${status}">${statusMapText[status]}</label>
-                                </div>
-                                <div class="d-flex justify-content-end">
-                                    <i class="${statusMapIcon[status]} ${statusMapColor[status]}"></i>
                                 </div>
                             </div>`;
         }

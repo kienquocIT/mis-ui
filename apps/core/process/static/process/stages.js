@@ -34,7 +34,7 @@ class ProcessStages {
                 </div>
             </div>
             <div class="app-item-tools">
-                <div class="item-tools-item app-control-item" data-code="amount" data-bs-toggle="tooltip" title="${$.fn.gettext("Number of documents created")}"></div>
+                <div class="item-tools-item app-control-item" data-code="amount" data-bs-toggle="tooltip" title="${$.fn.gettext("Number of documents created")} / ${$.fn.gettext("Number of documents approved")}"></div>
                 <div class="item-tools-item app-control-item" data-code="add" style="display: none;" data-bs-toggle="tooltip" title="${$.fn.gettext("Click to create more documents")}">
                     <i class="fa-solid fa-plus"></i>
                 </div>
@@ -191,6 +191,9 @@ class ProcessStages {
                                     <li>
                                         <i class="text-warning">${$.fn.gettext("Only when all features of a phase are completed will that phase be marked as complete and move to the next phase")}</i>
                                     </li>
+                                    <li>
+                                        <i class="text-warning">${$.fn.gettext("If the documents has a process applied, the documents status is Approved or Completed to be counted in the number of completed conditions")}</i>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -217,10 +220,11 @@ class ProcessStages {
                         <table class="table table-bordered nowrap w-100">
                             <thead class="thead-primary">
                                 <tr>
-                                    <th>#</th>
                                     <th class="no-transform">${$.fn.gettext('Title')}</th>
                                     <th class="no-transform">${$.fn.gettext('Creator')}</th>
                                     <th class="no-transform">${$.fn.gettext('Date created')}</th>
+                                    <th class="no-transform">${$.fn.gettext('Status')}</th>
+                                    <th class="no-transform">${$.fn.gettext('Timeline')}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -260,6 +264,35 @@ class ProcessStages {
                 (obj, item) => Object.assign(obj, {[item.id]: item}), {}
             );
         }
+    }
+
+    static matchStatusCode(status_code, returnHTML=true){
+        let txt = '';
+        let clsName = '';
+        switch(status_code){
+            case 0:
+                txt = $.fn.gettext('Draft');
+                clsName = 'text-secondary';
+                break
+            case 1:
+                txt = $.fn.gettext('Created');
+                clsName = 'text-primary';
+                break
+            case 2:
+                txt = $.fn.gettext('Approved');
+                clsName = 'text-success';
+                break
+            case 3:
+                txt = $.fn.gettext('Finished');
+                clsName = 'text-indigo';
+                break
+            case 4:
+                txt = $.fn.gettext('Canceled');
+                clsName = 'text-light';
+                break
+        }
+        if (returnHTML === true) return `<span class="${clsName}">${txt}</span>`;
+        return txt;
     }
 
     constructor(target$, data = {}, config = {}) {
@@ -598,6 +631,7 @@ class ProcessStages {
             'min': "0",
             'max': "1",
             'amount': 0,
+            'amount_approved': 0,
             'was_done': false,
             ...appData,
         }
@@ -605,9 +639,16 @@ class ProcessStages {
         const app$ = $(ProcessStages.htmlBaseAppItem)
             .addClass(clsThis.appClsName)
             .data(clsThis.appNameData, appData);
+
+        function renderAmountAndApproved(amount, amount_approved){
+            return `${amount} / ${amount_approved}`;
+        }
+
         app$.find('.app-item-text .app-text-title').text(appData?.['title'] || '');
         app$.find('.app-item-text .app-text-app').text(appData_application?.['title'] || '');
-        app$.find('.app-control-item[data-code=amount]').text(appData?.['amount'] || '0');
+        app$.find('.app-control-item[data-code=amount]').text(
+            renderAmountAndApproved(appData?.['amount'] || '0', appData?.['amount_approved'] || '0')
+        );
 
         function removeControlComplete(){
             app$.find('.app-control-item[data-code=confirm_complete]').remove();
@@ -655,7 +696,9 @@ class ProcessStages {
                 const appData_application = clsThis.applicationDict?.[appDataNew['application']] || {};
                 $(this).find('.app-item-text .app-text-title').text(appDataNew?.['title'] || '');
                 $(this).find('.app-item-text .app-text-app').text(appData_application?.['title'] || '');
-                $(this).find('.app-control-item[data-code=amount]').text(appDataNew?.['amount'] || '0');
+                $(this).find('.app-control-item[data-code=amount]').text(
+                    renderAmountAndApproved(appDataNew?.['amount'] || '0', appDataNew?.['amount_approved'] || '0')
+                );
                 // force to variable data
                 appData = {...appData, ...appDataNew};
             });
@@ -675,7 +718,7 @@ class ProcessStages {
                 if (itemData.state === 'CURRENT'){
                     try {
                         const appMin = Number.parseInt(appData.min);
-                        if (appData.amount >= appMin){
+                        if (appData.amount_approved >= appMin){
                             app$.find('.app-control-item[data-code=confirm_complete]').show().on('click', function (event) {
                                 event.preventDefault();
                                 Swal.fire({
@@ -877,7 +920,6 @@ class ProcessStages {
             this.modalDocListDataTable = this.modalDocList$.find('table').DataTableDefault({
                 styleDom: 'small',
                 data: [],
-                rowIdx: true,
                 autoWidth: false,
                 rowCallback: function (row, data) {
                     $(row).find('.txt-more').off('click').on('click', function(){
@@ -888,11 +930,7 @@ class ProcessStages {
                 },
                 columns: [
                     {
-                        width: '10%',
-                        render: () => '',
-                    },
-                    {
-                        width: '30%',
+                        width: '25%',
                         data: 'title',
                         render: data => {
                             if (data){
@@ -908,7 +946,7 @@ class ProcessStages {
                         },
                     },
                     {
-                        width: '30%',
+                        width: '20%',
                         data: 'employee_created',
                         render: data => {
                             if (data){
@@ -926,9 +964,38 @@ class ProcessStages {
                         },
                     },
                     {
-                        width: '30%',
+                        width: '20%',
                         data: 'date_created',
                         render: data => $x.fn.displayRelativeTime(data),
+                    },
+                    {
+                        width: '10%',
+                        data: 'system_status',
+                        render: data => {
+                            return ProcessStages.matchStatusCode(data);
+                        },
+                    },
+                    {
+                        width: '25%',
+                        data: 'date_status',
+                        render: data => {
+                            const ele$ = $(`<div></div>`);
+                            if (Array.isArray(data)){
+                                data.map(
+                                    item => {
+                                        const status = ProcessStages.matchStatusCode(item?.['status'] || '');
+                                        const dtData = item?.['datetime'] || '';
+                                        ele$.append(`
+                                            <div style="border: 1px solid #f1f1f1;overflow: hidden;padding: 3px;">
+                                                <small>${status}</small>
+                                                <small>${dtData}</small>
+                                            </div>  
+                                        `)
+                                    }
+                                )
+                            }
+                            return ele$.prop('outerHTML');
+                        }
                     }
                 ]
             })

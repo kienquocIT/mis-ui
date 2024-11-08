@@ -2,6 +2,7 @@
 class QuotationLoadDataHandle {
     static $form = $('#frm_quotation_create');
     static opportunitySelectEle = $('#opportunity_id');
+    static processSelectEle$ = $('#process_id');
     static customerSelectEle = $('#select-box-quotation-create-customer');
     static contactSelectEle = $('#select-box-quotation-create-contact');
     static paymentSelectEle = $('#select-box-quotation-create-payment-term');
@@ -1941,13 +1942,20 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.salePersonSelectEle.empty();
             QuotationLoadDataHandle.opportunitySelectEle.empty();
             QuotationLoadDataHandle.salePersonSelectEle.initSelect2({
-                    data: data?.['sale_person'],
-                    'allowClear': true,
-                });
+                data: data?.['sale_person'],
+                'allowClear': true,
+            });
             QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
-                    data: data?.['opportunity'],
-                    'allowClear': true,
-                });
+                data: data?.['opportunity'],
+                'allowClear': true,
+            });
+            QuotationLoadDataHandle.processSelectEle$.initSelect2({
+                data: {
+                    ...data?.['process'],
+                    'selected': true,
+                },
+                allowClear: true,
+            });
         }
         if ($(form).attr('data-method').toLowerCase() !== 'get') {
             QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');

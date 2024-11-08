@@ -1,0 +1,38 @@
+{% load i18n %}
+
+<div
+        class="modal fade" id="modalStartProcess" tabindex="-1" role="dialog" aria-labelledby="modalStartProcess"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Start process' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form
+                        id="frm-start-process-without-opp"
+                        data-url="{% url 'ProcessRuntimeAPI' %}"
+                        data-url-redirect="{% url 'ProcessRuntimeDetailView' pk='__pk__' %}"
+                >
+                    <div class="form-group">
+                        <label for="inp-start-process-title" class="form-label">{% trans 'Title' %}</label>
+                        <input type="text" class="form-control" name="title" id="inp-start-process-title" maxlength="100" />
+                    </div>
+                    <div class="form-group">
+                        <label for="inp-start-process-remark" class="form-label">{% trans 'Remarks' %}</label>
+                        <textarea type="text" class="form-control" name="remark" id="inp-start-process-remark"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="submit" form="frm-start-process-without-opp" class="btn btn-primary no-transform">{% trans 'Start' %}</button>
+            </div>
+        </div>
+    </div>
+</div>

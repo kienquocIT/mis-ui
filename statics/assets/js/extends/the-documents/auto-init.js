@@ -1,22 +1,3 @@
 $(document).ready(function () {
-    new $x.cls.bastionField({
-        has_opp: true,
-        has_prj: true,
-        has_inherit: true,
-        inherit_data: [{
-            "id": "",
-            "title": "",
-            "selected": true,
-        }],
-        opp_data: [{
-            "id": "",
-            "title": "",
-            "selected": true,
-        }],
-        prj_data: [{
-            "id": "",
-            "title": "",
-            "selected": true,
-        }]
-    }).init();
+    new $x.cls.bastionField($x.cls.bastionField.defaultOpts).init();
 })

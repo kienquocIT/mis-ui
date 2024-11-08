@@ -963,6 +963,9 @@ $(function () {
                 }
             }
             let submitFields = [
+                // process
+                'process',
+                //
                 'title',
                 'opportunity_id',
                 'customer',

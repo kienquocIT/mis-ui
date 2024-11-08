@@ -81,8 +81,8 @@ class MenusCompanySystem:
                 icon='<i class="fas fa-shapes"></i>'
             ),
             MenuCommon(
-                name='Business Process', code='menu_sale_process', view_name='SaleProcess',
-                icon='<i class="fab fa-phabricator"></i>',
+                name='Business Process', code='menu_process', view_name='ProcessList',
+                icon='<i class="fa-solid fa-microchip"></i>',
             ),
             MenuCommon(
                 name='Automation', code='', view_name='#', icon='<i class="fas fa-robot"></i>',
@@ -847,6 +847,15 @@ class SpaceItem:
                 MenusReport.PURCHASING_REPORT,
             ],
         ),
+        'definition': SpaceCommon(
+            'Definition',
+            'definition',
+            icon='<i class="fa-solid fa-square-pen"></i>',
+            menus=[
+                MenusCompanySystem.WORKFLOW_PROCESS.child[0],
+                MenusCompanySystem.WORKFLOW_PROCESS.child[1],
+            ],
+        ),
         'company-system': SpaceCommon(
             'Company',
             'company-system',
@@ -901,6 +910,7 @@ class SpaceGroup:
             SpaceItem.mapping['production'],
             SpaceItem.mapping['project'],
             SpaceItem.mapping['report'],
+            SpaceItem.mapping['definition'],
         ]
     )
     CORE_SETTINGS = SpaceCommon(

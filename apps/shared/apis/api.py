@@ -507,7 +507,19 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT, **kwargs)
+
+        try:
+            resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT, **kwargs)
+        except requests.exceptions.RequestException:
+            # except requests.exceptions.HTTPError:
+            # except requests.exceptions.ConnectionError:
+            # except requests.exceptions.Timeout:
+            return RespData(
+                _state=False,
+                _result={},
+                _status=503,
+            )
+
         resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         if resp.status_code == 401:
             if self.user_obj:
@@ -567,7 +579,18 @@ class APIUtil:
             headers['content-type'] = 'application/json'
             config['data'] = data
 
-        resp = requests.post(**config)
+        try:
+            resp = requests.post(**config)
+        except requests.exceptions.RequestException:
+            # except requests.exceptions.HTTPError:
+            # except requests.exceptions.ConnectionError:
+            # except requests.exceptions.Timeout:
+            return RespData(
+                _state=False,
+                _result={},
+                _status=500,
+            )
+
         resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         if resp.status_code == 401:
             if self.user_obj:
@@ -624,11 +647,18 @@ class APIUtil:
             headers['content-type'] = 'application/json'
             config['data'] = data
 
-        # resp = requests.put(
-        #     url=safe_url, headers=headers, json=data,
-        #     timeout=REQUEST_TIMEOUT
-        # )
-        resp = requests.put(**config)
+        try:
+            resp = requests.put(**config)
+        except requests.exceptions.RequestException:
+            # except requests.exceptions.HTTPError:
+            # except requests.exceptions.ConnectionError:
+            # except requests.exceptions.Timeout:
+            return RespData(
+                _state=False,
+                _result={},
+                _status=500,
+            )
+
         resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         if resp.status_code == 401:
             if self.user_obj:
@@ -659,11 +689,23 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.delete(
-            url=safe_url, headers=headers, json=data,
-            timeout=REQUEST_TIMEOUT,
-            **kwargs
-        )
+
+        try:
+            resp = requests.delete(
+                url=safe_url, headers=headers, json=data,
+                timeout=REQUEST_TIMEOUT,
+                **kwargs
+            )
+        except requests.exceptions.RequestException:
+            # except requests.exceptions.HTTPError:
+            # except requests.exceptions.ConnectionError:
+            # except requests.exceptions.Timeout:
+            return RespData(
+                _state=False,
+                _result={},
+                _status=500,
+            )
+
         resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         if resp.status_code == 401:
             if self.user_obj:
@@ -766,7 +808,7 @@ class ServerAPI:
             data.update(APIUtil.key_authenticated(access_token=self.user.access_token))
         if self.user and getattr(self.user, 'refresh_token', None) and self.has_refresh_token is True:
             data.update(APIUtil.key_authenticated_refresh(refresh_token=self.user.refresh_token))
-        if self.is_minimal is True:
+        if self.is_minimal is True or self.query_params.get('is_minimal', False) is True:
             data[settings.API_KEY_MINIMAL] = settings.API_KEY_VALUE_MINIMAL
 
         if self.is_check_perm is True:

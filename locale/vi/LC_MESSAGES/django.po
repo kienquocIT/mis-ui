@@ -2716,10 +2716,6 @@ msgid "Login page"
 msgstr "Trang đăng nhập"
 
 #
-msgid "Internal Server Errors"
-msgstr "Đã có lỗi xảy ra"
-
-#
 msgid "Username and password are incorrect."
 msgstr "Tên đăng nhập hoặc mật khẩu không chính xác."
 
@@ -4100,10 +4096,6 @@ msgstr "Phân quyền"
 
 msgid "Limited"
 msgstr "Giới hạn"
-
-#
-msgid "Unlimited"
-msgstr "Không giới hạn"
 
 #
 msgid "Data of this tab will be used on 'Permission` tab after saving."

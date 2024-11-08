@@ -1,3 +1,5 @@
+import urllib.parse
+
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
@@ -218,14 +220,30 @@ class TermsAndConditionsView(View):
         return {}, status.HTTP_200_OK
 
 
+class GatewayMiddleCreateView(APIView):
+    @mask_view(login_require=True, auth_require=True, is_api=True)
+    def get(self, request, *args, plan, app, **kwargs):
+        params = request.query_params.dict()
+        is_redirect = params.pop('redirect', False)
+        link_data = ReverseUrlCommon.get_link(plan=plan.lower(), app=app.lower(), pk=None, is_create=True)
+        if link_data:
+            if is_redirect:
+                return redirect(link_data + '?' + urllib.parse.urlencode(params))
+            return {'url': link_data}, status.HTTP_200_OK
+        if is_redirect:
+            return redirect(reverse('NotFoundView'))
+        return {}, status.HTTP_404_NOT_FOUND
+
+
 class GatewayMiddleListView(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, plan, app, **kwargs):
-        is_redirect = request.query_params.get('redirect', False)
+        params = request.query_params.dict()
+        is_redirect = params.pop('redirect', False)
         link_data = ReverseUrlCommon.get_link(plan=plan.lower(), app=app.lower(), pk=None)
         if link_data:
             if is_redirect:
-                return redirect(link_data)
+                return redirect(link_data + '?' + urllib.parse.urlencode(params))
             return {'url': link_data}, status.HTTP_200_OK
         return {}, status.HTTP_404_NOT_FOUND
 

@@ -5,9 +5,11 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a href="#" data-bs-toggle="modal"
-       data-bs-target="#createOpportunityModalForms"
-       id="create_opportunity_button">
+    <a
+            href="#" data-bs-toggle="modal"
+            data-bs-target="#createOpportunityModalForms"
+            id="create_opportunity_button"
+    >
         <button class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Add' %}</span>
@@ -25,9 +27,10 @@
     <input type="hidden" id="employee_current_id" value="{{ request.user.employee_current_data.id }}">
     <input type="hidden" id="employee_current_group" value="{{ request.user.employee_current_data.group }}">
     <input type="hidden" id="group_id_emp_login">
-    <input type="hidden" id="opportunity-link"
-           data-link-update="{% url 'OpportunityDetail' pk=0 %}"
-           data-link-list="{% url 'OpportunityList' %}"
+    <input
+            type="hidden" id="opportunity-link"
+            data-link-update="{% url 'OpportunityDetail' pk=0 %}"
+            data-link-list="{% url 'OpportunityList' %}"
     >
     <table
             id="table_opportunity_list"
@@ -45,7 +48,7 @@
             <th>{% trans 'Open Date' %}</th>
             <th>{% trans 'Close Date' %}</th>
             <th>{% trans 'Stage' %}</th>
-{#            <th>{% trans 'Actions' %}</th>#}
+            {#            <th>{% trans 'Actions' %}</th>#}
         </tr>
         </thead>
         <tbody>
@@ -54,8 +57,9 @@
 {% endblock %}
 
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory"
-           data-url-config="{% url 'OpportunityConfigAPI' %}"
+    <input
+            type="text" id="url-factory"
+            data-url-config="{% url 'OpportunityConfigAPI' %}"
     >
 {% endblock %}
 
@@ -112,7 +116,8 @@
                         </div>
                         <div class="mb-3 form-group">
                             <label class="form-label">{% trans "Product Category" %}</label>
-                            <select class="form-select"
+                            <select
+                                    class="form-select"
                                     name="product_category"
                                     id="select-box-product-category"
                                     data-close-on-select="true"
@@ -125,7 +130,8 @@
                         </div>
                         <div class="mb-3 form-group">
                             <label class="form-label required">{% trans "Sale Person" %}</label>
-                            <select class="form-select"
+                            <select
+                                    class="form-select"
                                     name="employee_inherit_id"
                                     id="select-box-sale-person"
                                     data-method="GET"
@@ -139,10 +145,10 @@
                         <div class="form-group mb-3">
                             <label for="inp-process" class="form-label">{% trans 'Process' %}</label>
                             <select
-                                    name="process"
+                                    name="process_config"
                                     id="inp-process"
                                     class="form-select"
-                                    data-url="{% url 'ProcessListAPI' %}"
+                                    data-url="{% url 'ProcessReadyListAPI' %}?for_opp=true"
                                     data-keyResp="process_list"
                             ></select>
                         </div>
@@ -157,7 +163,7 @@
                     >
                         {% trans 'Save' %}
                     </button>
-            </div>
+                </div>
             </div>
         </div>
     </div>
@@ -167,29 +173,31 @@
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_list.js' %}"></script>
     <script>
-        $(document).ready(function (){
+        $(document).ready(function () {
             const urlParams = new URLSearchParams(window.location.search);
             const inpProcess$ = $('#inp-process');
             const process_id = urlParams.get('create__process');
             const process_title = urlParams.get('create__process_name');
-            if (process_id && process_title){
+            let data = [];
+            if (process_id && process_title) {
                 $('#createOpportunityModalForms').modal('show');
-                inpProcess$.initSelect2({
-                    ajax: {
-                        url: inpProcess$.data('url'),
-                        method: 'GET',
-                    },
-                    data: [
-                        {
-                            'id': process_id,
-                            'title': process_title,
-                            selected: true,
-                        }
-                    ],
-                    allowClear: true,
-                    keyResp: 'process_list',
-                })
+                data = [
+                    {
+                        'id': process_id,
+                        'title': process_title,
+                        selected: true,
+                    }
+                ]
             }
+            inpProcess$.initSelect2({
+                ajax: {
+                    url: inpProcess$.data('url'),
+                    method: 'GET',
+                },
+                data: data,
+                allowClear: true,
+                keyResp: 'process_list',
+            })
         })
     </script>
 {% endblock %}

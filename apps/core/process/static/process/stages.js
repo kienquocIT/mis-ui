@@ -848,7 +848,7 @@ class ProcessStages {
 
         clsThis.modalAppConfig$.find('select[name=application]').initSelect2({
             keyText: 'title_i18n',
-            data: this.applicationList.sort((a, b) => a.title.localeCompare(b.title)),
+            data: this.applicationList.sort((a, b) => a.title_i18n.localeCompare(b.title_i18n)),
         })
 
         if (this.enableEdit === true) {

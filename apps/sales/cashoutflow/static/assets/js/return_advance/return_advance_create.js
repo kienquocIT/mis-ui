@@ -8,12 +8,13 @@ $(document).ready(function () {
     ReturnAPHandle.LoadPage(advance_payment)
     WFRTControl.setWFInitialData('returnadvance', 'POST')
 
-    // SUBMIT FORM CREATE ADVANCE PAYMENT
-    $('#form-create-return-ap').submit(function (event) {
-        event.preventDefault();
-        let form = ReturnAPHandle.CombinesData($(this));
-        if (form) {
-            WFRTControl.callWFSubmitForm(form);
+    // SUBMIT FORM CREATE RETURN ADVANCE
+    let form_validator = $('#form-create-return-ap').validate({
+        submitHandler: function (form) {
+            let form_data = ReturnAPHandle.CombinesData(form);
+            if (form_data) {
+                WFRTControl.callWFSubmitForm(form_data);
+            }
         }
     })
 })

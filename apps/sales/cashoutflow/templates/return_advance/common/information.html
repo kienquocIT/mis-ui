@@ -18,18 +18,18 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label for="title" class="form-label required">{% trans "Title" %}</label>
-                            <input class="form-control" id="title">
+                            <input required maxlength="100" class="form-control" id="title">
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label for="created_date" class="form-label">{% trans "Created date" %}</label>
-                            <input id="created_date" class="form-control form-control-line" readonly disabled>
+                            <label for="created_date" class="form-label required">{% trans "Created date" %}</label>
+                            <input required id="created_date" class="form-control form-control-line" readonly disabled>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label for="creator-select-box" class="form-label">{% trans "Creator" %}</label>
+                            <label for="creator-select-box" class="form-label required">{% trans "Creator" %}</label>
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="creator-detail-span">
                                     <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
@@ -54,14 +54,14 @@
                                         </span>
                                     </span>
                                 </span>
-                                <input class="form-control form-control-line" id="creator-select-box">
+                                <input required class="form-control form-control-line" id="creator-select-box">
                             </span>
                         </div>
                     </div>
                     <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
                             <label for="chooseAdvancePayment" class="form-label required">{% trans "Advance Payment" %}</label>
-                            <select id="chooseAdvancePayment"
+                            <select required id="chooseAdvancePayment"
                                     class="form-select select2"
                                     data-method="GET"
                                     data-url="{% url "APListForReturnAPI" %}">
@@ -71,7 +71,7 @@
                     <div class="col-12 col-md-2 col-lg-2">
                         <div class="form-group">
                             <label for="box-method-payment" class="form-label required">{% trans "Method" %}</label>
-                            <select id="box-method-payment"
+                            <select required id="box-method-payment"
                                     class="form-select"
                                     name="method">
                                 <option value="0">{% trans "Cash" %}</option>
@@ -87,7 +87,7 @@
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label for="chooseBeneficiary" class="form-label">{% trans "Beneficiary" %}</label>
+                            <label for="chooseBeneficiary" class="form-label required">{% trans "Beneficiary" %}</label>
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix" id="dropdownBeneficiary">
                                     <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
@@ -115,7 +115,7 @@
                                         </span>
                                     </span>
                                 </span>
-                                <input disabled readonly class="form-control form-control-line" id="chooseBeneficiary">
+                                <input required disabled readonly class="form-control form-control-line" id="chooseBeneficiary">
                             </span>
                         </div>
                     </div>

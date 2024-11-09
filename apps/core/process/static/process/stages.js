@@ -645,7 +645,7 @@ class ProcessStages {
         }
 
         app$.find('.app-item-text .app-text-title').text(appData?.['title'] || '');
-        app$.find('.app-item-text .app-text-app').text(appData_application?.['title'] || '');
+        app$.find('.app-item-text .app-text-app').text(appData_application?.['title_i18n'] || '');
         app$.find('.app-control-item[data-code=amount]').text(
             renderAmountAndApproved(appData?.['amount'] || '0', appData?.['amount_approved'] || '0')
         );
@@ -695,7 +695,7 @@ class ProcessStages {
                 const appDataNew = $(this).data(clsThis.appNameData);
                 const appData_application = clsThis.applicationDict?.[appDataNew['application']] || {};
                 $(this).find('.app-item-text .app-text-title').text(appDataNew?.['title'] || '');
-                $(this).find('.app-item-text .app-text-app').text(appData_application?.['title'] || '');
+                $(this).find('.app-item-text .app-text-app').text(appData_application?.['title_i18n'] || '');
                 $(this).find('.app-control-item[data-code=amount]').text(
                     renderAmountAndApproved(appDataNew?.['amount'] || '0', appDataNew?.['amount_approved'] || '0')
                 );
@@ -847,6 +847,7 @@ class ProcessStages {
         })
 
         clsThis.modalAppConfig$.find('select[name=application]').initSelect2({
+            keyText: 'title_i18n',
             data: this.applicationList.sort((a, b) => a.title.localeCompare(b.title)),
         })
 

@@ -57,12 +57,16 @@ function InitAdvancePaymentTable(data_param={}) {
                             })
                         )
 
-                        return_btn = `<a href="${dtb.attr('data-return')}?advance_payment=${advance_payment_obj}">
-                                        <button type="button" data-bs-toggle="tooltip" title="${dtb.attr('data-type-translate-return')}" class="btn btn-xs btn-rounded btn-outline-blue ml-1"><i class="fas fa-undo-alt"></i></button>
+                        return_btn = `<a class="return-btn hidden" target="_blank" href="${dtb.attr('data-return')}?advance_payment=${advance_payment_obj}">
+                                       <button class="btn btn-soft-primary btn-rounded btn-xs" 
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" 
+                                            title="${dtb.attr('data-type-translate-return')}"
+                                        ><i class="fas fa-hand-holding-usd fa-flip-horizontal"></i></button>
                                     </a>`;
                     }
                     const link = dtb.attr('data-url-detail').replace('0', row.id);
-                    return `<a href="${link}"><span class="text-primary"><b>${row?.['title']}</b></span></a>${return_btn}`
+                    return `<a class="text-primary fw-bold" href="${link}">${row?.['title']}</a>${return_btn}`
                 }
             },
             {
@@ -199,4 +203,12 @@ $(document).on("click", '#expiring-sort', function() {
     let dtb = $('#datatable_advance_list')
     dtb.DataTable().clear().destroy()
     InitAdvancePaymentTable({'return_date_expiring_sort': 1})
+});
+
+$(document).on("mouseenter", 'tbody tr', function() {
+    $(this).find('.return-btn').removeClass('hidden')
+});
+
+$(document).on("mouseleave", 'tbody tr', function() {
+    $(this).find('.return-btn').addClass('hidden')
 });

@@ -6558,11 +6558,11 @@ msgstr "Tuỳ chỉnh Dashboard"
 
 #
 msgid "Money display"
-msgstr "Hiển thị tiền theo:"
+msgstr "Hiển thị tiền theo"
 
 #
 msgid "Money round"
-msgstr "Làm tròn tiền:"
+msgstr "Làm tròn tiền"
 
 #
 msgid "Forecast"
@@ -6578,7 +6578,7 @@ msgstr "NV bán hàng"
 
 #
 msgid "Period"
-msgstr "Kỳ kế toán"
+msgstr "Năm tài chính"
 
 #
 msgid "Target item"
@@ -6594,7 +6594,7 @@ msgstr "Mục tiêu cả kỳ bằng tổng mục tiêu các kỳ con của nó"
 
 #
 msgid "Periods"
-msgstr "Kỳ kế toán"
+msgstr "Năm tài chính"
 
 #
 msgid "Fiscal year"
@@ -6606,11 +6606,11 @@ msgstr "Tháng bắt đầu"
 
 #
 msgid "Update period"
-msgstr "Cập nhật kỳ kế toán"
+msgstr "Cập nhật năm tài chính"
 
 #
 msgid "New period"
-msgstr "Thêm kỳ kế toán mới"
+msgstr "Thêm năm tài chính mới"
 
 #
 msgid "Select role(s) that has permission to create revenue plans"
@@ -6938,7 +6938,7 @@ msgstr "Báo cáo doanh thu chung"
 
 #
 msgid "Some Opening balance values can be wrong because last sub period have not been closed."
-msgstr "Các giá trị Opening balance có thể sai bởi vì kỳ kế toán tháng trước đó chưa được đóng."
+msgstr "Các giá trị Opening balance có thể sai bởi vì kỳ trước đó chưa được đóng."
 
 #
 msgid "Percent completed"
@@ -9459,3 +9459,59 @@ msgstr "Điều kiện thoát trạm"
 #
 msgid "Min collaborators"
 msgstr "CTV tối thiểu"
+
+#
+msgid "Jan "
+msgstr "Th.1"
+
+#
+msgid "Feb "
+msgstr "Th.2"
+
+#
+msgid "Mar "
+msgstr "Th.3"
+
+#
+msgid "Apr "
+msgstr "Th.4"
+
+#
+msgid "May "
+msgstr "Th.5"
+
+#
+msgid "Jun "
+msgstr "Th.6"
+
+#
+msgid "Jul "
+msgstr "Th.7"
+
+#
+msgid "Aug "
+msgstr "Th.8"
+
+#
+msgid "Sep "
+msgstr "Th.9"
+
+#
+msgid "Oct "
+msgstr "Th.10"
+
+#
+msgid "Nov "
+msgstr "Th.11"
+
+#
+msgid "Dec "
+msgstr "Th.12"
+
+#
+msgid "Period profit"
+msgstr "Lợi nhuận theo kỳ"
+
+#
+msgid "Accumulated profit"
+msgstr "Lợi nhuận tích luỹ"

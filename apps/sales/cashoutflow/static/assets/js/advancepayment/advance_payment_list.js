@@ -47,7 +47,7 @@ function InitAdvancePaymentTable(data_param={}) {
                 className: 'wrap-text',
                 render: (data, type, row) => {
                     let return_btn = ''
-                    if (row?.['system_status'] === 3 && !row?.['opportunity_mapped']?.['is_closed'] && parseFloat(row?.['remain_value']) !== 0) {
+                    if (row?.['system_status'] === 3 && !row?.['opportunity_mapped']?.['is_closed'] && parseFloat(row?.['remain_value'] ? row?.['remain_value'] : 0) !== 0) {
                         let advance_payment_obj= encodeURIComponent(
                             JSON.stringify({
                                 'id': row?.['id'],

@@ -369,13 +369,13 @@
                 let acc_code = btn_detail.attr('data-acc-code')
                 let parent_account = btn_detail.attr('data-parent-account')
 
-                let this_level = $(this).find('.btn-detail-account').attr('data-level')
+                let this_level = parseInt($(this).find('.btn-detail-account').attr('data-level'))
                 let max = 0
                 CURRENT_TABLE.find('tbody tr').each(function () {
-                    let row_level = $(this).find('.btn-detail-account').attr('data-level')
+                    let row_level = parseInt($(this).find('.btn-detail-account').attr('data-level'))
                     if (row_level === this_level) {
                         if (max < parseInt($(this).find('.acc-title-span').text())) {
-                            if (acc_code[0] === $(this).find('.acc-title-span').text()[0]) {
+                            if (acc_code.slice(0, this_level + 1) === $(this).find('.acc-title-span').text().slice(0, this_level + 1)) {
                                 max = parseInt($(this).find('.acc-title-span').text())
                             }
                         }
@@ -416,4 +416,46 @@
             }
         })
     })
+
+    const frm_add_new_account = $('#form-add-new-account');
+    new SetupFormSubmit(frm_add_new_account).validate({
+        rules: {
+            title: {
+                required: true,
+            },
+            currency: {
+                required: true,
+            },
+            factor: {
+                required: true,
+            },
+            price_list_type: {
+                required: true,
+            },
+            price_list_mapped_id: {
+                required: function () {
+                    return $("#checkbox-copy-source").is(':checked');
+                }
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+
+            $.fn.callAjax2({
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: frm.dataForm
+            }).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: 'Successfully'}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    });
 // })

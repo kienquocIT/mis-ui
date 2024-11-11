@@ -59,7 +59,7 @@ $(document).ready(function () {
                     },
                     {
                         targets: 5,
-                        width: '20%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = [
                                 transScript.attr('data-trans-waiting'),
@@ -74,6 +74,21 @@ $(document).ready(function () {
                             ][parseInt(row?.['bid_status'])]
 
                             return `<span class="${color}">${sttTxt}</span>`;
+                        }
+                    },
+                    {
+                        targets: 6,
+                        width: '10%',
+                        render: (data, type, row) => {
+                            let sttTxt = JSON.parse($('#stt_sys').text())
+                            let sttData = [
+                                "light",
+                                "primary",
+                                "info",
+                                "success",
+                                "danger",
+                            ]
+                            return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
                         }
                     },
                 ],

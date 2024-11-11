@@ -16,9 +16,7 @@ class AutoValidator {
                 $.validator.addMethod(key+'Validator', function (value, element) {
                     return field_list[i]['condition'] ? field_list[i]['condition'](value, element) : true;
                 }, $.fn.gettext(field_list[i]['message']) ? $.fn.gettext(field_list[i]['message']) : $.fn.gettext('This field is required'));
-                $(`[name="${key}"]`).rules("add", {
-                    [key + 'Validator']: true
-                });
+                $(`[name="${key}"]`).rules("add", {[key + 'Validator']: true});
             }
         }
     }

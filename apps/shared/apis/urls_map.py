@@ -345,6 +345,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_QUOTATION_LOAD_DB = StringUrl('saledata/product-quotation-load-db')
     DELETE_CURRENCY_FROM_PRICE_LIST = StringUrl('saledata/delete-currency-from-price-list/{pk}')
 
+    # masterdata/document
+    DOCUMENT_TYPE_LIST = StringUrl('saledata/document-type')
+
     # payment terms
     PAYMENT_TERMS = StringUrl('saledata/masterdata/config/payment-term')
 
@@ -375,6 +378,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     QUOTATION_INDICATOR_LIST = StringUrl('quotation/indicators')
     QUOTATION_INDICATOR_DETAIL = StringUrl('quotation/indicator')
     QUOTATION_INDICATOR_RESTORE = StringUrl('quotation/indicator-restore')
+
+    # Bidding
+    BIDDING_LIST = StringUrl('bidding/list')
+    BIDDING_RESULT = StringUrl('bidding/result')
+    ACCOUNT_FOR_BIDDING_LIST = StringUrl('bidding/account-list')
+    DOCUMENT_MASTERDATA_BIDDING_LIST = StringUrl('bidding/document-list')
+    BIDDING_DETAIL = StringUrl('bidding/detail')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')

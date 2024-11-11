@@ -108,7 +108,8 @@ INSTALLED_APPS = \
         'apps.sales.contract',
         'apps.sales.distributionplan',
         'apps.sales.production',
-        'apps.sales.projectproduction'
+        'apps.sales.projectproduction',
+        'apps.sales.bidding',
     ] + [  # e-office Application
         'apps.eoffice.leave',
         'apps.eoffice.businesstrip',

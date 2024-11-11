@@ -86,64 +86,6 @@ class BiddingLoadDataHandle {
         }
     };
 
-    static resetAttachmentUI (ele){
-         BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
-             let row = this.node();
-             $(row).css('background-color', '');
-        });
-        $('#btn-attach-invite-doc').closest('.form-control').css('background-color', '');
-        BiddingLoadDataHandle.$fileArea[0].classList.remove('bg-light');
-        BiddingLoadDataHandle.$remark[0].removeAttribute('readonly');
-        BiddingLoadDataHandle.$remark.val('');
-        BiddingLoadDataHandle.loadAddFile([]);
-        BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids').value = "";
-    }
-
-    static loadAttachmentData(dataStore) {
-        if (dataStore) {
-            BiddingLoadDataHandle.$remark.val(dataStore?.['remark']);
-            BiddingLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
-
-            let ids = dataStore?.['attachment_data'].map(fileData => fileData?.['attachment']?.['id']).join(',');
-            BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids').value = ids;
-
-            let attachmentParse = dataStore?.['attachment_data'].map(attachData => attachData?.['attachment']);
-            BiddingLoadDataHandle.$attachment.empty().html(`${BiddingLoadDataHandle.$attachmentTmp.html()}`);
-
-            new $x.cls.file(BiddingLoadDataHandle.$attachment).init({
-                name: 'attachment',
-                enable_edit: true,
-                enable_download: true,
-                data: attachmentParse,
-            });
-        }
-    }
-
-    static setAttributes(element, eleId, isManual) {
-        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
-        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-is-manual', isManual);
-        BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
-    }
-
-    static handleAttachFileEvent(ele) {
-        this.resetAttachmentUI();
-        let row = ele.closest('tr');
-        let eleId = row ? row.querySelector('.attach-file').getAttribute(row.querySelector('.attach-file').getAttribute('data-is-manual') === 'false' ? 'data-doctype-id' : 'data-id') : ele.id;
-        let isManual = row ? row.querySelector('.attach-file').getAttribute('data-is-manual') : ele.getAttribute('data-is-manual');
-
-        this.setAttributes(ele, eleId, isManual);
-
-        let dataStore = JSON.parse(ele.getAttribute('data-store') || JSON.stringify({
-            "id": eleId,
-            "title": '',
-            "attachment_data": [],
-            "isManual": true
-        }));
-        ele.setAttribute('data-store', JSON.stringify(dataStore));
-
-        this.loadAttachmentData(dataStore);
-    }
-
     // FILE
     static loadOpenAttachFile(ele) {
         BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {

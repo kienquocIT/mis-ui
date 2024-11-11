@@ -1,4 +1,4 @@
-// $(document).ready(function () {
+$(document).ready(function () {
     function GetQuarterFromMonth(month) {
         if ([1,2,3].includes(month)) {
             return 1
@@ -118,7 +118,7 @@
     // Revenue chart
 
     const revenueGroupEle = $('#revenue-group')
-    const revenueTypeEle = $('#revenue-type')
+    const revenueViewTypeEle = $('#revenue-view-type')
     let revenue_chart_list_DF = []
     let revenue_chart_DF = null
     let revenue_expected_data_DF = []
@@ -146,17 +146,12 @@
     LoadRevenueGroup()
 
     function CombineRevenueChartDataPeriod(group_filter, show_billion, titleY = 'Revenue', titleX = 'Month', chart_title = '') {
-        let cast_billion = 1e6
-        if (show_billion) {
-            cast_billion = 1e9
-        }
-
+        const cast_billion = show_billion ? 1e9 : 1e6
         let revenue_chart_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for (const item of revenue_chart_list_DF) {
             const group_id = item?.['group_inherit_id']
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth()
-            const year = dateApproved.getFullYear()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
                     revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
@@ -282,10 +277,7 @@
     }
 
     function CombineRevenueChartDataAccumulated(group_filter, show_billion, titleY = 'Revenue', titleX = 'Month', chart_title = '') {
-        let cast_billion = 1e6
-        if (show_billion) {
-            cast_billion = 1e9
-        }
+        const cast_billion = show_billion ? 1e9 : 1e6
         let revenue_chart_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for (const item of revenue_chart_list_DF) {
             const group_id = item?.['group_inherit_id']
@@ -433,114 +425,98 @@
     }
 
     function InitOptionRevenueChart() {
-        let group = revenueGroupEle.val()
-        let calculate_type = revenueTypeEle.val()
+        const group = revenueGroupEle.val()
+        const calculate_type = revenueViewTypeEle.val()
         const isBillionChecked = moneyDisplayEle.val() === '1'
-        if (calculate_type === '0') {
-            let options = CombineRevenueChartDataPeriod(
-                group,
-                isBillionChecked
-            )
-            revenue_chart_DF = new ApexCharts(document.querySelector("#revenue_chart"), options);
-            revenue_chart_DF.render();
-        } else {
-            let options = CombineRevenueChartDataAccumulated(
-                group,
-                isBillionChecked
-            )
-            revenue_chart_DF = new ApexCharts(document.querySelector("#revenue_chart"), options);
-            revenue_chart_DF.render();
-        }
+        const options = calculate_type === '0' ? CombineRevenueChartDataPeriod(
+            group,
+            isBillionChecked
+        ) : CombineRevenueChartDataAccumulated(
+            group,
+            isBillionChecked
+        )
+        revenue_chart_DF = new ApexCharts(document.querySelector("#revenue_chart"), options);
+        revenue_chart_DF.render();
         $('#revenue-spinner').prop('hidden', true)
     }
 
     function UpdateOptionRevenueChart() {
-        let group = revenueGroupEle.val()
-        let calculate_type = revenueTypeEle.val()
+        const group = revenueGroupEle.val()
+        const calculate_type = revenueViewTypeEle.val()
         const isBillionChecked = moneyDisplayEle.val() === '1'
-        if (calculate_type === '0') {
-            let options = CombineRevenueChartDataPeriod(
-                group,
-                isBillionChecked,
-            )
-            revenue_chart_DF.updateOptions(options)
-        }
-        else {
-            let options = CombineRevenueChartDataAccumulated(
-                group,
-                isBillionChecked
-            )
-            revenue_chart_DF.updateOptions(options)
-        }
+        const options = calculate_type === '0' ? CombineRevenueChartDataPeriod(
+            group,
+            isBillionChecked,
+        ) : CombineRevenueChartDataAccumulated(
+            group,
+            isBillionChecked
+        )
+        revenue_chart_DF.updateOptions(options)
     }
 
-    function AjaxRevenueChart(is_init = true) {
-        if (is_init) {
-            let revenue_chart_ajax = $.fn.callAjax2({
+    function AjaxRevenueChart(init=false) {
+        let revenue_chart_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-report-revenue-profit-list'),
             data: {},
             method: 'GET'
         }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('report_revenue_list')) {
-                        return data?.['report_revenue_list'];
-                    }
-                    return {};
-                },
-                (errs) => {
-                    console.log(errs);
-                })
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('report_revenue_list')) {
+                    return data?.['report_revenue_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            })
 
-            let company_revenue_plan_list_ajax = $.fn.callAjax2({
-                url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
-                data: {},
-                method: 'GET'
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
-                        for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
-                            if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === new Date().getFullYear()) {
-                                return data?.['revenue_plan_list'][i]
-                            }
+        let company_revenue_plan_list_ajax = $.fn.callAjax2({
+            url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
+            data: {},
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
+                    for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
+                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === new Date().getFullYear()) {
+                            return data?.['revenue_plan_list'][i]
                         }
                     }
-                    return [];
-                },
-                (errs) => {
-                    console.log(errs);
-                })
+                }
+                return [];
+            },
+            (errs) => {
+                console.log(errs);
+            })
 
-            Promise.all([revenue_chart_ajax, company_revenue_plan_list_ajax]).then(
-                (results) => {
-                    revenue_chart_list_DF = results[0];
-                    revenue_expected_data_DF = results[1]?.['company_month_target'];
-                    revenue_expected_data_detail_DF = results[1]?.['company_month_target_detail'];
+        Promise.all([revenue_chart_ajax, company_revenue_plan_list_ajax]).then(
+            (results) => {
+                revenue_chart_list_DF = results[0];
+                revenue_expected_data_DF = results[1]?.['company_month_target'];
+                revenue_expected_data_detail_DF = results[1]?.['company_month_target_detail'];
 
-                    period_selected_Setting = results[1]?.['period_mapped']
-                    fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
-                    space_month_Setting = period_selected_Setting?.['space_month']
-                    LoadRevenuePeriod(period_selected_Setting)
+                period_selected_Setting = results[1]?.['period_mapped']
+                fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
+                space_month_Setting = period_selected_Setting?.['space_month']
+                LoadRevenuePeriod(period_selected_Setting)
+                if (init) {
                     InitOptionRevenueChart()
-                })
-        } else {
-            UpdateOptionRevenueChart()
-        }
+                }
+            })
     }
 
-    AjaxRevenueChart()
+    AjaxRevenueChart(true)
 
-    revenueTypeEle.on('change', function () {
+    revenueViewTypeEle.on('change', function () {
         UpdateOptionRevenueChart()
     })
 
     $('#reload-revenue-data-btn').on('click', function () {
-        AjaxRevenueChart(false)
-    })
-
-    $('.timechart-revenue').on('change', function () {
+        AjaxRevenueChart()
         UpdateOptionRevenueChart()
+        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 
     // Profit chart
@@ -552,6 +528,7 @@
     let profit_chart_DF = null
     let profit_expected_data_DF = []
     let profit_expected_data_detail_DF = []
+    let profit_type_DF = profitTypeEle.val()
 
     function LoadProfitGroup(data) {
         profitGroupEle.initSelect2({
@@ -575,17 +552,12 @@
     LoadProfitGroup()
 
     function CombineProfitChartDataPeriod(group_filter, show_billion, profit_type='gross_profit', titleY = 'Profit', titleX = 'Month', chart_title = '') {
-        let cast_billion = 1e6
-        if (show_billion) {
-            cast_billion = 1e9
-        }
-
+        const cast_billion = show_billion ? 1e9 : 1e6
         let profit_chart_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for (const item of profit_chart_list_DF) {
             const group_id = item?.['group_inherit_id']
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth()
-            const year = dateApproved.getFullYear()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
                     profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
@@ -714,16 +686,12 @@
     }
 
     function CombineProfitChartDataAccumulated(group_filter, show_billion, profit_type='gross_profit', titleY = 'Profit', titleX = 'Month', chart_title = '') {
-        let cast_billion = 1e6
-        if (show_billion) {
-            cast_billion = 1e9
-        }
+        const cast_billion = show_billion ? 1e9 : 1e6
         let profit_chart_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for (const item of profit_chart_list_DF) {
             const group_id = item?.['group_inherit_id']
             const dateApproved = new Date(item?.['date_approved']);
             const month = dateApproved.getMonth();
-            const year = dateApproved.getFullYear();
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
                     profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
@@ -867,132 +835,97 @@
     }
 
     function InitOptionProfitChart() {
-        let group = profitGroupEle.val()
-        let calculate_type = profitTypeEle.val()
+        const group = profitGroupEle.val()
+        const calculate_type = profitViewTypeEle.val()
         const isBillionChecked = moneyDisplayEle.val() === '1'
-        if (calculate_type === '0') {
-            let options = CombineProfitChartDataPeriod(
-                group,
-                isBillionChecked
-            )
-            profit_chart_DF = new ApexCharts(document.querySelector("#profit_chart"), options);
-            profit_chart_DF.render();
-        } else {
-            let options = CombineProfitChartDataAccumulated(
-                group,
-                isBillionChecked
-            )
-            profit_chart_DF = new ApexCharts(document.querySelector("#profit_chart"), options);
-            profit_chart_DF.render();
-        }
+        const options = calculate_type === '0' ? CombineProfitChartDataPeriod(
+            group,
+            isBillionChecked
+        ) : CombineProfitChartDataAccumulated(
+            group,
+            isBillionChecked
+        )
+        profit_chart_DF = new ApexCharts(document.querySelector("#profit_chart"), options);
+        profit_chart_DF.render();
         $('#profit-spinner').prop('hidden', true)
     }
 
     function UpdateOptionProfitChart() {
-        let company_revenue_plan_list_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
-                    for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
-                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === fiscal_year_Setting) {
-                            return data?.['revenue_plan_list'][i]
-                        }
-                    }
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            })
+        if (profit_type_DF + (profitTypeEle.val() === '1' ? 1 : 0) === 1) {
+            profit_expected_data_DF = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }
+        let group = profitGroupEle.val()
+        let calculate_type = profitViewTypeEle.val()
+        const isBillionChecked = moneyDisplayEle.val() === '1'
+        const profit_type = profitTypeEle.val() === '1' ? 'net_income' : 'gross_profit'
 
-        Promise.all([company_revenue_plan_list_ajax]).then(
-            (results) => {
-                profit_expected_data_DF = results[0]?.['company_month_profit_target'];
-                profit_expected_data_detail_DF = results[0]?.['company_month_target_detail'];
-                let same = results[0]?.['profit_target_type'] + (profitViewTypeEle.val() === '1' ? 1 : 0)
-                if (same === 1) {
-                    profit_expected_data_DF = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                }
-                let group = profitGroupEle.val()
-                let calculate_type = profitTypeEle.val()
-                const isBillionChecked = moneyDisplayEle.val() === '1'
-                let profit_type = profitViewTypeEle.val() === '1' ? 'net_income' : 'gross_profit'
-
-                if (calculate_type === '0') {
-                    let options = CombineProfitChartDataPeriod(
-                        group,
-                        isBillionChecked,
-                        profit_type
-                    )
-                    profit_chart_DF.updateOptions(options)
-                } else {
-                    let options = CombineProfitChartDataAccumulated(
-                        group,
-                        profit_type
-                    )
-                    profit_chart_DF.updateOptions(options)
-                }
-            })
+        let options = calculate_type === '0' ? CombineProfitChartDataPeriod(
+            group,
+            isBillionChecked,
+            profit_type
+        ) : CombineProfitChartDataAccumulated(
+            group,
+            profit_type
+        )
+        profit_chart_DF.updateOptions(options)
     }
 
     function AjaxProfitChart(is_init = true) {
-        let profit_chart_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-report-revenue-profit-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('report_revenue_list')) {
-                    return data?.['report_revenue_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            })
+        if (is_init) {
+            let profit_chart_ajax = $.fn.callAjax2({
+                url: scriptUrlEle.attr('data-url-report-revenue-profit-list'),
+                data: {},
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('report_revenue_list')) {
+                        return data?.['report_revenue_list'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                })
 
-        let company_revenue_plan_list_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
-                    for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
-                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === new Date().getFullYear()) {
-                            return data?.['revenue_plan_list'][i]
+            let company_revenue_plan_list_ajax = $.fn.callAjax2({
+                url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
+                data: {},
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
+                        for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
+                            if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === new Date().getFullYear()) {
+                                return data?.['revenue_plan_list'][i]
+                            }
                         }
                     }
-                }
-                return [];
-            },
-            (errs) => {
-                console.log(errs);
-            })
+                    return [];
+                },
+                (errs) => {
+                    console.log(errs);
+                })
 
-        Promise.all([profit_chart_ajax, company_revenue_plan_list_ajax]).then(
-            (results) => {
-                profit_chart_list_DF = results[0];
-                profit_expected_data_DF = results[1]?.['company_month_profit_target'];
-                profitViewTypeEle.val(results[1]?.['profit_target_type'])
-                profit_expected_data_detail_DF = results[1]?.['company_month_target_detail'];
+            Promise.all([profit_chart_ajax, company_revenue_plan_list_ajax]).then(
+                (results) => {
+                    profit_chart_list_DF = results[0];
+                    profit_expected_data_DF = results[1]?.['company_month_profit_target'];
+                    profit_type_DF = results[1]?.['profit_target_type']
+                    profitTypeEle.val(results[1]?.['profit_target_type'])
+                    profit_expected_data_detail_DF = results[1]?.['company_month_target_detail'];
 
-                period_selected_Setting = results[1]?.['period_mapped']
-                fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
-                space_month_Setting = period_selected_Setting?.['space_month']
-                if (is_init) {
+                    period_selected_Setting = results[1]?.['period_mapped']
+                    fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
+                    space_month_Setting = period_selected_Setting?.['space_month']
                     LoadRevenuePeriod(period_selected_Setting)
                     InitOptionProfitChart()
-                } else {
-                    UpdateOptionProfitChart()
-                }
-            })
+                })
+        }
+        else {
+            UpdateOptionProfitChart()
+        }
     }
 
     AjaxProfitChart()
@@ -1001,16 +934,12 @@
         UpdateOptionProfitChart()
     })
 
+    profitViewTypeEle.on('change', function () {
+        UpdateOptionProfitChart()
+    })
+
     $('#reload-profit-data-btn').on('click', function () {
-        AjaxProfitChart(false)
-    })
-
-    $('.timechart-profit').on('change', function () {
-        UpdateOptionProfitChart()
-    })
-
-    $('input[name="profit-type"]').on('change', function () {
-        UpdateOptionProfitChart()
+        AjaxProfitChart()
     })
 
     // Top sellers chart
@@ -1964,4 +1893,4 @@
     $('.timechart-products').on('change', function () {
         UpdateOptionTopProductsChart()
     })
-// })
+})

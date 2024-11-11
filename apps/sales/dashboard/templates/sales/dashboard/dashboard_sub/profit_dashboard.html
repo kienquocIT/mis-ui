@@ -3,10 +3,10 @@
 <div class="view-space col-12 col-md-4 col-lg-4 mt-3">
     <div class="bg-white border border-white rounded p-2">
         <div class="row">
-            <div class="col-8">
+            <div class="col-7">
                 <span class="fw-bold text-black">{% trans 'Profit chart' %}</span>
             </div>
-            <div class="col-4 text-right">
+            <div class="col-5 text-right">
                 <button class="large-view-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover"
                    type="button">
                     <span class="icon"><i class="fas fa-expand"></i></span>
@@ -32,8 +32,8 @@
                         <div class="row">
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label class="form-label" for="profit-view-type">{% trans 'Type' %}</label>
-                                    <select class="form-select select2" id="profit-view-type">
+                                    <label class="form-label" for="profit-type">{% trans 'Type' %}</label>
+                                    <select class="form-select select2" id="profit-type">
                                         <option value="0" selected>{% trans 'Gross profit' %}</option>
                                         <option value="1">{% trans 'Net income' %}</option>
                                     </select>
@@ -51,8 +51,8 @@
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label class="form-label" for="profit-type">{% trans 'View type' %}</label>
-                                    <select class="form-select select2" id="profit-type">
+                                    <label class="form-label" for="profit-view-type">{% trans 'View type' %}</label>
+                                    <select class="form-select select2" id="profit-view-type">
                                         <option value="0" selected>{% trans 'Period profit' %}</option>
                                         <option value="1">{% trans 'Accumulated profit' %}</option>
                                     </select>

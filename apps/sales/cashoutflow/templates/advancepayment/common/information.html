@@ -22,7 +22,7 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label class="form-label required" for="title">{% trans "Name" %}</label>
-                            <input name="title" class="form-control" id="title">
+                            <input required maxlength="100" name="title" class="form-control" id="title">
                         </div>
                     </div>
                 {#        create date#}
@@ -90,7 +90,7 @@
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label required" for="type-select-box">{% trans "Type" %}</label>
-                            <select class="form-select"
+                            <select required class="form-select"
                                     id="type-select-box"
                                     name="advance_payment_type">
                                 <option value="0">{% trans "To employee" %}</option>
@@ -145,7 +145,7 @@
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label required" for="ap-method">{% trans "Method" %}</label>
-                            <select class="form-select"
+                            <select class="form-select" required
                                     id="ap-method"
                                     name="method"
                             >
@@ -158,7 +158,7 @@
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label required" for="return_date_id">{% trans "Return date" %}</label>
-                            <input class="form-control" id="return_date_id" name="return_date">
+                            <input required class="form-control" id="return_date_id" name="return_date">
                         </div>
                     </div>
                 {#        money gave#}

@@ -4,11 +4,12 @@ $(document).ready(function () {
     PaymentHandle.LoadPage()
     WFRTControl.setWFInitialData('payment', 'POST')
 
-    $('#form-create-payment').submit(function (event) {
-        event.preventDefault();
-        let form = PaymentHandle.CombinesData($(this), 'create');
-        if (form) {
-            WFRTControl.callWFSubmitForm(form);
+    let form_validator = $('#form-create-payment').validate({
+        submitHandler: function (form) {
+            let form_data = PaymentHandle.CombinesData(form, 'create');
+            if (form_data) {
+                WFRTControl.callWFSubmitForm(form_data);
+            }
         }
     })
 });

@@ -6594,7 +6594,7 @@ msgstr "Mục tiêu cả kỳ bằng tổng mục tiêu các kỳ con của nó"
 
 #
 msgid "Periods"
-msgstr "Năm tài chính"
+msgstr "Kỳ kế toán"
 
 #
 msgid "Fiscal year"
@@ -6606,11 +6606,11 @@ msgstr "Tháng bắt đầu"
 
 #
 msgid "Update period"
-msgstr "Cập nhật năm tài chính"
+msgstr "Cập nhật kỳ kế toán"
 
 #
 msgid "New period"
-msgstr "Thêm năm tài chính mới"
+msgstr "Thêm kỳ kế toán mới"
 
 #
 msgid "Select role(s) that has permission to create revenue plans"

@@ -175,7 +175,7 @@ msgid "Save"
 msgstr "Lưu"
 
 #
-msgid "Save Draft"
+msgid "Save draft"
 msgstr "Lưu nháp"
 
 #

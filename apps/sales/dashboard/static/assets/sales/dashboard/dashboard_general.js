@@ -287,7 +287,6 @@ $(document).ready(function () {
             const group_id = item?.['group_inherit_id']
             const dateApproved = new Date(item?.['date_approved']);
             const month = dateApproved.getMonth();
-            const year = dateApproved.getFullYear();
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
                     revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion

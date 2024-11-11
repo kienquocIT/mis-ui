@@ -254,6 +254,10 @@ msgid "Number of documents created"
 msgstr "Số phiếu đã được tạo ra"
 
 #
+msgid "Number of documents approved"
+msgstr "Số phiếu đã được phê duyệt"
+
+#
 msgid "Click to create more documents"
 msgstr "Nhấn vào đây để tạo thêm phiếu"
 

@@ -124,8 +124,14 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="tab" href="#tab_assignee_attach">
-                <i class="fa-solid fa-money-check-dollar"></i>
+                <i class="fas fa-paperclip"></i>
                 <span class="nav-link-text">{% trans 'Assignee attachment' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_report">
+                <i class="bi bi-clipboard-data"></i>
+                <span class="nav-link-text">{% trans 'Utilization Report' %}</span>
             </a>
         </li>
     </ul>
@@ -256,6 +262,33 @@
                 {% include 'extends/files/all.html' %}
             </div>
         </div>
+        <div class="tab-pane fade" id="tab_report">
+            {{ data.unit_data | json_script:'uom_data'}}
+            <table class="table nowrap w-100 min-w-1500p" id="table_report"
+                   data-method="get" data-url="{% url 'ProjectListAPI' %}">
+                <thead>
+                    <tr>
+                        <th>{% trans 'Task Assignee' %}</th>
+                        <th>{% trans 'Role' %}</th>
+                        <th class="text-center">{% trans 'Estimated time' %}</th>
+                        <th class="text-center">{% trans 'Actual time' %}</th>
+                        <th class="text-center">{% trans 'Total task' %}</th>
+                        <th class="text-center">{% trans 'Total task complete' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2" class="btm-0"></td>
+                        <td class="txt-bold">0 Hour</td>
+                        <td class="txt-bold">0 Hour</td>
+                        <td class="txt-bold">0</td>
+                        <td class="txt-bold">0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
     <!-- End Tabs -->
 {% endblock %}
@@ -293,6 +326,7 @@
            data-member-delete="{% url 'ProjectMemberDeleteAPI' data.pk 1 %}"
            data-update-order="{% url 'ProjectUpdateOrderAPI' data.pk %}"
            data-task="{% url 'ProjectTaskListAPI' %}"
+           data-task-list="{% url 'ProjectTaskListAllAPI' %}"
            data-task-logtime="{% url 'OpportunityTaskLogTimeAPI' %}"
            data-expense="{% url 'ExpenseListAPI' %}"
            data-expense-detail="{% url "ExpenseDetail" 1 %}"

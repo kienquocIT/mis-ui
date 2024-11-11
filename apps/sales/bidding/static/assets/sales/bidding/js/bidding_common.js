@@ -14,6 +14,7 @@ class BiddingLoadDataHandle {
     static $btnOpenDocModal = $('#btn-open-document-modal')
     static $btnOpenPartnerModal = $('#btn-open-partner-modal')
     static $btnOpenBidderModal = $('#btn-open-bidder-modal')
+    static $modalAccount = $('#modal-account')
     static loadAddVenture(data) {
         BiddingDataTableHandle.$tableVenture.DataTable().clear().draw();
         for (const dataRow of data) {
@@ -51,7 +52,6 @@ class BiddingLoadDataHandle {
         BiddingLoadDataHandle.$docDataScript.attr('data-doc-list',JSON.stringify(dataDocList))
 
     };
-
     static loadAddDocumentManual() {
         let TotalOrder = BiddingDataTableHandle.$tableDocumentModalManual[0].querySelectorAll('.table-row-order').length;
         let order = TotalOrder + 1;
@@ -61,7 +61,6 @@ class BiddingLoadDataHandle {
         }
         BiddingDataTableHandle.$tableDocumentModalManual.DataTable().row.add(dataAdd).draw().node();
     }
-
     static loadDataByOpportunity() {
         if ($(BiddingLoadDataHandle.$opportunitySelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(BiddingLoadDataHandle.$opportunitySelectEle, $(BiddingLoadDataHandle.$opportunitySelectEle).val());
@@ -86,6 +85,64 @@ class BiddingLoadDataHandle {
             }
         }
     };
+
+    static resetAttachmentUI (ele){
+         BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
+             let row = this.node();
+             $(row).css('background-color', '');
+        });
+        $('#btn-attach-invite-doc').closest('.form-control').css('background-color', '');
+        BiddingLoadDataHandle.$fileArea[0].classList.remove('bg-light');
+        BiddingLoadDataHandle.$remark[0].removeAttribute('readonly');
+        BiddingLoadDataHandle.$remark.val('');
+        BiddingLoadDataHandle.loadAddFile([]);
+        BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids').value = "";
+    }
+
+    static loadAttachmentData(dataStore) {
+        if (dataStore) {
+            BiddingLoadDataHandle.$remark.val(dataStore?.['remark']);
+            BiddingLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
+
+            let ids = dataStore?.['attachment_data'].map(fileData => fileData?.['attachment']?.['id']).join(',');
+            BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids').value = ids;
+
+            let attachmentParse = dataStore?.['attachment_data'].map(attachData => attachData?.['attachment']);
+            BiddingLoadDataHandle.$attachment.empty().html(`${BiddingLoadDataHandle.$attachmentTmp.html()}`);
+
+            new $x.cls.file(BiddingLoadDataHandle.$attachment).init({
+                name: 'attachment',
+                enable_edit: true,
+                enable_download: true,
+                data: attachmentParse,
+            });
+        }
+    }
+
+    static setAttributes(element, eleId, isManual) {
+        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
+        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-is-manual', isManual);
+        BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
+    }
+
+    static handleAttachFileEvent(ele) {
+        this.resetAttachmentUI();
+        let row = ele.closest('tr');
+        let eleId = row ? row.querySelector('.attach-file').getAttribute(row.querySelector('.attach-file').getAttribute('data-is-manual') === 'false' ? 'data-doctype-id' : 'data-id') : ele.id;
+        let isManual = row ? row.querySelector('.attach-file').getAttribute('data-is-manual') : ele.getAttribute('data-is-manual');
+
+        this.setAttributes(ele, eleId, isManual);
+
+        let dataStore = JSON.parse(ele.getAttribute('data-store') || JSON.stringify({
+            "id": eleId,
+            "title": '',
+            "attachment_data": [],
+            "isManual": true
+        }));
+        ele.setAttribute('data-store', JSON.stringify(dataStore));
+
+        this.loadAttachmentData(dataStore);
+    }
 
     // FILE
     static loadOpenAttachFile(ele) {
@@ -185,11 +242,25 @@ class BiddingLoadDataHandle {
 
     //DETAIL
     static loadDetail(data) {
-        console.log(data)
+        new $x.cls.bastionField({
+            has_opp: true,
+            has_inherit: true,
+            data_inherit: [{
+                "id": data?.['employee_inherit']?.['id'],
+                "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                "code": data?.['employee_inherit']?.['code'] || '',
+                "selected": true,
+            }],
+            data_opp: [{
+                "id": data?.['opportunity']?.['id'] || '',
+                "title": data?.['opportunity']?.['title'] || '',
+                "code": data?.['opportunity']?.['code'] || '',
+                "selected": true,
+            }]
+        }).init();
         $('#bid-name').val(data?.['title']);
+        BiddingLoadDataHandle.$customerEle.val(data?.['customer']?.['title'])
         $('#bid-value').attr('value', data?.['bid_value']);
-        $('#bid-bond-value').attr('value', data?.['bid_bond_value']);
-        BiddingTinymceHandle.initTinymce(data?.['tinymce_content'])
         $('#bid-date').each(function () {
             $(this).daterangepicker({
                 singleDatePicker: true,
@@ -211,27 +282,17 @@ class BiddingLoadDataHandle {
             }
             $(this).val(dateData).trigger('change');
         })
-        new $x.cls.bastionField({
-            has_opp: true,
-            has_inherit: true,
-            data_inherit: [{
-                "id": data?.['employee_inherit']?.['id'],
-                "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                "code": data?.['employee_inherit']?.['code'] || '',
-                "selected": true,
-            }],
-            data_opp: [{
-                "id": data?.['opportunity']?.['id'] || '',
-                "title": data?.['opportunity']?.['title'] || '',
-                "code": data?.['opportunity']?.['code'] || '',
-                "selected": true,
-            }]
-        }).init();
-        BiddingLoadDataHandle.$customerEle.val(data?.['customer']?.['title'])
+        $('#bid-bond-value').attr('value', data?.['bid_bond_value']);
         let securityType = data?.['security_type']
-        let bidStatus = data?.['bid_status']
         $(`input[name="security_type"][value="${securityType}"]`).prop('checked', true)
+
+        //load bidding documents
+        let dataBiddingDocument = data?.['attachment_m2m'].find(item => item['is_invite_doc'] === true)
+        $('#btn-attach-invite-doc').attr('data-store', JSON.stringify(dataBiddingDocument))
+
+        let bidStatus = data?.['bid_status']
         $(`input[name="bid_status"][value="${bidStatus}"]`).prop('checked', true)
+        //if bid is lost
         if (bidStatus===2){
             let causeOfLost = data?.['cause_of_lost']
             $('#cause-of-lost').attr('hidden',false)
@@ -244,26 +305,30 @@ class BiddingLoadDataHandle {
                     $(`input[name="other_cause"]`).val(data?.['other_cause'])
                 }
             })
-
         }
+
         for (let i=0;i<data?.['venture_partner']?.length;i++){
             data['venture_partner'][i]['order'] = i+1
-        }for (let i=0;i<data?.['other_bidder']?.length;i++){
-            data['other_bidder'][i]['order'] = i+1
         }
         BiddingDataTableHandle.dataTableVenture(data?.['venture_partner'], data['isDetail'])
-        BiddingDataTableHandle.dataTableBidder(data?.['other_bidder'], data['isDetail'])
-        let bids = data?.['attachment_m2m'].filter(item => item['is_invite_doc'] !== true)
 
+        for (let i=0;i<data?.['other_bidder']?.length;i++){
+            data['other_bidder'][i]['order'] = i+1
+        }
+        BiddingDataTableHandle.dataTableBidder(data?.['other_bidder'], data['isDetail'])
+
+        let bids = data?.['attachment_m2m'].filter(item => item['is_invite_doc'] !== true)
         for (let i=0;i<bids?.length;i++){
             bids[i]['isManual'] = data['attachment_m2m'][i]['document_type'] === null;
         }
         BiddingLoadDataHandle.setupDetailDocAttach(data['attachment_m2m'])
         BiddingDataTableHandle.dataTableDocument(bids, data['isDetail'])
-        let dataBiddingDocument = data?.['attachment_m2m'].find(item => item['is_invite_doc'] === true)
-        $('#btn-attach-invite-doc').attr('data-store', JSON.stringify(dataBiddingDocument))
         BiddingDataTableHandle.dataTableDocumentModal(bids)
+
+        // data for documents
         BiddingLoadDataHandle.$docDataScript.attr('data-doc-list', JSON.stringify(data['attachment_m2m']))
+
+        BiddingTinymceHandle.initTinymce(data?.['tinymce_content'])
         $.fn.initMaskMoney2()
     };
 

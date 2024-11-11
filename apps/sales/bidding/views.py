@@ -124,7 +124,7 @@ class BiddingDetailAPI(APIView):
             request=request,
             url=ApiURL.BIDDING_DETAIL,
             pk=pk,
-            msg=SaleMsg.BIDDING_CREATE
+            msg=SaleMsg.BIDDING_UPDATE
         )
 
 class BiddingResultAPI(APIView):
@@ -136,7 +136,7 @@ class BiddingResultAPI(APIView):
         return create_bidding(
             request=request,
             url=ApiURL.BIDDING_RESULT,
-            msg=SaleMsg.BIDDING_CREATE
+            msg=SaleMsg.BIDDING_UPDATE
         )
 
 class AccountForBiddingListAPI(APIView):

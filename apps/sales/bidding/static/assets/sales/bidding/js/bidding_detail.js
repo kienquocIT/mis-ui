@@ -6,69 +6,75 @@ $(document).ready(function () {
         BiddingLoadDataHandle.loadOpenAttachFile(this);
     });
     let transScript = $('#trans-script')
-    $('#btn-attach-invite-doc').on('click', function () {
-        BiddingStoreHandle.storeAttachment()
-        BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
-            let row = this.node();
-            $(row).css('background-color', '');
-        });
-        $(this).closest('.form-control').css('background-color', '#ebfcf5');
-        let eleId = this.id
-        let isManual = this.getAttribute('data-is-manual')
-        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
-        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-is-manual', isManual);
-        BiddingLoadDataHandle.$remark[0].removeAttribute('readonly');
-        BiddingLoadDataHandle.$remark.val('');
-        BiddingLoadDataHandle.loadAddFile([]);
-        let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-        if (fileIds) {
-            fileIds.value = "";
-        }
-        if(!this.getAttribute('data-store')){
-            let data = {
-                "id": eleId,
-                "title": '',
-                "attachment_data": [],
-                "isManual": true
-            }
-            this.setAttribute('data-store', JSON.stringify(data))
-        }
-         if (fileIds) {
-             let dataStore = JSON.parse(this.getAttribute('data-store'));
-            BiddingLoadDataHandle.$remark.val(dataStore?.['remark']);
-            BiddingLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
-            console.log(dataStore?.['attachment_data'])
-             let ids = [];
-            for (let fileData of dataStore?.['attachment_data']) {
-                ids.push(fileData?.['attachment']?.['id']);
-            }
-            let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-            fileIds.value = ids.join(',');
-            let attachmentParse = [];
-            for (let attachData of dataStore?.['attachment_data']) {
-                attachmentParse.push(attachData?.['attachment']);
-            }
-            // append html file again
-            BiddingLoadDataHandle.$attachment.empty().html(`${BiddingLoadDataHandle.$attachmentTmp.html()}`);
-            // init file again
-            new $x.cls.file(BiddingLoadDataHandle.$attachment).init({
-                name: 'attachment',
-                enable_edit: true,
-                enable_download: true,
-                data: attachmentParse,
-            });
-            // add event
-            let inputs = BiddingLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
+    // $('#btn-attach-invite-doc').on('click', function () {
+    //     BiddingStoreHandle.storeAttachment()
+    //     BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
+    //         let row = this.node();
+    //         $(row).css('background-color', '');
+    //     });
+    //     $(this).closest('.form-control').css('background-color', '#ebfcf5');
+    //     let eleId = this.id
+    //     let isManual = this.getAttribute('data-is-manual')
+    //     BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
+    //     BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-is-manual', isManual);
+    //     BiddingLoadDataHandle.$remark[0].removeAttribute('readonly');
+    //     BiddingLoadDataHandle.$remark.val('');
+    //     BiddingLoadDataHandle.loadAddFile([]);
+    //     let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+    //     if (fileIds) {
+    //         fileIds.value = "";
+    //     }
+    //     if(!this.getAttribute('data-store')){
+    //         let data = {
+    //             "id": eleId,
+    //             "title": '',
+    //             "attachment_data": [],
+    //             "isManual": true
+    //         }
+    //         this.setAttribute('data-store', JSON.stringify(data))
+    //     }
+    //      if (fileIds) {
+    //          let dataStore = JSON.parse(this.getAttribute('data-store'));
+    //         BiddingLoadDataHandle.$remark.val(dataStore?.['remark']);
+    //         BiddingLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
+    //         console.log(dataStore?.['attachment_data'])
+    //          let ids = [];
+    //         for (let fileData of dataStore?.['attachment_data']) {
+    //             ids.push(fileData?.['attachment']?.['id']);
+    //         }
+    //         let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+    //         fileIds.value = ids.join(',');
+    //         let attachmentParse = [];
+    //         for (let attachData of dataStore?.['attachment_data']) {
+    //             attachmentParse.push(attachData?.['attachment']);
+    //         }
+    //         // append html file again
+    //         BiddingLoadDataHandle.$attachment.empty().html(`${BiddingLoadDataHandle.$attachmentTmp.html()}`);
+    //         // init file again
+    //         new $x.cls.file(BiddingLoadDataHandle.$attachment).init({
+    //             name: 'attachment',
+    //             enable_edit: true,
+    //             enable_download: true,
+    //             data: attachmentParse,
+    //         });
+    //         // add event
+    //         let inputs = BiddingLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
+    //
+    //         inputs.forEach((input) => {
+    //             input.addEventListener('change', function () {
+    //                 let dataList = BiddingLoadDataHandle.loadSetupAddFile();
+    //                 BiddingLoadDataHandle.loadAddFile(dataList);
+    //             });
+    //         });
+    //      }
+    //      BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
+    // });
 
-            inputs.forEach((input) => {
-                input.addEventListener('change', function () {
-                    let dataList = BiddingLoadDataHandle.loadSetupAddFile();
-                    BiddingLoadDataHandle.loadAddFile(dataList);
-                });
-            });
-         }
-         BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
+    $('#btn-attach-invite-doc').on('click', function () {
+        BiddingStoreHandle.storeAttachment();
+        BiddingLoadDataHandle.handleAttachFileEvent(this);
     });
+
     // call ajax get data detail
     $.fn.callAjax2({
         url: formSubmit.data('url'),
@@ -86,8 +92,8 @@ $(document).ready(function () {
                 if (formSubmit.attr('data-method').toLowerCase() !== 'put') {
                     BiddingLoadDataHandle.$btnOpenBidderModal.on('click', function () {
                         let title = transScript.attr('data-trans-modal-bidder-title')
-                        $('#modal-account').find('.modal-title').html(title)
-                        $('#modal-account').attr('data-type', 'bidder')
+                        BiddingLoadDataHandle.$modalAccount.find('.modal-title').html(title)
+                        BiddingLoadDataHandle.$modalAccount.attr('data-type', 'bidder')
                         BiddingDataTableHandle.dataTableAccountModal(false);
                     })
                     BiddingLoadDataHandle.$opportunitySelectEle.prop('disabled',true)
@@ -138,14 +144,7 @@ $(document).ready(function () {
             let selectedRow = $(this).closest("tr");
             let id = $(this).data('id');
             let type = $(this).data('type');
-            if (type === "partner"){
-                data.push({
-                    "partner_account": id,
-                    "code": selectedRow.find(".table-row-code").text(),
-                    "title": selectedRow.find(".table-row-title").text(),
-                })
-                BiddingLoadDataHandle.loadAddVenture(data)
-            } else if(type === "bidder"){
+            if(type === "bidder"){
                 data.push({
                     "bidder_account": id,
                     "code": selectedRow.find(".table-row-code").text(),
@@ -179,7 +178,7 @@ $(document).ready(function () {
             $('#cause-other-input').prop('disabled', true);
         }
     });
-    // When any other checkbox is checked, uncheck 'cause-withdrawal'
+
     $('input[name="cause_of_lost"]').not('#cause-withdrawal').on('change', function () {
         if ($(this).is(':checked')) {
             $('#cause-withdrawal').prop('checked', false);
@@ -214,7 +213,7 @@ $(document).ready(function () {
                     $.fn.notifyB({description: data.message}, 'success');
                     setTimeout(() => {
                         window.location.reload();
-                    }, 3000);
+                    }, 1000);
                 }
             }, (err) => {
                 setTimeout(() => {

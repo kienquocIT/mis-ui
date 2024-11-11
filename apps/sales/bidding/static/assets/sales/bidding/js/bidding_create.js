@@ -1,6 +1,9 @@
 $(document).ready(function () {
+     WFRTControl.setWFInitialData('bidding');
+
     let formSubmit = $('#frm_bidding_create');
     let transScript = $('#trans-script')
+
     $('#bid-date').each(function () {
         $(this).daterangepicker({
             singleDatePicker: true,
@@ -19,8 +22,6 @@ $(document).ready(function () {
         $(this).val('').trigger('change');
     })
 
-    WFRTControl.setWFInitialData('bidding');
-
     //init data only for create page
     if (formSubmit.attr('data-method').toLowerCase() === 'post') {
         new $x.cls.file($('#attachment')).init({
@@ -34,14 +35,14 @@ $(document).ready(function () {
         BiddingTinymceHandle.initTinymce()
         BiddingDataTableHandle.$tableDocument.on('click', '.attach-file', function () {
             BiddingStoreHandle.storeAttachment();
-            BiddingLoadDataHandle.loadOpenAttachFile(this);
+            BiddingLoadDataHandle.handleAttachFileEvent(this);
         });
     }
 
     BiddingLoadDataHandle.$btnOpenPartnerModal.on('click', function () {
         let title = transScript.attr('data-trans-modal-venture-title')
-        $('#modal-account').find('.modal-title').html(title)
-        $('#modal-account').attr('data-type', 'partner')
+        BiddingLoadDataHandle.$modalAccount.find('.modal-title').html(title)
+        BiddingLoadDataHandle.$modalAccount.attr('data-type', 'partner')
         BiddingDataTableHandle.dataTableAccountModal(true);
     })
 
@@ -142,7 +143,6 @@ $(document).ready(function () {
     BiddingLoadDataHandle.$btnAddDoc.on('click', function () {
         data = []
         let dataDocList = JSON.parse(BiddingLoadDataHandle.$docDataScript.attr('data-doc-list') || '[]')
-        console.log(dataDocList)
         $("#document-modal-table .form-check-checkbox:checked").each(function (e) {
             let selectedRow = $(this).closest("tr");
             let document_type = $(this).data('id');
@@ -182,67 +182,72 @@ $(document).ready(function () {
         BiddingLoadDataHandle.loadAddDocumentManual();
     })
 
-    $('#btn-attach-invite-doc').on('click', function () {
-        BiddingStoreHandle.storeAttachment()
-        BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
-            let row = this.node();
-            $(row).css('background-color', '');
-        });
-        $(this).closest('.form-control').css('background-color', '#ebfcf5');
-        let eleId = this.id
-        let isManual = this.getAttribute('data-is-manual')
-        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
-        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-is-manual', isManual);
-        BiddingLoadDataHandle.$remark[0].removeAttribute('readonly');
-        BiddingLoadDataHandle.$remark.val('');
-        BiddingLoadDataHandle.loadAddFile([]);
-        let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-        if (fileIds) {
-            fileIds.value = "";
-        }
-        if(!this.getAttribute('data-store')){
-            let data = {
-                "id": eleId,
-                "title": '',
-                "attachment_data": [],
-                "isManual": true
-            }
-            this.setAttribute('data-store', JSON.stringify(data))
-        }
-         if (fileIds) {
-             let dataStore = JSON.parse(this.getAttribute('data-store'));
-            BiddingLoadDataHandle.$remark.val(dataStore?.['remark']);
-            BiddingLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
-            let ids = [];
-            for (let fileData of dataStore?.['attachment_data']) {
-                ids.push(fileData?.['attachment']?.['id']);
-            }
-            let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-            fileIds.value = ids.join(',');
-            let attachmentParse = [];
-            for (let attachData of dataStore?.['attachment_data']) {
-                attachmentParse.push(attachData?.['attachment']);
-            }
-            // append html file again
-            BiddingLoadDataHandle.$attachment.empty().html(`${BiddingLoadDataHandle.$attachmentTmp.html()}`);
-            // init file again
-            new $x.cls.file(BiddingLoadDataHandle.$attachment).init({
-                name: 'attachment',
-                enable_edit: true,
-                enable_download: true,
-                data: attachmentParse,
-            });
-            // add event
-            let inputs = BiddingLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
+    // $('#btn-attach-invite-doc').on('click', function () {
+    //     BiddingStoreHandle.storeAttachment()
+    //     BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
+    //         let row = this.node();
+    //         $(row).css('background-color', '');
+    //     });
+    //     $(this).closest('.form-control').css('background-color', '#ebfcf5');
+    //     let eleId = this.id
+    //     let isManual = this.getAttribute('data-is-manual')
+    //     BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
+    //     BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-is-manual', isManual);
+    //     BiddingLoadDataHandle.$remark[0].removeAttribute('readonly');
+    //     BiddingLoadDataHandle.$remark.val('');
+    //     BiddingLoadDataHandle.loadAddFile([]);
+    //     let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+    //     if (fileIds) {
+    //         fileIds.value = "";
+    //     }
+    //     if(!this.getAttribute('data-store')){
+    //         let data = {
+    //             "id": eleId,
+    //             "title": '',
+    //             "attachment_data": [],
+    //             "isManual": true
+    //         }
+    //         this.setAttribute('data-store', JSON.stringify(data))
+    //     }
+    //      if (fileIds) {
+    //          let dataStore = JSON.parse(this.getAttribute('data-store'));
+    //          BiddingLoadDataHandle.$remark.val(dataStore?.['remark']);
+    //          BiddingLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
+    //          let ids = [];
+    //          for (let fileData of dataStore?.['attachment_data']) {
+    //             ids.push(fileData?.['attachment']?.['id']);
+    //          }
+    //          let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+    //          fileIds.value = ids.join(',');
+    //          let attachmentParse = [];
+    //          for (let attachData of dataStore?.['attachment_data']) {
+    //              attachmentParse.push(attachData?.['attachment']);
+    //          }
+    //          // append html file again
+    //          BiddingLoadDataHandle.$attachment.empty().html(`${BiddingLoadDataHandle.$attachmentTmp.html()}`);
+    //          // init file again
+    //          new $x.cls.file(BiddingLoadDataHandle.$attachment).init({
+    //              name: 'attachment',
+    //              enable_edit: true,
+    //              enable_download: true,
+    //              data: attachmentParse,
+    //          });
+    //          // add event
+    //          let inputs = BiddingLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
+    //
+    //          inputs.forEach((input) => {
+    //              input.addEventListener('change', function () {
+    //                  let dataList = BiddingLoadDataHandle.loadSetupAddFile();
+    //                  BiddingLoadDataHandle.loadAddFile(dataList);
+    //              });
+    //          });
+    //      }
+    //      BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
+    // });
 
-            inputs.forEach((input) => {
-                input.addEventListener('change', function () {
-                    let dataList = BiddingLoadDataHandle.loadSetupAddFile();
-                    BiddingLoadDataHandle.loadAddFile(dataList);
-                });
-            });
-         }
-         BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
+    $('#btn-attach-invite-doc').on('click', function () {
+        BiddingStoreHandle.storeAttachment();
+        BiddingLoadDataHandle.handleAttachFileEvent(this);
     });
 
     $('#bid-bond-value').on('focus',function () {
@@ -261,27 +266,14 @@ $(document).ready(function () {
                     return bidBondValue && isSecurityChecked
                 }
             },
-            cause_of_lost: {
-                required: function (element) {
-                    const isLostStatusChecked = $("#bid-status-lost").is(":checked");
-                    const isCauseChecked = $("input[name='cause_of_lost']:checked").length === 0;
-                    return isLostStatusChecked && isCauseChecked
-                }
-            },
         },
         messages: {
             security_type: {
                 required: "Please select a security type if Bid Bond Value has data."
-            },
-            cause_of_lost: {
-                required: "Please select at least a cause of lost if bid is lost."
             }
         },
         onsubmit: true,
         submitHandler: function (form, event) {
-            const bidBondValue = $("#bid-bond-value").attr('value');
-            const isSecurityChecked = $("input[name='security_type']:checked").length === 0
-            console.log(bidBondValue && isSecurityChecked)
             let _form = new SetupFormSubmit(formSubmit);
             BiddingSubmitHandle.setupDataSubmit(_form)
 
@@ -305,31 +297,7 @@ $(document).ready(function () {
             if (_form.dataForm) {
                 BiddingCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
-            console.log(_form)
             WFRTControl.callWFSubmitForm(_form)
-            // WindowControl.showLoading();
-            // $.fn.callAjax2(
-            //     {
-            //         'url': _form.dataUrl,
-            //         'method': _form.dataMethod,
-            //         'data': _form.dataForm,
-            //     }
-            // ).then(
-            //     (resp) => {
-            //         let data = $.fn.switcherResp(resp);
-            //         if (data && (data['status'] === 201 || data['status'] === 200)) {
-            //             $.fn.notifyB({description: data.message}, 'success');
-            //             setTimeout(() => {
-            //                 window.location.replace(_form.dataUrlRedirect);
-            //             }, 3000);
-            //         }
-            //     }, (err) => {
-            //         setTimeout(() => {
-            //             WindowControl.hideLoading();
-            //         }, 1000)
-            //         $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-            //     }
-            // )
         },
     })
 })

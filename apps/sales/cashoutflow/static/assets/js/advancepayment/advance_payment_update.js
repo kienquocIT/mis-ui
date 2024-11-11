@@ -4,11 +4,28 @@ $(document).ready(function () {
     APHandle.LoadDetailAP('update');
 
     // SUBMIT FORM UPDATE ADVANCE PAYMENT
-    $('#form-detail-advance').submit(function (event) {
-        event.preventDefault();
-        let form = APHandle.CombinesData($(this), 'update');
-        if (form) {
-            WFRTControl.callWFSubmitForm(form);
+    let form_validator = $('#form-detail-advance').validate({
+        submitHandler: function (form) {
+            let form_data = APHandle.CombinesData(form, 'update');
+            if (form_data) {
+                WFRTControl.callWFSubmitForm(form_data);
+            }
         }
     })
+    AutoValidator.CustomValidator(form_validator, [
+        {
+            key: 'supplier_id',
+            condition: (value, element) => {
+                let conditions = [APTypeEle.val() === '1', value]
+                return conditions.every(c => c)
+            },
+
+        }, {
+            key: 'employee_inherit_id',
+            condition: (value, element) => {
+                let conditions = [APTypeEle.val() === '0', value]
+                return conditions.every(c => c)
+            },
+        },
+    ])
 })

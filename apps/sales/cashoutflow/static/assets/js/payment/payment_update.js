@@ -3,11 +3,12 @@ $(document).ready(function () {
     PaymentHandle.LoadDetailPayment('update');
     WFRTControl.setWFInitialData('payment', 'PUT')
 
-    $('#form-detail-payment').submit(function (event) {
-        event.preventDefault();
-        let form = PaymentHandle.CombinesData($(this), 'update');
-        if (form) {
-            WFRTControl.callWFSubmitForm(form);
+    let form_validator = $('#form-detail-payment').validate({
+        submitHandler: function (form) {
+            let form_data = PaymentHandle.CombinesData(form, 'update');
+            if (form_data) {
+                WFRTControl.callWFSubmitForm(form_data);
+            }
         }
     })
 })

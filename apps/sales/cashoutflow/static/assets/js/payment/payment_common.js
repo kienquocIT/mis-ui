@@ -1782,7 +1782,6 @@ checkbox_internal.on('change', function () {
         employee_label.prop('hidden', true)
         employee_detail_span.prop('hidden', true)
         supplier_detail_span.prop('hidden', false)
-        $('#payment-method').val('');
     }
 })
 

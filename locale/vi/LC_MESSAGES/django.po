@@ -9515,3 +9515,12 @@ msgstr "Lợi nhuận theo kỳ"
 #
 msgid "Accumulated profit"
 msgstr "Lợi nhuận tích luỹ"
+
+#
+msgid "This month revenue"
+msgstr "Doanh thu tháng này"
+
+
+#
+msgid "This month profit"
+msgstr "Lợi nhuận tháng này"

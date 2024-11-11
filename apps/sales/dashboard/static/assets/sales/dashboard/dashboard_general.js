@@ -112,7 +112,7 @@ $(document).ready(function () {
 
     $('.large-view-btn').on('click', function () {
         $('.view-space').each(function () {
-            $(this).attr('class', 'view-space col-12 col-md-4 col-lg-4 mt-3')
+            $(this).attr('class', 'view-space col-12 col-md-6 col-lg-4 mt-3')
         })
         $(this).closest('.view-space').attr('class', 'view-space col-12 col-md-8 col-lg-8 mt-3')
 

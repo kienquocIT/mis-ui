@@ -656,17 +656,30 @@ class APIUtil:
             **kwargs
         }
 
-        if content_type:
-            match content_type.split(":")[0]:
-                case 'multipart/form-data':
-                    config['files'] = data
-                case 'application/json':
-                    config['json'] = data
-                case _:
-                    config['data'] = data
-        else:
-            headers['content-type'] = 'application/json'
-            config['data'] = data
+        def re_update_data_call_post(for_backup=False):
+            if content_type:
+                if content_type.startswith('multipart/form-data'):
+                    # config['files'] = data  # using when upload only file (! requests_toolbelt.MultipartEncoder)
+                    if for_backup:
+                        config['data'] = self.data_backup
+                    else:
+                        self.data_backup = deepcopy(data)
+                        config['data'] = data
+                elif content_type.startswith('application/json'):
+                    if for_backup:
+                        config['json'] = self.data_backup
+                    else:
+                        config['json'] = data
+                else:
+                    if for_backup:
+                        config['data'] = self.data_backup
+                    else:
+                        config['data'] = data
+            else:
+                headers['content-type'] = 'application/json'
+                config['data'] = data
+
+        re_update_data_call_post()
 
         try:
             resp = requests.put(**config)
@@ -689,10 +702,8 @@ class APIUtil:
                 if state_refresh and headers_upgrade:
                     # refresh token
                     headers.update(headers_upgrade)
-                    resp = requests.put(
-                        url=safe_url, headers=headers, json=data,
-                        timeout=REQUEST_TIMEOUT
-                    )
+                    re_update_data_call_post(for_backup=True)
+                    resp = requests.put(**config)
                     resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         return resp_parsed
 

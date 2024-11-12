@@ -2541,7 +2541,7 @@ class QuotationDataTableHandle {
                         } else if (itemType === 1) {  // PROMOTION
                             des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '--';
                         }
-                        return `<div class="row"><textarea class="form-control table-row-description zone-readonly" rows="2" data-zone="${dataZone}" readonly>${des}</textarea></div>`;
+                        return `<div class="row"><textarea class="form-control form-control-line table-row-description zone-readonly" rows="2" data-zone="${dataZone}" readonly>${des}</textarea></div>`;
                     }
                 },
                 {
@@ -3624,13 +3624,13 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['description'] ? row?.['description'] : '--'}</span>`;
+                        return `<textarea class="form-control form-control-line table-row-description" rows="2" readonly>${row?.['description'] ? row?.['description'] : ''}</textarea>`
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-description">${row?.['sale_information']?.['default_uom']?.['title'] ? row?.['sale_information']?.['default_uom']?.['title'] : '--'}</span>`;
+                        return `<span class="table-row-uom">${row?.['sale_information']?.['default_uom']?.['title'] ? row?.['sale_information']?.['default_uom']?.['title'] : ''}</span>`;
                     }
                 },
                 {

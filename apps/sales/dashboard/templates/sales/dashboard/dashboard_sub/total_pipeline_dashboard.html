@@ -1,0 +1,54 @@
+{% load i18n %}
+
+<div class="view-space col-12 col-md-12 col-lg-12 mt-3">
+    <div class="bg-white border border-white rounded p-2">
+        <div class="row">
+            <div class="col-7">
+                <span class="fw-bold text-black">{% trans 'Total pipeline' %}</span>
+            </div>
+            <div class="col-5 text-right">
+                <button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover"
+                   data-bs-toggle="collapse"
+                   href="#totalPipelineCollapse"
+                   type="button">
+                    <span class="icon"><i class="bi bi-filter-circle"></i></span>
+                </button>
+            </div>
+            <div class="col-12">
+                <div class="collapse" id="totalPipelineCollapse">
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="total-pipeline-group">{% trans 'Group' %}</label>
+                                    <select class="form-select select2"
+                                            id="total-pipeline-group"
+                                            data-url="{% url 'GroupListAPI' %}"
+                                            data-method="GET"
+                                    ></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div id="total-pipeline-spinner" class="spinner-border" role="status"></div>
+                <div id="total_pipeline_chart"></div>
+            </div>
+            <div class="col-12">
+                <span class="fw-bold text-black">{% trans 'Top sales' %}</span>
+            </div>
+            <div class="col-12">
+                <div id="top-sale-by-total-pipeline-spinner" class="spinner-border" role="status"></div>
+                <div id="top_sale_by_total_pipeline_chart"></div>
+                <div class="col-12 text-right">
+                    <button id="top-previous" class="btn btn-icon btn-soft-primary btn-xs"><span class="icon"><i class="bi bi-caret-left-fill"></i></span></button>
+                    <button id="top-next" class="btn btn-icon btn-soft-primary btn-xs"><span class="icon"><i class="bi bi-caret-right-fill"></i></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

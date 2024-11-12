@@ -9520,7 +9520,10 @@ msgstr "Lợi nhuận tích luỹ"
 msgid "This month revenue"
 msgstr "Doanh thu tháng này"
 
-
 #
 msgid "This month profit"
 msgstr "Lợi nhuận tháng này"
+
+#
+msgid "Time range"
+msgstr "Khoảng thời gian"

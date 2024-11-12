@@ -4,6 +4,14 @@
 {% block title %}{% trans 'Dashboard Pipeline' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        #idxPageContent {
+            background-color: #f9f9f9;
+        }
+        .view-space {
+            transition: all 0.25s ease-in-out;
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -14,169 +22,33 @@
     <script id="script-url"
             data-url-pipeline-list="{% url 'ReportPipelineListAPI' %}"
     ></script>
-    <button class="btn btn-icon btn-rounded btn-xs btn-primary btn-floating position-fixed" data-bs-toggle="modal" data-bs-target="#modal-dashboard-setting">
-        <i class="fas fa-cog"></i>
-    </button>
-    <div class="modal fade" id="modal-dashboard-setting" tabindex="-1" role="dialog" aria-labelledby="modal-dashboard-setting" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Dashboard setting' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label class="form-check-label">{% trans 'Money display' %}</label>
-                                <div class="row mt-2">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-sm">
-                                            <input checked type="radio" id="million-checkbox" name="money-unit-radio" class="form-check-input money-radio">
-                                            <label class="form-check-label" for="million-checkbox">{% trans 'Million' %}</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-sm">
-                                            <input type="radio" id="billion-checkbox" name="money-unit-radio" class="form-check-input money-radio">
-                                            <label class="form-check-label" for="billion-checkbox">{% trans 'Billion' %}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label class="form-check-label">{% trans 'Money round' %}</label>
-                                <input id="money-round" type="number" class="form-control" value="1" min="0">
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-check-label">{% trans 'View mode' %}</label>
-                                <div class="row mt-2">
-                                    <div class="col-6">
-                                        <div class="form-check form-check-sm">
-                                            <input checked type="radio" id="grid-view" name="view-mode" class="form-check-input view-radio">
-                                            <label class="form-check-label" for="grid-view"><i class="bi bi-grid"></i>&nbsp;{% trans 'Grid' %}</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-check form-check-sm">
-                                            <input type="radio" id="list-view" name="view-mode" class="form-check-input view-radio">
-                                            <label class="form-check-label" for="list-view"><i class="bi bi-list-stars"></i>&nbsp;{% trans 'List' %}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+    <div class="row">
+        <div class="col-12 col-md-12 col-lg-6">
+            <div class="bg-white border border-white rounded p-2">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="money-display" class="form-check-label">{% trans 'Money display' %}</label>
+                            <select class="form-select" id="money-display">
+                                <option value="0">{% trans 'Million' %}</option>
+                                <option value="1">{% trans 'Billion' %}</option>
+                            </select>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="money-round" class="form-check-label">{% trans 'Money round' %}</label>
+                            <input id="money-round" type="number" class="form-control" value="1" min="0">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row mb-6">
-        <div id="see1" class="pl-5 pr-4 col-12 col-lg-6 col-md-6">
-            <div class="card mb-6" style="border-color: #e4e4e4">
-                <div class="card-header">
-                    <h5><b><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Total pipeline' %}</b></h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <select class="form-select select2" id="total-pipeline-group"
-                                    data-url="{% url 'GroupListAPI' %}"
-                                    data-method="GET"
-                            ></select>
-                        </div>
-                        <div class="col-6" hidden>
-                            <input disabled type="number" id="total-pipeline-year-filter" class="form-control timechart-total-pipeline">
-                        </div>
-                    </div>
-                    <div class="row mt-5">
-                        <div class="col-12">
-                            <div id="total-pipeline-spinner" class="spinner-border" role="status"></div>
-                            <div id="total_pipeline_chart"></div>
-                            <div id="top_sale_by_total_pipeline_chart"></div>
-                            <div class="col-12 text-right">
-                                <button id="top-previous" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-left-fill"></i></span></button>
-                                <button id="top-next" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-right-fill"></i></span></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="see2" class="pr-5 pl-4 col-12 col-lg-6 col-md-6">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card mb-6" style="border-color: #e4e4e4">
-                    <div class="card-header">
-                        <h5><b><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Forecast' %}</b></h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-8">
-                                <select class="form-select select2" id="forecast-group"
-                                        data-url="{% url 'GroupListAPI' %}"
-                                        data-method="GET"
-                                ></select>
-                            </div>
-                            <div class="col-4">
-                                <select class="form-select select2" id="forecast-type">
-                                    <option value="0" selected>{% trans 'Month' %}</option>
-                                    <option value="1">{% trans 'Quarter' %}</option>
-                                </select>
-                            </div>
-                            <div class="col-3" hidden>
-                                <input disabled type="number" class="form-control" id="forecast-year">
-                            </div>
-                        </div>
-                        <div class="row mt-5">
-                            <div class="col-12">
-                                <div id="forecast-spinner" class="spinner-border" role="status"></div>
-                                <div id="forecast_pipeline_chart"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                </div>
-                <div class="col-12">
-                    <div class="card mb-6" style="border-color: #e4e4e4">
-                        <div class="card-header">
-                            <h5><b><i class="bi bi-bar-chart-steps"></i>&nbsp;{% trans 'Customer activities' %}</b></h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <select class="form-select select2" id="customer-activities-month">
-                                        <option value="0">{% trans 'All' %}</option>
-                                    </select>
-                                </div>
-                                <div class="col-6" hidden>
-                                    <input disabled type="number" class="form-control" id="customer-activities-year">
-                                </div>
-                            </div>
-                            <div class="row mt-5">
-                                <div class="col-12">
-                                    <div id="customer-activities-spinner" class="spinner-border" role="status"></div>
-                                    <div id="customer_activities_pipeline_chart"></div>
-                                    <div class="col-12 text-right">
-                                        <button id="previous" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-left-fill"></i></span></button>
-                                        <button id="next" class="btn btn-icon btn-flush-primary flush-soft-hover btn-xs"><span class="icon"><i class="bi bi-caret-right-fill"></i></span></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="row dashboard-space mb-10">
+        {% include 'sales/dashboard/dashboard_sub/total_pipeline_dashboard.html' %}
+        {% include 'sales/dashboard/dashboard_sub/forecast_pipeline_dashboard.html' %}
+        {% include 'sales/dashboard/dashboard_sub/customer_activities_dashboard.html' %}
     </div>
 {% endblock %}
 {% block jsFooterUnCompress %}

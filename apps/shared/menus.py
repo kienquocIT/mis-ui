@@ -305,7 +305,7 @@ class MenusCRM:
     )
     BIDDING = MenuCommon(
         name='Bidding', code='menu_bidding_list', view_name='BiddingList',
-        icon='<i class="fas fa-yin-yang"></i>',
+        icon='<i class="fas fa-gavel"></i>',
     )
     SALE_ORDER = MenuCommon(
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',

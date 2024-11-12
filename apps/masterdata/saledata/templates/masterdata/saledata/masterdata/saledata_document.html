@@ -15,13 +15,10 @@
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
-{% block pageAction %}
-    {% include 'extends/systems/page_actions.html' with is_create=True create_link='#' create_attr='class="btn-show-modal" data-bs-toggle="modal" data-bs-target="#modal_document_type"' %}
-{% endblock %}
 {% block pageContent %}
     <div class="row">
         <div class="col-12 col-md-2 col-lg-2">
-            <ul class="nav flex-column nav-light nav-pills nav-pills-soft nav-vertical" id="tab-select-table">
+            <ul class="nav flex-column nav-light nav-pills" id="tab-select-table">
                 <li class="nav-item">
                     <a  href="#section_document_type"
                         class="nav-link active"
@@ -36,6 +33,16 @@
         <div class="col-12 col-md-9 col-lg-9">
             <div class="tab-content">
                 <div class="tab-pane fade show active lookup-data" id="section_document_type">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal_document_type">
+                        <button class="btn btn-sm btn-outline-primary btn-modal">
+                            <span>
+                                <span>{% trans 'Add' %}</span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                            </span>
+                        </button>
+                    </a>
                     <table id="datatable-document-type-list" class="table nowrap w-100"
                            data-url="{% url "DocumentTypeMasterDataListAPI" %}"
                            data-method="GET">
@@ -51,8 +58,8 @@
         </div>
     </div>
     <form
-            id="form-create-document-type" data-method="POST" data-lookup="section_document_type"
-            data-url-document-type="{% url "DocumentTypeMasterDataListAPI" %} "
+            id="form_create_document_type" data-method="POST" data-lookup="section_document_type"
+            data-url-document-type="{% url "DocumentTypeMasterDataListAPI" %}"
     >
         {% csrf_token %}
         <div
@@ -72,17 +79,15 @@
                         <div class="row">
                             <div class="col-12 col-lg-4 col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label required">{% trans "Code" %}</label>
-                                    <input required class="form-control" type="text" name="code" placeholder="CODE01"
+                                    <label for="inp_code" class="form-label required">{% trans "Code" %}</label>
+                                    <input id="inp_code" required class="form-control" type="text" name="code" placeholder="CODE01"
                                            oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-8 col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label required">{% trans "Name" %}</label>
-                                    <input  required
-                                            class="form-control" type="text" name="title" placeholder="Input name"
-                                    >
+                                    <label  for="inp_name" class="form-label required">{% trans "Name" %}</label>
+                                    <input id="inp_name" required class="form-control" type="text" name="title" placeholder="Input name">
                                 </div>
                             </div>
                         </div>
@@ -92,7 +97,57 @@
                                     data-bs-dismiss="modal"
                             >{% trans 'Close' %}</button>
                             <button
-                                    type="submit" form="form-create-document-type"
+                                    type="submit" form="form_create_document_type"
+                                    class="btn btn-primary"
+                            >{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form
+            id="form_update_document_type" data-method="PUT" data-lookup="section_document_type"
+            data-url-update-document-type="{% url "DocumentTypeMasterDataDetailAPI" pk=0 %}"
+    >
+        {% csrf_token %}
+        <div
+                class="modal fade" id="modal_update_document_type" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenter"
+                aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Document Type" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12 col-lg-4 col-md-6">
+                                <div class="form-group">
+                                    <label for="inp_code" class="form-label required">{% trans "Code" %}</label>
+                                    <input id="inp_code" required class="form-control" type="text" name="code" placeholder="CODE01"
+                                           oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-8 col-md-6">
+                                <div class="form-group">
+                                    <label  for="inp_name" class="form-label required">{% trans "Name" %}</label>
+                                    <input id="inp_name" required class="form-control" type="text" name="title" placeholder="Input name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                    type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                            >{% trans 'Close' %}</button>
+                            <button
+                                    type="submit" form="form_update_document_type"
                                     class="btn btn-primary"
                             >{% trans 'Save' %}</button>
                         </div>

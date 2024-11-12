@@ -347,7 +347,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # masterdata/document
     DOCUMENT_TYPE_LIST = StringUrl('saledata/document-type')
-
+    DOCUMENT_TYPE_DETAIL = StringUrl('saledata/document-type/{pk}')
     # payment terms
     PAYMENT_TERMS = StringUrl('saledata/masterdata/config/payment-term')
 

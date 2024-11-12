@@ -128,7 +128,7 @@
                             <label class="form-label required" for="date-recurrence-daily">{% trans 'Recurrence date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" name="start-date" id="date-recurrence-daily"
-                                       class="form-control date-picker" autocomplete="off" required>
+                                       class="form-control date-picker" autocomplete="off" required disabled>
                                 <div class="input-suffix">
                                     <i class="fas fa-calendar-alt"></i>
                                 </div>
@@ -144,6 +144,7 @@
                                     data-keyResp=""
                                     data-keyText=""
                                     required
+                                    disabled
                             ></select>
                         </div>
                         <div class="form-group custom-area" id="custom-area-3" hidden>
@@ -156,13 +157,14 @@
                                     data-keyResp=""
                                     data-keyText=""
                                     required
+                                    disabled
                             ></select>
                         </div>
                         <div class="form-group custom-area" id="custom-area-4" hidden>
                             <label class="form-label required" for="date-recurrence-yearly">{% trans 'Recurrence date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" name="start-date" id="date-recurrence-yearly"
-                                       class="form-control date-picker" autocomplete="off" required>
+                                       class="form-control date-picker" autocomplete="off" required disabled>
                                 <div class="input-suffix">
                                     <i class="fas fa-calendar-alt"></i>
                                 </div>

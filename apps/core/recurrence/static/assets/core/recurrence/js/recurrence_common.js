@@ -159,6 +159,10 @@ class RecurrenceLoadDataHandle {
     static loadChangeByPeriod() {
         RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxRepeat, RecurrenceLoadDataHandle.dataRepeat[RecurrenceLoadDataHandle.$boxPeriod.val()]);
 
+        RecurrenceLoadDataHandle.$dateRecurrenceDaily[0].setAttribute('disabled', 'true');
+        RecurrenceLoadDataHandle.$boxDateWeekly[0].setAttribute('disabled', 'true');
+        RecurrenceLoadDataHandle.$boxDateMonthly[0].setAttribute('disabled', 'true');
+        RecurrenceLoadDataHandle.$dateRecurrenceYearly[0].setAttribute('disabled', 'true');
         for (let eleArea of RecurrenceLoadDataHandle.$periodArea[0].querySelectorAll('.custom-area')) {
             eleArea.setAttribute('hidden', 'true');
         }
@@ -173,6 +177,16 @@ class RecurrenceLoadDataHandle {
 
         return true;
     };
+
+    static loadChangeRepeat() {
+        if (RecurrenceLoadDataHandle.$boxRepeat.val()) {
+            RecurrenceLoadDataHandle.$dateRecurrenceDaily[0].removeAttribute('disabled');
+            RecurrenceLoadDataHandle.$boxDateWeekly[0].removeAttribute('disabled');
+            RecurrenceLoadDataHandle.$boxDateMonthly[0].removeAttribute('disabled');
+            RecurrenceLoadDataHandle.$dateRecurrenceYearly[0].removeAttribute('disabled');
+        }
+        return true;
+    }
 
     static loadExecutionDate() {
         RecurrenceLoadDataHandle.$dateNext.val("");
@@ -213,6 +227,16 @@ class RecurrenceLoadDataHandle {
         if (RecurrenceLoadDataHandle.$dateStart.val()) {
             let start = RecurrenceLoadDataHandle.loadConvertDate(RecurrenceLoadDataHandle.$dateStart.val());
             let rangeStart = new Date(start);
+            if (nextDate < rangeStart) {
+                return "";
+            }
+        }
+        if (RecurrenceLoadDataHandle.$dateEnd.val()) {
+            let end = RecurrenceLoadDataHandle.loadConvertDate(RecurrenceLoadDataHandle.$dateEnd.val());
+            let rangeEnd = new Date(end);
+            if (nextDate > rangeEnd) {
+                return "";
+            }
         }
 
 

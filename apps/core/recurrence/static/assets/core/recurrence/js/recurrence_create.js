@@ -18,6 +18,7 @@ $(function () {
         });
 
         RecurrenceLoadDataHandle.$boxRepeat.on('change', function () {
+            RecurrenceLoadDataHandle.loadChangeRepeat();
             RecurrenceLoadDataHandle.loadExecutionDate();
         });
 
@@ -30,6 +31,10 @@ $(function () {
         });
 
         RecurrenceLoadDataHandle.$dateStart.on('blur', function () {
+            RecurrenceLoadDataHandle.loadExecutionDate();
+        });
+
+        RecurrenceLoadDataHandle.$dateEnd.on('blur', function () {
             RecurrenceLoadDataHandle.loadExecutionDate();
         });
 

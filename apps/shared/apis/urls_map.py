@@ -403,6 +403,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore')
     PRODUCT_LIST_SALE_ORDER = StringUrl('saleorder/product/list/{pk}')
     SALE_ORDER_PRODUCT_WO_LIST = StringUrl('saleorder/sale-order-product-wo/list')
+    SALE_ORDER_RECURRENCE_LIST = StringUrl('saleorder/sale-order-recurrence/list')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')

@@ -204,27 +204,27 @@ class APLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-name-input" value="${row?.['expense_name'] ? row?.['expense_name'] : ''}">`
+                        return `<input required ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-name-input" value="${row?.['expense_name'] ? row?.['expense_name'] : ''}">`
                     }
                 },
                 {
                     'render': () => {
-                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-type-select-box"></select>`;
+                        return `<select required ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-type-select-box"></select>`;
                     }
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-uom-input" value="${row?.['expense_uom_name'] ? row?.['expense_uom_name'] : ''}">`;
+                        return `<input required ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-uom-input" value="${row?.['expense_uom_name'] ? row?.['expense_uom_name'] : ''}">`;
                     }
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} type="number" min="1" class="form-control expense_quantity" value="${row?.['expense_quantity'] ? row?.['expense_quantity'] : 1}">`;
+                        return `<input required ${option === 'detail' ? 'disabled readonly' : ''} type="number" min="1" class="form-control expense_quantity" value="${row?.['expense_quantity'] ? row?.['expense_quantity'] : 1}">`;
                     }
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} type="text" class="form-control expense-unit-price-input mask-money" value="${row?.['expense_unit_price'] ? row?.['expense_unit_price'] : 0}">`;
+                        return `<input required ${option === 'detail' ? 'disabled readonly' : ''} type="text" class="form-control expense-unit-price-input mask-money" value="${row?.['expense_unit_price'] ? row?.['expense_unit_price'] : 0}">`;
                     }
                 },
                 {
@@ -234,12 +234,12 @@ class APLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input type="text" class="form-control expense-subtotal-price mask-money zone-readonly" value="${row?.['expense_subtotal_price'] ? row?.['expense_subtotal_price'] : 0}" disabled readonly>`;
+                        return `<input required type="text" class="form-control expense-subtotal-price mask-money zone-readonly" value="${row?.['expense_subtotal_price'] ? row?.['expense_subtotal_price'] : 0}" disabled readonly>`;
                     }
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input type="text" class="form-control expense-subtotal-price-after-tax mask-money zone-readonly" value="${row?.['expense_after_tax_price'] ? row?.['expense_after_tax_price'] : 0}" disabled readonly>`;
+                        return `<input required type="text" class="form-control expense-subtotal-price-after-tax mask-money zone-readonly" value="${row?.['expense_after_tax_price'] ? row?.['expense_after_tax_price'] : 0}" disabled readonly>`;
                     }
                 },
                 {
@@ -252,6 +252,7 @@ class APLoadTab {
             initComplete: function () {
                 if (data.length > 0) {
                     tableLineDetail.find('tbody tr').each(function (index) {
+                        $(this).find('.expense-name-input').attr('name', `expense_name_row_${index}`)
                         APLoadTab.LoadExpenseItem($(this).find('.expense-type-select-box'), data[index]?.['expense_type'])
                         APLoadTab.LoadExpenseTax($(this).find('.expense-tax-select-box'), data[index]?.['expense_tax'])
                     })
@@ -1438,11 +1439,14 @@ APTypeEle.on('change', function () {
     }
 })
 
+let add_click = 0
 $(document).on("click", '#btn-add-row-line-detail', function () {
+    add_click += 1
     APAction.AddRow(tableLineDetail, {})
     let row_added = tableLineDetail.find('tbody tr:last-child')
     APLoadTab.LoadExpenseItem(row_added.find('.expense-type-select-box'))
     APLoadTab.LoadExpenseTax(row_added.find('.expense-tax-select-box'))
+    row_added.find('.expense-name-input').attr('name', `expense-name-${add_click}`)
 });
 
 $(document).on("click", '.btn-del-line-detail', function () {

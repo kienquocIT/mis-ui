@@ -328,7 +328,7 @@ class QuotationLoadDataHandle {
         let year = currentDate.getFullYear();
         let formattedDate = `${day}/${month}/${year}`;
         $('#quotation-create-date-created').val(formattedDate)
-    }
+    };
 
     static loadBoxQuotationPrice() {
         let ele = $('#select-box-quotation-create-price-list');

@@ -208,7 +208,7 @@
                             <label class="form-label required" for="date-next">{% trans 'Next execution date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" name="start-date" id="date-next"
-                                       class="form-control date-picker" autocomplete="off" required>
+                                       class="form-control date-picker" autocomplete="off" required disabled>
                                 <div class="input-suffix">
                                     <i class="fas fa-calendar-alt"></i>
                                 </div>
@@ -249,7 +249,7 @@
     >
     <input
         type="text"
-        id="app-url-factory"
+        id="app-urls-factory"
         data-sale-order="{% url 'SORecurrenceListAPI' %}"
     >
     {{ data.employee_current|json_script:'employee_current' }}

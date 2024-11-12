@@ -13,6 +13,26 @@ $(function () {
             RecurrenceLoadDataHandle.loadChangeApp();
         });
 
+        RecurrenceLoadDataHandle.$boxPeriod.on('change', function () {
+            RecurrenceLoadDataHandle.loadExecutionDate();
+        });
+
+        RecurrenceLoadDataHandle.$boxRepeat.on('change', function () {
+            RecurrenceLoadDataHandle.loadExecutionDate();
+        });
+
+        RecurrenceLoadDataHandle.$dateRecurrenceDaily.on('blur', function () {
+            RecurrenceLoadDataHandle.loadExecutionDate();
+        });
+
+        RecurrenceLoadDataHandle.$boxDateWeekly.on('change', function () {
+            RecurrenceLoadDataHandle.loadExecutionDate();
+        });
+
+        RecurrenceLoadDataHandle.$dateStart.on('blur', function () {
+            RecurrenceLoadDataHandle.loadExecutionDate();
+        });
+
 
 // SUBMIT FORM
         SetupFormSubmit.validate(formSubmit, {

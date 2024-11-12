@@ -8,7 +8,13 @@ class RecurrenceLoadDataHandle {
     static $boxPeriod = $('#box-period') ;
     static $boxRepeat = $('#box-repeat') ;
     static $periodArea = $('#period-area') ;
-    static $boxDateWeekly = $('#box-date-recurrence-weekly') ;
+    static $dateRecurrenceDaily = $('#date-recurrence-daily');
+    static $dateRecurrenceYearly = $('#date-recurrence-yearly');
+    static $boxDateWeekly = $('#box-date-recurrence-weekly');
+    static $boxDateMonthly = $('#box-date-recurrence-monthly');
+    static $dateStart = $('#date-start');
+    static $dateEnd = $('#date-end');
+    static $dateNext = $('#date-next');
 
     static $trans = $('#app-trans-factory');
     static $urls = $('#app-urls-factory');
@@ -26,59 +32,34 @@ class RecurrenceLoadDataHandle {
     static dataRepeat = {
         '1': [
             {'id': '', 'title': 'Select...',},
-            {'id': 1, 'title': '1', 'type': RecurrenceLoadDataHandle.$trans.attr('data-day')},
-            {'id': 2, 'title': '2', 'type': RecurrenceLoadDataHandle.$trans.attr('data-day')},
-            {'id': 3, 'title': '3', 'type': RecurrenceLoadDataHandle.$trans.attr('data-day')},
-            {'id': 4, 'title': '4', 'type': RecurrenceLoadDataHandle.$trans.attr('data-day')},
-            {'id': 5, 'title': '5', 'type': RecurrenceLoadDataHandle.$trans.attr('data-day')},
-            {'id': 6, 'title': '6', 'type': RecurrenceLoadDataHandle.$trans.attr('data-day')},
         ],
         '2': [
             {'id': '', 'title': 'Select...',},
-            {'id': 1, 'title': '1', 'type': RecurrenceLoadDataHandle.$trans.attr('data-week')},
-            {'id': 2, 'title': '2', 'type': RecurrenceLoadDataHandle.$trans.attr('data-week')},
-            {'id': 3, 'title': '3', 'type': RecurrenceLoadDataHandle.$trans.attr('data-week')},
         ],
         '3': [
             {'id': '', 'title': 'Select...',},
-            {'id': 1, 'title': '1', 'type': RecurrenceLoadDataHandle.$trans.attr('data-month')},
-            {'id': 2, 'title': '2', 'type': RecurrenceLoadDataHandle.$trans.attr('data-month')},
-            {'id': 3, 'title': '3', 'type': RecurrenceLoadDataHandle.$trans.attr('data-month')},
-            {'id': 4, 'title': '4', 'type': RecurrenceLoadDataHandle.$trans.attr('data-month')},
-            {'id': 5, 'title': '5', 'type': RecurrenceLoadDataHandle.$trans.attr('data-month')},
-            {'id': 6, 'title': '6', 'type': RecurrenceLoadDataHandle.$trans.attr('data-month')},
-            {'id': 7, 'title': '7', 'type': RecurrenceLoadDataHandle.$trans.attr('data-month')},
-            {'id': 8, 'title': '8', 'type': RecurrenceLoadDataHandle.$trans.attr('data-month')},
-            {'id': 9, 'title': '9', 'type': RecurrenceLoadDataHandle.$trans.attr('data-month')},
-            {'id': 10, 'title': '10', 'type': RecurrenceLoadDataHandle.$trans.attr('data-month')},
-            {'id': 11, 'title': '11', 'type': RecurrenceLoadDataHandle.$trans.attr('data-month')},
         ],
         '4': [
             {'id': '', 'title': 'Select...',},
-            {'id': 1, 'title': '1', 'type': RecurrenceLoadDataHandle.$trans.attr('data-year')},
-            {'id': 2, 'title': '2', 'type': RecurrenceLoadDataHandle.$trans.attr('data-year')},
-            {'id': 3, 'title': '3', 'type': RecurrenceLoadDataHandle.$trans.attr('data-year')},
-            {'id': 4, 'title': '4', 'type': RecurrenceLoadDataHandle.$trans.attr('data-year')},
-            {'id': 5, 'title': '5', 'type': RecurrenceLoadDataHandle.$trans.attr('data-year')},
-            {'id': 6, 'title': '6', 'type': RecurrenceLoadDataHandle.$trans.attr('data-year')},
-            {'id': 7, 'title': '7', 'type': RecurrenceLoadDataHandle.$trans.attr('data-year')},
-            {'id': 8, 'title': '8', 'type': RecurrenceLoadDataHandle.$trans.attr('data-year')},
-            {'id': 9, 'title': '9', 'type': RecurrenceLoadDataHandle.$trans.attr('data-year')},
-            {'id': 10, 'title': '10', 'type': RecurrenceLoadDataHandle.$trans.attr('data-year')},
         ]
     };
     static dataDateRecurrenceWeekly = [
+        {'id': 0, 'title': RecurrenceLoadDataHandle.$trans.attr('data-sunday')},
+        {'id': 1, 'title': RecurrenceLoadDataHandle.$trans.attr('data-monday')},
+        {'id': 2, 'title': RecurrenceLoadDataHandle.$trans.attr('data-tuesday')},
+        {'id': 3, 'title': RecurrenceLoadDataHandle.$trans.attr('data-wednesday')},
+        {'id': 4, 'title': RecurrenceLoadDataHandle.$trans.attr('data-thursday')},
+        {'id': 5, 'title': RecurrenceLoadDataHandle.$trans.attr('data-friday')},
+        {'id': 6, 'title': RecurrenceLoadDataHandle.$trans.attr('data-saturday')},
+    ];
+    static dataDateRecurrenceMonthly = [
         {'id': '', 'title': 'Select...',},
-        {'id': 2, 'title': RecurrenceLoadDataHandle.$trans.attr('data-monday')},
-        {'id': 3, 'title': RecurrenceLoadDataHandle.$trans.attr('data-tuesday')},
-        {'id': 4, 'title': RecurrenceLoadDataHandle.$trans.attr('data-wednesday')},
-        {'id': 5, 'title': RecurrenceLoadDataHandle.$trans.attr('data-thursday')},
-        {'id': 6, 'title': RecurrenceLoadDataHandle.$trans.attr('data-friday')},
-        {'id': 7, 'title': RecurrenceLoadDataHandle.$trans.attr('data-saturday')},
-        {'id': 8, 'title': RecurrenceLoadDataHandle.$trans.attr('data-sunday')},
     ];
     static appMapUrl = {
-        'saleorder.saleorder': RecurrenceLoadDataHandle.$urls.attr('data-sale-order'),
+        'saleorder.saleorder': {
+            'url': RecurrenceLoadDataHandle.$urls.attr('data-sale-order'),
+            'keyResp': "sale_order_recurrence",
+        },
     }
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -105,6 +86,37 @@ class RecurrenceLoadDataHandle {
     };
 
     static loadInitPage() {
+        // data
+        for (let i = 1; i <= 6; i++) {
+            RecurrenceLoadDataHandle.dataRepeat["1"].push({
+                    'id': i,
+                    'title': `${i} ${RecurrenceLoadDataHandle.$trans.attr('data-day')}`
+                })
+        }
+        for (let i = 1; i <= 3; i++) {
+            RecurrenceLoadDataHandle.dataRepeat["2"].push({
+                    'id': i,
+                    'title': `${i} ${RecurrenceLoadDataHandle.$trans.attr('data-week')}`
+                })
+        }
+        for (let i = 1; i <= 11; i++) {
+            RecurrenceLoadDataHandle.dataRepeat["3"].push({
+                    'id': i,
+                    'title': `${i} ${RecurrenceLoadDataHandle.$trans.attr('data-month')}`
+                })
+        }
+        for (let i = 1; i <= 5; i++) {
+            RecurrenceLoadDataHandle.dataRepeat["4"].push({
+                    'id': i,
+                    'title': `${i} ${RecurrenceLoadDataHandle.$trans.attr('data-year')}`
+                })
+        }
+        for (let i = 1; i <= 31; i++) {
+            RecurrenceLoadDataHandle.dataDateRecurrenceMonthly.push({
+                    'id': i,
+                    'title': `${RecurrenceLoadDataHandle.$trans.attr('data-day')} ${i}`
+                })
+        }
         // select2
         RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxStatus, RecurrenceLoadDataHandle.dataStatus);
         RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxApp, [], {"is_workflow": true});
@@ -137,14 +149,15 @@ class RecurrenceLoadDataHandle {
             let data = SelectDDControl.get_data_from_idx(RecurrenceLoadDataHandle.$boxApp, RecurrenceLoadDataHandle.$boxApp.val());
             if (data?.['app_label'] && data?.['model_code']) {
                 let contentType = data?.['app_label'] + "." + data?.['model_code'];
-                RecurrenceLoadDataHandle.$boxDocTem.attr('data-url', RecurrenceLoadDataHandle.appMapUrl[contentType]);
+                RecurrenceLoadDataHandle.$boxDocTem.attr('data-url', RecurrenceLoadDataHandle.appMapUrl[contentType]?.['url']);
+                RecurrenceLoadDataHandle.$boxDocTem.attr('data-keyResp', RecurrenceLoadDataHandle.appMapUrl[contentType]?.['keyResp']);
                 RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxDocTem, [], {"is_recurring": true});
             }
         }
     }
 
     static loadChangeByPeriod() {
-        RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxRepeat, RecurrenceLoadDataHandle.dataRepeat[RecurrenceLoadDataHandle.$boxPeriod.val()], {}, null, false, {'res1': 'title', 'res2': 'type'});
+        RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxRepeat, RecurrenceLoadDataHandle.dataRepeat[RecurrenceLoadDataHandle.$boxPeriod.val()]);
 
         for (let eleArea of RecurrenceLoadDataHandle.$periodArea[0].querySelectorAll('.custom-area')) {
             eleArea.setAttribute('hidden', 'true');
@@ -154,9 +167,79 @@ class RecurrenceLoadDataHandle {
         if (RecurrenceLoadDataHandle.$boxPeriod.val() === "2") {
             RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxDateWeekly, RecurrenceLoadDataHandle.dataDateRecurrenceWeekly);
         }
+        if (RecurrenceLoadDataHandle.$boxPeriod.val() === "3") {
+            RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxDateMonthly, RecurrenceLoadDataHandle.dataDateRecurrenceMonthly);
+        }
 
         return true;
     };
+
+    static loadExecutionDate() {
+        RecurrenceLoadDataHandle.$dateNext.val("");
+        if (RecurrenceLoadDataHandle.$boxPeriod.val() && RecurrenceLoadDataHandle.$boxRepeat.val()) {
+            if (RecurrenceLoadDataHandle.$boxPeriod.val() === "1") {
+                if (RecurrenceLoadDataHandle.$dateRecurrenceDaily.val()) {
+                    let next = RecurrenceLoadDataHandle.getNextDaily(RecurrenceLoadDataHandle.$dateRecurrenceDaily.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()));
+                    RecurrenceLoadDataHandle.$dateNext.val(next);
+                }
+            }
+            if (RecurrenceLoadDataHandle.$boxPeriod.val() === "2") {
+                if (RecurrenceLoadDataHandle.$boxDateWeekly.val() && RecurrenceLoadDataHandle.$dateStart.val()) {
+                    let next = RecurrenceLoadDataHandle.getNextWeekly(RecurrenceLoadDataHandle.$dateStart.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()), parseInt(RecurrenceLoadDataHandle.$boxDateWeekly.val()));
+                    RecurrenceLoadDataHandle.$dateNext.val(next);
+                }
+            }
+        }
+        return true;
+    };
+
+    static loadConvertDate(startDate) {
+        let [day, month, year] = startDate.split('/');
+        startDate = new Date(`${year}-${month}-${day}`);
+        return startDate;
+    };
+
+    static getNextDaily(startDate, repeatIntervalDays, occurrences = 1) {
+        startDate = RecurrenceLoadDataHandle.loadConvertDate(startDate);
+        let nextDate = new Date(startDate); // Convert startDate to Date object
+        nextDate.setDate(nextDate.getDate() + repeatIntervalDays * occurrences);
+
+        // Format to DD/MM/YYYY
+        let nextDay = String(nextDate.getDate()).padStart(2, '0'); // Ensure day is two digits
+        let nextMonth = String(nextDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        let nextYear = nextDate.getFullYear();
+
+
+        if (RecurrenceLoadDataHandle.$dateStart.val()) {
+            let start = RecurrenceLoadDataHandle.loadConvertDate(RecurrenceLoadDataHandle.$dateStart.val());
+            let rangeStart = new Date(start);
+        }
+
+
+        return `${nextDay}/${nextMonth}/${nextYear}`;
+    };
+
+    static getNextWeekly(startDate, repeatIntervalWeeks, targetDayOfWeek) {
+        startDate = RecurrenceLoadDataHandle.loadConvertDate(startDate);
+        const currentDayOfWeek = startDate.getDay(); // Get weekday as a number (0 = Sunday, 1 = Monday, ...)
+
+        // Calculate the difference in days from the start day to the target weekday
+        let daysUntilTarget = targetDayOfWeek - currentDayOfWeek;
+        if (daysUntilTarget <= 0) {
+            daysUntilTarget += 7; // Adjust if target day is today or has already passed this week
+        }
+
+        // Set the next recurrence date by adding the calculated days and weeks interval
+        const nextDate = new Date(startDate);
+        nextDate.setDate(nextDate.getDate() + daysUntilTarget + (repeatIntervalWeeks - 1) * 7);
+
+        // Format to DD/MM/YYYY
+        let nextDay = String(nextDate.getDate()).padStart(2, '0'); // Ensure day is two digits
+        let nextMonth = String(nextDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        let nextYear = nextDate.getFullYear();
+
+        return `${nextDay}/${nextMonth}/${nextYear}`;
+    }
 
 }
 

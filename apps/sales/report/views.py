@@ -151,7 +151,6 @@ class ReportInventoryList(View):
         breadcrumb='REPORT_INVENTORY_COST_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        data_context_chatbot = ''
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
         resp2 = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()
         resp3 = ServerAPI(

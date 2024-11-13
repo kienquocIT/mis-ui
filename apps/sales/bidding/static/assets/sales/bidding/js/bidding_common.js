@@ -11,6 +11,8 @@ class BiddingLoadDataHandle {
     static $salePersonSelectEle = $('#employee_inherit_id');
     static $transScript = $('#trans-script')
     static $docDataScript = $('#doc-data-script')
+    static $partnerDataScript = $('#partner-data-script')
+    static $bidderDataScript = $('#bidder-data-script')
     static $btnOpenDocModal = $('#btn-open-document-modal')
     static $btnOpenPartnerModal = $('#btn-open-partner-modal')
     static $btnOpenBidderModal = $('#btn-open-bidder-modal')
@@ -267,8 +269,10 @@ class BiddingLoadDataHandle {
         BiddingDataTableHandle.dataTableDocument(bids, data['isDetail'])
         BiddingDataTableHandle.dataTableDocumentModal(bids)
 
-        // data for documents
+        // data for documents, partner, other bidders
         BiddingLoadDataHandle.$docDataScript.attr('data-doc-list', JSON.stringify(data['attachment_m2m']))
+        BiddingLoadDataHandle.$partnerDataScript.attr('data-partner-list', JSON.stringify(data['venture_partner']))
+        BiddingLoadDataHandle.$bidderDataScript.attr('data-bidder-list', JSON.stringify(data['other_bidder']))
 
         BiddingTinymceHandle.initTinymce(data?.['tinymce_content'])
         $.fn.initMaskMoney2()
@@ -308,15 +312,20 @@ class BiddingDataTableHandle {
         let data = isPartner ?  {"is_partner_account": true} : {"is_competitor_account": true}
         let ids = []
         if(isPartner){
-            let partnerAccountId = BiddingDataTableHandle.$tableVenture.find('.table-row-order').data('partner_account');
-            if (partnerAccountId) {
-                ids.push(partnerAccountId);
-            }
+            BiddingDataTableHandle.$tableVenture.find('.table-row-order').each(function () {
+                let partnerAccountId = $(this).data('partner_account');
+                if (partnerAccountId) {
+                    ids.push(partnerAccountId);
+                }
+            })
+
         } else {
-            let bidderAccountId = BiddingDataTableHandle.$tableBidder.find('.table-row-order').data('bidder_account');
-            if (bidderAccountId) {
-                ids.push(bidderAccountId);
-            }
+            BiddingDataTableHandle.$tableBidder.find('.table-row-order').each(function () {
+                let bidderAccountId = $(this).data('bidder_account');
+                if (bidderAccountId) {
+                    ids.push(bidderAccountId);
+                }
+            })
         }
         if ($.fn.DataTable.isDataTable(BiddingDataTableHandle.$tableAccountModal)) {
             BiddingDataTableHandle.$tableAccountModal.DataTable().destroy();

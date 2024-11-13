@@ -40,6 +40,8 @@ $(document).ready(function () {
     }
 
     BiddingLoadDataHandle.$btnOpenPartnerModal.on('click', function () {
+        let data = BiddingSubmitHandle.setupDataPartner()
+        BiddingLoadDataHandle.$partnerDataScript.attr('data-partner-list', JSON.stringify(data))
         let title = transScript.attr('data-trans-modal-venture-title')
         BiddingLoadDataHandle.$modalAccount.find('.modal-title').html(title)
         BiddingLoadDataHandle.$modalAccount.attr('data-type', 'partner')
@@ -51,25 +53,26 @@ $(document).ready(function () {
     });
 
     BiddingLoadDataHandle.$btnAddAccount.on('click', function (e) {
-        data = []
+        let data = []
+        let dataPartnerList = JSON.parse(BiddingLoadDataHandle.$partnerDataScript.attr('data-partner-list') || '[]')
         $("#account-modal-table .form-check-checkbox:checked").each(function (e) {
             let selectedRow = $(this).closest("tr");
             let id = $(this).data('id');
             let type = $(this).data('type');
             if (type === "partner"){
+                let is_leader = false
+                if (dataPartnerList.find(item => item?.['partner_account'] === id)){
+                    if (dataPartnerList.find(item => item?.['partner_account'] === id)?.["is_leader"]){
+                        is_leader=true
+                    }
+                }
                 data.push({
                     "partner_account": id,
                     "code": selectedRow.find(".table-row-code").text(),
                     "title": selectedRow.find(".table-row-title").text(),
+                    "is_leader": is_leader
                 })
                 BiddingLoadDataHandle.loadAddVenture(data)
-            } else if(type === "bidder"){
-                data.push({
-                    "bidder_account": id,
-                    "code": selectedRow.find(".table-row-code").text(),
-                    "title": selectedRow.find(".table-row-title").text(),
-                })
-                BiddingLoadDataHandle.loadAddBidder(data)
             }
         })
     })

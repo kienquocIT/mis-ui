@@ -7,8 +7,7 @@ from apps.shared import mask_view, ServerAPI, ApiURL
 from apps.shared.msg import ReportMsg
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-# from transformers import BertTokenizer, BertForQuestionAnswering
-# import torch
+from django.core.cache import cache
 
 FILTER_QUARTER = (
     (1, ReportMsg.QUARTER_FIRST),
@@ -283,6 +282,7 @@ class GetQRCodeSerialInfoAPI(APIView):
 
 
 class ReportInventoryChatBotAPI(APIView):
+
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -291,24 +291,16 @@ class ReportInventoryChatBotAPI(APIView):
         params = request.query_params.dict()
         contexts = params.get('contexts')
         question = params.get('question')
-        context_sentences = [sentence.strip() for sentence in contexts.split('.') if sentence]
-        # Tạo vector TF-IDF cho từng câu
+
         vectorizer = TfidfVectorizer()
+        context_sentences = [sentence.strip() for sentence in contexts.split('.') if sentence]
+        cache.set(f"context_sentences_{hash(contexts)}", context_sentences, timeout=300)  # Lưu trong cache 5p
         context_vectors = vectorizer.fit_transform(context_sentences)
+        cache.set(f"context_vectors_{hash(contexts)}", context_vectors, timeout=300)  # Lưu trong cache 5p
+
         question_vector = vectorizer.transform([question])
         similarities = cosine_similarity(question_vector, context_vectors).flatten()
         best_context = context_sentences[similarities.argmax()]
-
-        # model_name = "bert-large-uncased-whole-word-masking-finetuned-squad"
-        # tokenizer = BertTokenizer.from_pretrained(model_name)
-        # model = BertForQuestionAnswering.from_pretrained(model_name)
-        # inputs = tokenizer.encode_plus(question, best_context, add_special_tokens=True, return_tensors="pt")
-        # with torch.no_grad():
-            # outputs = model(**inputs)
-        # start_index = torch.argmax(outputs.start_logits)
-        # end_index = torch.argmax(outputs.end_logits)
-        # answer_tokens = inputs['input_ids'][0][start_index:end_index + 1]
-        # answer = tokenizer.decode(answer_tokens)
 
         return {'response': best_context}, status.HTTP_200_OK
 

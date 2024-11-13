@@ -241,7 +241,7 @@ $(document).ready(function () {
                                     class="popover-prd text-secondary">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
-                                <span class="${row?.['type']}">${row?.['product_title']}</span>&nbsp;
+                                <span class="${row?.['type']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
                             `
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
@@ -1398,7 +1398,7 @@ $(document).ready(function () {
 
     // chat bot
 
-// Lấy các phần tử
+    // Lấy các phần tử
     let chat_contexts = ''
     const chatPopup = $('#chatPopup')
     const toggleChat = $('#toggleChat')
@@ -1410,29 +1410,31 @@ $(document).ready(function () {
     function pushUserChat() {
         const message = chatInput.val().trim();
         if (message.length > 10) {
+            let dataParam = {}
+
             const messageElement = $(`<div style="display: flex; justify-content: flex-end;" class="mt-2">
-                <div class="me border border-light rounded bg-primary-light-5 p-2" style="max-width: 70%">${message}</div>
+                <div class="me border border-light rounded bg-primary-light-5 p-2" style="max-width: 80%">${message}</div>
             </div>`);
             chatShowSpace.append(messageElement);
             chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
             chatInput.val('');
 
             let messageResponse = $(`<div class="mt-2">
-                <div class="you border border-light rounded bg-blue-light-5 p-2" style="max-width: 70%">typing...</div>
+                <div class="you border border-light rounded bg-blue-light-5 p-2" style="max-width: 80%">typing...</div>
             </div>`);
             chatShowSpace.append(messageResponse)
 
             if (chat_contexts.length === 0) {
                 $('#table-inventory-report').find('tbody tr').each(function () {
                     if (!$(this).hasClass('fixed-row')) {
-                        chat_contexts += `${$(this).find('td:eq(0) span').text()} tồn đầu ${$(this).find('td:eq(2) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()}.`
-                        chat_contexts += `${$(this).find('td:eq(0) span').text()} đã nhập ${$(this).find('td:eq(3) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()}.`
-                        chat_contexts += `${$(this).find('td:eq(0) span').text()} đã xuất ${$(this).find('td:eq(4) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()}.`
-                        chat_contexts += `${$(this).find('td:eq(0) span').text()} còn tồn kho ${$(this).find('td:eq(5) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()}.`
-                        chat_contexts += `${$(this).find('td:eq(0) span').text()} có giá cost đầu kì là ${$(this).find('td:eq(2) .opening-value-span').attr('data-init-money')} VND.`
-                        chat_contexts += `${$(this).find('td:eq(0) span').text()} có giá cost nhập vào là ${$(this).find('td:eq(3) .in-value-span').attr('data-init-money')} VND.`
-                        chat_contexts += `${$(this).find('td:eq(0) span').text()} có giá cost xuất ra là ${$(this).find('td:eq(4) .out-value-span').attr('data-init-money')} VND.`
-                        chat_contexts += `${$(this).find('td:eq(0) span').text()} có giá cost cuối kì là ${$(this).find('td:eq(5) .ending-value-span').attr('data-init-money')} VND.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} tồn đầu ${$(this).find('td:eq(2) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()} ở kho ${$(this).find('td:eq(0) span').attr('data-wh-title')}.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} đã nhập ${$(this).find('td:eq(3) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()} ở kho ${$(this).find('td:eq(0) span').attr('data-wh-title')}.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} đã xuất ${$(this).find('td:eq(4) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()} ở kho ${$(this).find('td:eq(0) span').attr('data-wh-title')}.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} còn tồn kho ${$(this).find('td:eq(5) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()} ở kho ${$(this).find('td:eq(0) span').attr('data-wh-title')}.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} có giá cost đầu kì là ${$(this).find('td:eq(2) .opening-value-span').attr('data-init-money')} VND ở kho ${$(this).find('td:eq(0) span').attr('data-wh-title')}.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} có giá cost nhập vào là ${$(this).find('td:eq(3) .in-value-span').attr('data-init-money')} VND ở kho ${$(this).find('td:eq(0) span').attr('data-wh-title')}.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} có giá cost xuất ra là ${$(this).find('td:eq(4) .out-value-span').attr('data-init-money')} VND ở kho ${$(this).find('td:eq(0) span').attr('data-wh-title')}.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} có giá cost cuối kì là ${$(this).find('td:eq(5) .ending-value-span').attr('data-init-money')} VND ở kho ${$(this).find('td:eq(0) span').attr('data-wh-title')}.`
                     }
                     else {
                         chat_contexts += `${$(this).find('td:eq(0) .warehouse_row').text()} tồn đầu ${$(this).find('td:eq(2) .wh-opening-quantity-span').text()}, với giá trị ${parseInt($(this).find('td:eq(2) .wh-opening-value-span').attr('data-init-money'))} VND.`
@@ -1443,7 +1445,6 @@ $(document).ready(function () {
                 })
             }
 
-            let dataParam = {}
             dataParam['contexts'] = chat_contexts
             dataParam['question'] = message
             let chatbot_response_ajax = $.fn.callAjax2({
@@ -1470,7 +1471,7 @@ $(document).ready(function () {
         }
         else {
             let message = $('#trans-script').attr('data-trans-no-response')
-            let messageResponse = $(`<div class="mt-2"><div class="you border border-light rounded bg-blue-light-5 p-2" style="max-width: 70%">${message}</div></div>`);
+            let messageResponse = $(`<div class="mt-2"><div class="you border border-light rounded bg-blue-light-5 p-2" style="max-width: 80%">${message}</div></div>`);
             chatShowSpace.append(messageResponse)
             chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
             chatInput.val('');

@@ -637,6 +637,7 @@ $(document).ready(function () {
 
             Promise.all([inventory_detail_list_ajax]).then(
                 (results) => {
+                    chat_contexts = ''
                     let results_data = []
                     for (const item of results[0]) {
                         if (Object.keys(item?.['warehouse']).length > 0) {
@@ -1394,4 +1395,105 @@ $(document).ready(function () {
         LoadWarehouseSelectBox(warehouses_select_Ele)
         LoadProjectSelectBox(project_select_Ele)
     })
+
+    // chat bot
+
+// Lấy các phần tử
+    let chat_contexts = ''
+    const chatPopup = $('#chatPopup')
+    const toggleChat = $('#toggleChat')
+    const closeChatBtn = $('.close-chat')
+    const chatInput = $('#input-chat')
+    const chatShowSpace = $('#chat-show-space')
+    const sendMessage = $('#send-message')
+
+    function pushUserChat() {
+        const message = chatInput.val().trim();
+        if (message.length > 10) {
+            const messageElement = $(`<div style="display: flex; justify-content: flex-end;" class="mt-2">
+                <div class="me border border-light rounded bg-primary-light-5 p-2" style="max-width: 70%">${message}</div>
+            </div>`);
+            chatShowSpace.append(messageElement);
+            chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
+            chatInput.val('');
+
+            let messageResponse = $(`<div class="mt-2">
+                <div class="you border border-light rounded bg-blue-light-5 p-2" style="max-width: 70%">typing...</div>
+            </div>`);
+            chatShowSpace.append(messageResponse)
+
+            if (chat_contexts.length === 0) {
+                $('#table-inventory-report').find('tbody tr').each(function () {
+                    if (!$(this).hasClass('fixed-row')) {
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} tồn đầu ${$(this).find('td:eq(2) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()}.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} đã nhập ${$(this).find('td:eq(3) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()}.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} đã xuất ${$(this).find('td:eq(4) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()}.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} còn tồn kho ${$(this).find('td:eq(5) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()}.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} có giá cost đầu kì là ${$(this).find('td:eq(2) .opening-value-span').attr('data-init-money')} VND.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} có giá cost nhập vào là ${$(this).find('td:eq(3) .in-value-span').attr('data-init-money')} VND.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} có giá cost xuất ra là ${$(this).find('td:eq(4) .out-value-span').attr('data-init-money')} VND.`
+                        chat_contexts += `${$(this).find('td:eq(0) span').text()} có giá cost cuối kì là ${$(this).find('td:eq(5) .ending-value-span').attr('data-init-money')} VND.`
+                    }
+                    else {
+                        chat_contexts += `${$(this).find('td:eq(0) .warehouse_row').text()} tồn đầu ${$(this).find('td:eq(2) .wh-opening-quantity-span').text()}, với giá trị ${parseInt($(this).find('td:eq(2) .wh-opening-value-span').attr('data-init-money'))} VND.`
+                        chat_contexts += `${$(this).find('td:eq(0) .warehouse_row').text()} đã nhập ${$(this).find('td:eq(3) .wh-in-quantity-span').text()}, với giá trị ${parseInt($(this).find('td:eq(3) .wh-in-value-span').attr('data-init-money'))} VND.`
+                        chat_contexts += `${$(this).find('td:eq(0) .warehouse_row').text()} đã xuất ${$(this).find('td:eq(4) .wh-out-quantity-span').text()}, với giá trị ${parseInt($(this).find('td:eq(4) .wh-out-value-span').attr('data-init-money'))} VND.`
+                        chat_contexts += `${$(this).find('td:eq(0) .warehouse_row').text()} còn tồn kho ${$(this).find('td:eq(5) .wh-ending-quantity-span').text()}, với giá trị ${parseInt($(this).find('td:eq(5) .wh-ending-value-span').attr('data-init-money'))} VND.`
+                    }
+                })
+            }
+
+            let dataParam = {}
+            dataParam['contexts'] = chat_contexts
+            dataParam['question'] = message
+            let chatbot_response_ajax = $.fn.callAjax2({
+                url: $('#url-script').attr('data-url-chatbot'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('response')) {
+                        return data?.['response'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([chatbot_response_ajax]).then(
+                (results) => {
+                    messageResponse.find('.you').text(results[0] === '' ? $('#trans-script').attr('data-trans-no-response') : results[0])
+                })
+        }
+        else {
+            let message = $('#trans-script').attr('data-trans-no-response')
+            let messageResponse = $(`<div class="mt-2"><div class="you border border-light rounded bg-blue-light-5 p-2" style="max-width: 70%">${message}</div></div>`);
+            chatShowSpace.append(messageResponse)
+            chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
+            chatInput.val('');
+        }
+    }
+
+    toggleChat.on('click', function () {
+        chatPopup.toggleClass('active bg-primary');
+        toggleChat.toggleClass('text-white');
+    });
+
+    closeChatBtn.on('click', function () {
+        chatPopup.remove();
+    });
+
+    chatInput.on('keypress', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            pushUserChat()
+        }
+    });
+
+    sendMessage.on('click', function () {
+        pushUserChat()
+    });
 })

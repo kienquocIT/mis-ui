@@ -2,7 +2,7 @@ $(function () {
 
     $(document).ready(function () {
 
-        let formSubmit = $('#frm_recurrence_order');
+        let formSubmit = $('#frm_recurrence_create');
         RecurrenceLoadDataHandle.loadInitPage();
 
         RecurrenceLoadDataHandle.$boxPeriod.on('change', function () {
@@ -67,7 +67,8 @@ $(function () {
             }
             let submitFields = [
                 'title',
-                'application',
+                'application_id',
+                'application_data',
                 'app_code',
                 'doc_template_id',
                 'doc_template_data',

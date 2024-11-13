@@ -308,11 +308,11 @@ class MenusCRM:
         icon='<i class="fas fa-recycle"></i>',
         child=[
             MenuCommon(
-                name='Recurring order', code='id_menu_recurring_order', view_name='RecurrenceCreate',
+                name='Recurring order', code='menu_recurring_order', view_name='RecurrenceList',
                 icon='<i class="fas fa-file"></i>',
             ),
             MenuCommon(
-                name='Transaction template', code='id_menu_transaction_template', view_name='RecurrenceCreate',
+                name='Transaction template', code='menu_transaction_template', view_name='RecurrenceCreate',
                 icon='<i class="fas fa-file-alt"></i>',
             ),
         ],

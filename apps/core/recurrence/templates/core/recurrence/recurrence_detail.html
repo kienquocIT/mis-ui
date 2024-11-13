@@ -5,21 +5,23 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_recurrence_create">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
+    <a href="{% url 'RecurrenceUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 
 {% block pageContent %}
     <form
-            data-url="{% url 'RecurrenceListAPI' %}"
+            data-url="{% url 'RecurrenceDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'RecurrenceList' %}"
-            data-method="POST"
+            data-method="GET"
             id="frm_recurrence_create"
             method="post"
     >
@@ -32,7 +34,7 @@
                             type="text" class="form-control"
                             name="title"
                             id="title"
-                            required
+                            readonly
                     >
                 </div>
             </div>
@@ -45,7 +47,7 @@
                         data-url=""
                         data-method="GET"
                         data-link-detail=""
-                        name="recurrence_status"
+                        name="status"
                         data-keyResp=""
                         readonly
                     ></select>
@@ -64,7 +66,7 @@
                             name="application"
                             data-keyResp="tenant_application_list"
                             data-keyText="title_i18n"
-                            required
+                            readonly
                     ></select>
                 </div>
             </div>
@@ -81,7 +83,7 @@
                             name="doc_template"
                             data-keyResp=""
                             data-keyText=""
-                            required
+                            readonly
                     ></select>
                 </div>
             </div>
@@ -100,7 +102,7 @@
                                     name="doc_template"
                                     data-keyResp=""
                                     data-keyText=""
-                                    required
+                                    readonly
                             ></select>
                         </div>
                     </div>
@@ -115,7 +117,7 @@
                                     name="doc_template"
                                     data-keyResp=""
                                     data-keyText=""
-                                    required
+                                    readonly
                             ></select>
                         </div>
                     </div>
@@ -144,7 +146,7 @@
                                     data-keyResp=""
                                     data-keyText=""
                                     required
-                                    disabled
+                                    readonly
                             ></select>
                         </div>
                         <div class="form-group custom-area" id="custom-area-3" hidden>
@@ -157,7 +159,7 @@
                                     data-keyResp=""
                                     data-keyText=""
                                     required
-                                    disabled
+                                    readonly
                             ></select>
                         </div>
                         <div class="form-group custom-area" id="custom-area-4" hidden>
@@ -182,7 +184,7 @@
                             <label class="form-label required" for="date-start">{% trans 'Start date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" name="start-date" id="date-start"
-                                       class="form-control date-picker" autocomplete="off" required>
+                                       class="form-control date-picker" autocomplete="off" required disabled>
                                 <div class="input-suffix">
                                     <i class="fas fa-calendar-alt"></i>
                                 </div>
@@ -194,7 +196,7 @@
                             <label class="form-label required" for="date-end">{% trans 'End date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" name="end-date" id="date-end"
-                                       class="form-control date-picker" autocomplete="off" required>
+                                       class="form-control date-picker" autocomplete="off" required disabled>
                                 <div class="input-suffix">
                                     <i class="fas fa-calendar-alt"></i>
                                 </div>
@@ -263,4 +265,5 @@
 
     <script src="{% static 'assets/core/recurrence/js/recurrence_common.js' %}"></script>
     <script src="{% static 'assets/core/recurrence/js/recurrence_create.js' %}"></script>
+    <script src="{% static 'assets/core/recurrence/js/recurrence_detail.js' %}"></script>
 {% endblock %}

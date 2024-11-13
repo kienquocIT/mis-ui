@@ -1,6 +1,6 @@
 // Load data
 class RecurrenceLoadDataHandle {
-    static $form = $('#frm_production_order');
+    static $form = $('#frm_recurrence_create');
     static $title = $('#title');
     static $boxStatus = $('#box-status') ;
     static $boxApp = $('#box-app') ;
@@ -155,7 +155,7 @@ class RecurrenceLoadDataHandle {
                 RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxDocTem, [], {"is_recurring": true});
             }
         }
-    }
+    };
 
     static loadChangeByPeriod() {
         RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxRepeat, RecurrenceLoadDataHandle.dataRepeat[RecurrenceLoadDataHandle.$boxPeriod.val()]);
@@ -195,7 +195,7 @@ class RecurrenceLoadDataHandle {
         if (RecurrenceLoadDataHandle.$boxPeriod.val() && RecurrenceLoadDataHandle.$boxRepeat.val() && RecurrenceLoadDataHandle.$dateEnd.val() && RecurrenceLoadDataHandle.$dateStart.val() && RecurrenceLoadDataHandle.$dateEnd.val()) {
             if (RecurrenceLoadDataHandle.$boxPeriod.val() === "1") {
                 if (RecurrenceLoadDataHandle.$dateRecurrenceDaily.val()) {
-                    nextList = RecurrenceLoadDataHandle.getRecurrencesDailyInRange(RecurrenceLoadDataHandle.$dateRecurrenceDaily.val(), RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateEnd.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()));
+                    nextList = RecurrenceCalculateHandle.getRecurrencesDailyInRange(RecurrenceLoadDataHandle.$dateRecurrenceDaily.val(), RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateEnd.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()));
                     if (nextList.length > 0) {
                         let next = RecurrenceLoadDataHandle.loadConvertDate(nextList[0], 1);
                         RecurrenceLoadDataHandle.$dateNext.val(next);
@@ -204,7 +204,7 @@ class RecurrenceLoadDataHandle {
             }
             if (RecurrenceLoadDataHandle.$boxPeriod.val() === "2") {
                 if (RecurrenceLoadDataHandle.$boxDateWeekly.val()) {
-                    nextList = RecurrenceLoadDataHandle.getRecurrencesWeeklyInRange(RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateEnd.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()), parseInt(RecurrenceLoadDataHandle.$boxDateWeekly.val()));
+                    nextList = RecurrenceCalculateHandle.getRecurrencesWeeklyInRange(RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateEnd.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()), parseInt(RecurrenceLoadDataHandle.$boxDateWeekly.val()));
                     if (nextList.length > 0) {
                         let next = RecurrenceLoadDataHandle.loadConvertDate(nextList[0], 1);
                         RecurrenceLoadDataHandle.$dateNext.val(next);
@@ -213,7 +213,7 @@ class RecurrenceLoadDataHandle {
             }
             if (RecurrenceLoadDataHandle.$boxPeriod.val() === "3") {
                 if (RecurrenceLoadDataHandle.$boxDateMonthly.val()) {
-                    nextList = RecurrenceLoadDataHandle.getRecurrencesMonthlyInRange(RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateEnd.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()), parseInt(RecurrenceLoadDataHandle.$boxDateMonthly.val()));
+                    nextList = RecurrenceCalculateHandle.getRecurrencesMonthlyInRange(RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateEnd.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()), parseInt(RecurrenceLoadDataHandle.$boxDateMonthly.val()));
                     if (nextList.length > 0) {
                         let next = RecurrenceLoadDataHandle.loadConvertDate(nextList[0], 1);
                         RecurrenceLoadDataHandle.$dateNext.val(next);
@@ -222,7 +222,7 @@ class RecurrenceLoadDataHandle {
             }
             if (RecurrenceLoadDataHandle.$boxPeriod.val() === "4") {
                 if (RecurrenceLoadDataHandle.$dateRecurrenceYearly.val()) {
-                    nextList = RecurrenceLoadDataHandle.getRecurrencesYearlyInRange(RecurrenceLoadDataHandle.$dateRecurrenceYearly.val(), RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateEnd.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()));
+                    nextList = RecurrenceCalculateHandle.getRecurrencesYearlyInRange(RecurrenceLoadDataHandle.$dateRecurrenceYearly.val(), RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateEnd.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()));
                     if (nextList.length > 0) {
                         let next = RecurrenceLoadDataHandle.loadConvertDate(nextList[0], 1);
                         RecurrenceLoadDataHandle.$dateNext.val(next);
@@ -244,6 +244,44 @@ class RecurrenceLoadDataHandle {
         return startDate;
     };
 
+    static loadDetail(data) {
+        RecurrenceLoadDataHandle.$title.val(data?.['title']);
+        RecurrenceLoadDataHandle.$boxStatus.val(data?.['recurrence_status']).trigger('change');
+        RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxApp, [data?.['application_data']], {"is_workflow": true});
+        RecurrenceLoadDataHandle.$boxApp.trigger('change');
+        RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxDocTem, [data?.['doc_template_data']], {"is_recurring": true});
+        RecurrenceLoadDataHandle.$boxPeriod.val(data?.['period']).trigger('change');
+        RecurrenceLoadDataHandle.$boxRepeat.val(data?.['repeat']).trigger('change');
+
+        if (RecurrenceLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            RecurrenceLoadDataHandle.$dateRecurrenceDaily[0].setAttribute('disabled', 'true');
+            RecurrenceLoadDataHandle.$boxDateWeekly[0].setAttribute('disabled', 'true');
+            RecurrenceLoadDataHandle.$boxDateMonthly[0].setAttribute('disabled', 'true');
+            RecurrenceLoadDataHandle.$dateRecurrenceYearly[0].setAttribute('disabled', 'true');
+        }
+
+        if (data?.['period'] === 1) {
+            RecurrenceLoadDataHandle.$dateRecurrenceDaily.val(moment(data?.['date_daily']).format('DD/MM/YYYY'));
+        }
+        if (data?.['period'] === 2) {
+            RecurrenceLoadDataHandle.$boxDateWeekly.val(data?.['weekday']).trigger('change');
+        }
+        if (data?.['period'] === 3) {
+            RecurrenceLoadDataHandle.$boxDateMonthly.val(data?.['monthday']).trigger('change');
+        }
+        if (data?.['period'] === 4) {
+            RecurrenceLoadDataHandle.$dateRecurrenceDaily.val(moment(data?.['date_yearly']).format('DD/MM/YYYY'));
+        }
+        RecurrenceLoadDataHandle.$dateStart.val(moment(data?.['date_start']).format('DD/MM/YYYY'));
+        RecurrenceLoadDataHandle.$dateEnd.val(moment(data?.['date_end']).format('DD/MM/YYYY'));
+        RecurrenceLoadDataHandle.$dateNext.val(moment(data?.['date_next']).format('DD/MM/YYYY'));
+        return true;
+    }
+
+}
+
+// calculate
+class RecurrenceCalculateHandle {
     static getRecurrencesDailyInRange(recurrenceDate, startDate, endDate, repeatIntervalDays) {
         // Convert dates to standard Date objects
         recurrenceDate = RecurrenceLoadDataHandle.loadConvertDate(recurrenceDate);
@@ -367,7 +405,6 @@ class RecurrenceLoadDataHandle {
 
         return recurrenceDates;
     };
-
 }
 
 // Submit Form
@@ -379,6 +416,7 @@ class RecurrenceSubmitHandle {
             if (data?.['id'] && data?.['app_label'] && data?.['model_code']) {
                 let contentType = data?.['app_label'] + "." + data?.['model_code'];
                 _form.dataForm['application_id'] = data?.['id'];
+                _form.dataForm['application_data'] = data;
                 _form.dataForm['app_code'] = contentType;
 
                 //
@@ -439,7 +477,7 @@ class RecurrenceSubmitHandle {
                 _form.dataForm['next_recurrences'] = next_recurrences;
 
                 if (RecurrenceLoadDataHandle.$boxStatus.val()) {
-                    _form.dataForm['status'] = parseInt(RecurrenceLoadDataHandle.$boxStatus.val());
+                    _form.dataForm['recurrence_status'] = parseInt(RecurrenceLoadDataHandle.$boxStatus.val());
                 }
 
 

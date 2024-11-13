@@ -17,9 +17,9 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'RecurrenceListAPI' %}"
+            data-url="{% url 'RecurrenceDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'RecurrenceList' %}"
-            data-method="POST"
+            data-method="PUT"
             id="frm_recurrence_create"
             method="post"
     >
@@ -263,4 +263,5 @@
 
     <script src="{% static 'assets/core/recurrence/js/recurrence_common.js' %}"></script>
     <script src="{% static 'assets/core/recurrence/js/recurrence_create.js' %}"></script>
+    <script src="{% static 'assets/core/recurrence/js/recurrence_detail.js' %}"></script>
 {% endblock %}

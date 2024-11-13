@@ -469,6 +469,12 @@
                             contexts += `${$(this).find('td:eq(0) span').text()} có giá cost xuất ra là ${$(this).find('td:eq(4) .out-value-span').attr('data-init-money')}VND.`
                             contexts += `${$(this).find('td:eq(0) span').text()} có giá cost cuối kì là ${$(this).find('td:eq(5) .ending-value-span').attr('data-init-money')}VND.`
                         }
+                        else {
+                            contexts += `${$(this).find('td:eq(0) .warehouse_row').text()} tồn đầu ${$(this).find('td:eq(2) .wh-opening-quantity-span').text()}, với giá trị ${$(this).find('td:eq(2) .wh-opening-value-span').attr('data-init-money')}VND.`
+                            contexts += `${$(this).find('td:eq(0) .warehouse_row').text()} đã nhập ${$(this).find('td:eq(3) .wh-in-quantity-span').text()}, với giá trị ${$(this).find('td:eq(3) .wh-in-value-span').attr('data-init-money')}VND.`
+                            contexts += `${$(this).find('td:eq(0) .warehouse_row').text()} đã xuất ${$(this).find('td:eq(4) .wh-out-quantity-span').text()}, với giá trị ${$(this).find('td:eq(4) .wh-out-value-span').attr('data-init-money')}VND.`
+                            contexts += `${$(this).find('td:eq(0) .warehouse_row').text()} còn tồn kho ${$(this).find('td:eq(5) .wh-ending-quantity-span').text()}, với giá trị ${$(this).find('td:eq(5) .wh-ending-value-span').attr('data-init-money')}VND.`
+                        }
                     })
                     console.log(contexts)
                 }

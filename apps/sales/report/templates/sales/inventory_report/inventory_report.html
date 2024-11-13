@@ -309,7 +309,7 @@
             <!-- Khung Chat -->
             <div id="chatPopup" class="chat-popup border border-primary" style="z-index: 4">
                 <div class="chat-header fw-bold text-primary" id="toggleChat">
-                    <span><i class="fas fa-comments"></i>&nbsp;Bflow report chatbot</span>
+                    <span><i class="fas fa-comments"></i>&nbsp;Bflow report asking</span>
 {#                    <span class="close-chat">&times;</span>#}
                 </div>
                 <div class="chat-content">
@@ -444,7 +444,7 @@
 
         function pushUserChat() {
             const message = chatInput.val().trim();
-            if (message) {
+            if (message.length > 10) {
                 const messageElement = $(`<div style="display: flex; justify-content: flex-end;" class="mt-2">
                     <div class="me border border-light rounded bg-primary-light-5 p-2" style="max-width: 70%">${message}</div>
                 </div>`);
@@ -457,7 +457,7 @@
                 </div>`);
                 chatShowSpace.append(messageResponse)
 
-                if (contexts.length > 10) {
+                if (contexts.length === 0) {
                     $('#table-inventory-report').find('tbody tr').each(function () {
                         if (!$(this).hasClass('fixed-row')) {
                             contexts += `${$(this).find('td:eq(0) span').text()} tồn đầu ${$(this).find('td:eq(2) .ending-quantity-span').text()} ${$(this).find('td:eq(1) span').text()}.`
@@ -470,35 +470,39 @@
                             contexts += `${$(this).find('td:eq(0) span').text()} có giá cost tích lũy là ${$(this).find('td:eq(5) .ending-value-span').text()}.`
                         }
                     })
+                }
 
-                    let dataParam = {}
-                    dataParam['contexts'] = contexts
-                    dataParam['question'] = message
-                    let chatbot_response_ajax = $.fn.callAjax2({
-                        url: $('#url-script').attr('data-url-chatbot'),
-                        data: dataParam,
-                        method: 'GET'
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && typeof data === 'object' && data.hasOwnProperty('response')) {
-                                return data?.['response'];
-                            }
-                            return {};
-                        },
-                        (errs) => {
-                            console.log(errs);
+                let dataParam = {}
+                dataParam['contexts'] = contexts
+                dataParam['question'] = message
+                let chatbot_response_ajax = $.fn.callAjax2({
+                    url: $('#url-script').attr('data-url-chatbot'),
+                    data: dataParam,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('response')) {
+                            return data?.['response'];
                         }
-                    )
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
 
-                    Promise.all([chatbot_response_ajax]).then(
-                        (results) => {
-                            messageResponse.find('.you').text(results[0] === '' ? $('#trans-script').attr('data-trans-no-response') : results[0])
-                        })
-                }
-                else {
-                    messageResponse.find('.you').text($('#trans-script').attr('data-trans-no-response'))
-                }
+                Promise.all([chatbot_response_ajax]).then(
+                    (results) => {
+                        messageResponse.find('.you').text(results[0] === '' ? $('#trans-script').attr('data-trans-no-response') : results[0])
+                    })
+            }
+            else {
+                let message = $('#trans-script').attr('data-trans-no-response')
+                let messageResponse = $(`<div class="mt-2"><div class="you border border-light rounded bg-blue-light-5 p-2" style="max-width: 70%">${message}</div></div>`);
+                chatShowSpace.append(messageResponse)
+                chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
+                chatInput.val('');
             }
         }
 

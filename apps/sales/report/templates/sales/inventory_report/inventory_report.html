@@ -23,7 +23,6 @@
             background: white;
             z-index: 2;
         }
-        /* Khung chat dạng popup */
         .chat-popup {
             position: fixed;
             bottom: 20px;
@@ -33,7 +32,6 @@
             border-radius: 10px;
             overflow: hidden;
         }
-        /* Thanh tiêu đề chat */
         .chat-header {
             padding: 10px;
             cursor: pointer;
@@ -42,20 +40,17 @@
             align-items: center;
             background-color: rgba(0, 125, 136, 0.2);
         }
-        /* Nội dung chat */
         .chat-content {
             display: none; /* Ẩn nội dung chat ban đầu */
             padding: 10px;
-            background-color: #f9f9f9;
+            background-color: #e9e9e9;
             max-height: 400px;
             overflow: hidden;
         }
-        /* Nút đóng chat */
         .close-chat {
             font-size: 20px;
             cursor: pointer;
         }
-        /* Hiệu ứng khi mở chat */
         .chat-popup.active .chat-content {
             display: block;
         }
@@ -316,7 +311,7 @@
                     <div class="row">
                         <div class="col-12" id="chat-show-space" style="overflow-y: auto; max-height: 300px">
                             <div class="text-left">
-                                <div class="you border border-light rounded bg-blue-light-5 p-2" style="max-width: 80%">
+                                <div class="you bg-white rounded p-2" style="max-width: 80%">
                                     {% trans 'Xin chào👋! Bạn có thể hỏi đáp về dữ liệu trong Báo cáo này?' %}
                                 </div>
                             </div>

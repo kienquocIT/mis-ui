@@ -1413,14 +1413,14 @@ $(document).ready(function () {
             let dataParam = {}
 
             const messageElement = $(`<div style="display: flex; justify-content: flex-end;" class="mt-2">
-                <div class="me border border-light rounded bg-primary-light-5 p-2" style="max-width: 80%">${message}</div>
+                <div class="me bg-white rounded p-2" style="max-width: 80%">${message}</div>
             </div>`);
             chatShowSpace.append(messageElement);
             chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
             chatInput.val('');
 
             let messageResponse = $(`<div class="mt-2">
-                <div class="you border border-light rounded bg-blue-light-5 p-2" style="max-width: 80%">typing...</div>
+                <div class="you bg-white rounded p-2" style="max-width: 80%">...</div>
             </div>`);
             chatShowSpace.append(messageResponse)
 
@@ -1442,6 +1442,10 @@ $(document).ready(function () {
                         chat_contexts += `${$(this).find('td:eq(0) .warehouse_row').text()} đã xuất ${$(this).find('td:eq(4) .wh-out-quantity-span').text()}, với giá trị ${parseInt($(this).find('td:eq(4) .wh-out-value-span').attr('data-init-money'))} VND.`
                         chat_contexts += `${$(this).find('td:eq(0) .warehouse_row').text()} còn tồn kho ${$(this).find('td:eq(5) .wh-ending-quantity-span').text()}, với giá trị ${parseInt($(this).find('td:eq(5) .wh-ending-value-span').attr('data-init-money'))} VND.`
                     }
+                    chat_contexts += `Đầu kỳ tổng cộng ${$('tfoot .opening-total-quantity:eq(0)').text()}, với giá trị ${parseInt($('tfoot .opening-total-value:eq(0)').attr('data-init-money'))} VND.`
+                    chat_contexts += `Đã nhập tổng cộng ${$('tfoot .in-total-quantity:eq(0)').text()}, với giá trị ${parseInt($('tfoot .in-total-value:eq(0)').attr('data-init-money'))} VND.`
+                    chat_contexts += `Đã xuất tổng cộng ${$('tfoot .out-total-quantity:eq(0)').text()}, với giá trị ${parseInt($('tfoot .out-total-value:eq(0)').attr('data-init-money'))} VND.`
+                    chat_contexts += `Cuối kỳ tổng cộng ${$('tfoot .ending-total-quantity:eq(0)').text()}, với giá trị ${parseInt($('tfoot .ending-total-value:eq(0)').attr('data-init-money'))} VND.`
                 })
             }
 
@@ -1471,7 +1475,7 @@ $(document).ready(function () {
         }
         else {
             let message = $('#trans-script').attr('data-trans-no-response')
-            let messageResponse = $(`<div class="mt-2"><div class="you border border-light rounded bg-blue-light-5 p-2" style="max-width: 80%">${message}</div></div>`);
+            let messageResponse = $(`<div class="mt-2"><div class="you bg-white rounded p-2" style="max-width: 80%">${message}</div></div>`);
             chatShowSpace.append(messageResponse)
             chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
             chatInput.val('');

@@ -297,8 +297,7 @@ class ReportInventoryChatBotAPI(APIView):
         context_vectors = vectorizer.fit_transform(context_sentences)
         question_vector = vectorizer.transform([question])
         similarities = cosine_similarity(question_vector, context_vectors).flatten()
-        best_match_index = similarities.argmax()
-        best_context = context_sentences[best_match_index]
+        best_context = context_sentences[similarities.argmax()]
 
         # model_name = "bert-large-uncased-whole-word-masking-finetuned-squad"
         # tokenizer = BertTokenizer.from_pretrained(model_name)

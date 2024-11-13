@@ -80,9 +80,20 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
-                        <div class="form-group">
-                            <label for="inp-sale-code" class="form-label">{% trans "Sale Code" %}</label>
-                            <input id="inp-sale-code" class="form-control form-control-line" readonly disabled>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="inp-sale-code" class="form-label">{% trans "Sale Code" %}</label>
+                                    <input id="inp-sale-code" class="form-control form-control-line" readonly disabled>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="inp-process-mask" class="form-label">{% trans "Process" %}</label>
+                                    <input id="inp-process" name="process" class="form-control form-control-line" type="hidden">
+                                    <input id="inp-process-mask" class="form-control form-control-line" readonly disabled>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">

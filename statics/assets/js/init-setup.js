@@ -5257,14 +5257,13 @@ class WindowControl {
         return location.hash;
     }
 
-    static getAllParamsByKey(defaultData){
+    static getAllParamsByKey(defaultData=null){
         let urlParsed = {};
         const sPageURL = window.location.search.substring(1);
         const sURLVariables = sPageURL.split('&');
         for (let i = 0; i < sURLVariables.length; i++) {
             const sParameterName = sURLVariables[i].split('=');
-            const value = sParameterName[1] === undefined ? defaultData : UtilControl.decodeURI(sParameterName[1]);
-            urlParsed[sParameterName[0]] = value;
+            urlParsed[sParameterName[0]] = sParameterName[1] === undefined ? defaultData : UtilControl.decodeURI(sParameterName[1]);
         }
         return urlParsed;
     }
@@ -5664,7 +5663,24 @@ class PersonControl {
     static getEmployeeCurrentID(default_val = null) {
         let ele = $('#idx-link-to-current-employee');
         if (ele.length > 0) {
-            return ele.attr('data-value-id');
+            return ele.data('value-id');
+        }
+        return default_val;
+    }
+
+    static getEmployeeCurrent(key=null, default_val = null) {
+        let ele = $('#idx-link-to-current-employee');
+        if (ele.length > 0) {
+            let data = ele.data('value-full');
+            if (typeof data === 'string'){
+                try {
+                    data = JSON.parse(data);
+                } catch(e){}
+            }
+            if (data && typeof data === 'object' && data.hasOwnProperty(key)){
+                return data[key];
+            }
+            return default_val;
         }
         return default_val;
     }
@@ -8495,6 +8511,7 @@ let $x = {
         shortNameGlobe: PersonControl.shortNameGlobe,
         renderAvatar: PersonControl.renderAvatar,
         getEmployeeCurrentID: PersonControl.getEmployeeCurrentID,
+        getEmployeeCurrent: PersonControl.getEmployeeCurrent,
 
         renderCodeBreadcrumb: DocumentControl.renderCodeBreadcrumb,
         buttonLinkBlank: DocumentControl.buttonLinkBlank,
@@ -8548,6 +8565,7 @@ let $x = {
         lightenColor: Beautiful.lightenColor,
 
         getHashUrl: WindowControl.getHashUrl,
+        getAllParamsByKey: WindowControl.getAllParamsByKey,
         getUrlParameter: WindowControl.getUrlParameter,
         getManyUrlParameters: WindowControl.getManyUrlParameters,
         pushHashUrl: WindowControl.pushHashUrl,

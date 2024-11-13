@@ -1300,39 +1300,7 @@
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
 
-    <script>
-        $(document).ready(function () {
-            const {
-                opp_id,
-                opp_title,
-                opp_code,
-                process_id,
-                process_title
-            } = $x.fn.getManyUrlParameters(['opp_id', 'opp_title', 'opp_code', 'process_id', 'process_title'])
-
-            new $x.cls.bastionField({
-                ...$x.cls.bastionField.defaultOpts,
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
-                data_opp: $x.fn.checkUUID4(opp_id) ? [
-                    {
-                        "id": opp_id,
-                        "title": $x.fn.decodeURI(opp_title),
-                        "code": $x.fn.decodeURI(opp_code),
-                        "selected": true,
-                    }
-                ] : [],
-                data_process: $x.fn.checkUUID4(process_id) ? [
-                    {
-                        "id": process_id,
-                        "title": process_title,
-                        "selected": true,
-                    }
-                ] : [],
-            }).init();
-        })
-    </script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>
 
     <script src="{% static 'assets/js/xlsx-0.18.5.full.min.js' %}"></script>
     <script src="{% static 'assets/js/import-datatable.js' %}"></script>

@@ -496,7 +496,7 @@ class ProcessStages {
             'application': [],
             'is_system': false,
             'system_code': null,
-            'state': null, // DONE, CURRENT, null:COMING
+            'state': null, // DONE, CURRENT, COMING
             ...itemData,
         }
         const stagesItem$ = $(ProcessStages.htmlBaseItem)
@@ -770,15 +770,20 @@ class ProcessStages {
                 app$.addClass('stages-item-done');
                 removeControlComplete();
             }
+
+            const state = itemData?.['state'];
+
             // button add
             let isShowAdd = false;
             try {
-                if (appData.max === 'n') {
-                    isShowAdd = true;
-                } else {
-                    const appMax = Number.parseInt(appData.max);
-                    if (appData.amount < appMax) {
+                if (state === 'DONE' || state === 'CURRENT') {
+                    if (appData.max === 'n') {
                         isShowAdd = true;
+                    } else {
+                        const appMax = Number.parseInt(appData.max);
+                        if (appData.amount < appMax) {
+                            isShowAdd = true;
+                        }
                     }
                 }
             } catch (e) {
@@ -789,50 +794,59 @@ class ProcessStages {
                     app$.find('.app-control-item[data-code=add]').show().on('click', function (event) {
                         event.preventDefault();
 
-                        const urlResolved = clsThis.redirectMaskUrl.replaceAll('__plan__', appData.app_label).replaceAll('__app__', appData.mode_code);
-                        const paramData = $.param({
-                            'redirect': true,
-                            'process_id': clsThis.data?.['id'] || '',
-                            'process_title': clsThis.data?.['title'] || '',
-                            ...(
-                                clsThis.data?.['opp'] ? {
-                                    'opp_id': clsThis.data['opp']?.['id'] || '',
-                                    'opp_title': clsThis.data['opp']?.['title'] || '',
-                                    'opp_code': clsThis.data['opp']?.['code'] || '',
-                                } : {}
-                            )
-                        });
-                        const reLink = urlResolved + '?' + paramData;
+                            const urlResolved = clsThis.redirectMaskUrl.replaceAll('__plan__', appData.app_label).replaceAll('__app__', appData.mode_code);
+                            const paramData = $.param({
+                                'redirect': true,
+                                'create_open': true,
+                                'process_id': clsThis.data?.['id'] || '',
+                                'process_title': clsThis.data?.['title'] || '',
+                                ...(
+                                    clsThis.data?.['opp'] ? {
+                                        'opp_id': clsThis.data['opp']?.['id'] || '',
+                                        'opp_title': clsThis.data['opp']?.['title'] || '',
+                                        'opp_code': clsThis.data['opp']?.['code'] || '',
+                                    } : {}
+                                ),
+                                ... (
+                                    $x.fn.getEmployeeCurrent('id') ? {
+                                        'inherit_id': $x.fn.getEmployeeCurrent('id'),
+                                        'inherit_title': $x.fn.getEmployeeCurrent('full_name'),
+                                    } : {}
+                                ),
+                            });
+                            const reLink = urlResolved + '?' + paramData;
 
-                        Swal.fire({
-                            title: $.fn.gettext('You are being redirected to the feature creation page.'),
-                            html: `
+                            Swal.fire({
+                                title: $.fn.gettext('You are being redirected to the feature creation page.'),
+                                html: `
                                 <p class="mb-3">${appData_application.title || ''}</p>
                                 <a href="${reLink}">
                                     ${$.fn.gettext("Or link to here")}
                                 </a>
                             `,
-                            icon: "warning",
-                            timer: 2500,
-                            timerProgressBar: true,
-                            showCancelButton: true,
-                            cancelButtonText: $.fn.gettext('Cancel'),
-                            showConfirmButton: true,
-                            confirmButtonText: $.fn.gettext('Redirect now'),
-                        }).then((result) => {
-                            if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                                window.location.href = reLink;
-                            }
-                        })
-                    });
+                                icon: "warning",
+                                timer: 2500,
+                                timerProgressBar: true,
+                                showCancelButton: true,
+                                cancelButtonText: $.fn.gettext('Cancel'),
+                                showConfirmButton: true,
+                                confirmButtonText: $.fn.gettext('Redirect now'),
+                            }).then((result) => {
+                                if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                                    window.location.href = reLink;
+                                }
+                            })
+                        });
                 }
             } else removeControlAdd();
             // button amount
             app$.find('.app-control-item[data-code=amount]').show().on('click', function (event) {
                 event.preventDefault();
-                // alert(`app: ${appData.application} - ${appData.app_label} - ${appData.mode_code}`);
-                clsThis.load_docData(itemData, appData, appData_application);
-                clsThis.modalDocList$.modal('show');
+                if (state === 'DONE' || state === 'CURRENT') {
+                    // alert(`app: ${appData.application} - ${appData.app_label} - ${appData.mode_code}`);
+                    clsThis.load_docData(itemData, appData, appData_application);
+                    clsThis.modalDocList$.modal('show');
+                }
             });
         }
         return app$

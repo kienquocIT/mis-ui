@@ -8,6 +8,7 @@ from apps.core.home.views import (
     GatewayMiddleListView, GatewayMiddleDetailView, GatewayViewNameListView, GatewayViewNameParseView, DefaultDataView,
     OutLayoutNotFoundView, OutLayoutServerOff, ResolveNotifyItemAPI, GatewayPKMiddleDetailView, HomeCalendarAPI,
     GatewayMiddleCreateView,
+    TestView, TestAPI,
 )
 
 urlpatterns = [
@@ -60,4 +61,6 @@ if settings.DEBUG is True:
         path('components', ComponentCollections.as_view(), name='ComponentCollections'),
         path('utilities', UtilitiesView.as_view(), name='UtilitiesView'),
         path('default-data', DefaultDataView.as_view(), name='DefaultDataView'),
+        path('test', TestView.as_view(), name='TestView'),
+        path('test/api', TestAPI.as_view(), name='TestAPI'),
     ]

@@ -30,6 +30,14 @@ $(function () {
             RecurrenceLoadDataHandle.loadExecutionDate();
         });
 
+        RecurrenceLoadDataHandle.$boxDateMonthly.on('change', function () {
+            RecurrenceLoadDataHandle.loadExecutionDate();
+        });
+
+        RecurrenceLoadDataHandle.$dateRecurrenceYearly.on('blur', function () {
+            RecurrenceLoadDataHandle.loadExecutionDate();
+        });
+
         RecurrenceLoadDataHandle.$dateStart.on('blur', function () {
             RecurrenceLoadDataHandle.loadExecutionDate();
         });
@@ -53,36 +61,54 @@ $(function () {
 
         function submitHandlerFunc() {
             let _form = new SetupFormSubmit(formSubmit);
-            let result = ProdOrderSubmitHandle.setupDataSubmit(_form);
+            let result = RecurrenceSubmitHandle.setupDataSubmit(_form);
             if (result === false) {
                 return false;
             }
             let submitFields = [
                 'title',
-                'bom_id',
-                'bom_data',
-                'type_production',
-                'product_id',
-                'product_data',
-                'quantity',
-                'uom_id',
-                'uom_data',
-                'warehouse_id',
-                'warehouse_data',
-                'sale_order_data',
-                'status_production',
+                'application',
+                'app_code',
+                'doc_template_id',
+                'doc_template_data',
+                'period',
+                'repeat',
+                'date_daily',
+                'weekday',
+                'monthday',
+                'date_yearly',
                 'date_start',
                 'date_end',
-                'group_id',
-                'group_data',
-                'time',
-                'task_data',
-                'gr_remain_quantity',
+                'date_next',
+                'next_recurrences',
+                'status',
             ]
             if (_form.dataForm) {
-                ProdOrderCommonHandle.filterFieldList(submitFields, _form.dataForm);
+                RecurrenceCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
-            WFRTControl.callWFSubmitForm(_form);
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': _form.dataUrl,
+                    'method': _form.dataMethod,
+                    'data': _form.dataForm,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        setTimeout(() => {
+                            window.location.replace(_form.dataUrlRedirect);
+                        }, 2000);
+                    }
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
         }
 
 

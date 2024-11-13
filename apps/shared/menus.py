@@ -303,6 +303,20 @@ class MenusCRM:
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
         icon='<i class="fas fa-file-invoice"></i>',
     )
+    RECURRENCE = MenuCommon(
+        name='Recurrence transaction', code='menu_recurrence', view_name='',
+        icon='<i class="fas fa-recycle"></i>',
+        child=[
+            MenuCommon(
+                name='Recurring order', code='id_menu_recurring_order', view_name='RecurrenceCreate',
+                icon='<i class="fas fa-file"></i>',
+            ),
+            MenuCommon(
+                name='Transaction template', code='id_menu_transaction_template', view_name='RecurrenceCreate',
+                icon='<i class="fas fa-file-alt"></i>',
+            ),
+        ],
+    )
     WORK_ORDER = MenuCommon(
         name='Work order', code='menu_work_order_list', view_name='WorkOrderList',
         icon='<i class="fas fa-pencil-ruler"></i>',
@@ -751,6 +765,7 @@ class SpaceItem:
                 MenusCRM.QUOTATION,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,
+                MenusCRM.RECURRENCE,
                 MenusCRM.WORK_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.CONTRACT_APPROVAL,

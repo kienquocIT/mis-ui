@@ -105,7 +105,7 @@ class RecurrenceLoadDataHandle {
                     'title': `${i} ${RecurrenceLoadDataHandle.$trans.attr('data-month')}`
                 })
         }
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 1; i <= 4; i++) {
             RecurrenceLoadDataHandle.dataRepeat["4"].push({
                     'id': i,
                     'title': `${i} ${RecurrenceLoadDataHandle.$trans.attr('data-year')}`
@@ -138,6 +138,7 @@ class RecurrenceLoadDataHandle {
                 autoUpdateInput: false,
             }).on('apply.daterangepicker', function (ev, picker) {
                 $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                RecurrenceLoadDataHandle.loadExecutionDate();
             });
             $(this).val('').trigger('change');
         })
@@ -190,167 +191,274 @@ class RecurrenceLoadDataHandle {
 
     static loadExecutionDate() {
         RecurrenceLoadDataHandle.$dateNext.val("");
-        if (RecurrenceLoadDataHandle.$boxPeriod.val() && RecurrenceLoadDataHandle.$boxRepeat.val()) {
+        let nextList = [];
+        if (RecurrenceLoadDataHandle.$boxPeriod.val() && RecurrenceLoadDataHandle.$boxRepeat.val() && RecurrenceLoadDataHandle.$dateEnd.val() && RecurrenceLoadDataHandle.$dateStart.val() && RecurrenceLoadDataHandle.$dateEnd.val()) {
             if (RecurrenceLoadDataHandle.$boxPeriod.val() === "1") {
                 if (RecurrenceLoadDataHandle.$dateRecurrenceDaily.val()) {
-                    let next = RecurrenceLoadDataHandle.getNextDaily(RecurrenceLoadDataHandle.$dateRecurrenceDaily.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()));
-                    RecurrenceLoadDataHandle.$dateNext.val(next);
+                    nextList = RecurrenceLoadDataHandle.getRecurrencesDailyInRange(RecurrenceLoadDataHandle.$dateRecurrenceDaily.val(), RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateEnd.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()));
+                    if (nextList.length > 0) {
+                        let next = RecurrenceLoadDataHandle.loadConvertDate(nextList[0], 1);
+                        RecurrenceLoadDataHandle.$dateNext.val(next);
+                    }
                 }
             }
             if (RecurrenceLoadDataHandle.$boxPeriod.val() === "2") {
-                if (RecurrenceLoadDataHandle.$boxDateWeekly.val() && RecurrenceLoadDataHandle.$dateStart.val()) {
-                    let next = RecurrenceLoadDataHandle.getNextWeekly(RecurrenceLoadDataHandle.$dateStart.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()), parseInt(RecurrenceLoadDataHandle.$boxDateWeekly.val()));
-                    RecurrenceLoadDataHandle.$dateNext.val(next);
+                if (RecurrenceLoadDataHandle.$boxDateWeekly.val()) {
+                    nextList = RecurrenceLoadDataHandle.getRecurrencesWeeklyInRange(RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateEnd.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()), parseInt(RecurrenceLoadDataHandle.$boxDateWeekly.val()));
+                    if (nextList.length > 0) {
+                        let next = RecurrenceLoadDataHandle.loadConvertDate(nextList[0], 1);
+                        RecurrenceLoadDataHandle.$dateNext.val(next);
+                    }
+                }
+            }
+            if (RecurrenceLoadDataHandle.$boxPeriod.val() === "3") {
+                if (RecurrenceLoadDataHandle.$boxDateMonthly.val()) {
+                    nextList = RecurrenceLoadDataHandle.getRecurrencesMonthlyInRange(RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateEnd.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()), parseInt(RecurrenceLoadDataHandle.$boxDateMonthly.val()));
+                    if (nextList.length > 0) {
+                        let next = RecurrenceLoadDataHandle.loadConvertDate(nextList[0], 1);
+                        RecurrenceLoadDataHandle.$dateNext.val(next);
+                    }
+                }
+            }
+            if (RecurrenceLoadDataHandle.$boxPeriod.val() === "4") {
+                if (RecurrenceLoadDataHandle.$dateRecurrenceYearly.val()) {
+                    nextList = RecurrenceLoadDataHandle.getRecurrencesYearlyInRange(RecurrenceLoadDataHandle.$dateRecurrenceYearly.val(), RecurrenceLoadDataHandle.$dateStart.val(), RecurrenceLoadDataHandle.$dateEnd.val(), parseInt(RecurrenceLoadDataHandle.$boxRepeat.val()));
+                    if (nextList.length > 0) {
+                        let next = RecurrenceLoadDataHandle.loadConvertDate(nextList[0], 1);
+                        RecurrenceLoadDataHandle.$dateNext.val(next);
+                    }
                 }
             }
         }
-        return true;
+        return nextList;
     };
 
-    static loadConvertDate(startDate) {
-        let [day, month, year] = startDate.split('/');
-        startDate = new Date(`${year}-${month}-${day}`);
+    static loadConvertDate(startDate, type = 0) {
+        if (type === 0) {
+            let [day, month, year] = startDate.split('/');
+            startDate = new Date(`${year}-${month}-${day}`);
+        } else if (type === 1) {
+            let [year, month, day] = startDate.split('-');
+            startDate = `${day}/${month}/${year}`;
+        }
         return startDate;
     };
 
-    static getNextDaily(startDate, repeatIntervalDays, occurrences = 1) {
+    static getRecurrencesDailyInRange(recurrenceDate, startDate, endDate, repeatIntervalDays) {
+        // Convert dates to standard Date objects
+        recurrenceDate = RecurrenceLoadDataHandle.loadConvertDate(recurrenceDate);
         startDate = RecurrenceLoadDataHandle.loadConvertDate(startDate);
-        let nextDate = new Date(startDate); // Convert startDate to Date object
-        nextDate.setDate(nextDate.getDate() + repeatIntervalDays * occurrences);
+        endDate = RecurrenceLoadDataHandle.loadConvertDate(endDate);
 
-        // Format to DD/MM/YYYY
-        let nextDay = String(nextDate.getDate()).padStart(2, '0'); // Ensure day is two digits
-        let nextMonth = String(nextDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-        let nextYear = nextDate.getFullYear();
+        let currentRecurrence = new Date(recurrenceDate);
+        let rangeStart = new Date(startDate);
+        let rangeEnd = new Date(endDate);
+        const recurrenceDates = [];
 
-
-        if (RecurrenceLoadDataHandle.$dateStart.val()) {
-            let start = RecurrenceLoadDataHandle.loadConvertDate(RecurrenceLoadDataHandle.$dateStart.val());
-            let rangeStart = new Date(start);
-            if (nextDate < rangeStart) {
-                return "";
+        // Generate all recurrence dates within the range
+        while (currentRecurrence <= rangeEnd) {
+            // Only add dates that are within the specified range
+            if (currentRecurrence >= rangeStart) {
+                let day = String(currentRecurrence.getDate()).padStart(2, '0');
+                let month = String(currentRecurrence.getMonth() + 1).padStart(2, '0');
+                let year = currentRecurrence.getFullYear();
+                recurrenceDates.push(`${year}-${month}-${day}`);
             }
-        }
-        if (RecurrenceLoadDataHandle.$dateEnd.val()) {
-            let end = RecurrenceLoadDataHandle.loadConvertDate(RecurrenceLoadDataHandle.$dateEnd.val());
-            let rangeEnd = new Date(end);
-            if (nextDate > rangeEnd) {
-                return "";
-            }
+
+            // Move to the next recurrence date
+            currentRecurrence.setDate(currentRecurrence.getDate() + repeatIntervalDays);
         }
 
-
-        return `${nextDay}/${nextMonth}/${nextYear}`;
+        return recurrenceDates;
     };
 
-    static getNextWeekly(startDate, repeatIntervalWeeks, targetDayOfWeek) {
+    static getRecurrencesWeeklyInRange(recurrenceDate, startDate, endDate, repeatIntervalWeeks, targetDayOfWeek) {
+        // Convert dates to standard Date objects
+        recurrenceDate = RecurrenceLoadDataHandle.loadConvertDate(recurrenceDate);
         startDate = RecurrenceLoadDataHandle.loadConvertDate(startDate);
-        const currentDayOfWeek = startDate.getDay(); // Get weekday as a number (0 = Sunday, 1 = Monday, ...)
+        endDate = RecurrenceLoadDataHandle.loadConvertDate(endDate);
 
-        // Calculate the difference in days from the start day to the target weekday
-        let daysUntilTarget = targetDayOfWeek - currentDayOfWeek;
-        if (daysUntilTarget <= 0) {
-            daysUntilTarget += 7; // Adjust if target day is today or has already passed this week
+        let recurrenceDates = [];
+        let currentRecurrence = new Date(recurrenceDate);
+        const rangeEnd = new Date(endDate);
+        const rangeStart = new Date(startDate);
+
+        // Calculate initial offset to the target day of the week
+        let daysUntilTarget = targetDayOfWeek - currentRecurrence.getDay();
+        if (daysUntilTarget < 0) daysUntilTarget += 7;
+
+        // Adjust the currentRecurrence date to the first target weekday after the start date
+        currentRecurrence.setDate(currentRecurrence.getDate() + daysUntilTarget);
+
+        // Loop through each recurrence until it surpasses the end date
+        while (currentRecurrence <= rangeEnd) {
+            // Add only dates that fall within the range
+            if (currentRecurrence >= rangeStart) {
+                let day = String(currentRecurrence.getDate()).padStart(2, '0');
+                let month = String(currentRecurrence.getMonth() + 1).padStart(2, '0');
+                let year = currentRecurrence.getFullYear();
+                recurrenceDates.push(`${year}-${month}-${day}`);
+            }
+
+            // Move to the next recurrence by adding the repeat interval in weeks
+            currentRecurrence.setDate(currentRecurrence.getDate() + repeatIntervalWeeks * 7);
         }
 
-        // Set the next recurrence date by adding the calculated days and weeks interval
-        const nextDate = new Date(startDate);
-        nextDate.setDate(nextDate.getDate() + daysUntilTarget + (repeatIntervalWeeks - 1) * 7);
+        return recurrenceDates;
+    };
 
-        // Format to DD/MM/YYYY
-        let nextDay = String(nextDate.getDate()).padStart(2, '0'); // Ensure day is two digits
-        let nextMonth = String(nextDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-        let nextYear = nextDate.getFullYear();
+    static getRecurrencesMonthlyInRange(recurrenceDate, startDate, endDate, repeatIntervalMonths, targetDayOfMonth) {
+        // Convert dates to standard Date objects
+        recurrenceDate = RecurrenceLoadDataHandle.loadConvertDate(recurrenceDate);
+        startDate = RecurrenceLoadDataHandle.loadConvertDate(startDate);
+        endDate = RecurrenceLoadDataHandle.loadConvertDate(endDate);
 
-        return `${nextDay}/${nextMonth}/${nextYear}`;
-    }
+        let recurrenceDates = [];
+        let currentRecurrence = new Date(recurrenceDate);
+        const rangeEnd = new Date(endDate);
+        const rangeStart = new Date(startDate);
+
+        // Loop through each month until surpassing the end date
+        while (currentRecurrence <= rangeEnd) {
+            // Set the month and year for the next occurrence
+            currentRecurrence.setMonth(currentRecurrence.getMonth() + repeatIntervalMonths);
+            const lastDayOfMonth = new Date(currentRecurrence.getFullYear(), currentRecurrence.getMonth() + 1, 0).getDate();
+
+            // Ensure the target day is within the range of days for the month
+            const day = Math.min(targetDayOfMonth, lastDayOfMonth);
+            currentRecurrence.setDate(day);
+
+            // Add only dates that fall within the range
+            if (currentRecurrence >= rangeStart && currentRecurrence <= rangeEnd) {
+                let day = String(currentRecurrence.getDate()).padStart(2, '0');
+                let month = String(currentRecurrence.getMonth() + 1).padStart(2, '0');
+                let year = currentRecurrence.getFullYear();
+                recurrenceDates.push(`${year}-${month}-${day}`);
+            }
+        }
+
+        return recurrenceDates;
+    };
+
+    static getRecurrencesYearlyInRange(recurrenceDate, startDate, endDate, repeatIntervalYears = 1) {
+        // Convert dates to Date objects
+        recurrenceDate = RecurrenceLoadDataHandle.loadConvertDate(recurrenceDate);
+        startDate = RecurrenceLoadDataHandle.loadConvertDate(startDate);
+        endDate = RecurrenceLoadDataHandle.loadConvertDate(endDate);
+
+        let recurrenceDates = [];
+        let currentRecurrence = new Date(recurrenceDate);
+        const rangeEnd = new Date(endDate);
+        const rangeStart = new Date(startDate);
+
+        // Loop through each year until surpassing the end date
+        while (currentRecurrence <= rangeEnd) {
+            // Only add dates that fall within the specified range
+            if (currentRecurrence >= rangeStart && currentRecurrence <= rangeEnd) {
+                let day = String(currentRecurrence.getDate()).padStart(2, '0');
+                let month = String(currentRecurrence.getMonth() + 1).padStart(2, '0');
+                let year = currentRecurrence.getFullYear();
+                recurrenceDates.push(`${year}-${month}-${day}`);
+            }
+
+            // Set the next occurrence by incrementing the year
+            currentRecurrence.setFullYear(currentRecurrence.getFullYear() + repeatIntervalYears);
+        }
+
+        return recurrenceDates;
+    };
 
 }
 
 // Submit Form
 class RecurrenceSubmitHandle {
 
-    static setupTask() {
-        let result = [];
-        ProdOrderDataTableHandle.$tableMain.DataTable().rows().every(function () {
-            let row = this.node();
-            if (row.querySelector('.table-row-order')) {
-                if (row.querySelector('.table-row-order').getAttribute('data-row')) {
-                    result.push(JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row')));
-                }
-            }
-        });
-        return result;
-    };
-
     static setupDataSubmit(_form) {
-        if (ProdOrderLoadDataHandle.$dataBOM.val()) {
-            let dataBom = JSON.parse(ProdOrderLoadDataHandle.$dataBOM.val());
-            _form.dataForm['bom_id'] = dataBom?.['id'];
-            _form.dataForm['bom_data'] = dataBom;
+        if (RecurrenceLoadDataHandle.$boxApp.val()) {
+            let data = SelectDDControl.get_data_from_idx(RecurrenceLoadDataHandle.$boxApp, RecurrenceLoadDataHandle.$boxApp.val());
+            if (data?.['id'] && data?.['app_label'] && data?.['model_code']) {
+                let contentType = data?.['app_label'] + "." + data?.['model_code'];
+                _form.dataForm['application_id'] = data?.['id'];
+                _form.dataForm['app_code'] = contentType;
 
-            if (ProdOrderLoadDataHandle.$boxType.val()) {
-                _form.dataForm['type_production'] = parseInt(ProdOrderLoadDataHandle.$boxType.val());
-            }
-            if (ProdOrderLoadDataHandle.$boxProd.val()) {
-                _form.dataForm['product_id'] = ProdOrderLoadDataHandle.$boxProd.val();
-                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxProd, ProdOrderLoadDataHandle.$boxProd.val());
-                if (data) {
-                    _form.dataForm['product_data'] = data;
-                }
-            }
-            if (ProdOrderLoadDataHandle.$quantity.val()) {
-                _form.dataForm['quantity'] = parseFloat(ProdOrderLoadDataHandle.$quantity.val());
-                _form.dataForm['gr_remain_quantity'] = parseFloat(ProdOrderLoadDataHandle.$quantity.val());
-                if (_form.dataForm['quantity'] <= 0) {
-                    $.fn.notifyB({description: ProdOrderLoadDataHandle.$trans.attr('data-validate-quantity')}, 'failure');
-                    return false;
-                }
-            }
-            if (ProdOrderLoadDataHandle.$boxUOM.val()) {
-                _form.dataForm['uom_id'] = ProdOrderLoadDataHandle.$boxUOM.val();
-                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxUOM, ProdOrderLoadDataHandle.$boxUOM.val());
-                if (data) {
-                    _form.dataForm['uom_data'] = data;
-                }
-            }
-            if (ProdOrderLoadDataHandle.$boxWH.val()) {
-                _form.dataForm['warehouse_id'] = ProdOrderLoadDataHandle.$boxWH.val();
-                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxWH, ProdOrderLoadDataHandle.$boxWH.val());
-                if (data) {
-                    _form.dataForm['warehouse_data'] = data;
-                }
-            }
-            if (ProdOrderLoadDataHandle.$boxSO.val()) {
-                let dataSO = [];
-                for (let val of ProdOrderLoadDataHandle.$boxSO.val()) {
-                    let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxSO, val);
-                    if (data) {
-                        dataSO.push(data);
+                //
+                if (RecurrenceLoadDataHandle.$boxDocTem.val()) {
+                    let data = SelectDDControl.get_data_from_idx(RecurrenceLoadDataHandle.$boxDocTem, RecurrenceLoadDataHandle.$boxDocTem.val());
+                    if (data?.['id']) {
+                        _form.dataForm['doc_template_id'] = data?.['id'];
+                        _form.dataForm['doc_template_data'] = data;
                     }
                 }
-                _form.dataForm['sale_order_data'] = dataSO;
-            }
-            if (ProdOrderLoadDataHandle.$dateStart.val()) {
-                _form.dataForm['date_start'] = String(moment(ProdOrderLoadDataHandle.$dateStart.val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD'));
-            }
-            if (ProdOrderLoadDataHandle.$dateEnd.val()) {
-                _form.dataForm['date_end'] = String(moment(ProdOrderLoadDataHandle.$dateEnd.val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD'));
-            }
-            if (ProdOrderLoadDataHandle.$boxGroup.val()) {
-                _form.dataForm['group_id'] = ProdOrderLoadDataHandle.$boxGroup.val();
-                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxGroup, ProdOrderLoadDataHandle.$boxGroup.val());
-                if (data) {
-                    _form.dataForm['group_data'] = data;
+
+                //
+                if (RecurrenceLoadDataHandle.$boxPeriod.val()) {
+                    _form.dataForm['period'] = parseInt(RecurrenceLoadDataHandle.$boxPeriod.val());
+
+                    if (RecurrenceLoadDataHandle.$boxRepeat.val()) {
+                        _form.dataForm['period'] = parseInt(RecurrenceLoadDataHandle.$boxRepeat.val());
+                    }
+
+                    if (RecurrenceLoadDataHandle.$boxPeriod.val() === '1') {
+                        if (RecurrenceLoadDataHandle.$dateRecurrenceDaily.val()) {
+                            _form.dataForm['date_daily'] = moment(RecurrenceLoadDataHandle.$dateRecurrenceDaily.val(),
+                                'DD/MM/YYYY').format('YYYY-MM-DD')
+                        }
+                    }
+                    if (RecurrenceLoadDataHandle.$boxPeriod.val() === '2') {
+                        if (RecurrenceLoadDataHandle.$boxDateWeekly.val()) {
+                            _form.dataForm['weekday'] = parseInt(RecurrenceLoadDataHandle.$boxDateWeekly.val())
+                        }
+                    }
+                    if (RecurrenceLoadDataHandle.$boxPeriod.val() === '3') {
+                        if (RecurrenceLoadDataHandle.$boxDateMonthly.val()) {
+                            _form.dataForm['monthday'] = parseInt(RecurrenceLoadDataHandle.$boxDateMonthly.val())
+                        }
+                    }
+                    if (RecurrenceLoadDataHandle.$boxPeriod.val() === '4') {
+                        if (RecurrenceLoadDataHandle.$dateRecurrenceDaily.val()) {
+                            _form.dataForm['date_yearly'] = moment(RecurrenceLoadDataHandle.$dateRecurrenceYearly.val(),
+                                'DD/MM/YYYY').format('YYYY-MM-DD')
+                        }
+                    }
                 }
-            }
-            if (ProdOrderLoadDataHandle.$time.val()) {
-                _form.dataForm['time'] = parseInt(ProdOrderLoadDataHandle.$time.val());
-            }
 
-            ProdOrderStoreHandle.storeAll();
-            _form.dataForm['task_data'] = ProdOrderSubmitHandle.setupTask();
+                if (RecurrenceLoadDataHandle.$dateStart.val()) {
+                    _form.dataForm['date_start'] = moment(RecurrenceLoadDataHandle.$dateStart.val(),
+                        'DD/MM/YYYY').format('YYYY-MM-DD')
+                }
+                if (RecurrenceLoadDataHandle.$dateEnd.val()) {
+                    _form.dataForm['date_end'] = moment(RecurrenceLoadDataHandle.$dateEnd.val(),
+                        'DD/MM/YYYY').format('YYYY-MM-DD')
+                }
+                if (RecurrenceLoadDataHandle.$dateNext.val()) {
+                    _form.dataForm['date_next'] = moment(RecurrenceLoadDataHandle.$dateNext.val(),
+                        'DD/MM/YYYY').format('YYYY-MM-DD')
+                }
 
+                let next_recurrences = RecurrenceLoadDataHandle.loadExecutionDate();
+                _form.dataForm['next_recurrences'] = next_recurrences;
+
+                if (RecurrenceLoadDataHandle.$boxStatus.val()) {
+                    _form.dataForm['status'] = parseInt(RecurrenceLoadDataHandle.$boxStatus.val());
+                }
+
+
+                //
+
+            }
         }
+        return _form.dataForm;
     };
+}
+
+// Common
+class RecurrenceCommonHandle {
+
+    static filterFieldList(field_list, data_json) {
+        for (let key in data_json) {
+            if (!field_list.includes(key)) delete data_json[key]
+        }
+        return data_json;
+    }
+
 }

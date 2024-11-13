@@ -172,7 +172,7 @@ $(function () {
                         width: '10%',
                         render: (data, type, row) => {
                             let badge = {0: 'success', 1: 'danger'};
-                            return `<span class="badge badge-soft-${badge[row?.['recurrence_status']]}">${dataStatus[row?.['recurrence_status']]}</span>`;
+                            return `<span class="badge badge-${badge[row?.['recurrence_status']]} badge-outline">${dataStatus[row?.['recurrence_status']]}</span>`;
                         },
                     },
                     {

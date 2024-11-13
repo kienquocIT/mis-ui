@@ -313,7 +313,6 @@ class ReportInventoryChatBotAPI(APIView):
         return {'response': best_context}, status.HTTP_200_OK
 
 
-
 # REPORT PIPELINE
 class ReportPipelineList(View):
 

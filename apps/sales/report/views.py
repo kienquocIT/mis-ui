@@ -7,8 +7,8 @@ from apps.shared import mask_view, ServerAPI, ApiURL
 from apps.shared.msg import ReportMsg
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from transformers import BertTokenizer, BertForQuestionAnswering
-import torch
+# from transformers import BertTokenizer, BertForQuestionAnswering
+# import torch
 
 FILTER_QUARTER = (
     (1, ReportMsg.QUARTER_FIRST),
@@ -290,44 +290,25 @@ class ReportInventoryChatBotAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-
         contexts = params.get('contexts')
         question = params.get('question')
-
-        # Tách đoạn văn thành từng câu riêng lẻ
         context_sentences = [sentence.strip() for sentence in contexts.split('.') if sentence]
-
         # Tạo vector TF-IDF cho từng câu
         vectorizer = TfidfVectorizer()
         context_vectors = vectorizer.fit_transform(context_sentences)
-
-        # Vector hóa câu hỏi
         question_vector = vectorizer.transform([question])
-
-        # Tính độ tương đồng cosine giữa câu hỏi và từng câu
         similarities = cosine_similarity(question_vector, context_vectors).flatten()
-
-        # Tìm câu có độ tương đồng cao nhất
         best_match_index = similarities.argmax()
         best_context = context_sentences[best_match_index]
 
-        # Sử dụng mô hình hỏi đáp để lấy câu trả lời
         # model_name = "bert-large-uncased-whole-word-masking-finetuned-squad"
         # tokenizer = BertTokenizer.from_pretrained(model_name)
         # model = BertForQuestionAnswering.from_pretrained(model_name)
-
-        # Tiền xử lý văn bản
         # inputs = tokenizer.encode_plus(question, best_context, add_special_tokens=True, return_tensors="pt")
-
-        # Dự đoán câu trả lời
         # with torch.no_grad():
             # outputs = model(**inputs)
-
-        # Lấy chỉ số của câu trả lời
         # start_index = torch.argmax(outputs.start_logits)
         # end_index = torch.argmax(outputs.end_logits)
-
-        # Giải mã câu trả lời
         # answer_tokens = inputs['input_ids'][0][start_index:end_index + 1]
         # answer = tokenizer.decode(answer_tokens)
 

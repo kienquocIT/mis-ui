@@ -271,6 +271,8 @@ $(document).ready(function () {
                 'document_data',
                 'venture_partner',
                 'bid_value' ,
+                'bid_bond_value',
+                'security_type',
                 'bid_date',
                 'employee_inherit_id',
                 'tinymce_content',

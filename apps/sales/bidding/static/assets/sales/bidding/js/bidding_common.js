@@ -903,6 +903,7 @@ class BiddingSubmitHandle {
             _form.dataForm['bid_date'] = tmpDate.split('/').reverse().join('-');
         }
         _form.dataForm['bid_value'] = $('#bid-value').attr('value')
+        _form.dataForm['bid_bond_value'] = $('#bid-bond-value').attr('value')
         _form.dataForm['opportunity'] = _form.dataForm['opportunity_id']
         delete _form.dataForm['opportunity_id']
     };

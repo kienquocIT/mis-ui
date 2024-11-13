@@ -160,8 +160,8 @@ class MenusCoreConfigurations:
             ),
             MenuCommon(
                 name='Document', code='id_menu_master_data_document', view_name='DocumentTypeMasterDataList',
-                icon='<i class="bi bi-currency-exchange"></i>',
-            )
+                icon='<i class="fas fa-file"></i>',
+            ),
         ]
     )
     TRANSITION_DATA_CONFIG = MenuCommon(

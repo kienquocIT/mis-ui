@@ -253,25 +253,17 @@ $(document).ready(function () {
     })
 
     let validator = SetupFormSubmit.call_validate(formSubmit, {
-        rules: {
-            security_type: {
-                required: function (element) {
-                    const bidBondValue = $("#bid-bond-value").attr('value');
-                    const isSecurityChecked = $("input[name='security_type']:checked").length === 0
-                    return bidBondValue && isSecurityChecked
-                }
-            },
-        },
-        messages: {
-            security_type: {
-                required: "Please select a security type if Bid Bond Value has data."
-            }
-        },
+
         onsubmit: true,
         submitHandler: function (form, event) {
             let _form = new SetupFormSubmit(formSubmit);
             BiddingSubmitHandle.setupDataSubmit(_form)
-
+            const bidBondValue = $("#bid-bond-value").attr('value');
+            const isSecurityChecked = $("input[name='security_type']:checked").length === 0
+            if (bidBondValue && isSecurityChecked){
+                $.fn.notifyB({description: "Please select a security type if Bid Bond Value has data."}, 'failure');
+                return
+            }
             let submitFields = [
                 'title',
                 'attachment',
@@ -279,15 +271,11 @@ $(document).ready(function () {
                 'document_data',
                 'venture_partner',
                 'bid_value' ,
+                'bid_bond_value',
+                'security_type',
                 'bid_date',
                 'employee_inherit_id',
                 'tinymce_content',
-                'security_type',
-                'cause_of_lost',
-                'other_bidder',
-                'other_cause',
-                'bid_bond_value',
-                'bid_status'
             ]
             if (_form.dataForm) {
                 BiddingCommonHandle.filterFieldList(submitFields, _form.dataForm);

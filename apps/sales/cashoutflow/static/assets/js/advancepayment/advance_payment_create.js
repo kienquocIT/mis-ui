@@ -4,17 +4,6 @@ $(document).ready(function () {
     APHandle.LoadPage();
     WFRTControl.setWFInitialData('advancepayment', 'POST')
 
-    AutoValidator.CustomValidator([
-        {
-            key: 'supplierValidator',
-            checkfunc: (value, element) => {return APTypeEle.val() === '1' && value},
-
-        }, {
-            key: 'employeeValidator',
-            checkfunc: (value, element) => {return APTypeEle.val() === '0' && value},
-        },
-    ])
-
     // SUBMIT FORM CREATE ADVANCE PAYMENT
     let form_validator = $('#form-create-advance').validate({
         submitHandler: function (form) {

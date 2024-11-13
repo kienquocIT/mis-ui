@@ -199,6 +199,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_CONFIG_PAGE = BreadcrumbChildren(_('Task config'), 'OpportunityTaskConfig')
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
 
+    #Document
+    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Bidding'), 'DocumentTypeMasterDataList')
+
     # Sale Activities
     CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call log'), 'OpportunityCallLogList')
     EMAIL_LIST_PAGE = BreadcrumbChildren(_('Send email'), 'OpportunityEmailList')
@@ -735,6 +738,9 @@ class BreadcrumbView:
     # Task
     OPPORTUNITY_TASK_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_CONFIG_PAGE]
     OPPORTUNITY_TASK_LIST_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_LIST_PAGE]
+
+    #Document
+    DOCUMENT_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.DOCUMENT_MASTER_DATA_LIST_PAGE]
 
     # Sale Activities
     CALL_LOG_LIST_PAGE = [

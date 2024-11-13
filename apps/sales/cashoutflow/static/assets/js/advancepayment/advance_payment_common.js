@@ -204,7 +204,7 @@ class APLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-name-input" value="${row?.['expense_name'] ? row?.['expense_name'] : ''}">`
+                        return `<input required ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-name-input" value="${row?.['expense_name'] ? row?.['expense_name'] : ''}">`
                     }
                 },
                 {

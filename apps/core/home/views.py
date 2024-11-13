@@ -321,3 +321,19 @@ class HomeCalendarAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.HOME_CALENDAR).get()
         return resp.auto_return(key_success='home_calendar')
+
+
+class TestView(View):
+    @mask_view(
+        login_require=True,
+        template='core/test.html',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class TestAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.TENANT_APPLICATION_LIST).get()
+        return resp.auto_return(key_success='test')

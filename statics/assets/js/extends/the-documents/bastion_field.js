@@ -20,83 +20,52 @@ function onLoadDropdownInfoProcess(eleInfo, eleInfoData, selectedData) {
 
 class BastionFieldControl {
     static defaultOpts = {
-        has_opp: true,
-        has_prj: true,
-        has_inherit: true,
-        has_process: false,
-        data_inherit: [
-            {
-                "id": "",
-                "title": "",
-                "first_name": "",
-                "last_name": "",
-                "email": "",
-                "is_active": false,
-                "selected": true,
-            }
-        ],
-        data_opp: [
-            {
-                "id": "",
-                "title": "",
-                "code": "",
-                "selected": true,
-            }
-        ],
-        data_prj: [
-            {
-                "id": "",
-                "title": "",
-                "selected": true,
-            }
-        ],
-        data_process: [
-            {
-                "id": "",
-                "title": "",
-                "selected": true,
-            }
-        ],
+        // has_opp: false,
+        // has_prj: false,
+        // has_inherit: false,
+        // has_process: false,
 
-        not_change_opp: false,
-        not_change_process: false,
+        // data_inherit: [
+        //     {
+        //         "id": "",
+        //         "title": "",
+        //         "first_name": "",
+        //         "last_name": "",
+        //         "email": "",
+        //         "is_active": false,
+        //         "selected": true,
+        //     }
+        // ],
+        // data_opp: [
+        //     {
+        //         "id": "",
+        //         "title": "",
+        //         "code": "",
+        //         "selected": true,
+        //     }
+        // ],
+        // data_prj: [
+        //     {
+        //         "id": "",
+        //         "title": "",
+        //         "selected": true,
+        //     }
+        // ],
+        // data_process: [
+        //     {
+        //         "id": "",
+        //         "title": "",
+        //         "selected": true,
+        //     }
+        // ],
 
-        opp_call_trigger_change: false,
-        prj_call_trigger_change: false,
-        inherit_call_trigger_change: false,
-        process_call_trigger_change: false,
-    }
+        // not_change_opp: false,
+        // not_change_process: false,
 
-    constructor(opts) {
-        this.has_opp = $x.fn.popKey(opts, 'has_opp', false, true);
-        this.has_prj = $x.fn.popKey(opts, 'has_prj', false, true);
-        this.has_inherit = $x.fn.popKey(opts, 'has_inherit', false, true);
-        this.has_process = $x.fn.popKey(opts, 'has_process', false, true);
-
-        this.data_opp = $x.fn.popKey(opts, 'data_opp', [], true);
-        this.data_prj = $x.fn.popKey(opts, 'data_prj', [], true);
-        this.data_inherit = $x.fn.popKey(opts, 'data_inherit', [], true);
-        this.data_process = $x.fn.popKey(opts, 'data_process', [], true);
-
-        this.not_change_opp = $x.fn.popKey(opts, 'not_change_opp', false, true);
-        this.not_change_process = $x.fn.popKey(opts, 'not_change_process', false, true);
-
-        this.opp_call_trigger_change = $x.fn.popKey(opts, 'opp_call_trigger_change', false, true);
-        this.prj_call_trigger_change = $x.fn.popKey(opts, 'prj_call_trigger_change', false, true);
-        this.inherit_call_trigger_change = $x.fn.popKey(opts, 'inherit_call_trigger_change', false, true);
-        this.process_call_trigger_change = $x.fn.popKey(opts, 'process_call_trigger_change', false, true);
-
-        // data_*: [{"id": "XXXX", "title": "XXXXX", "selected": true}]
-
-        this.realOppData = Array.isArray(this.data_opp) ? this.data_opp : [];
-        this.realPrjData = Array.isArray(this.data_prj) ? this.data_prj : [];
-        this.realProcessData = Array.isArray(this.data_process) ? this.data_process : [];
-
-        this.paramsInheritor = {'data-onload': Array.isArray(this.data_inherit) ? this.data_inherit : []};
-    }
-
-    static getFeatureCode() {
-        return new BastionFieldControl().mainDiv.data('current-feature');
+        // opp_call_trigger_change: false,
+        // prj_call_trigger_change: false,
+        // inherit_call_trigger_change: false,
+        // process_call_trigger_change: false,
     }
 
     mainDiv = $('#bastionFieldTheDocument');
@@ -106,7 +75,7 @@ class BastionFieldControl {
     processEle = $('#process_id');
 
     getOppFlag(key = null) {
-        let data = {
+        let data = Object.keys(this.getOppFlagData).length > 0 ? this.getOppFlagData : {
             'has': (this.mainDiv.data('has_opp') === '1' || this.mainDiv.data('has_opp') === 1),
             'disabled': (this.mainDiv.data('opp_disabled') === '1' || this.mainDiv.data('opp_disabled') === 1),
             'required': (this.mainDiv.data('opp_required') === '1' || this.mainDiv.data('opp_required') === 1),
@@ -120,7 +89,7 @@ class BastionFieldControl {
     }
 
     getPrjFlag(key = null) {
-        let data = {
+        let data = Object.keys(this.getPrjFlagData).length > 0 ? this.getPrjFlagData : {
             'has': (this.mainDiv.data('has_prj') === '1' || this.mainDiv.data('has_prj') === 1),
             'disabled': (this.mainDiv.data('prj_disabled') === '1' || this.mainDiv.data('prj_disabled') === 1),
             'required': (this.mainDiv.data('prj_required') === '1' || this.mainDiv.data('prj_required') === 1),
@@ -134,13 +103,14 @@ class BastionFieldControl {
     }
 
     getInheritFlag(key = null) {
-        let data = {
+        let data = Object.keys(this.getInheritFlagData).length > 0 ? this.getInheritFlagData : {
             'has': (this.mainDiv.data('has_inherit') === '1' || this.mainDiv.data('has_inherit') === 1),
             'disabled': (this.mainDiv.data('inherit_disabled') === '1' || this.mainDiv.data('inherit_disabled') === 1),
             'required': (this.mainDiv.data('inherit_required') === '1' || this.mainDiv.data('inherit_required') === 1),
             'readonly': (this.mainDiv.data('inherit_readonly') === '1' || this.mainDiv.data('inherit_readonly') === 1),
             'hidden': (this.mainDiv.data('inherit_hidden') === '1' || this.mainDiv.data('inherit_hidden') === 1),
             'title': this.mainDiv.data('inherit_title'),
+            'data': this.empInheritEle.data('onload') || [],
         };
         data['showing'] = data['has'] === true && data['hidden'] === false;
         if (key) return data[key];
@@ -148,7 +118,7 @@ class BastionFieldControl {
     }
 
     getProcessFlag(key = null) {
-        let data = {
+        let data = Object.keys(this.getProcessFlagData).length > 0 ? this.getProcessFlagData : {
             'has': (this.mainDiv.data('has_process') === '1' || this.mainDiv.data('has_process') === 1),
             'disabled': (this.mainDiv.data('process_disabled') === '1' || this.mainDiv.data('process_disabled') === 1),
             'required': (this.mainDiv.data('process_required') === '1' || this.mainDiv.data('process_required') === 1),
@@ -157,8 +127,51 @@ class BastionFieldControl {
             'title': this.mainDiv.data('process_title'),
         };
         data['showing'] = data['has'] === true && data['hidden'] === false;
+        data['not_change'] = data['disabled'] === true || data['readonly'] === true;
         if (key) return data[key];
         return data;
+    }
+
+    static getFeatureCode() {
+        return new BastionFieldControl().mainDiv.data('current-feature');
+    }
+
+    constructor(opts) {
+        this.getOppFlagData = {};
+        this.getPrjFlagData = {};
+        this.getInheritFlagData = {};
+        this.getProcessFlagData = {};
+
+        this.getPrjFlag();
+        this.getOppFlag();
+        this.getInheritFlag();
+        this.getProcessFlag();
+
+        this.has_opp = $x.fn.popKey(opts, 'has_opp', this.getOppFlag('has'), true);
+        this.has_prj = $x.fn.popKey(opts, 'has_prj', this.getProcessFlag('has'), true);
+        this.has_inherit = $x.fn.popKey(opts, 'has_inherit', this.getInheritFlag('has'), true);
+        this.has_process = $x.fn.popKey(opts, 'has_process', this.getProcessFlag('has'), true);
+
+        this.data_opp = $x.fn.popKey(opts, 'data_opp', [], true);
+        this.data_prj = $x.fn.popKey(opts, 'data_prj', [], true);
+        this.data_inherit = $x.fn.popKey(opts, 'data_inherit', this.getInheritFlag('data'), true);
+        this.data_process = $x.fn.popKey(opts, 'data_process', [], true);
+
+        this.not_change_opp = $x.fn.popKey(opts, 'not_change_opp', this.getOppFlag('not_change'), true);
+        this.not_change_process = $x.fn.popKey(opts, 'not_change_process', this.getProcessFlag('not_change'), true);
+
+        this.opp_call_trigger_change = $x.fn.popKey(opts, 'opp_call_trigger_change', false, true);
+        this.prj_call_trigger_change = $x.fn.popKey(opts, 'prj_call_trigger_change', false, true);
+        this.inherit_call_trigger_change = $x.fn.popKey(opts, 'inherit_call_trigger_change', false, true);
+        this.process_call_trigger_change = $x.fn.popKey(opts, 'process_call_trigger_change', false, true);
+
+        // data_*: [{"id": "XXXX", "title": "XXXXX", "selected": true}]
+
+        this.realOppData = Array.isArray(this.data_opp) ? this.data_opp : [];
+        this.realPrjData = Array.isArray(this.data_prj) ? this.data_prj : [];
+        this.realProcessData = Array.isArray(this.data_process) ? this.data_process : [];
+
+        this.paramsInheritor = {'data-onload': Array.isArray(this.data_inherit) ? this.data_inherit : []};
     }
 
     initOppSelect(opts) {

@@ -29,6 +29,7 @@ class ReturnAPLoadPage {
         btn_detail.attr('href', url);
     }
     static LoadAdvancePayment(data, params={'system_status': 3}) {
+        const oppId = $x.fn.getUrlParameter('opp_id');
         advancePaymentEle.initSelect2({
             allowClear: data === null,
             ajax: {
@@ -38,6 +39,9 @@ class ReturnAPLoadPage {
             },
             data: (data ? data : null),
             keyResp: 'advance_payment_list',
+            dataParams: oppId && $x.fn.checkUUID4(oppId) ? {
+                'opportunity_mapped_id': oppId,
+            } : {},
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
@@ -180,7 +184,23 @@ class ReturnAPHandle {
         if (advance_payment) {
             advancePaymentEle.trigger('change')
         }
-        ReturnAPLoadTab.DrawTableCost()
+        ReturnAPLoadTab.DrawTableCost();
+
+        const {
+            opp_id, opp_code,
+            process_id, process_title,
+            inherit_id, inherit_title,
+        } = $x.fn.getManyUrlParameters([
+            'opp_id', 'opp_code',
+            'process_id', 'process_title',
+            'inherit_id', 'inherit_title',
+        ])
+        if (opp_id && $x.fn.checkUUID4(opp_id)) $('#inp-sale-code').val(opp_code);
+        if (process_id && $x.fn.checkUUID4(process_id)) {
+            $('#inp-process-mask').val(process_title);
+            $('#inp-process').val(process_id);
+        }
+        if (inherit_id && $x.fn.checkUUID4(inherit_id)) $('#chooseBeneficiary').val(inherit_title);
     }
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));

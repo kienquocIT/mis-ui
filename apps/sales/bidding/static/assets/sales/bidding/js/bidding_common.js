@@ -892,11 +892,9 @@ class BiddingSubmitHandle {
         BiddingStoreHandle.storeAttachment();
         let dataDocParse = BiddingSubmitHandle.setupDataDocument();
         let dataPartner = BiddingSubmitHandle.setupDataPartner();
-        let dataOtherBidder = BiddingSubmitHandle.setupDataBidder()
         _form.dataForm['document_data'] = dataDocParse?.['dataDoc'];
         _form.dataForm['attachment'] = dataDocParse?.['attachment'];
         _form.dataForm['venture_partner'] = dataPartner
-        _form.dataForm['other_bidder'] = dataOtherBidder
         _form.dataForm['tinymce_content'] = BiddingTinymceHandle.getContent();
         if(!_form.dataForm?.['bid_date']){
             _form.dataForm['bid_date']=null
@@ -908,13 +906,6 @@ class BiddingSubmitHandle {
         _form.dataForm['bid_bond_value'] = $('#bid-bond-value').attr('value')
         _form.dataForm['opportunity'] = _form.dataForm['opportunity_id']
         delete _form.dataForm['opportunity_id']
-        let causeOfLost = []
-         $('input[name="cause_of_lost"]').each(function () {
-            if ($(this).is(':checked')) {
-                causeOfLost.push($(this).val());
-            }
-        });
-        _form.dataForm['cause_of_lost'] = causeOfLost
     };
 }
 

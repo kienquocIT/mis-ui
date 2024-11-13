@@ -34,6 +34,22 @@ class DocumentTypeMasterDataListAPI(APIView):
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        print(1)
         resp = ServerAPI(user=request.user, url=ApiURL.DOCUMENT_TYPE_LIST).post(request.data)
         return resp.auto_return(key_success='document_type_list')
+
+class DocumentTypeMasterDataDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DOCUMENT_TYPE_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='document_type')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DOCUMENT_TYPE_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='document_type')

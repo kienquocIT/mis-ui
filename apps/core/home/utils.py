@@ -94,6 +94,7 @@ PLAN_APP_OF_SALE = {
         ).data,
         'opportunitycall': ReverseUrlCommon(
             list_view_name='OpportunityCallLogList', detail_view_name=None,
+            create_view_name='OpportunityCallLogList',
         ).data,
         'opportunityemail': ReverseUrlCommon(
             list_view_name='OpportunityEmailList', detail_view_name=None,
@@ -116,7 +117,11 @@ PLAN_APP_OF_SALE = {
         ).data,
     },
     'saleorder': {
-        'saleorder': ReverseUrlCommon(list_view_name='SaleOrderList', detail_view_name='SaleOrderDetail').data,
+        'saleorder': ReverseUrlCommon(
+            list_view_name='SaleOrderList',
+            detail_view_name='SaleOrderDetail',
+            create_view_name='SaleOrderCreate',
+        ).data,
     },
     'delivery': {
         'orderpickingsub': ReverseUrlCommon(
@@ -131,13 +136,19 @@ PLAN_APP_OF_SALE = {
     },
     'cashoutflow': {
         'advancepayment': ReverseUrlCommon(
-            list_view_name='AdvancePaymentList', detail_view_name='AdvancePaymentDetail'
+            list_view_name='AdvancePaymentList',
+            detail_view_name='AdvancePaymentDetail',
+            create_view_name='AdvancePaymentCreate',
         ).data,
         'payment': ReverseUrlCommon(
-            list_view_name='PaymentList', detail_view_name='PaymentDetail',
+            list_view_name='PaymentList',
+            detail_view_name='PaymentDetail',
+            create_view_name='PaymentCreate',
         ).data,
         'returnadvance': ReverseUrlCommon(
-            list_view_name='ReturnAdvanceList', detail_view_name='ReturnAdvanceDetail',
+            list_view_name='ReturnAdvanceList',
+            detail_view_name='ReturnAdvanceDetail',
+            create_view_name='ReturnAdvanceCreate',
         ).data,
     },
     'contract': {

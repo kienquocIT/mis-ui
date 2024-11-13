@@ -575,7 +575,7 @@ class APIUtil:
         #   2nd use requests_toolbelt.MultipartEncoder -> cur of MultiEncoder file at end -> hang!
         self.data_backup = data
 
-        def re_update_data_call_post(for_backup=False):
+        def re_update_data_call(for_backup=False):
             if content_type:
                 if content_type.startswith('multipart/form-data'):
                     # config['files'] = data  # using when upload only file (! requests_toolbelt.MultipartEncoder)
@@ -598,7 +598,7 @@ class APIUtil:
                 headers['content-type'] = 'application/json'
                 config['data'] = data
 
-        re_update_data_call_post()
+        re_update_data_call()
 
         try:
             resp = requests.post(**config)
@@ -622,7 +622,7 @@ class APIUtil:
                     # refresh token
                     headers.update(headers_upgrade)
                     # re-update data in call again
-                    re_update_data_call_post(for_backup=True)
+                    re_update_data_call(for_backup=True)
                     # re-call API
                     resp = requests.post(**config)
                     resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
@@ -656,8 +656,9 @@ class APIUtil:
             **kwargs
         }
 
-        def re_update_data_call_post(for_backup=False):
+        def re_update_data_call(for_backup=False):
             if content_type:
+                print('content_type:', content_type)
                 if content_type.startswith('multipart/form-data'):
                     # config['files'] = data  # using when upload only file (! requests_toolbelt.MultipartEncoder)
                     if for_backup:
@@ -679,8 +680,9 @@ class APIUtil:
                 headers['content-type'] = 'application/json'
                 config['data'] = data
 
-        re_update_data_call_post()
+        re_update_data_call()
 
+        print('call_put: ', config)
         try:
             resp = requests.put(**config)
         except requests.exceptions.RequestException:
@@ -702,7 +704,7 @@ class APIUtil:
                 if state_refresh and headers_upgrade:
                     # refresh token
                     headers.update(headers_upgrade)
-                    re_update_data_call_post(for_backup=True)
+                    re_update_data_call(for_backup=True)
                     resp = requests.put(**config)
                     resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         return resp_parsed

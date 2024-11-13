@@ -96,3 +96,7 @@ msgstr "Cấu hình tiến trình"
 #
 msgid "Stages current"
 msgstr "Giai đoạn hiện tại"
+
+#
+msgid "My Process Runtime"
+msgstr "Thực hiện tiến trình của tôi"

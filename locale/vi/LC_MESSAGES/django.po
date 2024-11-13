@@ -9531,3 +9531,99 @@ msgstr "Lợi nhuận tháng này"
 #
 msgid "Time range"
 msgstr "Khoảng thời gian"
+
+#
+msgid "Bidding Name"
+msgstr "Tên thầu"
+
+#
+msgid "Bidding Date"
+msgstr "Ngày thầu"
+
+#
+msgid "Bidding Value"
+msgstr "Giá thầu"
+
+#
+msgid "Bid Bond Value"
+msgstr "Giá bảo lãnh thầu"
+
+#
+msgid "Bidding Document"
+msgstr "Hồ sơ mời thầu"
+
+#
+msgid "Joint Venture Partner"
+msgstr "Đối tác liên doanh"
+
+#
+msgid "Partner Code"
+msgstr "Mã đối tác"
+
+#
+msgid "Partner Name"
+msgstr "Tên đối tác"
+
+#
+msgid "Leader"
+msgstr "Người đứng đầu"
+
+#
+msgid "Bids"
+msgstr "Hồ sơ dự thầu"
+
+#
+msgid "Result"
+msgstr "Kết quả thầu"
+
+#
+msgid "Required Documents"
+msgstr "Tài liệu dự thầu"
+
+#
+msgid "Document Name"
+msgstr "Tên tài liệu"
+
+#
+msgid "Other Bidder"
+msgstr "Người dự thầu"
+
+#
+msgid "Won"
+msgstr "Thắng"
+
+#
+msgid "Bids result"
+msgstr "Kết quả thầu"
+
+#
+msgid "Cause of lost"
+msgstr "Nguyên nhân thua"
+
+#
+msgid "Bids withdrawal"
+msgstr "Rút thầu"
+
+#
+msgid "Higher bid price"
+msgstr "Giá cao"
+
+#
+msgid "Non-compliance"
+msgstr "Không đáp ứng điều kiện"
+
+#
+msgid "Other reasons"
+msgstr "Lí do khác"
+
+#
+msgid "Select Joint Venture Partner"
+msgstr "Chọn đối tác liên doanh"
+
+#
+msgid "Select Other Bidder"
+msgstr "Chọn người dự thầu"
+
+#
+msgid "Select required documents"
+msgstr "Chọn tài liệu cho thầu"

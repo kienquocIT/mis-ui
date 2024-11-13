@@ -4,7 +4,7 @@ from apps.core.process.views import (
     ProcessList, ProcessCreate, ProcessListAPI, ProcessReadyListAPI,
     ProcessUpdate, ProcessDetailAPI, ProcessDetail,
     ProcessRuntimeOfMeAPI, ProcessRuntimeAPI,
-    ProcessRuntimeDetailView, ProcessRuntimeListView, ProcessRuntimeDetailAPI,
+    ProcessRuntimeDetailView, ProcessRuntimeListView, ProcessRuntimeListMeRedirect, ProcessRuntimeDetailAPI,
     ProcessRuntimeStageAppDetailAPI,
 )
 
@@ -19,6 +19,7 @@ urlpatterns = [
     path('config/detail/<str:pk>/api', ProcessDetailAPI.as_view(), name='ProcessDetailAPI'),
 
     path('runtime/list', ProcessRuntimeListView.as_view(), name='ProcessRuntimeListView'),
+    path('runtime/list/me/redirect', ProcessRuntimeListMeRedirect.as_view(), name='ProcessRuntimeListMeRedirect'),
     path('runtime/list/api', ProcessRuntimeAPI.as_view(), name='ProcessRuntimeAPI'),
     path('runtime/list/me/api', ProcessRuntimeOfMeAPI.as_view(), name='ProcessRuntimeOfMeAPI'),
     path('runtime/detail/<str:pk>', ProcessRuntimeDetailView.as_view(), name='ProcessRuntimeDetailView'),

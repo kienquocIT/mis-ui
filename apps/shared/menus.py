@@ -4,6 +4,7 @@ __all__ = [
 ]
 
 from typing import Union
+from urllib.parse import urlencode
 
 from django.urls import reverse
 from .utils import RandomGenerate
@@ -18,23 +19,34 @@ class MenuCommon:
     child: list
 
     def __init__(
-            self, name: str, code: str, view_name: Union[str, None] = None, icon: str = None,
-            child: list = None
+            self,
+            name: str, code: str,
+            view_name: Union[str, None] = None,
+            icon: str = None,
+            child: list = None,
+            params: dict[str, any] = None,
+            expanded: bool = False,
     ):
         self.name = name
         self.code = code
         self.view_name = view_name
         self.icon = icon if icon else ''
         self.child = child if isinstance(child, list) else []
+        self.params = params if isinstance(params, dict) else {}
+        self.expanded = expanded
 
     @property
     def data(self):
+        url = reverse(self.view_name) if self.view_name and self.view_name != '#' else '#'
+        if self.params:
+            url += '?' + urlencode(self.params)
         return {
             'name': self.name,
             'code': self.code if self.code else RandomGenerate.get_string(length=32),
             'view_name': self.view_name,
-            'url': reverse(self.view_name) if self.view_name and self.view_name != '#' else '#',
+            'url': url,
             'icon': self.icon,
+            'expanded': self.expanded,
             'child': [
                 x.data for x in self.child
             ]
@@ -89,6 +101,22 @@ class MenusCompanySystem:
             ),
         ]
     )
+    PROCESS = MenuCommon(
+        name='Process', code='process_group', icon='<i class="fa-solid fa-microchip"></i>',
+        expanded=True,
+        child=[
+            MenuCommon(
+                name='Business Process', code='menu_process', view_name='ProcessList',
+                icon='<i class="fa-solid fa-microchip"></i>',
+            ),
+            MenuCommon(
+                name='My Process Runtime',
+                code='menu_process_runtime',
+                view_name='ProcessRuntimeListMeRedirect',
+                icon='<i class="fa-solid fa-microchip"></i>',
+            ),
+        ]
+    )
     TENANT_MANAGE = MenuCommon(
         name='Tenant', code='menu_company_overview_list', view_name='CompanyListOverviewList',
         icon='<i class="fa-solid fa-city"></i>',
@@ -132,8 +160,8 @@ class MenusCoreConfigurations:
             ),
             MenuCommon(
                 name='Document', code='id_menu_master_data_document', view_name='DocumentTypeMasterDataList',
-                icon='<i class="bi bi-currency-exchange"></i>',
-            )
+                icon='<i class="fas fa-file"></i>',
+            ),
         ]
     )
     TRANSITION_DATA_CONFIG = MenuCommon(
@@ -862,7 +890,7 @@ class SpaceItem:
             icon='<i class="fa-solid fa-square-pen"></i>',
             menus=[
                 MenusCompanySystem.WORKFLOW_PROCESS.child[0],
-                MenusCompanySystem.WORKFLOW_PROCESS.child[1],
+                MenusCompanySystem.PROCESS,
             ],
         ),
         'company-system': SpaceCommon(

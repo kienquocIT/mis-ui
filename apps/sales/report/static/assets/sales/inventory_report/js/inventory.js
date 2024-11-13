@@ -330,7 +330,7 @@ $(document).ready(function () {
                             return `
                                 <div class="row">
                                     <div class="col-4"><span class="text-secondary in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['prd_in_quantity']}</span></div>
-                                    <div class="col-8"><span class="text-secondary in-quantity-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_in_value']}"></span></div>
+                                    <div class="col-8"><span class="text-secondary in-value-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_in_value']}"></span></div>
                                 </div>
                             `
                         }
@@ -357,7 +357,7 @@ $(document).ready(function () {
                             return `                                
                                 <div class="row">
                                     <div class="col-4"><span class="text-secondary out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['prd_out_quantity']}</span></div>
-                                    <div class="col-8"><span class="text-secondary out-quantity-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_out_value']}"></span></div>
+                                    <div class="col-8"><span class="text-secondary out-value-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_out_value']}"></span></div>
                                 </div>
                             `
                         }

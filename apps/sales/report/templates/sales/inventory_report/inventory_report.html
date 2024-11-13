@@ -460,16 +460,17 @@
                 if (contexts.length === 0) {
                     $('#table-inventory-report').find('tbody tr').each(function () {
                         if (!$(this).hasClass('fixed-row')) {
-                            contexts += `${$(this).find('td:eq(0) span').text()} tồn đầu ${$(this).find('td:eq(2) .ending-quantity-span').text()} ${$(this).find('td:eq(1) span').text()}.`
-                            contexts += `${$(this).find('td:eq(0) span').text()} đã nhập ${$(this).find('td:eq(3) .ending-quantity-span').text()} ${$(this).find('td:eq(1) span').text()}.`
-                            contexts += `${$(this).find('td:eq(0) span').text()} đã xuất ${$(this).find('td:eq(4) .ending-quantity-span').text()} ${$(this).find('td:eq(1) span').text()}.`
-                            contexts += `${$(this).find('td:eq(0) span').text()} còn tồn kho ${$(this).find('td:eq(5) .ending-quantity-span').text()} ${$(this).find('td:eq(1) span').text()}.`
-                            contexts += `${$(this).find('td:eq(0) span').text()} có giá cost đầu kì là ${$(this).find('td:eq(2) .ending-value-span').text()}.`
-                            contexts += `${$(this).find('td:eq(0) span').text()} có giá cost nhập vào là ${$(this).find('td:eq(3) .ending-value-span').text()}.`
-                            contexts += `${$(this).find('td:eq(0) span').text()} có giá cost xuất ra là ${$(this).find('td:eq(4) .ending-value-span').text()}.`
-                            contexts += `${$(this).find('td:eq(0) span').text()} có giá cost tích lũy là ${$(this).find('td:eq(5) .ending-value-span').text()}.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} tồn đầu ${$(this).find('td:eq(2) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()}.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} đã nhập ${$(this).find('td:eq(3) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()}.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} đã xuất ${$(this).find('td:eq(4) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()}.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} còn tồn kho ${$(this).find('td:eq(5) span:eq(0)').text()} ${$(this).find('td:eq(1) span').text()}.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} có giá cost đầu kì là ${$(this).find('td:eq(2) .opening-value-span').attr('data-init-money')}VND.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} có giá cost nhập vào là ${$(this).find('td:eq(3) .in-value-span').attr('data-init-money')}VND.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} có giá cost xuất ra là ${$(this).find('td:eq(4) .out-value-span').attr('data-init-money')}VND.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} có giá cost tích lũy là ${$(this).find('td:eq(5) .ending-value-span').attr('data-init-money')}VND.`
                         }
                     })
+                    console.log(contexts)
                 }
 
                 let dataParam = {}

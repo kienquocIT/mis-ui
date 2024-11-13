@@ -195,7 +195,7 @@ $(document).ready(function () {
         let sale_order_code_list = []
         table.DataTableDefault({
             styleDom: 'hide-foot',
-            scrollY: '64vh',
+            scrollY: '60vh',
             scrollX: true,
             scrollCollapse: true,
             ordering: false,

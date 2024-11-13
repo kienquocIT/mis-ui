@@ -23,6 +23,45 @@
             background: white;
             z-index: 2;
         }
+        /* Khung chat dạng popup */
+        .chat-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50vh;
+            max-width: 50vh;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        /* Thanh tiêu đề chat */
+        .chat-header {
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 125, 136, 0.2);
+        }
+        /* Nội dung chat */
+        .chat-content {
+            display: none; /* Ẩn nội dung chat ban đầu */
+            padding: 10px;
+            background-color: #f9f9f9;
+            max-height: 400px;
+            overflow: hidden;
+        }
+        /* Nút đóng chat */
+        .close-chat {
+            font-size: 20px;
+            cursor: pointer;
+        }
+        /* Hiệu ứng khi mở chat */
+        .chat-popup.active .chat-content {
+            display: block;
+        }
+        .chat-popup div {
+            z-index: 555; !important;
+        }
     </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
@@ -63,6 +102,7 @@
             data-trans-we="{% trans 'Weighted average' %}"
             data-trans-fifo="{% trans 'FIFO' %}"
             data-trans-all="{% trans 'Default all' %}"
+            data-trans-no-response="{% trans 'Tôi chưa hiểu bạn cần gì! Hãy đặt câu hỏi rõ hơn nhé!' %}"
     ></script>
 
     <script id="url-script"
@@ -70,6 +110,7 @@
             data-url-inventory-list-view="{% url 'ReportInventoryProductWarehouseViewAPI' %}"
             data-url-qr-code-sn-info="{% url 'GetQRCodeSerialInfoAPI' %}"
             data-url-qr-code-lot-info="{% url 'GetQRCodeLotInfoAPI' %}"
+            data-url-chatbot="{% url 'ReportInventoryChatBotAPI' %}"
     ></script>
 
     <div class="row">
@@ -266,6 +307,40 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-12">
+            <!-- Khung Chat -->
+            <div id="chatPopup" class="chat-popup border border-primary">
+                <div class="chat-header fw-bold text-primary" id="toggleChat">
+                    <span><i class="fas fa-comments"></i>&nbsp;Bflow report chatbot</span>
+{#                    <span class="close-chat">&times;</span>#}
+                </div>
+                <div class="chat-content">
+                    <div class="row">
+                        <div class="col-12" id="chat-show-space" style="overflow-y: auto; max-height: 300px">
+                            <div class="text-left">
+                                <div class="you border border-light rounded bg-blue-light-5 p-2" style="max-width: 70%">
+                                    {% trans 'Xin chào👋! Bạn có thể hỏi đáp về dữ liệu trong Báo cáo này?' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-10">
+                            <div class="form-group d-flex">
+                                <label for="input-chat" class="form-label"></label>
+                                <textarea class="form-control" style="border-radius: 10px" id="input-chat" placeholder="{% trans 'Input message...' %}"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <button id="send-message" class="btn fw-bold text-primary w-100 h-100">{% trans 'Send' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" style="z-index: 2" id="view-prd-wh" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg min-w-1280p" role="document">
             <div class="modal-content">
@@ -360,4 +435,104 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 
     <script src="{% static 'assets/sales/inventory_report/js/inventory.js' %}"></script>
+    <script>
+        // Lấy các phần tử
+        let contexts = ''
+        const chatPopup = $('#chatPopup')
+        const toggleChat = $('#toggleChat')
+        const closeChatBtn = $('.close-chat')
+        const chatInput = $('#input-chat')
+        const chatShowSpace = $('#chat-show-space')
+        const sendMessage = $('#send-message')
+
+        function pushUserChat() {
+            // Lấy nội dung tin nhắn
+            const message = chatInput.val().trim();
+            if (message) {
+                // Tạo một phần tử mới để hiển thị tin nhắn
+                const messageElement = $(`<div style="display: flex; justify-content: flex-end;" class="mt-2">
+                    <div class="me border border-light rounded bg-primary-light-5 p-2" style="max-width: 70%">${message}</div>
+                </div>`);
+
+                // Thêm tin nhắn vào vùng hiển thị
+                chatShowSpace.append(messageElement);
+
+                // Cuộn xuống tin nhắn mới nhất
+                chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
+
+                // Xóa nội dung trong ô nhập sau khi gửi
+                chatInput.val('');
+
+                let messageResponse = $(`<div class="mt-2">
+                    <div class="you border border-light rounded bg-blue-light-5 p-2" style="max-width: 70%">typing...</div>
+                </div>`);
+                chatShowSpace.append(messageResponse)
+
+                if (!contexts) {
+                    $('#table-inventory-report').find('tbody tr').each(function () {
+                        if (!$(this).hasClass('fixed-row')) {
+                            contexts += `${$(this).find('td:eq(0) span').text()} tồn đầu ${$(this).find('td:eq(2) .ending-quantity-span').text()} ${$(this).find('td:eq(1) span').text()}.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} đã nhập ${$(this).find('td:eq(3) .ending-quantity-span').text()} ${$(this).find('td:eq(1) span').text()}.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} đã xuất ${$(this).find('td:eq(4) .ending-quantity-span').text()} ${$(this).find('td:eq(1) span').text()}.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} còn tồn kho ${$(this).find('td:eq(5) .ending-quantity-span').text()} ${$(this).find('td:eq(1) span').text()}.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} có giá cost đầu kì là ${$(this).find('td:eq(2) .ending-value-span').text()}.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} có giá cost nhập vào là ${$(this).find('td:eq(3) .ending-value-span').text()}.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} có giá cost xuất ra là ${$(this).find('td:eq(4) .ending-value-span').text()}.`
+                            contexts += `${$(this).find('td:eq(0) span').text()} có giá cost tích lũy là ${$(this).find('td:eq(5) .ending-value-span').text()}.`
+                        }
+                    })
+                    console.log(contexts)
+                }
+
+
+                let dataParam = {}
+                dataParam['contexts'] = contexts
+                dataParam['question'] = message
+                let chatbot_response_ajax = $.fn.callAjax2({
+                    url: $('#url-script').attr('data-url-chatbot'),
+                    data: dataParam,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('response')) {
+                            return data?.['response'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                Promise.all([chatbot_response_ajax]).then(
+                    (results) => {
+                        messageResponse.find('.you').text(results[0] === '' ? $('#trans-script').attr('data-trans-no-response') : results[0])
+                    })
+            }
+        }
+
+        // Thay đổi trạng thái mở/đóng khi nhấn vào tiêu đề chat
+        toggleChat.on('click', function () {
+            chatPopup.toggleClass('active bg-primary');
+            toggleChat.toggleClass('text-white');
+        });
+
+        // Đóng popup khi nhấn vào nút "×"
+        closeChatBtn.on('click', function () {
+            chatPopup.remove(); // Ẩn hoặc xóa hoàn toàn popup
+        });
+
+        // Gửi tin nhắn khi nhấn phím Enter
+        chatInput.on('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                pushUserChat()
+            }
+        });
+
+        sendMessage.on('click', function () {
+            pushUserChat()
+        });
+    </script>
 {% endblock %}

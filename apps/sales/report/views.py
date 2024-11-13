@@ -5,6 +5,10 @@ from rest_framework import status
 from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL
 from apps.shared.msg import ReportMsg
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from transformers import BertTokenizer, BertForQuestionAnswering
+import torch
 
 FILTER_QUARTER = (
     (1, ReportMsg.QUARTER_FIRST),
@@ -147,6 +151,7 @@ class ReportInventoryList(View):
         breadcrumb='REPORT_INVENTORY_COST_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
+        data_context_chatbot = ''
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
         resp2 = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()
         resp3 = ServerAPI(
@@ -276,6 +281,58 @@ class GetQRCodeSerialInfoAPI(APIView):
         path = f"apps/sales/report/static/assets/sales/inventory_report/QR_sn_info/{data.get('product_id')}_{data.get('serial_number')}.png"
         img.save(path)
         return {'qr_path_sn': [{'path': path.replace('apps/sales/report', '')}]}, status.HTTP_200_OK
+
+
+class ReportInventoryChatBotAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+
+        contexts = params.get('contexts')
+        question = params.get('question')
+
+        # Tách đoạn văn thành từng câu riêng lẻ
+        context_sentences = [sentence.strip() for sentence in contexts.split('.') if sentence]
+
+        # Tạo vector TF-IDF cho từng câu
+        vectorizer = TfidfVectorizer()
+        context_vectors = vectorizer.fit_transform(context_sentences)
+
+        # Vector hóa câu hỏi
+        question_vector = vectorizer.transform([question])
+
+        # Tính độ tương đồng cosine giữa câu hỏi và từng câu
+        similarities = cosine_similarity(question_vector, context_vectors).flatten()
+
+        # Tìm câu có độ tương đồng cao nhất
+        best_match_index = similarities.argmax()
+        best_context = context_sentences[best_match_index]
+
+        # Sử dụng mô hình hỏi đáp để lấy câu trả lời
+        # model_name = "bert-large-uncased-whole-word-masking-finetuned-squad"
+        # tokenizer = BertTokenizer.from_pretrained(model_name)
+        # model = BertForQuestionAnswering.from_pretrained(model_name)
+
+        # Tiền xử lý văn bản
+        # inputs = tokenizer.encode_plus(question, best_context, add_special_tokens=True, return_tensors="pt")
+
+        # Dự đoán câu trả lời
+        # with torch.no_grad():
+            # outputs = model(**inputs)
+
+        # Lấy chỉ số của câu trả lời
+        # start_index = torch.argmax(outputs.start_logits)
+        # end_index = torch.argmax(outputs.end_logits)
+
+        # Giải mã câu trả lời
+        # answer_tokens = inputs['input_ids'][0][start_index:end_index + 1]
+        # answer = tokenizer.decode(answer_tokens)
+
+        return {'response': best_context}, status.HTTP_200_OK
+
 
 
 # REPORT PIPELINE

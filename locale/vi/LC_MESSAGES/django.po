@@ -6578,7 +6578,11 @@ msgstr "NV bán hàng"
 
 #
 msgid "Period"
-msgstr "Năm tài chính"
+msgstr "Giai đoạn"
+
+#
+msgid "Accounting Period"
+msgstr "Kỳ kế toán"
 
 #
 msgid "Target item"
@@ -6593,7 +6597,7 @@ msgid "Period target equals total of sub period targets"
 msgstr "Mục tiêu cả kỳ bằng tổng mục tiêu các kỳ con của nó"
 
 #
-msgid "Periods"
+msgid "Accounting Periods"
 msgstr "Kỳ kế toán"
 
 #
@@ -6605,11 +6609,11 @@ msgid "Start month"
 msgstr "Tháng bắt đầu"
 
 #
-msgid "Update period"
+msgid "Update accounting period"
 msgstr "Cập nhật kỳ kế toán"
 
 #
-msgid "New period"
+msgid "New accounting period"
 msgstr "Thêm kỳ kế toán mới"
 
 #
@@ -7293,19 +7297,19 @@ msgid "is not in stock"
 msgstr "không còn trong kho"
 
 #
-msgid "Posting periods"
+msgid "Posting accounting periods"
 msgstr "Kỳ kế toán"
 
 #
-msgid "Main period code"
+msgid "Main accounting period code"
 msgstr "Mã kỳ chính"
 
 #
-msgid "Sub period code"
+msgid "Sub accounting period code"
 msgstr "Mã kỳ phụ"
 
 #
-msgid "Period name"
+msgid "Accounting Period name"
 msgstr "Tên kỳ"
 
 #
@@ -7613,7 +7617,7 @@ msgid "First month"
 msgstr "Tháng đầu kỳ"
 
 #
-msgid "Sub periods"
+msgid "Sub accounting periods"
 msgstr "Kỳ con"
 
 #
@@ -9361,7 +9365,7 @@ msgid "You can see Period year list in Setting space."
 msgstr "Bạn có thể xem danh sách Kì kế toán ở Space Setting"
 
 #
-msgid "Create new Period year"
+msgid "Create new Accounting Period year"
 msgstr "Tạo mới Kì kế toán"
 
 #

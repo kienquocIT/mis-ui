@@ -86,7 +86,7 @@ class POLoadDataHandle {
             data: dataDD,
         });
         // add css to select2_rendered
-        POLoadDataHandle.loadCssS2($ele, '230px');
+        POLoadDataHandle.loadCssS2($ele, '260px');
     };
 
     static loadDataProductSelect(ele, is_change_item = true) {
@@ -1551,7 +1551,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '17%',
+                    width: '18%',
                     render: (data, type, row) => {
                         return `<div class="row table-row-item-area">
                                     <div class="col-12 col-md-12 col-lg-12">
@@ -1572,7 +1572,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '12%',
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</textarea></div>`;
                     }
@@ -1601,7 +1601,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '6.51041666667%',
+                    width: '6%',
                     render: () => {
                         return `<div class="row">
                                     <select 
@@ -1617,7 +1617,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '6.51041666667%',
+                    width: '6%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row?.['product_quantity_order_actual']}" required>
@@ -1626,7 +1626,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '14.625%',
+                    width: '14%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <div class="dropend">
@@ -1649,7 +1649,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: '6.51041666667%',
+                    width: '6%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <select 
@@ -1677,7 +1677,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '13.0625%',
+                    width: '13%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -1720,7 +1720,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '17%',
+                    width: '18%',
                     render: (data, type, row) => {
                         if (row?.['is_shipping'] === true) {
                             return `<input type="text" class="form-control table-row-shipping" value="${row?.['shipping_title'] ? row?.['shipping_title'] : ''}">`;
@@ -1739,7 +1739,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '12%',
+                    width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_shipping'] === true) {
                             return `<input type="text" class="form-control table-row-description" value="">`;

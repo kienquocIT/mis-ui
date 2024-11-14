@@ -1,4 +1,38 @@
 $(document).ready(function () {
+    const HEIGHT = 280
+    const scriptUrlEle = $('#script-url')
+    const trans_script = $('#trans-url')
+    const moneyDisplayEle = $('#money-display')
+    const moneyRoundEle = $('#money-round')
+    const periodFiscalYearFilterEle = $('#period-filter')
+    const current_period_Ele = $('#current_period')
+    const current_period = current_period_Ele.text() ? JSON.parse(current_period_Ele.text()) : {}
+    let period_selected_Setting = current_period
+    let fiscal_year_Setting = current_period?.['fiscal_year']
+    let space_month_Setting = current_period?.['space_month']
+    let COMPANY_CURRENT_REVENUE = null
+    let COMPANY_CURRENT_PROFIT = null
+
+    moneyDisplayEle.on('change', function () {
+        COMPANY_CURRENT_REVENUE = null
+        COMPANY_CURRENT_PROFIT = null
+        UpdateRevenueChart()
+        UpdateProfitChart()
+        UpdateTopSellersChart()
+        UpdateTopCustomersChart()
+        UpdateTopCategoriesChart()
+        UpdateTopProductsChart()
+    })
+
+    moneyRoundEle.on('change', function () {
+        UpdateRevenueChart()
+        UpdateProfitChart()
+        UpdateTopSellersChart()
+        UpdateTopCustomersChart()
+        UpdateTopCategoriesChart()
+        UpdateTopProductsChart()
+    })
+
     function GetQuarterFromMonth(month) {
         if ([1,2,3].includes(month)) {
             return 1
@@ -14,73 +48,6 @@ $(document).ready(function () {
         }
     }
 
-    $('#modal-dashboard-setting .modal-dialog').draggable({
-        "handle": ".modal-header"
-    });
-    const GRID_HEIGHT = 230
-    const FULL_HEIGHT = 410
-    let HEIGHT = GRID_HEIGHT
-
-    $('.view-radio').on('change', function () {
-        if ($('#grid-view').prop('checked')) {
-            HEIGHT = GRID_HEIGHT
-            $('#see1').attr('class', 'pl-5 pr-4 col-12 col-lg-6 col-md-6')
-            $('#see2').attr('class', 'pr-5 pl-4 col-12 col-lg-6 col-md-6')
-            $('#see3').attr('class', 'pl-5 pr-4 col-12 col-lg-6 col-md-6')
-            $('#see4').attr('class', 'pr-5 pl-4 col-12 col-lg-6 col-md-6')
-            $('#see5').attr('class', 'pl-5 pr-4 col-12 col-lg-6 col-md-6')
-            $('#see6').attr('class', 'pr-5 pl-4 col-12 col-lg-6 col-md-6')
-        }
-        else {
-            HEIGHT = FULL_HEIGHT
-            $('#see1').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
-            $('#see2').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
-            $('#see3').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
-            $('#see4').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
-            $('#see5').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
-            $('#see6').attr('class', 'px-5 col-12 col-lg-12 col-md-12')
-        }
-        UpdateOptionRevenueChart()
-        UpdateOptionProfitChart()
-        UpdateOptionTopSellersChart()
-        UpdateOptionTopCustomersChart()
-        UpdateOptionTopCategoriesChart()
-        UpdateOptionTopProductsChart()
-    })
-
-    const scriptUrlEle = $('#script-url')
-    const trans_script = $('#trans-url')
-    const moneyRadioEle = $('.money-radio')
-    const billionCheckboxEle = $('#billion-checkbox')
-    const moneyRoundEle = $('#money-round')
-    const periodFiscalYearFilterEle = $('#period-filter')
-    let period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val())
-    let fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
-    let space_month_Setting = period_selected_Setting?.['space_month']
-    const current_period_Ele = $('#current_period')
-    let current_period = {}
-    if (current_period_Ele.text() !== '') {
-        current_period = JSON.parse(current_period_Ele.text())
-    }
-
-    moneyRadioEle.on('change', function () {
-        UpdateOptionRevenueChart()
-        UpdateOptionProfitChart()
-        UpdateOptionTopSellersChart()
-        UpdateOptionTopCustomersChart()
-        UpdateOptionTopCategoriesChart()
-        UpdateOptionTopProductsChart()
-    })
-
-    moneyRoundEle.on('change', function () {
-        UpdateOptionRevenueChart()
-        UpdateOptionProfitChart()
-        UpdateOptionTopSellersChart()
-        UpdateOptionTopCustomersChart()
-        UpdateOptionTopCategoriesChart()
-        UpdateOptionTopProductsChart()
-    })
-
     function getMonthOrder(space_month) {
         let month_order = []
         for (let i = 0; i < 12; i++) {
@@ -93,7 +60,7 @@ $(document).ready(function () {
         return month_order
     }
 
-    function LoadRevenuePeriod(data) {
+    function LoadPeriod(data) {
         periodFiscalYearFilterEle.initSelect2({
             ajax: {
                 url: periodFiscalYearFilterEle.attr('data-url'),
@@ -107,8 +74,8 @@ $(document).ready(function () {
             period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val())
             fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
             space_month_Setting = period_selected_Setting?.['space_month']
-            UpdateOptionRevenueChart()
-            UpdateOptionProfitChart()
+            UpdateRevenueChart()
+            UpdateProfitChart()
             topSellersTimeEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
             topSellersNumberEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
             topCustomersTimeEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
@@ -123,6 +90,8 @@ $(document).ready(function () {
     function Check_in_period(dateApproved, period_selected_Setting) {
         if (Object.keys(period_selected_Setting).length === 0) {
             period_selected_Setting = current_period
+            fiscal_year_Setting = current_period?.['fiscal_year']
+            space_month_Setting = current_period?.['space_month']
         }
         const month = dateApproved.getMonth() + 1
         const year = dateApproved.getFullYear()
@@ -141,14 +110,22 @@ $(document).ready(function () {
         return list_month_period.includes(month.toString() + year.toString());
     }
 
+    $('.large-view-btn').on('click', function () {
+        $('.view-space').each(function () {
+            $(this).attr('class', 'view-space col-12 col-md-6 col-lg-4 mt-3')
+        })
+        $(this).closest('.view-space').attr('class', 'view-space col-12 col-md-8 col-lg-8 mt-3')
+
+    })
+
     // Revenue chart
 
     const revenueGroupEle = $('#revenue-group')
-    const revenueTypeEle = $('#revenue-type')
-    let revenue_chart_list_DF = []
-    let revenue_chart_DF = null
-    let revenue_expected_data_DF = []
-    let revenue_expected_data_detail_DF = []
+    const revenueViewTypeEle = $('#revenue-view-type')
+    let revenue_chart = null
+    let revenue_DF = []
+    let revenue_expected_DF = []
+    let revenue_expected_detail_DF = []
 
     function LoadRevenueGroup(data) {
         revenueGroupEle.initSelect2({
@@ -165,24 +142,17 @@ $(document).ready(function () {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            UpdateOptionRevenueChart()
+            UpdateRevenueChart()
         })
     }
 
-    LoadRevenueGroup()
-
-    function CombineRevenueChartDataPeriod(group_filter, show_billion, titleY = 'Revenue (million)', titleX = 'Fiscal month', chart_title = 'Revenue chart') {
-        let cast_billion = 1e6
-        if (show_billion) {
-            cast_billion = 1e9
-        }
-
+    function CombineRevenueChartDataPeriod(group_filter, show_billion, titleY = 'Revenue', titleX = 'Month', chart_title = '') {
+        const cast_billion = show_billion ? 1e9 : 1e6
         let revenue_chart_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        for (const item of revenue_chart_list_DF) {
+        for (const item of revenue_DF) {
             const group_id = item?.['group_inherit_id']
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth()
-            const year = dateApproved.getFullYear()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
                     revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
@@ -196,7 +166,7 @@ $(document).ready(function () {
 
         let revenue_expected_data = []
         if (group_filter) {
-            let group_found_data = revenue_expected_data_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
+            let group_found_data = revenue_expected_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
             if (group_found_data) {
                 let group_expected_data = group_found_data?.['group_month_target']
                 for (let i = 0; i < group_expected_data.length; i++) {
@@ -208,8 +178,8 @@ $(document).ready(function () {
             }
         }
         else {
-            for (let i = 0; i < revenue_expected_data_DF.length; i++) {
-                revenue_expected_data.push(revenue_expected_data_DF[i] / cast_billion)
+            for (let i = 0; i < revenue_expected_DF.length; i++) {
+                revenue_expected_data.push(revenue_expected_DF[i] / cast_billion)
             }
         }
 
@@ -227,12 +197,15 @@ $(document).ready(function () {
             ]
         }
 
+        COMPANY_CURRENT_REVENUE = COMPANY_CURRENT_REVENUE === null ? (revenue_chart_data[new Date().getMonth() - space_month_Setting] * cast_billion) : COMPANY_CURRENT_REVENUE
+        $('#current-revenue').attr('data-init-money', COMPANY_CURRENT_REVENUE)
+        $.fn.initMaskMoney2()
+
         return {
             series: series_data,
             chart: {
-                foreColor: "#999",
                 height: HEIGHT,
-                type: 'line',
+                type: 'area',
                 dropShadow: {
                     enabled: true,
                     color: '#000',
@@ -245,7 +218,7 @@ $(document).ready(function () {
                     show: false
                 }
             },
-            colors: ['#91c2e0', '#0a5b8c'],
+            colors: ['#ADC6F4', '#417DDC'],
             dataLabels: {
                 enabled: false,
             },
@@ -307,17 +280,13 @@ $(document).ready(function () {
         };
     }
 
-    function CombineRevenueChartDataAccumulated(group_filter, show_billion, titleY = 'Revenue (million)', titleX = 'Month', chart_title = 'Revenue chart') {
-        let cast_billion = 1e6
-        if (show_billion) {
-            cast_billion = 1e9
-        }
+    function CombineRevenueChartDataAccumulated(group_filter, show_billion, titleY = 'Revenue', titleX = 'Month', chart_title = '') {
+        const cast_billion = show_billion ? 1e9 : 1e6
         let revenue_chart_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        for (const item of revenue_chart_list_DF) {
+        for (const item of revenue_DF) {
             const group_id = item?.['group_inherit_id']
             const dateApproved = new Date(item?.['date_approved']);
             const month = dateApproved.getMonth();
-            const year = dateApproved.getFullYear();
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
                     revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
@@ -339,7 +308,7 @@ $(document).ready(function () {
 
         let revenue_expected_data = []
         if (group_filter) {
-            let group_found_data = revenue_expected_data_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
+            let group_found_data = revenue_expected_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
             if (group_found_data) {
                 let group_expected_data = group_found_data?.['group_month_target']
                 for (let i = 0; i < group_expected_data.length; i++) {
@@ -351,8 +320,8 @@ $(document).ready(function () {
             }
         }
         else {
-            for (let i = 0; i < revenue_expected_data_DF.length; i++) {
-                revenue_expected_data.push(revenue_expected_data_DF[i] / cast_billion)
+            for (let i = 0; i < revenue_expected_DF.length; i++) {
+                revenue_expected_data.push(revenue_expected_DF[i] / cast_billion)
             }
         }
 
@@ -381,9 +350,8 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
-                foreColor: "#999",
                 height: HEIGHT,
-                type: 'line',
+                type: 'area',
                 dropShadow: {
                     enabled: true,
                     color: '#000',
@@ -396,7 +364,7 @@ $(document).ready(function () {
                     show: false
                 }
             },
-            colors: ['#91c2e0', '#0a5b8c'],
+            colors: ['#ADC6F4', '#417DDC'],
             dataLabels: {
                 enabled: false,
             },
@@ -458,95 +426,37 @@ $(document).ready(function () {
         };
     }
 
-    function InitOptionRevenueChart() {
-        let group = revenueGroupEle.val()
-        let group_title = SelectDDControl.get_data_from_idx(revenueGroupEle, revenueGroupEle.val())['title']
-        if (!group_title) {
-            group_title = 'Company'
-        }
-        let calculate_type = revenueTypeEle.val()
-        const isBillionChecked = billionCheckboxEle.prop('checked')
-        const unitText = isBillionChecked ? 'billion' : 'million'
-        if (calculate_type === '0') {
-            let options = CombineRevenueChartDataPeriod(
-                group,
-                isBillionChecked,
-                `Revenue (${unitText})`,
-                'Month',
-                `Revenue chart of ${group_title} in ${fiscal_year_Setting}`
-            )
-            revenue_chart_DF = new ApexCharts(document.querySelector("#revenue_chart"), options);
-            revenue_chart_DF.render();
-        } else {
-            let options = CombineRevenueChartDataAccumulated(
-                group,
-                isBillionChecked,
-                `Revenue (${unitText})`,
-                'Month',
-                `Revenue chart of ${group_title} in ${fiscal_year_Setting}`
-            )
-            revenue_chart_DF = new ApexCharts(document.querySelector("#revenue_chart"), options);
-            revenue_chart_DF.render();
-        }
+    function InitRevenueChart() {
+        const group = revenueGroupEle.val()
+        const calculate_type = revenueViewTypeEle.val()
+        const isBillionChecked = moneyDisplayEle.val() === '1'
+        const options = calculate_type === '0' ? CombineRevenueChartDataPeriod(
+            group,
+            isBillionChecked
+        ) : CombineRevenueChartDataAccumulated(
+            group,
+            isBillionChecked
+        )
+        revenue_chart = new ApexCharts(document.querySelector("#revenue_chart"), options);
+        revenue_chart.render();
         $('#revenue-spinner').prop('hidden', true)
     }
 
-    function UpdateOptionRevenueChart() {
-        let company_revenue_plan_list_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
-                    for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
-                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === fiscal_year_Setting) {
-                            return data?.['revenue_plan_list'][i]
-                        }
-                    }
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            })
-
-        Promise.all([company_revenue_plan_list_ajax]).then(
-            (results) => {
-                revenue_expected_data_DF = results[0]?.['company_month_target'];
-                revenue_expected_data_detail_DF = results[0]?.['company_month_target_detail'];
-                let group = revenueGroupEle.val()
-                let group_title = SelectDDControl.get_data_from_idx(revenueGroupEle, revenueGroupEle.val())['title']
-                if (!group_title) {
-                    group_title = 'Company'
-                }
-                let calculate_type = revenueTypeEle.val()
-                const isBillionChecked = billionCheckboxEle.prop('checked')
-                const unitText = isBillionChecked ? 'billion' : 'million'
-                if (calculate_type === '0') {
-                    let options = CombineRevenueChartDataPeriod(
-                        group,
-                        isBillionChecked,
-                        `Revenue (${unitText})`,
-                        'Month',
-                        `Revenue chart of ${group_title} in ${fiscal_year_Setting}`
-                    )
-                    revenue_chart_DF.updateOptions(options)
-                } else {
-                    let options = CombineRevenueChartDataAccumulated(
-                        group,
-                        isBillionChecked,
-                        `Revenue (${unitText})`,
-                        'Month',
-                        `Revenue chart of ${group_title} in ${fiscal_year_Setting}`
-                    )
-                    revenue_chart_DF.updateOptions(options)
-                }
-            })
+    function UpdateRevenueChart() {
+        const group = revenueGroupEle.val()
+        const calculate_type = revenueViewTypeEle.val()
+        const isBillionChecked = moneyDisplayEle.val() === '1'
+        const options = calculate_type === '0' ? CombineRevenueChartDataPeriod(
+            group,
+            isBillionChecked,
+        ) : CombineRevenueChartDataAccumulated(
+            group,
+            isBillionChecked
+        )
+        revenue_chart.updateOptions(options)
     }
 
-    function AjaxRevenueChart(is_init = true) {
+    function CallAjaxRevenueChart(is_init=false) {
         let revenue_chart_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-report-revenue-profit-list'),
             data: {},
@@ -585,46 +495,40 @@ $(document).ready(function () {
 
         Promise.all([revenue_chart_ajax, company_revenue_plan_list_ajax]).then(
             (results) => {
-                revenue_chart_list_DF = results[0];
-                revenue_expected_data_DF = results[1]?.['company_month_target'];
-                revenue_expected_data_detail_DF = results[1]?.['company_month_target_detail'];
+                revenue_DF = results[0] ? results[0] : [];
+                revenue_expected_DF = results[1]?.['company_month_target'] ? results[1]?.['company_month_target'] : [];
+                revenue_expected_detail_DF = results[1]?.['company_month_target_detail'] ? results[1]?.['company_month_target_detail'] : [];
 
-                period_selected_Setting = results[1]?.['period_mapped']
-                fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
-                space_month_Setting = period_selected_Setting?.['space_month']
+                period_selected_Setting = results[1]?.['period_mapped'] ? results[1]?.['period_mapped'] : {}
+                fiscal_year_Setting = period_selected_Setting ? period_selected_Setting?.['fiscal_year'] : null
+                space_month_Setting = period_selected_Setting ? period_selected_Setting?.['space_month'] : null
+                LoadPeriod(period_selected_Setting)
                 if (is_init) {
-                    LoadRevenuePeriod(period_selected_Setting)
-                    InitOptionRevenueChart()
-                } else {
-                    $.fn.notifyB({description: "Get the latest revenue data successfully"}, 'success')
-                    UpdateOptionRevenueChart()
+                    InitRevenueChart()
                 }
             })
     }
 
-    AjaxRevenueChart()
-
-    revenueTypeEle.on('change', function () {
-        UpdateOptionRevenueChart()
+    revenueViewTypeEle.on('change', function () {
+        UpdateRevenueChart()
     })
 
     $('#reload-revenue-data-btn').on('click', function () {
-        AjaxRevenueChart(false)
-    })
-
-    $('.timechart-revenue').on('change', function () {
-        UpdateOptionRevenueChart()
+        CallAjaxRevenueChart()
+        UpdateRevenueChart()
+        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 
     // Profit chart
 
     const profitGroupEle = $('#profit-group')
     const profitTypeEle = $('#profit-type')
-    const netIncomeEle = $('#net-income')
-    let profit_chart_list_DF = []
-    let profit_chart_DF = null
-    let profit_expected_data_DF = []
-    let profit_expected_data_detail_DF = []
+    const profitViewTypeEle = $('#profit-view-type')
+    let profit_chart = null
+    let profit_chart_DF = []
+    let profit_expected_DF = []
+    let profit_expected_detail_DF = []
+    let profit_type_DF = profitTypeEle.val()
 
     function LoadProfitGroup(data) {
         profitGroupEle.initSelect2({
@@ -641,24 +545,17 @@ $(document).ready(function () {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            UpdateOptionProfitChart()
+            UpdateProfitChart()
         })
     }
 
-    LoadProfitGroup()
-
-    function CombineProfitChartDataPeriod(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Month', chart_title = 'Profit chart', profit_type='gross_profit') {
-        let cast_billion = 1e6
-        if (show_billion) {
-            cast_billion = 1e9
-        }
-
+    function CombineProfitChartDataPeriod(group_filter, show_billion, profit_type='gross_profit', titleY = 'Profit', titleX = 'Month', chart_title = '') {
+        const cast_billion = show_billion ? 1e9 : 1e6
         let profit_chart_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        for (const item of profit_chart_list_DF) {
+        for (const item of profit_chart_DF) {
             const group_id = item?.['group_inherit_id']
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth()
-            const year = dateApproved.getFullYear()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
                     profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
@@ -670,9 +567,13 @@ $(document).ready(function () {
             }
         }
 
+        let profit_expected_DF_copy = [...profit_expected_DF]  //create a copy
+        if (profit_type_DF + (profitTypeEle.val() === '1' ? 1 : 0) === 1) {
+            profit_expected_DF_copy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }
         let profit_expected_data = []
         if (group_filter) {
-            let group_found_data = profit_expected_data_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
+            let group_found_data = profit_expected_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
             if (group_found_data) {
                 let group_expected_data = group_found_data?.['group_month_profit_target']
                 for (let i = 0; i < group_expected_data.length; i++) {
@@ -684,8 +585,8 @@ $(document).ready(function () {
             }
         }
         else {
-            for (let i = 0; i < profit_expected_data_DF.length; i++) {
-                profit_expected_data.push(profit_expected_data_DF[i] / cast_billion)
+            for (let i = 0; i < profit_expected_DF_copy.length; i++) {
+                profit_expected_data.push(profit_expected_DF_copy[i] / cast_billion)
             }
         }
 
@@ -703,12 +604,15 @@ $(document).ready(function () {
             ]
         }
 
+        COMPANY_CURRENT_PROFIT = COMPANY_CURRENT_PROFIT === null ? (profit_chart_data[new Date().getMonth() - space_month_Setting] * cast_billion) : COMPANY_CURRENT_PROFIT
+        $('#current-profit').attr('data-init-money', COMPANY_CURRENT_PROFIT)
+        $.fn.initMaskMoney2()
+
         return {
             series: series_data,
             chart: {
-                foreColor: "#999",
                 height: HEIGHT,
-                type: 'line',
+                type: 'area',
                 dropShadow: {
                     enabled: true,
                     color: '#000',
@@ -722,8 +626,8 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#49d381',
-                '#158040'
+                '#82DBA6',
+                '#44A65E'
             ],
             dataLabels: {
                 enabled: false,
@@ -786,17 +690,13 @@ $(document).ready(function () {
         };
     }
 
-    function CombineProfitChartDataAccumulated(group_filter, show_billion, titleY = 'Profit (million)', titleX = 'Month', chart_title = 'Profit chart', profit_type='gross_profit') {
-        let cast_billion = 1e6
-        if (show_billion) {
-            cast_billion = 1e9
-        }
+    function CombineProfitChartDataAccumulated(group_filter, show_billion, profit_type='gross_profit', titleY = 'Profit', titleX = 'Month', chart_title = '') {
+        const cast_billion = show_billion ? 1e9 : 1e6
         let profit_chart_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        for (const item of profit_chart_list_DF) {
+        for (const item of profit_chart_DF) {
             const group_id = item?.['group_inherit_id']
             const dateApproved = new Date(item?.['date_approved']);
             const month = dateApproved.getMonth();
-            const year = dateApproved.getFullYear();
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
                     profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
@@ -815,9 +715,13 @@ $(document).ready(function () {
             profit_chart_data[i] += last_sum
         }
 
+        let profit_expected_DF_copy = [...profit_expected_DF]  //create a copy
+        if (profit_type_DF + (profitTypeEle.val() === '1' ? 1 : 0) === 1) {
+            profit_expected_DF_copy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }
         let profit_expected_data = []
         if (group_filter) {
-            let group_found_data = profit_expected_data_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
+            let group_found_data = profit_expected_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
             if (group_found_data) {
                 let group_expected_data = group_found_data?.['group_month_profit_target']
                 for (let i = 0; i < group_expected_data.length; i++) {
@@ -829,8 +733,8 @@ $(document).ready(function () {
             }
         }
         else {
-            for (let i = 0; i < profit_expected_data_DF.length; i++) {
-                profit_expected_data.push(profit_expected_data_DF[i] / cast_billion)
+            for (let i = 0; i < profit_expected_DF_copy.length; i++) {
+                profit_expected_data.push(profit_expected_DF_copy[i] / cast_billion)
             }
         }
 
@@ -859,9 +763,8 @@ $(document).ready(function () {
         return {
             series: series_data,
             chart: {
-                foreColor: "#999",
                 height: HEIGHT,
-                type: 'line',
+                type: 'area',
                 dropShadow: {
                     enabled: true,
                     color: '#000',
@@ -875,8 +778,8 @@ $(document).ready(function () {
                 }
             },
             colors: [
-                '#49d381',
-                '#158040'
+                '#82DBA6',
+                '#44A65E'
             ],
             dataLabels: {
                 enabled: false,
@@ -939,106 +842,40 @@ $(document).ready(function () {
         };
     }
 
-    function InitOptionProfitChart() {
-        let group = profitGroupEle.val()
-        let group_title = SelectDDControl.get_data_from_idx(profitGroupEle, profitGroupEle.val())['title']
-        if (!group_title) {
-            group_title = 'Company'
-        }
-        let calculate_type = profitTypeEle.val()
-        const isBillionChecked = billionCheckboxEle.prop('checked')
-        const unitText = isBillionChecked ? 'billion' : 'million'
-        if (calculate_type === '0') {
-            let options = CombineProfitChartDataPeriod(
-                group,
-                isBillionChecked,
-                `Profit (${unitText})`,
-                'Month',
-                `Profit chart of ${group_title} in ${fiscal_year_Setting}`
-            )
-            profit_chart_DF = new ApexCharts(document.querySelector("#profit_chart"), options);
-            profit_chart_DF.render();
-        } else {
-            let options = CombineProfitChartDataAccumulated(
-                group,
-                isBillionChecked,
-                `Profit (${unitText})`,
-                'Month',
-                `Profit chart of ${group_title} in ${fiscal_year_Setting}`
-            )
-            profit_chart_DF = new ApexCharts(document.querySelector("#profit_chart"), options);
-            profit_chart_DF.render();
-        }
+    function InitProfitChart() {
+        const group = profitGroupEle.val()
+        const calculate_type = profitViewTypeEle.val()
+        const isBillionChecked = moneyDisplayEle.val() === '1'
+        const options = calculate_type === '0' ? CombineProfitChartDataPeriod(
+            group,
+            isBillionChecked
+        ) : CombineProfitChartDataAccumulated(
+            group,
+            isBillionChecked
+        )
+        profit_chart = new ApexCharts(document.querySelector("#profit_chart"), options);
+        profit_chart.render();
         $('#profit-spinner').prop('hidden', true)
     }
 
-    function UpdateOptionProfitChart() {
-        let company_revenue_plan_list_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
-                    for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
-                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === fiscal_year_Setting) {
-                            return data?.['revenue_plan_list'][i]
-                        }
-                    }
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            })
+    function UpdateProfitChart() {
+        const group = profitGroupEle.val()
+        const calculate_type = profitViewTypeEle.val()
+        const isBillionChecked = moneyDisplayEle.val() === '1'
+        const profit_type = profitTypeEle.val() === '1' ? 'net_income' : 'gross_profit'
 
-        Promise.all([company_revenue_plan_list_ajax]).then(
-            (results) => {
-                profit_expected_data_DF = results[0]?.['company_month_profit_target'];
-                profit_expected_data_detail_DF = results[0]?.['company_month_target_detail'];
-                let same = results[0]?.['profit_target_type'] + (netIncomeEle.prop('checked') ? 1 : 0)
-                if (same === 1) {
-                    profit_expected_data_DF = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                }
-                let group = profitGroupEle.val()
-                let group_title = SelectDDControl.get_data_from_idx(profitGroupEle, profitGroupEle.val())['title']
-                if (!group_title) {
-                    group_title = 'Company'
-                }
-                let calculate_type = profitTypeEle.val()
-                const isBillionChecked = billionCheckboxEle.prop('checked')
-                const unitText = isBillionChecked ? 'billion' : 'million'
-                let profit_type = 'gross_profit'
-                if (netIncomeEle.prop('checked')) {
-                    profit_type = 'net_income'
-                }
-
-                if (calculate_type === '0') {
-                    let options = CombineProfitChartDataPeriod(
-                        group,
-                        isBillionChecked,
-                        `Profit (${unitText})`,
-                        'Month',
-                        `Profit chart of ${group_title} in ${fiscal_year_Setting}`,
-                        profit_type
-                    )
-                    profit_chart_DF.updateOptions(options)
-                } else {
-                    let options = CombineProfitChartDataAccumulated(
-                        group,
-                        isBillionChecked,
-                        `Profit (${unitText})`,
-                        'Month',
-                        `Profit chart of ${group_title} in ${fiscal_year_Setting}`,
-                        profit_type
-                    )
-                    profit_chart_DF.updateOptions(options)
-                }
-            })
+        let options = calculate_type === '0' ? CombineProfitChartDataPeriod(
+            group,
+            isBillionChecked,
+            profit_type
+        ) : CombineProfitChartDataAccumulated(
+            group,
+            profit_type
+        )
+        profit_chart.updateOptions(options)
     }
 
-    function AjaxProfitChart(is_init = true) {
+    function CallAjaxProfitChart(is_init=false) {
         let profit_chart_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-report-revenue-profit-list'),
             data: {},
@@ -1077,64 +914,51 @@ $(document).ready(function () {
 
         Promise.all([profit_chart_ajax, company_revenue_plan_list_ajax]).then(
             (results) => {
-                profit_chart_list_DF = results[0];
-                profit_expected_data_DF = results[1]?.['company_month_profit_target'];
-                netIncomeEle.prop('checked', results[1]?.['profit_target_type'])
-                profit_expected_data_detail_DF = results[1]?.['company_month_target_detail'];
+                profit_chart_DF = results[0] ? results[0] : [];
+                profit_expected_DF = results[1]?.['company_month_profit_target'] ? results[1]?.['company_month_profit_target'] : [];
+                profit_type_DF = results[1]?.['profit_target_type'] ? results[1]?.['profit_target_type'] : null
+                profitTypeEle.val(results[1]?.['profit_target_type'])
+                profit_expected_detail_DF = results[1]?.['company_month_target_detail'] ? results[1]?.['company_month_target_detail'] : [];
 
-                period_selected_Setting = results[1]?.['period_mapped']
-                fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
-                space_month_Setting = period_selected_Setting?.['space_month']
+                period_selected_Setting = results[1]?.['period_mapped'] ? results[1]?.['period_mapped'] : {}
+                fiscal_year_Setting = period_selected_Setting ? period_selected_Setting?.['fiscal_year'] : null
+                space_month_Setting = period_selected_Setting ? period_selected_Setting?.['space_month'] : null
+                LoadPeriod(period_selected_Setting)
                 if (is_init) {
-                    LoadRevenuePeriod(period_selected_Setting)
-                    InitOptionProfitChart()
-                } else {
-                    $.fn.notifyB({description: "Get the latest profit data successfully"}, 'success')
-                    UpdateOptionProfitChart()
+                    InitProfitChart()
                 }
             })
     }
 
-    AjaxProfitChart()
-
     profitTypeEle.on('change', function () {
-        UpdateOptionProfitChart()
+        UpdateProfitChart()
+    })
+
+    profitViewTypeEle.on('change', function () {
+        UpdateProfitChart()
     })
 
     $('#reload-profit-data-btn').on('click', function () {
-        AjaxProfitChart(false)
-    })
-
-    $('.timechart-profit').on('change', function () {
-        UpdateOptionProfitChart()
-    })
-
-    $('input[name="profit-type"]').on('change', function () {
-        UpdateOptionProfitChart()
+        CallAjaxProfitChart()
+        UpdateProfitChart()
+        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 
     // Top sellers chart
 
-    const topSellersTimeFilterYearEle = $('#top-sellers-time-filter-year')
-    const topSellersTimeFilterMMQQEle = $('#top-sellers-time-filter-mm-qq')
-    const topSellersTimeFilterSelectEle = $('#top-sellers-time-filter-select')
     const topSellersTimeEle = $('#top-sellers-time')
     const topSellersNumberEle = $('#top-sellers-number')
+    let top_sellers_chart = null
+    let top_sellers_chart_DF = []
 
-    let top_sellers_chart_list_DF = []
-    let top_sellers_chart_DF = null
-
-    function CombineTopSellersChartData(show_billion, titleY = "Seller's fullname", titleX = 'Revenue (million)') {
-        let cast_billion = 1e6
-        if (show_billion) {
-            cast_billion = 1e9
-        }
+    function CombineTopSellersChartData(show_billion, titleY = "Seller", titleX = 'Revenue', chart_title='') {
+        const cast_billion = show_billion ? 1e9 : 1e6
 
         const current_month = new Date().getMonth() + 1
         const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
 
         let top_sellers_chart_data = []
-        for (const item of top_sellers_chart_list_DF) {
+        for (const item of top_sellers_chart_DF) {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
             const quarter = GetQuarterFromMonth(month - space_month_Setting)
@@ -1187,23 +1011,17 @@ $(document).ready(function () {
                 data: topX_revenue
             }],
             chart: {
-                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT
             },
-            colors: ['#d29128'],
+            colors: ['#FA8019'],
             plotOptions: {
                 bar: {
-                    borderRadius: 5,
                     horizontal: true,
                 }
             },
             dataLabels: {
                 enabled: true,
-                // textAnchor: 'start',
-                style: {
-                    colors: ['#fff']
-                },
                 formatter: function (val) {
                     if (val) {
                         return val.toFixed(parseInt(moneyRoundEle.val()))
@@ -1212,10 +1030,6 @@ $(document).ready(function () {
                     }
                     // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
                 },
-                offsetX: 0,
-                dropShadow: {
-                    enabled: false
-                }
             },
             xaxis: {
                 categories: topX_full_name,
@@ -1242,8 +1056,8 @@ $(document).ready(function () {
                 },
             },
             title: {
-                text: `Top ${topX.length} Sellers Chart`,
-                align: 'left',
+                text: chart_title,
+                align: 'left'
             },
             tooltip: {
                 theme: 'dark',
@@ -1265,31 +1079,25 @@ $(document).ready(function () {
         };
     }
 
-    function InitOptionTopSellersChart() {
-        const isBillionChecked = billionCheckboxEle.prop('checked')
-        const unitText = isBillionChecked ? 'billion' : 'million'
+    function InitTopSellersChart() {
+        const isBillionChecked = moneyDisplayEle.val() === '1'
         let options = CombineTopSellersChartData(
-            isBillionChecked,
-            '',
-            `Revenue (${unitText})`
+            isBillionChecked
         )
         $('#top-sellers-spinner').prop('hidden', true)
-        top_sellers_chart_DF = new ApexCharts(document.querySelector("#top_sellers_chart"), options);
-        top_sellers_chart_DF.render();
+        top_sellers_chart = new ApexCharts(document.querySelector("#top_sellers_chart"), options);
+        top_sellers_chart.render();
     }
 
-    function UpdateOptionTopSellersChart() {
-        const isBillionChecked = billionCheckboxEle.prop('checked')
-        const unitText = isBillionChecked ? 'billion' : 'million'
+    function UpdateTopSellersChart() {
+        const isBillionChecked = moneyDisplayEle.val() === '1'
         let options = CombineTopSellersChartData(
-            isBillionChecked,
-            '',
-            `Revenue (${unitText})`
+            isBillionChecked
         )
-        top_sellers_chart_DF.updateOptions(options)
+        top_sellers_chart.updateOptions(options)
     }
 
-    function AjaxTopSellersChart(is_init = true) {
+    function CallAjaxTopSellersChart(is_init=false) {
         let top_sellers_chart_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-top-sellers-customers-list'),
             data: {},
@@ -1308,78 +1116,41 @@ $(document).ready(function () {
 
         Promise.all([top_sellers_chart_ajax]).then(
             (results) => {
-                top_sellers_chart_list_DF = results[0];
+                top_sellers_chart_DF = results[0];
                 $('#top-sellers-time-filter-year').val(new Date().getFullYear())
                 if (is_init) {
-                    InitOptionTopSellersChart()
-                } else {
-                    $.fn.notifyB({description: "Get the latest top sellers data successfully"}, 'success')
-                    UpdateOptionTopSellersChart()
+                    InitTopSellersChart()
                 }
             })
     }
 
-    AjaxTopSellersChart()
+    topSellersTimeEle.on('change', function () {
+        UpdateTopSellersChart()
+    })
 
     topSellersNumberEle.on('change', function () {
-        UpdateOptionTopSellersChart()
-    })
-
-    topSellersTimeEle.on('change', function () {
-        if ($(this).val() === '3') {
-            topSellersTimeFilterSelectEle.val('0').prop('hidden', false).prop('disabled', false)
-            topSellersTimeFilterMMQQEle.prop('disabled', topSellersTimeFilterSelectEle.val() === '0')
-            topSellersTimeFilterYearEle.prop('hidden', false).prop('disabled', false)
-        } else {
-            UpdateOptionTopSellersChart()
-            topSellersTimeFilterSelectEle.prop('hidden', true).prop('disabled', true)
-            topSellersTimeFilterMMQQEle.prop('disabled', true)
-            topSellersTimeFilterYearEle.prop('hidden', true).prop('disabled', true)
-            topSellersTimeFilterMMQQEle.closest('div').prop('hidden', true)
-        }
-    })
-
-    topSellersTimeFilterSelectEle.on('change', function () {
-        topSellersTimeFilterMMQQEle.val('').prop('disabled', $(this).val() === '0')
-        topSellersTimeFilterMMQQEle.closest('div').prop('hidden', $(this).val() === '0')
-
-        topSellersTimeFilterYearEle.val(new Date().getFullYear())
-        if ($(this).val() === '1') {
-            topSellersTimeFilterMMQQEle.val(new Date().getMonth() + 1)
-        } else if ($(this).val() === '2') {
-            topSellersTimeFilterMMQQEle.val(parseInt((new Date().getMonth() + 1) / 3) + 1)
-        }
+        UpdateTopSellersChart()
     })
 
     $('#reload-top-sellers-data-btn').on('click', function () {
-        AjaxTopSellersChart(false)
-    })
-
-    $('.timechart-sellers').on('change', function () {
-        UpdateOptionTopSellersChart()
+        CallAjaxTopSellersChart()
+        UpdateTopSellersChart()
+        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 
     // Top customers chart
 
-    const topCustomersTimeFilterYearEle = $('#top-customers-time-filter-year')
-    const topCustomersTimeFilterMMQQEle = $('#top-customers-time-filter-mm-qq')
-    const topCustomersTimeFilterSelectEle = $('#top-customers-time-filter-select')
     const topCustomersTimeEle = $('#top-customers-time')
     const topCustomersNumberEle = $('#top-customers-number')
+    let top_customers_chart = null
+    let top_customers_chart_DF = []
 
-    let top_customers_chart_list_DF = []
-    let top_customers_chart_DF = null
-
-    function CombineTopCustomersChartData(show_billion, titleY = "Customer's name", titleX = 'Revenue (million)') {
-        let cast_billion = 1e6
-        if (show_billion) {
-            cast_billion = 1e9
-        }
-
+    function CombineTopCustomersChartData(show_billion, titleY = "Customer", titleX = 'Revenue', chart_title="") {
+        const cast_billion = show_billion ? 1e9 : 1e6
         const current_month = new Date().getMonth() + 1
         const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
         let top_customers_chart_data = []
-        for (const item of top_customers_chart_list_DF) {
+        for (const item of top_customers_chart_DF) {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
             const quarter = GetQuarterFromMonth(month - space_month_Setting)
@@ -1432,23 +1203,17 @@ $(document).ready(function () {
                 data: topX_revenue
             }],
             chart: {
-                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT
             },
-            colors: ['#00A8A8'],
+            colors: ['#50C9D9'],
             plotOptions: {
                 bar: {
-                    borderRadius: 5,
                     horizontal: true,
                 }
             },
             dataLabels: {
                 enabled: true,
-                // textAnchor: 'start',
-                style: {
-                    colors: ['#fff']
-                },
                 formatter: function (val) {
                     if (val) {
                         return val.toFixed(parseInt(moneyRoundEle.val()))
@@ -1457,10 +1222,6 @@ $(document).ready(function () {
                     }
                     // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
                 },
-                offsetX: 0,
-                dropShadow: {
-                    enabled: false
-                }
             },
             xaxis: {
                 categories: topX_title,
@@ -1487,8 +1248,8 @@ $(document).ready(function () {
                 },
             },
             title: {
-                text: `Top ${topX.length} Customers Chart`,
-                align: 'left',
+                text: chart_title,
+                align: 'left'
             },
             tooltip: {
                 theme: 'dark',
@@ -1510,31 +1271,25 @@ $(document).ready(function () {
         };
     }
 
-    function InitOptionTopCustomersChart() {
-        const isBillionChecked = billionCheckboxEle.prop('checked')
-        const unitText = isBillionChecked ? 'billion' : 'million'
+    function InitTopCustomersChart() {
+        const isBillionChecked = moneyDisplayEle.val() === '1'
         let options = CombineTopCustomersChartData(
-            isBillionChecked,
-            '',
-            `Revenue (${unitText})`
+            isBillionChecked
         )
         $('#top-customers-spinner').prop('hidden', true)
-        top_customers_chart_DF = new ApexCharts(document.querySelector("#top_customers_chart"), options);
-        top_customers_chart_DF.render();
+        top_customers_chart = new ApexCharts(document.querySelector("#top_customers_chart"), options);
+        top_customers_chart.render();
     }
 
-    function UpdateOptionTopCustomersChart() {
-        const isBillionChecked = billionCheckboxEle.prop('checked')
-        const unitText = isBillionChecked ? 'billion' : 'million'
+    function UpdateTopCustomersChart() {
+        const isBillionChecked = moneyDisplayEle.val() === '1'
         let options = CombineTopCustomersChartData(
-            isBillionChecked,
-            '',
-            `Revenue (${unitText})`
+            isBillionChecked
         )
-        top_customers_chart_DF.updateOptions(options)
+        top_customers_chart.updateOptions(options)
     }
 
-    function AjaxTopCustomersChart(is_init = true) {
+    function CallAjaxTopCustomersChart(is_init=false) {
         let top_customers_chart_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-top-sellers-customers-list'),
             data: {},
@@ -1553,82 +1308,45 @@ $(document).ready(function () {
 
         Promise.all([top_customers_chart_ajax]).then(
             (results) => {
-                top_customers_chart_list_DF = results[0];
+                top_customers_chart_DF = results[0];
                 $('#top-customers-time-filter-year').val(new Date().getFullYear())
                 if (is_init) {
-                    InitOptionTopCustomersChart()
-                } else {
-                    $.fn.notifyB({description: "Get the latest top customers data successfully"}, 'success')
-                    UpdateOptionTopCustomersChart()
+                    InitTopCustomersChart()
                 }
             })
     }
 
-    AjaxTopCustomersChart()
+    topCustomersTimeEle.on('change', function () {
+        UpdateTopCustomersChart()
+    })
 
     topCustomersNumberEle.on('change', function () {
-        UpdateOptionTopCustomersChart()
-    })
-
-    topCustomersTimeEle.on('change', function () {
-        if ($(this).val() === '3') {
-            topCustomersTimeFilterSelectEle.val('0').prop('hidden', false).prop('disabled', false)
-            topCustomersTimeFilterMMQQEle.prop('disabled', topCustomersTimeFilterSelectEle.val() === '0')
-            topCustomersTimeFilterYearEle.prop('hidden', false).prop('disabled', false)
-        } else {
-            UpdateOptionTopCustomersChart()
-            topCustomersTimeFilterSelectEle.prop('hidden', true).prop('disabled', true)
-            topCustomersTimeFilterMMQQEle.prop('disabled', true)
-            topCustomersTimeFilterYearEle.prop('hidden', true).prop('disabled', true)
-            topCustomersTimeFilterMMQQEle.closest('div').prop('hidden', true)
-        }
-    })
-
-    topCustomersTimeFilterSelectEle.on('change', function () {
-        topCustomersTimeFilterMMQQEle.val('').prop('disabled', $(this).val() === '0')
-        topCustomersTimeFilterMMQQEle.closest('div').prop('hidden', $(this).val() === '0')
-        topCustomersTimeFilterYearEle.val(new Date().getFullYear())
-        if ($(this).val() === '1') {
-            topCustomersTimeFilterMMQQEle.val(new Date().getMonth() + 1)
-        } else if ($(this).val() === '2') {
-            topCustomersTimeFilterMMQQEle.val(parseInt((new Date().getMonth() + 1) / 3) + 1)
-        }
+        UpdateTopCustomersChart()
     })
 
     $('#reload-top-customers-data-btn').on('click', function () {
-        AjaxTopCustomersChart(false)
-    })
-
-    $('.timechart-customers').on('change', function () {
-        UpdateOptionTopCustomersChart()
+        CallAjaxTopCustomersChart()
+        UpdateTopCustomersChart()
+        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 
     // Top categories chart
 
-    const topCategoriesTimeFilterYearEle = $('#top-categories-time-filter-year')
-    const topCategoriesTimeFilterMMQQEle = $('#top-categories-time-filter-mm-qq')
-    const topCategoriesTimeFilterSelectEle = $('#top-categories-time-filter-select')
     const topCategoriesTimeEle = $('#top-categories-time')
     const topCategoriesNumberEle = $('#top-categories-number')
+    let top_categories_chart = null
+    let top_categories_chart_DF = []
 
-    let top_categories_chart_list_DF = []
-    let top_categories_chart_DF = null
-
-    function CombineTopCategoriesChartData(show_billion, titleY = "Revenue (million)", titleX = "Category's name", chart_title="Top 5 categories this month") {
-        let cast_billion = 1e6
-        if (show_billion) {
-            cast_billion = 1e9
-        }
-
+    function CombineTopCategoriesChartData(show_billion, titleY = "Revenue", titleX = "Category", chart_title="") {
+        const cast_billion = show_billion ? 1e9 : 1e6
         const current_month = new Date().getMonth() + 1
         const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
 
         let top_categories_chart_data = []
-        for (const item of top_categories_chart_list_DF) {
+        for (const item of top_categories_chart_DF) {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
             const quarter = GetQuarterFromMonth(month - space_month_Setting)
-            console.log(quarter)
             const filterTimes = topCategoriesTimeEle.val()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (filterTimes === '0') {
@@ -1678,23 +1396,17 @@ $(document).ready(function () {
                 data: topX_revenue
             }],
             chart: {
-                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT
             },
-            colors: ['#DC474F'],
+            colors: ['#DC3545'],
             plotOptions: {
                 bar: {
-                    borderRadius: 5,
                     horizontal: false,
                 }
             },
             dataLabels: {
                 enabled: true,
-                // textAnchor: 'start',
-                style: {
-                    colors: ['#fff']
-                },
                 formatter: function (val) {
                     if (val) {
                         return val.toFixed(parseInt(moneyRoundEle.val()))
@@ -1703,10 +1415,6 @@ $(document).ready(function () {
                     }
                     // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
                 },
-                offsetX: 0,
-                dropShadow: {
-                    enabled: false
-                }
             },
             xaxis: {
                 categories: topX_title,
@@ -1756,37 +1464,25 @@ $(document).ready(function () {
         };
     }
 
-    function InitOptionTopCategoriesChart() {
-        const isBillionChecked = billionCheckboxEle.prop('checked')
-        const unitText = isBillionChecked ? 'billion' : 'million'
-        let time = ['this month', 'this quarter', 'this year', '']
-
+    function InitTopCategoriesChart() {
+        const isBillionChecked = moneyDisplayEle.val() === '1'
         let options = CombineTopCategoriesChartData(
-            isBillionChecked,
-            `Revenue (${unitText})`,
-            "Category's name",
-            `Top ${topCategoriesNumberEle.val()} categories ${time[topCategoriesTimeEle.val()]}`
+            isBillionChecked
         )
         $('#top-categories-spinner').prop('hidden', true)
-        top_categories_chart_DF = new ApexCharts(document.querySelector("#top_categories_chart"), options);
-        top_categories_chart_DF.render();
+        top_categories_chart = new ApexCharts(document.querySelector("#top_categories_chart"), options);
+        top_categories_chart.render();
     }
 
-    function UpdateOptionTopCategoriesChart() {
-        const isBillionChecked = billionCheckboxEle.prop('checked')
-        const unitText = isBillionChecked ? 'billion' : 'million'
-        let time = ['this month', 'this quarter', 'this year', '']
-
+    function UpdateTopCategoriesChart() {
+        const isBillionChecked = moneyDisplayEle.val() === '1'
         let options = CombineTopCategoriesChartData(
-            isBillionChecked,
-            `Revenue (${unitText})`,
-            "Category's name",
-            `Top ${topCategoriesNumberEle.val()} categories ${time[topCategoriesTimeEle.val()]}`
+            isBillionChecked
         )
-        top_categories_chart_DF.updateOptions(options)
+        top_categories_chart.updateOptions(options)
     }
 
-    function AjaxTopCategoriesChart(is_init = true) {
+    function CallAjaxTopCategoriesChart(is_init=false) {
         let top_categories_chart_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-top-categories-products-list'),
             data: {},
@@ -1805,78 +1501,42 @@ $(document).ready(function () {
 
         Promise.all([top_categories_chart_ajax]).then(
             (results) => {
-                top_categories_chart_list_DF = results[0];
+                top_categories_chart_DF = results[0];
                 $('#top-categories-time-filter-year').val(new Date().getFullYear())
                 if (is_init) {
-                    InitOptionTopCategoriesChart()
-                } else {
-                    $.fn.notifyB({description: "Get the latest top categories data successfully"}, 'success')
-                    UpdateOptionTopCategoriesChart()
+                    InitTopCategoriesChart()
                 }
             })
     }
 
-    AjaxTopCategoriesChart()
-
     topCategoriesNumberEle.on('change', function () {
-        UpdateOptionTopCategoriesChart()
+        UpdateTopCategoriesChart()
     })
 
     topCategoriesTimeEle.on('change', function () {
-        if ($(this).val() === '3') {
-            topCategoriesTimeFilterSelectEle.val('0').prop('hidden', false).prop('disabled', false)
-            topCategoriesTimeFilterMMQQEle.prop('disabled', topCategoriesTimeFilterSelectEle.val() === '0')
-            topCategoriesTimeFilterYearEle.prop('hidden', false).prop('disabled', false)
-        } else {
-            UpdateOptionTopCategoriesChart()
-            topCategoriesTimeFilterSelectEle.prop('hidden', true).prop('disabled', true)
-            topCategoriesTimeFilterMMQQEle.prop('disabled', true)
-            topCategoriesTimeFilterYearEle.prop('hidden', true).prop('disabled', true)
-            topCategoriesTimeFilterMMQQEle.closest('div').prop('hidden', true)
-        }
-    })
-
-    topCategoriesTimeFilterSelectEle.on('change', function () {
-        topCategoriesTimeFilterMMQQEle.val('').prop('disabled', $(this).val() === '0')
-        topCategoriesTimeFilterMMQQEle.closest('div').prop('hidden', $(this).val() === '0')
-        topCategoriesTimeFilterYearEle.val(new Date().getFullYear())
-        if ($(this).val() === '1') {
-            topCategoriesTimeFilterMMQQEle.val(new Date().getMonth() + 1)
-        } else if ($(this).val() === '2') {
-            topCategoriesTimeFilterMMQQEle.val(parseInt((new Date().getMonth() + 1) / 3) + 1)
-        }
+        UpdateTopCategoriesChart()
     })
 
     $('#reload-top-categories-data-btn').on('click', function () {
-        AjaxTopCategoriesChart(false)
-    })
-
-    $('.timechart-categories').on('change', function () {
-        UpdateOptionTopCategoriesChart()
+        CallAjaxTopCategoriesChart()
+        UpdateTopCategoriesChart()
+        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 
     // Top products chart
 
-    const topProductsTimeFilterYearEle = $('#top-products-time-filter-year')
-    const topProductsTimeFilterMMQQEle = $('#top-products-time-filter-mm-qq')
-    const topProductsTimeFilterSelectEle = $('#top-products-time-filter-select')
     const topProductsTimeEle = $('#top-products-time')
     const topProductsNumberEle = $('#top-products-number')
+    let top_products_chart = null
+    let top_products_chart_DF = []
 
-    let top_products_chart_list_DF = []
-    let top_products_chart_DF = null
-
-    function CombineTopProductsChartData(show_billion, titleY = "Revenue (million)", titleX = "Product's name", chart_title="Top 5 products this month") {
-        let cast_billion = 1e6
-        if (show_billion) {
-            cast_billion = 1e9
-        }
-
+    function CombineTopProductsChartData(show_billion, titleY = "Revenue", titleX = "Product", chart_title="") {
+        const cast_billion = show_billion ? 1e9 : 1e6
         const current_month = new Date().getMonth() + 1
         const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
 
         let top_products_chart_data = []
-        for (const item of top_products_chart_list_DF) {
+        for (const item of top_products_chart_DF) {
             const dateApproved = new Date(item?.['date_approved'])
             const month = dateApproved.getMonth() + 1
             const quarter = GetQuarterFromMonth(month - space_month_Setting)
@@ -1929,23 +1589,17 @@ $(document).ready(function () {
                 data: topX_revenue
             }],
             chart: {
-                foreColor: "#999",
                 type: 'bar',
                 height: HEIGHT
             },
             colors: ['#2B77A4'],
             plotOptions: {
                 bar: {
-                    borderRadius: 5,
                     horizontal: false,
                 }
             },
             dataLabels: {
                 enabled: true,
-                // textAnchor: 'start',
-                style: {
-                    colors: ['#fff']
-                },
                 formatter: function (val) {
                     if (val) {
                         return val.toFixed(parseInt(moneyRoundEle.val()))
@@ -1954,10 +1608,6 @@ $(document).ready(function () {
                     }
                     // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
                 },
-                offsetX: 0,
-                dropShadow: {
-                    enabled: false
-                }
             },
             xaxis: {
                 categories: topX_title,
@@ -2007,37 +1657,25 @@ $(document).ready(function () {
         };
     }
 
-    function InitOptionTopProductsChart() {
-        const isBillionChecked = billionCheckboxEle.prop('checked')
-        const unitText = isBillionChecked ? 'billion' : 'million'
-        let time = ['this month', 'this quarter', 'this year', '']
-
+    function InitTopProductsChart() {
+        const isBillionChecked = moneyDisplayEle.val() === '1'
         let options = CombineTopProductsChartData(
-            isBillionChecked,
-            `Revenue (${unitText})`,
-            "Product's name",
-            `Top ${topProductsNumberEle.val()} products ${time[topProductsTimeEle.val()]}`
+            isBillionChecked
         )
         $('#top-products-spinner').prop('hidden', true)
-        top_products_chart_DF = new ApexCharts(document.querySelector("#top_products_chart"), options);
-        top_products_chart_DF.render();
+        top_products_chart = new ApexCharts(document.querySelector("#top_products_chart"), options);
+        top_products_chart.render();
     }
 
-    function UpdateOptionTopProductsChart() {
-        const isBillionChecked = billionCheckboxEle.prop('checked')
-        const unitText = isBillionChecked ? 'billion' : 'million'
-        let time = ['this month', 'this quarter', 'this year', '']
-
+    function UpdateTopProductsChart() {
+        const isBillionChecked = moneyDisplayEle.val() === '1'
         let options = CombineTopProductsChartData(
-            isBillionChecked,
-            `Revenue (${unitText})`,
-            "Product's name",
-            `Top ${topProductsNumberEle.val()} products ${time[topProductsTimeEle.val()]}`
+            isBillionChecked
         )
-        top_products_chart_DF.updateOptions(options)
+        top_products_chart.updateOptions(options)
     }
 
-    function AjaxTopProductsChart(is_init = true) {
+    function CallAjaxTopProductsChart(is_init=false) {
         let top_products_chart_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-top-categories-products-list'),
             data: {},
@@ -2056,53 +1694,36 @@ $(document).ready(function () {
 
         Promise.all([top_products_chart_ajax]).then(
             (results) => {
-                top_products_chart_list_DF = results[0];
+                top_products_chart_DF = results[0];
                 $('#top-products-time-filter-year').val(new Date().getFullYear())
                 if (is_init) {
-                    InitOptionTopProductsChart()
-                } else {
-                    $.fn.notifyB({description: "Get the latest top products data successfully"}, 'success')
-                    UpdateOptionTopProductsChart()
+                    InitTopProductsChart()
                 }
             })
     }
 
-    AjaxTopProductsChart()
-
     topProductsNumberEle.on('change', function () {
-        UpdateOptionTopProductsChart()
+        UpdateTopProductsChart()
     })
 
     topProductsTimeEle.on('change', function () {
-        if ($(this).val() === '3') {
-            topProductsTimeFilterSelectEle.val('0').prop('hidden', false).prop('disabled', false)
-            topProductsTimeFilterMMQQEle.prop('disabled', topProductsTimeFilterSelectEle.val() === '0')
-            topProductsTimeFilterYearEle.prop('hidden', false).prop('disabled', false)
-        } else {
-            UpdateOptionTopProductsChart()
-            topProductsTimeFilterSelectEle.prop('hidden', true).prop('disabled', true)
-            topProductsTimeFilterMMQQEle.prop('disabled', true)
-            topProductsTimeFilterYearEle.prop('hidden', true).prop('disabled', true)
-            topProductsTimeFilterMMQQEle.closest('div').prop('hidden', true)
-        }
-    })
-
-    topProductsTimeFilterSelectEle.on('change', function () {
-        topProductsTimeFilterMMQQEle.val('').prop('disabled', $(this).val() === '0')
-        topProductsTimeFilterMMQQEle.closest('div').prop('hidden', $(this).val() === '0')
-        topProductsTimeFilterYearEle.val(new Date().getFullYear())
-        if ($(this).val() === '1') {
-            topProductsTimeFilterMMQQEle.val(new Date().getMonth() + 1)
-        } else if ($(this).val() === '2') {
-            topProductsTimeFilterMMQQEle.val(parseInt((new Date().getMonth() + 1) / 3) + 1)
-        }
+        UpdateTopProductsChart()
     })
 
     $('#reload-top-products-data-btn').on('click', function () {
-        AjaxTopProductsChart(false)
+        CallAjaxTopProductsChart()
+        UpdateTopProductsChart()
+        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 
-    $('.timechart-products').on('change', function () {
-        UpdateOptionTopProductsChart()
-    })
+    // Load Page
+    LoadPeriod(current_period)
+    LoadRevenueGroup()
+    CallAjaxRevenueChart(true)
+    LoadProfitGroup()
+    CallAjaxProfitChart(true)
+    CallAjaxTopSellersChart(true)
+    CallAjaxTopCustomersChart(true)
+    CallAjaxTopCategoriesChart(true)
+    CallAjaxTopProductsChart(true)
 })

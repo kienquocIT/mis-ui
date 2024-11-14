@@ -13,4 +13,7 @@ LEAVE_DATA_MAP = {
     'detail_data': FieldMapCommon(
         name_mapping=['detail_data'],
     ).data,
+    'total': FieldMapCommon(
+        name_mapping=['total'],
+    ).data,
 }

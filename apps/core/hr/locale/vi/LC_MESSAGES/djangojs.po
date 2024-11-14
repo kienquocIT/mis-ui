@@ -24,3 +24,7 @@ msgstr "Thông tin nhân viên"
 #
 msgid "Avatar"
 msgstr "Ảnh đại diện"
+
+#
+msgid "Current page automatically goes to end page after the new row was added"
+msgstr "Trang hiện tại tự động chuyển đến trang cuối sau khi hàng mới được thêm vào"

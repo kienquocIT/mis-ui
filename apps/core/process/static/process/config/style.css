@@ -1,0 +1,212 @@
+.process-stage {
+    width: 100%;
+    position: relative;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 200px minmax(300px, auto);
+}
+
+.process-stage-full {
+    grid-template-columns: 100%;
+}
+
+.stage-head {
+    background-color: #c1e7a8;
+    color: #2a2f34;
+    padding: 5px;
+    height: 100%;
+    text-align: center;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.stage-head.stage-system {
+    background-color: #d6e6dc !important;
+    color: #fff !important;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.stage-head.stage-added {
+    border-radius: 40px 0 0 40px;
+}
+
+.stage-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-left: 5px;
+}
+
+.stage-item {
+    flex: 1 1 200px;
+    width: 100%;
+    background-color: #d9f7d8;
+    color: #212429;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.stage-label {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    color: #2a2f34;
+}
+
+.stage-tools {
+    visibility: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /*background-color: rgba(137, 206, 0, 0.3);*/
+    -webkit-backdrop-filter: blur(30px);
+    backdrop-filter: blur(30px);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1056;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 300ms, visibility 320ms;
+}
+
+.dropdown-menu {
+    z-index: 1111;
+}
+
+.tool-item {
+    display: inline-block;
+    cursor: pointer;
+    color: #00717a;
+    font-size: 1.4rem;
+}
+
+.tool-item:not(:last-child) {
+    margin-right: 10px;
+}
+
+.tool-item:hover {
+    color: #cc7400;
+}
+
+.stage-head:has(.stage-tools):hover .stage-tools {
+    visibility: visible;
+    opacity: 1;
+}
+
+.stage-head.stage-system:has(.stage-tools):hover .stage-tools {
+    border-radius: 20px;
+}
+
+.stage-head.stage-added:has(.stage-tools):hover .stage-tools {
+    border-radius: 40px 0 0 40px;
+}
+
+.stage-item:has(.stage-tools):hover .stage-tools {
+    visibility: visible;
+    opacity: 1;
+}
+
+.focusing {
+    background: linear-gradient(270deg, #9edfd5, #ead42f, #9edfd5);
+    background-size: 600% 600%;
+
+    -webkit-animation: StageItemFocus 2s ease infinite;
+    -moz-animation: StageItemFocus 2s ease infinite;
+    -o-animation: StageItemFocus 2s ease infinite;
+    animation: StageItemFocus 2s ease infinite;
+}
+
+@-webkit-keyframes StageItemFocus {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@-moz-keyframes StageItemFocus {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@-o-keyframes StageItemFocus {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes StageItemFocus {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.stage-not-done {
+    background-color: #fbd7e1 !important;
+}
+
+.dragging {
+    background-color: #fffaeb;
+    min-height: 40px;
+    border: 1px dashed orange;
+}
+.dragger-item {
+    background-color: #ffdd6b;
+    max-width: 400px;
+}
+.dragger-line {
+    max-width: 400px;
+}
+.dragger-line .stage-content {
+    max-height: 100px;
+    overflow: hidden;
+}
+.dragger-line .stage-head,
+.dragger-line .stage-content .stage-item {
+    background-color: #ffdd6b;
+}
+
+.process-stage.fixed .tool-item.handle {
+    display: none;
+}
+
+.stage-item-skip, .stage-item-repeat, .stage-item-application {
+    display: none;
+    margin-right: 3px;
+}

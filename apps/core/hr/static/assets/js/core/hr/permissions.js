@@ -1253,7 +1253,7 @@ tbl.on('click', '#btnAddNewRowPerms', function () {
         let currentPages = tbl.page.info().page;
         if (totalPages - 1 > currentPages) {
             $.fn.notifyB({
-                'description': globeGoToEndPage,
+                'description': $.fn.gettext("Current page automatically goes to end page after the new row was added"),
             }, 'info')
         }
         tbl.page(totalPages - 1).draw('page');

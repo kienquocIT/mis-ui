@@ -3,326 +3,6 @@ let PercentCount = 0;
 let $transElm = $('#trans-factory');
 $(document).ready(function () {
 
-    //Switch view table
-    $("#tab-select-table a").on("click", function () {
-        let btn_create = $('#btn-show-modal-create')
-        btn_create.show();
-        $('#btn-save-payment').hide();
-        $('#btn-back-payment').hide();
-        let section = $(this).attr('data-collapse')
-        $(".lookup-data").hide()
-        let id_tag = `#` + section
-        $(id_tag).show();
-        if (section === 'section-payment-terms') {
-            btn_create.removeAttr('data-bs-target');
-            btn_create.removeAttr('data-bs-toggle');
-        } else {
-            btn_create.attr('data-bs-toggle', 'modal');
-            btn_create.attr('data-bs-target', '#modal-' + section);
-        }
-
-        switch (section) {
-            case 'section-currency':
-                loadCurrency();
-                break;
-            case 'section-tax':
-                loadTax();
-                loadTaxCategory();
-                break;
-            case 'section-tax-category':
-                loadTaxCategory();
-                break;
-        }
-    })
-
-    $('#btn-show-modal-create').on('click', function () {
-        $('.modal-body .form-control').val('');
-        $('.modal-body .form-select').prop("selectedIndex", -1);
-        $('.modal-body .select2').val(null).trigger("change");
-        $('#form-create-payment-term')[0].reset();
-        $('#table_terms').DataTable().clear().draw();
-        $('[data-bs-target="#modal-add-table"]').prop('disabled', false)
-        if (!$(this).attr('data-bs-target')) {
-            $(".lookup-data").hide();
-            $('#section-create-payment-terms').show();
-            $(this).hide();
-            $('#btn-save-payment').show();
-            $('#btn-back-payment').show();
-            $('[name="payment_terms_id"]').val('')
-        }
-    })
-
-    $('#btn-back-payment').on('click', function () {
-        $('#btn-save-payment').hide();
-        $(this).hide();
-        $('#section-payment-terms').show();
-        $('#section-create-payment-terms').hide();
-        $('#btn-show-modal-create').show();
-    })
-
-    function loadCurrency() {
-        if (!$.fn.DataTable.isDataTable('#datatable-currency')) {
-            let tbl = $('#datatable-currency');
-            let frm = new SetupFormSubmit(tbl);
-            tbl.DataTableDefault(
-                {
-                    useDataServer: true,
-                    rowIdx: true,
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('currency_list')) {
-                                let vndCurrency = $.grep(resp.data['currency_list'], function (currency) {
-                                    return currency.abbreviation === "VND";
-                                })[0];
-                                if (vndCurrency !== undefined && vndCurrency?.['is_primary']) {
-                                    for (let i = 0; i < resp.data['currency_list'].length; i++) {
-                                        resp.data['currency_list'][i]['round_number'] = 2;
-                                    }
-                                } else {
-                                    for (let i = 0; i < resp.data['currency_list'].length; i++) {
-                                        resp.data['currency_list'][i]['round_number'] = 5;
-                                    }
-                                }
-
-                                resp.data['currency_list'].map(function (item) {
-                                    if (item?.['is_primary'] === true) {
-                                        $('.abbreviation-primary').text(item.abbreviation);
-                                    }
-                                });
-                                return resp.data['currency_list'] ? resp.data['currency_list'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columns: [
-                        {
-                            className: 'wrap-text w-10',
-                            render: (data, type, row, meta) => {
-                                return '';
-                            }
-                        },
-                        {
-                            data: 'title',
-                            className: 'wrap-text w-40',
-                            render: (data, type, row, meta) => {
-                                return `<a><span><b>{0}</b></span></a>`.format_by_idx(
-                                    data,
-                                )
-                            }
-                        },
-                        {
-                            data: 'abbreviation',
-                            className: 'wrap-text w-20',
-                            render: (data, type, row, meta) => {
-                                if (row.is_default === false) {
-                                    return `<span style="width: 50%;" class="badge badge-soft-primary badge-pill"><b>{0}</b></span></a>`.format_by_idx(
-                                        data
-                                    )
-                                } else {
-                                    return `<span style="width: 50%;" class="badge badge-soft-red badge-pill"><b></b>{0}</span></a>`.format_by_idx(
-                                        data
-                                    )
-                                }
-                            }
-                        },
-                        {
-                            data: 'rate',
-                            className: 'wrap-text w-30',
-                            render: (data, type, row, meta) => {
-                                if (data !== null) {
-                                    if (row?.['is_primary'] === true) {
-                                        return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`
-                                    } else {
-                                        return `<span>{0}</span>`.format_by_idx(
-                                            data.toLocaleString('en-US', {minimumFractionDigits: row.round_number})
-                                        )
-                                    }
-                                } else {
-                                    return ``;
-                                }
-                            }
-                        },
-                    ],
-                },
-            );
-        }
-    }
-
-    function loadTax() {
-        if (!$.fn.DataTable.isDataTable('#datatable-tax')) {
-            let tbl = $('#datatable-tax');
-            let frm = new SetupFormSubmit(tbl);
-            tbl.DataTableDefault(
-                {
-                    useDataServer: true,
-                    rowIdx: true,
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('tax_list')) {
-                                return resp.data['tax_list'] ? resp.data['tax_list'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columns: [
-                        {
-                            className: 'wrap-text w-10',
-                            render: (data, type, row, meta) => {
-                                return '';
-                            }
-                        },
-                        {
-                            data: 'code',
-                            className: 'wrap-text',
-                            render: (data, type, row, meta) => {
-                                return `<span class="badge badge-primary">${data}</span>`
-                            }
-                        },
-                        {
-                            data: 'title',
-                            className: 'wrap-text',
-                            render: (data, type, row, meta) => {
-                                return `<span class="initial-wrap text-primary"><b>${data}</b></span>`
-                            }
-                        },
-                        {
-                            data: 'tax_type',
-                            className: 'wrap-text',
-                            render: (data, type, row, meta) => {
-                                if (data === 0) {
-                                    return 'Sale'
-                                }
-                                if (data === 1) {
-                                    return 'Purchase'
-                                }
-                                return 'Sale, Purchase'
-                            }
-                        },
-                        {
-                            data: 'category',
-                            className: 'wrap-text',
-                            render: (data, type, row, meta) => {
-                                if (row.category) {
-                                    return `<span class="badge badge-soft-primary">${data.title}</span>`
-                                } else {
-                                    return `<span></span>`
-                                }
-                            }
-                        },
-                        {
-                            data: 'rate',
-                            className: 'wrap-text',
-                            render: (data, type, row, meta) => {
-                                if (data >= 0) {
-                                    return `<span class="badge badge-soft-pink" >${data}%</span>`
-                                } else {
-                                    return `<span></span>`
-                                }
-                            }
-                        },
-                        {
-                            render: (data, type, row, meta) => {
-                                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
-                                           data-id="${row.id}" data-bs-toggle="modal"
-                                           data-bs-target="#modal-detail-tax" data-bs-placement="top" title="" 
-                                           data-bs-original-title="Edit">
-                                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
-                                        </a>`
-                            }
-                        }
-                    ],
-                },
-            );
-        }
-    }
-
-    $('#select-box-category-create').initSelect2();
-
-    function loadTaxCategory() {
-        if (!$.fn.DataTable.isDataTable('#datatable-tax-category')) {
-            let tbl = $('#datatable-tax-category');
-            let frm = new SetupFormSubmit(tbl);
-            tbl.DataTableDefault(
-                {
-                    useDataServer: true,
-                    rowIdx: true,
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('tax_category_list')) {
-                                return resp.data['tax_category_list'] ? resp.data['tax_category_list'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columns: [
-                        {
-                            className: 'wrap-text w-10',
-                            render: (data, type, row, meta) => {
-                                return '';
-                            }
-                        },
-                        {
-                            data: 'code',
-                            className: 'wrap-text w-30',
-                            render: (data, type, row) => {
-                                if (row.is_default) {
-                                    return `<span class="badge badge-secondary">${row.code}</span>`
-                                } else {
-                                    return `<span class="badge badge-primary">${row.code}</span>`
-                                }
-                            }
-                        },
-                        {
-                            data: 'title',
-                            className: 'wrap-text w-40',
-                            render: (data, type, row, meta) => {
-                                if (row.is_default) {
-                                    return `<span class="initial-wrap text-secondary"><b>${data}</b></span>`
-                                } else {
-                                    return `<span class="initial-wrap text-primary"><b>${data}</b></span>`
-                                }
-                            }
-                        },
-                        {
-                            data: 'description',
-                            className: 'wrap-text w-35',
-                            render: (data, type, row, meta) => {
-                                return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
-                                )
-                            }
-                        },
-                        {
-                            className: 'wrap-text w-15',
-                            render: (data, type, row, meta) => {
-                                if (row.is_default) {
-                                    return ``
-                                } else {
-                                    return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-detail"
-                                               data-id="${row.id}" data-bs-toggle="modal"
-                                               data-bs-target="#modal-detail-tax-category" data-bs-placement="top" title="" 
-                                               data-bs-original-title="Edit">
-                                               <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
-                                            </a>`
-                                }
-                            }
-                        }
-                    ],
-                },
-            );
-        }
-    }
-
-    // load Base Currency (Master data)
     function loadBaseCurrency() {
         let ele = $('#currency_name');
         ele.initSelect2({
@@ -335,27 +15,343 @@ $(document).ready(function () {
             $('#abbreviation-id').val(currency.code);
         })
     }
+    function loadCurrency() {
+        let tbl = $('#datatable-currency');
+        let frm = new SetupFormSubmit(tbl);
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('currency_list')) {
+                        let vndCurrency = $.grep(resp.data['currency_list'], function (currency) {
+                            return currency.abbreviation === "VND";
+                        })[0];
+                        if (vndCurrency !== undefined && vndCurrency?.['is_primary']) {
+                            for (let i = 0; i < resp.data['currency_list'].length; i++) {
+                                resp.data['currency_list'][i]['round_number'] = 2;
+                            }
+                        } else {
+                            for (let i = 0; i < resp.data['currency_list'].length; i++) {
+                                resp.data['currency_list'][i]['round_number'] = 5;
+                            }
+                        }
+
+                        resp.data['currency_list'].map(function (item) {
+                            if (item?.['is_primary'] === true) {
+                                $('.abbreviation-primary').text(item.abbreviation);
+                            }
+                        });
+                        return resp.data['currency_list'] ? resp.data['currency_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return '';
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text w-35',
+                    render: (data) => {
+                        return `<b>${data}</b>`
+                    }
+                },
+                {
+                    data: 'abbreviation',
+                    className: 'wrap-text w-25',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `<span class="text-primary"><b>${data}</b></span></a>`
+                        } else {
+                            return `<span class="text-red"><b></b>${data}</span></a>`
+                        }
+                    }
+                },
+                {
+                    data: 'rate',
+                    className: 'wrap-text w-35',
+                    render: (data, type, row) => {
+                        if (data) {
+                            if (row?.['is_primary']) {
+                                return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`
+                            } else {
+                                return `<span>${data.toLocaleString('en-US', {minimumFractionDigits: row.round_number})}</span>`
+                            }
+                        } else {
+                            return ``;
+                        }
+                    }
+                },
+            ],
+        });
+    }
+    function loadTaxCategory() {
+        let tbl = $('#datatable-tax-category');
+        let frm = new SetupFormSubmit(tbl);
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('tax_category_list')) {
+                        return resp.data['tax_category_list'] ? resp.data['tax_category_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return '';
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text w-10',
+                    render: (data, type, row) => {
+                        if (row?.['is_default']) {
+                            return `<span class="badge badge-secondary w-70">${row?.['code']}</span>`
+                        } else {
+                            return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
+                        }
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text w-35',
+                    render: (data, type, row, meta) => {
+                        if (row?.['is_default']) {
+                            return `<b>${data}</b>`
+                        } else {
+                            return `${data}`
+                        }
+                    }
+                },
+                {
+                    data: 'description',
+                    className: 'wrap-text w-35',
+                    render: (data) => {
+                        return `${data}`
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-15',
+                    render: (data, type, row, meta) => {
+                        if (row?.['is_default']) {
+                            return ``
+                        } else {
+                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-tax-category"
+                                       data-id="${row?.['id']}"
+                                       data-code="${row?.['code']}"
+                                       data-title="${row?.['title']}"
+                                       data-description="${row?.['description']}"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#modal-update-tax-category"
+                                       data-bs-placement="top" title="" 
+                                       data-bs-original-title="Edit">
+                                       <span class="btn-icon-wrap">
+                                           <span class="feather-icon text-primary">
+                                               <i data-feather="edit"></i>
+                                           </span>
+                                       </span>
+                                    </a>`
+                        }
+                    }
+                }
+            ],
+        });
+    }
+    function loadTax() {
+        let tbl = $('#datatable-tax');
+        let frm = new SetupFormSubmit(tbl);
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('tax_list')) {
+                        return resp.data['tax_list'] ? resp.data['tax_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return '';
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text w-10',
+                    render: (data) => {
+                        return `<span class="badge badge-primary w-70">${data}</span>`
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text w-25',
+                    render: (data) => {
+                        return `${data}`
+                    }
+                },
+                {
+                    data: 'tax_type',
+                    className: 'wrap-text w-15',
+                    render: (data) => {
+                        if (data === 0) {
+                            return 'Sale'
+                        }
+                        if (data === 1) {
+                            return 'Purchase'
+                        }
+                        return 'Sale, Purchase'
+                    }
+                },
+                {
+                    data: 'category',
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        if (row.category) {
+                            return `<span class="badge badge-soft-primary">${data?.['title']}</span>`
+                        } else {
+                            return ``
+                        }
+                    }
+                },
+                {
+                    data: 'rate',
+                    className: 'wrap-text w-15',
+                    render: (data) => {
+                        if (data >= 0) {
+                            return `<span class="badge badge-soft-pink" >${data}%</span>`
+                        } else {
+                            return ``
+                        }
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-10',
+                    render: (data, type, row) => {
+                        return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-tax"
+                                   data-id="${row?.['id']}"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#modal-update-tax"
+                                   data-bs-placement="top" title="" 
+                                   data-bs-original-title="Edit">
+                                   <span class="btn-icon-wrap">
+                                       <span class="feather-icon text-primary">
+                                           <i data-feather="edit"></i>
+                                       </span>
+                                   </span>
+                                </a>`
+                    }
+                }
+            ],
+        });
+    }
 
     loadBaseCurrency()
     loadCurrency()
     loadTax()
     loadTaxCategory()
 
-    $('#select-box-type').initSelect2({
-        data: [
-            {
-                'id': '0',
-                'title': $transElm.data('trans-sale'),
-            },
-            {
-                'id': '1',
-                'title': $transElm.data('trans-purchase'),
+    let form_create_currency = $('#form-create-currency')
+
+    $(document).on("click", '#sync-from-VCB-button', function () {
+        $('#datatable-currency tbody tr td:nth-child(4)').each(function () {
+            if ($(this).find('span').hasClass('badge') === false) {
+                $(this).html('<div class="spinner-border text-primary" role="status" style="height: 15px; width: 15px;"></div>');
             }
-        ]
+        });
+        $.fn.callAjax2({
+            'url': $(this).attr('data-url'),
+            'method': 'PUT',
+            'data': {'name': '1'}
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    console.log(data)
+                    $.fn.notifyB({description: 'Sync successfully!'}, 'success');
+                    setTimeout(function () {
+                        $('#datatable-currency').DataTable().ajax.reload();
+                    }, 0);
+                }
+            },
+            (errs) => {
+                $.fn.notifyB({description: 'Sync Failed!'}, 'failure');
+            }
+        )
+    });
+
+    new SetupFormSubmit(form_create_currency).validate({
+        rules: {
+            currency: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            if (frm.dataForm['rate'] === '') {
+                frm.dataForm['rate'] = null;
+            }
+            let currency_ele = $('#currency_name');
+            let currency_obj = SelectDDControl.get_data_from_idx(currency_ele, currency_ele.val());
+            frm.dataForm['abbreviation'] = currency_obj.code;
+            frm.dataForm['title'] = currency_obj.title;
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-new-currency').modal('hide');
+                        $('#modal-new-currency form')[0].reset()
+                        loadCurrency()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
     })
 
-//submit form create tax category
     let form_create_tax_category = $('#form-create-tax-category')
+    let form_update_tax_category = $('#form-update-tax-category')
+
+    $(document).on('click', '.btn-update-tax-category', function () {
+        let modal = $('#modal-update-tax-category')
+        modal.find('#tax-category-code').val($(this).attr('data-code'))
+        modal.find('#tax-category-title').val($(this).attr('data-title'))
+        modal.find('#tax-category-description').val($(this).attr('data-description'))
+        let raw_url = form_update_tax_category.attr('data-url-raw')
+        form_update_tax_category.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
+    })
+
     new SetupFormSubmit(form_create_tax_category).validate({
         rules: {
             code:{
@@ -376,8 +372,9 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#modal-section-tax-category').modal('hide');
-                        $('#datatable-tax-category').DataTable().ajax.reload();
+                        $('#modal-new-tax-category').modal('hide');
+                        $('#modal-new-tax-category form')[0].reset()
+                        loadTaxCategory()
                     }
                 },
                 (errs) => {
@@ -387,8 +384,94 @@ $(document).ready(function () {
         }
     })
 
-//submit form create tax
+    new SetupFormSubmit(form_update_tax_category).validate({
+        rules: {
+            code:{
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-update-tax-category').modal('hide');
+                        loadTaxCategory()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+
     let form_create_tax = $('#form-create-tax')
+    let form_update_tax = $('#form-update-tax')
+
+    $('#select-box-type').initSelect2({
+        data: [
+            {
+                'id': '0',
+                'title': $transElm.data('trans-sale'),
+            },
+            {
+                'id': '1',
+                'title': $transElm.data('trans-purchase'),
+            }
+        ]
+    })
+
+    $(document).on('click', '.btn-update-tax', function () {
+        let raw_url = form_update_tax.attr('data-url-raw')
+        form_update_tax.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
+        $.fn.callAjax2({
+            'url': form_update_tax.attr('data-url'),
+            'method': 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax')) {
+                        $('#tax-title').val(data?.['tax']?.['title']);
+                        $('#tax-code').val(data?.['tax']?.['code']);
+                        $('#tax-rate').val(data?.['tax']?.['rate']);
+                        $('#select-box-category-update').initSelect2({
+                            'data': data?.['tax']?.['category']
+                        })
+                        let typeEle = $('#tax-type');
+                        typeEle.empty()
+                        typeEle.initSelect2({
+                            data: [{
+                                'id': '0',
+                                'title': $transElm.data('trans-sale'),
+                            },
+                            {
+                                'id': '1',
+                                'title': $transElm.data('trans-purchase'),
+                            }]
+                        })
+                        if (data?.['tax']?.['tax_type'] === 0) {
+                            typeEle.val(['0']).trigger("change");
+                        } else if (data?.['tax']?.['tax_type'] === 1) {
+                            typeEle.val(['1']).trigger("change");
+                        } else {
+                            typeEle.val(['0', '1']).trigger("change");
+                        }
+                    }
+                }
+            })
+    })
+
     new SetupFormSubmit(form_create_tax).validate({
         rules: {
             code: {
@@ -424,8 +507,9 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#modal-section-tax').hide();
-                        $('#datatable-tax').DataTable().ajax.reload();
+                        $('#modal-new-tax').hide();
+                        $('#modal-new-tax form')[0].reset();
+                        loadTax()
                     }
                 },
                 (errs) => {
@@ -435,76 +519,8 @@ $(document).ready(function () {
         }
     })
 
-    let url_detail = ''
-// show detail tax
-    $(document).on('click', '#datatable-tax .btn-detail', function () {
-        url_detail = $('#form-update-tax').attr('data-url').format_url_with_uuid($(this).attr('data-id'));
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax')) {
-                        $('#tax-title').val(data.tax.title);
-                        $('#tax-code').val(data.tax.code);
-                        $('#tax-rate').val(data.tax.rate);
-                        $('#select-box-category-update').initSelect2({
-                            'data': data.tax.category
-                        })
-                        let typeEle = $('#tax-type');
-                        typeEle.find('option').remove()
-                        typeEle.initSelect2({
-                            data: [
-                                {
-                                    'id': '0',
-                                    'title': $transElm.data('trans-sale'),
-                                },
-                                {
-                                    'id': '1',
-                                    'title': $transElm.data('trans-purchase'),
-                                }
-                            ]
-                        })
-                        if (data.tax.tax_type === 0) {
-                            typeEle.val(['0']).trigger("change");
-                        } else if (data.tax.tax_type === 1) {
-                            typeEle.val(['1']).trigger("change");
-                        } else {
-                            typeEle.val(['0', '1']).trigger("change");
-                        }
-                    }
-                }
-            })
-    })
-
-// show detail tax category
-    $(document).on('click', '#datatable-tax-category .btn-detail', function () {
-        url_detail = $('#form-update-tax-category').attr('data-url').format_url_with_uuid($(this).attr('data-id'));
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET',
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_category')) {
-                        $('#tax-category-code').val(data?.['tax_category'].code)
-                        $('#tax-category-title').val(data?.['tax_category'].title)
-                        $('#tax-category-description').val(data?.['tax_category'].description)
-                    }
-                }
-            })
-    })
-
-//form update tax
-    let form_update_tax = $('#form-update-tax')
     new SetupFormSubmit(form_update_tax).validate({
         rules: {
-            code: {
-                required: true
-            },
             title: {
                 required: true,
             },
@@ -528,79 +544,6 @@ $(document).ready(function () {
             }
             frm.dataForm['category'] = $('#select-box-category-update').val();
             $.fn.callAjax2({
-                'url': url_detail,
-                'method': frm.dataMethod,
-                'data': frm.dataForm
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#modal-detail-tax').modal('hide');
-                        $('#datatable-tax').DataTable().ajax.reload();
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
-        }
-    })
-
-//form update tax category
-    let form_update_tax_category = $('#form-update-tax-category')
-    new SetupFormSubmit(form_update_tax_category).validate({
-        rules: {
-            code:{
-                required: true,
-            },
-            title: {
-                required: true,
-            }
-        },
-        submitHandler: function (form) {
-            let frm = new SetupFormSubmit($(form));
-            $.fn.callAjax2({
-                'url': url_detail,
-                'method': frm.dataMethod,
-                'data': frm.dataForm,
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#modal-detail-tax-category').modal('hide');
-                        $('#datatable-tax-category').DataTable().ajax.reload();
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
-        }
-    })
-
-// form create currency
-    let form_create_currency = $('#form-create-currency')
-    new SetupFormSubmit(form_create_currency).validate({
-        rules: {
-            currency: {
-                required: true,
-            }
-        },
-        submitHandler: function (form) {
-            let frm = new SetupFormSubmit($(form));
-
-            if (frm.dataForm['rate'] === '') {
-                frm.dataForm['rate'] = null;
-            }
-
-            let currency_ele = $('#currency_name');
-            let currency_obj = SelectDDControl.get_data_from_idx(currency_ele, currency_ele.val());
-            frm.dataForm['abbreviation'] = currency_obj.code;
-            frm.dataForm['title'] = currency_obj.title;
-
-            $.fn.callAjax2({
                 'url': frm.dataUrl,
                 'method': frm.dataMethod,
                 'data': frm.dataForm
@@ -609,8 +552,8 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#modal-section-currency').modal('hide');
-                        $('#datatable-currency').DataTable().ajax.reload();
+                        $('#modal-update-tax').modal('hide');
+                        loadTax()
                     }
                 },
                 (errs) => {
@@ -620,57 +563,10 @@ $(document).ready(function () {
         }
     })
 
-
-// show detail currency
-    $(document).on('click', '#datatable-currency .btn-detail', function () {
-        $('#currency-title').closest('div').find('span').text('*')
-        $('#currency-abbreviation').closest('div').find('span').text('*')
-        url_detail = $('#form-update-currency').attr('data-url').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency')) {
-                        $('#currency-title').val(data.currency.title);
-                        $('#currency-abbreviation').val(data.currency.abbreviation);
-                        $('#currency-rate').val(data.currency.rate);
-                    }
-                }
-            })
-    })
-
-
-    // sync selling rate from VietComBank
-    $(document).on("click", '#sync-from-VCB-button', function () {
-        $('#datatable-currency tbody tr td:nth-child(4)').each(function () {
-            if ($(this).find('span').hasClass('badge') === false) {
-                $(this).html('<div class="spinner-border text-primary" role="status" style="height: 15px; width: 15px;"></div>');
-            }
-        });
-        $.fn.callAjax2({
-            'url': $(this).attr('data-url'),
-            'method': 'PUT',
-            'data': {'name': '1'}
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: 'Sync successfully!'}, 'success');
-                    setTimeout(function () {
-                        $('#datatable-currency').DataTable().ajax.reload();
-                    }, 0);
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: 'Sync Failed!'}, 'failure');
-            }
-        )
-    });
-
     // PAYMENTS TERMS handle
+    const $termForm = $('#form-create-payment-term');
+    const $ModalTermForm = $('#modal-add-table form');
+
 
     function PaymentTermsList() {
         // init dataTable
@@ -708,7 +604,7 @@ $(document).ready(function () {
                 },
                 {
                     render: (row, type, data) => {
-                        let url = $('#url-factory').data('detail').format_url_with_uuid(data.id);
+                        let url = $('#url-factory').attr('data-detail').format_url_with_uuid(data.id);
                         return `<p><a href="#" data-href="${url}" 
                             class="text-primary text-decoration-underline row-title">${data.title}</a></p>`
                     },
@@ -776,6 +672,7 @@ $(document).ready(function () {
         let table_elm = $(elm).parents('table.table');
         let rowIdx = $(table_elm).DataTable().row(elm).index()
         if (isAction === 'edit') {
+            $('#modal-add-table form #is_edited').val('true')
             let unit = data.unit_type.hasOwnProperty('value') ? data.unit_type.value : data.unit_type,
                 day = data.day_type.hasOwnProperty('value') ? data.day_type.value : data.day_type,
                 after = data.after.hasOwnProperty('value') ? data.after.value : data.after;
@@ -811,8 +708,6 @@ $(document).ready(function () {
                 // reload Init Mask Money
                 $.fn.initMaskMoney2();
 
-                // render icon after table callback
-                feather.replace();
                 // generator index of row
                 let api = this.api();
                 let rows = api.rows({page: 'current'}).nodes();
@@ -918,9 +813,7 @@ $(document).ready(function () {
                                    href="#"
                                    data-id="${_id}"
                                    data-action="edit">
-                                    <span class="feather-icon">
-                                        <i data-feather="edit"></i>
-                                    </span>
+                                    <span class="btn-icon-wrap"><i class="bi bi-pencil-square"></i></span>
                                 </a>
                                 <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
                                    title="Delete"
@@ -928,9 +821,7 @@ $(document).ready(function () {
                                    data-id="${_id}"
                                    data-action="delete">
                                     <span class="btn-icon-wrap">
-                                        <span class="feather-icon">
-                                            <i data-feather="trash-2"></i>
-                                        </span>
+                                        <i class="bi bi-trash"></i>
                                     </span>
                                 </a>
                             </div>`;
@@ -949,7 +840,7 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $('#modal-add-table form #is_edited').val('true')
+                    $('.btn-add-terms').trigger('click')
                     $('[name="title"]').val(data.title)
                     $('[name="code"]').val(data.code)
                     $('[name="apply_for"]').val(data.apply_for).trigger('change')
@@ -980,25 +871,54 @@ $(document).ready(function () {
     termsDataTable()
     // init config payment terms list
     PaymentTermsList()
+    // create new terms action click
+    $('.btn-add-terms').on('click', () => {
+        $('.tab-content .tab-pane').removeClass('show active')
+        $('#section-create-payment-terms').addClass('show active')
+        $('.payment-terms-tabs').removeClass('hidden')
+        $termForm[0].reset();
+        $('#table_terms').DataTable().clear().draw();
+    });
+
+    $('[data-bs-target="#modal-add-table"]').on('click', function(){
+        $ModalTermForm[0].reset();
+        $('#is_edited', $ModalTermForm).val(false);
+        $('#modal-add-table').removeAttr('data-table-idx');
+        let $modalForm = $('#modal-add-table form');
+        $modalForm.find('[name="value"]').removeClass('hidden');
+        $modalForm.removeClass('was-validate');
+        $modalForm.find('.form-select').removeClass('is-invalid');
+    })
+    // close btn
+    $('.btn-terms-close').click(() => {
+            $('#section-create-payment-terms').removeClass('show active')
+            $('#section-payment-terms').addClass('show active')
+            $('.payment-terms-tabs').addClass('hidden')
+        });
+
+    // hide btn when click another tab
+    $('a[href="#section-payment-terms"]').on('hide.bs.tab', () => $('.payment-terms-tabs').addClass('hidden'))
+
     // button on add term
-    $('#modal-add-table button[type=submit]').off().on('click', function () {
+    $('#modal-add-table button[type=submit]').on('click', function () {
         let getIdx = $(this).closest('.modal').attr('data-table-idx');
         let $modalForm = $('form', $(this).closest('.modal-body'))
         let convertData = {}
-        convertData['value'] = $('#modal-add-table [name="value"]').val()
+        convertData['value'] = $('input[name="value"]', $modalForm).val();
+
         let value_amount = $('#modal-add-table [name="value_amount"]').valCurrency()
         convertData['unit_type'] = {
-            text: $('#modal-add-table [name="unit_type"] option:selected').text(),
-            value: $('#modal-add-table [name="unit_type"]').val()
+            text: $('[name="unit_type"] option:selected', $modalForm).text(),
+            value: $('[name="unit_type"]', $modalForm).val()
         }
         convertData['day_type'] = {
-            text: $('#modal-add-table [name="day_type"] option:selected').text(),
-            value: $('#modal-add-table [name="day_type"]').val()
+            text: $('[name="day_type"] option:selected', $modalForm).text(),
+            value: $('[name="day_type"]', $modalForm).val()
         }
-        convertData['no_of_days'] = $('#modal-add-table [name="no_of_days"]').val();
+        convertData['no_of_days'] = $('#modal-add-table [name="no_of_days"]').val()
         convertData['after'] = {
-            text: $('#modal-add-table [name="after"] option:selected').text(),
-            value: $('#modal-add-table [name="after"]').val()
+            text: $('[name="after"] option:selected', $modalForm).text(),
+            value: $('[name="after"]', $modalForm).val()
         }
         // valid if user had wrong setup unit type
         let validate_unit_type = true;
@@ -1008,19 +928,24 @@ $(document).ready(function () {
             2: $transElm.attr('data-terms-mess-3'),
         }
         if (convertData['unit_type'].value === '0') {
+            // loại đơn vị là: phần trăm
             if (term_type_list.indexOf(1) !== -1) {
-                // có 1
+                // kiềm tra xem có type là 1 hay ko => có type validated else ko valid
                 validate_unit_type = false
                 $modalForm.find('.invalid-feedback').html(temp_txt_invalid[0])
             }
-        } else if (convertData['unit_type'].value === '1') {
+        }
+        else if (convertData['unit_type'].value === '1') {
+            // loại đơn vị là: số lượng
             if (term_type_list.indexOf(0) !== -1) {
                 // có 0
                 validate_unit_type = false
                 $modalForm.find('.invalid-feedback').html(temp_txt_invalid[1])
             }
             convertData['value'] = value_amount
-        } else {
+        }
+        else {
+            // loại đơn vị là: cân bằng
             if (term_type_list.indexOf(2) !== -1 && $('#is_edited').val() !== 'true') {
                 // có 2
                 validate_unit_type = false
@@ -1029,21 +954,19 @@ $(document).ready(function () {
         }
 
         if (!validate_unit_type) {
-            $('#modal-add-table [name="unit_type"]').addClass('is-invalid')
+            $('[name="unit_type"]', $modalForm).addClass('is-invalid')
             $modalForm.addClass('was-validate')
             return false
-        } else {
+        }
+        else {
             $modalForm.removeClass('was-validate');
-            $('#modal-add-table [name="unit_type"]').removeClass('is-invalid');
+            $('[name="unit_type"]', $modalForm).removeClass('is-invalid');
         }
         // end validate
 
-        if (!convertData.unit_type.value
-            || (!convertData.value && convertData.unit_type.value === '0')
+        if (!convertData.unit_type.value || (!convertData.value && convertData.unit_type.value === '0')
             || (!value_amount && convertData.unit_type.value === '1')
-            || !convertData.day_type.value
-            || !convertData.after.value
-            || !convertData.no_of_days) {
+            || !convertData.day_type.value || !convertData.after.value || !convertData.no_of_days) {
             let txtKey = !convertData.day_type.value ?
                 'day_type' : !convertData.unit_type.value ? 'unit_type' : !convertData.no_of_days ?
                     'no_of_days' : 'after';
@@ -1058,23 +981,13 @@ $(document).ready(function () {
         else $('#table_terms').DataTable().row.add(convertData).draw()
         $('#modal-add-table').modal('hide');
     });
-    // create new terms
-    $('[data-bs-target="#modal-add-table"]').off().on('click', () => {
-        $('#modal-add-table').removeAttr('data-table-idx');
-        let $modalForm = $('#modal-add-table form');
-        $modalForm[0].reset();
-        $modalForm.find('[name="value"]').removeClass('hidden')
-        $modalForm.find('[name="value_amount"]').addClass('hidden')
-        $modalForm.removeClass('was-validate');
-        $modalForm.find('.form-select').removeClass('is-invalid')
-    })
 
     // form create submit
-    $('#btn-save-payment').off().on('click', function () {
-        let $form = $('#form-create-payment-term')
+    $termForm.on('submit', function (e) {
+        e.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let formID = $('[name="payment_terms_id"]').val()
-        let _form = new SetupFormSubmit($form);
+        let _form = new SetupFormSubmit($termForm);
         let tableTerms = $('#table_terms').DataTable().data().toArray();
         for (let item of tableTerms) {
             item.unit_type = item.unit_type.hasOwnProperty('value') ? item.unit_type.value : item.unit_type
@@ -1131,8 +1044,10 @@ $(document).ready(function () {
                         }
                         $table.DataTable().clear().draw()
                         $table.DataTable().rows.add(defaultData).draw();
+
                     }
                 }
             )
     })
+
 })

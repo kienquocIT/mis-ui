@@ -153,7 +153,7 @@ class HomeChart {
                             fontSize: '12px',
                             fontWeight: 400,
                             offsetY: 5,
-                            formatter: (val) => { return val }
+                            formatter: (val) => { return val + '%' }
                         },
                         name: {
                             show: false,

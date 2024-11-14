@@ -5,6 +5,66 @@
 {% endblock %}
 
 {% block pageContent %}
+    <div class="mb-10">
+        <form id="frm-test">
+            <div class="form-group">
+                <label for="">a</label>
+                <input type="text" name="a" />
+            </div>
+            <div class="form-group">
+                <label for="">a</label>
+                <input type="text" name="a" />
+            </div>
+            <div class="form-group">
+                <label for="">b</label>
+                <input type="checkbox" name="b"/>
+            </div>
+            <div class="form-group">
+                <label for="">c</label>
+                <select name="c">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="">d</label>
+                <select name="d" multiple>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="2">3</option>
+                    <option value="2">4</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="">e</label>
+                <div>
+                    <input type="radio" name="e" value="1">
+                    <input type="radio" name="e" value="2">
+                    <input type="radio" name="e" value="3">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="">f</label>
+                <textarea name="f" cols="30" rows="10"></textarea>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+        <script>
+            $(document).ready(function (){
+                const frm$ = $('#frm-test');
+                SetupFormSubmit.validate(
+                    frm$,
+                    {
+                        submitHandler: function (form, event){
+                            event.preventDefault();
+                            console.log($(form).serializeObject());
+                        }
+                    }
+                )
+            })
+        </script>
+    </div>
+
     <form id="frm-x" data-url="#" data-method="POST">
         <div class="row mb-3">
             <div class="col-md-4 col-sm-12">

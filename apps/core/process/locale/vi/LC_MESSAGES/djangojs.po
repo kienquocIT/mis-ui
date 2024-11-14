@@ -1,0 +1,238 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "Destroy stage"
+msgstr "Xoá giai đoạn"
+
+#
+msgid "Destroy item"
+msgstr "Xoá mục"
+
+#
+msgid "A little descriptions"
+msgstr "Mô tả một vài chi tiết"
+
+#
+msgid "New Stage"
+msgstr "Giai đoạn mới"
+
+#
+msgid "Function"
+msgstr "Tính năng"
+
+#
+msgid "New item"
+msgstr "Thêm mục mới"
+
+#
+msgid "New previous stage"
+msgstr "Thêm giai đoạn mới phía trước"
+
+#
+msgid "New next stage"
+msgstr "Thêm giai đoạn mới phía sau"
+
+#
+msgid "Start"
+msgstr "Bắt đầu"
+
+#
+msgid "End"
+msgstr "Kết thúc"
+
+#
+msgid "Stages 1"
+msgstr "Giai đoạn 1"
+
+#
+msgid "Yes, delete it"
+msgstr "Đồng ý"
+
+#
+msgid "Cancel"
+msgstr "Huỷ bỏ"
+
+#
+msgid "Runtime list"
+msgstr "Danh sách thực hiện"
+
+#
+msgid "Edit"
+msgstr "Chỉnh sửa"
+
+#
+msgid "Process"
+msgstr "Tiến trình"
+
+#
+msgid "For Opportunity"
+msgstr "Dành cho Cơ hội kinh doanh"
+
+#
+msgid "Yes"
+msgstr "Có"
+
+#
+msgid "No"
+msgstr "Không"
+
+#
+msgid "Active state"
+msgstr "Trạng thái kích hoạt"
+
+#
+msgid "Creator"
+msgstr "Người tạo"
+
+#
+msgid "Applications loading..."
+msgstr "Đang tải danh sách ứng dụng..."
+
+#
+msgid "Add new previous stages"
+msgstr "Thêm một giai đoạn phía trước"
+
+#
+msgid "Add new next stages"
+msgstr "Thêm một giai đoạn phía sau"
+
+#
+msgid "Add new application"
+msgstr "Thêm một ứng dụng mới"
+
+#
+msgid "Min=0 and Max=0 : Incorrect configuration"
+msgstr "Tối thiểu = 0, Tối đa = 0 : Cấu hình sai"
+
+#
+msgid "Min > Max : Incorrect configuration"
+msgstr "Tối thiểu > Tối đa : Cấu hình sai"
+
+#
+msgid "Min = Max = x : Always have x documents"
+msgstr "Tối thiểu = Tối đa = x : Bắt buộc có x phiếu"
+
+#
+msgid "Min=0 and Max > 0 : May or may not have a documents"
+msgstr "Tối thiểu = 0 và Tối đa > 0 : Có thể có hoặc không có phiếu"
+
+#
+msgid "Min=1 and Max > 1 : At least one document is required, and multiple document can be created"
+msgstr "Tối thiểu = 1 và Tối đa > 1 : Bắt buộc có ít nhất 1 phiếu và có thể tạo nhiều phiếu"
+
+#
+msgid "Max = n : The maximum quantity is unlimited, subject to the system's limits"
+msgstr "Tối đa = n : Số lượng tối đa không giới hạn, tùy thuộc vào giới hạn của hệ thống"
+
+#
+msgid "The 'Complete' action always shown and can confirm complete, and reaching the maximum document quantity will trigger auto-completion"
+msgstr "Hành động 'Hoàn thành' sẽ luôn được hiển thị và có thể xác nhận hoàn thành. Khi đạt đến số lượng phiếu tối đa sẽ tự động hoàn thành"
+
+#
+msgid "When the document quantity is 1, the 'Complete' action will be shown and can confirm complete, and reaching the maximum document quantity will trigger auto-completion"
+msgstr "Khi số lượng phiếu là 1, hành động 'Hoàn thành' sẽ được hiển thị và có thể xác nhận hoàn thành. Khi đạt đến số lượng phiếu tối đa sẽ kích hoạt tự động hoàn thành"
+
+#
+msgid "The 'Complete' action always appear, and completion confirmation is manual"
+msgstr "Hành động 'Hoàn thành' sẽ luôn hiển thị và xác nhận hoàn tất phải làm thủ công"
+
+#
+msgid "Auto-complete once the amount is sufficient."
+msgstr "Tự động hoàn tất khi đủ số lượng"
+
+#
+msgid "Rules"
+msgstr "Quy tắc"
+
+#
+msgid "Until the maximum quantity is reached, additional documents can still be created — even if the feature has belong to the passed phase"
+msgstr "Cho đến khi đạt đến số lượng tối đa, các phiếu bổ sung vẫn có thể được tạo — ngay cả khi tính năng đã thuộc về giai đoạn đã qua"
+
+#
+msgid "Only when all features of a phase are completed will that phase be marked as complete and move to the next phase"
+msgstr "Chỉ khi tất cả các tính năng của một giai đoạn được hoàn thành thì giai đoạn đó mới được đánh dấu là hoàn thành và chuyển sang giai đoạn tiếp theo"
+
+#
+msgid "Date created"
+msgstr "Ngày tạo"
+
+#
+msgid "read more"
+msgstr "xem thêm"
+
+#
+msgid "Status"
+msgstr "Trạng thái"
+
+#
+msgid "Finish"
+msgstr "Hoàn thành"
+
+#
+msgid "In progress"
+msgstr "Đang thực hiện"
+
+#
+msgid "The {stages_name} stages requires at least 1 application"
+msgstr "Giai đoạn {stages_name} yêu cầu có ít nhất một ứng dụng"
+
+#
+msgid "Need to select application for all functions"
+msgstr "Cần chọn ứng dụng cho tất cả các chức năng"
+
+#
+msgid "The values of Min and Max are incorrect"
+msgstr "Giá trị tối thiểu và tối đa không chính xác"
+
+#
+msgid "Process requires at least 1 stage (except system stage)"
+msgstr "Tiến trình cần ít nhất 1 giai đoạn (trừ giai đoạn hệ thống)"
+
+#
+msgid "Member"
+msgstr "Thành viên"
+
+#
+msgid "Or link to here"
+msgstr "Hoặc đường liên kết ở đây"
+
+#
+msgid "Draft"
+msgstr "Nháp"
+
+#
+msgid "Created"
+msgstr "Đã tạo"
+
+#
+msgid "Approved"
+msgstr "Đã duyệt"
+
+#
+msgid "Finished"
+msgstr "Kết thúc"
+
+#
+msgid "Canceled"
+msgstr "Huỷ bỏ"
+
+#
+msgid "If the documents has a process applied, the documents status is Approved or Completed to be counted in the number of completed conditions"
+msgstr "Nếu tài liệu có quy trình được áp dụng, trạng thái của tài liệu là Đã phê duyệt hoặc Hoàn thành để được tính vào số điều kiện đã hoàn thành"

@@ -1,0 +1,102 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "Process"
+msgstr "Tiến trình"
+
+#
+msgid "Process configuration"
+msgstr "Cấu hình Tiến trình"
+
+#
+msgid "Process runtime"
+msgstr "Thực hiện Tiến trình"
+
+#
+msgid "Setup"
+msgstr "Cấu hình"
+
+#
+msgid "Update block"
+msgstr "Cập nhật khối"
+
+#
+msgid "Update stage"
+msgstr "Cập nhật giai đoạn"
+
+#
+msgid "Allow skip"
+msgstr "Cho phép bỏ qua"
+
+#
+msgid "Enable repeat"
+msgstr "Kích hoạt lặp lại"
+
+#
+msgid "Background color"
+msgstr "Màu nền"
+
+#
+msgid "Apply time"
+msgstr "Thời gian áp dụng"
+
+#
+msgid "For Opportunity"
+msgstr "Dành riêng cho Cơ hội kinh doanh"
+
+#
+msgid "This selected can't change after created"
+msgstr "Lựa chọn này không cho phép chỉnh sửa sau khi tạo thành công"
+
+#
+msgid "Start process"
+msgstr "Bắt đầu tiến trình"
+
+#
+msgid "Create a process from here. It helps suggest tasks for you based on the configuration. Only you can see it, but you can also collaborate with others."
+msgstr "Tạo một tiến trình từ đây. Nó giúp gợi ý các tác vụ cho bạn dựa trên cấu hình. Chỉ bạn mới có thể thấy nó, nhưng bạn cũng có thể cộng tác với những người khác."
+
+#
+msgid "Without opportunity"
+msgstr "Không có Cơ hội kinh doanh"
+
+#
+msgid "Runtime list of me"
+msgstr "Thực hiện của tôi"
+
+#
+msgid "Stages"
+msgstr "Giai đoạn"
+
+#
+msgid "Click to detail page"
+msgstr "Nhấn vào để đến trang chi tiết"
+
+#
+msgid "Process config"
+msgstr "Cấu hình tiến trình"
+
+#
+msgid "Stages current"
+msgstr "Giai đoạn hiện tại"
+
+#
+msgid "My Process Runtime"
+msgstr "Thực hiện tiến trình của tôi"

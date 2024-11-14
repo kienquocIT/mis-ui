@@ -145,6 +145,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     QUOTATION_DETAIL_PAGE = BreadcrumbChildren(_('Quotation detail'))
     QUOTATION_UPDATE_PAGE = BreadcrumbChildren(_('Quotation update'))
 
+    # Bidding
+    BIDDING_LIST_PAGE = BreadcrumbChildren(_('Bidding list'), 'BiddingList')
+    BIDDING_CREATE_PAGE = BreadcrumbChildren(_('Bidding create'), 'BiddingCreate')
+
     # Shipping
     SHIPPING_LIST_PAGE = BreadcrumbChildren(_('Shipping'), 'ShippingList')
     SHIPPING_CREATE_PAGE = BreadcrumbChildren(_('Shipping create'), 'ShippingCreate')
@@ -195,6 +199,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_CONFIG_PAGE = BreadcrumbChildren(_('Task config'), 'OpportunityTaskConfig')
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
 
+    #Document
+    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Bidding'), 'DocumentTypeMasterDataList')
+
     # Sale Activities
     CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call log'), 'OpportunityCallLogList')
     EMAIL_LIST_PAGE = BreadcrumbChildren(_('Send email'), 'OpportunityEmailList')
@@ -232,8 +239,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
         _('Purchase Request'), 'PurchaseRequestList'
     )
 
-    SALE_PROCESS_PAGE = BreadcrumbChildren(
-        _('Sale Process'), 'SaleProcess'
+    # Process
+    PROCESS_CONFIG_LIST = BreadcrumbChildren(
+        _('Process configuration'), 'ProcessList'
+    )
+    PROCESS_RUNTIME_LIST = BreadcrumbChildren(
+        _('Process runtime'), 'ProcessRuntimeListView'
     )
 
     # Expense item
@@ -657,6 +668,14 @@ class BreadcrumbView:
     QUOTATION_DETAIL_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     QUOTATION_UPDATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    # Bidding
+    BIDDING_LIST_PAGE = [
+        BreadcrumbItem.BIDDING_LIST_PAGE
+    ]
+    BIDDING_CREATE_PAGE = BIDDING_LIST_PAGE + [BreadcrumbItem.BIDDING_CREATE_PAGE]
+    BIDDING_DETAIL_PAGE = BIDDING_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    BIDDING_UPDATE_PAGE = BIDDING_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
     # Shipping
     SHIPPING_LIST_PAGE = [
         BreadcrumbItem.SHIPPING_LIST_PAGE
@@ -724,6 +743,9 @@ class BreadcrumbView:
     OPPORTUNITY_TASK_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_CONFIG_PAGE]
     OPPORTUNITY_TASK_LIST_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_LIST_PAGE]
 
+    #Document
+    DOCUMENT_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.DOCUMENT_MASTER_DATA_LIST_PAGE]
+
     # Sale Activities
     CALL_LOG_LIST_PAGE = [
         BreadcrumbItem.CALL_LOG_LIST_PAGE
@@ -784,8 +806,35 @@ class BreadcrumbView:
     ]
 
     # process
-    SALE_PROCESS_PAGE = [
-        BreadcrumbItem.SALE_PROCESS_PAGE
+    PROCESS_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST
+    ]
+    PROCESS_CREATE_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.BASTION_CREATE,
+    ]
+    PROCESS_UPDATE_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.BASTION_UPDATE,
+    ]
+    PROCESS_DETAIL_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.BASTION_DETAIL,
+    ]
+    PROCESS_RUNTIME_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.PROCESS_RUNTIME_LIST
+    ]
+    PROCESS_RUNTIME_DETAIL_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.PROCESS_RUNTIME_LIST,
+        BreadcrumbItem.BASTION_DETAIL
     ]
 
     # expense item

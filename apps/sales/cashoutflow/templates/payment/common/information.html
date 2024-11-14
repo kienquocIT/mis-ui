@@ -1,7 +1,7 @@
 {% load i18n %}
 
 {% trans 'Select Sale Person' as inherit_title %}
-{% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+{% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
 
 <div class="accordion accordion-card accordion-soft accordion-icon" id="accordionPanelsStayOpenExampleOne">
     <div class="accordion-item">
@@ -21,13 +21,13 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label for="title" class="form-label required">{% trans "Title" %}</label>
-                            <input name="title" class="form-control" id="title">
+                            <input required maxlength="100" name="title" class="form-control" id="title">
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label for="created_date_id" class="form-label required">{% trans "Created date" %}</label>
-                            <input name="date_created" class="form-control form-control-line" id="created_date_id" readonly disabled>
+                            <input required name="date_created" class="form-control form-control-line" id="created_date_id" readonly disabled>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
@@ -57,7 +57,7 @@
                                         </span>
                                     </span>
                                 </span>
-                                <input name="employee_created_id" class="form-control form-control-line" id="creator-select-box" data-method="GET" disabled readonly>
+                                <input required name="employee_created_id" class="form-control form-control-line" id="creator-select-box" data-method="GET" disabled readonly>
                             </span>
                         </div>
                     </div>
@@ -83,11 +83,11 @@
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-6 text-left">
+                                <div class="col-8 text-left">
                                     <label for="supplier-select-box" class="form-label required" id="supplier-label">{% trans "Supplier name" %}</label>
                                     <label for="employee-select-box" class="form-label required" hidden id="employee-label">{% trans "Employee" %}</label>
                                 </div>
-                                <div class="col-6 text-right form-check">
+                                <div class="col-4 text-right form-check">
                                     <input name="is_internal_payment" class="form-check-input" type="checkbox" id="internal">
                                     <label for="internal" class="form-label">{% trans "Internal" %}</label>
                                 </div>
@@ -120,7 +120,7 @@
                                         </span>
                                     </span>
                                 </span>
-                                <select name="supplier_id" class="form-select" data-method="GET" id="supplier-select-box" data-url="{% url 'AccountListAPI' %}"></select>
+                                <select required name="supplier_id" class="form-select" data-method="GET" id="supplier-select-box" data-url="{% url 'AccountListAPI' %}"></select>
                             </span>
                             <span id="employee-detail-span" hidden class="input-affix-wrapper">
                                 <span class="input-prefix">
@@ -146,14 +146,14 @@
                                         </span>
                                     </span>
                                 </span>
-                                <select name="employee_payment_id" class="form-select" data-method="GET" id="employee-select-box" data-url="{% url 'EmployeeListAPI' %}"></select>
+                                <select required name="employee_payment_id" class="form-select" data-method="GET" id="employee-select-box" data-url="{% url 'EmployeeListAPI' %}"></select>
                             </span>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label for="payment-method" class="form-label required">{% trans "Method" %}</label>
-                            <select name="method" class="form-select" id="payment-method">
+                            <select required name="method" class="form-select" id="payment-method">
                                 <option value="0">{% trans "None" %}</option>
                                 <option value="1">{% trans "Cash" %}</option>
                                 <option value="2">{% trans "Bank transfer" %}</option>

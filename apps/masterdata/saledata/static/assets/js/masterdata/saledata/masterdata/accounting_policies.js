@@ -2,17 +2,17 @@ $(document).ready(function () {
     let company_config = JSON.parse($('#company_config').text())
     let type = company_config?.['accounting_policies']
     let circular = company_config?.['applicable_circular']
-    if (type === 0) {
-        $('#vas').prop('checked', true)
-    }
-    else {
+    if (type === 1) {
         $('#ias').prop('checked', true)
     }
-    if (circular === 0) {
-        $('#circular200').prop('checked', true)
+    else {
+        $('#vas').prop('checked', true)
+    }
+    if (circular === 1) {
+        $('#circular133').prop('checked', true)
     }
     else {
-        $('#circular133').prop('checked', true)
+        $('#circular200').prop('checked', true)
     }
 
     function combinesData(frmEle) {

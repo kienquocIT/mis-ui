@@ -1,4 +1,5 @@
 """share all popular class function for use together purpose"""
+from copy import deepcopy
 from typing import Callable, TypedDict, Union, Literal
 import requests
 
@@ -397,6 +398,7 @@ class APIUtil:
     def __init__(self, user_obj: Model = None, response_origin: bool = False):
         self.user_obj = user_obj
         self.response_origin = response_origin
+        self.data_backup = None
 
     @classmethod
     def key_authenticated(cls, access_token: str) -> dict:
@@ -507,7 +509,19 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT, **kwargs)
+
+        try:
+            resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT, **kwargs)
+        except requests.exceptions.RequestException:
+            # except requests.exceptions.HTTPError:
+            # except requests.exceptions.ConnectionError:
+            # except requests.exceptions.Timeout:
+            return RespData(
+                _state=False,
+                _result={},
+                _status=503,
+            )
+
         resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         if resp.status_code == 401:
             if self.user_obj:
@@ -555,19 +569,49 @@ class APIUtil:
             **kwargs
         }
 
-        if content_type:
-            match content_type.split(":")[0]:
-                case 'multipart/form-data':
-                    config['files'] = data
-                case 'application/json':
-                    config['json'] = data
-                case _:
-                    config['data'] = data
-        else:
-            headers['content-type'] = 'application/json'
-            config['data'] = data
+        # using for case data changes after 1st call API.
+        # Reuse at 2nd call API -> API Server request.data -> crash or hang!
+        # only use copy data to data_backup when content-type is multipart/form-data
+        #   2nd use requests_toolbelt.MultipartEncoder -> cur of MultiEncoder file at end -> hang!
+        self.data_backup = data
 
-        resp = requests.post(**config)
+        def re_update_data_call(for_backup=False):
+            if content_type:
+                if content_type.startswith('multipart/form-data'):
+                    # config['files'] = data  # using when upload only file (! requests_toolbelt.MultipartEncoder)
+                    if for_backup:
+                        config['data'] = self.data_backup
+                    else:
+                        self.data_backup = deepcopy(data)
+                        config['data'] = data
+                elif content_type.startswith('application/json'):
+                    if for_backup:
+                        config['json'] = self.data_backup
+                    else:
+                        config['json'] = data
+                else:
+                    if for_backup:
+                        config['data'] = self.data_backup
+                    else:
+                        config['data'] = data
+            else:
+                headers['content-type'] = 'application/json'
+                config['data'] = data
+
+        re_update_data_call()
+
+        try:
+            resp = requests.post(**config)
+        except requests.exceptions.RequestException:
+            # except requests.exceptions.HTTPError:
+            # except requests.exceptions.ConnectionError:
+            # except requests.exceptions.Timeout:
+            return RespData(
+                _state=False,
+                _result={},
+                _status=500,
+            )
+
         resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         if resp.status_code == 401:
             if self.user_obj:
@@ -577,10 +621,10 @@ class APIUtil:
                 if state_refresh and headers_upgrade:
                     # refresh token
                     headers.update(headers_upgrade)
-                    resp = requests.post(
-                        url=safe_url, headers=headers, json=data,
-                        timeout=REQUEST_TIMEOUT
-                    )
+                    # re-update data in call again
+                    re_update_data_call(for_backup=True)
+                    # re-call API
+                    resp = requests.post(**config)
                     resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         return resp_parsed
 
@@ -612,23 +656,45 @@ class APIUtil:
             **kwargs
         }
 
-        if content_type:
-            match content_type.split(":")[0]:
-                case 'multipart/form-data':
-                    config['files'] = data
-                case 'application/json':
-                    config['json'] = data
-                case _:
-                    config['data'] = data
-        else:
-            headers['content-type'] = 'application/json'
-            config['data'] = data
+        def re_update_data_call(for_backup=False):
+            if content_type:
+                print('content_type:', content_type)
+                if content_type.startswith('multipart/form-data'):
+                    # config['files'] = data  # using when upload only file (! requests_toolbelt.MultipartEncoder)
+                    if for_backup:
+                        config['data'] = self.data_backup
+                    else:
+                        self.data_backup = deepcopy(data)
+                        config['data'] = data
+                elif content_type.startswith('application/json'):
+                    if for_backup:
+                        config['json'] = self.data_backup
+                    else:
+                        config['json'] = data
+                else:
+                    if for_backup:
+                        config['data'] = self.data_backup
+                    else:
+                        config['data'] = data
+            else:
+                headers['content-type'] = 'application/json'
+                config['data'] = data
 
-        # resp = requests.put(
-        #     url=safe_url, headers=headers, json=data,
-        #     timeout=REQUEST_TIMEOUT
-        # )
-        resp = requests.put(**config)
+        re_update_data_call()
+
+        print('call_put: ', config)
+        try:
+            resp = requests.put(**config)
+        except requests.exceptions.RequestException:
+            # except requests.exceptions.HTTPError:
+            # except requests.exceptions.ConnectionError:
+            # except requests.exceptions.Timeout:
+            return RespData(
+                _state=False,
+                _result={},
+                _status=500,
+            )
+
         resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         if resp.status_code == 401:
             if self.user_obj:
@@ -638,10 +704,8 @@ class APIUtil:
                 if state_refresh and headers_upgrade:
                     # refresh token
                     headers.update(headers_upgrade)
-                    resp = requests.put(
-                        url=safe_url, headers=headers, json=data,
-                        timeout=REQUEST_TIMEOUT
-                    )
+                    re_update_data_call(for_backup=True)
+                    resp = requests.put(**config)
                     resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         return resp_parsed
 
@@ -659,11 +723,23 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.delete(
-            url=safe_url, headers=headers, json=data,
-            timeout=REQUEST_TIMEOUT,
-            **kwargs
-        )
+
+        try:
+            resp = requests.delete(
+                url=safe_url, headers=headers, json=data,
+                timeout=REQUEST_TIMEOUT,
+                **kwargs
+            )
+        except requests.exceptions.RequestException:
+            # except requests.exceptions.HTTPError:
+            # except requests.exceptions.ConnectionError:
+            # except requests.exceptions.Timeout:
+            return RespData(
+                _state=False,
+                _result={},
+                _status=500,
+            )
+
         resp_parsed = self.get_data_from_resp(resp) if self.response_origin is False else resp
         if resp.status_code == 401:
             if self.user_obj:
@@ -766,7 +842,7 @@ class ServerAPI:
             data.update(APIUtil.key_authenticated(access_token=self.user.access_token))
         if self.user and getattr(self.user, 'refresh_token', None) and self.has_refresh_token is True:
             data.update(APIUtil.key_authenticated_refresh(refresh_token=self.user.refresh_token))
-        if self.is_minimal is True:
+        if self.is_minimal is True or self.query_params.get('is_minimal', False) is True:
             data[settings.API_KEY_MINIMAL] = settings.API_KEY_VALUE_MINIMAL
 
         if self.is_check_perm is True:

@@ -56,6 +56,34 @@ $(function () {
                             new PrintTinymceControl().render('b9650500-aba7-44e3-b6e0-2542622702a3', data, false);
                         }
                     }
+
+                    //
+                    const processData = data?.['process'] || {};
+                    const oppData = data?.['opportunity'] || {};
+                    const inheritData = data?.['employee_inherit'] || {};
+                    new $x.cls.bastionField({
+                        has_opp: true,
+                        has_inherit: true,
+                        has_process: true,
+                        data_process: processData && Object.keys(processData).length > 0 ? [
+                            {
+                               ...processData,
+                               'selected': true,
+                            }
+                        ] : [],
+                        data_opp: oppData && Object.keys(oppData).length > 0 ? [
+                            {
+                                ...oppData,
+                                'selected': true,
+                            }
+                        ] : [],
+                        data_inherit: inheritData && Object.keys(inheritData).length > 0 ? [
+                            {
+                                ...inheritData,
+                                'selected': true,
+                            }
+                        ] : [],
+                    }).init();
                 }
             }
         )

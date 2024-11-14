@@ -434,9 +434,12 @@ class SelectDDControl {
         // setup templateResult concat default + manual
         let clsThis = this;
         return function (state) {
-            if (state.data) clsThis._forceUpdateDataBackupLoaded(state.id, state.data);
-            let setupFunc = clsThis.opts?.['templateResult'];
-            return setupFunc ? setupFunc(state) : state.text;
+            if (!(state.loading === true || state.disabled === true)) {  // show normal text of system: loading, ...
+                if (state.data) clsThis._forceUpdateDataBackupLoaded(state.id, state.data);
+                let setupFunc = clsThis.opts?.['templateResult'];
+                return setupFunc ? setupFunc(state) : state.text;
+            }
+            return state.text;
         }
     }
 
@@ -577,9 +580,6 @@ class SelectDDControl {
                 'cache': this._ajax_cache,
                 'delay': 250,
                 'headers': clsThis._ajax_parse_headers(),
-                'data': function (params) {
-                    return clsThis._ajax_parse_params(params, config.url);
-                },
                 'processResults': function (resp, params) {
                     params.page = params.page || clsThis.page;
                     return {
@@ -589,7 +589,15 @@ class SelectDDControl {
                             // Load More Scrolling | Infinite Scrolling : https://select2.org/data-sources/ajax#count_filtered
                         }
                     };
-                }, ...config,
+                },
+                ...config,
+                'data': function (params) {
+                    // data in ajax { 'data': function(params){}}
+                    const dataOfManual = config?.['data'];
+                    if (typeof dataOfManual === 'function') dataOfManual.bind(this)(params);
+                    // append params of DataTable.
+                    return clsThis._ajax_parse_params(params, config.url);
+                },
             }
         }
         return {'ajax': (ajaxConfig ? ajaxConfig : null)};

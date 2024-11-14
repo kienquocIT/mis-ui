@@ -7,86 +7,110 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a id="btn-show-modal-create" href="#" data-bs-toggle="modal" data-bs-target="#modal-lookup-data">
-        <button class="btn btn-outline-primary">
-            <span>
-                <span>{% trans 'Add' %}</span>
-                <span class="icon">
-                    <i class="fa-solid fa-plus"></i>
-                </span>
-            </span>
-        </button>
-    </a>
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <div class="col-12 col-md-2 col-lg-2">
-            <ul class="nav flex-column nav-light nav-pills nav-pills-soft nav-vertical" id="tab-select-table">
+        <div class="col-12 col-lg-2 col-md-2">
+            <ul class="nav nav-pills nav-light flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-account-type" href="#section-account-type">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#section-account-type">
                         <span class="nav-link-text">{% trans 'Account Types' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" data-collapse="section-account-group" href="#section-account-group">
+                    <a class="nav-link" data-bs-toggle="tab" href="#section-account-group">
                         <span class="nav-link-text">{% trans 'Account Groups' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" data-collapse="section-industry" href="#section-industry">
+                    <a class="nav-link" data-bs-toggle="tab" href="#section-industry">
                         <span class="nav-link-text">{% trans 'Industries' %}</span>
                     </a>
                 </li>
             </ul>
         </div>
-        <div class="col-12 col-md-1 col-lg-1"></div>
-        <div class="col-12 col-md-9 col-lg-9">
-            <div class="tab-content">
-                <div class="tab-pane fade show active lookup-data" id="section-account-type">
-                    <table id="datatable-account-type-list" class="table nowrap w-100 mb-5"
+        <div class="col-12 col-md-10 col-lg-10">
+            <div class="tab-content m-0">
+                <div class="tab-pane fade show active" id="section-account-type" role="tabpanel">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-new-account-type">
+                        <button class="btn btn-sm btn-outline-primary btn-modal">
+                            <span>
+                                <span>{% trans 'Add' %}</span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                            </span>
+                        </button>
+                    </a>
+                    <table id="datatable-account-type-list" class="table nowrap w-100"
                            data-url="{% url "AccountTypeListAPI" %}"
                            data-method="GET">
                         <thead>
-                        <th></th>
-                        <th>{% trans "Code" %}</th>
-                        <th>{% trans "Name" %}</th>
-                        <th>{% trans "Description" %}</th>
-                        <th>{% trans "Action" %}</th>
+                            <tr>
+                                <th></th>
+                                <th>{% trans "Code" %}</th>
+                                <th>{% trans "Name" %}</th>
+                                <th>{% trans "Description" %}</th>
+                                <th></th>
+                            </tr>
                         </thead>
                     </table>
                 </div>
-                <div class="tab-pane fade lookup-data" id="section-account-group">
-                    <table id="datatable-account-group-list" class="table nowrap w-100 mb-5"
+                <div class="tab-pane fade" id="section-account-group" role="tabpanel">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-new-account-group">
+                        <button class="btn btn-sm btn-outline-primary btn-modal">
+                            <span>
+                                <span>{% trans 'Add' %}</span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                            </span>
+                        </button>
+                    </a>
+                    <table id="datatable-account-group-list" class="table nowrap w-100"
                            data-url="{% url "AccountGroupListAPI" %}"
                            data-method="GET">
                         <thead>
-                        <th></th>
-                        <th>{% trans "Code" %}</th>
-                        <th>{% trans "Name" %}</th>
-                        <th>{% trans "Description" %}</th>
-                        <th>{% trans "Action" %}</th>
+                            <tr>
+                                <th></th>
+                                <th>{% trans "Code" %}</th>
+                                <th>{% trans "Name" %}</th>
+                                <th>{% trans "Description" %}</th>
+                                <th></th>
+                            </tr>
                         </thead>
                     </table>
                 </div>
-                <div class="tab-pane fade lookup-data" id="section-industry">
-                <table id="datatable-industry-list" class="table nowrap w-100 mb-5"
-                       data-url="{% url "IndustryListAPI" %}"
-                       data-method="GET">
-                    <thead>
-                    <th></th>
-                    <th>{% trans "Code" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Description" %}</th>
-                    <th>{% trans "Action" %}</th>
-                    </thead>
-                </table>
-            </div>
+                <div class="tab-pane fade" id="section-industry" role="tabpanel">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-new-industry">
+                        <button class="btn btn-sm btn-outline-primary btn-modal">
+                            <span>
+                                <span>{% trans 'Add' %}</span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                            </span>
+                        </button>
+                    </a>
+                    <table id="datatable-industry-list" class="table nowrap w-100"
+                           data-url="{% url "IndustryListAPI" %}"
+                           data-method="GET">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>{% trans "Code" %}</th>
+                                <th>{% trans "Name" %}</th>
+                                <th>{% trans "Description" %}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="modal-lookup-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
-         aria-hidden="true">
+    <div class="modal fade" id="modal-new-account-type" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -96,43 +120,135 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-create-lookup" data-method="POST" data-lookup="section-account-type"
-                          data-url-account-type="{% url "AccountTypeCreateAPI" %}"
-                          data-url-account-group="{% url "AccountGroupCreateAPI" %}"
-                          data-url-industry="{% url "IndustryCreateAPI" %}"
+                    <form id="form-create-account-type"
+                          data-method="POST"
+                          data-url="{% url "AccountTypeCreateAPI" %}"
                           data-url-redirect="{% url "AccountMasterDataList" %}">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="form-group">
-                                <label class="form-label required">{% trans "Code" %}</label>
-                                <input id="inp-code" class="form-control" type="text" name="code"
-                                       placeholder="CODE01" oninput="this.value=this.value.toUpperCase()">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="inp-code-account-type" class="form-label required">{% trans "Code" %}</label>
+                                    <input id="inp-code-account-type" class="form-control" type="text" name="code"
+                                           oninput="this.value=this.value.toUpperCase()">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label required">{% trans "Name" %}</label>
-                                <input class="form-control" type="text" name="title"
-                                       placeholder="Input name">
+                            <div class="col-9">
+                                <div class="form-group">
+                                    <label for="inp-name-account-type" class="form-label required">{% trans "Name" %}</label>
+                                    <input id="inp-name-account-type" class="form-control" type="text" name="title">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">{% trans "Description" %}</label>
-                                <input class="form-control" type="text" name="description"
-                                       placeholder="Input text">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="inp-description-account-type" class="form-label">{% trans "Description" %}</label>
+                                    <textarea id="inp-description-account-type" class="form-control" type="text" name="description"></textarea>
+                                </div>
                             </div>
                         </div>
                     </form>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                        <button type="submit" class="btn btn-primary"
-                                form="form-create-lookup">{% trans 'Save' %}</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-create-account-type">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="modal-update-data" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
-         aria-hidden="true">
+    <div class="modal fade" id="modal-new-account-group" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Account Group" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-create-account-group"
+                          data-method="POST"
+                          data-url="{% url "AccountGroupCreateAPI" %}"
+                          data-url-redirect="{% url "AccountMasterDataList" %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="inp-code-account-group" class="form-label required">{% trans "Code" %}</label>
+                                    <input id="inp-code-account-group" class="form-control" type="text" name="code"
+                                           oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="form-group">
+                                    <label for="inp-name-account-group" class="form-label required">{% trans "Name" %}</label>
+                                    <input id="inp-name-account-group" class="form-control" type="text" name="title">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="inp-description-account-group" class="form-label">{% trans "Description" %}</label>
+                                    <textarea id="inp-description-account-group" class="form-control" type="text" name="description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-create-account-group">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-new-industry" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Account Group" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-create-industry"
+                          data-method="POST"
+                          data-url="{% url "IndustryCreateAPI" %}"
+                          data-url-redirect="{% url "AccountMasterDataList" %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="inp-code-industry" class="form-label required">{% trans "Code" %}</label>
+                                    <input id="inp-code-industry" class="form-control" type="text" name="code"
+                                           oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="form-group">
+                                    <label for="inp-name-industry" class="form-label required">{% trans "Name" %}</label>
+                                    <input id="inp-name-industry" class="form-control" type="text" name="title">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="inp-description-industry" class="form-label">{% trans "Description" %}</label>
+                                    <textarea id="inp-description-industry" class="form-control" type="text" name="description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-create-industry">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-update-account-type" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -142,46 +258,132 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-update-masterdata" data-method="PUT">
+                    <form id="form-update-account-type"
+                          data-method="PUT"
+                          data-url-raw="{% url "AccountTypeDetailAPI" pk=0 %}"
+                          data-url="{% url "AccountTypeDetailAPI" pk=0 %}">
                         <div class="row">
-                            <div class="hidden">
-                                <input id="master-data-url-detail">
-                                <input id="master-data-type">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="code-update-account-type" class="form-label required">{% trans "Code" %}</label>
+                                    <input id="code-update-account-type" class="form-control form-control-line" type="text" name="code" readonly
+                                           oninput="this.value=this.value.toUpperCase()">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label required">{% trans "Code" %}</label>
-                                <input id="code-update" class="form-control" type="text" name="code" readonly
-                                       placeholder="CODE01" oninput="this.value=this.value.toUpperCase()" required>
+                            <div class="col-9">
+                                <div class="form-group">
+                                    <label for="name-update-account-type" class="form-label required">{% trans "Name" %}</label>
+                                    <input class="form-control" type="text" name="title" id="name-update-account-type" required>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label required">{% trans "Name" %}</label>
-                                <input class="form-control" type="text" name="title" id="name-update"
-                                       placeholder="Input name" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">{% trans "Description" %}</label>
-                                <input class="form-control" type="text" name="description" id="description-update"
-                                       placeholder="Input text">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="description-update-account-type" class="form-label">{% trans "Description" %}</label>
+                                    <textarea class="form-control" type="text" name="description" id="description-update-account-type"></textarea>
+                                </div>
                             </div>
                         </div>
                     </form>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                        <button type="submit" class="btn btn-primary"
-                                form="form-update-masterdata">{% trans 'Save' %}</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-update-account-type">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-update-account-group" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Edit" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-account-group"
+                          data-method="PUT"
+                          data-url-raw="{% url "AccountGroupDetailAPI" pk=0 %}"
+                          data-url="{% url "AccountGroupDetailAPI" pk=0 %}">
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="code-update-account-group" class="form-label required">{% trans "Code" %}</label>
+                                    <input id="code-update-account-group" class="form-control form-control-line" type="text" name="code" readonly
+                                           oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="form-group">
+                                    <label for="name-update-account-group" class="form-label required">{% trans "Name" %}</label>
+                                    <input class="form-control" type="text" name="title" id="name-update-account-group" required>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="description-update-account-group" class="form-label">{% trans "Description" %}</label>
+                                    <textarea class="form-control" type="text" name="description" id="description-update-account-group"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-update-account-group">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-update-industry" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Edit" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-industry"
+                          data-method="PUT"
+                          data-url-raw="{% url "IndustryDetailAPI" pk=0 %}"
+                          data-url="{% url "IndustryDetailAPI" pk=0 %}">
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="code-update-industry" class="form-label required">{% trans "Code" %}</label>
+                                    <input id="code-update-industry" class="form-control form-control-line" type="text" name="code" readonly
+                                           oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="form-group">
+                                    <label for="name-update-industry" class="form-label required">{% trans "Name" %}</label>
+                                    <input class="form-control" type="text" name="title" id="name-update-industry" required>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="description-update-industry" class="form-label">{% trans "Description" %}</label>
+                                    <textarea class="form-control" type="text" name="description" id="description-update-industry"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-update-industry">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory"
-           data-url-account-type="{% url "AccountTypeDetailAPI" pk=0 %}"
-           data-url-account-group="{% url "AccountGroupDetailAPI" pk=0 %}"
-           data-url-industry="{% url "IndustryDetailAPI" pk=0 %}"
-    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/masterdata/saledata_account_create.js' %}"></script>

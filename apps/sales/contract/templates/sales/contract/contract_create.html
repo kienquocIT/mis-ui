@@ -62,25 +62,25 @@
 
         <div class="row" id="tabs-area">
             <ul class="nav nav-light nav-tabs">
-                <li class="nav-item">
+                <li class="nav-item" data-zone="abstract_content">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_abstract">
                         <span class="nav-icon-wrap mr-1"><i class="fas fa-file-contract"></i></span>
                         <span class="nav-link-text">{% trans 'Abstract' %}</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" data-zone="trade_content">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_trade">
                         <span class="nav-icon-wrap mr-1"><i class="fas fa-file-invoice-dollar"></i></span>
                         <span class="nav-link-text">{% trans 'Trade review' %}</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" data-zone="legal_content">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_legal">
                         <span class="nav-icon-wrap mr-1"><i class="fas fa-balance-scale"></i></span>
                         <span class="nav-link-text">{% trans 'Legal review' %}</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" data-zone="payment_content">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_payment">
                         <span class="nav-icon-wrap mr-1"><i class="fas fa-receipt"></i></span>
                         <span class="nav-link-text">{% trans 'Payment review' %}</span>
@@ -182,7 +182,6 @@
     <script src="{% static 'assets/sales/contract/js/contract_common.js' %}"></script>
     <script src="{% static 'assets/sales/contract/js/contract_create.js' %}"></script>
 
-    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script>
         $(document).ready(function (){

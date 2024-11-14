@@ -82,7 +82,8 @@ $(function () {
                 'date_end',
                 'date_next',
                 'next_recurrences',
-                'status',
+                'recurrence_status',
+                'employee_inherit_id',
             ]
             if (_form.dataForm) {
                 RecurrenceCommonHandle.filterFieldList(submitFields, _form.dataForm);

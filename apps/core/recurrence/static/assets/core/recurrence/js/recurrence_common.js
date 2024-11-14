@@ -425,6 +425,9 @@ class RecurrenceSubmitHandle {
                     if (data?.['id']) {
                         _form.dataForm['doc_template_id'] = data?.['id'];
                         _form.dataForm['doc_template_data'] = data;
+                        if (data?.['employee_inherit']?.['id']) {
+                            _form.dataForm['employee_inherit_id'] = data?.['employee_inherit']?.['id'];
+                        }
                     }
                 }
 
@@ -433,7 +436,7 @@ class RecurrenceSubmitHandle {
                     _form.dataForm['period'] = parseInt(RecurrenceLoadDataHandle.$boxPeriod.val());
 
                     if (RecurrenceLoadDataHandle.$boxRepeat.val()) {
-                        _form.dataForm['period'] = parseInt(RecurrenceLoadDataHandle.$boxRepeat.val());
+                        _form.dataForm['repeat'] = parseInt(RecurrenceLoadDataHandle.$boxRepeat.val());
                     }
 
                     if (RecurrenceLoadDataHandle.$boxPeriod.val() === '1') {

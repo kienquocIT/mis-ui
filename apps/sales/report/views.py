@@ -291,17 +291,12 @@ class ReportInventoryChatBotAPI(APIView):
         params = request.query_params.dict()
         contexts = params.get('contexts')
         question = params.get('question')
-
         vectorizer = TfidfVectorizer()
         context_sentences = [sentence.strip() for sentence in contexts.split('.') if sentence]
-        cache.set(f"context_sentences_{hash(contexts)}", context_sentences, timeout=300)  # Lưu trong cache 5p
         context_vectors = vectorizer.fit_transform(context_sentences)
-        cache.set(f"context_vectors_{hash(contexts)}", context_vectors, timeout=300)  # Lưu trong cache 5p
-
         question_vector = vectorizer.transform([question])
         similarities = cosine_similarity(question_vector, context_vectors).flatten()
         best_context = context_sentences[similarities.argmax()]
-
         return {'response': best_context}, status.HTTP_200_OK
 
 

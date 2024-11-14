@@ -736,12 +736,22 @@ class MenusProduction:
     )
 
 
-class MenusFinancial:
+class MenusFinancials:
     HOME = MenuCommon(
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
-    FINANCIAL = MenuCommon(
-        name='Account chart', code='menu_account_chart_list', view_name='AccountChartList', icon='<i class="fas fa-list-alt"></i>',
+    ACCOUNTING_SETTING = MenuCommon(
+        name='Accounting settings', code='', view_name='', icon='<i class="fas fa-cog"></i>',
+        child=[
+            MenuCommon(
+                name='Chart of accounts', code='menu_chart_of_accounts_list', view_name='ChartOfAccountsList',
+                icon='<i class="fas fa-list-alt"></i>',
+            ),
+            MenuCommon(
+                name='Default account definition', code='menu_default_account_definition_list', view_name='DefaultAccountDefinitionList',
+                icon='<i class="fas fa-shield-alt"></i>',
+            ),
+        ],
     )
 
 
@@ -834,13 +844,13 @@ class SpaceItem:
                 MenuEOffice.MEETING,
             ],
         ),
-        'financial': SpaceCommon(
-            'Financial',
-            'financial',
+        'financials': SpaceCommon(
+            'Financials',
+            'financials',
             icon='<i class="fas fa-balance-scale"></i>',
             menus=[
-                MenusFinancial.HOME,
-                MenusFinancial.FINANCIAL,
+                MenusFinancials.HOME,
+                MenusFinancials.ACCOUNTING_SETTING,
             ]
         ),
         'forms': SpaceCommon(
@@ -962,7 +972,7 @@ class SpaceGroup:
             SpaceItem.mapping['crm'],
             # SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
-            SpaceItem.mapping['financial'],
+            SpaceItem.mapping['financials'],
             SpaceItem.mapping['forms'],
             # SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],

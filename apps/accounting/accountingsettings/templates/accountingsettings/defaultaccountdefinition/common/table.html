@@ -1,0 +1,16 @@
+{% load i18n %}
+
+<table class="table nowrap w-100 mt-5"
+       id="definition-table"
+       data-method="GET"
+       data-url="{% url 'DefaultAccountDefinitionListAPI' %}">
+    <thead>
+    <tr>
+        <th></th>
+        <th>{% trans 'Trading account type' %}</th>
+        <th>{% trans 'Account code' %}</th>
+        <th>{% trans 'Account name' %}</th>
+        <th></th>
+    </tr>
+    </thead>
+</table>

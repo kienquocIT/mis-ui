@@ -412,8 +412,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCTION_REPORT_LIST_PAGE = BreadcrumbChildren(_('Production report'), 'ProductionReportList')
     WORK_ORDER_LIST_PAGE = BreadcrumbChildren(_('Work order'), 'WorkOrderList')
 
-    # Advance
-    ACCOUNT_CHART_LIST_PAGE = BreadcrumbChildren(_('Account chart list'), 'AccountChartList')
+    # Accounting
+    CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of accounts'), 'ChartOfAccountsList')
+    DEFAULT_ACCOUNT_DEFINITION_LIST_PAGE = BreadcrumbChildren(_('Default account definition'), 'DefaultAccountDefinitionList')
 
 
 class BreadcrumbView:
@@ -1083,6 +1084,9 @@ class BreadcrumbView:
     WORK_ORDER_DETAIL_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     WORK_ORDER_UPDATE_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
-    ACCOUNT_CHART_LIST_PAGE = [
-        BreadcrumbItem.ACCOUNT_CHART_LIST_PAGE
+    CHART_OF_ACCOUNTS_LIST_PAGE = [
+        BreadcrumbItem.CHART_OF_ACCOUNTS_LIST_PAGE
+    ]
+    DEFAULT_ACCOUNT_DEFINITION_LIST_PAGE = [
+        BreadcrumbItem.DEFAULT_ACCOUNT_DEFINITION_LIST_PAGE
     ]

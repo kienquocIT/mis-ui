@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Default account definition' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/dragula/dragula.min.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{#    <a href="{% url "AdvancePaymentCreate" %}">#}
+{#        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">#}
+{#            <span>#}
+{#                <span>{% trans 'Add' %}</span>#}
+{#                <span class="icon">#}
+{#                    <i class="fa-solid fa-plus"></i>#}
+{#                </span>#}
+{#            </span>#}
+{#        </button>#}
+{#    </a>#}
+{% endblock %}
+{% block pageContent %}
+    <script id="trans-script"
+    ></script>
+    <script id="url-script"
+    ></script>
+    <div class="row">
+        <div class="col-12">
+            {% include 'accountingsettings/defaultaccountdefinition/common/btn-list.html' %}
+            {% include 'accountingsettings/defaultaccountdefinition/common/table.html' %}
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/dragula/dragula.min.js' %}"></script>
+    <script src="{% static 'assets/js/accountingsettings/defaultacountdefinition/defaultacountdefinition.js' %}"></script>
+{% endblock %}

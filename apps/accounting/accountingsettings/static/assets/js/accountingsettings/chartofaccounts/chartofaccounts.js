@@ -1,30 +1,30 @@
-// $(document).ready(function() {
+$(document).ready(function() {
     $('.hard-foreign-account-name').prop('hidden', $('.hard-foreign-account-name:eq(0)').closest('a').text()[0] === 'A')
     const trans_script = $('#trans-script')
     const url_script = $('#url-script')
     const control_acc = $('#control-acc')
     const account_select = $('#account-select')
     const title_select = $('#title-select')
-    const account_chart_assets_table = $('#account-chart-assets-table')
-    const account_chart_liabilities_table = $('#account-chart-liabilities-table')
-    const account_chart_owner_equity_table = $('#account-chart-owner-equity-table')
-    const account_chart_revenue_table = $('#account-chart-revenue-table')
-    const account_chart_costs_table = $('#account-chart-costs-table')
-    const account_chart_other_income_table = $('#account-chart-other-income-table')
-    const account_chart_other_expense_table = $('#account-chart-other-expense-table')
-    const account_chart_income_summary_table = $('#account-chart-income-summary-table')
+    const chart_of_accounts_assets_table = $('#chart-of-accounts-assets-table')
+    const chart_of_accounts_liabilities_table = $('#chart-of-accounts-liabilities-table')
+    const chart_of_accounts_owner_equity_table = $('#chart-of-accounts-owner-equity-table')
+    const chart_of_accounts_revenue_table = $('#chart-of-accounts-revenue-table')
+    const chart_of_accounts_costs_table = $('#chart-of-accounts-costs-table')
+    const chart_of_accounts_other_income_table = $('#chart-of-accounts-other-income-table')
+    const chart_of_accounts_other_expense_table = $('#chart-of-accounts-other-expense-table')
+    const chart_of_accounts_income_summary_table = $('#chart-of-accounts-income-summary-table')
     const list_table = [
-        account_chart_assets_table,
-        account_chart_liabilities_table,
-        account_chart_owner_equity_table,
-        account_chart_revenue_table,
-        account_chart_costs_table,
-        account_chart_other_income_table,
-        account_chart_other_expense_table,
-        account_chart_income_summary_table
+        chart_of_accounts_assets_table,
+        chart_of_accounts_liabilities_table,
+        chart_of_accounts_owner_equity_table,
+        chart_of_accounts_revenue_table,
+        chart_of_accounts_costs_table,
+        chart_of_accounts_other_income_table,
+        chart_of_accounts_other_expense_table,
+        chart_of_accounts_income_summary_table
     ]
     let LIST_PARENT_ACC = []
-    let ACCOUNT_CHART_LIST = []
+    let CHART_OF_ACCOUNTS_LIST = []
     let CURRENT_TABLE = null
 
     const drag_row = dragula(
@@ -70,16 +70,16 @@
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             LIST_PARENT_ACC = []
-                            for (let i = 0; i < resp.data['account_chart_list'].length; i++) {
-                                let row = resp.data['account_chart_list'][i]
+                            for (let i = 0; i < resp.data['chart_of_accounts_list'].length; i++) {
+                                let row = resp.data['chart_of_accounts_list'][i]
                                 LIST_PARENT_ACC.push({
                                     'id': row?.['id'],
                                     'code': row?.['acc_code'],
                                     'name': row?.['acc_name']
                                 })
                             }
-                            ACCOUNT_CHART_LIST = resp.data['account_chart_list']
-                            return resp.data['account_chart_list'] ? resp.data['account_chart_list'] : [];
+                            CHART_OF_ACCOUNTS_LIST = resp.data['chart_of_accounts_list']
+                            return resp.data['chart_of_accounts_list'] ? resp.data['chart_of_accounts_list'] : [];
                         }
                         return [];
                     },
@@ -170,7 +170,7 @@
                 scrollX: true,
                 scrollCollapse: true,
                 paging: false,
-                data: ACCOUNT_CHART_LIST,
+                data: CHART_OF_ACCOUNTS_LIST,
                 columns: [
                     {
                         className: 'wrap-text w-5',
@@ -278,6 +278,8 @@
     InitTable(list_table[0], {'acc_type': 1}, url_script.attr('data-url-get-account-list'), 'GET')
 
     $('.list-group-item').on('click', function () {
+        $('#add-new-same').prop('disabled', true)
+        $('#add-new-sub').prop('disabled', true)
         let index = parseInt($(this).attr('id').split('-')[1])
         InitTable(list_table[index-1], {'acc_type': index}, url_script.attr('data-url-get-account-list'), 'GET')
     })
@@ -458,4 +460,4 @@
             )
         }
     });
-// })
+})

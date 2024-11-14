@@ -118,7 +118,7 @@ INSTALLED_APPS = \
     ] + [  # external
         'apps.web_builder',
     ] + [
-        'apps.accounting.accountchart'
+        'apps.accounting.accountingsettings'
     ]
 
 INSTALLED_APPS += [

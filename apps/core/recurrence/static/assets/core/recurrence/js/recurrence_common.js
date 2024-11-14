@@ -119,7 +119,7 @@ class RecurrenceLoadDataHandle {
         }
         // select2
         RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxStatus, RecurrenceLoadDataHandle.dataStatus);
-        RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxApp, [], {"is_workflow": true});
+        RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxApp, [], {"allow_recurrence": true});
         RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxDocTem, []);
         RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxPeriod, RecurrenceLoadDataHandle.dataPeriod);
         RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxRepeat, []);
@@ -276,7 +276,7 @@ class RecurrenceLoadDataHandle {
         RecurrenceLoadDataHandle.$dateEnd.val(moment(data?.['date_end']).format('DD/MM/YYYY'));
         RecurrenceLoadDataHandle.$dateNext.val(moment(data?.['date_next']).format('DD/MM/YYYY'));
         return true;
-    }
+    };
 
 }
 

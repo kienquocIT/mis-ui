@@ -3106,12 +3106,18 @@ class WFRTControl {
             typeWF = 1;
         }
         if (window.location.href.includes('/update/')) {
-            let eleStatus = $('#systemStatus');
-            if (eleStatus && eleStatus.length > 0) {
-                if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+            let docData = WFRTControl.getRuntimeDocData();
+            if (docData?.['system_status']) {
+                if (![0, 3].includes(docData?.['system_status'])) {
                     typeWF = 1;
                 }
             }
+            // let eleStatus = $('#systemStatus');
+            // if (eleStatus && eleStatus.length > 0) {
+            //     if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+            //         typeWF = 1;
+            //     }
+            // }
         }
         let $associateCreate = $('#idxAssociateCreate');
         let dataCreate = [];

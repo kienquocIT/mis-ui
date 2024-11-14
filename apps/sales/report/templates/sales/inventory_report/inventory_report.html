@@ -25,11 +25,10 @@
         }
         .chat-popup {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50vh;
+            bottom: 10px;
+            right: 10px;
             max-width: 50vh;
-            border-radius: 10px;
+            border-radius: 0.375rem;
             overflow: hidden;
         }
         .chat-header {
@@ -302,16 +301,15 @@
     <div class="row">
         <div class="col-12">
             <!-- Khung Chat -->
-            <div id="chatPopup" class="chat-popup border border-primary" style="z-index: 4">
-                <div class="chat-header fw-bold text-primary" id="toggleChat">
-                    <span><i class="fas fa-comments"></i>&nbsp;Bflow report asking</span>
-{#                    <span class="close-chat">&times;</span>#}
+            <div id="chatPopup" class="chat-popup" style="z-index: 4">
+                <div class="chat-header text-primary" id="toggleChat">
+                    <span><i class="fas fa-comments"></i></span>
                 </div>
                 <div class="chat-content">
                     <div class="row">
                         <div class="col-12" id="chat-show-space" style="overflow-y: auto; max-height: 300px">
                             <div class="text-left">
-                                <div class="you bg-white rounded p-2" style="max-width: 80%">
+                                <div class="you bg-white p-2" style="max-width: 80%; border-radius: 0.375rem">
                                     {% trans 'Xin chào👋! Bạn có thể hỏi đáp về dữ liệu trong Báo cáo này?' %}
                                 </div>
                             </div>
@@ -320,13 +318,12 @@
                     <div class="row mt-5">
                         <div class="col-12">
                             <div class="form-group d-flex">
-                                <label for="input-chat" class="form-label"></label>
-                                <textarea class="form-control" style="border-radius: 10px" id="input-chat" placeholder="{% trans 'Type here...' %}"></textarea>
+                                <textarea class="form-control" id="input-chat" placeholder="{% trans 'Type here...' %}"></textarea>
+                                <label for="input-chat" class="form-label">
+                                    <button id="send-message" class="btn fw-bold text-primary w-100 h-100"><i class="far fa-paper-plane"></i></button>
+                                </label>
                             </div>
                         </div>
-{#                        <div class="col-2">#}
-{#                            <button id="send-message" class="btn fw-bold text-primary w-100 h-100">{% trans 'Send' %}</button>#}
-{#                        </div>#}
                     </div>
                 </div>
             </div>

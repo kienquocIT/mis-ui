@@ -395,6 +395,9 @@ class BiddingDataTableHandle {
                     throw Error('Call data raise errors.')
                 },
             },
+            scrollY: '30vh',
+            scrollX: true,
+            scrollCollapse: true,
             ordering: false,
             paging: false,
             columns: [
@@ -423,6 +426,9 @@ class BiddingDataTableHandle {
         })
         BiddingDataTableHandle.$tableDocumentModalManual.DataTableDefault({
             data: manualData ? manualData : [],
+            scrollY: '30vh',
+            scrollX: true,
+            scrollCollapse: true,
             ordering: false,
             paging: false,
             columns: [
@@ -893,7 +899,11 @@ class BiddingSubmitHandle {
         });
         data["cause_of_lost"] = causeOfLost
         data["bid_status"] = $('input[name="bid_status"]:checked').val();
-        data["other_cause"] = $('input[name="other_cause"]').val();
+        if (causeOfLost.includes('4')){
+            data["other_cause"] = $('input[name="other_cause"]').val();
+        } else {
+            data["other_cause"] = ""
+        }
         return data
     }
 

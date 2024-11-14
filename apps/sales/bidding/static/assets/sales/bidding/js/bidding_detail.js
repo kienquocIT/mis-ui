@@ -122,6 +122,9 @@ $(document).ready(function () {
                     $('#btn-open-bidder-modal').attr('disabled', false)
                     $('#bid-status-won').attr('disabled', false)
                     $('#bid-status-lost').attr('disabled', false)
+                    if($('#cause-other').is(':checked')){
+                        $('#cause-other-input').prop('disabled', false);
+                    }
                 }
                 // file
                 new $x.cls.file($('#attachment')).init({

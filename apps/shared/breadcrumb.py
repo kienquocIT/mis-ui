@@ -145,6 +145,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     QUOTATION_DETAIL_PAGE = BreadcrumbChildren(_('Quotation detail'))
     QUOTATION_UPDATE_PAGE = BreadcrumbChildren(_('Quotation update'))
 
+    # Bidding
+    BIDDING_LIST_PAGE = BreadcrumbChildren(_('Bidding list'), 'BiddingList')
+    BIDDING_CREATE_PAGE = BreadcrumbChildren(_('Bidding create'), 'BiddingCreate')
+
     # Shipping
     SHIPPING_LIST_PAGE = BreadcrumbChildren(_('Shipping'), 'ShippingList')
     SHIPPING_CREATE_PAGE = BreadcrumbChildren(_('Shipping create'), 'ShippingCreate')
@@ -194,6 +198,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Task
     OPPORTUNITY_TASK_CONFIG_PAGE = BreadcrumbChildren(_('Task config'), 'OpportunityTaskConfig')
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
+
+    #Document
+    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Bidding'), 'DocumentTypeMasterDataList')
 
     # Sale Activities
     CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call log'), 'OpportunityCallLogList')
@@ -660,6 +667,14 @@ class BreadcrumbView:
     QUOTATION_DETAIL_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     QUOTATION_UPDATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    # Bidding
+    BIDDING_LIST_PAGE = [
+        BreadcrumbItem.BIDDING_LIST_PAGE
+    ]
+    BIDDING_CREATE_PAGE = BIDDING_LIST_PAGE + [BreadcrumbItem.BIDDING_CREATE_PAGE]
+    BIDDING_DETAIL_PAGE = BIDDING_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    BIDDING_UPDATE_PAGE = BIDDING_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
     # Shipping
     SHIPPING_LIST_PAGE = [
         BreadcrumbItem.SHIPPING_LIST_PAGE
@@ -726,6 +741,9 @@ class BreadcrumbView:
     # Task
     OPPORTUNITY_TASK_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_CONFIG_PAGE]
     OPPORTUNITY_TASK_LIST_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_LIST_PAGE]
+
+    #Document
+    DOCUMENT_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.DOCUMENT_MASTER_DATA_LIST_PAGE]
 
     # Sale Activities
     CALL_LOG_LIST_PAGE = [

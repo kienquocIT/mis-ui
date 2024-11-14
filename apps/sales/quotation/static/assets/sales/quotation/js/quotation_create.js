@@ -1013,6 +1013,9 @@ $(function () {
             ]
             if (is_sale_order === true) {
                 submitFields = [
+                    // process
+                    'process',
+                    //
                     'title',
                     'opportunity_id',
                     'customer',

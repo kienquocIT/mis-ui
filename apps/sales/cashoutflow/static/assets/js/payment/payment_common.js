@@ -1597,25 +1597,6 @@ class PaymentHandle {
                     $('#employee_inherit_id').prop('disabled', true)
 
                     if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
-                        new $x.cls.bastionField({
-                            has_opp: true,
-                            has_inherit: true,
-                            data_inherit: [{
-                                "id": data?.['employee_inherit']?.['id'],
-                                "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                                "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                                "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                                "email": data?.['employee_inherit']?.['email'] || '',
-                                "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                                "selected": true,
-                            }],
-                            data_opp: [{
-                                "id": data?.['opportunity_mapped']?.['id'] || '',
-                                "title": data?.['opportunity_mapped']?.['title'] || '',
-                                "code": data?.['opportunity_mapped']?.['code'] || '',
-                                "selected": true,
-                            }]
-                        }).init();
                         PaymentLoadPage.LoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
                         PaymentLoadTab.LoadPlanQuotation(
                             opp_mapped_select.val(),
@@ -1670,21 +1651,36 @@ class PaymentHandle {
                         payment_for = 'saleorder'
                     }
                     else {
-                        new $x.cls.bastionField({
-                            has_opp: false,
-                            has_inherit: true,
-                            data_inherit: [{
-                                "id": data?.['employee_inherit']?.['id'],
-                                "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                                "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                                "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                                "email": data?.['employee_inherit']?.['email'] || '',
-                                "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                                "selected": true,
-                            }],
-                        }).init();
                         payment_for = null
                     }
+
+                    const data_inherit = Object.keys(data?.['employee_inherit'] || {}).length > 0 ? [{
+                        "id": data?.['employee_inherit']?.['id'],
+                        "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                        "first_name": data?.['employee_inherit']?.['first_name'] || '',
+                        "last_name": data?.['employee_inherit']?.['last_name'] || '',
+                        "email": data?.['employee_inherit']?.['email'] || '',
+                        "is_active": data?.['employee_inherit']?.['is_active'] || false,
+                        "selected": true,
+                    }] : [];
+                    const data_opp = Object.keys(data?.['opportunity_mapped'] || {}).length > 0 ? [{
+                        "id": data?.['opportunity_mapped']?.['id'] || '',
+                        "title": data?.['opportunity_mapped']?.['title'] || '',
+                        "code": data?.['opportunity_mapped']?.['code'] || '',
+                        "selected": true,
+                    }] : [];
+                    const data_process = Object.keys(data?.['process'] || {}).length > 0 ? [{
+                        ...data?.['process'],
+                        "selected": true,
+                    }] : [];
+                    new $x.cls.bastionField({
+                        has_opp: true,
+                        has_inherit: true,
+                        has_process: true,
+                        data_inherit: data_inherit,
+                        data_opp: data_opp,
+                        data_process: data_process,
+                    }).init();
 
                     $('#title').val(data?.['title']);
 
@@ -1782,7 +1778,6 @@ checkbox_internal.on('change', function () {
         employee_label.prop('hidden', true)
         employee_detail_span.prop('hidden', true)
         supplier_detail_span.prop('hidden', false)
-        $('#payment-method').val('');
     }
 })
 

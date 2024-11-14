@@ -660,16 +660,19 @@ $.fn.extend({
             let formArray = this.serializeArray();
 
             formArray.forEach(function(item) {
-                const inputType = form$.find(`[name="${item.name}"]`).attr("type");
-                if (!item.name.startsWith("table-")){
-                    if (inputType === "checkbox") {
-                        addToFormData(item.name, true);
-                    } else if (inputType === "number") {
-                        addToFormData(item.name, item.value ? parseFloat(item.value) : null);
-                    } else if (inputType === "date" || inputType === "datetime-local") {
-                        addToFormData(item.name, item.value ? new Date(item.value).toISOString() : null);
-                    } else {
-                        addToFormData(item.name, item.value);
+                const input$ = form$.find(`[name="${item.name}"]`);
+                if (!input$.hasClass('ignore-input')){
+                    const inputType = input$.attr("type");
+                    if (!item.name.startsWith("table-")){
+                        if (inputType === "checkbox") {
+                            addToFormData(item.name, true);
+                        } else if (inputType === "number") {
+                            addToFormData(item.name, item.value ? parseFloat(item.value) : null);
+                        } else if (inputType === "date" || inputType === "datetime-local") {
+                            addToFormData(item.name, item.value ? new Date(item.value).toISOString() : null);
+                        } else {
+                            addToFormData(item.name, item.value);
+                        }
                     }
                 }
             });

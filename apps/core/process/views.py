@@ -1,3 +1,8 @@
+from urllib.parse import urlencode
+
+from django.contrib.auth.models import AnonymousUser
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
@@ -100,11 +105,25 @@ class ProcessRuntimeListView(View):
         login_require=True,
         template='process/runtime/list.html',
         breadcrumb='PROCESS_RUNTIME_LIST_PAGE',
-        menu_active='menu_process',
+        menu_active='menu_process_runtime',
         jsi18n='process',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class ProcessRuntimeListMeRedirect(View):
+    @mask_view(login_require=True)
+    def get(self, request, *args, **kwargs):
+        params = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
+            if isinstance(employee_current, dict) and 'id' in employee_current and 'full_name' in employee_current:
+                params = {
+                    'creator': employee_current.get('id', ''),
+                    'creator_title': employee_current.get('full_name', ''),
+                }
+        return redirect(reverse('ProcessRuntimeListView') + '?' + urlencode(params))
 
 
 class ProcessRuntimeOfMeAPI(APIView):
@@ -134,7 +153,7 @@ class ProcessRuntimeDetailView(View):
         login_require=True,
         template='process/runtime/detail.html',
         breadcrumb='PROCESS_RUNTIME_DETAIL_PAGE',
-        menu_active='menu_process',
+        menu_active='menu_process_runtime',
         jsi18n='process',
     )
     def get(self, request, *args, pk, **kwargs):

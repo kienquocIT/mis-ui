@@ -395,6 +395,9 @@ class BiddingDataTableHandle {
                     throw Error('Call data raise errors.')
                 },
             },
+            scrollY: '30vh',
+            scrollX: true,
+            scrollCollapse: true,
             ordering: false,
             paging: false,
             columns: [
@@ -423,6 +426,9 @@ class BiddingDataTableHandle {
         })
         BiddingDataTableHandle.$tableDocumentModalManual.DataTableDefault({
             data: manualData ? manualData : [],
+            scrollY: '30vh',
+            scrollX: true,
+            scrollCollapse: true,
             ordering: false,
             paging: false,
             columns: [

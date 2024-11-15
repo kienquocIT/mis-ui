@@ -124,11 +124,11 @@
                         {% trans 'Assignee' as inherit_title %}
                         {% if is_project_page %}
                             {% trans 'Project code' as prj_title %}
-                            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='prj-inherit-opp' has_prj=True prj_disabled=True has_inherit=True is_open=True inherit_required=True new_list_from_app=new_list_from_app %}
+                            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='prj-inherit-opp-process' has_process=True has_prj=True prj_disabled=True has_inherit=True is_open=True inherit_required=True new_list_from_app=new_list_from_app %}
                         {% else %}
                             {% trans 'Opp code' as opp_title %}
                             {% trans 'Project code' as prj_title %}
-                            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=False show_warning=True priority_app='opp-prj-inherit' has_opp=True has_prj=has_prj has_inherit=True is_open=True inherit_required=True new_list_from_app=new_list_from_app %}
+                            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=False show_warning=True priority_app='opp-process-prj-inherit' has_opp=True has_process=True has_prj=has_prj has_inherit=True is_open=True inherit_required=True new_list_from_app=new_list_from_app %}
                         {% endif %}
                     </div>
                     <div class="col-md-12 col-xs-12">

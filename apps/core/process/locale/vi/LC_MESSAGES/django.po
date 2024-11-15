@@ -100,3 +100,7 @@ msgstr "Giai đoạn hiện tại"
 #
 msgid "My Process Runtime"
 msgstr "Thực hiện tiến trình của tôi"
+
+#
+msgid "Supported applications will vary based on this selection."
+msgstr "Các ứng dụng được hỗ trợ sẽ khác nhau tùy theo lựa chọn này."

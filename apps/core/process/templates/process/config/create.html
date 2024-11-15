@@ -34,6 +34,9 @@
                     ({% trans "This selected can't change after created" %})
                 </small>
             </label>
+            <small class="form-text text-muted">
+                {% trans 'Supported applications will vary based on this selection.' %}
+            </small>
         </div>
     </form>
     <div class="w-100 d-flex justify-content-center align-items-center" id="btn-collapse-info">
@@ -50,8 +53,6 @@
 {% endblock %}
 
 {% block modalData %}
-    {% include 'process/extends/modal_stage_config.html' %}
-    {% include 'process/extends/modal_item_config.html' %}
     {% include 'process/extends/instructions.html' %}
 {% endblock %}
 

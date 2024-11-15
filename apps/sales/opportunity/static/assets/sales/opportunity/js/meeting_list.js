@@ -73,6 +73,22 @@ function loadOpportunityMeetingList() {
 }
 
 function loadMeetingSaleCodeList(data) {
+    function loadOppSelected(obj_selected){
+        if (obj_selected?.['is_close']) {
+            $.fn.notifyB({description: `Opportunity ${obj_selected?.['code']} has been closed. Can not select.`}, 'failure');
+            meeting_Opp_slb.find('option').remove();
+        }
+        else {
+            loadMeetingAddress(obj_selected?.['customer']?.['shipping_address'] ? obj_selected?.['customer']?.['shipping_address'] : [])
+            loadCustomerMember(obj_selected?.['customer']?.['contact_mapped'] ? obj_selected?.['customer']?.['contact_mapped'] : [])
+        }
+    }
+
+    const {
+        opp_id,
+        opp_title,
+        opp_code
+    } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'opp_id', 'opp_title', 'opp_code']);
     meeting_Opp_slb.initSelect2({
         ajax: {
             url: meeting_Opp_slb.attr('data-url'),
@@ -103,25 +119,40 @@ function loadMeetingSaleCodeList(data) {
             ele.append('<div class="col-8">' + data.data?.['title'] + '</div>');
             return ele;
         },
-        data: (data ? data : null),
+        data: opp_id ? [
+            {
+                'id': opp_id,
+                'title': opp_title,
+                'code': opp_code,
+                'selected': true,
+            }
+        ] : data ? data : [],
         keyResp: 'opportunity_list',
         keyId: 'id',
         keyText: 'title',
     })
     .on('change', function () {
-        let obj_selected = SelectDDControl.get_data_from_idx(meeting_Opp_slb, meeting_Opp_slb.val())
+        let obj_selected = SelectDDControl.get_data_from_idx(meeting_Opp_slb, meeting_Opp_slb.val());
         if (obj_selected) {
-            if (obj_selected?.['is_close']) {
-                $.fn.notifyB({description: `Opportunity ${obj_selected?.['code']} has been closed. Can not select.`}, 'failure');
-                meeting_Opp_slb.find('option').remove();
-
-            }
-            else {
-                loadMeetingAddress(obj_selected?.['customer']?.['shipping_address'] ? obj_selected?.['customer']?.['shipping_address'] : [])
-                loadCustomerMember(obj_selected?.['customer']?.['contact_mapped'] ? obj_selected?.['customer']?.['contact_mapped'] : [])
+            if (obj_selected.hasOwnProperty('is_close')){
+                loadOppSelected(obj_selected);
+            } else {
+                $.fn.callAjax2({
+                    url: meeting_Opp_slb.attr('data-url') + `?id__in=${obj_selected['id']}`,
+                    method: 'GET',
+                    isLoading: true,
+                }).then(
+                    resp => {
+                        const data = $.fn.switcherResp(resp);
+                        if (data && data.hasOwnProperty('opportunity_list') && Array.isArray(data['opportunity_list']) && data['opportunity_list'].length > 0){
+                            loadOppSelected(data['opportunity_list'][0]);
+                        }
+                    },
+                )
             }
         }
-    })
+    });
+    if (opp_id) meeting_Opp_slb.trigger('change');
 }
 
 function loadCustomerMember(contact_list) {
@@ -147,7 +178,6 @@ function loadEmployeeAttended(data) {
 }
 
 function loadMeetingAddress(shipping_address_list) {
-    console.log(shipping_address_list)
     meeting_address_slb.attr('disabled', false);
     $('#meeting-address-select-box option').remove();
     meeting_address_slb.initSelect2();
@@ -196,6 +226,14 @@ function detailMeeting($this) {
 
     $('#detail-meeting-address-select-box option').remove();
     $('#detail-meeting-address-select-box').append(`<option selected>${meeting_obj.meeting_address}</option>`);
+
+    if (meeting_obj.process){
+        const process$ = $('#detail-inp-process');
+        process$.find('option').remove();
+        process$.append(`<option selected>${meeting_obj.process.title}</option>`);
+        const link$ = process$.siblings('.link-to-process');
+        link$.attr('href', link$.data('href').replaceAll('__pk__', meeting_obj.process.id))
+    }
 
     $('#detail-meeting-room-location-input').val(meeting_obj.room_location);
 
@@ -354,33 +392,38 @@ class MeetingHandle {
 $(document).ready(function () {
     new MeetingHandle().load();
 
-    $('#form-new-meeting').submit(function (event) {
-        event.preventDefault();
-        let combinesData = new MeetingHandle().combinesData($(this));
-        if (combinesData) {
-            WindowControl.showLoading();
-            $.fn.callAjax2(combinesData)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
-                                location.reload.bind(location);
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        setTimeout(
-                            () => {
-                                WindowControl.hideLoading();
+    SetupFormSubmit.validate(
+        $('#form-new-meeting'),
+        {
+            submitHandler: function(form, event){
+                event.preventDefault();
+                let combinesData = new MeetingHandle().combinesData($(form));
+                if (combinesData) {
+                    WindowControl.showLoading();
+                    $.fn.callAjax2(combinesData)
+                        .then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: "Successfully"}, 'success')
+                                    setTimeout(() => {
+                                        window.location.replace($(form).attr('data-url-redirect'));
+                                        location.reload.bind(location);
+                                    }, 1000);
+                                }
                             },
-                            1000
+                            (errs) => {
+                                setTimeout(
+                                    () => {
+                                        WindowControl.hideLoading();
+                                    },
+                                    1000
+                                )
+                                $.fn.notifyB({description: errs.data.errors}, 'failure');
+                            }
                         )
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
+                }
+            }
         }
-    })
+    );
 });

@@ -468,7 +468,7 @@ class PaymentLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-name-input" value="${row?.['expense_description'] ? row?.['expense_description'] : ''}"></textarea>`;
+                        return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control des-input">${row?.['expense_description'] ? row?.['expense_description'] : ''}</textarea>`;
                     }
                 },
                 {
@@ -1505,7 +1505,7 @@ class PaymentHandle {
                 let expense_detail_value = 0;
                 let row_id = '#row-' + i.toString();
                 let expense_type = tableLineDetail.find(row_id + ' .expense-type-select-box').val();
-                let expense_name_input = tableLineDetail.find(row_id + ' .expense-name-input').val();
+                let des_input = tableLineDetail.find(row_id + ' .des-input').val();
                 let expense_uom_name = tableLineDetail.find(row_id + ' .expense-uom-input').val();
                 let expense_quantity = tableLineDetail.find(row_id + ' .expense_quantity').val();
                 let expense_tax = tableLineDetail.find(row_id + ' .expense-tax-select-box option:selected').attr('value');
@@ -1542,7 +1542,7 @@ class PaymentHandle {
                     expense_detail_value = expense_detail_value + sum_value;
                     payment_item_list.push({
                         'expense_type_id': expense_type,
-                        'expense_description': expense_name_input,
+                        'expense_description': des_input,
                         'expense_uom_name': expense_uom_name,
                         'expense_quantity': expense_quantity,
                         'expense_unit_price': expense_unit_price,

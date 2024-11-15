@@ -86,6 +86,8 @@ $(document).ready(function () {
                 // store && load data detail
                 if (formSubmit.attr('data-method').toLowerCase() !== 'put') {
                     BiddingLoadDataHandle.$btnOpenBidderModal.on('click', function () {
+                        let data = BiddingSubmitHandle.setupDataBidder()
+                        BiddingLoadDataHandle.$bidderDataScript.attr('data-bidder-list', JSON.stringify(data))
                         let title = transScript.attr('data-trans-modal-bidder-title')
                         BiddingLoadDataHandle.$modalAccount.find('.modal-title').html(title)
                         BiddingLoadDataHandle.$modalAccount.attr('data-type', 'bidder')
@@ -120,6 +122,9 @@ $(document).ready(function () {
                     $('#btn-open-bidder-modal').attr('disabled', false)
                     $('#bid-status-won').attr('disabled', false)
                     $('#bid-status-lost').attr('disabled', false)
+                    if($('#cause-other').is(':checked')){
+                        $('#cause-other-input').prop('disabled', false);
+                    }
                 }
                 // file
                 new $x.cls.file($('#attachment')).init({
@@ -135,23 +140,31 @@ $(document).ready(function () {
     )
 
     BiddingLoadDataHandle.$btnAddAccount.on('click', function (e) {
-        data = []
+        let data = []
+        let dataBidderList = JSON.parse(BiddingLoadDataHandle.$bidderDataScript.attr('data-bidder-list') || '[]')
         $("#account-modal-table .form-check-checkbox:checked").each(function (e) {
             let selectedRow = $(this).closest("tr");
             let id = $(this).data('id');
             let type = $(this).data('type');
             if(type === "bidder"){
+                let is_won = false
+                if (dataBidderList.find(item => item?.['bidder_account'] === id)){
+                    if (dataBidderList.find(item => item?.['bidder_account'] === id)?.["is_won"]){
+                        is_won=true
+                    }
+                }
                 data.push({
                     "bidder_account": id,
                     "code": selectedRow.find(".table-row-code").text(),
                     "title": selectedRow.find(".table-row-title").text(),
+                    "is_won": is_won
                 })
                 BiddingLoadDataHandle.loadAddBidder(data)
             }
         })
     })
 
-     $('#bid-status-lost').on('change',function () {
+    $('#bid-status-lost').on('change',function () {
          if ($(this).is(':checked')) {
             $('#cause-of-lost').attr('hidden',false)
          }

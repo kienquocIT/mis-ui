@@ -38,6 +38,11 @@ class PrintApplicationTemplateSample(APIView):
                 self.parse_template_detail(f"{_('Quotation')} 1", base_url + 'quotation_1.html'),
                 self.parse_template_detail(f"{_('Quotation')} 2", base_url + 'quotation_2.html'),
             ]
+        elif app_id == '57725469-8b04-428a-a4b0-578091d0e4f5':  # Advance payment
+            base_url += 'advance_payment/'
+            result = [
+                self.parse_template_detail(f"{_('Advance Payment')} 1", base_url + 'advance_payment_1.html'),
+            ]
         return RespData.resp_200(data={'templates': result})
 
 

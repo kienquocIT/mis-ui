@@ -11,6 +11,7 @@ from apps.masterdata.saledata.views.accounts import (
 )
 from apps.masterdata.saledata.views.balance_init import BalanceInitList, BalanceInitListAPI, \
     ImportBalanceInitDBAPIViews, BalanceInitializationListImportDBAPI
+from apps.masterdata.saledata.views.bidding_result_config import BiddingResultConfigList, BiddingResultConfigListAPI
 from apps.masterdata.saledata.views.budget_plan_config import BudgetPlanConfigList, BudgetPlanConfigListAPI, \
     ListCanViewCompanyBudgetPlanAPI, ListCanLockBudgetPlanAPI
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
@@ -371,4 +372,15 @@ urlpatterns += [
     path('masterdata/document-type/list', DocumentTypeMasterDataList.as_view(), name='DocumentTypeMasterDataList'),
     path('masterdata/document-type/api', DocumentTypeMasterDataListAPI.as_view(), name='DocumentTypeMasterDataListAPI'),
     path('masterdata/document-type/api/<str:pk>', DocumentTypeMasterDataDetailAPI.as_view(), name='DocumentTypeMasterDataDetailAPI'),
+]
+
+urlpatterns += [
+    path(
+        'bidding-result-config', BiddingResultConfigList.as_view(),
+        name='BiddingResultConfigList'
+    ),
+    path(
+        'bidding-result-config/api', BiddingResultConfigListAPI.as_view(),
+        name='BiddingResultConfigListAPI'
+    ),
 ]

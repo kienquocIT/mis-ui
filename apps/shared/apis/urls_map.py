@@ -752,3 +752,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WORK_ORDER_DETAIL = StringUrl('production/work-order')
     WORK_ORDER_DD_LIST = StringUrl('production/work-order-dd/list')
     WORK_ORDER_MANUAL_DONE_LIST = StringUrl('production/work-order-manual-done/list')
+
+    # masterdata/bidding result config
+    BIDDING_RESULT_CONFIG_LIST = StringUrl('saledata/bidding-result-config')

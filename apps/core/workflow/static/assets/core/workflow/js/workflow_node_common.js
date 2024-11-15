@@ -2,6 +2,7 @@
 class NodeLoadDataHandle {
     static $form = $('#form-create_workflow');
 
+    static $nodeDragBox = $('#node_dragbox');
     static $initEmp = $('#data-init-employee');
     static $btnNewNode = $('#btn-new-node');
     static $btnSaveNode = $('#btn-save-node');
@@ -943,8 +944,7 @@ class NodeStoreHandle {
 
                                 // if edit title then change node's title in left & right of flowchart
                                 if (isEditTitle === true) {
-                                    let $dragBox = $('#node_dragbox');
-                                    let control = $dragBox[0].querySelector(`.control[data-drag="${NodeLoadDataHandle.dataNode[i]['order']}"]`);
+                                    let control = NodeLoadDataHandle.$nodeDragBox[0].querySelector(`.control[data-drag="${NodeLoadDataHandle.dataNode[i]['order']}"]`);
                                     if (control) {
                                         if (control.querySelector('.drag-title')) {
                                             control.querySelector('.drag-title').innerHTML = NodeLoadDataHandle.dataNode[i]['title'];

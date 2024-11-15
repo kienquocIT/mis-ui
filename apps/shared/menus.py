@@ -239,6 +239,10 @@ class MenusCoreConfigurations:
                 view_name='ProjectConfig',
                 icon='<i class="fa-brands fa-r-project"></i>',
             ),
+            MenuCommon(
+                name='Bidding Result Config', code='menu_bidding_result_config', view_name='BiddingResultConfigList',
+                icon='<i class="fas fa-gavel"></i>',
+            ),
         ]
     )
     TEMPLATES_DATA_CONFIG = MenuCommon(

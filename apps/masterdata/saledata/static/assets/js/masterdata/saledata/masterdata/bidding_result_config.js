@@ -1,7 +1,6 @@
 $(document).ready(function () {
     let $formBiddingResultConfig = $('#form-bidding-result-config')
     let dataBiddingResultConfigEmployeeUrl = $formBiddingResultConfig.attr('data-url')
-    let dataBiddingResultConfigEmployee = []
     let $employeeSelect = $('#employee-select')
     function loadBiddingResultConfigEmployee(){
         $.fn.callAjax2({

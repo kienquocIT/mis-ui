@@ -11,8 +11,8 @@ class BiddingResultConfigList(View):
     @mask_view(
         auth_require=True,
         template='masterdata/saledata/masterdata/bidding_result_config.html',
-        breadcrumb='',
-        menu_active='',
+        breadcrumb='BIDDING_RESULT_CONFIG_PAGE',
+        menu_active='menu_bidding_result_config',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

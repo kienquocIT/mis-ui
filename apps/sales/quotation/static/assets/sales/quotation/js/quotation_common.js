@@ -6183,7 +6183,7 @@ class QuotationSubmitHandle {
                             'indicator_value': parseFloat(indicator_value),
                             'indicator_rate': parseFloat(indicator_rate),
                             'quotation_indicator_value': parseFloat(quotation_indicator_value),
-                            'difference_indicator_value': parseFloat(difference_indicator_rate),
+                            'difference_indicator_value': parseFloat(difference_indicator_rate) ? difference_indicator_rate : 0,
                             'order': parseInt(order),
                         })
                     }

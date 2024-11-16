@@ -125,10 +125,10 @@ PLAN_APP_OF_SALE = {
     },
     'delivery': {
         'orderpickingsub': ReverseUrlCommon(
-            list_view_name='OrderDeliveryList', detail_view_name='OrderDeliveryDetail'
+            list_view_name='OrderPickingList', detail_view_name='OrderPickingDetail',
         ).data,
         'orderdeliverysub': ReverseUrlCommon(
-            list_view_name='OrderPickingList', detail_view_name='OrderPickingDetail',
+            list_view_name='OrderDeliveryList', detail_view_name='OrderDeliveryDetail',
         ).data,
     },
     'promotion': {
@@ -152,7 +152,7 @@ PLAN_APP_OF_SALE = {
         ).data,
     },
     'contract': {
-        'contract': ReverseUrlCommon(
+        'contractapproval': ReverseUrlCommon(
             list_view_name='ContractApprovalList', detail_view_name='ContractApprovalDetail'
         ).data,
     },

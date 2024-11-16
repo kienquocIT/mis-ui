@@ -197,6 +197,7 @@ class JSPlumbsHandle {
     }
 
     htmlDragRender(target_elm) {
+        let $trans = $('#node-trans-factory');
         let strHTMLDragNode = '';
         if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
             for (let val in DEFAULT_NODE_LIST) {
@@ -219,18 +220,18 @@ class JSPlumbsHandle {
                 //     + `title="${item.remark}">${item.title}</p></div>`;
 
                 strHTMLDragNode += `<div class="btn-group dropdown">
-<div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" title="${item.title}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
-                            <p class="drag-title" contentEditable="true" title="${item.remark}">${item.title}</p>
-                            </div>
-<div class="dropdown-menu w-210p">
-<div class="dropdown-item">
-<button type="button" class="btn btn-outline-primary btn-wth-icon btn-block config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><span><span class="icon"><span class="feather-icon"><i class="fas fa-cog"></i></span></span><span class="btn-text">Configuration</span></span></button>
-</div>
-<div class="dropdown-item">
-<button type="button" class="btn btn-outline-danger btn-wth-icon btn-block del-node"><span><span class="icon"><span class="feather-icon"><i class="fas fa-trash-alt"></i></span></span><span class="btn-text">Delete</span></span></button>
-</div>
-</div>
-</div>`;
+                                        <div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" title="${item.title}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
+                                            <p class="drag-title" contentEditable="true" title="${item.remark}">${item.title}</p>
+                                        </div>
+                                        <div class="dropdown-menu w-210p">
+                                            <div class="dropdown-item">
+                                                <button type="button" class="btn btn-outline-primary btn-wth-icon btn-block config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><span><span class="icon"><span class="feather-icon"><i class="fas fa-cog"></i></span></span><span class="btn-text">${$trans.attr('data-config')}</span></span></button>
+                                            </div>
+                                            <div class="dropdown-item">
+                                                <button type="button" class="btn btn-outline-danger btn-wth-icon btn-block del-node"><span><span class="icon"><span class="feather-icon"><i class="fas fa-trash-alt"></i></span></span><span class="btn-text">${$trans.attr('data-delete')}</span></span></button>
+                                            </div>
+                                        </div>
+                                    </div>`;
             }
         }
         if (!target_elm) $('#node_dragbox').html(strHTMLDragNode)

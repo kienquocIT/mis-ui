@@ -9631,3 +9631,7 @@ msgstr "Chọn một cộng tác viên thao tác"
 #
 msgid "In workflow"
 msgstr "Nhiều cộng tác viên cùng thao tác"
+
+#
+msgid "Configuration"
+msgstr "Cấu hình"

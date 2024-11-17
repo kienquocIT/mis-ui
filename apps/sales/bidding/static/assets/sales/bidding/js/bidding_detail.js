@@ -230,7 +230,6 @@ $(document).ready(function () {
         $.fn.callAjax2({
             url: $urlBidResultConfig,
             method: 'GET',
-            isLoading: true,
         }).then(
             (resp)=>{
                 let dataConfig = $.fn.switcherResp(resp);

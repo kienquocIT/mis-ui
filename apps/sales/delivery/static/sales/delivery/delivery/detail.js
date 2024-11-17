@@ -1234,6 +1234,9 @@ $(async function () {
                 const res = $.fn.switcherResp(req);
                 prepareHTMLConfig(res?.['config_at_that_point'])
                 $x.fn.renderCodeBreadcrumb(res);
+
+                new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
+
                 const $saleOrder = $('#inputSaleOrder');
                 $saleOrder.html(res.sale_order_data.code)
                 $saleOrder.attr('data-so', JSON.stringify(res?.['sale_order_data']));

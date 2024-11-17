@@ -38,6 +38,16 @@ class PrintApplicationTemplateSample(APIView):
                 self.parse_template_detail(f"{_('Quotation')} 1", base_url + 'quotation_1.html'),
                 self.parse_template_detail(f"{_('Quotation')} 2", base_url + 'quotation_2.html'),
             ]
+        elif app_id == '1373e903-909c-4b77-9957-8bcf97e8d6d3':  # Quotation
+            base_url += 'delivery/'
+            result = [
+                self.parse_template_detail(f"{_('Delivery')} 1", base_url + 'delivery_1.html'),
+            ]
+        elif app_id == 'c5de0a7d-bea3-4f39-922f-06a40a060aba':  # Quotation
+            base_url += 'inventory_adjustment/'
+            result = [
+                self.parse_template_detail(f"{_('Inventory Adjustment')} 1", base_url + 'inventory_adjustment_1.html'),
+            ]
         return RespData.resp_200(data={'templates': result})
 
 

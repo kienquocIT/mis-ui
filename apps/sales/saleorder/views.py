@@ -219,7 +219,7 @@ class SaleOrderDetailDeliveryAPI(APIView):
         is_api=True,
     )
     def post(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SALEORDER_CALL.fill_key(pk=pk)).post(data={})
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SALEORDER_CALL.fill_key(pk=pk)).post(data=request.data)
         return resp.auto_return()
 
 

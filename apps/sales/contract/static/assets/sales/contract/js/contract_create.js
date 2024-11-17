@@ -71,6 +71,7 @@ $(function () {
                 'trade_content',
                 'legal_content',
                 'payment_content',
+                'process',
             ]
             if (_form.dataForm) {
                 ContractCommonHandle.filterFieldList(submitFields, _form.dataForm);

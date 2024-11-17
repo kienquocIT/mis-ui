@@ -35,9 +35,9 @@ class ProcessStages {
             </div>
             <div class="app-item-tools">
                 <div class="item-tools-item app-control-item" data-code="amount" data-bs-toggle="tooltip" title="${$.fn.gettext("Number of documents created")} / ${$.fn.gettext("Number of documents approved")}"></div>
-                <div class="item-tools-item app-control-item" data-code="add" style="display: none;" data-bs-toggle="tooltip" title="${$.fn.gettext("Click to create more documents")}">
+                <a href="#" class="item-tools-item app-control-item" data-code="add" style="display: none;" data-bs-toggle="tooltip" title="${$.fn.gettext("Click to create more documents")}">
                     <i class="fa-solid fa-plus"></i>
-                </div>
+                </a>
                 <div class="item-tools-item app-control-item" data-code="confirm_complete" style="display: none;" data-bs-toggle="tooltip" title="${$.fn.gettext("Click to confirm complete")}">
                     <i class="fa-solid fa-flag-checkered"></i>
                 </div>
@@ -266,6 +266,48 @@ class ProcessStages {
         }
     }
 
+    reloadNewAppToSelect(){
+        const clsThis = this;
+        const application$ = clsThis.modalAppConfig$.find('select[name=application]');
+        application$.empty();
+        application$.initSelect2({
+            data: this.applicationList.sort((a, b) => a['title_i18n'].localeCompare(b['title_i18n'])),
+        })
+    }
+
+    checkExistDataWithApplication(){
+        const clsThis = this;
+        let application = [];
+        clsThis.target$.find('.' + clsThis.appClsName).each(function () {
+            application.push(
+                {
+                    'data': $(this).data(clsThis.appNameData),
+                    'element': $(this),
+                }
+            )
+        })
+        const errors = [];
+        application.map(
+            item => {
+                const app_id = item.data?.['application'];
+                if (app_id && !clsThis.applicationDict.hasOwnProperty(app_id)){
+                    const txtApp = $(item.element).find('.app-item-list .app-text-app').text();
+                    const txtTitle = $(item.element).find('.app-item-list .app-text-title').text();
+                    errors.push(`${$.fn.gettext('Application is not supported')}: ${txtApp} - ${txtTitle}`);
+                    return false;
+                }
+            }
+        )
+        errors.map(
+            msg => {
+                $.fn.notifyB({
+                    'description': msg
+                }, 'failure');
+            }
+        )
+        return errors.length === 0;
+    }
+
     static matchStatusCode(status_code, returnHTML=true){
         let txt = '';
         let clsName = '';
@@ -340,12 +382,13 @@ class ProcessStages {
         }
         this.applicationList = this.config.applicationList;
         this.applicationDict = {};
-        this.setApplicationDict();
 
         this.modalStageConfig$ = $(ProcessStages.htmlModalStageConfig);
         this.modalAppConfig$ = $(ProcessStages.htmlModalAppConfig);
         this.modalDocList$ = $(ProcessStages.htmlModalDocList);
         this.modalDocListDataTable = null;
+
+        this.setApplicationDict();
     }
 
     itemClsName = 'stages-item';
@@ -644,12 +687,6 @@ class ProcessStages {
             return `${amount} / ${amount_approved}`;
         }
 
-        app$.find('.app-item-text .app-text-title').text(appData?.['title'] || '');
-        app$.find('.app-item-text .app-text-app').text(appData_application?.['title_i18n'] || '');
-        app$.find('.app-control-item[data-code=amount]').text(
-            renderAmountAndApproved(appData?.['amount'] || '0', appData?.['amount_approved'] || '0')
-        );
-
         function removeControlComplete(){
             app$.find('.app-control-item[data-code=confirm_complete]').remove();
         }
@@ -657,6 +694,41 @@ class ProcessStages {
         function removeControlAdd(){
             app$.find('.app-control-item[data-code=add]').remove();
         }
+
+        function getUrlAdd(){
+            const urlResolved = clsThis.redirectMaskUrl.replaceAll('__plan__', appData.app_label).replaceAll('__app__', appData.mode_code);
+            const paramData = $.param({
+                'redirect': true,
+                'create_open': true,
+                'process_id': clsThis.data?.['id'] || '',
+                'process_title': clsThis.data?.['title'] || '',
+                ...(
+                    clsThis.data?.['opp'] ? {
+                        'opp_id': clsThis.data['opp']?.['id'] || '',
+                        'opp_title': clsThis.data['opp']?.['title'] || '',
+                        'opp_code': clsThis.data['opp']?.['code'] || '',
+                    } : {}
+                ),
+                ... (
+                    $x.fn.getEmployeeCurrent('id') ? {
+                        'inherit_id': $x.fn.getEmployeeCurrent('id'),
+                        'inherit_title': $x.fn.getEmployeeCurrent('full_name'),
+                    } : {}
+                ),
+            });
+            return urlResolved + '?' + paramData;
+        }
+
+        function confirmUrlAndSetAttr(){
+            app$.find('.app-control-item[data-code=add]').attr('href', appData.app_label && appData.mode_code ? getUrlAdd() : '#');
+        }
+
+        app$.find('.app-item-text .app-text-title').text(appData?.['title'] || '');
+        app$.find('.app-item-text .app-text-app').text(appData_application?.['title_i18n'] || '');
+        app$.find('.app-control-item[data-code=amount]').text(
+            renderAmountAndApproved(appData?.['amount'] || '0', appData?.['amount_approved'] || '0')
+        );
+        confirmUrlAndSetAttr();
 
         if (clsThis.enableEdit === true) {
             const controlApp$ = $(ProcessStages.htmlItemAppControl);
@@ -699,6 +771,7 @@ class ProcessStages {
                 $(this).find('.app-control-item[data-code=amount]').text(
                     renderAmountAndApproved(appDataNew?.['amount'] || '0', appDataNew?.['amount_approved'] || '0')
                 );
+                confirmUrlAndSetAttr();
                 // force to variable data
                 appData = {...appData, ...appDataNew};
             });
@@ -793,50 +866,28 @@ class ProcessStages {
                 if (clsThis.redirectMaskUrl) {
                     app$.find('.app-control-item[data-code=add]').show().on('click', function (event) {
                         event.preventDefault();
-
-                            const urlResolved = clsThis.redirectMaskUrl.replaceAll('__plan__', appData.app_label).replaceAll('__app__', appData.mode_code);
-                            const paramData = $.param({
-                                'redirect': true,
-                                'create_open': true,
-                                'process_id': clsThis.data?.['id'] || '',
-                                'process_title': clsThis.data?.['title'] || '',
-                                ...(
-                                    clsThis.data?.['opp'] ? {
-                                        'opp_id': clsThis.data['opp']?.['id'] || '',
-                                        'opp_title': clsThis.data['opp']?.['title'] || '',
-                                        'opp_code': clsThis.data['opp']?.['code'] || '',
-                                    } : {}
-                                ),
-                                ... (
-                                    $x.fn.getEmployeeCurrent('id') ? {
-                                        'inherit_id': $x.fn.getEmployeeCurrent('id'),
-                                        'inherit_title': $x.fn.getEmployeeCurrent('full_name'),
-                                    } : {}
-                                ),
-                            });
-                            const reLink = urlResolved + '?' + paramData;
-
-                            Swal.fire({
-                                title: $.fn.gettext('You are being redirected to the feature creation page.'),
-                                html: `
-                                <p class="mb-3">${appData_application.title || ''}</p>
-                                <a href="${reLink}">
-                                    ${$.fn.gettext("Or link to here")}
-                                </a>
-                            `,
-                                icon: "warning",
-                                timer: 2500,
-                                timerProgressBar: true,
-                                showCancelButton: true,
-                                cancelButtonText: $.fn.gettext('Cancel'),
-                                showConfirmButton: true,
-                                confirmButtonText: $.fn.gettext('Redirect now'),
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                                    window.location.href = reLink;
-                                }
-                            })
-                        });
+                        const reLink = getUrlAdd();
+                        Swal.fire({
+                            title: $.fn.gettext('You are being redirected to the feature creation page.'),
+                            html: `
+                            <p class="mb-3">${appData_application.title || ''}</p>
+                            <a href="${reLink}">
+                                ${$.fn.gettext("Or link to here")}
+                            </a>
+                        `,
+                            icon: "warning",
+                            timer: 2500,
+                            timerProgressBar: true,
+                            showCancelButton: true,
+                            cancelButtonText: $.fn.gettext('Cancel'),
+                            showConfirmButton: true,
+                            confirmButtonText: $.fn.gettext('Redirect now'),
+                        }).then((result) => {
+                            if (result.dismiss === Swal.DismissReason.timer || result.value) {
+                                window.location.href = reLink;
+                            }
+                        })
+                    });
                 }
             } else removeControlAdd();
             // button amount
@@ -860,7 +911,8 @@ class ProcessStages {
             $(this).siblings('ul').slideToggle('slow');
         })
 
-        clsThis.modalAppConfig$.find('select[name=application]').initSelect2({
+        const application$ = clsThis.modalAppConfig$.find('select[name=application]');
+        application$.initSelect2({
             keyText: 'title_i18n',
             data: this.applicationList.sort((a, b) => a.title_i18n.localeCompare(b.title_i18n)),
         })
@@ -1020,40 +1072,44 @@ class ProcessStages {
     getFullStages() {
         const clsThis = this;
 
-        let errors = [];
-        let stages = [];
-        clsThis.target$.find('.' + clsThis.itemClsName).each(function () {
-            let application = [];
-            $(this).find('.' + clsThis.appClsName).each(function () {
-                application.push(
-                    $(this).data(clsThis.appNameData)
-                )
+        const stateAppSupport = clsThis.checkExistDataWithApplication();
+        if (stateAppSupport){
+            let errors = [];
+            let stages = [];
+            clsThis.target$.find('.' + clsThis.itemClsName).each(function () {
+                let application = [];
+                $(this).find('.' + clsThis.appClsName).each(function () {
+                    application.push(
+                        $(this).data(clsThis.appNameData)
+                    )
+                })
+
+                let itemData = $(this).data(clsThis.itemNameData);
+                const stagesData = {
+                    ...itemData,
+                    'application': application
+                }
+                const errorData = clsThis.validateStages(stagesData);
+                errors = errors.concat(errorData)
+
+                stages.push(stagesData)
+
             })
-
-            let itemData = $(this).data(clsThis.itemNameData);
-            const stagesData = {
-                ...itemData,
-                'application': application
+            if (stages.length < 3){
+                errors.push($.fn.gettext("Process requires at least 1 stage (except system stage)"))
             }
-            const errorData = clsThis.validateStages(stagesData);
-            errors = errors.concat(errorData)
 
-            stages.push(stagesData)
-
-        })
-        if (stages.length < 3){
-           errors.push($.fn.gettext("Process requires at least 1 stage (except system stage)"))
+            if (errors.length > 0){
+                errors.map(
+                    msg => $.fn.notifyB({
+                        'description': msg
+                    }, 'failure')
+                )
+                return null;
+            }
+            return stages
         }
-
-        if (errors.length > 0){
-            errors.map(
-                msg => $.fn.notifyB({
-                    'description': msg
-                }, 'failure')
-            )
-            return null;
-        }
-        return stages
+        return null;
     }
 
     validateStages(stagesData){

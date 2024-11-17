@@ -17,6 +17,7 @@ $(document).ready(function () {
         has_opp: true,
         has_inherit: true,
         has_process: true,
+        has_prj: true,
         data_opp: $x.fn.checkUUID4(opp_id) ? [
             {
                 "id": opp_id,

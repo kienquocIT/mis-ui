@@ -169,23 +169,26 @@ class SetupFormSubmit {
             errorElement: "small",
             showErrors: function (errorMap, errorList) {
                 this.defaultShowErrors();
-                errorList.map(
-                    item => {
-                        if (item.element && item.message){
-                            if (!$(item.element).is(':visible')){
-                                const formGroup$ = $(item.element).closest('.form-group');
-                                const label$ = formGroup$.length > 0 ? formGroup$.find('.form-label') : $(item.element).siblings('label');
+                const isSilentPopup = $(ele$).data('validate-silent-popup');
+                if (!(isSilentPopup === 'true' || isSilentPopup === true)){
+                    errorList.map(
+                        item => {
+                            if (item.element && item.message){
+                                if (!$(item.element).is(':visible')){
+                                    const formGroup$ = $(item.element).closest('.form-group');
+                                    const label$ = formGroup$.length > 0 ? formGroup$.find('.form-label') : $(item.element).siblings('label');
 
-                                if (label$ && label$.length > 0){
-                                    $.fn.notifyB({
-                                        'title': label$.text() + ': ',
-                                        'description': item.message,
-                                    }, 'failure');
+                                    if (label$ && label$.length > 0){
+                                        $.fn.notifyB({
+                                            'title': label$.text() + ': ',
+                                            'description': item.message,
+                                        }, 'failure');
+                                    }
                                 }
                             }
                         }
-                    }
-                )
+                    )
+                }
             },
             errorPlacement: function (error, element) {
                 // error.insertAfter(element);
@@ -200,6 +203,16 @@ class SetupFormSubmit {
                 if (insertAfterEle.siblings('.select2-container').length > 0) {
                     insertAfterEle.parent().append(error);
                 } else error.insertAfter(insertAfterEle);
+            },
+            success: function (label, element) {
+                $(element).siblings('.form-error-msg').remove();
+                let parentEle = $(element).parent();
+
+                if (parentEle.hasClass('input-group') || parentEle.hasClass('input-affix-wrapper')) {
+                    parentEle.siblings('.form-error-msg').remove();
+                } else {
+                    $(element).siblings('.form-error-msg').remove();
+                }
             },
             onsubmit: false,
             ...configs

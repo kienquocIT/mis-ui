@@ -1644,7 +1644,7 @@ msgstr "Tỉnh"
 
 #
 msgid "Inventory activities"
-msgstr "Hoạt động kho hàng"
+msgstr "Các hoạt động kho"
 
 #
 msgid "Sale"
@@ -1697,10 +1697,6 @@ msgstr "Chi tiết"
 #
 msgid "Product"
 msgstr "Sản phẩm"
-
-#
-msgid "Warehouse"
-msgstr "Kho hàng"
 
 #
 msgid "Quantity"
@@ -2682,10 +2678,6 @@ msgstr "Tạo đơn hàng"
 #
 msgid "Sale order detail"
 msgstr "Chi tiết đơn hàng"
-
-#
-msgid "WareHouse"
-msgstr "Kho Hàng"
 
 #
 msgid "Return Advance"
@@ -6054,7 +6046,7 @@ msgstr "Chi phí"
 
 #
 msgid "Expenses Item"
-msgstr ""
+msgstr "Chi phí"
 
 #
 msgid "Calendar"
@@ -6394,7 +6386,7 @@ msgstr "Chọn sản phẩm"
 
 #
 msgid "Warehouse is required"
-msgstr "Kho hàng là bắt buộc"
+msgstr "Kho là bắt buộc"
 
 #
 msgid "Done number is not valid value"
@@ -7435,10 +7427,6 @@ msgstr "GT đơn hàng đã nhận"
 #
 msgid "Remaining value"
 msgstr "GT đơn hàng còn lại"
-
-#
-msgid "WareHouses"
-msgstr "Các kho hàng"
 
 #
 msgid "AR Invoice"
@@ -8690,7 +8678,7 @@ msgstr "Đang sản xuất"
 
 #
 msgid "All warehouse"
-msgstr "Tất cả kho hàng"
+msgstr "Tất cả kho"
 
 #
 msgid "Material/Component"
@@ -9627,3 +9615,31 @@ msgstr "Chọn người dự thầu"
 #
 msgid "Select required documents"
 msgstr "Chọn tài liệu cho thầu"
+
+#
+msgid "Agency/Partner Location"
+msgstr "Đại lí/Đối tác"
+
+#
+msgid "Agency"
+msgstr "Đại lí"
+
+#
+msgid "Partner"
+msgstr "Đối tác"
+
+#
+msgid "Warehouse Address"
+msgstr "Địa chỉ kho"
+
+#
+msgid "Edit Warehouse Address"
+msgstr "Sửa địa chỉ kho"
+
+#
+msgid "Click to edit"
+msgstr "Nhấn để chỉnh sửa"
+
+#
+msgid "Detail address"
+msgstr "Địa chỉ cụ thể"

@@ -162,7 +162,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     SALE_ORDER_UPDATE_PAGE = BreadcrumbChildren(_('Sale order update'))
 
     # WareHouse
-    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
+    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('Warehouse'), 'WareHouseList')
 
     # Good receipt
     GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt'), 'GoodReceiptList')

@@ -56,7 +56,7 @@ $(document).ready(function () {
                     },
                 }, {
                     data: 'title',
-                    className: 'wrap-text w-25',
+                    className: 'wrap-text w-30',
                     render: (data, type, row) => {
                         const link = urlEle.attr('data-url-detail').replace('0', row.id);
                         return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
@@ -79,13 +79,14 @@ $(document).ready(function () {
                     render: (data) => {
                         return `<div class="form-check form-switch mb-1"><input type="checkbox" class="form-check-input" ${(data === true ? "checked" : "")} disabled></div>`
                     },
-                }, {
-                    data: 'id',
-                    className: 'text-right wrap-text w-5',
-                    render: () => {
-                        return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row" ><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                    }
-                }
+                },
+                // {
+                //     data: 'id',
+                //     className: 'text-right wrap-text w-5',
+                //     render: () => {
+                //         return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row" ><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
+                //     }
+                // }
             ]
         })
     }

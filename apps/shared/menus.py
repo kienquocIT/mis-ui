@@ -480,7 +480,7 @@ class MenusInventory:
         name='Inventory activities', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-store"></i>',
         child=[
             MenuCommon(
-                name='WareHouses', code='menu_warehouse_list', view_name='WareHouseList',
+                name='Warehouses', code='menu_warehouse_list', view_name='WareHouseList',
                 icon='<i class="fas fa-warehouse"></i>',
             ),
             MenuCommon(

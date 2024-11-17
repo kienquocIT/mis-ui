@@ -1,0 +1,86 @@
+{% load i18n %}
+
+<div class="modal fade" id="modalWarehouseAddress" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenter" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Edit Warehouse Address' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="form-label" for="addressDetail">{% trans "Address" %}</label>
+                            <input
+                                    class="form-control" type="text" id="addressDetail"
+                                    placeholder="Number 20, 22 street, Him Lam residential area"
+                            >
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Province" %}</label>
+                            <select
+                                    class="form-select" id="warehouseCity" aria-label=".form-select-sm"
+                                    data-url="{% url "CityListAPI" %}" data-method="GET"
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "District" %}</label>
+                            <select
+                                    class="form-select" id="warehouseDistrict" aria-label=".form-select-sm"
+                                    data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Ward" %}</label>
+                            <select
+                                    class="form-select" id="warehouseWard" aria-label=".form-select-sm"
+                                    data-url="{% url "WardAllListAPI" %}" data-method="GET"
+                            ></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="button" class="btn btn-primary"
+                            id="saveWarehouseAddress">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="shelf-detail-modal" tabindex="-1" role="dialog" aria-labelledby="shelf-detail-modal" aria-hidden="true">
+            <div class="modal-dialog modal-lg min-w-1000p" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Shelf detail' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row" style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
+                                    <div class="col-12" id="shelf-area"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>

@@ -18,12 +18,15 @@ $(document).ready(function () {
                     },
                 },
                 full_address: {
-                    required: true,
+                    required: function () {
+                        return !$('#checkDropShip').is(':checked');
+                    },
                 }
             },
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
-                let data = WarehouseLoadPage.getFormDataUpdate();
+                let data = WarehouseLoadPage.getFormData();
+                let pk = $.fn.getPkDetail()
                 $.fn.callAjax2({
                     url: frm.getUrlDetail(pk),
                     method: 'PUT',
@@ -31,9 +34,9 @@ $(document).ready(function () {
                 }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.notifyB({description: $.fn.transEle.attr('data-success')}, 'success');
                         setTimeout(() => {
-                            window.location.href = frm.dataUrlRedirect;
+                            window.location.href = frm.dataUrlRedirect.replace('/0', `/${pk}`);
                         }, 1000)
                     }
                 }, (errs) => {

@@ -1516,16 +1516,15 @@
 
     function pushUserChat() {
         const message = chatInput.val().trim();
+        const messageElement = $(`<div style="display: flex; justify-content: flex-end;" class="mt-2">
+            <div class="me bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">${message}</div>
+        </div>`);
         if (message.length > 10) {
-            let dataParam = {}
-
-            const messageElement = $(`<div style="display: flex; justify-content: flex-end;" class="mt-2">
-                <div class="me bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">${message}</div>
-            </div>`);
             chatShowSpace.append(messageElement);
             chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
             chatInput.val('');
 
+            let dataParam = {}
             let is_filter = false
             let contexts = ''
             if (
@@ -1628,11 +1627,15 @@
                 })
         } else {
             if (message.length > 0) {
-                let message = $('#trans-script').attr('data-trans-no-response')
-                let messageResponse = $(`<div class="mt-2"><div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">${message}</div></div>`);
-                chatShowSpace.append(messageResponse)
+                chatShowSpace.append(messageElement);
                 chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
                 chatInput.val('');
+
+                let messageResponse = $(`<div class="mt-2">
+                    <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">${$('#trans-script').attr('data-trans-no-response')}</div>
+                </div>`);
+                chatShowSpace.append(messageResponse)
+                chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
             }
         }
     }

@@ -1,24 +1,5 @@
 let urlEle = $('#url-factory');
 $(document).ready(function () {
-    function validBodyDataNewOrUpdate(bodyData) {
-        if (bodyData.hasOwnProperty('title') && !bodyData['title']) {
-            $.fn.notifyB({
-                'title': $('label[for=inputTextUpdateTitle]').text(),
-                'description': $.fn.transEle.attr('data-msgFieldRequired'),
-            }, 'failure');
-            return false;
-        }
-        if (bodyData.hasOwnProperty('code') && !bodyData['code']) {
-            $.fn.notifyB({
-                'title': $('label[for=inputTextUpdateCode]').text(),
-                'description': $.fn.transEle.attr('data-msgFieldRequired'),
-            }, 'failure');
-            return false;
-        }
-        return true;
-    }
-
-
     $(document).on('click', '.btn-remove-row', function (event) {
         WindowControl.showLoading();
         let rowData = DTBControl.getRowData($(this));
@@ -63,7 +44,7 @@ $(document).ready(function () {
             columns: [
                 {
                     className: 'wrap-text w-5',
-                    render: (data, type, row, meta) => {
+                    render: () => {
                         return ''
                     },
                 }, {
@@ -75,27 +56,33 @@ $(document).ready(function () {
                     },
                 }, {
                     data: 'title',
-                    className: 'wrap-text w-30',
+                    className: 'wrap-text w-25',
                     render: (data, type, row) => {
                         const link = urlEle.attr('data-url-detail').replace('0', row.id);
                         return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
                     },
                 }, {
                     data: 'remarks',
-                    className: 'wrap-text w-20',
-                    render: (data, type, row) => {
+                    className: 'wrap-text w-30',
+                    render: (data) => {
                         return `<p class="wrap-text">${data}</p>`;
                     },
                 }, {
+                    data: 'is_dropship',
+                    className: 'text-center wrap-text w-10',
+                    render: (data) => {
+                        return data ? `<i class="text-primary bi bi-check-square-fill"></i>` : '';
+                    },
+                }, {
                     data: 'is_active',
-                    className: 'wrap-text w-15',
-                    render: (data, type, row) => {
+                    className: 'text-center wrap-text w-10',
+                    render: (data) => {
                         return `<div class="form-check form-switch mb-1"><input type="checkbox" class="form-check-input" ${(data === true ? "checked" : "")} disabled></div>`
                     },
                 }, {
                     data: 'id',
-                    className: 'action-center wrap-text w-15',
-                    render: (data, type, row, meta) => {
+                    className: 'text-right wrap-text w-5',
+                    render: () => {
                         return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row" ><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                     }
                 }

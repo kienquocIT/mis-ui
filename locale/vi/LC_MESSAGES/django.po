@@ -1612,7 +1612,7 @@ msgstr "Báo cáo tới"
 
 #
 msgid "Address Information"
-msgstr "Thông tin liên hệ"
+msgstr "Thông tin địa chỉ"
 
 #
 msgid "Work address"
@@ -9643,3 +9643,7 @@ msgstr "Nhấn để chỉnh sửa"
 #
 msgid "Detail address"
 msgstr "Địa chỉ cụ thể"
+
+#
+msgid "Addition Information"
+msgstr "Thông tin bổ sung"

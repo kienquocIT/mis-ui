@@ -59,14 +59,13 @@
             <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="warehouseAddress">{% trans "Warehouse Address" %}</label>
-                    <textarea data-bs-toggle="modal"
-                              data-bs-target="#modalWarehouseAddress"
-                              class="form-control"
-                              name="full_address"
-                              readonly
-                              id="warehouseAddress">
-                    </textarea>
-                    <span class="small text-muted">{% trans 'Click to edit' %}</span>
+                    <input data-bs-toggle="modal"
+                          data-bs-target="#modalWarehouseAddress"
+                          class="form-control form-control-line text-primary"
+                          name="full_address"
+                          readonly
+                          placeholder="{% trans 'Click to edit' %}"
+                          id="warehouseAddress">
                 </div>
             </div>
         </div>

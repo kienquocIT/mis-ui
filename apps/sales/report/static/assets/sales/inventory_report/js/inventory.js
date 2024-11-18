@@ -1,4 +1,4 @@
-$(document).ready(function () {
+// $(document).ready(function () {
     const table_inventory_report = $('#table-inventory-report')
 
     const current_period_Ele = $('#current_period')
@@ -195,7 +195,7 @@ $(document).ready(function () {
         let sale_order_code_list = []
         table.DataTableDefault({
             styleDom: 'hide-foot',
-            scrollY: '64vh',
+            scrollY: '60vh',
             scrollX: true,
             scrollCollapse: true,
             ordering: false,
@@ -241,7 +241,7 @@ $(document).ready(function () {
                                     class="popover-prd text-secondary">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
-                                <span class="${row?.['type']}">${row?.['product_title']}</span>&nbsp;
+                                <span class="${row?.['type']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
                             `
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
@@ -330,7 +330,7 @@ $(document).ready(function () {
                             return `
                                 <div class="row">
                                     <div class="col-4"><span class="text-secondary in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['prd_in_quantity']}</span></div>
-                                    <div class="col-8"><span class="text-secondary in-quantity-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_in_value']}"></span></div>
+                                    <div class="col-8"><span class="text-secondary in-value-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_in_value']}"></span></div>
                                 </div>
                             `
                         }
@@ -357,7 +357,7 @@ $(document).ready(function () {
                             return `                                
                                 <div class="row">
                                     <div class="col-4"><span class="text-secondary out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['prd_out_quantity']}</span></div>
-                                    <div class="col-8"><span class="text-secondary out-quantity-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_out_value']}"></span></div>
+                                    <div class="col-8"><span class="text-secondary out-value-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_out_value']}"></span></div>
                                 </div>
                             `
                         }
@@ -1394,4 +1394,269 @@ $(document).ready(function () {
         LoadWarehouseSelectBox(warehouses_select_Ele)
         LoadProjectSelectBox(project_select_Ele)
     })
-})
+
+    // chatbot
+    const chatPopup = $('#chatPopup')
+    const toggleChat = $('#toggleChat')
+    const closeChatBtn = $('.close-chat')
+    const chatInput = $('#input-chat')
+    const chatShowSpace = $('#chat-show-space')
+    const sendMessage = $('#send-message')
+
+    function getNumberFromStr(inputString) {
+        let numbers = inputString.match(/\d+/g);
+        return numbers ? numbers.map(Number) : [];
+    }
+
+    function checkWordInStr(list_word, inputString) {
+        let count = 0
+        list_word.forEach(word => {
+            if (inputString.includes(word)) {
+                count += 1
+            }
+        })
+        return count === list_word.length
+    }
+
+
+    class GetContexts {
+        static get_product_row_info(row) {
+            let row_info = ''
+            let product = row.find('td:eq(0) span').text()
+            let uom = row.find('td:eq(1) span').text()
+            let warehouse = row.find('td:eq(0) span').attr('data-wh-title')
+            row_info += `${product} tồn đầu ${row.find('td:eq(2) span:eq(0)').text()} ${uom} ở kho ${warehouse}.`
+            row_info += `${product} đã nhập ${row.find('td:eq(3) span:eq(0)').text()} ${uom} ở kho ${warehouse}.`
+            row_info += `${product} đã xuất ${row.find('td:eq(4) span:eq(0)').text()} ${uom} ở kho ${warehouse}.`
+            row_info += `${product} còn tồn kho ${row.find('td:eq(5) span:eq(0)').text()} ${uom} ở kho ${warehouse}.`
+            row_info += `${product} có giá cost đầu kì là ${row.find('td:eq(2) .opening-value-span').attr('data-init-money')} VND ở kho ${warehouse}.`
+            row_info += `${product} có giá cost nhập vào là ${row.find('td:eq(3) .in-value-span').attr('data-init-money')} VND ở kho ${warehouse}.`
+            row_info += `${product} có giá cost xuất ra là ${row.find('td:eq(4) .out-value-span').attr('data-init-money')} VND ở kho ${warehouse}.`
+            row_info += `${product} có giá cost cuối kì là ${row.find('td:eq(5) .ending-value-span').attr('data-init-money')} VND ở kho ${warehouse}.`
+            return row_info
+        }
+        static get_warehouse_row_info(row) {
+            let row_info = ''
+            let warehouse = row.find('td:eq(0) .warehouse_row').text()
+            row_info += `${warehouse} tồn đầu ${row.find('td:eq(2) .wh-opening-quantity-span').text()}, với giá trị ${parseInt(row.find('td:eq(2) .wh-opening-value-span').attr('data-init-money'))} VND.`
+            row_info += `${warehouse} đã nhập ${row.find('td:eq(3) .wh-in-quantity-span').text()}, với giá trị ${parseInt(row.find('td:eq(3) .wh-in-value-span').attr('data-init-money'))} VND.`
+            row_info += `${warehouse} đã xuất ${row.find('td:eq(4) .wh-out-quantity-span').text()}, với giá trị ${parseInt(row.find('td:eq(4) .wh-out-value-span').attr('data-init-money'))} VND.`
+            row_info += `${warehouse} còn tồn kho ${row.find('td:eq(5) .wh-ending-quantity-span').text()}, với giá trị ${parseInt(row.find('td:eq(5) .wh-ending-value-span').attr('data-init-money'))} VND.`
+            return row_info
+        }
+        static get_overall_info() {
+            let row_info = ''
+            row_info += `Tổng cộng đầu kỳ ${$('tfoot .opening-total-quantity:eq(0)').text()}, với giá trị ${parseInt($('tfoot .opening-total-value:eq(0)').attr('data-init-money'))} VND.`
+            row_info += `Tổng cộng đã nhập ${$('tfoot .in-total-quantity:eq(0)').text()}, với giá trị ${parseInt($('tfoot .in-total-value:eq(0)').attr('data-init-money'))} VND.`
+            row_info += `Tổng cộng đã xuất ${$('tfoot .out-total-quantity:eq(0)').text()}, với giá trị ${parseInt($('tfoot .out-total-value:eq(0)').attr('data-init-money'))} VND.`
+            row_info += `Tổng cộng cuối kỳ ${$('tfoot .ending-total-quantity:eq(0)').text()}, với giá trị ${parseInt($('tfoot .ending-total-value:eq(0)').attr('data-init-money'))} VND.`
+            return row_info
+        }
+        static get_products_opening_quantity_gte(threshold) {
+            let row_info = ''
+            $('#table-inventory-report').find('tbody tr').each(function () {
+                if (!$(this).hasClass('fixed-row')) {
+                    let opening_quantity = $(this).find('td:eq(2) span:eq(0)').text()
+                    if (parseFloat(opening_quantity) >= parseFloat(threshold)) {
+                        let product = $(this).find('td:eq(0) span').text()
+                        let uom = $(this).find('td:eq(1) span').text()
+                        let warehouse = $(this).find('td:eq(0) span').attr('data-wh-title')
+                        row_info += `<br>${product} (${opening_quantity} ${uom} - ${warehouse})`
+                    }
+                }
+            })
+            return row_info
+        }
+        static get_products_opening_quantity_lte(threshold) {
+            let row_info = ''
+            $('#table-inventory-report').find('tbody tr').each(function () {
+                if (!$(this).hasClass('fixed-row')) {
+                    let opening_quantity = $(this).find('td:eq(2) span:eq(0)').text()
+                    if (parseFloat(opening_quantity) <= parseFloat(threshold)) {
+                        let product = $(this).find('td:eq(0) span').text()
+                        let uom = $(this).find('td:eq(1) span').text()
+                        let warehouse = $(this).find('td:eq(0) span').attr('data-wh-title')
+                        row_info += `<br>${product} (${opening_quantity} ${uom} - ${warehouse})`
+                    }
+                }
+            })
+            return row_info
+        }
+        static get_products_ending_quantity_gte(threshold) {
+            let row_info = ''
+            $('#table-inventory-report').find('tbody tr').each(function () {
+                if (!$(this).hasClass('fixed-row')) {
+                    let ending_quantity = $(this).find('td:eq(5) span:eq(0)').text()
+                    if (parseFloat(ending_quantity) >= parseFloat(threshold)) {
+                        let product = $(this).find('td:eq(0) span').text()
+                        let uom = $(this).find('td:eq(1) span').text()
+                        let warehouse = $(this).find('td:eq(0) span').attr('data-wh-title')
+                        row_info += `<br>${product} (${ending_quantity} ${uom} - ${warehouse})`
+                    }
+                }
+            })
+            return row_info
+        }
+        static get_products_ending_quantity_lte(threshold) {
+            let row_info = ''
+            $('#table-inventory-report').find('tbody tr').each(function () {
+                if (!$(this).hasClass('fixed-row')) {
+                    let ending_quantity = $(this).find('td:eq(2) span:eq(0)').text()
+                    if (parseFloat(ending_quantity) <= parseFloat(threshold)) {
+                        let product = $(this).find('td:eq(0) span').text()
+                        let uom = $(this).find('td:eq(1) span').text()
+                        let warehouse = $(this).find('td:eq(0) span').attr('data-wh-title')
+                        row_info += `<br>${product} (${ending_quantity} ${uom} - ${warehouse})`
+                    }
+                }
+            })
+            return row_info
+        }
+    }
+
+    function pushUserChat() {
+        const message = chatInput.val().trim();
+        const messageElement = $(`<div style="display: flex; justify-content: flex-end;" class="mt-2">
+            <div class="me bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">${message}</div>
+        </div>`);
+        if (message.length > 10) {
+            chatShowSpace.append(messageElement);
+            chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
+            chatInput.val('');
+
+            let dataParam = {}
+            let is_filter = false
+            let contexts = ''
+            if (
+                checkWordInStr(['tồn', 'đầu', 'lớn', 'hơn'], message) ||
+                checkWordInStr(['tồn', 'đầu', 'nhiều', 'hơn'], message)
+            ) {
+                is_filter = true
+                let threshold = getNumberFromStr(message).length > 0 ? getNumberFromStr(message)[0] : 0
+                contexts += GetContexts.get_products_opening_quantity_gte(threshold)
+            }
+            else if (
+                checkWordInStr(['tồn', 'đầu', 'bé', 'hơn'], message) ||
+                checkWordInStr(['tồn', 'đầu', 'nhỏ', 'hơn'], message) ||
+                checkWordInStr(['tồn', 'đầu', 'ít', 'hơn'], message)
+            ) {
+                is_filter = true
+                let threshold = getNumberFromStr(message).length > 0 ? getNumberFromStr(message)[0] : 0
+                contexts += GetContexts.get_products_opening_quantity_lte(threshold)
+            }
+            else if (
+                checkWordInStr(['tồn', 'cuối', 'lớn', 'hơn'], message) ||
+                checkWordInStr(['tồn', 'cuối', 'nhiều', 'hơn'], message) ||
+                checkWordInStr(['tồn', 'kho', 'lớn', 'hơn'], message) ||
+                checkWordInStr(['tồn', 'kho', 'nhiều', 'hơn'], message)
+            ) {
+                is_filter = true
+                let threshold = getNumberFromStr(message).length > 0 ? getNumberFromStr(message)[0] : 0
+                contexts += GetContexts.get_products_ending_quantity_gte(threshold)
+            }
+            else if (
+                checkWordInStr(['tồn', 'cuối', 'bé', 'hơn'], message) ||
+                checkWordInStr(['tồn', 'cuối', 'nhỏ', 'hơn'], message) ||
+                checkWordInStr(['tồn', 'cuối', 'ít', 'hơn'], message) ||
+                checkWordInStr(['tồn', 'kho', 'bé', 'hơn'], message) ||
+                checkWordInStr(['tồn', 'kho', 'nhỏ', 'hơn'], message) ||
+                checkWordInStr(['tồn', 'kho', 'ít', 'hơn'], message)
+            ) {
+                is_filter = true
+                let threshold = getNumberFromStr(message).length > 0 ? getNumberFromStr(message)[0] : 0
+                contexts += GetContexts.get_products_ending_quantity_lte(threshold)
+            }
+            else {
+                is_filter = false
+                $('#table-inventory-report').find('tbody tr').each(function () {
+                    if (!$(this).hasClass('fixed-row')) {
+                        contexts += GetContexts.get_product_row_info($(this))
+                    } else {
+                        contexts += GetContexts.get_warehouse_row_info($(this))
+                    }
+                })
+                contexts += GetContexts.get_overall_info()
+            }
+
+            dataParam['contexts'] = contexts
+            dataParam['question'] = message
+            let chatbot_response_ajax = $.fn.callAjax2({
+                url: $('#url-script').attr('data-url-chatbot'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('response')) {
+                        return data?.['response'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([chatbot_response_ajax]).then(
+                (results) => {
+                    if (is_filter) {
+                        let data = results[0].split('<br>').filter(item => item !== '');
+                        for (let i = 0; i < data.length; i++) {
+                            let messageResponse = $(`<div class="mt-2">
+                                <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">
+                                    ${data[i] === '' ? $('#trans-script').attr('data-trans-no-response') : data[i]}
+                                </div>
+                            </div>`);
+                            chatShowSpace.append(messageResponse)
+                        }
+                    } else {
+                        let messageResponse = $(`<div class="mt-2">
+                            <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">
+                                ${results[0] === '' ? $('#trans-script').attr('data-trans-no-response') : results[0]}
+                            </div>
+                        </div>`);
+                        chatShowSpace.append(messageResponse)
+                    }
+                    chatShowSpace.append(`
+                        <div class="mt-2">
+                            <div class="you bg-white p-2" style="max-width: 80%; border-radius: 0.375rem">
+                                Bạn cần thêm thông tin gì nữa không?
+                            </div>
+                        </div>
+                    `)
+                })
+        } else {
+            if (message.length > 0) {
+                chatShowSpace.append(messageElement);
+                chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
+                chatInput.val('');
+
+                let messageResponse = $(`<div class="mt-2">
+                    <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">${$('#trans-script').attr('data-trans-no-response')}</div>
+                </div>`);
+                chatShowSpace.append(messageResponse)
+                chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));
+            }
+        }
+    }
+
+    toggleChat.on('click', function () {
+        chatPopup.toggleClass('active bg-primary');
+        toggleChat.toggleClass('text-white');
+    });
+
+    closeChatBtn.on('click', function () {
+        chatPopup.remove();
+    });
+
+    chatInput.on('keypress', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            pushUserChat()
+        }
+    });
+
+    sendMessage.on('click', function () {
+        pushUserChat()
+    });
+// })

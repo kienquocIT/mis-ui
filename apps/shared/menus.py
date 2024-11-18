@@ -151,7 +151,7 @@ class MenusCoreConfigurations:
                 icon='<i class="bi bi-person-rolodex"></i>',
             ),
             MenuCommon(
-                name='Items', code='id_menu_master_data_product', view_name='ProductMasterDataList',
+                name='Item', code='id_menu_master_data_product', view_name='ProductMasterDataList',
                 icon='<i class="bi bi-diagram-2-fill"></i>',
             ),
             MenuCommon(
@@ -239,6 +239,10 @@ class MenusCoreConfigurations:
                 name='Project config', code='menu_project_config',
                 view_name='ProjectConfig',
                 icon='<i class="fa-brands fa-r-project"></i>',
+            ),
+            MenuCommon(
+                name='Bidding Result Config', code='menu_bidding_result_config', view_name='BiddingResultConfigList',
+                icon='<i class="fas fa-gavel"></i>',
             ),
         ]
     )
@@ -497,7 +501,7 @@ class MenusInventory:
         icon='<i class="fas fa-store"></i>',
         child=[
             MenuCommon(
-                name='WareHouses', code='menu_warehouse_list', view_name='WareHouseList',
+                name='Warehouses', code='menu_warehouse_list', view_name='WareHouseList',
                 icon='<i class="fas fa-warehouse"></i>',
             ),
             MenuCommon(

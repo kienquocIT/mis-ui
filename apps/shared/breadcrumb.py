@@ -162,7 +162,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     SALE_ORDER_UPDATE_PAGE = BreadcrumbChildren(_('Sale order update'))
 
     # WareHouse
-    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
+    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('Warehouse'), 'WareHouseList')
 
     # Good receipt
     GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt'), 'GoodReceiptList')
@@ -200,7 +200,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
 
     #Document
-    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Bidding'), 'DocumentTypeMasterDataList')
+    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Document'), 'DocumentTypeMasterDataList')
+
+    #Bidding Result config
+    BIDDING_RESULT_CONFIG_PAGE = BreadcrumbChildren(_('Bidding'), 'BiddingResultConfigList')
 
     # Sale Activities
     CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call log'), 'OpportunityCallLogList')
@@ -575,8 +578,8 @@ class BreadcrumbView:
         BreadcrumbItem.CONTACT_LIST_PAGE
     ]
     CONTACT_CREATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_CREATE_PAGE]
-    CONTACT_DETAIL_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_DETAIL_PAGE]
-    CONTACT_UPDATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_UPDATE_PAGE]
+    CONTACT_DETAIL_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CONTACT_UPDATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     ACCOUNT_LIST_PAGE = [
         BreadcrumbItem.ACCOUNT_LIST_PAGE
@@ -753,6 +756,9 @@ class BreadcrumbView:
 
     #Document
     DOCUMENT_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.DOCUMENT_MASTER_DATA_LIST_PAGE]
+
+    #Bidding Result config
+    BIDDING_RESULT_CONFIG_PAGE = [BreadcrumbItem.BIDDING_RESULT_CONFIG_PAGE]
 
     # Sale Activities
     CALL_LOG_LIST_PAGE = [

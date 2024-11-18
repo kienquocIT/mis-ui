@@ -1447,15 +1447,15 @@ $(document).ready(function () {
 
                 // event create related features
                 $('#dropdown-menu-relate-app #create-advance-payment-shortcut').on('click', function () {
-                    let url = $(this).attr('data-url') + `?type=0&&sale_code_mapped=${$(this).attr('data-sale_code_mapped')}&&quotation_object=${$(this).attr('data-quotation_object')}&&sale_order_object=${$(this).attr('data-sale_order_object')}`
+                    let url = $(this).attr('data-url') + `?type=0&&opp_mapped=${$(this).attr('data-opp_mapped')}&&quotation_object=${$(this).attr('data-quotation_object')}&&sale_order_object=${$(this).attr('data-sale_order_object')}`
                     window.open(url, '_blank');
                 })
                 $('#dropdown-menu-relate-app #create-payment-shortcut').on('click', function () {
-                    let url = $(this).attr('data-url') + `?type=0&&sale_code_mapped=${$(this).attr('data-sale_code_mapped')}&&quotation_object=${$(this).attr('data-quotation_object')}&&sale_order_object=${$(this).attr('data-sale_order_object')}`
+                    let url = $(this).attr('data-url') + `?type=0&&opp_mapped=${$(this).attr('data-opp_mapped')}&&quotation_object=${$(this).attr('data-quotation_object')}&&sale_order_object=${$(this).attr('data-sale_order_object')}`
                     window.open(url, '_blank');
                 })
                 $('#dropdown-menu-relate-app #create-return-advance-shortcut').on('click', function () {
-                    let url = $(this).attr('data-url') + `?opportunity=${$(this).attr('data-opportunity_mapped')}`
+                    let url = $(this).attr('data-url') + `?opportunity=${$(this).attr('data-opportunity')}`
                     window.open(url, '_blank');
                 })
                 $('#dropdown-menu-relate-app #create-project-bom-shortcut').on('click', function () {
@@ -1551,7 +1551,7 @@ $(document).ready(function () {
                             let opp_list = results[0];
                             for (let opp of opp_list) {
                                 if (opp?.['id'] === dataInitSaleCode?.['id']) {
-                                    let sale_code_mapped = encodeURIComponent(JSON.stringify({
+                                    let opp_mapped = encodeURIComponent(JSON.stringify({
                                         'id': opp?.['id'],
                                         'code': opp?.['code'],
                                         'title': opp?.['title']
@@ -1559,7 +1559,7 @@ $(document).ready(function () {
                                     let quotation = encodeURIComponent(JSON.stringify(opp?.['quotation']));
                                     let sale_order = encodeURIComponent(JSON.stringify(opp?.['sale_order']));
                                     $('#create-advance-payment-shortcut').removeClass('disabled');
-                                    $('#create-advance-payment-shortcut').attr('data-sale_code_mapped', sale_code_mapped)
+                                    $('#create-advance-payment-shortcut').attr('data-opp_mapped', opp_mapped)
                                     $('#create-advance-payment-shortcut').attr('data-quotation_object', quotation)
                                     $('#create-advance-payment-shortcut').attr('data-sale_order_object', sale_order)
                                     break;
@@ -1591,7 +1591,7 @@ $(document).ready(function () {
                             let opp_list = results[0];
                             for (let opp of opp_list) {
                                 if (opp?.['id'] === dataInitSaleCode?.['id']) {
-                                    let sale_code_mapped = encodeURIComponent(JSON.stringify({
+                                    let opp_mapped = encodeURIComponent(JSON.stringify({
                                         'id': opp?.['id'],
                                         'code': opp?.['code'],
                                         'title': opp?.['title']
@@ -1599,7 +1599,7 @@ $(document).ready(function () {
                                     let quotation = encodeURIComponent(JSON.stringify(opp?.['quotation']));
                                     let sale_order = encodeURIComponent(JSON.stringify(opp?.['sale_order']));
                                     $('#create-payment-shortcut').removeClass('disabled')
-                                    $('#create-payment-shortcut').attr('data-sale_code_mapped', sale_code_mapped)
+                                    $('#create-payment-shortcut').attr('data-opp_mapped', opp_mapped)
                                     $('#create-payment-shortcut').attr('data-quotation_object', quotation)
                                     $('#create-payment-shortcut').attr('data-sale_order_object', sale_order)
                                     break;
@@ -1607,7 +1607,7 @@ $(document).ready(function () {
                             }
                         })
 
-                    $('#create-return-advance-shortcut').attr('data-opportunity_mapped', encodeURIComponent(JSON.stringify({
+                    $('#create-return-advance-shortcut').attr('data-opportunity', encodeURIComponent(JSON.stringify({
                         'id': dataInitSaleCode?.['id'],
                         'code': dataInitSaleCode?.['code'],
                         'title': dataInitSaleCode?.['title']

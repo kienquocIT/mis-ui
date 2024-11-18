@@ -385,6 +385,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_FOR_BIDDING_LIST = StringUrl('bidding/account-list')
     DOCUMENT_MASTERDATA_BIDDING_LIST = StringUrl('bidding/document-list')
     BIDDING_DETAIL = StringUrl('bidding/detail')
+    BIDDING_RESULT_CONFIG_LIST = StringUrl('bidding/bidding-result-config')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')

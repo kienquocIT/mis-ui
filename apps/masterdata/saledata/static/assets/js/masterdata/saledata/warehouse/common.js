@@ -41,25 +41,53 @@ class WarehouseLoadPage {
         })
     }
 
-    static getFormDataCreate() {
-        let type = $('#warehouseType').val();
-        let data = {
+    static getFormData() {
+        let shelf_data_new = []
+        let shelf_data_update = []
+        $('.shelf').each(function () {
+            if ($(this).attr('data-shelf-id')) {
+                // shelf_data_update.push({
+                //     'shelf_id': $(this).attr('data-shelf-id'),
+                //     'shelf_title': $(this).find('.shelf-title').text(),
+                //     'shelf_position': $(this).attr('style'),
+                //     'shelf_order': $(this).attr('data-shelf-order'),
+                //     'shelf_row': $(this).attr('data-shelf-row'),
+                //     'shelf_column': $(this).attr('data-shelf-col')
+                // })
+                shelf_data_new.push({
+                    'shelf_title': $(this).find('.shelf-title').text(),
+                    'shelf_position': $(this).attr('style'),
+                    'shelf_order': $(this).attr('data-shelf-order'),
+                    'shelf_row': $(this).attr('data-shelf-row'),
+                    'shelf_column': $(this).attr('data-shelf-col')
+                })
+            }
+            else {
+                shelf_data_new.push({
+                    'shelf_title': $(this).find('.shelf-title').text(),
+                    'shelf_position': $(this).attr('style'),
+                    'shelf_order': $(this).attr('data-shelf-order'),
+                    'shelf_row': $(this).attr('data-shelf-row'),
+                    'shelf_column': $(this).attr('data-shelf-col')
+                })
+            }
+        })
+        return {
             'title': $('#inpTitle').val(),
             'remarks': $('#inpRemarks').val(),
             'address': $('#addressDetail').val(),
             'city': cityEle.val(),
             'district': districtEle.val(),
             'ward': wardEle.val(),
-            'warehouse_type': type,
-            'agency': agencyEle.val(),
+            'agency': $('#checkAgencyLocation').prop('checked') ? agencyEle.val() : null,
             'full_address': $('#warehouseAddress').val(),
             'is_active': $('#inputActive').is(':checked'),
-            'is_dropship': $('#checkDropShip').prop('checked')
+            'is_dropship': $('#checkDropShip').prop('checked'),
+            'is_bin_location': $('#checkBinLocation').prop('checked'),
+            'is_agency_location': $('#checkAgencyLocation').prop('checked'),
+            'shelf_data_new': shelf_data_new,
+            'shelf_data_update': shelf_data_update
         }
-        if (type !== '3') {
-            delete data['agency']
-        }
-        return data
     }
 
     static loadDetail(frmDetail, pk, type='detail') {
@@ -75,24 +103,12 @@ class WarehouseLoadPage {
                 $('#inpTitle').val(detail.title);
                 $('#inpRemarks').val(detail.remarks);
 
-                let agencyParentEle = agencyEle.closest('.form-group');
-                let typeEle = $('#warehouseType')
-                switch (detail.warehouse_type) {
-                    case 1:
-                        $('#checkDropShip').prop('checked', true);
-                        typeEle.val(1);
-                        break;
-                    case 2:
-                        $('#checkBinLocation').prop('checked', true);
-                        typeEle.val(2);
-                        break;
-                    case 3:
-                        $('#checkAgencyLocation').prop('checked', true);
-                        agencyParentEle.removeClass('hidden');
-                        WarehouseLoadPage.loadAgency(detail.agency);
-                        typeEle.val(3);
-                        break;
-                }
+                $('#checkDropShip').prop('checked', detail?.['is_dropship']);
+                $('#checkBinLocation').prop('checked', detail?.['is_bin_location']);
+                $('#bin-location-area').prop('hidden', !detail?.['is_bin_location']);
+                $('#checkAgencyLocation').prop('checked', detail?.['is_agency_location']);
+                $('#hidden-place').prop('hidden', !detail?.['is_agency_location']);
+                WarehouseLoadPage.loadAgency(detail.agency);
 
                 $('#inputActive').prop('checked', detail.is_active);
                 $('#warehouseAddress').val(detail.full_address);
@@ -126,66 +142,13 @@ class WarehouseLoadPage {
                 }
                 $(document.getElementsByClassName('shelf')).resizable({ghost: true}).draggable({containment: "#shelf-map"})
                 if (type === 'detail') {
-                    $('form input').prop('disabled', true)
-                    $('textarea').prop('disabled', true)
+                    $('form input').prop('disabled', true).prop('readonly', true)
+                    $('textarea').prop('disabled', true).prop('readonly', true)
                     $(document.getElementsByClassName('delete-shelf')).remove()
                     $(document.getElementsByClassName('ui-resizable-handle')).remove()
                 }
             }
         })
-    }
-
-    static getFormDataUpdate() {
-        let shelf_data_new = []
-        let shelf_data_update = []
-        $('.shelf').each(function () {
-            if ($(this).attr('data-shelf-id')) {
-                // shelf_data_update.push({
-                //     'shelf_id': $(this).attr('data-shelf-id'),
-                //     'shelf_title': $(this).find('.shelf-title').text(),
-                //     'shelf_position': $(this).attr('style'),
-                //     'shelf_order': $(this).attr('data-shelf-order'),
-                //     'shelf_row': $(this).attr('data-shelf-row'),
-                //     'shelf_column': $(this).attr('data-shelf-col')
-                // })
-                shelf_data_new.push({
-                    'shelf_title': $(this).find('.shelf-title').text(),
-                    'shelf_position': $(this).attr('style'),
-                    'shelf_order': $(this).attr('data-shelf-order'),
-                    'shelf_row': $(this).attr('data-shelf-row'),
-                    'shelf_column': $(this).attr('data-shelf-col')
-                })
-            }
-            else {
-                shelf_data_new.push({
-                    'shelf_title': $(this).find('.shelf-title').text(),
-                    'shelf_position': $(this).attr('style'),
-                    'shelf_order': $(this).attr('data-shelf-order'),
-                    'shelf_row': $(this).attr('data-shelf-row'),
-                    'shelf_column': $(this).attr('data-shelf-col')
-                })
-            }
-        })
-        let type = $('#warehouseType').val();
-        let data = {
-            'title': $('#inpTitle').val(),
-            'remarks': $('#inpRemarks').val(),
-            'address': $('#addressDetail').val(),
-            'city': cityEle.val(),
-            'district': districtEle.val(),
-            'ward': wardEle.val(),
-            'warehouse_type': type,
-            'agency': agencyEle.val(),
-            'full_address': $('#warehouseAddress').val(),
-            'is_active': $('#inputActive').is(':checked'),
-            'is_dropship': $('#checkDropShip').prop('checked'),
-            'shelf_data_new': shelf_data_new,
-            'shelf_data_update': shelf_data_update
-        }
-        if (type !== '3') {
-            data['agency'] = null;
-        }
-        return data
     }
 }
 
@@ -203,33 +166,23 @@ function eventPage() {
         $('#modalWarehouseAddress').modal('hide');
     })
 
-    $('#checkAgencyLocation').on('change', function () {
-        if ($(this).is(':checked')) {
-            agencyEle.closest('.form-group').removeClass('hidden');
-        } else {
-            agencyEle.closest('.form-group').addClass('hidden');
+    $('#checkDropShip').on('change', function () {
+        if ($(this).prop('checked')) {
+            $('#warehouseAddress').val('')
+            $('#warehouseAddress').closest('.form-group').find('label').removeClass('required')
+        }
+        else {
+            $('#warehouseAddress').closest('.form-group').find('label').addClass('required')
         }
     })
 
-    $(".checkType").change(function () {
-        let typeEle = $('#warehouseType');
-        if ($(this).is(':checked')) {
-            let id = $(this).attr("id");
-            $(".checkType").not(this).prop("checked", false);
+    $('#checkAgencyLocation').on('change', function () {
+        $('#hidden-place').prop('hidden', !$(this).is(':checked'));
+    })
 
-            if (id === "checkDropShip") {
-                typeEle.val(1);
-            } else if (id === "checkBinLocation") {
-                typeEle.val(2);
-            } else if (id === "checkAgencyLocation") {
-                typeEle.val(3);
-            }
-        }
-        else{
-            typeEle.val(0);
-        }
-
-    });
+    $('#checkBinLocation').on('change', function () {
+        $('#bin-location-area').prop('hidden', !$(this).is(':checked'));
+    })
 }
 
 $('#shelf-map').resizable()

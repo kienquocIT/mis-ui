@@ -1,0 +1,36 @@
+{% load i18n %}
+
+<div class="row" id="bin-location-area" hidden>
+    <div class="col-12">
+        <div class="border rounded p-2">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-2">
+                    <div class="form-group">
+                        <label class="form-label" for="new-shelf-title">{% trans 'Shelf title' %}</label>
+                        <input type="text" class="form-control" id="new-shelf-title">
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 col-lg-2">
+                    <div class="form-group">
+                        <label class="form-label required" for="new-shelf-row">{% trans 'Shelf row' %}</label>
+                        <input class="form-control" id="new-shelf-row" type="number" placeholder="shelf row" value="1">
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 col-lg-2">
+                    <div class="form-group">
+                        <label class="form-label required" for="new-shelf-col">{% trans 'Shelf column' %}</label>
+                        <input class="form-control" id="new-shelf-col" type="number" placeholder="shelf column" value="1">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button type="button" class="btn btn-primary btn-xs" id="new-shelf">{% trans 'Add shelf' %}</button>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div id="shelf-map" class="p-2 w-100 border rounded-3 min-h-350p"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

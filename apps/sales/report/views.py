@@ -5,6 +5,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL
 from apps.shared.msg import ReportMsg
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from django.core.cache import cache
 
 FILTER_QUARTER = (
     (1, ReportMsg.QUARTER_FIRST),
@@ -276,6 +279,25 @@ class GetQRCodeSerialInfoAPI(APIView):
         path = f"apps/sales/report/static/assets/sales/inventory_report/QR_sn_info/{data.get('product_id')}_{data.get('serial_number')}.png"
         img.save(path)
         return {'qr_path_sn': [{'path': path.replace('apps/sales/report', '')}]}, status.HTTP_200_OK
+
+
+class ReportInventoryChatBotAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        contexts = params.get('contexts')
+        question = params.get('question')
+        vectorizer = TfidfVectorizer()
+        context_sentences = [sentence.strip() for sentence in contexts.split('.') if sentence]
+        context_vectors = vectorizer.fit_transform(context_sentences)
+        question_vector = vectorizer.transform([question])
+        similarities = cosine_similarity(question_vector, context_vectors).flatten()
+        best_context = context_sentences[similarities.argmax()]
+        return {'response': best_context}, status.HTTP_200_OK
 
 
 # REPORT PIPELINE

@@ -680,6 +680,8 @@ $(function () {
             $btnCreateSub.off().on('click', function () {
                 // call form create-task.js
                 const taskID = $(this).closest('form').find('[name="id"]').val()
+                const taskTxt = $(this).closest('form').find('[name="title"]').val()
+                $('#drawer_task_create .simplebar-content-wrapper').animate({ scrollTop: 0}, "fast");
                 let oppData = {}
                 if ($oppElm.val())
                     oppData = {
@@ -691,7 +693,9 @@ $(function () {
                     $('.title-create').removeClass("hidden")
                     $('.title-detail').addClass("hidden")
                     $('.btn-assign').removeClass('disabled')
+                    $('.parents-block').removeClass('hidden')
                     // after reset
+                    $('[name="parent"]', $formElm).val(taskTxt)
                     $formElm.append(`<input type="hidden" name="parent_n" value="${taskID}"/>`)
                     if (Object.keys(oppData).length) {
                         $oppElm.append(`<option value="${oppData.id}" selected>${oppData.title}</option>`)

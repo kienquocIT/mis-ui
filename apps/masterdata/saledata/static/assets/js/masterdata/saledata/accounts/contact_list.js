@@ -15,7 +15,7 @@ $(document).ready(function () {
         },
         columns: [
             {
-                'render': (data, type, row, meta) => {
+                'render': () => {
                     return ``;
                 }
             },
@@ -30,39 +30,39 @@ $(document).ready(function () {
             {
                 className: 'wrap-text w-20',
                 'data': 'full_name',
-                render: (data, type, row, meta) => {
+                render: (data, type, row) => {
                     let urlDetail = baseUrlDetail.replace("0", row?.['id']);
-                    return `<a href="${urlDetail}"><b>${row.fullname}</b></a>`
+                    return `<a href="${urlDetail}"><b>${row?.['fullname']}</b></a>`
                 }
             }, {
                 className: 'wrap-text w-15',
                 'data': 'job_title',
-                render: (data, type, row, meta) => {
-                    return `<span>${row.job_title}</span>`
+                render: (data, type, row) => {
+                    return `<span class="text-blue">${row?.['job_title']}</span>`
                 }
             }, {
                 className: 'wrap-text w-15',
                 'data': 'account_name',
-                'render': (data, type, row, meta) => {
+                'render': (data, type, row) => {
                     return `<span class="fw-bold">${row?.['account_name']?.['name'] ? row['account_name']['name'] : ''}</span>`
                 }
             }, {
                 className: 'wrap-text w-10',
                 'data': 'mobile',
-                'render': (data, type, row, meta) => {
-                    return `<span>${row.mobile ? row.mobile : ''}</span><span>${row.phone && row.mobile ? ' | ' : ''}<span>${row.phone ? row.phone : ''}</span>`;
+                'render': (data, type, row) => {
+                    return `<span>${row?.['mobile'] ? row?.['mobile'] : ''}</span><span>${row?.['phone'] ? ' | ' + row?.['phone'] : ''}</span>`;
                 }
             }, {
                 className: 'wrap-text w-15',
                 'data': 'email',
-                'render': (data, type, row, meta) => {
-                    return `<span>${row.email ? row.email : ''}</span>`;
+                'render': (data, type, row) => {
+                    return `<span>${row?.['email'] ? row?.['email'] : ''}</span>`;
                 }
             }, {
                 className: 'wrap-text w-15',
                 'data': 'owner',
-                'render': (data, type, row, meta) => {
-                    return `<span class="text-blue">${row.owner.fullname ? row.owner.fullname : ''}</span>`
+                'render': (data, type, row) => {
+                    return `<span class="badge badge-outline badge-secondary w-100">${row?.['owner']?.['fullname'] ? row?.['owner']?.['fullname'] : ''}</span>`
                 }
             }
         ],

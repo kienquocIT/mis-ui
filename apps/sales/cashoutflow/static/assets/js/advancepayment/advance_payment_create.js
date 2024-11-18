@@ -1,7 +1,19 @@
 $(document).ready(function () {
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
-    APHandle.LoadPage();
+    const urlParams = new URLSearchParams(window.location.search)
+    let opportunity_json= urlParams.get('opp_mapped')
+    let opportunity = opportunity_json ? JSON.parse(decodeURIComponent(opportunity_json)) : null
+    let quotation_json= urlParams.get('quotation_object')
+    let quotation = quotation_json ? JSON.parse(decodeURIComponent(quotation_json)) : null
+    let sale_order_json= urlParams.get('sale_order_object')
+    let sale_order = sale_order_json ? JSON.parse(decodeURIComponent(sale_order_json)) : null
+    if (opportunity) {
+        opportunity['quotation'] = quotation
+        opportunity['sale_order'] = sale_order
+    }
+
+    APHandle.LoadPage(opportunity);
     WFRTControl.setWFInitialData('advancepayment', 'POST')
 
     // SUBMIT FORM CREATE ADVANCE PAYMENT
@@ -18,13 +30,6 @@ $(document).ready(function () {
             key: 'supplier_id',
             condition: (value, element) => {
                 let conditions = [APTypeEle.val() === '1', value]
-                return conditions.every(c => c)
-            },
-
-        }, {
-            key: 'employee_inherit_id',
-            condition: (value, element) => {
-                let conditions = [APTypeEle.val() === '0', value]
                 return conditions.every(c => c)
             },
         },

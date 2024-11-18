@@ -6,6 +6,8 @@ $(document).ready(function () {
         BiddingLoadDataHandle.loadOpenAttachFile(this);
     });
     let transScript = $('#trans-script')
+    let $urlBidResultConfig = $('#app-url-factory').attr('data-bid-result-config')
+
     $('#btn-attach-invite-doc').on('click', function () {
         BiddingStoreHandle.storeAttachment()
         BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
@@ -70,7 +72,6 @@ $(document).ready(function () {
          BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
     });
 
-
     // call ajax get data detail
     $.fn.callAjax2({
         url: formSubmit.data('url'),
@@ -105,6 +106,7 @@ $(document).ready(function () {
                     $('#btn-open-bidder-modal').prop('disabled',true)
                     $('#inp-contents').prop('disabled',true)
                     data['isDetail'] = true
+                    new PrintTinymceControl().render('ad1e1c4e-2a7e-4b98-977f-88d069554657', data, false);
                 } else {
                     if ($('#bid-bond-value').attr('value')) {
                         $('#bid-guarantee').attr('disabled',false)
@@ -115,17 +117,9 @@ $(document).ready(function () {
                 }
                 BiddingLoadDataHandle.loadDetail(data);
                 let empCurrent = JSON.parse($('#employee_current').text());
-                console.log(empCurrent)
-                let isCreatedUser = empCurrent?.["id"] === data?.["employee_created_id"]
-                if(isCreatedUser && (data?.['system_status'] === 3)){
-                    $('#btn-save-result').attr('disabled', false)
-                    $('#btn-open-bidder-modal').attr('disabled', false)
-                    $('#bid-status-won').attr('disabled', false)
-                    $('#bid-status-lost').attr('disabled', false)
-                    if($('#cause-other').is(':checked')){
-                        $('#cause-other-input').prop('disabled', false);
-                    }
-                }
+                let systemStatus = data?.['system_status']
+                loadUIBidResult(empCurrent, systemStatus)
+
                 // file
                 new $x.cls.file($('#attachment')).init({
                     name: 'attachment',
@@ -134,7 +128,6 @@ $(document).ready(function () {
                 });
                 // init workflow
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
-                // get WF initial zones for change
             }
         }
     )
@@ -232,4 +225,37 @@ $(document).ready(function () {
             }
         )
     })
+
+    function loadUIBidResult(empCurrent, sysStatus) {
+        console.log($urlBidResultConfig)
+        $.fn.callAjax2({
+            url: $urlBidResultConfig,
+            method: 'GET',
+        }).then(
+            (resp)=>{
+                let dataConfig = $.fn.switcherResp(resp);
+                if(dataConfig){
+                    let employeeList = dataConfig?.["bidding_result_config"][0]?.["employee"]
+                    // !! convert value to boolean
+                    let isAllowedModify = !!employeeList.find(item => item?.["id"] === empCurrent?.["id"])
+                    if(isAllowedModify && sysStatus === 3){
+                        $('#btn-save-result').attr('disabled', false)
+                        $('#btn-open-bidder-modal').attr('disabled', false)
+                        $('#bid-status-won').attr('disabled', false)
+                        $('#bid-status-lost').attr('disabled', false)
+                        $('input[name="cause_of_lost"]').each(function () {
+                            $(this).attr('disabled', false)
+                        })
+                        if($('#cause-other').is(':checked')){
+                            $('#cause-other-input').prop('disabled', false);
+                        }
+                        BiddingDataTableHandle.$tableBidder.find('tbody tr').each(function (){
+                            $(this).find(".bidder-checkbox").prop("disabled", false)
+                            $(this).find("button").prop("disabled", false)
+                        })
+                    }
+                }
+            }
+        );
+    }
 });

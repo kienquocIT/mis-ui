@@ -8,8 +8,10 @@ $(document).ready(function () {
     let quotation = quotation_json ? JSON.parse(decodeURIComponent(quotation_json)) : null
     let sale_order_json= urlParams.get('sale_order_object')
     let sale_order = sale_order_json ? JSON.parse(decodeURIComponent(sale_order_json)) : null
-    opportunity['quotation'] = quotation
-    opportunity['sale_order'] = sale_order
+    if (opportunity) {
+        opportunity['quotation'] = quotation
+        opportunity['sale_order'] = sale_order
+    }
 
     APHandle.LoadPage(opportunity);
     WFRTControl.setWFInitialData('advancepayment', 'POST')

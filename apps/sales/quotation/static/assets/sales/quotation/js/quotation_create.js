@@ -18,7 +18,6 @@ $(function () {
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         QuotationLoadDataHandle.loadInitDate();
 
-        // QuotationLoadDataHandle.loadInitQuotationProduct();
         // init dataTable
         QuotationDataTableHandle.dataTableSelectProduct();
         QuotationDataTableHandle.dataTableProduct();
@@ -912,7 +911,7 @@ $(function () {
         });
 
         function submitHandlerFunc() {
-            if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
+            if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method').toLowerCase() === "post") { // HAS PROMOTION => Check condition again
                 QuotationPromotionHandle.callPromotion(1);
                 // Check promotion then Submit Form
                 submitCheckPromotion();
@@ -1063,6 +1062,7 @@ $(function () {
                     'is_change',
                     'document_root_id',
                     'document_change_order',
+                    'is_recurring',
                 ]
             }
             if (_form.dataForm) {

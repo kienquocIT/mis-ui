@@ -219,7 +219,7 @@ class SaleOrderDetailDeliveryAPI(APIView):
         is_api=True,
     )
     def post(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SALEORDER_CALL.fill_key(pk=pk)).post(data={})
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SALEORDER_CALL.fill_key(pk=pk)).post(data=request.data)
         return resp.auto_return()
 
 
@@ -351,3 +351,14 @@ class SOProductWOListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.SALE_ORDER_PRODUCT_WO_LIST).get(data)
         return resp.auto_return(key_success='sale_order_product_wo')
+
+
+class SORecurrenceListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.SALE_ORDER_RECURRENCE_LIST).get(data)
+        return resp.auto_return(key_success='sale_order_recurrence')

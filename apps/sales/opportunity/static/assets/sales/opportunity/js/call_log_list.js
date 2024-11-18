@@ -201,6 +201,16 @@ $(document).on('click', '#table_opportunity_call_log_list .detail-call-log-butto
     $('#detail-account-select-box option').remove();
     $('#detail-account-select-box').append(`<option selected>${call_log_obj.opportunity.customer.title}</option>`);
 
+    const process$ = $('#detail-inp-process');
+    process$.find('option').remove();
+    if (call_log_obj?.process){
+        process$.append(`<option selected>${call_log_obj.process.title}</option>`).initSelect2({
+            disabled: true,
+        });
+        const link$ = process$.siblings('.link-process-detail');
+        link$.attr('href', link$.data('href').replaceAll('__pk__', call_log_obj.process.id));
+    }
+
     $('#detail-contact-select-box option').remove();
     $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);
 
@@ -290,7 +300,7 @@ $(document).ready(function () {
         {
             submitHandler: function (form, event) {
                 event.preventDefault();
-                let combinesData = new CallLogHandle().combinesData($(this));
+                let combinesData = new CallLogHandle().combinesData($(form));
                 if (combinesData) {
                     WindowControl.showLoading();
                     $.fn.callAjax2(combinesData)
@@ -300,7 +310,7 @@ $(document).ready(function () {
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     setTimeout(() => {
-                                        window.location.href = $(this).attr('data-url-redirect');
+                                        window.location.href = $(form).attr('data-url-redirect');
                                     }, 1000);
                                 }
                             },

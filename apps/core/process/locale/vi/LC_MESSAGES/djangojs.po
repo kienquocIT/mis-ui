@@ -236,3 +236,7 @@ msgstr "Huỷ bỏ"
 #
 msgid "If the documents has a process applied, the documents status is Approved or Completed to be counted in the number of completed conditions"
 msgstr "Nếu tài liệu có quy trình được áp dụng, trạng thái của tài liệu là Đã phê duyệt hoặc Hoàn thành để được tính vào số điều kiện đã hoàn thành"
+
+#
+msgid "Application is not supported"
+msgstr "Ứng dụng không hỗ trợ"

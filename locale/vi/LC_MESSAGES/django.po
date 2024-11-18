@@ -9617,6 +9617,19 @@ msgid "Select required documents"
 msgstr "Chọn tài liệu cho thầu"
 
 #
+msgid "Out form"
+msgstr "Chọn một cộng tác viên thao tác"
+
+#
+msgid "In workflow"
+msgstr "Nhiều cộng tác viên cùng thao tác"
+
+#
+msgid "Configuration"
+msgstr "Cấu hình"
+msgstr "Chọn tài liệu cho thầu"
+
+#
 msgid "Agency/Partner Location"
 msgstr "Đại lí/Đối tác"
 

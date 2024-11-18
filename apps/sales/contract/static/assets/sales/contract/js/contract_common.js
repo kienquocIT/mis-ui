@@ -254,12 +254,25 @@ class ContractLoadDataHandle {
     // DETAIL
     static loadDetail(data) {
         $('#contract-title').val(data?.['title']);
-        if (data?.['opportunity_data']?.['id']) {
-            ContractLoadDataHandle.loadInitS2(ContractLoadDataHandle.$boxOpp, [data?.['opportunity_data']], {}, null, false, {'res1': 'code', 'res2': 'title'});
-        }
-        if (data?.['employee_inherit_data']?.['id']) {
-            ContractLoadDataHandle.loadInitS2(ContractLoadDataHandle.$boxEmp, [data?.['employee_inherit_data']], {}, null, false, {'res1': 'code', 'res2': 'title'});
-        }
+
+        new $x.cls.bastionField({
+            has_opp: true,
+            has_inherit: true,
+            has_process: true,
+            data_opp: [{
+                ...data?.['opportunity_data'],
+                'selected': true,
+            }],
+            data_process: [{
+                ...data?.['process'],
+                'selected': true,
+            }],
+            data_inherit: [{
+                ...data?.['employee_inherit_data'],
+                'selected': true,
+            }],
+        }).init();
+
         ContractLoadDataHandle.setupDetailDocAttach(data);
         ContractDataTableHandle.$tableDocument.DataTable().rows.add(data?.['document_data']).draw();
         ContractDataTableHandle.$tableDocument.DataTable().rows().every(function () {

@@ -15,6 +15,8 @@ function resetFormTask() {
     $('[name="parent_n"]').remove();
     window.editor.setData('')
     $('.create-task').attr('disabled', false);
+    $('.parents-block').addClass('hidden')
+
     const $attachElm = $('#assigner_attachment'), $attachElmAssignee = $('#assignee_attachment');
     $attachElm.find('.dm-uploader').dmUploader("reset")
     $attachElm.find('.dm-uploader-result-list').html('');

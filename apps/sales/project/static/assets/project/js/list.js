@@ -17,7 +17,7 @@ $(document).ready(function(){
         useDataServer: true,
         info: true,
         pageLength: 50,
-        autoWidth: true,
+        autoWidth: false,
         scrollX: true,
         columns: [
             {

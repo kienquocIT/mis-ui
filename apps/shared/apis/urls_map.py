@@ -757,3 +757,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Recurrence
     RECURRENCE_LIST = StringUrl('recurrence/list')
     RECURRENCE_DETAIL = StringUrl('recurrence')
+
+    # HRM
+    HRM_EMPLOYEE_NOT_MAP_HRM = StringUrl('hrm/employee-not-map/list')
+    HRM_EMPLOYEE_INFO_LIST = StringUrl('hrm/employee-info/list')
+    HRM_EMPLOYEE_INFO_DETAIL = StringUrl('hrm/employee-info/detail/{pk}')

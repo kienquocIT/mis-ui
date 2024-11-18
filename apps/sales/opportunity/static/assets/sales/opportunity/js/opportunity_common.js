@@ -1038,7 +1038,7 @@ class OpportunityActivity {
                         window.checklist.render()
                         $('.create-subtask, .create-checklist').addClass('hidden')
                         if (data?.['task_log_work'].length) OpportunityActivity.tabLogWork(data['task_log_work'])
-                        if (data?.['sub_task_list']) OpportunityActivity.tabSubtask(data['sub_task_list'])
+                        if (data?.['sub_task_list']) OpportunityActivity.tabSubtask(data.id)
                         if (data.attach) {
                             const fileDetail = data.attach[0]?.['files']
                             FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);

@@ -772,7 +772,7 @@ class QuotationLoadDataHandle {
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
                 // load Description
                 if (description) {
-                    description.innerHTML = data?.['description'] ? data?.['description'] : '--';
+                    description.innerHTML = data?.['description'] ? data?.['description'] : '';
                 }
                 // load UOM
                 if (uom && data?.['unit_of_measure'] && data?.['uom_group']) {
@@ -2537,11 +2537,11 @@ class QuotationDataTableHandle {
                         }
                         let des = "--";
                         if (itemType === 0) {  // PRODUCT
-                            des = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '--';
+                            des = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '';
                         } else if (itemType === 1) {  // PROMOTION
-                            des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '--';
+                            des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '';
                         }
-                        return `<div class="row"><textarea class="form-control form-control-line table-row-description zone-readonly" rows="2" data-zone="${dataZone}" readonly>${des}</textarea></div>`;
+                        return `<div class="row"><textarea class="form-control table-row-description zone-readonly" rows="2" data-zone="${dataZone}" readonly>${des}</textarea></div>`;
                     }
                 },
                 {
@@ -3624,7 +3624,7 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<textarea class="form-control form-control-line table-row-description" rows="2" readonly>${row?.['description'] ? row?.['description'] : ''}</textarea>`
+                        return `<textarea class="form-control table-row-description" rows="2" readonly>${row?.['description'] ? row?.['description'] : ''}</textarea>`
                     }
                 },
                 {

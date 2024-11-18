@@ -5,8 +5,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
-from apps.shared.constant import SYSTEM_STATUS
+from apps.shared import mask_view, ServerAPI, ApiURL
 from apps.shared.msg import CoreMsg
 
 
@@ -36,7 +35,7 @@ class RecurrenceList(View):
         breadcrumb='RECURRENCE_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class RecurrenceCreate(View):
@@ -124,3 +123,16 @@ class RecurrenceDetailAPI(APIView):
             pk=pk,
             msg=CoreMsg.RECURRENCE_UPDATE
         )
+
+
+class TransactionTemplateList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='core/recurrence/recurrence_template.html',
+        menu_active='menu_transaction_template',
+        breadcrumb='RECURRENCE_LIST_PAGE',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

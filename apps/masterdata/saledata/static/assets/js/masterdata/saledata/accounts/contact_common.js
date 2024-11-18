@@ -110,14 +110,13 @@ $('#save-changes-modal-work-address').on('click', function () {
         let district_id = wDistrictEle.val();
         let ward_id = wWardEle.val();
 
-        if (country_id && city_id && district_id && ward_id) {
+        if (country_id && city_id && district_id) {
             let detail_work_address = wWorkAddrDetail.val();
             let city = wCityEle.find(`option[value="` + city_id + `"]`).text();
             let district = wDistrictEle.find(`option[value="` + district_id + `"]`).text();
             let ward = wWardEle.find(`option[value="` + ward_id + `"]`).text();
 
             if (detail_work_address || city || district || ward) {
-                console.log(wAddr, detail_work_address, ward, district, city)
                 loadAddressDisplay(wAddr, detail_work_address, ward, district, city);
                 $(this).closest('div.modal').modal('hide');
             } else {
@@ -168,7 +167,7 @@ $('#save-changes-modal-home-address').on('click', function () {
         let district_id = hDistrict.val();
         let ward_id = hWard.val();
 
-        if (country_id && city_id && district_id && ward_id) {
+        if (country_id && city_id && district_id) {
             let detail_home_address = wHomeAddrDetail.val();
             let city = hCity.find(`option:selected`).text();
             let district = hDistrict.find(`option:selected`).text();

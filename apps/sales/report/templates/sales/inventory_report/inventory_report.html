@@ -101,7 +101,7 @@
             data-url-inventory-list-view="{% url 'ReportInventoryProductWarehouseViewAPI' %}"
             data-url-qr-code-sn-info="{% url 'GetQRCodeSerialInfoAPI' %}"
             data-url-qr-code-lot-info="{% url 'GetQRCodeLotInfoAPI' %}"
-            data-url-chatbot="{% url 'ReportInventoryChatBotAPI' %}"
+{#            data-url-chatbot="{% url 'ReportInventoryChatBotAPI' %}"#}
     ></script>
 
     <div class="row">
@@ -298,37 +298,37 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <!-- Khung Chat -->
-            <div id="chatPopup" class="chat-popup" style="z-index: 4">
-                <div class="chat-header text-primary" id="toggleChat">
-                    <span><i class="fas fa-comments"></i></span>
-                </div>
-                <div class="chat-content">
-                    <div class="row">
-                        <div class="col-12" id="chat-show-space" style="overflow-y: auto; max-height: 300px">
-                            <div class="text-left">
-                                <div class="you bg-white p-2" style="max-width: 80%; border-radius: 0.375rem">
-                                    Xin chào👋! Tôi có thể hỗ trợ bạn về dữ liệu trong Báo cáo này.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-5">
-                        <div class="col-12">
-                            <div class="form-group d-flex">
-                                <textarea class="form-control" id="input-chat" placeholder="{% trans 'Type here...' %}"></textarea>
-                                <label for="input-chat" class="form-label">
-                                    <button id="send-message" class="btn fw-bold text-primary w-100 h-100"><i class="far fa-paper-plane"></i></button>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+{#    <div class="row">#}
+{#        <div class="col-12">#}
+{#            <!-- Khung Chat -->#}
+{#            <div id="chatPopup" class="chat-popup" style="z-index: 4">#}
+{#                <div class="chat-header text-primary" id="toggleChat">#}
+{#                    <span><i class="fas fa-comments"></i></span>#}
+{#                </div>#}
+{#                <div class="chat-content">#}
+{#                    <div class="row">#}
+{#                        <div class="col-12" id="chat-show-space" style="overflow-y: auto; max-height: 300px">#}
+{#                            <div class="text-left">#}
+{#                                <div class="you bg-white p-2" style="max-width: 80%; border-radius: 0.375rem">#}
+{#                                    Xin chào👋! Tôi có thể hỗ trợ bạn về dữ liệu trong Báo cáo này.#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="row mt-5">#}
+{#                        <div class="col-12">#}
+{#                            <div class="form-group d-flex">#}
+{#                                <textarea class="form-control" id="input-chat" placeholder="{% trans 'Type here...' %}"></textarea>#}
+{#                                <label for="input-chat" class="form-label">#}
+{#                                    <button id="send-message" class="btn fw-bold text-primary w-100 h-100"><i class="far fa-paper-plane"></i></button>#}
+{#                                </label>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
 
     <div class="modal fade" style="z-index: 2" id="view-prd-wh" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg min-w-1280p" role="document">

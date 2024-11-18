@@ -1,7 +1,7 @@
 from django.urls import path
 
 from apps.core.recurrence.views import RecurrenceCreate, RecurrenceListAPI, RecurrenceList, RecurrenceDetail, \
-    RecurrenceDetailAPI, RecurrenceUpdate
+    RecurrenceDetailAPI, RecurrenceUpdate, TransactionTemplateList
 
 urlpatterns = [
     path('lists', RecurrenceList.as_view(), name='RecurrenceList'),
@@ -10,4 +10,5 @@ urlpatterns = [
     path('detail/<str:pk>', RecurrenceDetail.as_view(), name='RecurrenceDetail'),
     path('detail-api/<str:pk>', RecurrenceDetailAPI.as_view(), name='RecurrenceDetailAPI'),
     path('update/<str:pk>', RecurrenceUpdate.as_view(), name='RecurrenceUpdate'),
+    path('transaction-template/lists', TransactionTemplateList.as_view(), name='TransactionTemplateList'),
 ]

@@ -520,7 +520,7 @@ class BiddingDataTableHandle {
         })
     }
 
-    static dataTableBidder(data) {
+    static dataTableBidder(data, isDetail=false) {
         BiddingDataTableHandle.$tableBidder.DataTableDefault({
             data: data ? data : [],
             ordering: false,
@@ -575,6 +575,12 @@ class BiddingDataTableHandle {
                 });
             },
             initComplete: function (){
+                BiddingDataTableHandle.$tableBidder.find('tbody tr').each(function (){
+                    if (isDetail){
+                        $(this).find(".bidder-checkbox").prop("disabled", true)
+                        $(this).find("button").prop("disabled", true)
+                    }
+                })
             }
         })
     }
@@ -848,7 +854,7 @@ class BiddingSubmitHandle {
             }
         }
         result.push({
-            'title': '',
+            'title': 'Tài liệu đấu thầu',
             'remark':remark,
             'attachment_data': attachment_data,
             'is_invite_doc': true,

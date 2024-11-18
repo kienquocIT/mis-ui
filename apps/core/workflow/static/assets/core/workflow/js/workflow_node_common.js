@@ -431,10 +431,12 @@ class NodeLoadDataHandle {
                         </div>`;
         }
         for (let ele of NodeLoadDataHandle.$modalNode[0].querySelectorAll('.zone-edit')) {
-            $(ele).empty().append(`<div data-simplebar class="nicescroll-bar">${htmlEdit}</div>`);
+            // $(ele).empty().append(`<div data-simplebar class="nicescroll-bar">${htmlEdit}</div>`);
+            $(ele).empty().append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">${htmlEdit}</div>`);
         }
         for (let ele of NodeLoadDataHandle.$modalNode[0].querySelectorAll('.zone-hidden')) {
-            $(ele).empty().append(`<div data-simplebar class="nicescroll-bar">${htmlHidden}</div>`);
+            // $(ele).empty().append(`<div data-simplebar class="nicescroll-bar">${htmlHidden}</div>`);
+            $(ele).empty().append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">${htmlHidden}</div>`);
         }
         return true;
     };

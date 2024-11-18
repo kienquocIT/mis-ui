@@ -200,7 +200,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
 
     #Document
-    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Bidding'), 'DocumentTypeMasterDataList')
+    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Document'), 'DocumentTypeMasterDataList')
+
+    #Bidding Result config
+    BIDDING_RESULT_CONFIG_PAGE = BreadcrumbChildren(_('Bidding'), 'BiddingResultConfigList')
 
     # Sale Activities
     CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call log'), 'OpportunityCallLogList')
@@ -753,6 +756,9 @@ class BreadcrumbView:
 
     #Document
     DOCUMENT_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.DOCUMENT_MASTER_DATA_LIST_PAGE]
+
+    #Bidding Result config
+    BIDDING_RESULT_CONFIG_PAGE = [BreadcrumbItem.BIDDING_RESULT_CONFIG_PAGE]
 
     # Sale Activities
     CALL_LOG_LIST_PAGE = [

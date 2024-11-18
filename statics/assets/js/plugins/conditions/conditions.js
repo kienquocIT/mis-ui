@@ -56,7 +56,7 @@ class Conditions {
                     let sub_formset_temp = [];
                     $(item).find('[data-subformset-body] [data-subformset-form]').each(function () {
                         /*** for loop in sub formset get sub condition ***/
-                        if (!$(this).attr('data-formset-form-deleted')) {
+                        if (!this.hasAttribute('data-formset-form-deleted')) {
                             /*** get data form from sub-formset ***/
                             let left_cond = $(this).find('select[name*="-left_cond"]').val();
                             if ($(this).find('select[name*="-left_cond"]').val()) {

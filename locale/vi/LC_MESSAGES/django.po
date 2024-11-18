@@ -8938,7 +8938,7 @@ msgstr "Chọn một cộng tác viên thao tác"
 
 #
 msgid "Many collaborators action"
-msgstr "Nhiều cộng tác viên cùng thao tác"
+msgstr "Một hoặc nhiều cộng tác viên cùng thao tác"
 
 #
 msgid "Config according to"
@@ -9622,11 +9622,27 @@ msgstr "Chọn một cộng tác viên thao tác"
 
 #
 msgid "In workflow"
-msgstr "Nhiều cộng tác viên cùng thao tác"
+msgstr "Một hoặc nhiều cộng tác viên cùng thao tác"
 
 #
 msgid "Configuration"
 msgstr "Cấu hình"
+
+#
+msgid "Recurrence transaction"
+msgstr "Giao dich lặp lại"
+
+#
+msgid "Recurring order"
+msgstr "Cấu hình lặp lại"
+
+#
+msgid "Transaction template"
+msgstr "Mẫu giao dịch"
+
+#
+msgid "Set as recurring template"
+msgstr "Đặt làm mẫu lặp lại"
 
 #
 msgid "Agency/Partner Location"

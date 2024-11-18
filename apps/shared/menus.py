@@ -240,6 +240,10 @@ class MenusCoreConfigurations:
                 view_name='ProjectConfig',
                 icon='<i class="fa-brands fa-r-project"></i>',
             ),
+            MenuCommon(
+                name='Bidding Result Config', code='menu_bidding_result_config', view_name='BiddingResultConfigList',
+                icon='<i class="fas fa-gavel"></i>',
+            ),
         ]
     )
     TEMPLATES_DATA_CONFIG = MenuCommon(
@@ -350,7 +354,7 @@ class MenusCRM:
                 icon='<i class="fas fa-file"></i>',
             ),
             MenuCommon(
-                name='Transaction template', code='menu_transaction_template', view_name='RecurrenceCreate',
+                name='Transaction template', code='menu_transaction_template', view_name='TransactionTemplateList',
                 icon='<i class="fas fa-file-alt"></i>',
             ),
         ],

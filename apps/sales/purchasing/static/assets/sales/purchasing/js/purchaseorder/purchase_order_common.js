@@ -102,7 +102,7 @@ class POLoadDataHandle {
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
                 // load Description
                 if (description) {
-                    description.innerHTML = data?.['description'] ? data?.['description'] : '--';
+                    description.innerHTML = data?.['description'] ? data?.['description'] : '';
                 }
                 // load UOM
                 if (uom && Object.keys(data?.['unit_of_measure']).length !== 0 && Object.keys(data?.['uom_group']).length !== 0) {
@@ -1574,7 +1574,7 @@ class PODataTableHandle {
                     targets: 2,
                     width: '15%',
                     render: (data, type, row) => {
-                        return `<div class="row"><textarea class="table-row-description form-control form-control-line" rows="2" readonly>${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</textarea></div>`;
+                        return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</textarea></div>`;
                     }
                 },
                 {
@@ -1744,13 +1744,13 @@ class PODataTableHandle {
                         if (row?.['is_shipping'] === true) {
                             return `<input type="text" class="form-control table-row-description" value="">`;
                         }
-                        let des = '--';
+                        let des = '';
                         if (row?.['product']?.['description']) {
                             if (row?.['product']?.['description'] !== '') {
                                 des = row?.['product']?.['description'];
                             }
                         }
-                        return `<div class="row"><textarea class="table-row-description form-control form-control-line" rows="2" readonly>${des}</textarea></div>`;
+                        return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${des}</textarea></div>`;
                     }
                 },
                 {

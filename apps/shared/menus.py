@@ -151,7 +151,7 @@ class MenusCoreConfigurations:
                 icon='<i class="bi bi-person-rolodex"></i>',
             ),
             MenuCommon(
-                name='Items', code='id_menu_master_data_product', view_name='ProductMasterDataList',
+                name='Item', code='id_menu_master_data_product', view_name='ProductMasterDataList',
                 icon='<i class="bi bi-diagram-2-fill"></i>',
             ),
             MenuCommon(

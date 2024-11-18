@@ -62,7 +62,7 @@ $(document).ready(function () {
                 className: 'wrap-text w-15',
                 'data': 'owner',
                 'render': (data, type, row) => {
-                    return `<span>${row?.['owner']?.['fullname'] ? row?.['owner']?.['fullname'] : ''}</span>`
+                    return `<span class="badge badge-outline badge-secondary w-100">${row?.['owner']?.['fullname'] ? row?.['owner']?.['fullname'] : ''}</span>`
                 }
             }
         ],

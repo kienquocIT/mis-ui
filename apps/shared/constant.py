@@ -173,4 +173,5 @@ MARITAL_STT = (
     (2, _('Separated')),
     (3, _('Divorced')),
     (4, _('Single')),
+    (5, _('Engaged')),
 )

@@ -401,8 +401,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     WORK_ORDER_LIST_PAGE = BreadcrumbChildren(_('Work order'), 'WorkOrderList')
 
     # HRM
-    HRM_EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('HRM\Employee'), 'HRMEmployeeList')
-    HRM_EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('HRM\Employee Create'), 'HRMEmployeeCreate')
+    HRM_EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('HRM Employee info'), 'HRMEmployeeList')
+    HRM_EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'HRMEmployeeCreate')
+    HRM_EMPLOYEE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    HRM_EMPLOYEE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
 
 class BreadcrumbView:
@@ -1038,3 +1040,5 @@ class BreadcrumbView:
         BreadcrumbItem.HRM_EMPLOYEE_LIST_PAGE
     ]
     HRM_EMPLOYEE_CREATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    HRM_EMPLOYEE_DETAIL_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    HRM_EMPLOYEE_UPDATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     EmployeeHRMInit.loadUserList();
     EmployeeHRMInit.loadEmpList();
     EmployeeHRMInit.loadDate($('#employee-dob'));
@@ -12,22 +11,22 @@ $(document).ready(function () {
     EmployeeHRMInit.switchChoice();
     EmployeeHRMInit.loadBank();
 
+    EmployeeHRMInit.loadDetail();
+
     SetupFormSubmit.validate(
         $('#frm_employee_hrm'),
         {
             submitHandler: function (form) {
                 let employeeData = {};
-                const serializerArray = SetupFormSubmit.serializerObject(form)
+                const serializerArray = SetupFormSubmit.serializerObject(form);
                 for (let key in serializerArray) {
                     const item = serializerArray[key]
                     if (item) employeeData[key] = item
                 }
                 employeeData.last_name = `${serializerArray.last_name} ${serializerArray['middle_name']}`
-                if ($('.select-wrap').hasClass('is-select')) delete employeeData['employee_create']
-                else delete employeeData.employee
                 $.fn.callAjax2({
-                    url: form.attr('data-url'),
-                    method: 'post',
+                    url: form.attr('data-hrm-update'),
+                    method: 'put',
                     data: employeeData,
                     isLoading: true,
                 }).then((resp) => {
@@ -44,4 +43,6 @@ $(document).ready(function () {
             }
         }
     );
-});
+
+
+})

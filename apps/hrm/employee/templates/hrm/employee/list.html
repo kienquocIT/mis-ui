@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-
+{% block title %}{% trans 'Employee info list' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee/employee_list.css' %}">
 {% endblock %}
@@ -19,22 +19,18 @@
 {% endblock %}
 
 {% block pageContent %}
-    <table id="datable_employee_list" class="table nowrap w-100 mb-5"
-           data-url="{% url 'EmployeeListAPI' %}"
+    <table id="datable_employee_info_list" class="table nowrap w-100 mb-5"
+           data-url="{% url 'HRMEmployeeListAPI' %}"
            data-method="GET"
-           data-url-detail="{% url 'EmployeeDetail' pk='0' %}"
+           data-url-detail="{% url 'HRMEmployeeDetail' pk='0' %}"
     >
         <thead>
         <tr>
-            <th></th>
-            <th>{% trans 'Code' %}</th>
+            <th>#</th>
+            <th>{% trans 'Employee ID' %}</th>
             <th>{% trans 'Full Name' %}</th>
-            <th>{% trans 'Department' %}</th>
-            <th>{% trans 'Roles' %}</th>
+            <th>{% trans 'User ID' %}</th>
             <th>{% trans 'Date Joined' %}</th>
-            <th>{% trans 'Status' %}</th>
-            <th>{% trans 'Is admin' %}</th>
-{#          <th>{% trans 'Actions' %}</th>#}
         </tr>
         </thead>
         <tbody></tbody>
@@ -42,5 +38,5 @@
 {% endblock %}
 
 {% block jsFooter %}
-    <script src="{% static 'assets/js/core/hr/employee/employee_data.js' %}"></script>
+    <script src="{% static 'assets/hrm/js/list.js' %}"></script>
 {% endblock %}

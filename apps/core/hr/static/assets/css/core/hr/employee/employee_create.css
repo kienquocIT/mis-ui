@@ -13,18 +13,3 @@
     float: left;
     list-style: none;
 }
-
-fieldset{
-    border-top: solid 1px #555;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-fieldset legend{
-    margin-top: -13px;
-    font-size: 14px;
-    font-weight: 600;
-}
-legend span{
-    background: #fff;
-    padding-right: 10px;
-}

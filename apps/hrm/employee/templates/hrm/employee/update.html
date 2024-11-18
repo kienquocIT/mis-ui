@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Employee info create' %}{% endblock %}
+{% block title %}{% trans 'Employee info edit' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
@@ -30,20 +30,21 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link disabled" data-bs-toggle="tab" href="#tab-app">
+            <a class="nav-link disabled" data-bs-toggle="tab" href="#a1">
                 <span class="nav-link-text">{% trans 'Education' %}</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link disabled" data-bs-toggle="tab" href="#tab-app">
+            <a class="nav-link disabled" data-bs-toggle="tab" href="#a12">
                 <span class="nav-link-text">{% trans 'Insurance' %}</span>
             </a>
         </li>
     </ul>
 
     <form id="frm_employee_hrm" class="needs-validation"
-          data-url="{% url 'HRMEmployeeCreateAPI' %}"
-          data-method="POST"
+          data-hrm-detail="{% url 'HRMEmployeeDetailAPI' pk %}"
+          data-method="put"
+          data-hrm-update="{% url 'HRMEmployeeUpdateAPI' pk %}"
           data-url-redirect="{% url 'HRMEmployeeList' %}"
     >
         {% csrf_token %}
@@ -56,8 +57,9 @@
                                 <label class="form-label"
                                        for="select-box-employee">{% trans 'Empl ID' %}</label>
                                 <div class="input-affix-wrapper">
+                                    <label for="new_employee"></label>
                                     <input type="text" id="new_employee" class="form-control" name="employee_create"
-                                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                                           placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
                                     <span class="input-suffix switch-choice">
                                         <i class="fa-solid fa-font"></i>
                                             <span></span>
@@ -79,7 +81,7 @@
                                                 data-method="GET"
                                                 data-params="{'is_mapped': false}"
                                                 data-keyResp="emp_not_map"
-                                                name="employee"
+                                                name="employee" readonly
                                         >
                                         </select>
                                     </div>
@@ -105,7 +107,7 @@
                                             data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
                                             data-method="GET"
                                             data-keyResp="company_user_list"
-                                            name="user"
+                                            name="user" disabled
                                     >
                                     </select>
                                 </div>
@@ -164,10 +166,12 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
-                            <label class="form-label" for="employee-doi">{% trans 'Date of issue' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input class="form-control pl-2" id="employee-doi" type="text" name="date_of_issue"/>
-                                <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                            <div class="form-group">
+                                <label class="form-label" for="employee-doi">{% trans 'Date of issue' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input class="form-control pl-2" id="employee-doi" type="text" name="date_of_issue"/>
+                                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                                </div>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
@@ -227,7 +231,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="employee-gender">{% trans 'Gender' %}</label>
                                 <select class="form-select" name="gender" id="employee-gender">
-                                    <option value="" selected disabled>{% trans 'Choice gender' %}...</option>
+                                    <option value="" selected disabled>...</option>
                                     {% for key, value in data.gender %}
                                         <option value="{{ key }}">{{ value }}</option>
                                     {% endfor %}
@@ -238,7 +242,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="employee-mstt">{% trans 'Marital status' %}</label>
                                 <select class="form-select" name="marital_status" id="employee-mstt">
-                                    <option value="" selected disabled>{% trans 'Choice Marital status' %}...</option>
+                                    <option value="" selected disabled>...</option>
                                     {% for key, value in data.marital %}
                                         <option value="{{ key }}">{{ value }}</option>
                                     {% endfor %}
@@ -263,8 +267,8 @@
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="employee-bank_name">{% trans 'Bank name' %}</label>
-                                <select class="form-control" id="employee-bank_name" type="text"
-                                        name="bank_name" data-onload="{{ data.bank }}">
+                                <select class="form-control" id="employee-bank_name" type="text" name="bank_name"
+                                placeholder="Viettinbank..." data-onload="{{ data.bank }}">
                                     <option value="" selected disabled>...</option>
                                 </select>
                             </div>
@@ -324,5 +328,5 @@
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
-    <script src="{% static 'assets/hrm/js/create.js' %}"></script>
+    <script src="{% static 'assets/hrm/js/update.js' %}"></script>
 {% endblock %}

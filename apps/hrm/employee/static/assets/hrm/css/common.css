@@ -1,0 +1,71 @@
+.select-wrap {
+    display: none;
+    align-items: center;
+    width: calc(100% - 43px);
+    position: absolute;
+    z-index: 5;
+}
+
+.select-wrap.is-select {
+    display: flex;
+}
+
+.select-wrap .selection .select2-selection {
+    box-shadow: none;
+}
+
+.switch-choice {
+    top: 1px !important;
+}
+
+.switch-choice {
+    padding: 0 5px 0 0;
+    cursor: pointer;
+}
+
+.switch-choice span {
+    display: block;
+    width: 1px;
+    height: 22px;
+    background: #FFA500;
+    margin: 0 4px;
+    transform: rotate(25deg);
+}
+
+.switch-choice.is-select span {
+    background: #0064CD;
+}
+
+.switch-choice i {
+    font-size: 85%;
+    margin-top: -8px;
+    color: #FFA500;
+}
+
+.switch-choice i.fa-clipboard-list {
+    margin-top: 8px;
+    color: #555;
+}
+fieldset{
+    border-top: solid 1px #555;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+fieldset legend{
+    margin-top: -13px;
+    font-size: 14px;
+    font-weight: 600;
+}
+legend span{
+    background: #fff;
+    padding-right: 10px;
+}
+.switch-choice.is-select i{
+    color: #555;
+}
+.switch-choice.is-select i.fa-clipboard-list{
+    color: #0064CD;
+}
+.text-bold{
+    font-weight: 700;
+}

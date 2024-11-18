@@ -118,6 +118,8 @@ INSTALLED_APPS = \
         'apps.eoffice.meeting',
     ] + [  # external
         'apps.web_builder',
+    ] + [  # HRM
+        'apps.hrm.employee'
     ]
 
 INSTALLED_APPS += [

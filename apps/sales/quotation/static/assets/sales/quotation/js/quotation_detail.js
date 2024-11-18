@@ -2,7 +2,6 @@ $(function () {
 
     $(document).ready(function () {
         let $form = $('#frm_quotation_create');
-        let eleDataDetail = $('#quotation-detail-data');
 
         // call ajax get info quotation detail
         $.fn.callAjax2({
@@ -16,7 +15,7 @@ $(function () {
                     $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data);
                     // store && load data detail
-                    eleDataDetail.val(JSON.stringify(data));
+                    QuotationLoadDataHandle.$eleStoreDetail.val(JSON.stringify(data));
                     QuotationLoadDataHandle.loadDetailQuotation(data);
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
                     indicatorHandle.loadIndicator();

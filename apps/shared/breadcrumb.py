@@ -411,6 +411,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCTION_REPORT_LIST_PAGE = BreadcrumbChildren(_('Production report'), 'ProductionReportList')
     WORK_ORDER_LIST_PAGE = BreadcrumbChildren(_('Work order'), 'WorkOrderList')
 
+    # Recurrence
+    RECURRENCE_LIST_PAGE = BreadcrumbChildren(_('Recurrence'), 'RecurrenceList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1082,4 +1085,10 @@ class BreadcrumbView:
     WORK_ORDER_DETAIL_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     WORK_ORDER_UPDATE_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
-
+    # Recurrence
+    RECURRENCE_LIST_PAGE = [
+        BreadcrumbItem.RECURRENCE_LIST_PAGE
+    ]
+    RECURRENCE_CREATE_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    RECURRENCE_DETAIL_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    RECURRENCE_UPDATE_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

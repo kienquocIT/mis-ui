@@ -42,7 +42,7 @@ class ProductionOrderCreate(View):
     @mask_view(
         auth_require=True,
         template='sales/production/productionorder/production_order_create.html',
-        menu_active='',
+        menu_active='menu_production_order_list',
         breadcrumb='PRODUCTION_ORDER_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):

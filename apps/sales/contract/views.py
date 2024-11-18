@@ -97,8 +97,8 @@ class ContractApprovalUpdate(View):
     @mask_view(
         auth_require=True,
         template='sales/contract/contract_update.html',
-        breadcrumb='menu_contract_approval_list',
-        menu_active='CONTRACT_UPDATE_PAGE',
+        menu_active='menu_contract_approval_list',
+        breadcrumb='CONTRACT_UPDATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         ctx = {

@@ -169,7 +169,6 @@ class BiddingResultConfigList(View):
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
-
 class BiddingResultConfigListAPI(APIView):
     permission_classes = [IsAuthenticated] # noqa
 

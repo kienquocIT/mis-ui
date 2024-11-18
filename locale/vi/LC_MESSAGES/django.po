@@ -1612,7 +1612,7 @@ msgstr "Báo cáo tới"
 
 #
 msgid "Address Information"
-msgstr "Thông tin liên hệ"
+msgstr "Thông tin địa chỉ"
 
 #
 msgid "Work address"
@@ -1644,7 +1644,7 @@ msgstr "Tỉnh"
 
 #
 msgid "Inventory activities"
-msgstr "Hoạt động kho hàng"
+msgstr "Các hoạt động kho"
 
 #
 msgid "Sale"
@@ -1697,10 +1697,6 @@ msgstr "Chi tiết"
 #
 msgid "Product"
 msgstr "Sản phẩm"
-
-#
-msgid "Warehouse"
-msgstr "Kho hàng"
 
 #
 msgid "Quantity"
@@ -2682,10 +2678,6 @@ msgstr "Tạo đơn hàng"
 #
 msgid "Sale order detail"
 msgstr "Chi tiết đơn hàng"
-
-#
-msgid "WareHouse"
-msgstr "Kho Hàng"
 
 #
 msgid "Return Advance"
@@ -6054,7 +6046,7 @@ msgstr "Chi phí"
 
 #
 msgid "Expenses Item"
-msgstr ""
+msgstr "Chi phí"
 
 #
 msgid "Calendar"
@@ -6394,7 +6386,7 @@ msgstr "Chọn sản phẩm"
 
 #
 msgid "Warehouse is required"
-msgstr "Kho hàng là bắt buộc"
+msgstr "Kho là bắt buộc"
 
 #
 msgid "Done number is not valid value"
@@ -6578,7 +6570,11 @@ msgstr "NV bán hàng"
 
 #
 msgid "Period"
-msgstr "Năm tài chính"
+msgstr "Giai đoạn"
+
+#
+msgid "Accounting Period"
+msgstr "Kỳ kế toán"
 
 #
 msgid "Target item"
@@ -6593,7 +6589,7 @@ msgid "Period target equals total of sub period targets"
 msgstr "Mục tiêu cả kỳ bằng tổng mục tiêu các kỳ con của nó"
 
 #
-msgid "Periods"
+msgid "Accounting Periods"
 msgstr "Kỳ kế toán"
 
 #
@@ -6605,11 +6601,11 @@ msgid "Start month"
 msgstr "Tháng bắt đầu"
 
 #
-msgid "Update period"
+msgid "Update accounting period"
 msgstr "Cập nhật kỳ kế toán"
 
 #
-msgid "New period"
+msgid "New accounting period"
 msgstr "Thêm kỳ kế toán mới"
 
 #
@@ -7293,19 +7289,19 @@ msgid "is not in stock"
 msgstr "không còn trong kho"
 
 #
-msgid "Posting periods"
+msgid "Posting accounting periods"
 msgstr "Kỳ kế toán"
 
 #
-msgid "Main period code"
+msgid "Main accounting period code"
 msgstr "Mã kỳ chính"
 
 #
-msgid "Sub period code"
+msgid "Sub accounting period code"
 msgstr "Mã kỳ phụ"
 
 #
-msgid "Period name"
+msgid "Accounting Period name"
 msgstr "Tên kỳ"
 
 #
@@ -7431,10 +7427,6 @@ msgstr "GT đơn hàng đã nhận"
 #
 msgid "Remaining value"
 msgstr "GT đơn hàng còn lại"
-
-#
-msgid "WareHouses"
-msgstr "Các kho hàng"
 
 #
 msgid "AR Invoice"
@@ -7613,7 +7605,7 @@ msgid "First month"
 msgstr "Tháng đầu kỳ"
 
 #
-msgid "Sub periods"
+msgid "Sub accounting periods"
 msgstr "Kỳ con"
 
 #
@@ -8686,7 +8678,7 @@ msgstr "Đang sản xuất"
 
 #
 msgid "All warehouse"
-msgstr "Tất cả kho hàng"
+msgstr "Tất cả kho"
 
 #
 msgid "Material/Component"
@@ -9361,7 +9353,7 @@ msgid "You can see Period year list in Setting space."
 msgstr "Bạn có thể xem danh sách Kì kế toán ở Space Setting"
 
 #
-msgid "Create new Period year"
+msgid "Create new Accounting Period year"
 msgstr "Tạo mới Kì kế toán"
 
 #
@@ -9651,3 +9643,39 @@ msgstr "Mẫu giao dịch"
 #
 msgid "Set as recurring template"
 msgstr "Đặt làm mẫu lặp lại"
+
+#
+msgid "Agency/Partner Location"
+msgstr "Đại lí/Đối tác"
+
+#
+msgid "Agency"
+msgstr "Đại lí"
+
+#
+msgid "Partner"
+msgstr "Đối tác"
+
+#
+msgid "Warehouse Address"
+msgstr "Địa chỉ kho"
+
+#
+msgid "Edit Warehouse Address"
+msgstr "Sửa địa chỉ kho"
+
+#
+msgid "Click to edit"
+msgstr "Nhấn để chỉnh sửa"
+
+#
+msgid "Detail address"
+msgstr "Địa chỉ cụ thể"
+
+#
+msgid "Addition Information"
+msgstr "Thông tin bổ sung"
+
+#
+msgid "Item"
+msgstr "Danh mục"

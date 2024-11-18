@@ -47,7 +47,7 @@ function InitAdvancePaymentTable(data_param={}) {
                 className: 'wrap-text',
                 render: (data, type, row) => {
                     let return_btn = ''
-                    if (row?.['system_status'] === 3 && !row?.['opportunity_mapped']?.['is_closed'] && parseFloat(row?.['remain_value'] ? row?.['remain_value'] : 0) !== 0) {
+                    if (row?.['system_status'] === 3 && !row?.['opportunity']?.['is_closed'] && parseFloat(row?.['remain_value'] ? row?.['remain_value'] : 0) !== 0) {
                         let advance_payment_obj= encodeURIComponent(
                             JSON.stringify({
                                 'id': row?.['id'],
@@ -86,8 +86,8 @@ function InitAdvancePaymentTable(data_param={}) {
                 data: 'sale_code',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (row?.['opportunity_mapped']?.['id']) {
-                        return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity_mapped']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
+                    if (row?.['opportunity']?.['id']) {
+                        return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
                     }
                     else if (row?.['quotation_mapped']?.['id']) {
                         return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row?.['quotation_mapped']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`

@@ -45,7 +45,7 @@ $(document).ready(async function () {
             });
     }
     async function loadConfig() {
-        let url = $("#url-factory").data('url-config');
+        let url = $("#script-url").data('url-config');
         let method = 'GET';
         let result = await callData(url, method);
         return result?.['opportunity_config'];

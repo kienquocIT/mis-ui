@@ -136,7 +136,7 @@ $(document).ready(function () {
             },
             plotOptions: {
                 bar: {
-                    barHeight: '100%',
+                    barHeight: '95%',
                     distributed: true,
                     horizontal: true,
                 }
@@ -261,8 +261,8 @@ $(document).ready(function () {
                 if (is_init) {
                     InitOptionTotalPipelineChart()
                     InitOptionTopSaleByTotalPipelineChart()
-                    InitOptionCustomerActivitiesPipelineChart()
                     InitOptionForecastChart()
+                    InitOptionCustomerActivitiesPipelineChart()
                 }
             })
     }
@@ -382,7 +382,7 @@ $(document).ready(function () {
             ],
             plotOptions: {
                 bar: {
-                    barHeight: '100%',
+                    barHeight: '95%',
                     distributed: false,
                     horizontal: true,
                     dataLabels: {
@@ -627,7 +627,7 @@ $(document).ready(function () {
             ],
             plotOptions: {
                 bar: {
-                    barHeight: '100%',
+                    barHeight: '95%',
                     distributed: false,
                     horizontal: true,
                     dataLabels: {
@@ -1054,7 +1054,7 @@ $(document).ready(function () {
             }],
             plotOptions: {
                 bar: {
-                    barHeight: '100%',
+                    barHeight: '95%',
                     distributed: false,
                     horizontal: true,
                     dataLabels: {

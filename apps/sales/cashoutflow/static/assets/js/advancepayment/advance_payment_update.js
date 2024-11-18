@@ -20,12 +20,6 @@ $(document).ready(function () {
                 return conditions.every(c => c)
             },
 
-        }, {
-            key: 'employee_inherit_id',
-            condition: (value, element) => {
-                let conditions = [APTypeEle.val() === '0', value]
-                return conditions.every(c => c)
-            },
         },
     ])
 })

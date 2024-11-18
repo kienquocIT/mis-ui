@@ -34,10 +34,7 @@ requests==2.31.0
 requests-toolbelt==1.0.0
 rjsmin==1.2.0
 six==1.16.0
-scikit-learn==1.5.2
 sqlparse==0.4.3
-torch==2.5.1
-transformers==4.46.2
 tzdata==2022.6
 urllib3==1.26.13
 unidecode==1.3.6

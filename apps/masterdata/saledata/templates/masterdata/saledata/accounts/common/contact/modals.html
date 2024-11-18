@@ -58,63 +58,59 @@
     </div>
 </div>
 <div class="modal fade" id="modal-home-address" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans 'Edit Home Address' %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="text" name="home_country" value="bbf52b7b-77ed-4e8c-af0a-86ca00771d83" hidden>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans "Address" %}</label>
-                                    <input
-                                            class="form-control" type="text" id="detail-modal-home-address"
-                                            name="home_detail_address"
-                                            placeholder="Number 20, 22 street, Him Lam residential area"
-                                    >
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans "Province" %}</label>
-                                    <select
-                                            class="form-select" id="homecity" aria-label=".form-select-sm"
-                                            name="home_city"
-                                            data-url="{% url "CityListAPI" %}" data-method="GET"
-                                    ></select>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans "District" %}</label>
-                                    <select
-                                            class="form-select" id="homedistrict" aria-label=".form-select-sm"
-                                            name="home_district"
-                                            data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
-                                    ></select>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans "Ward" %}</label>
-                                    <select
-                                            class="form-select" id="homeward" aria-label=".form-select-sm"
-                                            name="home_ward"
-                                            data-url="{% url "WardAllListAPI" %}" data-method="GET"
-                                    ></select>
-                                </div>
-                            </div>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Edit Home Address' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" name="home_country" value="bbf52b7b-77ed-4e8c-af0a-86ca00771d83" hidden>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="detail-modal-home-address" class="form-label">{% trans "Address" %}</label>
+                            <textarea class="form-control" type="text" id="detail-modal-home-address" name="home_detail_address"></textarea>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                        <button type="button" class="btn btn-primary" id="save-changes-modal-home-address">{% trans 'Save' %}</button>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Province" %}</label>
+                            <select
+                                    class="form-select" id="homecity" aria-label=".form-select-sm"
+                                    name="home_city"
+                                    data-url="{% url "CityListAPI" %}" data-method="GET"
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "District" %}</label>
+                            <select
+                                    class="form-select" id="homedistrict" aria-label=".form-select-sm"
+                                    name="home_district"
+                                    data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Ward" %}</label>
+                            <select
+                                    class="form-select" id="homeward" aria-label=".form-select-sm"
+                                    name="home_ward"
+                                    data-url="{% url "WardAllListAPI" %}" data-method="GET"
+                            ></select>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-primary" id="save-changes-modal-home-address">{% trans 'Save' %}</button>
+            </div>
         </div>
+    </div>
+</div>

@@ -9647,3 +9647,7 @@ msgstr "Địa chỉ cụ thể"
 #
 msgid "Addition Information"
 msgstr "Thông tin bổ sung"
+
+#
+msgid "Item"
+msgstr "Danh mục"

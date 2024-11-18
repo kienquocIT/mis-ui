@@ -162,7 +162,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     SALE_ORDER_UPDATE_PAGE = BreadcrumbChildren(_('Sale order update'))
 
     # WareHouse
-    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
+    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('Warehouse'), 'WareHouseList')
 
     # Good receipt
     GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt'), 'GoodReceiptList')
@@ -582,8 +582,8 @@ class BreadcrumbView:
         BreadcrumbItem.CONTACT_LIST_PAGE
     ]
     CONTACT_CREATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_CREATE_PAGE]
-    CONTACT_DETAIL_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_DETAIL_PAGE]
-    CONTACT_UPDATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_UPDATE_PAGE]
+    CONTACT_DETAIL_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CONTACT_UPDATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     ACCOUNT_LIST_PAGE = [
         BreadcrumbItem.ACCOUNT_LIST_PAGE

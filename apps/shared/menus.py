@@ -155,7 +155,7 @@ class MenusCoreConfigurations:
                 icon='<i class="bi bi-person-rolodex"></i>',
             ),
             MenuCommon(
-                name='Items', code='id_menu_master_data_product', view_name='ProductMasterDataList',
+                name='Item', code='id_menu_master_data_product', view_name='ProductMasterDataList',
                 icon='<i class="bi bi-diagram-2-fill"></i>',
             ),
             MenuCommon(
@@ -505,7 +505,7 @@ class MenusInventory:
         icon='<i class="fas fa-store"></i>',
         child=[
             MenuCommon(
-                name='WareHouses', code='menu_warehouse_list', view_name='WareHouseList',
+                name='Warehouses', code='menu_warehouse_list', view_name='WareHouseList',
                 icon='<i class="fas fa-warehouse"></i>',
             ),
             MenuCommon(

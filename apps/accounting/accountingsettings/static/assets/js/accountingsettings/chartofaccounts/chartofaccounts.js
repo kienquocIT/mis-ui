@@ -25,31 +25,6 @@ $(document).ready(function() {
     ]
     let LIST_PARENT_ACC = []
     let CHART_OF_ACCOUNTS_LIST = []
-    let CURRENT_TABLE = null
-
-    const drag_row = dragula(
-        Array.prototype.map.call(list_table, function(item) {
-            return item.find('tbody')[0]
-        }),
-        {
-            moves: function (el, container, handle) {
-                return handle.classList.contains('drag-handle');
-            }
-        }
-    );
-
-    drag_row.on('dragend', function() {
-        setTimeout(
-            function () {
-                if (confirm('Bạn có chắc chắn muốn thay đổi vị trí không?')) {
-                    console.log('Vị trí đã được thay đổi.')
-                }
-                else {
-                    InitTable(list_table[0], {}, null, '', true)
-                }
-            }, 500
-        );
-    });
 
     function InitTable(dtb=null, data_param={}, url=null, method = 'GET', reload=false) {
         dtb.DataTable().clear().destroy()
@@ -94,11 +69,11 @@ $(document).ready(function() {
                     {
                         className: 'wrap-text w-20',
                         render: (data, type, row) => {
-                            let expand_btn = `<button data-acc-id="${row?.['id']}" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm btn-collapse-acc-sub-list">
+                            let expand_btn = `<button data-acc-id="${row?.['id']}" class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-sm btn-collapse-acc-sub-list">
                                 <span class="icon"><i class="bi bi-caret-up-fill"></i></span>
                             </button>`
                             return `
-                                <span data-root-id="${row?.['parent_account'] ? row?.['parent_account'] : ''}" class="acc-title-span text-primary fw-bold ${row?.['parent_account'] ? `ml-${(row?.['level'] - 1) * 2}` : ''}">${row?.['acc_code'] ? row?.['acc_code'] : ''}</span>
+                                <span data-root-id="${row?.['parent_account'] ? row?.['parent_account'] : ''}" class="acc-title-span ${row?.['parent_account'] ? 'text-primary' : 'text-secondary fw-bold'} ${row?.['parent_account'] ? `ml-${(row?.['level'] - 1) * 2}` : ''}">${row?.['acc_code'] ? row?.['acc_code'] : ''}</span>
                                 ${row?.['has_child'] ? expand_btn : ''}
                             `;
                         }
@@ -106,35 +81,31 @@ $(document).ready(function() {
                     {
                         className: 'wrap-text w-25',
                         render: (data, type, row) => {
-                            return `<span class="text-primary">${row?.['acc_name'] ? row?.['acc_name'] : ''}</span>`
+                            return `<span class="${row?.['parent_account'] ? 'text-primary' : 'text-secondary fw-bold'}">${row?.['acc_name'] ? row?.['acc_name'] : ''}</span>`
                         }
                     },
                     {
                         className: 'wrap-text w-25',
                         render: (data, type, row) => {
-                            return `<span class="text-primary">${row?.['foreign_acc_name'] ? row?.['foreign_acc_name'] : ''}</span>`
+                            return `<span class="${row?.['parent_account'] ? 'text-primary' : 'text-secondary fw-bold'}">${row?.['foreign_acc_name'] ? row?.['foreign_acc_name'] : ''}</span>`
                         }
                     },
                     {
                         className: 'wrap-text text-right w-15',
                         render: (data, type, row) => {
-                            return `<div class="form-check form-switch">
-                <input disabled ${row?.['acc_status'] ? 'checked' : ''} type="checkbox" class="form-check-input active-account">
-                <label class="form-check-label" for="customSwitch1"></label>
-            </div>`
+                            if (row?.['parent_account']) {
+                                return `<div class="form-check form-switch">
+                                    <input disabled ${row?.['acc_status'] ? 'checked' : ''} type="checkbox" class="form-check-input active-account">
+                                    <label class="form-check-label" for="customSwitch1"></label>
+                                </div>`
+                            }
+                            return ''
                         }
                     },
                     {
                         className: 'wrap-text text-right w-10',
                         render: (data, type, row) => {
-                            // let drag_btn = `<a class="btn btn-icon btn-flush-secondary btn-rounded flush-soft-hover drag-handle">
-                            //    <span class="btn-icon-wrap drag-handle"><span class="feather-icon text-secondary drag-handle">
-                            //        <i class="fas fa-grip-horizontal drag-handle"></i>
-                            //    </span></span>
-                            // </a>`
-                            let drag_btn = ''
-                            return `${row?.['parent_account'] ? drag_btn : ''}
-                                    <a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-detail-account"
+                            return `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-detail-account"
                                        data-bs-toggle="modal"
                                        data-bs-target="#modal-account-detail"
                                        data-id="${row?.['id']}"

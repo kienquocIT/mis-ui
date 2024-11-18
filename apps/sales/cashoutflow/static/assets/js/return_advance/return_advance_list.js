@@ -51,8 +51,8 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            if (row?.['advance_payment']?.['opportunity_mapped']?.['id']) {
-                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['advance_payment']?.['opportunity_mapped']?.['id'])}"><b>${row?.['advance_payment']?.['opportunity_mapped']?.['code']}</b></a></span>`
+                            if (row?.['advance_payment']?.['opportunity']?.['id']) {
+                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['advance_payment']?.['opportunity']?.['id'])}"><b>${row?.['advance_payment']?.['opportunity']?.['code']}</b></a></span>`
                             }
                             else if (row?.['advance_payment']?.['quotation_mapped']?.['id']) {
                                 return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row?.['advance_payment']?.['quotation_mapped']?.['id'])}"><b>${row?.['advance_payment']?.['quotation_mapped']?.['code']}</b></a></span>`

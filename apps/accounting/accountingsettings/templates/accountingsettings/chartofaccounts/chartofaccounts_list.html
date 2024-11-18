@@ -3,7 +3,6 @@
 {% load static %}
 {% block title %}{% trans 'Chart of accounts' %}{% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'vendors/dragula/dragula.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -63,6 +62,5 @@
     {% include 'accountingsettings/chartofaccounts/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'vendors/dragula/dragula.min.js' %}"></script>
     <script src="{% static 'assets/js/accountingsettings/chartofaccounts/chartofaccounts.js' %}"></script>
 {% endblock %}

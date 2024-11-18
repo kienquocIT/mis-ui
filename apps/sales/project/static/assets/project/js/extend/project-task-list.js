@@ -206,6 +206,7 @@ class handle_tasks_cls {
                         $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
                         $($(this).attr('href')).modal('show')
                         elmTaskID.val(data.id)
+                        logworkSubmit()
                     })
                 }
             }).on('draw.dt', function () {
@@ -381,6 +382,8 @@ class handle_tasks_cls {
                             .attr('value', data.employee_created.id)
 
                         _this.initSelect($('#employee_inherit_id', $form), data.employee_inherit, 'full_name')
+                        _this.initSelect($('#project_id', $form), data.project, 'title')
+                        _this.initSelect($('#process_id', $form), data.process, 'title')
                         window.formLabel.renderLabel(data.label)
                         window.editor.setData(data.remark)
                         window.checklist.setDataList = data.checklist
@@ -430,7 +433,7 @@ class handle_tasks_cls {
     init() {
         // first time load get and render data
         this.renderTable();
-        const _this = this
+        const _this = this;
         // reset form create task khi click huỷ bỏ
         $('.cancel-task, [data-drawer-target="#drawer_task_create"]').each((idx, elm) => {
             $(elm).on('click', function () {
@@ -450,6 +453,17 @@ class handle_tasks_cls {
         new $x.cls.file($('#assignee_attachment')).init({'name': 'attach_assignee'});
 
         //--BTN LOG-TIME-- action click to log-work
+        $('#startDateLogTime, #endDateLogTime').daterangepicker({
+            singleDatePicker: true,
+            timepicker: false,
+            showDropdowns: false,
+            minYear: 2023,
+            locale: {
+                format: 'DD/MM/YYYY',
+            },
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            autoApply: true
+        });
         $('.btn-log_work').off().on('click', () => {
             $('#logWorkModal').modal('show')
             $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
@@ -493,6 +507,9 @@ class handle_tasks_cls {
             $stt.val('')
             $empElm.val('').trigger('change')
             elmTable.DataTable().ajax.reload()
-        })
+        });
+
+        $('#formOpportunityTask').find('.custom-layout .accordion-item .accordion-body .row:last-child > div')
+            .removeClass('col-lg-4 col-md-4 col-sm-6 col-12').addClass('col-xs-12')
     }
 }

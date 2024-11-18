@@ -40,7 +40,7 @@ class ReturnAPLoadPage {
             data: (data ? data : null),
             keyResp: 'advance_payment_list',
             dataParams: oppId && $x.fn.checkUUID4(oppId) ? {
-                'opportunity_mapped_id': oppId,
+                'opportunity_id': oppId,
             } : {},
             keyId: 'id',
             keyText: 'title',

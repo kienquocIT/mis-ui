@@ -48,6 +48,16 @@ class PrintApplicationTemplateSample(APIView):
             result = [
                 self.parse_template_detail(f"{_('Inventory Adjustment')} 1", base_url + 'inventory_adjustment_1.html'),
             ]
+        elif app_id == '0242ba77-8b02-4589-8ed9-239788083f2b':  # Quotation
+            base_url += 'goods_return/'
+            result = [
+                self.parse_template_detail(f"{_('Goods Return')} 1", base_url + 'goods_return_1.html'),
+            ]
+        elif app_id == 'ad1e1c4e-2a7e-4b98-977f-88d069554657':  # Quotation
+            base_url += 'bidding/'
+            result = [
+                self.parse_template_detail(f"{_('Bidding')} 1", base_url + 'bidding_1.html'),
+            ]
         return RespData.resp_200(data={'templates': result})
 
 

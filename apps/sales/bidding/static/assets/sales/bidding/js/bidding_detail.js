@@ -106,6 +106,7 @@ $(document).ready(function () {
                     $('#btn-open-bidder-modal').prop('disabled',true)
                     $('#inp-contents').prop('disabled',true)
                     data['isDetail'] = true
+                    new PrintTinymceControl().render('ad1e1c4e-2a7e-4b98-977f-88d069554657', data, false);
                 } else {
                     if ($('#bid-bond-value').attr('value')) {
                         $('#bid-guarantee').attr('disabled',false)
@@ -248,6 +249,10 @@ $(document).ready(function () {
                         if($('#cause-other').is(':checked')){
                             $('#cause-other-input').prop('disabled', false);
                         }
+                        BiddingDataTableHandle.$tableBidder.find('tbody tr').each(function (){
+                            $(this).find(".bidder-checkbox").prop("disabled", false)
+                            $(this).find("button").prop("disabled", false)
+                        })
                     }
                 }
             }

@@ -15,6 +15,7 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    {% include 'printer/print.html' %}
     <form
             data-url="{% url 'BiddingDetailAPI' pk=pk%}"
             data-url-redirect="{% url 'BiddingList' %}"
@@ -23,6 +24,15 @@
             method="post"
     >
         {% csrf_token %}
+        <div class="row">
+            <div class="col-12 text-right">
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans 'Print' %}">
+                        <button type="button" class="btn btn-outline-light btn-sm" id="print-document"><i class="fas fa-print"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
         {% include 'sales/bidding/common/information.html' %}
     </form>
 
@@ -56,6 +66,7 @@
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/sales/bidding/js/bidding_common.js' %}"></script>
     <script src="{% static 'assets/sales/bidding/js/bidding_detail.js' %}"></script>
+    <script src="{% static 'printer/print.js' %}"></script>
     <script>
         $(document).ready(function (){
             $('#btn-show-comment').on('click', function (){
@@ -77,6 +88,13 @@
                     }
                 })
             })
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#print-document').on('click', function () {
+                PrintTinymceControl.open_modal();
+            });
         })
     </script>
 {% endblock %}

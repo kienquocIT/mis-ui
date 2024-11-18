@@ -385,6 +385,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_FOR_BIDDING_LIST = StringUrl('bidding/account-list')
     DOCUMENT_MASTERDATA_BIDDING_LIST = StringUrl('bidding/document-list')
     BIDDING_DETAIL = StringUrl('bidding/detail')
+    BIDDING_RESULT_CONFIG_LIST = StringUrl('bidding/bidding-result-config')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')
@@ -762,6 +763,3 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     HRM_EMPLOYEE_NOT_MAP_HRM = StringUrl('hrm/employee-not-map/list')
     HRM_EMPLOYEE_INFO_LIST = StringUrl('hrm/employee-info/list')
     HRM_EMPLOYEE_INFO_DETAIL = StringUrl('hrm/employee-info/detail/{pk}')
-
-    # masterdata/bidding result config
-    BIDDING_RESULT_CONFIG_LIST = StringUrl('saledata/bidding-result-config')

@@ -62,11 +62,27 @@ $(document).ready(function () {
         .then(
             (resp) => {
                 const data = $.fn.switcherResp(resp);
-                let todoItem = data[$sttElm.attr('data-keyResp')][0]
-                $('.btn-create-todo, .current-create-task').click(() => {
-                    $sttElm.attr('data-onload', JSON.stringify(todoItem))
-                    $sttElm.initSelect2()
-                })
+                let todoItem = data[$sttElm.attr('data-keyResp')][0];
+
+                let drawerEle = new Set([]);
+                $('.btn-create-todo, .current-create-task').each(function(){
+                    const idx = $(this).attr('data-drawer-target');
+                    if (idx) drawerEle.add(idx);
+                });
+
+                $(Array.from(drawerEle).join(", ")).on('drawer.show', function (){
+                    const loaded = $(this).attr('data-loaded') === '1';
+                    if (!loaded){
+                        $(this).attr('data-loaded', '1');
+                        $sttElm.attr('data-onload', JSON.stringify(todoItem));
+                        $sttElm.initSelect2();
+                    }
+                });
+
+                const create_open = $x.fn.getUrlParameter('create_open', '') === 'true';
+                if (create_open === true) {
+                    $("#drawer_task_create").trigger('drawer.show');
+                }
             })
 
     // load assigner

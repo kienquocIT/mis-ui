@@ -386,6 +386,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_FOR_BIDDING_LIST = StringUrl('bidding/account-list')
     DOCUMENT_MASTERDATA_BIDDING_LIST = StringUrl('bidding/document-list')
     BIDDING_DETAIL = StringUrl('bidding/detail')
+    BIDDING_RESULT_CONFIG_LIST = StringUrl('bidding/bidding-result-config')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')
@@ -414,6 +415,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore')
     PRODUCT_LIST_SALE_ORDER = StringUrl('saleorder/product/list/{pk}')
     SALE_ORDER_PRODUCT_WO_LIST = StringUrl('saleorder/sale-order-product-wo/list')
+    SALE_ORDER_RECURRENCE_LIST = StringUrl('saleorder/sale-order-recurrence/list')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
@@ -753,6 +755,15 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WORK_ORDER_DETAIL = StringUrl('production/work-order')
     WORK_ORDER_DD_LIST = StringUrl('production/work-order-dd/list')
     WORK_ORDER_MANUAL_DONE_LIST = StringUrl('production/work-order-manual-done/list')
+
+    # Recurrence
+    RECURRENCE_LIST = StringUrl('recurrence/list')
+    RECURRENCE_DETAIL = StringUrl('recurrence')
+
+    # HRM
+    HRM_EMPLOYEE_NOT_MAP_HRM = StringUrl('hrm/employee-not-map/list')
+    HRM_EMPLOYEE_INFO_LIST = StringUrl('hrm/employee-info/list')
+    HRM_EMPLOYEE_INFO_DETAIL = StringUrl('hrm/employee-info/detail/{pk}')
 
     CHART_OF_ACCOUNTS_LIST = StringUrl('accounting-setting/chart-of-accounts')
     CHART_OF_ACCOUNTS_DETAIL = StringUrl('accounting-setting/chart-of-accounts/{pk}')

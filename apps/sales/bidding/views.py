@@ -156,3 +156,36 @@ class DocumentMasterDataBiddingListAPI(APIView):
         #     filter['account_types_mapped__account_type_order'] = int(filter['account_types_mapped__account_type_order'])
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.DOCUMENT_MASTERDATA_BIDDING_LIST).get(filter)
         return resp.auto_return(key_success='document_masterdata_bidding_list')
+
+class BiddingResultConfigList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/bidding/config/bidding_result_config.html',
+        breadcrumb='BIDDING_RESULT_CONFIG_PAGE',
+        menu_active='menu_bidding_result_config',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class BiddingResultConfigListAPI(APIView):
+    permission_classes = [IsAuthenticated] # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.BIDDING_RESULT_CONFIG_LIST).get(params)
+        return resp.auto_return(key_success='bidding_result_config')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.BIDDING_RESULT_CONFIG_LIST).post(request.data)
+        return resp.auto_return()

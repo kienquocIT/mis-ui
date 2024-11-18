@@ -97,17 +97,22 @@ PLAN_APP_OF_SALE = {
             create_view_name='OpportunityCallLogList',
         ).data,
         'opportunityemail': ReverseUrlCommon(
-            list_view_name='OpportunityEmailList', detail_view_name=None,
+            list_view_name='OpportunityEmailList',
+            detail_view_name=None,
+            create_view_name='OpportunityEmailList',
         ).data,
         'meetingwithcustomer': ReverseUrlCommon(
-            list_view_name='OpportunityMeetingList', detail_view_name=None,
+            list_view_name='OpportunityMeetingList',
+            detail_view_name=None,
+            create_view_name='OpportunityMeetingList',
         ).data,
     },
     'task': {
-        # Task.OpportunityTask not has page detail!
-        # 'opportunitytask': ReverseUrlCommon(
-        #     list_view_name='OpportunityTaskList', detail_view_name='OpportunityTaskDetailAPI'
-        # ).data,
+        'opportunitytask': ReverseUrlCommon(
+            list_view_name='OpportunityTaskList',
+            detail_view_name=None,
+            create_view_name='OpportunityTaskList',
+        ).data,
     },
     'quotation': {
         'quotation': ReverseUrlCommon(
@@ -125,10 +130,12 @@ PLAN_APP_OF_SALE = {
     },
     'delivery': {
         'orderpickingsub': ReverseUrlCommon(
-            list_view_name='OrderDeliveryList', detail_view_name='OrderDeliveryDetail'
+            list_view_name='OrderPickingList', detail_view_name='OrderPickingDetail',
         ).data,
         'orderdeliverysub': ReverseUrlCommon(
-            list_view_name='OrderPickingList', detail_view_name='OrderPickingDetail',
+            list_view_name='OrderDeliveryList',
+            detail_view_name='OrderDeliveryDetail',
+            create_view_name='OrderDeliveryCreate',
         ).data,
     },
     'promotion': {
@@ -152,8 +159,10 @@ PLAN_APP_OF_SALE = {
         ).data,
     },
     'contract': {
-        'contract': ReverseUrlCommon(
-            list_view_name='ContractApprovalList', detail_view_name='ContractApprovalDetail'
+        'contractapproval': ReverseUrlCommon(
+            list_view_name='ContractApprovalList',
+            detail_view_name='ContractApprovalDetail',
+            create_view_name='ContractApprovalCreate',
         ).data,
     },
     'distributionplan': {

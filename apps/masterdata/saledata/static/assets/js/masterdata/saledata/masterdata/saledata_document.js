@@ -29,7 +29,7 @@ $(document).ready(function () {
             }
         },
         {
-            className: 'wrap-text w-10',
+            className: 'wrap-text text-right w-10',
             render: (data, type, row, meta) => {
                 if (!row?.['is_default']) {
                     return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-document-type"

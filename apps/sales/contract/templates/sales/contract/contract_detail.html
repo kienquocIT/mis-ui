@@ -27,7 +27,7 @@
         {% csrf_token %}
         <div class="row">
             {% trans 'Select Sale Person' as inherit_title %}
-            {% include 'extends/the-documents/bastion.html' with has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
+            {% include 'extends/the-documents/bastion.html' with has_opp=True has_process=True has_inherit=True opp_disabled=True process_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
             <div class="form-group">
                 <label class="form-label required" for="contract-title">{% trans 'Title' %}</label>
                 <input
@@ -37,7 +37,7 @@
                         readonly
                 >
             </div>
-            <label class="form-label required">{% trans 'Document' %}</label>
+            <label class="form-label">{% trans 'Document' %}</label>
             <table
                 id="datable-contract-document"
                 class="table nowrap w-100"
@@ -179,7 +179,6 @@
     <script src="{% static 'assets/sales/contract/js/contract_common.js' %}"></script>
     <script src="{% static 'assets/sales/contract/js/contract_create.js' %}"></script>
     <script src="{% static 'assets/sales/contract/js/contract_detail.js' %}"></script>
-    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script>
         $(document).ready(function (){
             $('#btn-show-comment').on('click', function (){
@@ -187,7 +186,7 @@
                     duration: 'fast',
                     always: function (){
                         $(this).remove();
-                        let appIdx = "b9650500-aba7-44e3-b6e0-2542622702a3";  // Application: Quotation - Quotation
+                        let appIdx = "58385bcf-f06c-474e-a372-cadc8ea30ecc";  // Application: contract.ContractApproval
                         let docIdx = $.fn.getPkDetail();
                         if (docIdx){
                             let modalEle = $('#comment-group');

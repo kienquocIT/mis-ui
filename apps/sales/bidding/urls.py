@@ -2,7 +2,7 @@ from django.urls import path
 
 from apps.sales.bidding.views import BiddingCreate, BiddingList, BiddingListAPI, \
     DocumentMasterDataBiddingListAPI, AccountForBiddingListAPI, BiddingDetail, BiddingDetailAPI, BiddingUpdate, \
-    BiddingResultAPI
+    BiddingResultAPI, BiddingResultConfigList, BiddingResultConfigListAPI
 
 urlpatterns = [
     # view urls
@@ -17,4 +17,12 @@ urlpatterns = [
     path('api/result', BiddingResultAPI.as_view(), name='BiddingResultAPI'),
     path('api/account-list', AccountForBiddingListAPI.as_view(), name='AccountForBiddingListAPI'),
     path('api/document-list', DocumentMasterDataBiddingListAPI.as_view(), name='DocumentMasterDataBiddingListAPI'),
+    path(
+        'bidding-result-config', BiddingResultConfigList.as_view(),
+        name='BiddingResultConfigList'
+    ),
+    path(
+        'bidding-result-config/api', BiddingResultConfigListAPI.as_view(),
+        name='BiddingResultConfigListAPI'
+    ),
 ]

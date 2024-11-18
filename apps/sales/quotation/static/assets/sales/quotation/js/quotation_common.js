@@ -328,7 +328,7 @@ class QuotationLoadDataHandle {
         let year = currentDate.getFullYear();
         let formattedDate = `${day}/${month}/${year}`;
         $('#quotation-create-date-created').val(formattedDate)
-    }
+    };
 
     static loadBoxQuotationPrice() {
         let ele = $('#select-box-quotation-create-price-list');
@@ -772,7 +772,7 @@ class QuotationLoadDataHandle {
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
                 // load Description
                 if (description) {
-                    description.innerHTML = data?.['description'] ? data?.['description'] : '--';
+                    description.innerHTML = data?.['description'] ? data?.['description'] : '';
                 }
                 // load UOM
                 if (uom && data?.['unit_of_measure'] && data?.['uom_group']) {
@@ -2537,9 +2537,9 @@ class QuotationDataTableHandle {
                         }
                         let des = "--";
                         if (itemType === 0) {  // PRODUCT
-                            des = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '--';
+                            des = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '';
                         } else if (itemType === 1) {  // PROMOTION
-                            des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '--';
+                            des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '';
                         }
                         return `<div class="row"><textarea class="form-control table-row-description zone-readonly" rows="2" data-zone="${dataZone}" readonly>${des}</textarea></div>`;
                     }
@@ -3624,13 +3624,13 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['description'] ? row?.['description'] : '--'}</span>`;
+                        return `<textarea class="form-control table-row-description" rows="2" readonly>${row?.['description'] ? row?.['description'] : ''}</textarea>`
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-description">${row?.['sale_information']?.['default_uom']?.['title'] ? row?.['sale_information']?.['default_uom']?.['title'] : '--'}</span>`;
+                        return `<span class="table-row-uom">${row?.['sale_information']?.['default_uom']?.['title'] ? row?.['sale_information']?.['default_uom']?.['title'] : ''}</span>`;
                     }
                 },
                 {
@@ -6183,7 +6183,7 @@ class QuotationSubmitHandle {
                             'indicator_value': parseFloat(indicator_value),
                             'indicator_rate': parseFloat(indicator_rate),
                             'quotation_indicator_value': parseFloat(quotation_indicator_value),
-                            'difference_indicator_value': parseFloat(difference_indicator_rate),
+                            'difference_indicator_value': parseFloat(difference_indicator_rate) ? difference_indicator_rate : 0,
                             'order': parseInt(order),
                         })
                     }

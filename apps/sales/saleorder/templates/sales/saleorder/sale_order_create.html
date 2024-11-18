@@ -32,7 +32,7 @@
                         <span class="nav-link-text">{% trans 'Sale Order' %}</span>
                     </a>
                 </li>
-                <li class="nav-item quotation-tab-item" id="tab-indicator">
+                <li class="nav-item quotation-tab-item" id="tab-indicator" data-zone="sale_order_indicators_data">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
                         <span class="nav-link-text">{% trans 'Indicator' %}</span>
                     </a>
@@ -134,6 +134,14 @@
                                         data-keyResp="payment_terms_list"
                                         required
                                 ></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="d-flex justify-content-end">
+                            <div class="form-check form-check-lg">
+                                <input type="checkbox" class="form-check-input" id="is-recurring" name="is_recurring">
+                                <label class="form-check-label" for="is-recurring">{% trans 'Set as recurring template' %}</label>
                             </div>
                         </div>
                     </div>
@@ -733,8 +741,8 @@
                                 <thead>
                                 <tr class="bg-light">
                                     <th class="w-30">{% trans 'Product' %}</th>
-                                    <th class="w-25">{% trans 'Description' %}</th>
-                                    <th class="w-15">{% trans 'UOM' %}</th>
+                                    <th class="w-30">{% trans 'Description' %}</th>
+                                    <th class="w-10">{% trans 'UOM' %}</th>
                                     <th class="w-10">{% trans 'Status' %}</th>
                                     <th class="w-20">{% trans 'Note' %}</th>
                                 </tr>

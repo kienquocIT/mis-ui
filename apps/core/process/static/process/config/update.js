@@ -38,56 +38,64 @@ $(document).ready(function () {
                         'shorthandCurrentMonth': true,
                     });
 
-                    $.fn.callAjax2({
-                        'url': frm$.data('url-app') + '?' + $.param({'pageSize': -1, 'allow_process': true}),
-                    }).then(
-                        resp => {
-                            const appData = $.fn.switcherResp(resp);
-                            if (appData) {
-                                const clsProcess = new ProcessStages(
-                                    processSetup$,
-                                    process_detail,
-                                    {
-                                        'debug': false,
-                                        'enableEdit': true,
-                                        'applicationList': appData['tenant_application_list'] || [],
-                                    },
-                                );
-                                clsProcess.init();
-                                new SetupFormSubmit(frm$).validate({
-                                    submitHandler: function (form, event) {
-                                        const frm = new SetupFormSubmit($(form));
-                                        const stages = clsProcess.getFullStages();
-                                        if (stages){
-                                            $.fn.callAjax2({
-                                                url: $(form).data('url'),
-                                                method: 'PUT',
-                                                data: {
-                                                    ...frm.dataForm,
-                                                    'apply_start': frm.dataForm?.['appy_start'] ? frm.dataForm['appy_start'] : null,
-                                                    'apply_finish': frm.dataForm?.['apply_finish'] ? frm.dataForm['apply_finish'] : null,
-                                                    'stages': stages,
-                                                }
-                                            }).then(resp => {
-                                                const data = $.fn.switcherResp(resp);
-                                                if (data) {
-                                                    $.fn.notifyB({'description': $.fn.gettext('Successful')}, 'success');
-                                                    setTimeout(
-                                                        () => window.location.href = $(form).data('url-redirect'),
-                                                        1000
-                                                    )
-                                                }
-                                            }, errs => $.fn.switcherResp(errs))
-                                        }
-                                    },
-                                })
-
+                    const clsProcess = new ProcessStages(
+                        processSetup$,
+                        process_detail,
+                        {
+                            'debug': false,
+                            'enableEdit': true,
+                            'applicationList': [],
+                        },
+                    );
+                    new SetupFormSubmit(frm$).validate({
+                        submitHandler: function (form, event) {
+                            const frm = new SetupFormSubmit($(form));
+                            const stages = clsProcess.getFullStages();
+                            if (stages){
+                                $.fn.callAjax2({
+                                    url: $(form).data('url'),
+                                    method: 'PUT',
+                                    data: {
+                                        ...frm.dataForm,
+                                        'apply_start': frm.dataForm?.['appy_start'] ? frm.dataForm['appy_start'] : null,
+                                        'apply_finish': frm.dataForm?.['apply_finish'] ? frm.dataForm['apply_finish'] : null,
+                                        'stages': stages,
+                                    }
+                                }).then(resp => {
+                                    const data = $.fn.switcherResp(resp);
+                                    if (data) {
+                                        $.fn.notifyB({'description': $.fn.gettext('Successful')}, 'success');
+                                        setTimeout(
+                                            () => window.location.href = $(form).data('url-redirect'),
+                                            1000
+                                        )
+                                    }
+                                }, errs => $.fn.switcherResp(errs))
                             }
                         },
-                        errs => {
-
+                    })
+                    const params = !!process_detail?.['for_opp'] || '' ? {'allow_opportunity': true} : {}
+                    $.fn.callAjax2({
+                        url: frm$.data('url-app') + '?' + $.param({
+                            'allow_process': true,
+                            'pageSize': '-1',
+                            ...params,
+                        }),
+                        method: 'GET',
+                        isLoading: true,
+                        loadingOpts: {
+                            'html': $.fn.gettext('Applications loading...'),
+                        },
+                    }).then(resp => {
+                        const appData = $.fn.switcherResp(resp);
+                        if (appData) {
+                            clsProcess.applicationList = appData['tenant_application_list'] || [];
+                            clsProcess.setApplicationDict();
+                            clsProcess.reloadNewAppToSelect();
+                            clsProcess.init();
+                            clsProcess.checkExistDataWithApplication();
                         }
-                    )
+                    })
                 }
             }
         },

@@ -169,23 +169,26 @@ class SetupFormSubmit {
             errorElement: "small",
             showErrors: function (errorMap, errorList) {
                 this.defaultShowErrors();
-                errorList.map(
-                    item => {
-                        if (item.element && item.message){
-                            if (!$(item.element).is(':visible')){
-                                const formGroup$ = $(item.element).closest('.form-group');
-                                const label$ = formGroup$.length > 0 ? formGroup$.find('.form-label') : $(item.element).siblings('label');
+                const isSilentPopup = $(ele$).data('validate-silent-popup');
+                if (!(isSilentPopup === 'true' || isSilentPopup === true)){
+                    errorList.map(
+                        item => {
+                            if (item.element && item.message){
+                                if (!$(item.element).is(':visible')){
+                                    const formGroup$ = $(item.element).closest('.form-group');
+                                    const label$ = formGroup$.length > 0 ? formGroup$.find('.form-label') : $(item.element).siblings('label');
 
-                                if (label$ && label$.length > 0){
-                                    $.fn.notifyB({
-                                        'title': label$.text() + ': ',
-                                        'description': item.message,
-                                    }, 'failure');
+                                    if (label$ && label$.length > 0){
+                                        $.fn.notifyB({
+                                            'title': label$.text() + ': ',
+                                            'description': item.message,
+                                        }, 'failure');
+                                    }
                                 }
                             }
                         }
-                    }
-                )
+                    )
+                }
             },
             errorPlacement: function (error, element) {
                 // error.insertAfter(element);
@@ -200,6 +203,16 @@ class SetupFormSubmit {
                 if (insertAfterEle.siblings('.select2-container').length > 0) {
                     insertAfterEle.parent().append(error);
                 } else error.insertAfter(insertAfterEle);
+            },
+            success: function (label, element) {
+                $(element).siblings('.form-error-msg').remove();
+                let parentEle = $(element).parent();
+
+                if (parentEle.hasClass('input-group') || parentEle.hasClass('input-affix-wrapper')) {
+                    parentEle.siblings('.form-error-msg').remove();
+                } else {
+                    $(element).siblings('.form-error-msg').remove();
+                }
             },
             onsubmit: false,
             ...configs
@@ -3074,12 +3087,18 @@ class WFRTControl {
             typeWF = 1;
         }
         if (window.location.href.includes('/update/')) {
-            let eleStatus = $('#systemStatus');
-            if (eleStatus && eleStatus.length > 0) {
-                if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+            let docData = WFRTControl.getRuntimeDocData();
+            if (docData?.['system_status']) {
+                if (![0, 3].includes(docData?.['system_status'])) {
                     typeWF = 1;
                 }
             }
+            // let eleStatus = $('#systemStatus');
+            // if (eleStatus && eleStatus.length > 0) {
+            //     if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+            //         typeWF = 1;
+            //     }
+            // }
         }
         let $collabOFCreate = $('#idxCollabOFCreate');
         let dataCreate = [];
@@ -3106,12 +3125,18 @@ class WFRTControl {
             typeWF = 1;
         }
         if (window.location.href.includes('/update/')) {
-            let eleStatus = $('#systemStatus');
-            if (eleStatus && eleStatus.length > 0) {
-                if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+            let docData = WFRTControl.getRuntimeDocData();
+            if (docData?.['system_status']) {
+                if (![0, 3].includes(docData?.['system_status'])) {
                     typeWF = 1;
                 }
             }
+            // let eleStatus = $('#systemStatus');
+            // if (eleStatus && eleStatus.length > 0) {
+            //     if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+            //         typeWF = 1;
+            //     }
+            // }
         }
         let $associateCreate = $('#idxAssociateCreate');
         let dataCreate = [];
@@ -3174,8 +3199,25 @@ class WFRTControl {
                 body_fields.push(item.code);
                 body_fields_related = body_fields_related.concat(item?.['code_related']);
             });
+            let $editData = $('#idxZonesData');
+            let $editKey = $('#idxZonesKeyData');
+            let $editRelate = $('#idxZonesKeyRelatedData');
+            if ($editData && $editData.length > 0) {
+                $editData.empty().html(`${JSON.stringify(zonesData)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>`);
+            }
+            if ($editKey && $editKey.length > 0) {
+                $editKey.empty().html(`${JSON.stringify(body_fields)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>`);
+            }
+            if ($editRelate && $editRelate.length > 0) {
+                $editRelate.empty().html(`${JSON.stringify(body_fields_related)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesKeyRelatedData">${JSON.stringify(body_fields_related)}</script>`);
+            }
         }
-        $('html').append(`<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>` + `<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>` + `<script class="hidden" id="idxZonesKeyRelatedData">${JSON.stringify(body_fields_related)}</script>`);
     }
 
     static setZoneHiddenData(zonesHiddenData) {
@@ -3184,12 +3226,28 @@ class WFRTControl {
             zonesHiddenData.map((item) => {
                 body_fields.push(item.code);
             });
-            $('html').append(`<script class="hidden" id="idxZonesHiddenData">${JSON.stringify(zonesHiddenData)}</script>` + `<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
+            let $hiddenData = $('#idxZonesHiddenData');
+            let $hiddenKey = $('#idxZonesHiddenKeyData');
+            if ($hiddenData && $hiddenData.length > 0) {
+                $hiddenData.empty().html(`${JSON.stringify(zonesHiddenData)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesHiddenData">${JSON.stringify(zonesHiddenData)}</script>`);
+            }
+            if ($hiddenKey && $hiddenKey.length > 0) {
+                $hiddenKey.empty().html(`${JSON.stringify(body_fields)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
+            }
         }
     }
 
     static setIsEditAllZoneData(isEditAllZone) {
-        $('html').append(`<script class="hidden" id="idxIsEditAllZone">${isEditAllZone}</script>`);
+        let $allZone = $('#idxIsEditAllZone');
+        if ($allZone && $allZone.length > 0) {
+            $allZone.empty().html(`${isEditAllZone}`);
+        } else {
+            $('html').append(`<script class="hidden" id="idxIsEditAllZone">${isEditAllZone}</script>`);
+        }
     }
 
     static setCollabOFRuntime(collabOutFormData) {

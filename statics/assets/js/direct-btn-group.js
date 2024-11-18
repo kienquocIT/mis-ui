@@ -14,7 +14,10 @@ $(document).ready(function () {
     }
 
     $direct_first.on('click', function () {
-        let dataParam = {'direct_first': true}
+        let dataParam = {
+            'pageSize': 1,
+            'ordering': 'date_created'
+        }
         let ajax = $.fn.callAjax2({
             url: $direct_btn_group_url.attr('data-url-list-api'),
             data: dataParam,
@@ -45,7 +48,10 @@ $(document).ready(function () {
     })
 
     $direct_last.on('click', function () {
-        let dataParam = {'direct_last': true}
+        let dataParam = {
+            'pageSize': 1,
+            'ordering': '-date_created'
+        }
         let ajax = $.fn.callAjax2({
             url: $direct_btn_group_url.attr('data-url-list-api'),
             data: dataParam,
@@ -76,7 +82,12 @@ $(document).ready(function () {
     })
 
     $direct_previous.on('click', function () {
-        let dataParam = {'direct_previous': true, 'current_pk': $.fn.getPkDetail() !== "None" ? $.fn.getPkDetail() : null}
+        let dataParam = {
+            'direct_previous': true,
+            'current_pk': $.fn.getPkDetail() !== "None" ? $.fn.getPkDetail() : null,
+            'pageSize': 1,
+            'ordering': '-date_created'
+        }
         let ajax = $.fn.callAjax2({
             url: $direct_btn_group_url.attr('data-url-list-api'),
             data: dataParam,
@@ -107,7 +118,12 @@ $(document).ready(function () {
     })
 
     $direct_next.on('click', function () {
-        let dataParam = {'direct_next': true, 'current_pk': $.fn.getPkDetail() !== "None" ? $.fn.getPkDetail() : null}
+        let dataParam = {
+            'direct_next': true,
+            'current_pk': $.fn.getPkDetail() !== "None" ? $.fn.getPkDetail() : null,
+            'pageSize': 1,
+            'ordering': 'date_created'
+        }
         let ajax = $.fn.callAjax2({
             url: $direct_btn_group_url.attr('data-url-list-api'),
             data: dataParam,

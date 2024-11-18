@@ -39,4 +39,5 @@ I18N_JS_MATCH_APP = {
     'log': 'apps.log',
     'process': 'apps.core.process',
     'delivery': 'apps.sales.delivery',
+    'hrm': 'apps.hrm.employee',
 }

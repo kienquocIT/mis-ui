@@ -414,6 +414,14 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCTION_REPORT_LIST_PAGE = BreadcrumbChildren(_('Production report'), 'ProductionReportList')
     WORK_ORDER_LIST_PAGE = BreadcrumbChildren(_('Work order'), 'WorkOrderList')
 
+    # Recurrence
+    RECURRENCE_LIST_PAGE = BreadcrumbChildren(_('Recurrence'), 'RecurrenceList')
+    # HRM
+    HRM_EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('HRM Employee info'), 'HRMEmployeeList')
+    HRM_EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'HRMEmployeeCreate')
+    HRM_EMPLOYEE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    HRM_EMPLOYEE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1088,4 +1096,18 @@ class BreadcrumbView:
     WORK_ORDER_DETAIL_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     WORK_ORDER_UPDATE_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    # Recurrence
+    RECURRENCE_LIST_PAGE = [
+        BreadcrumbItem.RECURRENCE_LIST_PAGE
+    ]
+    RECURRENCE_CREATE_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    RECURRENCE_DETAIL_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    RECURRENCE_UPDATE_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    HRM_EMPLOYEE_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.HRM_EMPLOYEE_LIST_PAGE
+    ]
+    HRM_EMPLOYEE_CREATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    HRM_EMPLOYEE_DETAIL_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    HRM_EMPLOYEE_UPDATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

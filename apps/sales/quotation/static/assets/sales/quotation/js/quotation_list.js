@@ -30,7 +30,7 @@ $(function () {
                 },
                 autoWidth: true,
                 scrollX: true,
-                pageLength:50,
+                pageLength: 10,
                 columns: [  // (1280p)
                     {
                         targets: 0,

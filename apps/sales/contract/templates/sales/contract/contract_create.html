@@ -35,7 +35,7 @@
                         required
                 >
             </div>
-            <label class="form-label required">{% trans 'Document' %}</label>
+            <label class="form-label">{% trans 'Document' %}</label>
             <table
                 id="datable-contract-document"
                 class="table nowrap w-100"
@@ -190,7 +190,7 @@
                     duration: 'fast',
                     always: function (){
                         $(this).remove();
-                        let appIdx = "b9650500-aba7-44e3-b6e0-2542622702a3";  // Application: Quotation - Quotation
+                        let appIdx = "58385bcf-f06c-474e-a372-cadc8ea30ecc";  // Application: contract.ContractApproval
                         let docIdx = $.fn.getPkDetail();
                         if (docIdx){
                             let modalEle = $('#comment-group');

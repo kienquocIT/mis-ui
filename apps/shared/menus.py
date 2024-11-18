@@ -221,7 +221,8 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-chalkboard-teacher"></i>',
             ),
             MenuCommon(
-                name='Revenue plan config', code='id_menu_master_data_revenue_plan_config', view_name='RevenuePlanConfigList',
+                name='Revenue plan config', code='id_menu_master_data_revenue_plan_config',
+                view_name='RevenuePlanConfigList',
                 icon='<i class="fas fa-hand-holding-usd"></i>',
             ),
             MenuCommon(
@@ -264,7 +265,8 @@ class MenusCoreConfigurations:
         ]
     )
     INVENTORY_DATA_CONFIG = MenuCommon(
-        name='Inventory interact config', code='menu_inventory_interact_config', view_name='InventoryInteractConfigList',
+        name='Inventory interact config', code='menu_inventory_interact_config',
+        view_name='InventoryInteractConfigList',
         icon='<i class="fa-solid fa-arrow-right-to-bracket"></i>'
     )
 
@@ -342,6 +344,20 @@ class MenusCRM:
     SALE_ORDER = MenuCommon(
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
         icon='<i class="fas fa-file-invoice"></i>',
+    )
+    RECURRENCE = MenuCommon(
+        name='Recurrence transaction', code='menu_recurrence', view_name='',
+        icon='<i class="fas fa-recycle"></i>',
+        child=[
+            MenuCommon(
+                name='Recurring order', code='menu_recurring_order', view_name='RecurrenceList',
+                icon='<i class="fas fa-file"></i>',
+            ),
+            MenuCommon(
+                name='Transaction template', code='menu_transaction_template', view_name='TransactionTemplateList',
+                icon='<i class="fas fa-file-alt"></i>',
+            ),
+        ],
     )
     WORK_ORDER = MenuCommon(
         name='Work order', code='menu_work_order_list', view_name='WorkOrderList',
@@ -481,7 +497,8 @@ class MenusInventory:
     )
 
     INVENTORY = MenuCommon(
-        name='Inventory activities', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-store"></i>',
+        name='Inventory activities', code='menu_inventory_activities', view_name='',
+        icon='<i class="fas fa-store"></i>',
         child=[
             MenuCommon(
                 name='WareHouses', code='menu_warehouse_list', view_name='WareHouseList',
@@ -736,6 +753,21 @@ class MenusProduction:
     )
 
 
+class MenusHRM:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_hrm_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    HUMAN_RESOURCES = MenuCommon(
+        name='Human resources', code='menu_human_resources', view_name='', icon='<i class="fa-solid fa-person"></i>',
+        child=[
+            MenuCommon(
+                name='Employee data', code='menu_employee_data_list', view_name='HRMEmployeeList',
+                icon='<i class="fa-solid fa-user-check"></i>',
+            ),
+        ]
+    )
+
+
 # Space Setup
 class SpaceCommon:
     name: str  # 'Sale'
@@ -792,6 +824,7 @@ class SpaceItem:
                 MenusCRM.BIDDING,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,
+                MenusCRM.RECURRENCE,
                 MenusCRM.WORK_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.CONTRACT_APPROVAL,
@@ -837,7 +870,10 @@ class SpaceItem:
             'HRM',
             'hrm',
             icon='<i class="fa-solid fa-user-tag"></i>',
-            menus=[],
+            menus=[
+                MenusHRM.HOME,
+                MenusHRM.HUMAN_RESOURCES,
+            ],
         ),
         'inventory': SpaceCommon(
             'Inventory',

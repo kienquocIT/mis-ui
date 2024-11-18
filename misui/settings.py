@@ -84,6 +84,7 @@ INSTALLED_APPS = \
         'apps.core.diagram',
         'apps.core.attachment',
         'apps.core.form',
+        'apps.core.recurrence',
     ] + [  # Another Application
         'apps.masterdata.saledata',
         'apps.masterdata.promotion',
@@ -117,6 +118,8 @@ INSTALLED_APPS = \
         'apps.eoffice.meeting',
     ] + [  # external
         'apps.web_builder',
+    ] + [  # HRM
+        'apps.hrm.employee'
     ]
 
 INSTALLED_APPS += [

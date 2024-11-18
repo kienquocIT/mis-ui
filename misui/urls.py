@@ -16,6 +16,7 @@ urlpatterns = \
         path('', include('apps.masterdata.urls')),
         path('', include('apps.sales.urls')),
         path('', include('apps.eoffice.urls')),
+        path('hrm/', include('apps.hrm.urls')),
         path('site/', include('apps.web_builder.urls.viewer')),
         path('site-config/', include('apps.web_builder.urls.config')),
         path("jsi18n/<str:packages>", JavaScriptCatalogCustomize.as_view(), name="javascript-catalog"),

@@ -251,7 +251,7 @@
                                         </button>
                                         <div class="dropdown-menu action-list w-160p h-120p"></div>
                                     </div>
-                                    <div class="form-control div-input action-show" readonly></div>
+                                    <div class="form-control div-input action-show w-30" readonly></div>
                                 </div>
                             </div>
                             <br>
@@ -260,13 +260,13 @@
                                     <div class="col-12 col-md-6 col-lg-6 border-right">
                                         <div class="form-group">
                                             <label class="form-label">{% trans 'Editing zone' %}</label>
-                                            <div class="zone-edit h-150p"></div>
+                                            <div class="zone-edit"></div>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 col-lg-6">
                                         <div class="form-group">
                                             <label class="form-label">{% trans 'Hidden zone' %}</label>
-                                            <div class="zone-hidden h-150p"></div>
+                                            <div class="zone-hidden"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -341,13 +341,13 @@
                                         <div class="col-12 col-md-6 col-lg-6 border-right">
                                             <div class="form-group">
                                                 <label class="form-label">{% trans 'Editing zone' %}</label>
-                                                <div class="zone-edit h-150p"></div>
+                                                <div class="zone-edit"></div>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-6">
                                             <div class="form-group">
                                                 <label class="form-label">{% trans 'Hidden zone' %}</label>
-                                                <div class="zone-hidden h-150p"></div>
+                                                <div class="zone-hidden"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -471,13 +471,13 @@
                                                 <div class="col-12 col-md-6 col-lg-6 border-right">
                                                     <div class="form-group">
                                                         <label class="form-label">{% trans 'Editing zone' %}</label>
-                                                        <div class="zone-edit h-150p"></div>
+                                                        <div class="zone-edit"></div>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-6 col-lg-6">
                                                     <div class="form-group">
                                                         <label class="form-label">{% trans 'Hidden zone' %}</label>
-                                                        <div class="zone-hidden h-150p"></div>
+                                                        <div class="zone-hidden"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -723,8 +723,8 @@
         data-employee-list="{% trans 'Employee list' %}"
         data-add-new="{% trans 'New' %}"
         data-system-node="{% trans 'System node' %}"
-        data-type-src-2="{% trans 'Choose one collaborator actions' %}"
-        data-type-src-3="{% trans 'Many collaborators action' %}"
+        data-type-src-2="{% trans 'Out form' %}"
+        data-type-src-3="{% trans 'In workflow' %}"
         data-type-src-note="{% trans 'At this node' %}"
         data-type-src-2-note="{% trans 'Only one collaborator (select in list below) will action, approve the document' %}"
         data-type-src-3-note="{% trans 'All collaborators (according to configuration below) will action, approve the document' %}"
@@ -734,6 +734,8 @@
         data-validate-association-4="{% trans "Cannot connect itself" %}"
         data-next-node="{% trans "Next node" %}"
         data-exceed-collab="{% trans "Exceed collaborator quantity" %}"
+        data-config="{% trans "Configuration" %}"
+        data-delete="{% trans "Delete" %}"
     >
 
     <input

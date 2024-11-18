@@ -3199,8 +3199,25 @@ class WFRTControl {
                 body_fields.push(item.code);
                 body_fields_related = body_fields_related.concat(item?.['code_related']);
             });
+            let $editData = $('#idxZonesData');
+            let $editKey = $('#idxZonesKeyData');
+            let $editRelate = $('#idxZonesKeyRelatedData');
+            if ($editData && $editData.length > 0) {
+                $editData.empty().html(`${JSON.stringify(zonesData)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>`);
+            }
+            if ($editKey && $editKey.length > 0) {
+                $editKey.empty().html(`${JSON.stringify(body_fields)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>`);
+            }
+            if ($editRelate && $editRelate.length > 0) {
+                $editRelate.empty().html(`${JSON.stringify(body_fields_related)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesKeyRelatedData">${JSON.stringify(body_fields_related)}</script>`);
+            }
         }
-        $('html').append(`<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>` + `<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>` + `<script class="hidden" id="idxZonesKeyRelatedData">${JSON.stringify(body_fields_related)}</script>`);
     }
 
     static setZoneHiddenData(zonesHiddenData) {
@@ -3209,12 +3226,28 @@ class WFRTControl {
             zonesHiddenData.map((item) => {
                 body_fields.push(item.code);
             });
-            $('html').append(`<script class="hidden" id="idxZonesHiddenData">${JSON.stringify(zonesHiddenData)}</script>` + `<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
+            let $hiddenData = $('#idxZonesHiddenData');
+            let $hiddenKey = $('#idxZonesHiddenKeyData');
+            if ($hiddenData && $hiddenData.length > 0) {
+                $hiddenData.empty().html(`${JSON.stringify(zonesHiddenData)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesHiddenData">${JSON.stringify(zonesHiddenData)}</script>`);
+            }
+            if ($hiddenKey && $hiddenKey.length > 0) {
+                $hiddenKey.empty().html(`${JSON.stringify(body_fields)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
+            }
         }
     }
 
     static setIsEditAllZoneData(isEditAllZone) {
-        $('html').append(`<script class="hidden" id="idxIsEditAllZone">${isEditAllZone}</script>`);
+        let $allZone = $('#idxIsEditAllZone');
+        if ($allZone && $allZone.length > 0) {
+            $allZone.empty().html(`${isEditAllZone}`);
+        } else {
+            $('html').append(`<script class="hidden" id="idxIsEditAllZone">${isEditAllZone}</script>`);
+        }
     }
 
     static setCollabOFRuntime(collabOutFormData) {

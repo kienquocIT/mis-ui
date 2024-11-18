@@ -1344,3 +1344,195 @@ class createBaseline {
         createBaseline.baselineSubmit()
     }
 }
+
+class TaskReport{
+    constructor() {
+        this.data = []
+    }
+    set setData(datas){
+        let temp = []
+        let draft = []
+        for (let data of datas){
+            const task = data.task
+            if (draft.includes(task.employee_inherit.id)){
+                // nếu có
+                const idx = draft.indexOf(task.employee_inherit.id)
+                temp[idx]['total_time_received'] += ',' + task.estimate
+                temp[idx]['total_task'] += 1
+                temp[idx]['total_task_complete'] += task.percent_completed === 100 ? 1 : 0
+                temp[idx]['total_time_did'] = temp[idx]['total_time_did'].concat(task.log_time)
+            }
+            else{
+                // ko có
+                draft.push(task.employee_inherit.id)
+                temp.push({
+                    'employee':{
+                        'id': task.employee_inherit.id,
+                        'full_name': task.employee_inherit.full_name,
+                    },
+                    'role': task.employee_inherit.role,
+                    'total_time_received': task.estimate,
+                    'total_time_did': task.log_time,
+                    'total_task': 1,
+                    'total_task_complete': task.percent_completed === 100 ? 1 : 0
+                })
+            }
+        }
+        this.data = temp
+    }
+    get getData(){
+        return this.data
+    }
+    getAjaxData(){
+        let _this = this
+        $.fn.callAjax2({
+            'url': $('#url-factory').attr('data-task-list'),
+            'data': {'project_id': $('#project_form #id').val(), 'pageSize': -1},
+            'method': 'get',
+            'sweetAlertOpts': {
+                'allowOutsideClick': true,
+                'showCancelButton': true
+            }
+        })
+            .then(
+                (resp) => {
+                    let res = $.fn.switcherResp(resp);
+                    if (res && (res['status'] === 201 || res['status'] === 200)) {
+                        _this.setData = res['prj_task_list_all']
+                        _this.loadData()
+                    }
+                }
+            )
+    }
+
+    convertUnitOfMeasure(){
+        const getData = JSON.parse($('#uom_data').text())
+        let uom_lst = {'d': 1, 'h': 1}
+        for (let uom of getData){
+            if (uom.code === 'Manday') uom_lst.d = uom.ratio
+            if (uom.code === 'Manhour') uom_lst.d = uom.ratio
+        }
+        return uom_lst
+    }
+
+    loadData(){
+        let table = $('#table_report');
+        let uom_list = this.convertUnitOfMeasure()
+        if (table.hasClass('dataTable')){
+            table.DataTable().clear().draw();
+            table.DataTable().rows.add(this.getData).draw();
+        }
+        else{
+            table.DataTable({
+                searching: false,
+                ordering: false,
+                paginate: false,
+                info: false,
+                data: this.getData,
+                columns: [
+                    {
+                        data: 'employee',
+                        targets: 0,
+                        width: "20%",
+                        render: (row, type, data) => {
+                            let time = '--';
+                            if (Object.keys(row).length > 0) time = `${row.full_name}`
+                            return time
+                        }
+                    },
+                    {
+                        data: 'role',
+                        targets: 1,
+                        width: "20%",
+                        render: (row, type, data) => {
+                            if (Array.isArray(row)) {
+                                let result = [];
+                                row.map(item => item.title ? result.push(`<span class="badge badge-outline badge-soft-pumpkin mb-1 mr-1">` + item.title + `</span>`) : null);
+                                return result.join(" ");
+                            }
+                            return '';
+                        }
+                    },
+                    {
+                        data: 'total_time_received',
+                        targets: 2,
+                        width: "20%",
+                        class: 'text-center',
+                        render: (row, type, data) => {
+                            let lst = row.split(',')
+                            let temp = 0
+                            for (let d of lst){
+                                temp += uom_list[d.slice(-1)] * parseInt(d.slice(0, d.length -1))
+                            }
+                            return temp + ' ' + $.fn.gettext('Hour');
+                        }
+                    },
+                    {
+                        data: 'total_time_did',
+                        targets: 3,
+                        width: "10%",
+                        class: 'text-center',
+                        render: (row, type, data) => {
+                            let temp = 0
+                            for (let d of row){
+                                temp += uom_list[d.time_spent.slice(-1)] * parseInt(d.time_spent.slice(0, d.time_spent.length -1))
+                            }
+                            return temp + ' ' + $.fn.gettext('Hour');
+                        }
+                    },
+                    {
+                        data: 'total_task',
+                        targets: 3,
+                        width: "10%",
+                        class: 'text-center',
+                        render: (row, type, data) => {
+                            return row
+                        }
+                    },
+                    {
+                        data: 'total_task_complete',
+                        targets: 3,
+                        width: "10%",
+                        class: 'text-center',
+                        render: (row, type, data) => {
+                            return row
+                        }
+                    }
+                ],
+                footerCallback: function () {
+                    let api = this.api();
+                    // Total footer row
+                    let totalEst = 0
+                    let totalAct = 0
+                    let totalTask = 0
+                    let totalComplete = 0
+                    api.rows().every(function () {
+                        let data = this.data()
+                        if (data?.['total_time_received']) {
+                            let lst = data.total_time_received.split(',')
+                            for (let d of lst){
+                                totalEst += uom_list[d.slice(-1)] * parseInt(d.slice(0, d.length -1))
+                            }
+                        }
+                        if (data?.['total_time_did']) {
+                            for (let d of data.total_time_did){
+                                totalAct += uom_list[d.time_spent.slice(-1)] * parseInt(d.time_spent.slice(0, d.time_spent.length -1))
+                            }
+                        }
+                        totalTask += data.total_task
+                        totalComplete += data.total_task_complete
+                    });
+                    // Update header
+                    $('tr:nth-child(1) td:nth-child(2)', api.table().footer()).html(totalEst + ' ' + $.fn.gettext('Hour'));
+                    $('tr:nth-child(1) td:nth-child(3)', api.table().footer()).html(totalAct + ' ' + $.fn.gettext('Hour'));
+                    $('tr:nth-child(1) td:nth-child(4)', api.table().footer()).html(totalTask);
+                    $('tr:nth-child(1) td:nth-child(5)', api.table().footer()).html(totalComplete);
+                },
+            })
+        }
+    }
+
+    init() {
+        this.getAjaxData()
+    }
+}

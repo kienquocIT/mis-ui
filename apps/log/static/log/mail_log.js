@@ -63,7 +63,9 @@ $(document).ready(function () {
         },
         initComplete: function (settings, json) {
             let wrapper$ = tbl$.closest('.dataTables_wrapper');
-            let textFilter$ = wrapper$.find('.textFilter');
+            const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+            const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+            headerToolbar$.prepend(textFilter$);
             if (textFilter$.length > 0) {
                 textFilter$.css('display', 'flex');
 

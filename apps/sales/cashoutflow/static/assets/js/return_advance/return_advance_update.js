@@ -3,12 +3,13 @@ $(document).ready(function () {
     WFRTControl.setWFInitialData('returnpayment', 'PUT')
     ReturnAPHandle.LoadDetail('update');
 
-    // SUBMIT FORM CREATE ADVANCE PAYMENT
-    $('#form-detail-return-ap').submit(function (event) {
-        event.preventDefault();
-        let form = ReturnAPHandle.CombinesData($(this));
-        if (form) {
-            WFRTControl.callWFSubmitForm(form);
+    // SUBMIT FORM UPDATE RETURN ADVANCE
+    let form_validator = $('#form-detail-return-ap').validate({
+        submitHandler: function (form) {
+            let form_data = ReturnAPHandle.CombinesData(form);
+            if (form_data) {
+                WFRTControl.callWFSubmitForm(form_data);
+            }
         }
     })
 })

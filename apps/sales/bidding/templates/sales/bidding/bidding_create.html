@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm_bidding_create">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <form
+            data-url="{% url 'BiddingListAPI' %}"
+            data-url-redirect="{% url 'BiddingList' %}"
+            data-method="POST"
+            id="frm_bidding_create"
+    >
+        {% csrf_token %}
+        {% include 'sales/bidding/common/information.html' %}
+    </form>
+
+    <!-- comments -->
+
+    <div class="p-3 mt-5">
+        <h6>{% trans 'Comments' %}</h6>
+        <button class="btn btn-primary" id="btn-show-comment">{% trans 'Load comments' %}</button>
+        <div id="comment-group" style="display:none;">
+            {% include 'comment/list.html' %}
+        </div>
+    </div>
+
+
+    <!-- modal !-->
+    {% include 'sales/bidding/common/modal.html' %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
+    <script src="{% static 'assets/sales/bidding/js/bidding_common.js' %}"></script>
+    <script src="{% static 'assets/sales/bidding/js/bidding_create.js' %}"></script>
+    <script>
+        $(document).ready(function (){
+            $('#btn-show-comment').on('click', function (){
+                $(this).fadeOut({
+                    duration: 'fast',
+                    always: function (){
+                        $(this).remove();
+                        let appIdx = "b9650500-aba7-44e3-b6e0-2542622702a3";  // Application: Quotation - Quotation
+                        let docIdx = $.fn.getPkDetail();
+                        if (docIdx){
+                            let modalEle = $('#comment-group');
+                            new $x.cls.cmt(modalEle.find('.comment-group'), {'btn_goto_enabled': false}).init(docIdx, appIdx)
+                            modalEle.fadeIn('fast');
+                        } else {
+                            $.fn.notifyB({
+                                'description': `{% trans 'Document is not selected.' %}`,
+                            }, 'failure');
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock %}

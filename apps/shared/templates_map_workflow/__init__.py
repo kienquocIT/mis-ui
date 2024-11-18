@@ -1,3 +1,4 @@
+from .bidding_bidding import BIDDING_DATA_MAP
 from .cashoutflow_advance import ADVANCE_DATA_MAP
 from .cashoutfow_payment import PAYMENT_DATA_MAP
 from .cashoutflow_return_advance import RETURN_ADVANCE_DATA_MAP
@@ -45,3 +46,4 @@ class InputMappingProperties:
     INVENTORY_GOODS_RETURN = GOODS_RETURN_DATA_MAP
     DISTRIBUTION_PLAN_DB = DISTRIBUTION_PLAN_DATA_MAP
     CONTRACT_APPROVAL_DATA_MAP = CONTRACT_APPROVAL_DATA_MAP
+    BIDDING_DATA_MAP = BIDDING_DATA_MAP

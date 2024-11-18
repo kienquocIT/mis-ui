@@ -32,7 +32,7 @@
                     <th></th>
                     <th>{% trans 'Code' %}</th>
                     <th>{% trans 'Title' %}</th>
-                    <th>{% trans 'Period' %}</th>
+                    <th>{% trans 'Fiscal year' %}</th>
                     <th>{% trans 'Employee created' %}</th>
                     <th>{% trans 'Date created' %}</th>
                     <th>{% trans 'Status' %}</th>
@@ -67,7 +67,7 @@
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label for="budget-plan-period" class="form-label required">{% trans 'Period' %}</label>
+                                    <label for="budget-plan-period" class="form-label required">{% trans 'Fiscal year' %}</label>
                                     <select class="form-select select2" id="budget-plan-period"
                                             data-url="{% url 'PeriodsConfigListAPI' %}"
                                             data-method="GET"

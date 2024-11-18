@@ -32,6 +32,14 @@ $(function () {
             }
         });
 
+        ProdOrderLoadDataHandle.$boxSupplier.on('change', function () {
+            ProdOrderLoadDataHandle.$boxPO[0].setAttribute('disabled', 'true');
+            if (ProdOrderLoadDataHandle.$boxSupplier.val()) {
+                ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxPO, [],  {'supplier_id': ProdOrderLoadDataHandle.$boxSupplier.val(), 'system_status': 3});
+                ProdOrderLoadDataHandle.$boxPO[0].removeAttribute('disabled');
+            }
+        });
+
         ProdOrderLoadDataHandle.$quantity.on('change', function () {
             ProdOrderLoadDataHandle.loadChangeQuantity();
             let multi = 1;
@@ -74,8 +82,18 @@ $(function () {
 
 
 // SUBMIT FORM
-        formSubmit.submit(function (e) {
-            e.preventDefault();
+        SetupFormSubmit.validate(formSubmit, {
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 100,
+                },
+            },
+            errorClass: 'is-invalid cl-red',
+            submitHandler: submitHandlerFunc
+        });
+
+        function submitHandlerFunc() {
             let _form = new SetupFormSubmit(formSubmit);
             let result = ProdOrderSubmitHandle.setupDataSubmit(_form);
             if (result === false) {
@@ -88,6 +106,10 @@ $(function () {
                 'type_production',
                 'product_id',
                 'product_data',
+                'supplier_id',
+                'supplier_data',
+                'purchase_order_id',
+                'purchase_order_data',
                 'quantity',
                 'uom_id',
                 'uom_data',
@@ -107,8 +129,7 @@ $(function () {
                 ProdOrderCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
             WFRTControl.callWFSubmitForm(_form);
-        });
-
+        }
 
 
     });

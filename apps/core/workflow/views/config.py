@@ -12,8 +12,8 @@ WORKFLOW_ACTION = {
     1: WorkflowMsg.ACTION_APPROVED,
     2: WorkflowMsg.ACTION_REJECT,
     3: WorkflowMsg.ACTION_RETURN,
-    4: WorkflowMsg.ACTION_RECEIVE,
-    5: WorkflowMsg.ACTION_TODO,
+    # 4: WorkflowMsg.ACTION_RECEIVE,
+    # 5: WorkflowMsg.ACTION_TODO,
 }
 
 WORKFLOW_TYPE = {

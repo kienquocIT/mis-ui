@@ -778,14 +778,13 @@ class WorkOrderDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<div class="d-flex align-items-center ml-2">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input table-row-checkbox" 
-                                            >
-                                        </div>
-                                        <span class="table-row-item">${row?.['product_data']?.['title']}</span>
+                        return `<div class="form-check form-check-lg">
+                                    <input 
+                                        type="radio" 
+                                        class="form-check-input table-row-checkbox" 
+                                        id="so-pro-${row?.['product_data']?.['id'].replace(/-/g, "")}"
+                                    >
+                                    <label class="table-row-item" for="so-pro-${row?.['product_data']?.['id'].replace(/-/g, "")}">${row?.['product_data']?.['title']}</label>
                                 </div>`;
                     }
                 },

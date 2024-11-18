@@ -369,6 +369,7 @@ class Task_in_project {
             if ($(this).hasClass('disabled')) return;
             $('#logWorkModal').modal('show')
             $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
+            $('#logWorkModal #logtime_task_id').val($('#formOpportunityTask input[name="id"]').val())
             logWorkSubmit()
         })
 

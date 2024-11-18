@@ -345,6 +345,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_QUOTATION_LOAD_DB = StringUrl('saledata/product-quotation-load-db')
     DELETE_CURRENCY_FROM_PRICE_LIST = StringUrl('saledata/delete-currency-from-price-list/{pk}')
 
+    # masterdata/document
+    DOCUMENT_TYPE_LIST = StringUrl('saledata/document-type')
+    DOCUMENT_TYPE_DETAIL = StringUrl('saledata/document-type/{pk}')
     # payment terms
     PAYMENT_TERMS = StringUrl('saledata/masterdata/config/payment-term')
 
@@ -376,6 +379,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     QUOTATION_INDICATOR_DETAIL = StringUrl('quotation/indicator')
     QUOTATION_INDICATOR_RESTORE = StringUrl('quotation/indicator-restore')
 
+    # Bidding
+    BIDDING_LIST = StringUrl('bidding/list')
+    BIDDING_RESULT = StringUrl('bidding/result')
+    ACCOUNT_FOR_BIDDING_LIST = StringUrl('bidding/account-list')
+    DOCUMENT_MASTERDATA_BIDDING_LIST = StringUrl('bidding/document-list')
+    BIDDING_DETAIL = StringUrl('bidding/detail')
+
     # address
     COUNTRIES = StringUrl('base/location/countries')
     CITIES = StringUrl('base/location/cities')
@@ -403,6 +413,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore')
     PRODUCT_LIST_SALE_ORDER = StringUrl('saleorder/product/list/{pk}')
     SALE_ORDER_PRODUCT_WO_LIST = StringUrl('saleorder/sale-order-product-wo/list')
+    SALE_ORDER_RECURRENCE_LIST = StringUrl('saleorder/sale-order-recurrence/list')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
@@ -486,10 +497,16 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_QUOTATION_PRODUCT_LIST = StringUrl('purchasing/purchase-quotation-product/list')
 
     # Process
-    FUNCTION_PROCESS_LIST = StringUrl('sale-process/function/list')
-    PROCESS = StringUrl('sale-process/')
-    SKIP_PROCESS_STEP = StringUrl('sale-process/step/skip/{pk}')
-    SET_CURRENT_PROCESS_STEP = StringUrl('sale-process/step/set-current/{pk}')
+    PROCESS_CONFIG_LIST = StringUrl('process/config/list')
+    PROCESS_CONFIG_READY = StringUrl('process/config/list/ready')
+    PROCESS_CONFIG_DETAIL = StringUrl('process/config/detail/{pk}')
+    PROCESS_RUNTIME_LIST = StringUrl('process/runtime/list')
+    PROCESS_RUNTIME_LIST_OF_ME = StringUrl('process/runtime/list/me')
+    PROCESS_RUNTIME_DETAIL = StringUrl('process/runtime/detail/{pk}')
+    PROCESS_RUNTIME_STAGES_APP_COMPLETE = StringUrl('process/runtime/app/{pk}')
+
+    # Chatbot
+    CHATBOT_CHAT = StringUrl('chatbot/chat')
 
     # Expense item
 
@@ -736,6 +753,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WORK_ORDER_DETAIL = StringUrl('production/work-order')
     WORK_ORDER_DD_LIST = StringUrl('production/work-order-dd/list')
     WORK_ORDER_MANUAL_DONE_LIST = StringUrl('production/work-order-manual-done/list')
+
+    # Recurrence
+    RECURRENCE_LIST = StringUrl('recurrence/list')
+    RECURRENCE_DETAIL = StringUrl('recurrence')
 
     # HRM
     HRM_EMPLOYEE_NOT_MAP_HRM = StringUrl('hrm/employee-not-map/list')

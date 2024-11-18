@@ -197,19 +197,41 @@ class JSPlumbsHandle {
     }
 
     htmlDragRender(target_elm) {
+        let $trans = $('#node-trans-factory');
         let strHTMLDragNode = '';
         if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
             for (let val in DEFAULT_NODE_LIST) {
                 let item = DEFAULT_NODE_LIST[val];
                 let clsSys = '';
                 let bg = '';
+                let clsModal = "modal";
+                let disabled = "";
                 if (item?.['is_system'] === true) {
                     clsSys = 'control-system'
                     bg = 'bg-blue-light-5';
+                    if (["approved", "completed"].includes(item?.['code'])) {
+                        clsModal = "";
+                        disabled = "disabled";
+                    }
                 }
-                strHTMLDragNode += `<div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" `
-                    + `title="${item.title}">` + `<p class="drag-title" contentEditable="true" `
-                    + `title="${item.remark}">${item.title}</p></div>`;
+                // strHTMLDragNode += `<div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" data-bs-toggle="${clsModal}"
+                //             data-bs-target="#nodeModal" `
+                //     + `title="${item.title}">` + `<p class="drag-title" contentEditable="true" `
+                //     + `title="${item.remark}">${item.title}</p></div>`;
+
+                strHTMLDragNode += `<div class="btn-group dropdown">
+                                        <div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" title="${item.title}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
+                                            <p class="drag-title" contentEditable="true" title="${item.remark}">${item.title}</p>
+                                        </div>
+                                        <div class="dropdown-menu w-210p">
+                                            <div class="dropdown-item">
+                                                <button type="button" class="btn btn-outline-primary btn-wth-icon btn-block config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><span><span class="icon"><span class="feather-icon"><i class="fas fa-cog"></i></span></span><span class="btn-text">${$trans.attr('data-config')}</span></span></button>
+                                            </div>
+                                            <div class="dropdown-item">
+                                                <button type="button" class="btn btn-outline-danger btn-wth-icon btn-block del-node"><span><span class="icon"><span class="feather-icon"><i class="fas fa-trash-alt"></i></span></span><span class="btn-text">${$trans.attr('data-delete')}</span></span></button>
+                                            </div>
+                                        </div>
+                                    </div>`;
             }
         }
         if (!target_elm) $('#node_dragbox').html(strHTMLDragNode)
@@ -322,13 +344,17 @@ class JSPlumbsHandle {
                     for (let idx in DEFAULT_NODE_LIST) {
                         let item = DEFAULT_NODE_LIST[idx]
                         if (item.order === parseInt(ui.draggable.attr('data-drag'))) {
-                            if (item.hasOwnProperty('code_node_system')) sys_code = item.code_node_system.toLowerCase()
+                            if (item.hasOwnProperty('code_node_system')) {
+                                if (item?.['code_node_system'] !== null) {
+                                    sys_code = item.code_node_system.toLowerCase();
+                                }
+                            }
                             break;
                         }
                     }
                     if (sys_code !== 'completed')
                         instance.addEndpoint(is_id, {
-                            endpoint: ["Dot", {radius: 4}],
+                            endpoint: ["Dot", {radius: 5}],
                             anchor: ["Bottom", "BottomRight", "BottomLeft"],
                             isSource: true,
                             connectorOverlays: [
@@ -355,7 +381,7 @@ class JSPlumbsHandle {
                     //
                     if (sys_code !== 'initial')
                         instance.addEndpoint(is_id, {
-                            endpoint: ["Rectangle", {width: 8, height: 8}],
+                            endpoint: ["Rectangle", {width: 10, height: 10}],
                             anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
                             isTarget: true,
                             connectorOverlays: [
@@ -385,21 +411,13 @@ class JSPlumbsHandle {
                     let temp = that_cls.getCommitNode
                     temp[numID] = DEFAULT_NODE_LIST[numID]
                     that_cls.setCommitNodeList = temp
-
-                    // handle event on click node
-                    $('#' + is_id).off().on("mousedown", function (evt) {
-                        _MOUSE_POSITION = evt.pageX + evt.pageY
-                    }).on("mouseup", function (evt) {
-                        let temp = evt.pageX + evt.pageY;
-                        if (_MOUSE_POSITION === temp) eventNodeClick(evt)
-                    })
                 }
 
             });
 
             // check if workflow detail or edit page show flowchart
             let $form = $('#form-create_workflow');
-            if (['GET', 'PUT'].includes($form.attr('data-method'))) {
+            if (['get', 'put'].includes($form.attr('data-method').toLowerCase())) {
                 instance.doWhileSuspended(function () {
                     $('#flowchart_workflow .clone').each(function () {
                         let is_id = $(this).attr('id')
@@ -408,7 +426,7 @@ class JSPlumbsHandle {
                         let sys_code = DEFAULT_NODE_LIST[$(this).data('drag')].code_node_system
                         if (sys_code !== 'completed')
                             instance.addEndpoint(is_id, {
-                                endpoint: ["Dot", {radius: 4}],
+                                endpoint: ["Dot", {radius: 5}],
                                 anchor: ["Bottom", "BottomRight", "BottomLeft"],
                                 isSource: true,
                                 connectorOverlays: [
@@ -435,7 +453,7 @@ class JSPlumbsHandle {
                         //
                         if (sys_code !== 'initial')
                             instance.addEndpoint(is_id, {
-                                endpoint: ["Rectangle", {width: 8, height: 8}],
+                                endpoint: ["Rectangle", {width: 10, height: 10}],
                                 anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
                                 // anchor: "Perimeter",
                                 isTarget: true,
@@ -465,13 +483,6 @@ class JSPlumbsHandle {
 
                         // disable node drag in left side
                         numID.draggable("disable");
-                        // add event click for node of right side
-                        $('#' + is_id).off().on("mousedown", function (evt) {
-                            _MOUSE_POSITION = evt.pageX + evt.pageY
-                        }).on("mouseup", function (evt) {
-                            let temp = evt.pageX + evt.pageY;
-                            if (_MOUSE_POSITION === temp) eventNodeClick(evt)
-                        })
                     })
                 }) // end do while suspended
 
@@ -495,7 +506,7 @@ class JSPlumbsHandle {
                             ]
                         ],
                         anchors: ["Bottom", "Top"],
-                        endpoint: ["Dot", {radius: 4}],
+                        endpoint: ["Dot", {radius: 5}],
                         endpointStyle: {fill: "#374986", opacity: ".8"},
                         paintStyle: {stroke: "#eaeaea", strokeWidth: 3},
                         hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
@@ -617,7 +628,7 @@ class JSPlumbsHandle {
 
     init() {
         // get node list from func node
-        this.setNodeList = NodeSubmitHandle.setupDataSubmit(true);
+        this.setNodeList = NodeSubmitHandle.setupDataFlowChart();
         this.setNodeState = this.nodeData;
         let $form = $('#form-create_workflow');
         if (['GET', 'PUT'].includes($form.attr('data-method'))){

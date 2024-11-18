@@ -45,8 +45,18 @@ $(function () {
         });
 
 // SUBMIT FORM
-        formSubmit.submit(function (e) {
-            e.preventDefault();
+        SetupFormSubmit.validate(formSubmit, {
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 100,
+                },
+            },
+            errorClass: 'is-invalid cl-red',
+            submitHandler: submitHandlerFunc
+        });
+
+        function submitHandlerFunc() {
             let _form = new SetupFormSubmit(formSubmit);
             ContractSubmitHandle.setupDataSubmit(_form);
             let submitFields = [
@@ -61,13 +71,13 @@ $(function () {
                 'trade_content',
                 'legal_content',
                 'payment_content',
+                'process',
             ]
             if (_form.dataForm) {
                 ContractCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
             WFRTControl.callWFSubmitForm(_form);
-        });
-
+        }
 
 
     });

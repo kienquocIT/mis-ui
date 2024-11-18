@@ -36,16 +36,7 @@
         {% csrf_token %}
         <input type="hidden" name="actions_rename">
         <input type="hidden" name="associate" id="node-associate">
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group">
-                    <label class="form-label">{% trans 'Workflow name' %}</label>
-                    <input class="form-control" type="text"
-                           name="title"
-                           id="form-create-title" readonly value="">
-                </div>
-            </div>
-        </div>
+
         <div class="d-flex justify-content-center">
             <ul class="nav nav-line nav-tabs nav-light nav-workflow-form-tabs">
                 <li class="nav-item">
@@ -54,13 +45,6 @@
                         <span class="nav-link-text">{% trans 'Function and Zone' %}</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-href="#tab_node">
-                        <span class="nav-icon-wrap mr-1"><i class="fas fa-cubes"></i></span>
-                        <span class="nav-link-text">{% trans 'Node' %}</span>
-                    </a>
-                </li>
-
                 <li class="nav-item">
                     <a class="nav-link" data-href="#tab_next_node">
                         <span class="nav-icon-wrap mr-1"><i class="fas fa-project-diagram"></i></span>
@@ -71,6 +55,16 @@
         </div>
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_function">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label" for="form-create-title">{% trans 'Workflow name' %}</label>
+                            <input class="form-control" type="text"
+                                   name="title"
+                                   id="form-create-title" readonly value="">
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-6">
                         <div class="form-group">
@@ -166,90 +160,6 @@
                         </button>
                     </div>
                 </div>
-                <div class="row" id="add-new-node-workflow-create">
-                    <div class="col-12">
-                        <button
-                                type="button"
-                                class="btn btn-outline-primary open-modal-node wf-is-editable"
-                                data-bs-toggle="modal"
-                                data-bs-target="#nodeModalCreate"
-                                disabled
-                                hidden
-                        >
-                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
-                        </button>
-
-                        <div class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalCenter" aria-hidden="true"
-                        >
-                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Add node</h5>
-                                        <button
-                                                type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"
-                                        >
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="form-group">
-                                            <label class="form-label required" for="modal-node-name-create">{% trans 'Node Name' %}</label>
-                                            <input
-                                                    type="text" class="form-control"
-                                                    id="modal-node-name-create"
-                                            >
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="form-label" for="modal-node-description-create">{% trans 'Description' %}</label>
-                                            <textarea
-                                                    class="form-control"
-                                                    rows="4" cols="50"
-                                                    id="modal-node-description-create"
-                                            ></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                        </button>
-                                        <button
-                                                type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                                                id="btn-add-new-node-create"
-                                        >Save changes
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <input type="text" id="workflow-create-node-data" hidden>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <table
-                                id="datable-workflow-node-create"
-                                class="table nowrap w-100 mb-5"
-                        >
-                            <thead>
-                            <tr class="bg-light">
-                                <th class="w-20">{% trans 'Node name' %}</th>
-                                <th class="w-30">{% trans 'Description' %}</th>
-                                <th class="w-15">{% trans 'Node Actions' %}</th>
-                                <th class="w-15">{% trans 'Collaborators' %}</th>
-                                <th class="w-10">{% trans 'Actions' %}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <select id="data-init-property-in-form-detail" hidden></select>
-                <select id="data-init-company-in-workflow-detail" hidden></select>
-                <select id="data-init-employee-in-workflow-detail" hidden></select>
-                <input type="hidden" id="wf-employee-out-form-detail">
             </div>
             <div class="tab-pane fade" id="tab_next_node">
                 <div class="wrap-flowchart">
@@ -307,6 +217,293 @@
                     data-nav-type="next">
                 {% trans 'Next' %}
             </button>
+        </div>
+
+
+        <div class="modal-area">
+            <div
+                class="modal fade" id="nodeModal" tabindex="-1" role="dialog"
+                aria-labelledby="nodeModal" aria-hidden="true"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Node configuration' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body modal-body-collab">
+                            <div class="form-group">
+                                <label class="form-label required" for="node-title"><b>{% trans 'Title' %}</b></label>
+                                <input
+                                        type="text" class="form-control"
+                                        id="node-title"
+                                >
+                            </div>
+                            <div class="form-group" hidden>
+                                <label class="form-label" for="node-remark">{% trans 'Note' %}</label>
+                                <textarea class="form-control" rows="2" id="node-remark"></textarea>
+                            </div>
+                            <div class="row action-area">
+                                <label class="form-label required" for="box-list-source"><b>{% trans 'Actions at node' %}</b></label>
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <button type="button" class="btn btn-outline-primary mr-2" aria-expanded="false" data-bs-toggle="dropdown">
+                                            <span><span>{% trans 'Select action' %}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                                        </button>
+                                        <div class="dropdown-menu action-list w-160p h-120p"></div>
+                                    </div>
+                                    <div class="form-control div-input action-show" readonly></div>
+                                </div>
+                            </div>
+                            <br>
+                            <div id="node-system-area" hidden>
+                                <div class="row">
+                                    <div class="col-12 col-md-6 col-lg-6 border-right">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'Editing zone' %}</label>
+                                            <div class="zone-edit h-100p"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'Hidden zone' %}</label>
+                                            <div class="zone-hidden h-100p"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="node-custom-area" hidden>
+                                <label class="form-label required" for="box-list-source"><b>{% trans 'Collaborators at node' %}</b></label>
+                                <div class="form-group form-group-data-source">
+                                    <label class="form-label" for="box-list-source">{% trans 'Type' %}</label>
+                                    <select
+                                        class="form-select"
+                                        id="box-list-source"
+                                        data-url=""
+                                        data-method="GET"
+                                        data-link-detail=""
+                                        name="list_source"
+                                        data-keyResp=""
+                                    >
+                                    </select>
+                                    <small class="form-text text-muted source-note"></small>
+                                </div>
+                                <div class="row collab-area mb-5" id="collab-area-1" hidden>
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Collaborator list' %}</label>
+                                        <div
+                                            class="input-group input-group-out-form-employee mb-3"
+                                            data-bs-toggle="offcanvas"
+                                            data-bs-target="#outFormCanvas"
+                                            aria-controls="outFormCanvas"
+                                        >
+                                            <span class="input-affix-wrapper">
+                                                <div class="form-control div-input out-form-emp-show"></div>
+                                                <input type="hidden" class="node-out-form-employee-submit">
+                                                <span class="input-suffix">
+                                                    <div class="btn-group btn-link btn-sm"><i class="fa fa-user"></i></div>
+                                                </span>
+                                            </span>
+                                        </div>
+                                        <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="outFormCanvas" aria-labelledby="outFormCanvas">
+                                            <div class="offcanvas-header">
+                                                <h5 id="offcanvasRightLabel">{% trans 'Add Employee' %}</h5>
+                                            </div>
+                                            <div class="offcanvas-body form-group">
+                                                <table
+                                                        class="table nowrap w-100"
+                                                        id="table-out-form-employee"
+                                                        data-url="{% url "EmployeeListAPI" %}"
+                                                        data-method="GET"
+                                                >
+                                                    <thead>
+                                                    <tr class="bg-light">
+                                                        <th class="w-30">{% trans 'Employee' %}</th>
+                                                        <th class="w-30">{% trans 'Group' %}</th>
+                                                        <th class="w-40">{% trans 'Role' %}</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                                <br><br>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+                                                    <button
+                                                            type="button"
+                                                            class="btn btn-primary btn-save-out-form-employee"
+                                                            data-bs-dismiss="offcanvas"
+                                                    >{% trans 'Save' %}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6 col-lg-6 border-right">
+                                            <div class="form-group">
+                                                <label class="form-label">{% trans 'Editing zone' %}</label>
+                                                <div class="zone-edit h-100p"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <label class="form-label">{% trans 'Hidden zone' %}</label>
+                                                <div class="zone-hidden h-100p"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row collab-area mb-5" id="collab-area-2" hidden>
+                                    <div class="row">
+                                        <div class="col-12 col-md-7 col-lg-7 border-right">
+                                            <label class="form-label">{% trans 'Collaborator list' %}</label>
+                                            <table
+                                                class="table nowrap w-100"
+                                                id="table-in-workflow"
+                                            >
+                                                <thead>
+                                                <tr class="bg-light">
+                                                    <th class="w-20">{% trans 'Collaborators' %}</th>
+                                                    <th class="w-20">{% trans 'Role' %}</th>
+                                                    <th class="w-20">{% trans 'Editing zone' %}</th>
+                                                    <th class="w-20">{% trans 'Hidden zone' %}</th>
+                                                    <th class="w-5"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                            <div class="d-flex justify-content-start">
+                                                <button
+                                                        type="button"
+                                                        class="btn btn-outline-primary"
+                                                        data-bs-toggle="offcanvas"
+                                                        data-bs-target="#inWFCanvas"
+                                                        aria-controls="inWFCanvas"
+                                                >
+                                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-5 col-lg-5">
+                                            <label class="form-label">{% trans 'Exit condition' %}</label>
+                                            <table
+                                                class="table nowrap w-100"
+                                                id="table-in-workflow-exit-condition"
+                                            >
+                                                <thead>
+                                                <tr class="bg-light">
+                                                    <th class="w-25">{% trans "Action" %}</th>
+                                                    <th class="w-30">{% trans "Min collaborators" %}</th>
+                                                    <th class="w-45">{% trans "Next node" %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="inWFCanvas" aria-labelledby="inWFCanvas">
+                                        <div class="offcanvas-header">
+                                            <h5 id="offcanvasRightLabel"><b>{% trans 'Add Employee' %}</b></h5>
+                                        </div>
+                                        <div class="offcanvas-body">
+                                            <div class="form-group">
+                                                <label class="form-label" for="box-in-workflow-option">{% trans 'Config according to' %}</label>
+                                                <select
+                                                    class="form-select"
+                                                    id="box-in-workflow-option"
+                                                    data-url=""
+                                                    data-method="GET"
+                                                    data-keyResp=""
+                                                >
+                                                </select>
+                                            </div>
+                                            <div class="in-wf-opt-area" id="in-wf-opt-area-1" hidden>
+                                                <div class="form-group">
+                                                    <label class="form-label" for="box-in-workflow-position">{% trans 'Select position' %}</label>
+                                                    <select
+                                                        class="form-select"
+                                                        id="box-in-workflow-position"
+                                                        data-url=""
+                                                        data-method="GET"
+                                                        data-keyResp=""
+                                                    >
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="in-wf-opt-area" id="in-wf-opt-area-2" hidden>
+                                                <div class="form-group" hidden>
+                                                    <label class="form-label" for="box-in-workflow-company">{% trans 'Company' %}</label>
+                                                    <select
+                                                        class="form-control"
+                                                        id="box-in-workflow-company"
+                                                        data-url="{% url "CompanyListAPI" %}"
+                                                        data-method="GET"
+                                                        data-keyResp="company_list"
+                                                    >
+                                                    </select>
+                                                </div>
+                                                <div class="form-group" hidden>
+                                                    <label class="form-label" for="box-in-workflow-role">{% trans 'Role' %}</label>
+                                                    <select
+                                                        class="form-control"
+                                                        id="box-in-workflow-role"
+                                                        data-url="{% url "RoleListAPI" %}"
+                                                        data-method="GET"
+                                                        data-keyResp="role_list"
+                                                    >
+                                                    </select>
+                                                </div>
+                                                <div class="form-group employee-area">
+                                                    <label class="form-label required" for="box-in-workflow-employee">{% trans 'Employee' %}</label>
+                                                    <select
+                                                        class="form-control"
+                                                        id="box-in-workflow-employee"
+                                                        data-url=""
+                                                        data-method="GET"
+                                                        data-keyResp="employee_list"
+                                                        data-keyText="full_name"
+                                                    >
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 col-md-6 col-lg-6 border-right">
+                                                    <div class="form-group">
+                                                        <label class="form-label">{% trans 'Editing zone' %}</label>
+                                                        <div class="zone-edit h-100p"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-6 col-lg-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">{% trans 'Hidden zone' %}</label>
+                                                        <div class="zone-hidden h-100p"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br><br>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+                                                <button
+                                                        type="button"
+                                                        class="btn btn-primary btn-save-in-workflow-employee"
+                                                        data-bs-dismiss="offcanvas"
+                                                        id=""
+                                                >{% trans 'Save' %}</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-node" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
 
@@ -529,10 +726,8 @@
         data-employee-list="{% trans 'Employee list' %}"
         data-add-new="{% trans 'New' %}"
         data-system-node="{% trans 'System node' %}"
-        data-type-src-2="{% trans 'One collaborator actions' %}"
-        data-type-src-3="{% trans 'Many collaborators action' %}"
-        data-config-according="{% trans 'Config according to' %}"
-        data-type="{% trans 'Type' %}"
+        data-type-src-2="{% trans 'Out form' %}"
+        data-type-src-3="{% trans 'In workflow' %}"
         data-type-src-note="{% trans 'At this node' %}"
         data-type-src-2-note="{% trans 'Only one collaborator (select in list below) will action, approve the document' %}"
         data-type-src-3-note="{% trans 'All collaborators (according to configuration below) will action, approve the document' %}"
@@ -540,6 +735,10 @@
         data-validate-association-1="{% trans 'Must go through approval node' %}"
         data-validate-association-3="{% trans "No return at approval node" %}"
         data-validate-association-4="{% trans "Cannot connect itself" %}"
+        data-next-node="{% trans "Next node" %}"
+        data-exceed-collab="{% trans "Exceed collaborator quantity" %}"
+        data-config="{% trans "Configuration" %}"
+        data-delete="{% trans "Delete" %}"
     >
 
 

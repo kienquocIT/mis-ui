@@ -1,0 +1,8 @@
+.div-input {
+    min-height: 40px;
+    margin-top: -0.4px
+}
+
+.input-group-wth-btn .input-affix-wrapper .input-suffix {
+    top: unset;
+}

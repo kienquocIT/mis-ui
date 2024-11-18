@@ -145,6 +145,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     QUOTATION_DETAIL_PAGE = BreadcrumbChildren(_('Quotation detail'))
     QUOTATION_UPDATE_PAGE = BreadcrumbChildren(_('Quotation update'))
 
+    # Bidding
+    BIDDING_LIST_PAGE = BreadcrumbChildren(_('Bidding list'), 'BiddingList')
+    BIDDING_CREATE_PAGE = BreadcrumbChildren(_('Bidding create'), 'BiddingCreate')
+
     # Shipping
     SHIPPING_LIST_PAGE = BreadcrumbChildren(_('Shipping'), 'ShippingList')
     SHIPPING_CREATE_PAGE = BreadcrumbChildren(_('Shipping create'), 'ShippingCreate')
@@ -195,6 +199,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_CONFIG_PAGE = BreadcrumbChildren(_('Task config'), 'OpportunityTaskConfig')
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
 
+    #Document
+    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Bidding'), 'DocumentTypeMasterDataList')
+
     # Sale Activities
     CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call log'), 'OpportunityCallLogList')
     EMAIL_LIST_PAGE = BreadcrumbChildren(_('Send email'), 'OpportunityEmailList')
@@ -232,8 +239,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
         _('Purchase Request'), 'PurchaseRequestList'
     )
 
-    SALE_PROCESS_PAGE = BreadcrumbChildren(
-        _('Sale Process'), 'SaleProcess'
+    # Process
+    PROCESS_CONFIG_LIST = BreadcrumbChildren(
+        _('Process configuration'), 'ProcessList'
+    )
+    PROCESS_RUNTIME_LIST = BreadcrumbChildren(
+        _('Process runtime'), 'ProcessRuntimeListView'
     )
 
     # Expense item
@@ -400,6 +411,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCTION_REPORT_LIST_PAGE = BreadcrumbChildren(_('Production report'), 'ProductionReportList')
     WORK_ORDER_LIST_PAGE = BreadcrumbChildren(_('Work order'), 'WorkOrderList')
 
+    # Recurrence
+    RECURRENCE_LIST_PAGE = BreadcrumbChildren(_('Recurrence'), 'RecurrenceList')
     # HRM
     HRM_EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('HRM Employee info'), 'HRMEmployeeList')
     HRM_EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'HRMEmployeeCreate')
@@ -659,6 +672,14 @@ class BreadcrumbView:
     QUOTATION_DETAIL_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     QUOTATION_UPDATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    # Bidding
+    BIDDING_LIST_PAGE = [
+        BreadcrumbItem.BIDDING_LIST_PAGE
+    ]
+    BIDDING_CREATE_PAGE = BIDDING_LIST_PAGE + [BreadcrumbItem.BIDDING_CREATE_PAGE]
+    BIDDING_DETAIL_PAGE = BIDDING_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    BIDDING_UPDATE_PAGE = BIDDING_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
     # Shipping
     SHIPPING_LIST_PAGE = [
         BreadcrumbItem.SHIPPING_LIST_PAGE
@@ -708,6 +729,10 @@ class BreadcrumbView:
     ORDER_DELIVERY_LIST_PAGE = [
         BreadcrumbItem.DELIVERY_LIST_PAGE,
     ]
+    ORDER_DELIVERY_CREATE_PAGE = [
+        BreadcrumbItem.DELIVERY_LIST_PAGE,
+        BreadcrumbItem.BASTION_CREATE
+    ]
     ORDER_DELIVERY_DETAIL_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     ORDER_DELIVERY_EDIT_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
@@ -725,6 +750,9 @@ class BreadcrumbView:
     # Task
     OPPORTUNITY_TASK_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_CONFIG_PAGE]
     OPPORTUNITY_TASK_LIST_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_LIST_PAGE]
+
+    #Document
+    DOCUMENT_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.DOCUMENT_MASTER_DATA_LIST_PAGE]
 
     # Sale Activities
     CALL_LOG_LIST_PAGE = [
@@ -786,8 +814,35 @@ class BreadcrumbView:
     ]
 
     # process
-    SALE_PROCESS_PAGE = [
-        BreadcrumbItem.SALE_PROCESS_PAGE
+    PROCESS_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST
+    ]
+    PROCESS_CREATE_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.BASTION_CREATE,
+    ]
+    PROCESS_UPDATE_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.BASTION_UPDATE,
+    ]
+    PROCESS_DETAIL_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.BASTION_DETAIL,
+    ]
+    PROCESS_RUNTIME_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.PROCESS_RUNTIME_LIST
+    ]
+    PROCESS_RUNTIME_DETAIL_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PROCESS_CONFIG_LIST,
+        BreadcrumbItem.PROCESS_RUNTIME_LIST,
+        BreadcrumbItem.BASTION_DETAIL
     ]
 
     # expense item
@@ -1034,6 +1089,14 @@ class BreadcrumbView:
     WORK_ORDER_CREATE_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     WORK_ORDER_DETAIL_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     WORK_ORDER_UPDATE_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Recurrence
+    RECURRENCE_LIST_PAGE = [
+        BreadcrumbItem.RECURRENCE_LIST_PAGE
+    ]
+    RECURRENCE_CREATE_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    RECURRENCE_DETAIL_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    RECURRENCE_UPDATE_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     HRM_EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block cssHeader %}
+    <link href="{% static 'assets/sales/production/css/productionorder/production_order_create.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
@@ -89,6 +90,36 @@
                                     name="product_id"
                                     data-keyResp="product_sale_list"
                                     required
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="outsourcing-area" hidden>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-supplier">{% trans 'Supplier' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-supplier"
+                                    data-url="{% url "AccountForSaleListAPI" %}"
+                                    data-method="GET"
+                                    name="supplier_id"
+                                    data-keyResp="account_sale_list"
+                                    data-keyText="name"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-po">{% trans 'Purchase order' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="box-po"
+                                    data-url="{% url "PurchaseOrderSaleListAPI" %}"
+                                    data-method="GET"
+                                    name="purchase_order_id"
+                                    data-keyResp="purchase_order_sale_list"
+                                    disabled
                                 ></select>
                             </div>
                         </div>

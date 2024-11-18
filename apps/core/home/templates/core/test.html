@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block pageContent %}
+    <p id="url-x">{% url 'TestAPI' %}</p>
+    <button id="btn-x">Click me!</button>
+    {% include 'extends/files/all.html' with id="attachment" %}
+{% endblock %}
+
+
+{% block jsFooter %}
+    <script>
+        $(document).ready(function () {
+            $('#btn-x').on('click', function () {
+                $.fn.callAjax2({
+                    url: $('#url-x').text(),
+                    method: 'GET',
+                }).then(
+                    resp => console.log(resp),
+                    errs => console.log(errs),
+                )
+            });
+
+            new $x.cls.file($('#attachment')).init({
+                name: 'attachment',
+                enable_edit: true,
+            });
+        })
+    </script>
+{% endblock %}

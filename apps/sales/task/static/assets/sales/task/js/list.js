@@ -86,8 +86,8 @@ $(function () {
                     // Function to wait form create on submit
                     $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
                     let observer = new MutationObserver(callBackModalChange);
-                    const DOMCheck = document.getElementById('drawer_task_create')
-                    observer.observe(DOMCheck, {attributeFilter: ['class']});
+                    // const DOMCheck = document.getElementById('drawer_task_create')
+                    // observer.observe(DOMCheck, {attributeFilter: ['class']});
                     let temp = $.extend(true, {}, data)
                     delete temp['task_list']
                     $('.btn-task-bar').data('task_info', temp)

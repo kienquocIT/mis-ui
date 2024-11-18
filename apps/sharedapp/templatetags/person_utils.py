@@ -1,4 +1,7 @@
+import json
+
 from django import template
+from django.contrib.auth.models import AnonymousUser
 from django.templatetags.static import static
 
 register = template.Library()
@@ -59,3 +62,27 @@ def revert_language_to_full_name(value):
         if value == 'en':
             return 'English'
     return ''
+
+
+@register.simple_tag(takes_context=True, name='current_employee_str')
+def current_employee_str(context):
+    result = {}
+    user_obj = context.request.user
+    if user_obj and not isinstance(user_obj, AnonymousUser):
+        employee_data = context.request.user.employee_current_data
+        if (
+                employee_data
+                and 'id' in employee_data
+                and 'first_name' in employee_data
+                and 'last_name' in employee_data
+                and 'full_name' in employee_data
+                and 'email' in employee_data
+        ):
+            result = {
+                'id': employee_data['id'],
+                'first_name': employee_data['first_name'],
+                'last_name': employee_data['last_name'],
+                'full_name': employee_data['full_name'],
+                'email': employee_data['email'],
+            }
+    return json.dumps(result)

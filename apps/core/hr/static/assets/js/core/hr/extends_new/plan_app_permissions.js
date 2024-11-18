@@ -130,7 +130,7 @@ let elePermit = {
             let currentPages = dtb_tmp.page.info().page;
             if (totalPages - 1 > currentPages) {
                 $.fn.notifyB({
-                    'description': globeGoToEndPage,
+                    'description': $.fn.gettext("Current page automatically goes to end page after the new row was added"),
                 }, 'info')
             }
             dtb_tmp.page(totalPages - 1).draw('page');
@@ -799,7 +799,7 @@ class HandlePlanAppNew {
         let opt_of_0 = HandlePlanAppNew.spaceAllowOfApp.indexOf("0") ? "" : `<option value="0" ${data === "0" ? "selected" : ""} ${allow_space.indexOf("0") === -1 ? "disabled" : ""}>${HandlePlanAppNew.spaceText["0"]}</option>`;
         let opt_of_1 = `<option value="1" ${data === "1" ? "selected" : ""} ${allow_space.indexOf("1") === -1 ? "disabled" : ""}>${HandlePlanAppNew.spaceText["1"]}</option>`;
 
-        return `<select class="form-select space-permit-select" id="range-${app_id}" ${
+        return `<select class="form-select space-permit-select" id="space-${app_id}" ${
             HandlePlanAppNew.editEnabled !== true ? "disabled" : ""}>
             ${opt_of_0} ${opt_of_1}
         </select>`;

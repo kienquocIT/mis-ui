@@ -37,5 +37,7 @@ I18N_JS_MATCH_APP = {
     'project_home': 'apps.sales.project',
     'attachment': 'apps.core.attachment',
     'log': 'apps.log',
+    'process': 'apps.core.process',
+    'delivery': 'apps.sales.delivery',
     'hrm': 'apps.hrm.employee',
 }

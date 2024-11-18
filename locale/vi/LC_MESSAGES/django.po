@@ -9647,3 +9647,7 @@ msgstr "Cấu hình lặp lại"
 #
 msgid "Transaction template"
 msgstr "Mẫu giao dịch"
+
+#
+msgid "Set as recurring template"
+msgstr "Đặt làm mẫu lặp lại"

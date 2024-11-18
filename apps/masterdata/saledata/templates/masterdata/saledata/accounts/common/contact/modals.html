@@ -77,19 +77,18 @@
                     </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label">{% trans "Province" %}</label>
+                            <label for="homecity" class="form-label">{% trans "Province" %}</label>
                             <select
-                                    class="form-select" id="homecity" aria-label=".form-select-sm"
-                                    name="home_city"
+                                    class="form-select" id="homecity" name="home_city"
                                     data-url="{% url "CityListAPI" %}" data-method="GET"
                             ></select>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label">{% trans "District" %}</label>
+                            <label for="homedistrict" class="form-label">{% trans "District" %}</label>
                             <select
-                                    class="form-select" id="homedistrict" aria-label=".form-select-sm"
+                                    class="form-select" id="homedistrict"
                                     name="home_district"
                                     data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
                             ></select>
@@ -97,9 +96,9 @@
                     </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label">{% trans "Ward" %}</label>
+                            <label for="homeward" class="form-label">{% trans "Ward" %}</label>
                             <select
-                                    class="form-select" id="homeward" aria-label=".form-select-sm"
+                                    class="form-select" id="homeward"
                                     name="home_ward"
                                     data-url="{% url "WardAllListAPI" %}" data-method="GET"
                             ></select>

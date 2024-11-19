@@ -28,7 +28,6 @@ $(document).ready(function () {
     loadBiddingResultConfigEmployee()
 
     function loadEmployee (data){
-        debugger
         $employeeSelect.initSelect2({
             ajax: {
                 url: $employeeSelect.attr('data-url'),

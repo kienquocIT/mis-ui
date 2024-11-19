@@ -89,18 +89,6 @@ $(document).ready(function () {
         BiddingCommonHandle.commonDeleteRow(row, BiddingDataTableHandle.$tableVenture);
     });
 
-    BiddingDataTableHandle.$tableBidder.on('click', '.del-row', function () {
-        let row = $(this).closest('tr');
-
-        let rowData = BiddingDataTableHandle.$tableBidder.DataTable().row(row).data();
-
-        let checkbox = BiddingDataTableHandle.$tableAccountModal.find(`input[type="checkbox"][data-id="${rowData.bidder_account}"]`);
-        if (checkbox.length) {
-            checkbox.prop('checked', false);
-        }
-        BiddingCommonHandle.commonDeleteRow(row, BiddingDataTableHandle.$tableBidder);
-    });
-
     BiddingDataTableHandle.$tableDocument.on('click', '.del-row', function () {
         Swal.fire({
             html: `<div class="mb-3">

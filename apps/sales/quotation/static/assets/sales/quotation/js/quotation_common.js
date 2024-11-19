@@ -2024,6 +2024,59 @@ class QuotationLoadDataHandle {
         return true;
     };
 
+    static loadRecurrenceData() {
+        let $recurrenceTempID = $('#recurrence_template_id');
+        if ($recurrenceTempID.text()) {
+            let recurrenceTempID = JSON.parse($recurrenceTempID.text());
+            if (recurrenceTempID) {
+                // call ajax get info quotation detail
+                $.fn.callAjax2({
+                    url: QuotationLoadDataHandle.urlEle.attr('data-so-detail').format_url_with_uuid(recurrenceTempID),
+                    method: 'GET',
+                    isLoading: true,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            QuotationLoadDataHandle.loadDetailQuotation(data);
+                            QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
+                            indicatorHandle.loadIndicator();
+
+                            //
+                            const processData = data?.['process'] || {};
+                            const oppData = data?.['opportunity'] || {};
+                            const inheritData = data?.['employee_inherit'] || {};
+                            new $x.cls.bastionField({
+                                has_opp: true,
+                                has_inherit: true,
+                                has_process: true,
+                                data_process: processData && Object.keys(processData).length > 0 ? [
+                                    {
+                                        ...processData,
+                                        'selected': true,
+                                    }
+                                ] : [],
+                                data_opp: oppData && Object.keys(oppData).length > 0 ? [
+                                    {
+                                        ...oppData,
+                                        'selected': true,
+                                    }
+                                ] : [],
+                                data_inherit: inheritData && Object.keys(inheritData).length > 0 ? [
+                                    {
+                                        ...inheritData,
+                                        'selected': true,
+                                    }
+                                ] : [],
+                            }).init();
+                        }
+                    }
+                )
+            }
+        }
+        return true;
+    };
+
     // LOAD DATA DETAIL
     static loadDetailQuotation(data, is_copy = false) {
         let form = document.getElementById('frm_quotation_create');
@@ -3293,7 +3346,7 @@ class QuotationDataTableHandle {
                                         </div>
                                     </div>`;
                         }
-                        return `<span>--</span>`;
+                        return ``;
                     }
                 },
                 {
@@ -3303,7 +3356,7 @@ class QuotationDataTableHandle {
                             return `<span class="badge badge-soft-pink">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
                                     <span class="table-row-customer">${row?.['opportunity']?.['title']}</span>`;
                         }
-                        return `<span>--</span>`;
+                        return ``;
                     },
                 },
                 {
@@ -3312,7 +3365,7 @@ class QuotationDataTableHandle {
                         if (row?.['customer']?.['title']) {
                             return `<p class="table-row-customer">${row?.['customer']?.['title']}</p>`;
                         }
-                        return `<p>--</p>`;
+                        return ``;
                     },
                 }
             ],

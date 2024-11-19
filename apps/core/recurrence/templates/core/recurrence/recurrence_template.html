@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Workflow list' %}{% endblock %}
+{% block title %}{% trans 'Transaction template' %}{% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'assets/core/workflow/css/wf-list-new.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/core/recurrence/css/recurrence_template.css' %}" rel="stylesheet" type="text/css">
     <style>
         .child-workflow-group {
             border-left: 1px groove #bfcbd0;
@@ -205,18 +205,6 @@
         <tbody>
         </tbody>
     </table>
-
-    <input
-            type="hidden" id="url-factory"
-            data-new="{% url 'WorkflowCreate' %}"
-            data-child="{% url 'WorkflowListAPI' %}"
-            data-grand-child="{% url 'WorkflowListAPI' %}"
-            data-url-app-workflow-detail="{% url 'WorkflowOfAppDetailAPI' pk=1 %}"
-            data-url-workflow-list="{% url 'WorkflowListAPI' %}"
-            data-url-workflow-detail="{% url 'WorkflowDetail' pk=1 %}"
-            data-url-workflow-update="{% url 'WorkflowUpdate' pk=1 %}"
-            data-url-workflow-runtime-list="{% url 'FlowRuntimeListAPI' flow_id=1 %}"
-    >
     <span class="hidden" id="idxSpanMsgGroup" data-make-sure="{% trans 'Make sure change to' %}"></span>
 {% endblock %}
 
@@ -225,14 +213,19 @@
         type="text"
         id="app-trans-factory"
         data-title="{% trans 'Title' %}"
-        data-date-applied="{% trans 'Date Applied' %}"
-        data-active="{% trans 'Active' %}"
-        data-wait-complete="{% trans 'Wait complete' %}"
+        data-transaction-type="{% trans 'Transaction type' %}"
+        data-beneficiary="{% trans 'Beneficiary' %}"
+        data-date="{% trans 'Date' %}"
+        data-status="{% trans 'Status' %}"
         data-action="{% trans 'Action' %}"
+        data-linked="{% trans 'Linked' %}"
+        data-not-linked="{% trans 'Not linked' %}"
+        data-no-data="{% trans 'Empty' %}"
     >
     <input
         type="text"
         id="app-urls-factory"
+        data-recurrence-detail="{% url 'RecurrenceDetail' pk=1 %}"
         data-sale-order="{% url 'SORecurrenceListAPI' %}"
     >
 {% endblock %}

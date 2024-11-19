@@ -621,6 +621,7 @@ $(function () {
         }
 
         QuotationLoadDataHandle.loadInitOpportunity();
+        QuotationLoadDataHandle.loadRecurrenceData();
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)

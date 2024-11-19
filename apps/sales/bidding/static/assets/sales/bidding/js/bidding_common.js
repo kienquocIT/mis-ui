@@ -89,7 +89,7 @@ class BiddingLoadDataHandle {
     };
 
     // FILE
-    static loadOpenAttachFile(ele) {
+    static loadOpenAttachFile(ele, enableEdit) {
         BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
             let row = this.node();
             $(row).css('background-color', '');
@@ -134,8 +134,8 @@ class BiddingLoadDataHandle {
                 // init file again
                 new $x.cls.file(BiddingLoadDataHandle.$attachment).init({
                     name: 'attachment',
-                    enable_edit: true,
-                    enable_download: true,
+                    enable_edit: enableEdit,
+                    enable_download: enableEdit,
                     data: attachmentParse,
                 });
                 // add event
@@ -181,6 +181,70 @@ class BiddingLoadDataHandle {
             order += 1;
         }
         return result;
+    };
+
+    static loadOpenBtnAttachInviteDoc(element, enableEdit){
+        BiddingStoreHandle.storeAttachment()
+        BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
+            let row = this.node();
+            $(row).css('background-color', '');
+        });
+        $(element).closest('.form-control').css('background-color', '#ebfcf5');
+        let eleId = element.id
+        let isManual = element.getAttribute('data-is-manual')
+        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
+        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-is-manual', isManual);
+        BiddingLoadDataHandle.$remark[0].removeAttribute('readonly');
+        BiddingLoadDataHandle.$remark.val('');
+        BiddingLoadDataHandle.loadAddFile([]);
+        let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+        if (fileIds) {
+            fileIds.value = "";
+        }
+        if (!element.getAttribute('data-store')) {
+            let data = {
+                "id": eleId,
+                "title": '',
+                "attachment_data": [],
+                "isManual": true
+            }
+            element.setAttribute('data-store', JSON.stringify(data))
+        }
+        if (fileIds) {
+            let dataStore = JSON.parse(element.getAttribute('data-store'));
+            BiddingLoadDataHandle.$remark.val(dataStore?.['remark']);
+            BiddingLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
+            let ids = [];
+            for (let fileData of dataStore?.['attachment_data']) {
+                ids.push(fileData?.['attachment']?.['id']);
+            }
+            let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
+            fileIds.value = ids.join(',');
+            let attachmentParse = [];
+            for (let attachData of dataStore?.['attachment_data']) {
+                attachmentParse.push(attachData?.['attachment']);
+            }
+            // append html file again
+            BiddingLoadDataHandle.$attachment.empty().html(`${BiddingLoadDataHandle.$attachmentTmp.html()}`);
+            // init file again
+            new $x.cls.file(BiddingLoadDataHandle.$attachment).init({
+                name: 'attachment',
+                enable_edit: enableEdit,
+                enable_download: enableEdit,
+                data: attachmentParse,
+            });
+
+            // add event
+            let inputs = BiddingLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
+
+            inputs.forEach((input) => {
+                input.addEventListener('change', function () {
+                    let dataList = BiddingLoadDataHandle.loadSetupAddFile();
+                    BiddingLoadDataHandle.loadAddFile(dataList);
+                });
+            });
+        }
+        BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
     };
 
     //DETAIL

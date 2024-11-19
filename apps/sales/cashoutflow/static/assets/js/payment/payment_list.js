@@ -62,8 +62,8 @@ $(document).ready(function () {
                         data: 'sale_code',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            if (row?.['opportunity_mapped']?.['id']) {
-                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity_mapped']?.['id'])}"><b>${row?.['opportunity_mapped']?.['code']}</b></a></span>`
+                            if (row?.['opportunity']?.['id']) {
+                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity']?.['id'])}"><b>${row?.['opportunity']?.['code']}</b></a></span>`
                             }
                             else if (row?.['quotation_mapped']?.['id']) {
                                 return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row?.['quotation_mapped']?.['id'])}"><b>${row?.['quotation_mapped']?.['code']}</b></a></span>`

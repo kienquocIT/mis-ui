@@ -35,6 +35,14 @@
                   method="post" autocomplete="off" data-method="POST">
                 {% csrf_token %}
                 <div class="row">
+                    <div class="col-md-12 col-xs-12 parents-block hidden">
+                        <div class="form-group">
+                            <label for="inputTextTitle" class="form-label required">{% trans 'Task parent' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" class="form-control" name="parent" readonly/>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-12 col-xs-12">
                         <div class="form-group">
                             <label for="inputTextTitle" class="form-label required">{% trans 'Name' %}</label>
@@ -43,6 +51,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
                             <label for="inputTextCode" class="form-label">{% trans 'Code' %}</label>

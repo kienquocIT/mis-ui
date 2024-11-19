@@ -30,10 +30,10 @@ function LoadPeriod(data) {
 function LoadTabCompanyTable(company_budget_data, space_month) {
     let tab_table = $(`
         <table class="table nowrap w-100" id="table-company">
-            <thead class="sticky bg-primary">
+            <thead class="sticky bg-primary-light-5">
             <tr>
-                <th class="fix1 bg-primary"></th>
-                <th class="fix2 bg-primary expense-item">${trans_script.attr('data-trans-expense-item')}</th>
+                <th class="fix1 bg-primary-light-5"></th>
+                <th class="fix2 bg-primary-light-5 expense-item">${trans_script.attr('data-trans-expense-item')}</th>
                 <th class="text-right m1th money-input"></th>
                 <th class="text-right m2th money-input"></th>
                 <th class="text-right m3th money-input"></th>
@@ -90,10 +90,10 @@ function LoadTabGroupTable(group_budget_data, space_month, is_lock) {
     $(document.getElementsByClassName('tab-table')).each(function () {
         let tab_table = $(`
             <table class="table nowrap w-100" id="table-${$(this).attr('data-group-id')}">
-                <thead class="sticky bg-primary">
+                <thead class="sticky bg-primary-light-5">
                 <tr>
-                    <th class="fix1 bg-primary"></th>
-                    <th class="fix2 bg-primary expense-item">${trans_script.attr('data-trans-expense-item')}</th>
+                    <th class="fix1 bg-primary-light-5"></th>
+                    <th class="fix2 bg-primary-light-5 expense-item">${trans_script.attr('data-trans-expense-item')}</th>
                     <th class="text-right m1th money-input"></th>
                     <th class="text-right m2th money-input"></th>
                     <th class="text-right m3th money-input"></th>
@@ -172,7 +172,7 @@ function LoadTabs(group_budget_data, company_budget_data, space_month, is_lock, 
 
     Promise.all([ajax]).then(
         (results) => {
-            console.log(results[0])
+            // console.log(results[0])
             // let group_budget_data_id_list = []
             for (const item of group_budget_data) {
                 // group_budget_data_id_list.push(item?.['group']?.['id'])
@@ -213,7 +213,7 @@ function LoadTabs(group_budget_data, company_budget_data, space_month, is_lock, 
                         </div>
                     </div>
                 `)
-                $('.nav-tabs').append(new_tab)
+                $('.nav-pills').append(new_tab)
                 $('.tab-content').append(new_tab_content)
 
                 let pk = $.fn.getPkDetail();
@@ -290,7 +290,7 @@ function combinesDataTab(frmEle) {
     })
     frm.dataForm['data_group_budget_plan'] = data_group_budget_plan;
 
-    console.log(frm)
+    // console.log(frm)
     return {
         url: url_script.attr('data-url-update-tab').replace('/0', `/${$.fn.getPkDetail()}`),
         method: 'PUT',
@@ -455,7 +455,7 @@ function LoadDetailBudgetPlan(option, dataParam={}) {
         (results) => {
             let data = results[0];
             $x.fn.renderCodeBreadcrumb(data);
-            console.log(data)
+            // console.log(data)
 
             budgetPlanTitleEle.val(data?.['title'])
             LoadPeriod(data?.['period_mapped'])

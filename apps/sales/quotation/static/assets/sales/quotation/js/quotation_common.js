@@ -9,6 +9,7 @@ class QuotationLoadDataHandle {
     static salePersonSelectEle = $('#employee_inherit_id');
     static quotationSelectEle = $('#select-box-quotation');
     static $btnSaveSelectProduct = $('#btn-save-select-product');
+    static $eleStoreDetail = $('#quotation-detail-data');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#app-url-factory');
     static customerInitEle = $('#data-init-customer');
@@ -799,6 +800,11 @@ class QuotationLoadDataHandle {
     };
 
     static loadPriceProduct(eleProduct) {
+        let $form = $('#frm_quotation_create');
+        let dataZone = "quotation_products_data";
+        if ($form[0].classList.contains('sale-order')) {
+            dataZone = "sale_order_products_data";
+        }
         if ($(eleProduct).val()) {
             let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
             let is_change_price = false;
@@ -849,7 +855,7 @@ class QuotationLoadDataHandle {
                                 }
                                 htmlPriceList += `<div class="d-flex justify-content-between align-items-center">
                                                     <div class="form-check form-check-lg">
-                                                        <input type="radio" class="form-check-input table-row-price-option" id="price-${priceData?.['id'].replace(/-/g, "")}" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" ${checked}>
+                                                        <input type="radio" class="form-check-input table-row-price-option" id="price-${priceData?.['id'].replace(/-/g, "")}" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checked}>
                                                         <label class="form-check-label" for="price-${priceData?.['id'].replace(/-/g, "")}">${priceData?.['title']}</label>
                                                     </div>
                                                     <div class="d-flex justify-content-between align-items-center">
@@ -1446,56 +1452,60 @@ class QuotationLoadDataHandle {
         $table[0].querySelector('.quotation-create-cost-pretax-amount').innerHTML = "0";
         $table[0].querySelector('.quotation-create-cost-taxes').innerHTML = "0";
         $table[0].querySelector('.quotation-create-cost-total').innerHTML = "0";
-        // copy data tab detail to table cost
+        // copy data table product to table cost
         if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
             let valueOrder = 0;
-            $tableProduct.DataTable().rows().every(function () {
-                let row = this.node();
-                let valueQuantity = 0;
-                let valueTaxAmount = 0;
-                let valueSubtotal = 0;
-                let dataProduct = {};
-                let dataUOM = {};
-                let dataTax = {};
-                let product = row.querySelector('.table-row-item');
-                let uom = row.querySelector('.table-row-uom');
-                let tax = row.querySelector('.table-row-tax');
-                let shipping = row.querySelector('.table-row-shipping');
-                if (product) { // PRODUCT
-                    dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
-                    if ($(uom).val()) {
-                        dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
-                    }
-                    if ($(tax).val()) {
-                        dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
-                    }
-                    valueQuantity = 0;
-                    if (row.querySelector('.table-row-quantity').value) {
-                        valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
-                    }
-                    valueOrder++
-                    let dataAdd = {
-                        "order": valueOrder,
-                        "product_quantity": valueQuantity,
-                        "product_uom_code": "",
-                        "product_tax_title": "",
-                        "product_tax_value": 0,
-                        "product_uom_title": "",
-                        "product_cost_price": 0,
-                        "product_tax_amount": valueTaxAmount,
-                        "product_subtotal_price": valueSubtotal,
-                    }
-                    let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                    QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
-                    $(newRow.querySelector('.table-row-item')).attr('data-product-id', dataProduct?.['id']);
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
-                    $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['supplied_by'] ? dataProduct?.['supplied_by'] : 0).change();
+            // check if product is hidden zone (page update)
+            let $form = $('#frm_quotation_create');
+            let isHidden = false;
+            let dataZone = "quotation_products_data";
+            if ($form[0].classList.contains('sale-order')) {
+                dataZone = "sale_order_products_data";
+            }
+            let zoneHiddenData = WFRTControl.getZoneHiddenData();
+            for (let zoneHidden of zoneHiddenData) {
+                if (zoneHidden?.['code'] === dataZone) {
+                    isHidden = true;
+                    break;
                 }
-                if (shipping) { // SHIPPING
-                    if (shipping.getAttribute('data-shipping')) {
-                        let dataShipping = JSON.parse(shipping.getAttribute('data-shipping'));
+            }
+            if (isHidden === true) {  // product is zone hidden
+                let storeDetail = JSON.parse(QuotationLoadDataHandle.$eleStoreDetail.val());
+                for (let data of storeDetail?.[dataZone]) {
+                    let valueQuantity = 0;
+                    let valueTaxAmount = 0;
+                    let valueSubtotal = 0;
+                    let dataProduct = {};
+                    let dataUOM = {};
+                    let dataTax = {};
+                    if (data?.['product_data']?.['id']) { // PRODUCT
+                        dataProduct = data?.['product_data'];
+                        dataUOM = data?.['uom_data'];
+                        dataTax = data?.['tax_data'];
+                        valueQuantity = 0;
+                        valueQuantity = data?.['product_unit_price'];
+                        valueOrder++
+                        let dataAdd = {
+                            "order": valueOrder,
+                            "product_quantity": valueQuantity,
+                            "product_uom_code": "",
+                            "product_tax_title": "",
+                            "product_tax_value": 0,
+                            "product_uom_title": "",
+                            "product_cost_price": 0,
+                            "product_tax_amount": valueTaxAmount,
+                            "product_subtotal_price": valueSubtotal,
+                        }
+                        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
+                        QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
+                        $(newRow.querySelector('.table-row-item')).attr('data-product-id', dataProduct?.['id']);
+                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
+                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
+                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
+                        $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['supplied_by'] ? dataProduct?.['supplied_by'] : 0).change();
+                    }
+                    if (data?.['shipping_data']?.['id']) { // SHIPPING
+                        let dataShipping = data?.['shipping_data'];
                         valueQuantity = 1;
                         valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
                         // check if margin then minus
@@ -1524,7 +1534,84 @@ class QuotationLoadDataHandle {
                         QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
                     }
                 }
-            })
+            } else {  // product is not zone hidden
+                $tableProduct.DataTable().rows().every(function () {
+                    let row = this.node();
+                    let valueQuantity = 0;
+                    let valueTaxAmount = 0;
+                    let valueSubtotal = 0;
+                    let dataProduct = {};
+                    let dataUOM = {};
+                    let dataTax = {};
+                    let product = row.querySelector('.table-row-item');
+                    let uom = row.querySelector('.table-row-uom');
+                    let tax = row.querySelector('.table-row-tax');
+                    let shipping = row.querySelector('.table-row-shipping');
+                    if (product) { // PRODUCT
+                        dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
+                        if ($(uom).val()) {
+                            dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
+                        }
+                        if ($(tax).val()) {
+                            dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
+                        }
+                        valueQuantity = 0;
+                        if (row.querySelector('.table-row-quantity').value) {
+                            valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
+                        }
+                        valueOrder++
+                        let dataAdd = {
+                            "order": valueOrder,
+                            "product_quantity": valueQuantity,
+                            "product_uom_code": "",
+                            "product_tax_title": "",
+                            "product_tax_value": 0,
+                            "product_uom_title": "",
+                            "product_cost_price": 0,
+                            "product_tax_amount": valueTaxAmount,
+                            "product_subtotal_price": valueSubtotal,
+                        }
+                        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
+                        QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
+                        $(newRow.querySelector('.table-row-item')).attr('data-product-id', dataProduct?.['id']);
+                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
+                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
+                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
+                        $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['supplied_by'] ? dataProduct?.['supplied_by'] : 0).change();
+                    }
+                    if (shipping) { // SHIPPING
+                        if (shipping.getAttribute('data-shipping')) {
+                            let dataShipping = JSON.parse(shipping.getAttribute('data-shipping'));
+                            valueQuantity = 1;
+                            valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
+                            // check if margin then minus
+                            if (dataShipping?.['shipping_margin']) {
+                                if (dataShipping?.['shipping_margin'] > 0) {
+                                    valueSubtotal = valueSubtotal - dataShipping?.['shipping_margin'];
+                                }
+                            }
+                            valueOrder++
+                            let dataAdd = {
+                                "order": valueOrder,
+                                "product_quantity": valueQuantity,
+                                "product_uom_code": "",
+                                "product_tax_title": "",
+                                "product_tax_value": 0,
+                                "product_uom_title": "",
+                                "product_cost_price": valueSubtotal,
+                                "product_tax_amount": valueTaxAmount,
+                                "product_subtotal_price": valueSubtotal,
+                                "is_shipping": true,
+                                "shipping_id": dataShipping?.['id'],
+                                "shipping_data": dataShipping,
+                            }
+                            let newRow = $table.DataTable().row.add(dataAdd).draw().node();
+                            QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
+                            QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
+                        }
+                    }
+                })
+            }
             // Re calculate
             QuotationCalculateCaseHandle.calculateAllRowsTableCost();
             // load cost list
@@ -1608,6 +1695,11 @@ class QuotationLoadDataHandle {
     static loadCostWHProduct(eleProduct, costBomStandardData) {
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
         let row = eleProduct.closest('tr');
+        let $form = $('#frm_quotation_create');
+        let dataZone = "quotation_costs_data";
+        if ($form[0].classList.contains('sale-order')) {
+            dataZone = "sale_order_costs_data";
+        }
         if (productData && row) {
             let priceGr = row.querySelector('.input-group-price');
             let modalBody = QuotationLoadDataHandle.$costModal[0].querySelector('.modal-body');
@@ -1642,7 +1734,7 @@ class QuotationLoadDataHandle {
                                         }
                                         htmlCostList += `<div class="d-flex justify-content-between">
                                                         <div class="form-check form-check-lg">
-                                                            <input type="radio" class="form-check-input table-row-price-option" id="cost-${costData?.['warehouse']?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}" ${checked}>
+                                                            <input type="radio" class="form-check-input table-row-price-option" id="cost-${costData?.['warehouse']?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checked}>
                                                             <label class="form-check-label" for="cost-${costData?.['warehouse']?.['id'].replace(/-/g, "")}">${costData?.['warehouse']?.['title']}</label>
                                                         </div>
                                                         <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
@@ -1654,14 +1746,14 @@ class QuotationLoadDataHandle {
                                 htmlCostList += `<hr>`;
                                 htmlCostList += `<div class="d-flex justify-content-between">
                                                     <div class="form-check form-check-lg">
-                                                        <input type="radio" class="form-check-input table-row-price-option" id="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costBom'])}" data-wh="${JSON.stringify({'id': 'bom'}).replace(/"/g, "&quot;")}" ${checkedBom}>
+                                                        <input type="radio" class="form-check-input table-row-price-option" id="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costBom'])}" data-wh="${JSON.stringify({'id': 'bom'}).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checkedBom}>
                                                         <label class="form-check-label" for="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}">${QuotationLoadDataHandle.transEle.attr('data-cost-bom')}</label>
                                                     </div>
                                                     <span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costBom'])}"></span>
                                                 </div>`;
                                 htmlCostList += `<div class="d-flex justify-content-between">
                                                     <div class="form-check form-check-lg">
-                                                        <input type="radio" class="form-check-input table-row-price-option" id="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costStandard'])}" data-wh="${JSON.stringify({'id': 'standard'}).replace(/"/g, "&quot;")}" ${checkedStandard}>
+                                                        <input type="radio" class="form-check-input table-row-price-option" id="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costStandard'])}" data-wh="${JSON.stringify({'id': 'standard'}).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checkedStandard}>
                                                         <label class="form-check-label" for="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}">${QuotationLoadDataHandle.transEle.attr('data-cost-standard')}</label>
                                                     </div>
                                                     <span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costStandard'])}"></span>

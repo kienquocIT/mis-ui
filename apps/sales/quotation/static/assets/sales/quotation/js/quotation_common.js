@@ -2390,6 +2390,9 @@ class QuotationLoadDataHandle {
                             QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
                             QuotationLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '260px');
                             QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
+                            for (let ele of table[0].querySelectorAll('.btn-select-price')) {
+                                ele.removeAttribute('disabled');
+                            }
                         }
                     }
                     if (table[0].id === "datable-quotation-create-cost") {  // COST
@@ -2518,9 +2521,6 @@ class QuotationLoadDataHandle {
         }
         for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
             ele.setAttribute('readonly', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.btn-select-price')) {
-            ele.removeAttribute('disabled');
         }
         QuotationLoadDataHandle.$btnSavePrice[0].setAttribute('disabled', 'true');
         for (let ele of table[0].querySelectorAll('.btn-select-cost')) {

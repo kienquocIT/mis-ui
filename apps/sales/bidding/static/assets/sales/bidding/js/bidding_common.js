@@ -180,7 +180,6 @@ class BiddingLoadDataHandle {
             }
             order += 1;
         }
-        console.log(result)
         return result;
     };
 
@@ -262,9 +261,6 @@ class BiddingLoadDataHandle {
         BiddingDataTableHandle.dataTableBidder(data?.['other_bidder'], data['isDetail'])
 
         let bids = data?.['attachment_m2m'].filter(item => item['is_invite_doc'] !== true)
-        for (let i=0;i<bids?.length;i++){
-            bids[i]['isManual'] = data['attachment_m2m'][i]['document_type'] === null;
-        }
         BiddingLoadDataHandle.setupDetailDocAttach(data['attachment_m2m'])
         BiddingDataTableHandle.dataTableDocument(bids, data['isDetail'])
         BiddingDataTableHandle.dataTableDocumentModal(bids)
@@ -338,7 +334,6 @@ class BiddingDataTableHandle {
                 data: data,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    console.log(data)
                     if (data && resp.data.hasOwnProperty('account_for_bidding_list')) {
                         return resp.data['account_for_bidding_list'] ? resp.data['account_for_bidding_list'] : []
                     }
@@ -871,6 +866,8 @@ class BiddingSubmitHandle {
             let data = {}
             let row = this.node();
             let isLeader = row.querySelector('.venture-checkbox').checked;
+            let eleOrd = row.querySelector('.table-row-order');
+            data['order'] = parseInt(eleOrd.innerHTML)
             data['id'] = this.data().id ? this.data().id : null
             data['partner_account'] = this.data().partner_account;
             data['is_leader'] = isLeader;
@@ -885,7 +882,9 @@ class BiddingSubmitHandle {
             let data = {}
             let row = this.node();
             let isWon = row.querySelector('.bidder-checkbox').checked;
+            let eleOrd = row.querySelector('.table-row-order');
             data['id'] = this.data().id ? this.data().id : null
+            data['order'] = parseInt(eleOrd.innerHTML)
             data['bidder_account'] = this.data().bidder_account;
             data['is_won'] = isWon;
             result.push(data)

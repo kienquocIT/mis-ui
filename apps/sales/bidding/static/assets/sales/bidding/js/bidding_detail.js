@@ -1,12 +1,13 @@
 $(document).ready(function () {
     let formSubmit = $('#frm_bidding_create');
+    let transScript = $('#trans-script')
+    let $urlBidResultConfig = $('#app-url-factory').attr('data-bid-result-config')
+
     BiddingDataTableHandle.dataTableFile();
     BiddingDataTableHandle.$tableDocument.on('click', '.attach-file', function () {
         BiddingStoreHandle.storeAttachment();
         BiddingLoadDataHandle.loadOpenAttachFile(this);
     });
-    let transScript = $('#trans-script')
-    let $urlBidResultConfig = $('#app-url-factory').attr('data-bid-result-config')
 
     $('#btn-attach-invite-doc').on('click', function () {
         BiddingStoreHandle.storeAttachment()
@@ -235,8 +236,11 @@ $(document).ready(function () {
                 let dataConfig = $.fn.switcherResp(resp);
                 if(dataConfig){
                     let employeeList = dataConfig?.["bidding_result_config"][0]?.["employee"]
-                    // !! convert value to boolean
-                    let isAllowedModify = !!employeeList.find(item => item?.["id"] === empCurrent?.["id"])
+                    let isAllowedModify = false
+                    if(employeeList){
+                        // !! convert value to boolean
+                        isAllowedModify = !!employeeList.find(item => item?.["id"] === empCurrent?.["id"])
+                    }
                     if(isAllowedModify && sysStatus === 3){
                         $('#btn-save-result').attr('disabled', false)
                         $('#btn-open-bidder-modal').attr('disabled', false)

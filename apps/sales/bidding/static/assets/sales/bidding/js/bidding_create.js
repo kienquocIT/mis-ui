@@ -124,11 +124,13 @@ $(document).ready(function () {
                 let row = $(this).closest('tr');
                 let rowData = BiddingDataTableHandle.$tableDocument.DataTable().row(row).data();
                 if (rowData.isManual) {
+                    debugger
                     let checkbox = BiddingDataTableHandle.$tableDocumentModalManual.find(`input[type="checkbox"][data-row-id="${rowData.id}"]`);
                     if (checkbox.length) {
                         checkbox.prop('checked', false);
                     }
                 } else {
+                    debugger
                     let checkbox = BiddingDataTableHandle.$tableDocumentModal.find(`input[type="checkbox"][data-id="${rowData.document_type}"]`);
                     if (checkbox.length) {
                         checkbox.prop('checked', false);

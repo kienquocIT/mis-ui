@@ -1294,8 +1294,8 @@
                         break
                     case 'Recurrence':
                         iconApp = $(`<i class="fas fa-recycle"></i>`)
-                        if (appMapUrl?.[data?.['app_code']]?.['create']) {
-                            link = appMapUrl[data?.['app_code']]['create'] + `?recurrence_template_id=${data?.['id']}`;
+                        if (appMapUrl?.[data?.['app_code']]?.['create'] && data?.['doc_template_data']?.['id']) {
+                            link = appMapUrl[data?.['app_code']]['create'] + `?recurrence_template_id=${data?.['doc_template_data']?.['id']}`;
                         }
                         break
                 }

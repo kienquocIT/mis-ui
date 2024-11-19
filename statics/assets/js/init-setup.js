@@ -2213,8 +2213,10 @@ class WFRTControl {
                     document.querySelectorAll('.group-checkbox-save-status').forEach((checkboxGr) => {
                         checkboxGr.addEventListener('click', function () {
                             // Mark the child radio button as checked
-                            const radio = this.querySelector('.checkbox-save-status');
-                            radio.checked = true; // Automatically unchecks other radios in the group
+                            let radio = this.querySelector('.checkbox-save-status');
+                            if (radio) {
+                                radio.checked = true; // Automatically unchecks other radios in the group
+                            }
                         });
                     });
                 }
@@ -2332,15 +2334,14 @@ class WFRTControl {
                 showCancelButton: true,
                 cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 didOpen: () => {
-                    // Add event listener after the modal is shown
-                    let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.addEventListener('click', function () {
-                            let checked = checkbox.checked;
-                            for (let eleCheck of checkboxes) {
-                                eleCheck.checked = false;
+                    // Attach click event listeners to each group container
+                    document.querySelectorAll('.group-checkbox-next-node-collab').forEach((checkboxGr) => {
+                        checkboxGr.addEventListener('click', function () {
+                            // Find and mark the radio button inside this group as checked
+                            let radio = this.querySelector('.checkbox-next-node-collab');
+                            if (radio) {
+                                radio.checked = true; // Automatically unchecks others in the group
                             }
-                            checkbox.checked = checked;
                         });
                     });
                 }
@@ -2413,15 +2414,14 @@ class WFRTControl {
                 showCancelButton: true,
                 cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 didOpen: () => {
-                    // Add event listener after the modal is shown
-                    let checkboxes = document.querySelectorAll('.checkbox-next-association');
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.addEventListener('click', function () {
-                            let checked = checkbox.checked;
-                            for (let eleCheck of checkboxes) {
-                                eleCheck.checked = false;
+                    // Attach click event listeners to each group container
+                    document.querySelectorAll('.group-checkbox-next-association').forEach((checkboxGr) => {
+                        checkboxGr.addEventListener('click', function () {
+                            // Find and mark the radio button inside this group as checked
+                            let radio = this.querySelector('.checkbox-next-association');
+                            if (radio) {
+                                radio.checked = true; // Automatically unchecks others in the group
                             }
-                            checkbox.checked = checked;
                         });
                     });
                 }
@@ -2471,15 +2471,14 @@ class WFRTControl {
                     showCancelButton: true,
                     cancelButtonText: $.fn.transEle.attr('data-cancel'),
                     didOpen: () => {
-                        // Add event listener after the modal is shown
-                        let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
-                        checkboxes.forEach((checkbox) => {
-                            checkbox.addEventListener('click', function () {
-                                let checked = checkbox.checked;
-                                for (let eleCheck of checkboxes) {
-                                    eleCheck.checked = false;
+                        // Attach click event listeners to each group container
+                        document.querySelectorAll('.group-checkbox-next-node-collab').forEach((checkboxGr) => {
+                            checkboxGr.addEventListener('click', function () {
+                                // Find and mark the radio button inside this group as checked
+                                let radio = this.querySelector('.checkbox-next-node-collab');
+                                if (radio) {
+                                    radio.checked = true; // Automatically unchecks others in the group
                                 }
-                                checkbox.checked = checked;
                             });
                         });
                     }
@@ -2511,9 +2510,9 @@ class WFRTControl {
         }
         htmlCustom += `<div class="d-flex mb-5">${commonImg}<span>${commonTxt}</span></div>`;
         for (let associate of AssociationData) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom group-checkbox-next-association">
                                 <div class="form-check form-check-lg d-flex align-items-center">
-                                    <input type="radio" class="form-check-input checkbox-next-association" id="associate-${associate?.['id'].replace(/-/g, "")}" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
+                                    <input type="radio" name="next-association" class="form-check-input checkbox-next-association" id="associate-${associate?.['id'].replace(/-/g, "")}" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
                                     <label class="form-check-label mr-2" for="associate-${associate?.['id'].replace(/-/g, "")}">${associate?.['node_out']?.['title']}</label>
                                 </div>
                             </div>`;
@@ -2524,9 +2523,9 @@ class WFRTControl {
     static setupHTMLSelectCollab(collabOutForm) {
         let htmlCustom = ``;
         for (let collab of collabOutForm) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom group-checkbox-next-node-collab">
                                 <div class="form-check form-check-lg d-flex align-items-center">
-                                    <input type="radio" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
+                                    <input type="radio" name="next-node-collab" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
                                     <label class="form-check-label mr-2" for="collab-${collab?.['id'].replace(/-/g, "")}">${collab?.['full_name']}</label>
                                 </div>
                                 <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>

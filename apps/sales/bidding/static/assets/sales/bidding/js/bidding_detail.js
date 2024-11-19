@@ -107,15 +107,14 @@ $(document).ready(function () {
                     $('#inp-contents').prop('disabled',true)
                     data['isDetail'] = true
                     new PrintTinymceControl().render('ad1e1c4e-2a7e-4b98-977f-88d069554657', data, false);
-                } else {
-                    if ($('#bid-bond-value').attr('value')) {
-                        $('#bid-guarantee').attr('disabled',false)
-                        $('#bid-guarantee').attr('readonly',false)
-                        $('#bid-deposit').attr('disabled',false)
-                        $('#bid-deposit').attr('readonly',false)
-                    }
                 }
                 BiddingLoadDataHandle.loadDetail(data);
+                if ($('#bid-bond-value').attr('value') && formSubmit.attr('data-method').toLowerCase() === 'put') {
+                    $('#bid-guarantee').attr('disabled',false)
+                    $('#bid-guarantee').attr('readonly',false)
+                    $('#bid-deposit').attr('disabled',false)
+                    $('#bid-deposit').attr('readonly',false)
+                }
                 let empCurrent = JSON.parse($('#employee_current').text());
                 let systemStatus = data?.['system_status']
                 loadUIBidResult(empCurrent, systemStatus)

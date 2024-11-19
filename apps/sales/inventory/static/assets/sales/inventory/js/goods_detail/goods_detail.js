@@ -6,7 +6,7 @@ $(document).ready(function () {
     const $status = $('#status')
     const $table_serial = $('#table-serial')
     const $trans_script = $('#trans-url')
-    const $filter_btn = $('#filter-btn')
+    const $apply_btn = $('#apply-btn')
 
     function loadProductCategory(data) {
         $prd_category.initSelect2({
@@ -22,7 +22,6 @@ $(document).ready(function () {
             keyText: 'title',
         }).on('change', function () {})
     }
-
     loadProductCategory()
 
     function loadProduct(data) {
@@ -39,7 +38,6 @@ $(document).ready(function () {
             keyText: 'title',
         }).on('change', function () {})
     }
-
     loadProduct()
 
     function loadWarehouse(data) {
@@ -56,7 +54,6 @@ $(document).ready(function () {
             keyText: 'title',
         }).on('change', function () {})
     }
-
     loadWarehouse()
 
     function loadMainTable(category_list=[], product_list=[], warehouse_list=[], status_list=[]) {
@@ -66,7 +63,7 @@ $(document).ready(function () {
             rowIdx: true,
             paging: false,
             useDataServer: true,
-            scrollY: '60vh',
+            scrollY: '62vh',
             scrollX: true,
             scrollCollapse: true,
             reloadCurrency: true,
@@ -115,19 +112,19 @@ $(document).ready(function () {
                     data: 'product',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-primary badge-sm w-20">${data?.['code']}</span>&nbsp;<span class="text-primary">${data?.['title']}</span>`;
+                        return `<span class="badge badge-soft-secondary">${data?.['code']}</span><br><span class="text-muted">${data?.['title']}</span>`;
                     }
                 },
                 {
                     data: 'goods_receipt',
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-secondary gr-code w-100">${data?.['code']}</span>`;
+                        return `<span class="badge badge-soft-blue gr-code">${data?.['code']}</span>`;
                     }
                 },
                 {
                     data: 'goods_receipt',
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
                         if (data?.['date_approved']) {
                             return `<span>${moment(data?.['date_approved'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
@@ -137,28 +134,28 @@ $(document).ready(function () {
                 },
                 {
                     data: 'person_in_charge',
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="text-blue">${data?.['full_name']}</span>`;
+                        return `<span class="text-muted">${data?.['full_name']}</span>`;
                     }
                 },
                 {
                     data: 'warehouse',
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-secondary badge-sm w-20">${data?.['code']}</span>&nbsp;<span class="text-muted">${data?.['title']}</span>`;
+                        return `<span class="badge badge-soft-secondary">${data?.['code']}</span><br><span class="text-muted">${data?.['title']}</span>`;
                     }
                 },
                 {
                     data: 'quantity_import',
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
                         return `${data}`;
                     }
                 },
                 {
                     data: 'serial_list',
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text',
                     render: (data, type, row) => {
                         if (row?.['product']?.['type'] === 2) {
                             let status = row?.['status'] ? $trans_script.attr('data-trans-done') : $trans_script.attr('data-trans-not-yet')
@@ -167,17 +164,14 @@ $(document).ready(function () {
                                 <button type="button"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modal-serial"
-                                        class="btn btn-custom btn-soft-${color} btn-rounded btn-sm btn-open-modal-serial w-100"
+                                        class="btn btn-${color} btn-sm btn-open-modal-serial w-100"
                                         data-quantity-import="${row?.['quantity_import']}"
                                         data-product-id="${row?.['product']?.['id']}"
                                         data-warehouse-id="${row?.['warehouse']?.['id']}"
                                         data-goods-receipt-id="${row?.['goods_receipt']?.['id']}"
                                         data-purchase-request-id="${row?.['goods_receipt']?.['purchase_request']?.['id']}"
                                 >
-                                    <span>
-                                        <span class="row-status">${status}</span>
-                                        <span class="icon"><i class="bi bi-box-arrow-up-right"></i></span>
-                                    </span>
+                                    <span class="row-status">${status}</span>
                                 </button>
                                 <script class="serial_list_data">${JSON.stringify(data)}</script>
                             `;
@@ -186,9 +180,24 @@ $(document).ready(function () {
                     }
                 },
             ],
+            initComplete: function (settings, json) {
+                let wrapper$ = $main_table.closest('.dataTables_wrapper');
+                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                headerToolbar$.prepend(textFilter$);
+                if (textFilter$.length > 0) {
+                    textFilter$.css('display', 'flex');
+                    textFilter$.append(
+                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append(`
+                            <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                <i class="fas fa-sliders-h"></i>&nbsp;${$trans_script.attr('data-trans-filter')}
+                            </button>
+                        `)
+                    )
+                }
+            },
         });
     }
-
     loadMainTable([], [], [], $status.val());
 
     function loadSerialTable(data, product_id, warehouse_id, goods_receipt_id, purchase_request_id) {
@@ -371,10 +380,10 @@ $(document).ready(function () {
         let this_gr_code = $(this).find('.gr-code').text()
         $main_table.find('.gr-code').each(function() {
             if ($(this).text() === this_gr_code) {
-                $(this).attr('class', 'badge badge-secondary gr-code')
+                $(this).attr('class', 'badge badge-blue gr-code')
             }
             else {
-                $(this).attr('class', 'badge badge-soft-secondary gr-code')
+                $(this).attr('class', 'badge badge-soft-blue gr-code')
             }
         });
     });
@@ -446,11 +455,17 @@ $(document).ready(function () {
         }
     })
 
-    $filter_btn.on('click', function () {
+    $apply_btn.on('click', function () {
         let category_list = $prd_category.val()
         let product_list = $prd.val()
         let warehouse_list = $wh.val()
         let status_list = $status.val()
         loadMainTable(category_list, product_list, warehouse_list, status_list)
+    })
+
+    $(document).on("click", '#btn-filter', function () {
+        loadProductCategory()
+        loadProduct()
+        loadWarehouse()
     })
 })

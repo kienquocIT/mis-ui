@@ -9679,3 +9679,11 @@ msgstr "Thông tin bổ sung"
 #
 msgid "Item"
 msgstr "Danh mục"
+
+#
+msgid "Warehouse"
+msgstr "Kho"
+
+#
+msgid "State"
+msgstr "Trạng thái"

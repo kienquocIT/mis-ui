@@ -56,7 +56,7 @@
 {% block pageContent %}
     {{ data.revenue_plan_config | json_script:"revenue_plan_config" }}
 
-    <script id="trans-url"
+    <script id="trans-script"
             data-trans-m1th="{% trans 'January' %}"
             data-trans-m2th="{% trans 'February' %}"
             data-trans-m3th="{% trans 'March' %}"

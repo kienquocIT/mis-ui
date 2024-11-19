@@ -1,4 +1,4 @@
-// $(document).ready(function () {
+$(document).ready(function () {
     const table_inventory_report = $('#table-inventory-report')
 
     const current_period_Ele = $('#current_period')
@@ -1659,4 +1659,4 @@
     // sendMessage.on('click', function () {
     //     pushUserChat()
     // });
-// })
+})

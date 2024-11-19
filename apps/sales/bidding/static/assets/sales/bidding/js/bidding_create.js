@@ -35,7 +35,7 @@ $(document).ready(function () {
         BiddingTinymceHandle.initTinymce()
         BiddingDataTableHandle.$tableDocument.on('click', '.attach-file', function () {
             BiddingStoreHandle.storeAttachment();
-            BiddingLoadDataHandle.loadOpenAttachFile(this);
+            BiddingLoadDataHandle.loadOpenAttachFile(this, true);
         });
     }
 
@@ -87,18 +87,6 @@ $(document).ready(function () {
             checkbox.prop('checked', false);
         }
         BiddingCommonHandle.commonDeleteRow(row, BiddingDataTableHandle.$tableVenture);
-    });
-
-    BiddingDataTableHandle.$tableBidder.on('click', '.del-row', function () {
-        let row = $(this).closest('tr');
-
-        let rowData = BiddingDataTableHandle.$tableBidder.DataTable().row(row).data();
-
-        let checkbox = BiddingDataTableHandle.$tableAccountModal.find(`input[type="checkbox"][data-id="${rowData.bidder_account}"]`);
-        if (checkbox.length) {
-            checkbox.prop('checked', false);
-        }
-        BiddingCommonHandle.commonDeleteRow(row, BiddingDataTableHandle.$tableBidder);
     });
 
     BiddingDataTableHandle.$tableDocument.on('click', '.del-row', function () {
@@ -186,66 +174,8 @@ $(document).ready(function () {
     })
 
     $('#btn-attach-invite-doc').on('click', function () {
-        BiddingStoreHandle.storeAttachment()
-        BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
-            let row = this.node();
-            $(row).css('background-color', '');
-        });
-        $(this).closest('.form-control').css('background-color', '#ebfcf5');
-        let eleId = this.id
-        let isManual = this.getAttribute('data-is-manual')
-        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
-        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-is-manual', isManual);
-        BiddingLoadDataHandle.$remark[0].removeAttribute('readonly');
-        BiddingLoadDataHandle.$remark.val('');
-        BiddingLoadDataHandle.loadAddFile([]);
-        let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-        if (fileIds) {
-            fileIds.value = "";
-        }
-        if(!this.getAttribute('data-store')){
-            let data = {
-                "id": eleId,
-                "title": '',
-                "attachment_data": [],
-                "isManual": true
-            }
-            this.setAttribute('data-store', JSON.stringify(data))
-        }
-         if (fileIds) {
-             let dataStore = JSON.parse(this.getAttribute('data-store'));
-             BiddingLoadDataHandle.$remark.val(dataStore?.['remark']);
-             BiddingLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
-             let ids = [];
-             for (let fileData of dataStore?.['attachment_data']) {
-                ids.push(fileData?.['attachment']?.['id']);
-             }
-             let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-             fileIds.value = ids.join(',');
-             let attachmentParse = [];
-             for (let attachData of dataStore?.['attachment_data']) {
-                 attachmentParse.push(attachData?.['attachment']);
-             }
-             // append html file again
-             BiddingLoadDataHandle.$attachment.empty().html(`${BiddingLoadDataHandle.$attachmentTmp.html()}`);
-             // init file again
-             new $x.cls.file(BiddingLoadDataHandle.$attachment).init({
-                 name: 'attachment',
-                 enable_edit: true,
-                 enable_download: true,
-                 data: attachmentParse,
-             });
-             // add event
-             let inputs = BiddingLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
-
-             inputs.forEach((input) => {
-                 input.addEventListener('change', function () {
-                     let dataList = BiddingLoadDataHandle.loadSetupAddFile();
-                     BiddingLoadDataHandle.loadAddFile(dataList);
-                 });
-             });
-         }
-         BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
+        let isCreatePage = formSubmit.attr('data-method').toLowerCase() === 'post'
+        BiddingLoadDataHandle.loadOpenBtnAttachInviteDoc(this, isCreatePage)
     });
 
     $('#bid-bond-value').on('focus',function () {

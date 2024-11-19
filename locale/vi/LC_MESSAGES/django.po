@@ -1804,7 +1804,7 @@ msgid "Click on title to move detail page."
 msgstr "Nhấn vào mã ở cột này để di chuyển đến trang chi tiết."
 
 #
-msgid "Transaction Type"
+msgid "Transaction type"
 msgstr "Loại giao dịch"
 
 #
@@ -9679,6 +9679,22 @@ msgstr "Thông tin bổ sung"
 #
 msgid "Item"
 msgstr "Danh mục"
+
+#
+msgid "Linked"
+msgstr "Liên kết"
+
+#
+msgid "Not linked"
+msgstr "Không liên kết"
+
+#
+msgid "Recurrence date"
+msgstr "Ngày lặp lại"
+
+#
+msgid "Next execution date"
+msgstr "Ngày lặp tiếp theo"
 
 #
 msgid "Warehouse"

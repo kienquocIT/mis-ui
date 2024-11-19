@@ -19,20 +19,6 @@ let IS_DETAIL_PAGE = false
 let IS_DONE_GIS = false
 
 class GISLoadPage {
-    static LoadDateCreated() {
-        $("#date_created").daterangepicker({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: false,
-            minYear: 2023,
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            // drops: 'up',
-            autoApply: true,
-        })
-    }
     static LoadIA(data) {
         if (data) {
             IAEle.prop('disabled', true)
@@ -539,7 +525,6 @@ class GISAction {
 
 class GISHandle {
     static LoadPage() {
-        GISLoadPage.LoadDateCreated()
         GISLoadPage.LoadIA()
         GISLoadTab.DrawTableIAItems()
     }

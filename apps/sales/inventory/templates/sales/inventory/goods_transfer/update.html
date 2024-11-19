@@ -39,7 +39,7 @@
 {% endblock %}
 {% block pageContent %}
     {% include 'printer/print.html' %}
-    {{ data.is_project | json_script:"is_project" }}
+    {{ data.company_current_data | json_script:"company_current_data" }}
     <script id="trans-script"
             data-trans-product-list="{% trans 'Select product' %}"
             data-trans-out-warehouse-list="{% trans 'Select out warehouse' %}"
@@ -52,6 +52,7 @@
             data-url-project-product-list="{% url 'ProjectProductListAPI' %}"
             data-url-none-project-product-list="{% url 'NoneProjectProductListAPI' %}"
             data-url-so-list="{% url 'SaleOrderListAPI' %}"
+            data-url-company-detail="{% url 'CompanyDetailAPI' '0' %}"
     ></script>
 
     <form id="frm_goods_transfer_update"

@@ -11,8 +11,32 @@ let NOW_ROW = null
 let IS_DETAIL_PAGE = false
 let IS_UPDATE_PAGE = false
 let DOC_DONE = false
-const is_project = $('#is_project').text() === 'true';
-$('#tr_so').prop('hidden', !is_project)
+let is_project = false
+const company_current_data = JSON.parse($('#company_current_data').text());
+if (company_current_data) {
+    let company_current_data_ajax = $.fn.callAjax2({
+        url: $url_script.attr('data-url-company-detail').replace('/0', `/${company_current_data?.['id']}`),
+        data: {},
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                return data?.['company_detail'] ? data?.['company_detail'] : [];
+            }
+            return [];
+        },
+        (errs) => {
+            console.log(errs);
+        }
+    )
+
+    Promise.all([company_current_data_ajax]).then(
+        (results) => {
+            is_project = results[0]?.['cost_cfg']?.['cost_per_project']
+            $('#tr_so').prop('hidden', !is_project)
+        })
+}
 
 function LoadDate() {
     $date.daterangepicker({

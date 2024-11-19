@@ -542,10 +542,10 @@ class WorkOrderLoadDataHandle {
         WorkOrderLoadDataHandle.$dataBOM.val(JSON.stringify(data?.['bom_data']));
         WorkOrderLoadDataHandle.$title.val(data?.['title']);
         if (data?.['opportunity_data']?.['id']) {
-            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxOpp, [data?.['opportunity_data']], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxOpp, [data?.['opportunity_data']], {}, null, false, {'res1': 'code', 'res2': 'title'});
         }
         if (data?.['employee_inherit_data']?.['id']) {
-            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxEmp, [data?.['employee_inherit_data']], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+            WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxEmp, [data?.['employee_inherit_data']], {}, null, false, {'res1': 'code', 'res2': 'title'});
         }
         if (data?.['sale_order_data']?.['id']) {
             WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxSO, [data?.['sale_order_data']], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
@@ -778,14 +778,13 @@ class WorkOrderDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<div class="d-flex align-items-center ml-2">
-                                        <div class="form-check">
-                                            <input 
-                                                type="radio" 
-                                                class="form-check-input table-row-checkbox" 
-                                            >
-                                        </div>
-                                        <span class="table-row-item">${row?.['product_data']?.['title']}</span>
+                        return `<div class="form-check form-check-lg">
+                                    <input 
+                                        type="radio" 
+                                        class="form-check-input table-row-checkbox" 
+                                        id="so-pro-${row?.['product_data']?.['id'].replace(/-/g, "")}"
+                                    >
+                                    <label class="table-row-item" for="so-pro-${row?.['product_data']?.['id'].replace(/-/g, "")}">${row?.['product_data']?.['title']}</label>
                                 </div>`;
                     }
                 },

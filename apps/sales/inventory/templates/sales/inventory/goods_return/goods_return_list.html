@@ -16,6 +16,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'GoodsReturnListAPI' %}"
+        data-url-create="{% url 'GoodsReturnCreate' %}"
+        data-url-detail="{% url 'GoodsReturnDetail' '0' %}"
+        data-key-return="goods_return_list"
+    ></script>
     <div>
         <table id="goods_return_list" class="table nowrap w-100 mb-5" data-method="GET"
                data-url="{% url 'GoodsReturnListAPI' %}"
@@ -36,4 +42,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/inventory/js/goods_return/goods_return_list.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

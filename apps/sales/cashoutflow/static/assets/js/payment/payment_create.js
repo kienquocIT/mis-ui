@@ -1,14 +1,27 @@
 $(document).ready(function () {
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
-    PaymentHandle.LoadPage()
+    const urlParams = new URLSearchParams(window.location.search)
+    let opportunity_json= urlParams.get('opp_mapped')
+    let opportunity = opportunity_json ? JSON.parse(decodeURIComponent(opportunity_json)) : null
+    let quotation_json= urlParams.get('quotation_object')
+    let quotation = quotation_json ? JSON.parse(decodeURIComponent(quotation_json)) : null
+    let sale_order_json= urlParams.get('sale_order_object')
+    let sale_order = sale_order_json ? JSON.parse(decodeURIComponent(sale_order_json)) : null
+    if (opportunity) {
+        opportunity['quotation'] = quotation
+        opportunity['sale_order'] = sale_order
+    }
+
+    PaymentHandle.LoadPage(opportunity)
     WFRTControl.setWFInitialData('payment', 'POST')
 
-    $('#form-create-payment').submit(function (event) {
-        event.preventDefault();
-        let form = PaymentHandle.CombinesData($(this), 'create');
-        if (form) {
-            WFRTControl.callWFSubmitForm(form);
+    let form_validator = $('#form-create-payment').validate({
+        submitHandler: function (form) {
+            let form_data = PaymentHandle.CombinesData(form, 'create');
+            if (form_data) {
+                WFRTControl.callWFSubmitForm(form_data);
+            }
         }
     })
 });

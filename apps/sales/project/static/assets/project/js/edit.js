@@ -154,6 +154,9 @@ $(document).ready(function () {
                     enable_download: true,
                     data: data['assignee_attachment'],
                 })
+
+                // run tab report
+                tabReport.init()
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )
@@ -224,4 +227,7 @@ $(document).ready(function () {
         $('.init_drag_modal').each(function(){
             dragElement($(this)[0])
         })
+
+    // init tabs report
+    let tabReport = new TaskReport()
 });

@@ -434,9 +434,12 @@ class SelectDDControl {
         // setup templateResult concat default + manual
         let clsThis = this;
         return function (state) {
-            if (state.data) clsThis._forceUpdateDataBackupLoaded(state.id, state.data);
-            let setupFunc = clsThis.opts?.['templateResult'];
-            return setupFunc ? setupFunc(state) : state.text;
+            if (!(state.loading === true || state.disabled === true)) {  // show normal text of system: loading, ...
+                if (state.data) clsThis._forceUpdateDataBackupLoaded(state.id, state.data);
+                let setupFunc = clsThis.opts?.['templateResult'];
+                return setupFunc ? setupFunc(state) : state.text;
+            }
+            return state.text;
         }
     }
 
@@ -577,9 +580,6 @@ class SelectDDControl {
                 'cache': this._ajax_cache,
                 'delay': 250,
                 'headers': clsThis._ajax_parse_headers(),
-                'data': function (params) {
-                    return clsThis._ajax_parse_params(params, config.url);
-                },
                 'processResults': function (resp, params) {
                     params.page = params.page || clsThis.page;
                     return {
@@ -589,7 +589,15 @@ class SelectDDControl {
                             // Load More Scrolling | Infinite Scrolling : https://select2.org/data-sources/ajax#count_filtered
                         }
                     };
-                }, ...config,
+                },
+                ...config,
+                'data': function (params) {
+                    // data in ajax { 'data': function(params){}}
+                    const dataOfManual = config?.['data'];
+                    if (typeof dataOfManual === 'function') dataOfManual.bind(this)(params);
+                    // append params of DataTable.
+                    return clsThis._ajax_parse_params(params, config.url);
+                },
             }
         }
         return {'ajax': (ajaxConfig ? ajaxConfig : null)};
@@ -762,22 +770,25 @@ class SelectDDControl {
     init() {
         // call this for init select with options
         if (this.ele.length > 0) {
-            let clsThis = this;
-
             if (!this._config) this._config = this.config();
             this.renderDataOnload(this._config);
-            return this.ele.select2(this._config).on('change', function (e) {
-                const frm$ = $(this).closest('form');
-                if (frm$.length > 0) {
-                    // Make sure form was initialized before call valid().
-                    // Because valid() was called, form not initialized, form is creating validate with empty config!
-                    if (frm$.data('validator')){
-                        if ($(this).valid()) $(this).closest(".form-group").removeClass("has-error");
-                        else $(this).closest(".form-group").addClass("has-error");
-                    }
-                }
-                clsThis.loadInfoMore($(this));
+            const sel2$ = this.ele.select2(this._config);
+            // on event in select2 => call DOM event
+            // don't trigger change + valid when change : because call duplicate showErrors
+            const form$ = this.ele.closest('form');
+            function hasCallValid(){
+                return !!(form$.length > 0 && form$.data('validator'));
+            }
+            sel2$.on('select2:select', function(){
+                if (hasCallValid()) $(this).valid();
             });
+            sel2$.on('select2:unselect', function(){
+                if (hasCallValid()) $(this).valid();
+            });
+            sel2$.on('select2:clear', function(){
+                if (hasCallValid()) $(this).valid();
+            });
+            return sel2$;
         }
     }
 }

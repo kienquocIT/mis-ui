@@ -23,13 +23,17 @@ $(function () {
             });
         }
 
+        ContractLoadDataHandle.$boxOpp.on('change', function () {
+            ContractLoadDataHandle.loadDataByOpp();
+        });
+
         ContractLoadDataHandle.$btnAddDoc.on('click', function () {
             ContractLoadDataHandle.loadAddDoc();
         });
 
-        ContractDataTableHandle.$tableDocument.on('click', '.attach-file', function () {
+        ContractDataTableHandle.$tableDocument.on('click', '.open-attach', function () {
             ContractStoreHandle.storeAttachment();
-            ContractLoadDataHandle.loadOpenAttachFile(this);
+            ContractLoadDataHandle.loadOpenAttach(this);
         });
 
         ContractDataTableHandle.$tableDocument.on('click', '.del-row', function () {
@@ -41,25 +45,39 @@ $(function () {
         });
 
 // SUBMIT FORM
-        formSubmit.submit(function (e) {
-            e.preventDefault();
+        SetupFormSubmit.validate(formSubmit, {
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 100,
+                },
+            },
+            errorClass: 'is-invalid cl-red',
+            submitHandler: submitHandlerFunc
+        });
+
+        function submitHandlerFunc() {
             let _form = new SetupFormSubmit(formSubmit);
             ContractSubmitHandle.setupDataSubmit(_form);
             let submitFields = [
                 'title',
+                'opportunity_id',
+                'opportunity_data',
+                'employee_inherit_id',
+                'employee_inherit_data',
                 'document_data',
                 'attachment',
                 'abstract_content',
                 'trade_content',
                 'legal_content',
                 'payment_content',
+                'process',
             ]
             if (_form.dataForm) {
                 ContractCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
             WFRTControl.callWFSubmitForm(_form);
-        });
-
+        }
 
 
     });

@@ -73,28 +73,29 @@ class SetupFormSubmit {
     }
 
     static serializerObject(formSelected) {
-        const queryExclude = ':not([dont_serialize]):not([name^="DataTables_"])';
-        const query$ = formSelected.find(queryExclude);
-
-        let obj = {};
-        // case radio
-        query$.find(':input[name]:not([disabled])[type=radio]').each(function (){
-            const name = $(this).attr('name');
-            const value = $(this).attr('value');
-            const checked = $(this).prop('checked');
-            if (value !== null && value !== undefined && checked === true) obj[name] = value;
-        })
-        // another
-        query$.find(':input[name]:not([disabled]):not([type=radio])').each(function () {
-            let item = SetupFormSubmit.serializerInput($(this));
-            if (item && item.hasOwnProperty('name')){
-                if (item.name in obj) {
-                    obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
-                    obj[item.name].push(item.value);
-                } else obj[item.name] = item.value;
-            }
-        })
-        return obj;
+        // const queryExclude = ':not([dont_serialize]):not([name^="DataTables_"])';
+        // const query$ = formSelected.find(queryExclude);
+        //
+        // let obj = {};
+        // // case radio
+        // query$.find(':input[name]:not([disabled])[type=radio]').each(function (){
+        //     const name = $(this).attr('name');
+        //     const value = $(this).attr('value');
+        //     const checked = $(this).prop('checked');
+        //     if (value !== null && value !== undefined && checked === true) obj[name] = value;
+        // })
+        // // another
+        // query$.find(':input[name]:not([disabled]):not([type=radio])').each(function () {
+        //     let item = SetupFormSubmit.serializerInput($(this));
+        //     if (item && item.hasOwnProperty('name')){
+        //         if (item.name in obj) {
+        //             obj[item.name] = $.isArray(obj[item.name]) ? obj[item.name] : [obj[item.name]];
+        //             obj[item.name].push(item.value);
+        //         } else obj[item.name] = item.value;
+        //     }
+        // })
+        // return obj;
+        return $(formSelected).serializeObject();
     }
 
     static groupDataFromPrefix(data, prefix) {
@@ -161,12 +162,33 @@ class SetupFormSubmit {
 
     static call_validate(ele$, configs) {
         let validator = $(ele$).validate({
+            ignore: ".ignore-validate", // ":hidden",
             focusInvalid: true,
             validClass: "is-valid",
             errorClass: "is-invalid",
             errorElement: "small",
             showErrors: function (errorMap, errorList) {
                 this.defaultShowErrors();
+                const isSilentPopup = $(ele$).data('validate-silent-popup');
+                if (!(isSilentPopup === 'true' || isSilentPopup === true)){
+                    errorList.map(
+                        item => {
+                            if (item.element && item.message){
+                                if (!$(item.element).is(':visible')){
+                                    const formGroup$ = $(item.element).closest('.form-group');
+                                    const label$ = formGroup$.length > 0 ? formGroup$.find('.form-label') : $(item.element).siblings('label');
+
+                                    if (label$ && label$.length > 0){
+                                        $.fn.notifyB({
+                                            'title': label$.text() + ': ',
+                                            'description': item.message,
+                                        }, 'failure');
+                                    }
+                                }
+                            }
+                        }
+                    )
+                }
             },
             errorPlacement: function (error, element) {
                 // error.insertAfter(element);
@@ -181,6 +203,16 @@ class SetupFormSubmit {
                 if (insertAfterEle.siblings('.select2-container').length > 0) {
                     insertAfterEle.parent().append(error);
                 } else error.insertAfter(insertAfterEle);
+            },
+            success: function (label, element) {
+                $(element).siblings('.form-error-msg').remove();
+                let parentEle = $(element).parent();
+
+                if (parentEle.hasClass('input-group') || parentEle.hasClass('input-affix-wrapper')) {
+                    parentEle.siblings('.form-error-msg').remove();
+                } else {
+                    $(element).siblings('.form-error-msg').remove();
+                }
             },
             onsubmit: false,
             ...configs
@@ -460,7 +492,7 @@ class LogController {
             let intervalShowWfHistory = setInterval(() => {
                 if (dataRuntimeCounter > 5) {
                     clearInterval(intervalShowWfHistory);
-                    this.blockDataRuntime.html(`<span class="text-danger">${globeResourceLoadFailed}</span>`).removeClass('hidden');
+                    this.blockDataRuntime.html(`<span class="text-danger">${$.fn.gettext("Failed to load resource")}</span>`).removeClass('hidden');
                     WindowControl.hideLoadingWaitResponse(this.blockDataRuntime);
                 } else {
                     dataRuntimeCounter += 1;
@@ -902,11 +934,11 @@ class FileUtils {
     static clsNameInputFile = 'input-file-upload';
 
     static _getMaxSizeDisplay() {
-        return globeMaxFileSize.replaceAll("{size}", FileUtils.numberFileSizeMiBMax);
+        return $.fn.gettext("Maximum size {size}MiB").replaceAll("{size}", FileUtils.numberFileSizeMiBMax);
     }
 
     static _getAllowMultiple() {
-        return globeAllowMultiple;
+        return $.fn.gettext("Allows uploading multiple files");
     }
 
     static _checkTypeFileAllow(file_type, accept_list) {
@@ -928,7 +960,7 @@ class FileUtils {
         if (!FileUtils._checkTypeFileAllow(file.type, acceptArr)) {
             let typeMsgErr = acceptArr.map((item) => `"${item}"`).join(", ");
             $.fn.notifyB({
-                'description': `${globeFileDeny}. <p>${globeFileAccept} ${typeMsgErr}<p>`,
+                'description': `${$.fn.gettext("File type not allowed for uploading")}. <p>${$.fn.gettext("It must be one of the following file types:")} ${typeMsgErr}<p>`,
             }, 'failure');
             return false;
         }
@@ -1723,57 +1755,6 @@ class ListeningEventController {
         FileUtils.init();
     }
 
-    avatarUpload() {
-        $('#btnUploadMyAvatar').click(function () {
-            Swal.fire({
-                html: `
-                    <h4>${$.fn.transEle.attr('data-choose-avatar-image')}</h4>
-                    <small class="text-warning">${$.fn.transEle.attr('data-allow-file-properties').format_by_idx('*.jpg *.jpeg *.png *.gif')}</small>
-                `,
-                input: 'file',
-                inputAttributes: {
-                    autocapitalize: 'off',
-                    name: 'file',
-                },
-                showCancelButton: true,
-                cancelButtonText: $.fn.transEle.attr('data-cancel'),
-                confirmButtonText: $.fn.transEle.attr('data-upload'),
-                showLoaderOnConfirm: true,
-                preConfirm: (file) => {
-                    let formData = new FormData();
-                    formData.append('file', file);
-                    return $.fn.callAjax2({
-                        url: globeUrlAvatarUpload,
-                        method: 'POST',
-                        data: formData,
-                        contentType: 'multipart/form-data',
-                        isNotify: false,
-                    }).then(
-                        (resp) => {
-                            $.fn.switcherResp(resp);
-                            return true;
-                        },
-                        (errs) => {
-                            return false;
-                        }
-                    )
-                },
-                allowOutsideClick: () => !Swal.isLoading()
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: $.fn.transEle.attr('data-success'),
-                        timer: 2000,
-                        timerProgressBar: true,
-                    }).then(() => {
-                        window.location.reload();
-                    })
-                }
-            })
-        });
-    }
-
     static tabHashUrl__parent_active(currentEle) {
         $(currentEle).closest('.nav-tabs a[data-bs-toggle="tab"]').each(function () {
             if ($(this).length > 0) {
@@ -1809,9 +1790,12 @@ class ListeningEventController {
         });
 
         $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-            if ($(this).data('not-push-tab') === null || $(this).data('not-push-tab') === undefined) {
+            if ($(this).data('push-tab')){
                 window.history.pushState(null, null, $(e.target).attr("href"));
             }
+            // if ($(this).data('not-push-tab') === null || $(this).data('not-push-tab') === undefined) {
+            //     window.history.pushState(null, null, $(e.target).attr("href"));
+            // }
         });
     }
 
@@ -1856,7 +1840,7 @@ class ListeningEventController {
             if ($(_ele).parent().attr('data-toggle') === 'tooltip' || $(_ele).parent().attr('data-bs-toggle') === 'tooltip') {
                 parentTxt = $(_ele).parent().attr('title');
             }
-            return `${parentTxt ? parentTxt + "." : ""} ${globeFileNotFoundAlt}`
+            return `${parentTxt ? parentTxt + "." : ""} ${$.fn.gettext("This image encountered an error during loading or does not exist")}`
         }
 
         let imgReplace = opts?.['imgReplace'] || globeFileNotFoundImg;
@@ -1895,7 +1879,6 @@ class ListeningEventController {
         this.dataTable();
         this.navAndMenu();
         this.activeFileUpload();
-        this.avatarUpload();
         this.tabHashUrl();  // keep it run after nttDrawer and log
         this.setValidatorDefaults();
         this.dropdownInAccordion();
@@ -2279,7 +2262,7 @@ class WFRTControl {
                     $.fn.notifyB({description: data.message}, 'success');
                     setTimeout(() => {
                         window.location.replace(_form.dataUrlRedirect);
-                    }, 3000);
+                    }, 2000);
                 }
             }, (err) => {
                 setTimeout(() => {
@@ -2297,6 +2280,7 @@ class WFRTControl {
                 'url': _form.dataUrl,
                 'method': _form.dataMethod,
                 'data': _form.dataForm,
+                isLoading: true,
             }
         ).then(
             (resp) => {
@@ -2528,19 +2512,12 @@ class WFRTControl {
             commonTxt = $.fn.transEle.attr('data-select-association-type-2');
             commonImg = `<i class="fas fa-exclamation-triangle text-danger"></i>`;
         }
-        let typeMapTxt = {
-            1: $.fn.transEle.attr('data-node-type-1'),
-            2: $.fn.transEle.attr('data-node-type-2'),
-        }
         htmlCustom += `<div class="d-flex mb-5">${commonImg}<span>${commonTxt}</span></div>`;
         for (let associate of AssociationData) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <i class="fas fa-cubes mr-2"></i>
-                                    <span class="mr-2">${associate?.['node_out']?.['title']}</span>
-                                </div>
-                                <div class="form-check form-check-theme ms-3">
-                                    <input type="radio" class="form-check-input checkbox-next-association" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
+                                <div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="radio" class="form-check-input checkbox-next-association" id="associate-${associate?.['id'].replace(/-/g, "")}" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
+                                    <label class="form-check-label mr-2" for="associate-${associate?.['id'].replace(/-/g, "")}">${associate?.['node_out']?.['title']}</label>
                                 </div>
                             </div>`;
         }
@@ -2551,14 +2528,11 @@ class WFRTControl {
         let htmlCustom = ``;
         for (let collab of collabOutForm) {
             htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <i class="fas fa-user mr-2"></i>
-                                    <span class="mr-2">${collab?.['full_name']}</span>
-                                    <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
+                                <div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="radio" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
+                                    <label class="form-check-label mr-2" for="collab-${collab?.['id'].replace(/-/g, "")}">${collab?.['full_name']}</label>
                                 </div>
-                                <div class="form-check form-check-theme ms-3">
-                                    <input type="radio" class="form-check-input checkbox-next-node-collab" data-id="${collab?.['id']}">
-                                </div>
+                                <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                             </div>`;
         }
         return htmlCustom;
@@ -2567,26 +2541,19 @@ class WFRTControl {
     static setupHTMLDraftOrSave() {
         let htmlCustom = ``;
         let statusList = [0, 1];
-        let statusMapIcon = {
-            0: "far fa-list-alt mr-2",
-            1: "fas fa-sitemap mr-2",
-        };
         let statusMapText = {
             0: $.fn.transEle.attr('data-save-draft'),
             1: $.fn.transEle.attr('data-save-run-wf'),
         };
-        let statusMapColor = {
-            0: "text-secondary",
-            1: "text-secondary",
-        };
         for (let status of statusList) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
-                                <div class="d-flex align-items-center">
-                                    <i class="${statusMapIcon[status]} ${statusMapColor[status]}"></i>
-                                    <span class="${statusMapColor[status]}">${statusMapText[status]}</span>
-                                </div>
-                                <div class="form-check form-check-theme ms-3">
-                                    <input type="radio" class="form-check-input checkbox-save-status" data-status="${status}">
+            let checked = "";
+            if (status === 0) {
+                checked = "checked";
+            }
+            htmlCustom += `<div class="d-flex mb-5 border-bottom">
+                                <div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="radio" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}" ${checked}>
+                                    <label class="form-check-label" for="save-type-${status}">${statusMapText[status]}</label>
                                 </div>
                             </div>`;
         }
@@ -2976,7 +2943,7 @@ class WFRTControl {
                                 pageEle.find(findText).each(function () {
                                     let optsSetZone = {'add_empty_value': true};
                                     $(this).changePropertiesElementIsZone(optsSetZone);
-                                    $(this).find('input, select, textarea, button, span, p').each(function (event) {
+                                    $(this).find('input, select, textarea, button, span, p, li').each(function (event) {
                                         $(this).changePropertiesElementIsZone(optsSetZone);
                                     });
                                 })
@@ -3037,7 +3004,7 @@ class WFRTControl {
                                 pageEle.find(findText).each(function () {
                                     let optsSetZone = {'add_empty_value': true};
                                     $(this).changePropertiesElementIsZone(optsSetZone);
-                                    $(this).find('input, select, textarea, button, span, p').each(function (event) {
+                                    $(this).find('input, select, textarea, button, span, p, li').each(function (event) {
                                         $(this).changePropertiesElementIsZone(optsSetZone);
                                     });
                                 })
@@ -3120,12 +3087,18 @@ class WFRTControl {
             typeWF = 1;
         }
         if (window.location.href.includes('/update/')) {
-            let eleStatus = $('#systemStatus');
-            if (eleStatus && eleStatus.length > 0) {
-                if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+            let docData = WFRTControl.getRuntimeDocData();
+            if (docData?.['system_status']) {
+                if (![0, 3].includes(docData?.['system_status'])) {
                     typeWF = 1;
                 }
             }
+            // let eleStatus = $('#systemStatus');
+            // if (eleStatus && eleStatus.length > 0) {
+            //     if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+            //         typeWF = 1;
+            //     }
+            // }
         }
         let $collabOFCreate = $('#idxCollabOFCreate');
         let dataCreate = [];
@@ -3152,12 +3125,18 @@ class WFRTControl {
             typeWF = 1;
         }
         if (window.location.href.includes('/update/')) {
-            let eleStatus = $('#systemStatus');
-            if (eleStatus && eleStatus.length > 0) {
-                if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+            let docData = WFRTControl.getRuntimeDocData();
+            if (docData?.['system_status']) {
+                if (![0, 3].includes(docData?.['system_status'])) {
                     typeWF = 1;
                 }
             }
+            // let eleStatus = $('#systemStatus');
+            // if (eleStatus && eleStatus.length > 0) {
+            //     if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
+            //         typeWF = 1;
+            //     }
+            // }
         }
         let $associateCreate = $('#idxAssociateCreate');
         let dataCreate = [];
@@ -3220,8 +3199,25 @@ class WFRTControl {
                 body_fields.push(item.code);
                 body_fields_related = body_fields_related.concat(item?.['code_related']);
             });
+            let $editData = $('#idxZonesData');
+            let $editKey = $('#idxZonesKeyData');
+            let $editRelate = $('#idxZonesKeyRelatedData');
+            if ($editData && $editData.length > 0) {
+                $editData.empty().html(`${JSON.stringify(zonesData)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>`);
+            }
+            if ($editKey && $editKey.length > 0) {
+                $editKey.empty().html(`${JSON.stringify(body_fields)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>`);
+            }
+            if ($editRelate && $editRelate.length > 0) {
+                $editRelate.empty().html(`${JSON.stringify(body_fields_related)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesKeyRelatedData">${JSON.stringify(body_fields_related)}</script>`);
+            }
         }
-        $('html').append(`<script class="hidden" id="idxZonesData">${JSON.stringify(zonesData)}</script>` + `<script class="hidden" id="idxZonesKeyData">${JSON.stringify(body_fields)}</script>` + `<script class="hidden" id="idxZonesKeyRelatedData">${JSON.stringify(body_fields_related)}</script>`);
     }
 
     static setZoneHiddenData(zonesHiddenData) {
@@ -3230,12 +3226,28 @@ class WFRTControl {
             zonesHiddenData.map((item) => {
                 body_fields.push(item.code);
             });
-            $('html').append(`<script class="hidden" id="idxZonesHiddenData">${JSON.stringify(zonesHiddenData)}</script>` + `<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
+            let $hiddenData = $('#idxZonesHiddenData');
+            let $hiddenKey = $('#idxZonesHiddenKeyData');
+            if ($hiddenData && $hiddenData.length > 0) {
+                $hiddenData.empty().html(`${JSON.stringify(zonesHiddenData)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesHiddenData">${JSON.stringify(zonesHiddenData)}</script>`);
+            }
+            if ($hiddenKey && $hiddenKey.length > 0) {
+                $hiddenKey.empty().html(`${JSON.stringify(body_fields)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
+            }
         }
     }
 
     static setIsEditAllZoneData(isEditAllZone) {
-        $('html').append(`<script class="hidden" id="idxIsEditAllZone">${isEditAllZone}</script>`);
+        let $allZone = $('#idxIsEditAllZone');
+        if ($allZone && $allZone.length > 0) {
+            $allZone.empty().html(`${isEditAllZone}`);
+        } else {
+            $('html').append(`<script class="hidden" id="idxIsEditAllZone">${isEditAllZone}</script>`);
+        }
     }
 
     static setCollabOFRuntime(collabOutFormData) {
@@ -3451,6 +3463,23 @@ class WFRTControl {
                 if ($(ele$).is('button')) {  // if <button> (only button that have attr data-zone)
                     if ($(ele$).attr('data-zone')) {
                         $(ele$).attr('hidden', 'true');
+                    }
+                }
+                if ($(ele$).is('li')) {  // if <li>
+                    $(ele$).attr('hidden', 'true');
+                    if ($(ele$).hasClass('nav-item')) {  // check if <li> is nav-item then find tab-pane removeCls "show"
+                        let $navLink = $(ele$).find('.nav-link');
+                        if ($navLink && $navLink.length > 0) {
+                            let href = $navLink.attr('href');
+                            if (href.includes("#")) {
+                                href = href.replace("#", "");
+                                let $tabPane = $(`.tab-pane[id="${href}"]`);
+                                if ($tabPane && $tabPane.length > 0) {
+                                    $tabPane.removeClass("show");
+                                    $tabPane.removeClass("active");
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -3833,15 +3862,94 @@ class UtilControl {
         return data;
     }
 
+    static checkAndAddFormErrors(source$ , key, message, destination){
+        if (key && message){
+            const inp$ = source$.find(`:input[name=${key}]`);
+            if (inp$.length > 0){
+                const frm$ = inp$.closest('form');
+                if (frm$.length > 0){
+                    const formID = frm$.attr('id');
+                    if (formID){
+                        const validator = frm$.data('validator');
+                        if (validator){
+                            if (!destination.hasOwnProperty(formID)) destination[formID] = {};
+                            destination[formID][key] = message;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    static showFormErrors(formIdErrors){
+        Object.keys(formIdErrors).map(
+            formID => {
+                const form$ = $('#' + formID);
+                const validator = form$.data('validator');
+                if (validator){
+                    validator.showErrors(formIdErrors[formID]);
+                }
+            }
+        )
+    }
+
+    static showAndScrollToInputError($input) {
+        let $tabPane = $input.closest('.tab-pane');
+        let $modal = $input.closest('.modal');
+
+        if ($tabPane.length && !$tabPane.hasClass('active')) {
+            let tabId = $tabPane.attr('id');
+            $(`a[href="#${tabId}"]`).tab('show');
+        }
+
+        if ($modal.length && !$modal.hasClass('show')) {
+            $modal.modal('show');
+        }
+
+        setTimeout(function() {
+            $x.fn.scrollToIdx($input);
+        }, 200);
+    }
+
+    static makeSureOneInputErrorIsShowing(areaControl$, allInputErrors){
+        if (allInputErrors.length > 0){
+            let listInp$ = [];
+            for (let i = 0 ; i < allInputErrors.length ; i++){
+                const inp$ = areaControl$.find(`:input[name=${allInputErrors[i]}]`);
+                if (inp$.length > 0) {
+                    if (inp$.is(':visible')) {
+                        $x.fn.scrollToIdx(inp$);
+                        return;
+                    }
+                    listInp$.push(inp$);
+                }
+            }
+            if (listInp$.length > 0) {
+                for (let i = 0 ; i < listInp$.length ; i++){
+                    const insideModal = listInp$[i].closest('.modal').length > 0;
+                    const insideTab = listInp$[i].closest('.tab-content').length > 0;
+                    if (insideModal === false && insideTab === false){
+                        $x.fn.scrollToIdx(listInp$[i]);
+                        return;
+                    }
+                }
+                UtilControl.showAndScrollToInputError(listInp$[0]);
+            }
+        }
+    }
+
     static notifyErrors(errs, opts = {}) {
         let confirmOpts = $.extend(
             {
+                'areaControl': $(''),
+                'autoDetectShowErrors': true,
                 'keyNotMatch': '',
                 'replaceKey': {},
                 'isShowKey': true,
             },
             opts
         )
+        const areaControl$ = confirmOpts['areaControl'] instanceof jQuery ? confirmOpts['areaControl'] : $('');
 
         function resolveDataNotify(key, data) {
             if (confirmOpts.isShowKey === true) {
@@ -3863,13 +3971,26 @@ class UtilControl {
             return {'description': data}
         }
 
-
         if (errs) {
             if (typeof errs === 'object') {
+                let allInputErrors = [];
+                let formIdErrors = {};
                 let errors_converted = UtilControl.cleanDataNotify(errs);
                 Object.keys(errors_converted).map((key) => {
-                    jQuery.fn.notifyB(resolveDataNotify(key, errors_converted[key]), 'failure');
+                    const notifyData = resolveDataNotify(key, errors_converted[key])
+                    jQuery.fn.notifyB(notifyData, 'failure');
+                    if (confirmOpts?.['autoDetectShowErrors'] === true) {
+                        UtilControl.checkAndAddFormErrors(
+                            areaControl$,
+                            key,
+                            notifyData['description'],
+                            formIdErrors,
+                        );
+                    }
+                    allInputErrors.push(key);
                 });
+                UtilControl.showFormErrors(formIdErrors);
+                UtilControl.makeSureOneInputErrorIsShowing(areaControl$, allInputErrors);
             } else if (typeof errs === 'string') {
                 jQuery.fn.notifyB({
                     'description': errs
@@ -4046,6 +4167,16 @@ class UtilControl {
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;');
+    }
+
+    static decodeURI(txt){
+        return decodeURIComponent((txt + '').replace(/\+/g, '%20'))
+    }
+
+    static cutMaxlength(txt, maxNum){
+        txt = txt.toString();
+        if (txt.length > maxNum) return txt.slice(0, maxNum) + '...';
+        return txt;
     }
 }
 
@@ -4450,7 +4581,7 @@ class DTBControl {
 
         // append filter search class form-control-sm
         filterEle.addClass('mr-1');
-        filterEle.find('input[type="search"]').addClass('form-control w-200p');
+        filterEle.find('input[type="search"]'); // .addClass('form-control w-200p');
 
         // handle sort
         let preKeyVisible = settings.aoHeader[0].map((item) => {
@@ -4775,7 +4906,12 @@ class DTBControl {
             Object.keys(params).map(
                 (key) => {
                     let val = params[key];
-                    if (val || (!val && keyKeepEmpty.includes(key))) result[key] = val;
+                    if (
+                        val
+                        || typeof val === 'boolean'
+                        || typeof val === 'number'
+                        || keyKeepEmpty.includes(key)
+                    ) result[key] = val;
                 }
             )
         }
@@ -5179,6 +5315,17 @@ class WindowControl {
         return location.hash;
     }
 
+    static getAllParamsByKey(defaultData=null){
+        let urlParsed = {};
+        const sPageURL = window.location.search.substring(1);
+        const sURLVariables = sPageURL.split('&');
+        for (let i = 0; i < sURLVariables.length; i++) {
+            const sParameterName = sURLVariables[i].split('=');
+            urlParsed[sParameterName[0]] = sParameterName[1] === undefined ? defaultData : UtilControl.decodeURI(sParameterName[1]);
+        }
+        return urlParsed;
+    }
+
     static getUrlParameter(sParam, defaultData='') {
         const sPageURL = window.location.search.substring(1);
         const sURLVariables = sPageURL.split('&');
@@ -5188,10 +5335,24 @@ class WindowControl {
             sParameterName = sURLVariables[i].split('=');
 
             if (sParameterName[0] === sParam) {
-                return sParameterName[1] === undefined ? defaultData : decodeURIComponent(sParameterName[1]);
+                return sParameterName[1] === undefined ? defaultData : UtilControl.decodeURI(sParameterName[1]);
             }
         }
         return defaultData;
+    }
+
+    static getManyUrlParameters(paramKeys, defaultData = '') {
+        const urlParsed = WindowControl.getAllParamsByKey(defaultData);
+        let result = {};
+        paramKeys.map(
+            key => {
+                result[key] = defaultData;
+                if (urlParsed.hasOwnProperty(key)){
+                    result[key] = urlParsed[key];
+                }
+            }
+        )
+        return result;
     }
 
     static pushHashUrl(idHash) {
@@ -5335,14 +5496,14 @@ class WindowControl {
 
     static showForbidden(opts) {
         Swal.fire({
-            title: globeMsgHttp403,
+            title: $.fn.gettext("Forbidden"),
             icon: 'error',
-            allowOutsideClick: false,
+            allowOutsideClick: true,
             showDenyButton: true,
-            denyButtonText: globeHomePage,
+            denyButtonText: $.fn.gettext('Home Page'),
             confirmButtonColor: '#3085d6',
             showConfirmButton: true,
-            confirmButtonText: globePreviousPage,
+            confirmButtonText: $.fn.gettext('Previous page'),
             denyButtonColor: '#21b48f',
             preConfirm: function (opts) {
                 window.location.href = document.referrer;
@@ -5356,14 +5517,14 @@ class WindowControl {
 
     static showNotFound(opts) {
         Swal.fire({
-            title: globeMsgHttp404,
+            title: $.fn.gettext("Not found"),
             icon: 'question',
-            allowOutsideClick: false,
+            allowOutsideClick: true,
             showDenyButton: true,
-            denyButtonText: globeHomePage,
+            denyButtonText: $.fn.gettext('Home Page'),
             confirmButtonColor: '#3085d6',
             showConfirmButton: true,
-            confirmButtonText: globePreviousPage,
+            confirmButtonText: $.fn.gettext('Previous page'),
             denyButtonColor: '#21b48f',
             preConfirm: function (opts) {
                 window.location.href = document.referrer;
@@ -5415,14 +5576,14 @@ class WindowControl {
     static showUnauthenticated(opts, isRedirect = true) {
         if (isRedirect === true) {
             Swal.fire({
-                title: globeMsgAuthExpires,
+                title: $.fn.gettext('The session login was expired'),
                 icon: 'error',
                 allowOutsideClick: false,
                 confirmButtonColor: '#3085d6',
                 timer: 2000,
                 timerProgressBar: true,
                 showConfirmButton: true,
-                confirmButtonText: globeLoginPage,
+                confirmButtonText: $.fn.gettext('Login page'),
                 ...opts
             }).then((result) => {
                 if (result.dismiss === Swal.DismissReason.timer || result.isConfirmed || result.value) {
@@ -5433,12 +5594,12 @@ class WindowControl {
             });
         } else {
             Swal.fire({
-                title: globeMsgAuthExpires,
+                title: $.fn.gettext('The session login was expired'),
                 icon: 'error',
-                allowOutsideClick: false,
+                allowOutsideClick: true,
                 confirmButtonColor: '#3085d6',
                 showConfirmButton: true,
-                confirmButtonText: globeLoginPage,
+                confirmButtonText: $.fn.gettext('Login page'),
                 preConfirm: function (opts) {
                     return $x.fn.redirectLogin();
                 },
@@ -5449,17 +5610,17 @@ class WindowControl {
 
     static showSVErrors() {
         Swal.fire({
-            title: globeMsgHttp500,
+            title: $.fn.gettext("Internal Server Errors"),
             icon: 'error',
-            allowOutsideClick: false,
+            allowOutsideClick: true,
             showDenyButton: true,
-            denyButtonText: globeHomePage,
+            denyButtonText: $.fn.gettext('Home Page'),
             confirmButtonColor: '#3085d6',
             showConfirmButton: true,
-            confirmButtonText: globePreviousPage,
+            confirmButtonText: $.fn.gettext('Previous page'),
             denyButtonColor: '#21b48f',
             showCancelButton: true,
-            cancelButtonText: globeCancelText,
+            cancelButtonText: $.fn.gettext('Close'),
             preConfirm: function (opts) {
                 window.location.href = document.referrer;
             },
@@ -5478,7 +5639,7 @@ class WindowControl {
         return offsetTop;
     }
 
-    static scrollToIdx(idxStrOr$, parentEleStrOr$ = '#idxPageContent .simplebar-content-wrapper', timer=200) {
+    static scrollToIdx(idxStrOr$, parentEleStrOr$ = '#idxPageContent', timer=200) {
         const ele$ = idxStrOr$ instanceof jQuery ? idxStrOr$ : $(idxStrOr$);
         let parent$ = parentEleStrOr$ instanceof jQuery ? parentEleStrOr$ : $(parentEleStrOr$);
         // let offsetTop = ele$.offset().top;
@@ -5560,7 +5721,24 @@ class PersonControl {
     static getEmployeeCurrentID(default_val = null) {
         let ele = $('#idx-link-to-current-employee');
         if (ele.length > 0) {
-            return ele.attr('data-value-id');
+            return ele.data('value-id');
+        }
+        return default_val;
+    }
+
+    static getEmployeeCurrent(key=null, default_val = null) {
+        let ele = $('#idx-link-to-current-employee');
+        if (ele.length > 0) {
+            let data = ele.data('value-full');
+            if (typeof data === 'string'){
+                try {
+                    data = JSON.parse(data);
+                } catch(e){}
+            }
+            if (data && typeof data === 'object' && data.hasOwnProperty(key)){
+                return data[key];
+            }
+            return default_val;
         }
         return default_val;
     }
@@ -6270,6 +6448,33 @@ class Beautiful {
         ]
         return randomColor[Math.floor(Math.random() * 25)]
     }
+
+    static randomColorHex(){
+        return "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+    }
+
+    static hexToRgb(hex) {
+        hex = hex.replace(/^#/, '');
+        let r = parseInt(hex.slice(0, 2), 16);
+        let g = parseInt(hex.slice(2, 4), 16);
+        let b = parseInt(hex.slice(4, 6), 16);
+
+        return { r, g, b };
+    }
+
+    static rgbToHex(r, g, b) {
+        return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+    }
+
+    static lightenColor(hex, factor) {
+        let { r, g, b } = Beautiful.hexToRgb(hex);
+
+        r = Math.min(255, Math.floor(r + (255 - r) * factor));
+        g = Math.min(255, Math.floor(g + (255 - g) * factor));
+        b = Math.min(255, Math.floor(b + (255 - b) * factor));
+
+        return Beautiful.rgbToHex(r, g, b);
+    }
 }
 
 class FileControl {
@@ -6439,6 +6644,9 @@ class FileControl {
                         ids.replace(id, '')
                     )
                 );
+
+                // Manually trigger the change event
+                inputEle[0].dispatchEvent(new Event('change'));
             }
         } else {
             Swal.fire({
@@ -8361,6 +8569,7 @@ let $x = {
         shortNameGlobe: PersonControl.shortNameGlobe,
         renderAvatar: PersonControl.renderAvatar,
         getEmployeeCurrentID: PersonControl.getEmployeeCurrentID,
+        getEmployeeCurrent: PersonControl.getEmployeeCurrent,
 
         renderCodeBreadcrumb: DocumentControl.renderCodeBreadcrumb,
         buttonLinkBlank: DocumentControl.buttonLinkBlank,
@@ -8389,6 +8598,8 @@ let $x = {
         arrayRange: UtilControl.arrayRange,
         keepExistInOther: UtilControl.keepExistInOther,
         removeExistInOther: UtilControl.removeExistInOther,
+        decodeURI: UtilControl.decodeURI,
+        cutMaxlength: UtilControl.cutMaxlength,
 
         popKey: UtilControl.popKey,
         getKey: UtilControl.getKey,
@@ -8406,9 +8617,15 @@ let $x = {
         convertDatetimeToMoment: DateTimeControl.convertDatetimeToMoment,
 
         randomColor: Beautiful.randomColorClass,
+        randomColorHex: Beautiful.randomColorHex,
+        hexToRgb: Beautiful.hexToRgb,
+        rgbToHex: Beautiful.rgbToHex,
+        lightenColor: Beautiful.lightenColor,
 
         getHashUrl: WindowControl.getHashUrl,
+        getAllParamsByKey: WindowControl.getAllParamsByKey,
         getUrlParameter: WindowControl.getUrlParameter,
+        getManyUrlParameters: WindowControl.getManyUrlParameters,
         pushHashUrl: WindowControl.pushHashUrl,
         scrollToIdx: WindowControl.scrollToIdx,
         findGetParameter: WindowControl.findGetParameter,

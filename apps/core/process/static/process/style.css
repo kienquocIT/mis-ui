@@ -1,0 +1,17 @@
+#btn-collapse-info {
+            cursor: pointer;
+            transition: background-color 1s, color 1s;
+        }
+
+        #btn-collapse-info.collapsed span {
+            transition: transform 0.5s;
+        }
+
+        #btn-collapse-info:hover {
+            background-color: #ebfcf5;
+            color: #00804c;
+        }
+
+        #btn-collapse-info.collapsed span {
+            transform: rotate(180deg);
+        }

@@ -9,7 +9,7 @@ urlpatterns = [
     path('tenant/', include('apps.core.tenant.urls')),
     path('workflow/', include('apps.core.workflow.urls')),
     path('attachment/', include('apps.core.attachment.urls')),
-    path('sale-process/', include('apps.core.process.urls')),
+    path('process/', include('apps.core.process.urls')),
     path('calendar/', include('apps.core.programme.urls')),
     path('comment/', include('apps.core.comment.urls')),
     path('printer/', include('apps.core.printer.urls')),
@@ -17,4 +17,6 @@ urlpatterns = [
     path('import/', include('apps.core.fimport.urls')),
     path('diagram/', include('apps.core.diagram.urls')),
     path('form/', include('apps.core.form.urls')),
+    path('', include('apps.core.chatbot.urls')),
+    path('recurrence/', include('apps.core.recurrence.urls')),
 ]

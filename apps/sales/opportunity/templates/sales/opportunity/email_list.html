@@ -66,23 +66,31 @@
                           id="form-new-email"
                           method="post">
                         {% csrf_token %}
-                        <div class="row mb-3">
+                        <div class="form-group mb-3">
                             <label class="form-label required">{% trans 'Sale Code' %}</label>
                             <select id="email-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
                         </div>
-                        <div class="row mb-3">
-                            <label class="form-label required">{% trans 'To' %}</label>
-                            <select disabled id="email-to-select-box" class="select2 form-select" multiple="multiple" data-account-list-url="{% url 'AccountDetailAPI' '0' %}" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                        <div class="form-group mb-3">
+                            <label for="inp-process" class="form-label">{% trans 'Process' %}</label>
+                            <select
+                                    name="process" id="inp-process" class="form-select"
+                                    data-url="{% url 'ProcessRuntimeOfMeAPI' %}"
+                                    data-keyResp="process_runtime_list"
+                            ></select>
                         </div>
-                        <div class="row mb-3">
+                        <div class="form-group mb-3">
+                            <label class="form-label required">{% trans 'To' %}</label>
+                            <select disabled id="email-to-select-box" class="form-select" multiple="multiple"></select>
+                        </div>
+                        <div class="form-group mb-3">
                             <label class="form-label">{% trans 'Cc' %}</label>
                             <select disabled id="email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                         </div>
-                        <div class="row mb-3">
+                        <div class="form-group mb-3">
                             <label class="form-label required">{% trans 'Subject' %}</label>
                             <div><input id="email-subject-input" class="form-control required"></div>
                         </div>
-                        <div class="row mb-3">
+                        <div class="form-group mb-3">
                             <label class="col-12 col-form-label">{% trans 'Content' %}</label>
                             <div><textarea id="email-content-area"></textarea></div>
                         </div>
@@ -107,23 +115,33 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
+                    <div class="form-group mb-3">
                         <label class="form-label required">{% trans 'Sale Code' %}</label>
                         <select disabled id="detail-email-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
                     </div>
-                    <div class="row mb-3">
+                    <div class="form-group mb-3">
+                        <label for="detail-inp-process" class="form-label">{% trans 'Process' %}</label>
+                        <select
+                                name="process" id="detail-inp-process" class="form-select"
+                                data-url="{% url 'ProcessRuntimeOfMeAPI' %}"
+                                data-keyResp="process_runtime_list"
+                                disabled
+                        ></select>
+                        <a href="#" data-href="{% url 'ProcessRuntimeDetailView' pk='__pk__' %}" target="_blank" class="link-to-process">{% trans 'Detail' %}</a>
+                    </div>
+                    <div class="form-group mb-3">
                         <label class="form-label required">{% trans 'To' %}</label>
                         <select disabled id="detail-email-to-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                     </div>
-                    <div class="row mb-3">
+                    <div class="form-group mb-3">
                         <label class="form-label">{% trans 'Cc' %}</label>
                         <select disabled id="detail-email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                     </div>
-                    <div class="row mb-3">
+                    <div class="form-group mb-3">
                         <label class="form-label required">{% trans 'Subject' %}</label>
                         <div><input readonly id="detail-email-subject-input" class="form-control required"></div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="form-group mb-3">
                         <label class="form-label">{% trans 'Content' %}</label>
                         <div>
                             <div class="row form-group mb-3" id="detail-email-content-area"></div>
@@ -135,8 +153,32 @@
     </div>
 {% endblock %}
 {% block jsFooter %}
-
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/email_list.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            const modal$ = $("#send-email");
+            const create_open = $x.fn.getUrlParameter('create_open', '') === 'true';
+            let processData = [];
+            if (create_open === true){
+                modal$.modal('show');
+                const {
+                    process_id,
+                    process_title,
+                } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'opp_id', 'opp_title', 'opp_code']);
+                if (process_id){
+                    processData.push({
+                        'id': process_id,
+                        'title': process_title,
+                        'selected': true,
+                    })
+                }
+            }
+            modal$.find(':input[name=process]').initSelect2({
+                allowClear: true,
+                data: processData
+            })
+        })
+    </script>
 {% endblock %}

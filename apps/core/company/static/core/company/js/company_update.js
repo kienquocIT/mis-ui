@@ -1,4 +1,18 @@
 $(document).ready(function () {
+    const trans_script = $('#trans-script')
+    const current_period = $('#current_period').text() ? JSON.parse($('#current_period').text()) : []
+    if (current_period.length === 0) {
+        ShowToastrCreatePeriod();
+        $('#save-company').prop('hidden', true)
+    }
+    else {
+        $('#save-company').prop('hidden', false)
+    }
+
+    let pk = $.fn.getPkDetail()
+    let redirect_create_period = $('#form-create-periods-config').attr('data-url-redirect').replace(`/0`, `/${pk}`)
+    $('#form-create-periods-config').attr('data-url-redirect', redirect_create_period)
+
     new CompanyHandle().load();
     LoadDetailCompany($('#frm-update-company'), 'update');
 
@@ -14,7 +28,43 @@ $(document).ready(function () {
         iconFiles = event.target.files[0];
     })
 
-    let pk = $.fn.getPkDetail();
+    function ShowToastrCreatePeriod() {
+        const customHtml = `
+            <div>
+                <h6 class="text-white fw-bold">${trans_script.attr('data-trans-alert-toastr-1')}</h6>
+                <div class="mt-3">
+                    <span class="text-white small fst-italic">${trans_script.attr('data-trans-alert-toastr-2')}</span>
+                </div>
+                <div>
+                    <span class="text-white small fst-italic">${trans_script.attr('data-trans-alert-toastr-3')}</span>
+                </div>
+                <div class="mt-3">
+                    <button id="showModalButton"
+                            class="btn btn-sm btn-light"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-periods-create"
+                    >${trans_script.attr('data-trans-alert-toastr-4')}</button>
+                </div>
+            </div>
+        `;
+
+        toastr.options = {
+            "closeButton": false,  // Disable the default close button
+            "positionClass": "toast-top-right",
+            "timeOut": 0, // Toastr will not auto-hide
+            "extendedTimeOut": 0, // Extended timeout also set to 0
+            "tapToDismiss": false,
+            "onclick": null,
+            "showDuration": "3000",
+            "hideDuration": "1000",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "toastClass": "custom-toastr"
+        };
+
+        toastr.warning(customHtml);
+    }
+
     $("#frm-update-company").submit(function (event) {
         event.preventDefault();
         let frmConfig = new SetupFormSubmit($('#tblCompanyConfig'));
@@ -110,7 +160,15 @@ $(document).ready(function () {
                                     }
                                 }
                             },
-                            (errs) => $.fn.switcherResp(errs),
+                            (errs) => {
+                                $.fn.switcherResp(errs)
+                                if (Object.keys(errs.data.errors).length > 0) {
+                                    let key = Object.keys(errs.data.errors)[0]
+                                    if (key === 'fiscal_year_not_found') {
+                                        ShowToastrCreatePeriod();
+                                    }
+                                }
+                            },
                         )
                     }
                 },

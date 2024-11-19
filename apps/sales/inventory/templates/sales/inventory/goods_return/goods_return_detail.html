@@ -19,6 +19,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'GoodsReturnListAPI' %}"
+        data-url-create="{% url 'GoodsReturnCreate' %}"
+        data-url-detail="{% url 'GoodsReturnDetail' '0' %}"
+        data-key-return="goods_return_list"
+    ></script>
     {% include 'printer/print.html' %}
     <script id="script-url"
             data-url-delivery="{% url 'DeliveryListForGoodsReturnAPI' %}"
@@ -171,7 +177,7 @@
             </button>
         <div class="row">
             <div class="col-12">
-                <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
+                <ul class="nav nav-pills nav-icon nav-light" id="tab-select-table">
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                             <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
@@ -248,6 +254,7 @@
     <script src="{% static 'assets/sales/inventory/js/goods_return/goods_return_detail.js' %}"></script>
 
     <script src="{% static 'printer/print.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
     <script>
         $(document).ready(function () {
             $('#print-document').on('click', function () {

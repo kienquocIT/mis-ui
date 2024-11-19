@@ -14,6 +14,8 @@ from apps.masterdata.saledata.views.balance_init import BalanceInitList, Balance
 from apps.masterdata.saledata.views.budget_plan_config import BudgetPlanConfigList, BudgetPlanConfigListAPI, \
     ListCanViewCompanyBudgetPlanAPI, ListCanLockBudgetPlanAPI
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
+from apps.masterdata.saledata.views.document import DocumentTypeMasterDataListAPI, DocumentTypeMasterDataList, \
+    DocumentTypeMasterDataDetailAPI
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
     ExpenseDetailAPI, ExpenseForSaleListAPI, ExpenseUpdate
 from apps.masterdata.saledata.views.expense_item import ExpenseItemList, ExpenseItemListAPI, ExpenseItemDetailAPI
@@ -26,7 +28,7 @@ from apps.masterdata.saledata.views.product import (
     UnitOfMeasureGroupListAPI, UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ProductCategoryDetailAPI,
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
     ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI, ProductForSaleDetailAPI,
-    ProductQuickCreateAPI, ProductQuotationListLoadDBAPI
+    ProductQuickCreateAPI, ProductQuotationListLoadDBAPI, BaseUnitListAPI
 )
 from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
@@ -152,6 +154,7 @@ urlpatterns = [
         'masterdata/product-category/api/<str:pk>', ProductCategoryDetailAPI.as_view(),
         name='ProductCategoryDetailAPI'
     ),
+    path('base-unit/api', BaseUnitListAPI.as_view(), name='BaseUnitListAPI'),
     path(
         'masterdata/unit-of-measure/list/api', UnitOfMeasureListAPI.as_view(), name='UnitOfMeasureListAPI'
     ),
@@ -362,4 +365,10 @@ urlpatterns += [
         'masterdata/import-balance-data-init-db/api/<str:pk>', ImportBalanceInitDBAPIViews.as_view(),
         name='ImportBalanceInitDBAPIViews'
     ),
+]
+
+urlpatterns += [
+    path('masterdata/document-type/list', DocumentTypeMasterDataList.as_view(), name='DocumentTypeMasterDataList'),
+    path('masterdata/document-type/api', DocumentTypeMasterDataListAPI.as_view(), name='DocumentTypeMasterDataListAPI'),
+    path('masterdata/document-type/api/<str:pk>', DocumentTypeMasterDataDetailAPI.as_view(), name='DocumentTypeMasterDataDetailAPI'),
 ]

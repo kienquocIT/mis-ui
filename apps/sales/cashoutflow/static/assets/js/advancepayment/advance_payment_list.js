@@ -46,8 +46,27 @@ function InitAdvancePaymentTable(data_param={}) {
                 data: 'title',
                 className: 'wrap-text',
                 render: (data, type, row) => {
+                    let return_btn = ''
+                    if (row?.['system_status'] === 3 && !row?.['opportunity']?.['is_closed'] && parseFloat(row?.['remain_value'] ? row?.['remain_value'] : 0) !== 0) {
+                        let advance_payment_obj= encodeURIComponent(
+                            JSON.stringify({
+                                'id': row?.['id'],
+                                'code': row?.['code'],
+                                'title': row?.['title'],
+                                'sale_code': row?.['sale_code'] ? row?.['sale_code'] : ''
+                            })
+                        )
+
+                        return_btn = `<a class="return-btn hidden" target="_blank" href="${dtb.attr('data-return')}?advance_payment=${advance_payment_obj}">
+                                       <button class="btn btn-soft-primary btn-rounded btn-xs" 
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" 
+                                            title="${dtb.attr('data-type-translate-return')}"
+                                        ><i class="fas fa-hand-holding-usd fa-flip-horizontal"></i></button>
+                                    </a>`;
+                    }
                     const link = dtb.attr('data-url-detail').replace('0', row.id);
-                    return `<a href="${link}"><span class="text-primary"><b>${row?.['title']}</b></span></a>`
+                    return `<a class="text-primary fw-bold" href="${link}">${row?.['title']}</a>${return_btn}`
                 }
             },
             {
@@ -67,8 +86,8 @@ function InitAdvancePaymentTable(data_param={}) {
                 data: 'sale_code',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (row?.['opportunity_mapped']?.['id']) {
-                        return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity_mapped']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
+                    if (row?.['opportunity']?.['id']) {
+                        return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
                     }
                     else if (row?.['quotation_mapped']?.['id']) {
                         return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row?.['quotation_mapped']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
@@ -139,7 +158,7 @@ function InitAdvancePaymentTable(data_param={}) {
             },
             {
                 data: 'status',
-                className: 'wrap-text',
+                className: 'wrap-text text-center status-col bg-white',
                 render: (data, type, row) => {
                     let approved_trans = ``
                     let text_color = ``
@@ -166,51 +185,6 @@ function InitAdvancePaymentTable(data_param={}) {
                     return `<span class="w-100 badge ${text_color}">` + approved_trans + `</span>`
                 }
             },
-            {
-                data: '',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    if (row?.['system_status'] !== 3 || row?.['opportunity_mapped']?.['is_closed'] || parseFloat(row?.['remain_value']) === 0) {
-                        return ``;
-                    }
-                    else {
-                        let sale_code_id = null
-                        let sale_code_title = null
-                        if (row?.['opportunity_mapped']?.['id']) {
-                            sale_code_id = row?.['opportunity_mapped']?.['id']
-                            sale_code_title = row?.['opportunity_mapped']?.['title']
-                        }
-                        else if (row?.['quotation_mapped']?.['id']) {
-                            sale_code_id = row?.['quotation_mapped']?.['id']
-                            sale_code_title = row?.['quotation_mapped']?.['title']
-                        }
-                        else if (row?.['sale_order_mapped']?.['id']) {
-                            sale_code_id = row?.['sale_order_mapped']?.['id']
-                            sale_code_title = row?.['sale_order_mapped']?.['title']
-                        }
-
-                        let advance_payment_obj= encodeURIComponent(
-                            JSON.stringify({
-                                'id': row?.['id'],
-                                'code': row?.['code'],
-                                'title': row?.['title'],
-                                'sale_code': row?.['sale_code'] ? row?.['sale_code'] : ''
-                            })
-                        )
-
-                        return `<div data-money-gave="${row?.['money_gave']}"
-                                     class="dropdown ap-shortcut"
-                                     data-ap-id="${row?.['id']}"
-                                     data-sale-code-id="${sale_code_id}"
-                                     data-sale-code-title="${sale_code_title}"
-                                     data-sale-code="${row?.['sale_code'] ? row?.['sale_code'] : ''}">
-                                    <a href="${dtb.attr('data-return')}?advance_payment=${advance_payment_obj}">
-                                        <button type="button" class="btn btn-xs btn-rounded btn-outline-blue">${dtb.attr('data-type-translate-return')}</button>
-                                    </a>
-                                </div>`;
-                    }
-                }
-            }
         ],
     });
 }
@@ -229,4 +203,12 @@ $(document).on("click", '#expiring-sort', function() {
     let dtb = $('#datatable_advance_list')
     dtb.DataTable().clear().destroy()
     InitAdvancePaymentTable({'return_date_expiring_sort': 1})
+});
+
+$(document).on("mouseenter", 'tbody tr', function() {
+    $(this).find('.return-btn').removeClass('hidden')
+});
+
+$(document).on("mouseleave", 'tbody tr', function() {
+    $(this).find('.return-btn').addClass('hidden')
 });

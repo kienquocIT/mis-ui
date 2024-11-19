@@ -18,6 +18,12 @@
 {% endblock %}
 
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'SaleOrderListAPI' %}"
+        data-url-create="{% url 'SaleOrderCreate' %}"
+        data-url-detail="{% url 'SaleOrderDetail' '0' %}"
+        data-key-return="sale_order_list"
+    ></script>
     <div class="row">
         <div class="col-12 col-md-6 col-lg-6">
             <ul class="nav nav-line nav-tabs nav-light justify-content-start quotation-tabs">
@@ -26,7 +32,7 @@
                         <span class="nav-link-text">{% trans 'Sale Order' %}</span>
                     </a>
                 </li>
-                <li class="nav-item quotation-tab-item" id="tab-indicator">
+                <li class="nav-item quotation-tab-item" id="tab-indicator" data-zone="sale_order_indicators_data">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
                         <span class="nav-link-text">{% trans 'Indicator' %}</span>
                     </a>
@@ -137,19 +143,19 @@
                     <div class="row">
                         <div class="row">
                             <ul class="nav nav-light nav-tabs" id="quotation-tabs">
-                                <li class="nav-item tab-detail">
+                                <li class="nav-item tab-detail" data-zone="sale_order_products_data">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
                                         <span class="nav-link-text">{% trans 'Product' %}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item tab-cost">
+                                <li class="nav-item tab-cost" data-zone="sale_order_costs_data">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_cost">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-dollar-sign"></i></span>
                                         <span class="nav-link-text">{% trans 'Cost' %}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item tab-expense">
+                                <li class="nav-item tab-expense" data-zone="sale_order_expenses_data">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_expense">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-hand-holding-usd"></i></span>
                                         <span class="nav-link-text">{% trans 'Expense' %}</span>
@@ -171,7 +177,7 @@
                         </div>
 
                         <div class="tab-content" id="tab-content-quotation-product">
-                            <div class="tab-pane fade show active" id="tab_line_detail" data-zone="sale_order_products_data">
+                            <div class="tab-pane fade show active" id="tab_line_detail">
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
@@ -343,7 +349,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab_cost" data-zone="sale_order_costs_data">
+                            <div class="tab-pane fade" id="tab_cost">
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-cost"
@@ -404,7 +410,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="tab_expense" data-zone="sale_order_expenses_data">
+                            <div class="tab-pane fade" id="tab_expense">
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-expense"
@@ -703,8 +709,8 @@
                                 <thead>
                                 <tr class="bg-light">
                                     <th class="w-30">{% trans 'Product' %}</th>
-                                    <th class="w-25">{% trans 'Description' %}</th>
-                                    <th class="w-15">{% trans 'UOM' %}</th>
+                                    <th class="w-30">{% trans 'Description' %}</th>
+                                    <th class="w-10">{% trans 'UOM' %}</th>
                                     <th class="w-10">{% trans 'Status' %}</th>
                                     <th class="w-20">{% trans 'Note' %}</th>
                                 </tr>
@@ -780,7 +786,6 @@
         data-apply="{% trans 'Apply' %}"
         data-refreshed="{% trans 'Data is refreshed.' %}"
         data-valid="{% trans "Valid" %}"
-        data-required-product="{% trans "Product is required" %}"
         data-required-expense="{% trans "Expense is required" %}"
         data-required-product-uom="{% trans "Product unit of measure is required" %}"
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
@@ -806,6 +811,10 @@
         data-product-no-cost="{% trans "The product does not have warehouse cost list. You can choose bill of material cost, standard cost or input cost." %}"
         data-cost-bom="{% trans "Bill of material cost" %}"
         data-cost-standard="{% trans "Standard cost" %}"
+        data-required-customer="{% trans "Customer is required" %}"
+        data-required-contact="{% trans "Contact is required" %}"
+        data-required-payment="{% trans "Payment is required" %}"
+        data-required-product="{% trans "Product is required" %}"
     >
     <input
         type="text"
@@ -927,6 +936,7 @@
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_detail.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 
     <script>
         $(document).ready(function (){

@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    new ContactHandle().load();
+    ContactHandle.load();
 
     const frm = new SetupFormSubmit($('#form-create-contact'));
     frm.validate({
         submitHandler: function (form) {
             WindowControl.showLoading();
-            let combinesData = new ContactHandle().combinesData(form);
+            let combinesData = ContactHandle.combinesData(form);
             $.fn.callAjax2(combinesData).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -16,6 +16,7 @@ $(document).ready(function () {
                         }, 1000);
                     }
                 }, (err) => {
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
                     setTimeout(() => {
                         WindowControl.hideLoading();
                     }, 1000)

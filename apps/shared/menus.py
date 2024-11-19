@@ -4,6 +4,7 @@ __all__ = [
 ]
 
 from typing import Union
+from urllib.parse import urlencode
 
 from django.urls import reverse
 from .utils import RandomGenerate
@@ -18,23 +19,34 @@ class MenuCommon:
     child: list
 
     def __init__(
-            self, name: str, code: str, view_name: Union[str, None] = None, icon: str = None,
-            child: list = None
+            self,
+            name: str, code: str,
+            view_name: Union[str, None] = None,
+            icon: str = None,
+            child: list = None,
+            params: dict[str, any] = None,
+            expanded: bool = False,
     ):
         self.name = name
         self.code = code
         self.view_name = view_name
         self.icon = icon if icon else ''
         self.child = child if isinstance(child, list) else []
+        self.params = params if isinstance(params, dict) else {}
+        self.expanded = expanded
 
     @property
     def data(self):
+        url = reverse(self.view_name) if self.view_name and self.view_name != '#' else '#'
+        if self.params:
+            url += '?' + urlencode(self.params)
         return {
             'name': self.name,
             'code': self.code if self.code else RandomGenerate.get_string(length=32),
             'view_name': self.view_name,
-            'url': reverse(self.view_name) if self.view_name and self.view_name != '#' else '#',
+            'url': url,
             'icon': self.icon,
+            'expanded': self.expanded,
             'child': [
                 x.data for x in self.child
             ]
@@ -81,11 +93,27 @@ class MenusCompanySystem:
                 icon='<i class="fas fa-shapes"></i>'
             ),
             MenuCommon(
-                name='Business Process', code='menu_sale_process', view_name='SaleProcess',
-                icon='<i class="fab fa-phabricator"></i>',
+                name='Business Process', code='menu_process', view_name='ProcessList',
+                icon='<i class="fa-solid fa-microchip"></i>',
             ),
             MenuCommon(
                 name='Automation', code='', view_name='#', icon='<i class="fas fa-robot"></i>',
+            ),
+        ]
+    )
+    PROCESS = MenuCommon(
+        name='Process', code='process_group', icon='<i class="fa-solid fa-microchip"></i>',
+        expanded=True,
+        child=[
+            MenuCommon(
+                name='Business Process', code='menu_process', view_name='ProcessList',
+                icon='<i class="fa-solid fa-microchip"></i>',
+            ),
+            MenuCommon(
+                name='My Process Runtime',
+                code='menu_process_runtime',
+                view_name='ProcessRuntimeListMeRedirect',
+                icon='<i class="fa-solid fa-microchip"></i>',
             ),
         ]
     )
@@ -123,13 +151,17 @@ class MenusCoreConfigurations:
                 icon='<i class="bi bi-person-rolodex"></i>',
             ),
             MenuCommon(
-                name='Items', code='id_menu_master_data_product', view_name='ProductMasterDataList',
+                name='Item', code='id_menu_master_data_product', view_name='ProductMasterDataList',
                 icon='<i class="bi bi-diagram-2-fill"></i>',
             ),
             MenuCommon(
                 name='Price', code='id_menu_master_data_price', view_name='PriceMasterDataList',
                 icon='<i class="bi bi-currency-exchange"></i>',
-            )
+            ),
+            MenuCommon(
+                name='Document', code='id_menu_master_data_document', view_name='DocumentTypeMasterDataList',
+                icon='<i class="fas fa-file"></i>',
+            ),
         ]
     )
     TRANSITION_DATA_CONFIG = MenuCommon(
@@ -189,7 +221,8 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-chalkboard-teacher"></i>',
             ),
             MenuCommon(
-                name='Revenue plan config', code='id_menu_master_data_revenue_plan_config', view_name='RevenuePlanConfigList',
+                name='Revenue plan config', code='id_menu_master_data_revenue_plan_config',
+                view_name='RevenuePlanConfigList',
                 icon='<i class="fas fa-hand-holding-usd"></i>',
             ),
             MenuCommon(
@@ -206,6 +239,10 @@ class MenusCoreConfigurations:
                 name='Project config', code='menu_project_config',
                 view_name='ProjectConfig',
                 icon='<i class="fa-brands fa-r-project"></i>',
+            ),
+            MenuCommon(
+                name='Bidding Result Config', code='menu_bidding_result_config', view_name='BiddingResultConfigList',
+                icon='<i class="fas fa-gavel"></i>',
             ),
         ]
     )
@@ -228,7 +265,8 @@ class MenusCoreConfigurations:
         ]
     )
     INVENTORY_DATA_CONFIG = MenuCommon(
-        name='Inventory interact config', code='menu_inventory_interact_config', view_name='InventoryInteractConfigList',
+        name='Inventory interact config', code='menu_inventory_interact_config',
+        view_name='InventoryInteractConfigList',
         icon='<i class="fa-solid fa-arrow-right-to-bracket"></i>'
     )
 
@@ -299,9 +337,27 @@ class MenusCRM:
         name='Quotation', code='menu_quotation_list', view_name='QuotationList',
         icon='<i class="fas fa-file-invoice-dollar"></i>',
     )
+    BIDDING = MenuCommon(
+        name='Bidding', code='menu_bidding_list', view_name='BiddingList',
+        icon='<i class="fas fa-gavel"></i>',
+    )
     SALE_ORDER = MenuCommon(
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
         icon='<i class="fas fa-file-invoice"></i>',
+    )
+    RECURRENCE = MenuCommon(
+        name='Recurrence transaction', code='menu_recurrence', view_name='',
+        icon='<i class="fas fa-recycle"></i>',
+        child=[
+            MenuCommon(
+                name='Recurring order', code='menu_recurring_order', view_name='RecurrenceList',
+                icon='<i class="fas fa-file"></i>',
+            ),
+            MenuCommon(
+                name='Transaction template', code='menu_transaction_template', view_name='TransactionTemplateList',
+                icon='<i class="fas fa-file-alt"></i>',
+            ),
+        ],
     )
     WORK_ORDER = MenuCommon(
         name='Work order', code='menu_work_order_list', view_name='WorkOrderList',
@@ -441,10 +497,11 @@ class MenusInventory:
     )
 
     INVENTORY = MenuCommon(
-        name='Inventory activities', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-store"></i>',
+        name='Inventory activities', code='menu_inventory_activities', view_name='',
+        icon='<i class="fas fa-store"></i>',
         child=[
             MenuCommon(
-                name='WareHouses', code='menu_warehouse_list', view_name='WareHouseList',
+                name='Warehouses', code='menu_warehouse_list', view_name='WareHouseList',
                 icon='<i class="fas fa-warehouse"></i>',
             ),
             MenuCommon(
@@ -663,6 +720,10 @@ class MenusProject:
         name='Project activities', code='menu_project_activities', view_name='ProjectActivities',
         icon='<i class="fa-solid fa-fire-flame-curved"></i>',
     )
+    TASKS = MenuCommon(
+        name='Project task list', code='menu_project_task_list', view_name='ProjectTaskList',
+        icon='<i class="fa-solid fa-list"></i>',
+    )
 
 
 class MenusProduction:
@@ -689,6 +750,21 @@ class MenusProduction:
                 icon='<i class="fas fa-tasks"></i>',
             ),
         ],
+    )
+
+
+class MenusHRM:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_hrm_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    HUMAN_RESOURCES = MenuCommon(
+        name='Human resources', code='menu_human_resources', view_name='', icon='<i class="fa-solid fa-person"></i>',
+        child=[
+            MenuCommon(
+                name='Employee data', code='menu_employee_data_list', view_name='HRMEmployeeList',
+                icon='<i class="fa-solid fa-user-check"></i>',
+            ),
+        ]
     )
 
 
@@ -745,8 +821,10 @@ class SpaceItem:
                 MenusCRM.ACCOUNT,
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
+                MenusCRM.BIDDING,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,
+                MenusCRM.RECURRENCE,
                 MenusCRM.WORK_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.CONTRACT_APPROVAL,
@@ -792,7 +870,10 @@ class SpaceItem:
             'HRM',
             'hrm',
             icon='<i class="fa-solid fa-user-tag"></i>',
-            menus=[],
+            menus=[
+                MenusHRM.HOME,
+                MenusHRM.HUMAN_RESOURCES,
+            ],
         ),
         'inventory': SpaceCommon(
             'Inventory',
@@ -829,6 +910,7 @@ class SpaceItem:
                 MenusProject.HOME,
                 MenusProject.LIST,
                 MenusProject.ACTIVITIES,
+                MenusProject.TASKS,
             ]
         ),
         'report': SpaceCommon(
@@ -840,6 +922,15 @@ class SpaceItem:
                 MenusReport.SALE_REPORT,
                 MenusReport.INVENTORY_REPORT,
                 MenusReport.PURCHASING_REPORT,
+            ],
+        ),
+        'definition': SpaceCommon(
+            'Definition',
+            'definition',
+            icon='<i class="fa-solid fa-square-pen"></i>',
+            menus=[
+                MenusCompanySystem.WORKFLOW_PROCESS.child[0],
+                MenusCompanySystem.PROCESS,
             ],
         ),
         'company-system': SpaceCommon(
@@ -887,15 +978,16 @@ class SpaceGroup:
     SPACE = SpaceCommon(
         'Space', 'space', child=[
             SpaceItem.mapping['crm'],
-            SpaceItem.mapping['kms'],
+            # SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
             SpaceItem.mapping['forms'],
-            SpaceItem.mapping['hrm'],
+            # SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],
             SpaceItem.mapping['purchase'],
             SpaceItem.mapping['production'],
             SpaceItem.mapping['project'],
             SpaceItem.mapping['report'],
+            SpaceItem.mapping['definition'],
         ]
     )
     CORE_SETTINGS = SpaceCommon(

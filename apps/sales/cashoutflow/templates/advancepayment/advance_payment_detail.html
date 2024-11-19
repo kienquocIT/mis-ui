@@ -30,6 +30,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'AdvancePaymentListAPI' %}"
+        data-url-create="{% url 'AdvancePaymentCreate' %}"
+        data-url-detail="{% url 'AdvancePaymentDetail' '0' %}"
+        data-key-return="advance_payment_list"
+    ></script>
     {% include 'printer/print.html' %}
     <script id="script-url"
             data-trans-unplanned="{% trans 'Unplanned expenses' %}"
@@ -72,6 +78,7 @@
     <script src="{% static "assets/js/advancepayment/advance_payment_detail.js" %}"></script>
 
     <script src="{% static 'printer/print.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
     <script>
         $(document).ready(function () {
             $('#print-document').on('click', function () {

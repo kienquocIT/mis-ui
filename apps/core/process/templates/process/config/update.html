@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'process/stages.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/flatpickr/flatpickr.min.css' %}">
+    <link rel="stylesheet" href="{% static 'process/style.css' %}">
+{% endblock %}
+
+
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm-process-update">
+    <span>
+        <span>{% trans 'Save' %}</span>
+        <span class="icon">
+            <i class="fa-regular fa-floppy-disk"></i>
+        </span>
+    </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            id="frm-process-update"
+            data-url="{% url 'ProcessDetailAPI' pk=pk %}"
+            data-url-redirect="{% url 'ProcessList' %}"
+            data-url-app="{% url 'TenantApplicationListAPI' %}"
+    >
+        {% include 'process/extends/config.html' %}
+        <div class="form-check mb-1">
+            <input type="checkbox" class="form-check-input mt-2" id="inp-for-opp" name="for_opp" disabled/>
+            <label for="inp-for-opp" class="form-label">
+                {% trans 'For Opportunity' %}
+                <small class="form-text text-muted d-inline-block">
+                    ({% trans "This selected can't change after created" %})
+                </small>
+            </label>
+        </div>
+    </form>
+    <div class="w-100 d-flex justify-content-center align-items-center" id="btn-collapse-info">
+        <span><i class="fa-solid fa-angles-up"></i></span>
+    </div>
+    <div class="w-100">
+        <p class="form-label">{% trans 'Stages' %}</p>
+        <div class="w-100" id="process-config"></div>
+    </div>
+{% endblock %}
+
+{% block modalData %}
+    {% include 'process/extends/modal_stage_config.html' %}
+    {% include 'process/extends/modal_item_config.html' %}
+    {% include 'process/extends/instructions.html' %}
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
+    <script src="{% static 'vendors/jquery/dist/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'process/stages.js' %}"></script>
+    <script src="{% static 'process/config/update.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            const btnCollapse$ = $('#btn-collapse-info');
+            const frm$ = $('#frm-process-update');
+            btnCollapse$.on('click', function () {
+                btnCollapse$.toggleClass('collapsed');
+                frm$.slideToggle('slow');
+            })
+        })
+    </script>
+{% endblock %}

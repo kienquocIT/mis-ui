@@ -17,6 +17,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'InventoryAdjustmentListAPI' %}"
+        data-url-create="{% url 'InventoryAdjustmentCreate' %}"
+        data-url-detail="{% url 'InventoryAdjustmentDetail' '0' %}"
+        data-key-return="inventory_adjustment_list"
+    ></script>
     <div class="row">
         <div class="col-12">
             <table id="inventory_adjustment_list" class="table nowrap w-100 mb-5" data-method="GET"
@@ -35,7 +41,7 @@
                     </i>
                 </th>
                 <th>{% trans "Title" %}</th>
-                <th>{% trans "Warehouses" %}</th>
+                <th>{% trans "Warehouse" %}</th>
                 <th>{% trans "Date" %}</th>
                 <th>{% trans "Status" %}</th>
                 </thead>
@@ -45,4 +51,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_list.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

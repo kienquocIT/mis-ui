@@ -204,7 +204,7 @@ class APLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-name-input" value="${row?.['expense_name'] ? row?.['expense_name'] : ''}">`
+                        return `<input required ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-name-input" value="${row?.['expense_name'] ? row?.['expense_name'] : ''}">`
                     }
                 },
                 {
@@ -364,7 +364,7 @@ class APLoadTab {
                 }
             )
     
-            let dataParam2 = {'opportunity_mapped_id': opportunity_id}
+            let dataParam2 = {'opportunity_id': opportunity_id}
             let ap_mapped_item = $.fn.callAjax2({
                 url: script_url.attr('data-url-ap-cost-list'),
                 data: dataParam2,
@@ -382,7 +382,7 @@ class APLoadTab {
                 }
             )
     
-            let dataParam3 = {'opportunity_mapped_id': opportunity_id}
+            let dataParam3 = {'opportunity_id': opportunity_id}
             let payment_mapped_item = $.fn.callAjax2({
                 url: script_url.attr('data-url-payment-cost-list'),
                 data: dataParam3,
@@ -1150,9 +1150,18 @@ class APAction {
 }
 
 class APHandle {
-    static LoadPage() {
+    static LoadPage(opportunity=null) {
         APLoadPage.LoadCreatedDate()
         APLoadPage.LoadCreator(initEmployee)
+        if (opportunity) {
+            new $x.cls.bastionField({
+                has_opp: true,
+                opp_disabled: true,
+                has_inherit: true,
+                data_opp: [opportunity],
+            }).init();
+            opp_mapped_select.trigger('change')
+        }
         APLoadPage.LoadQuotation()
         APLoadPage.LoadSaleOrder()
         APLoadPage.LoadSupplier()
@@ -1167,7 +1176,7 @@ class APHandle {
 
         if (option === 'create') {
             if (ap_for === 'opportunity') {
-                frm.dataForm['opportunity_mapped_id'] = opp_mapped_select.val()
+                frm.dataForm['opportunity_id'] = opp_mapped_select.val()
                 frm.dataForm['sale_code_type'] = 0
             }
             else if (ap_for === 'quotation') {
@@ -1179,7 +1188,7 @@ class APHandle {
                 frm.dataForm['sale_code_type'] = 0
             }
             else {
-                frm.dataForm['opportunity_mapped_id'] = null
+                frm.dataForm['opportunity_id'] = null
                 frm.dataForm['quotation_mapped_id'] = null
                 frm.dataForm['sale_order_mapped_id'] = null
                 frm.dataForm['sale_code_type'] = 2
@@ -1227,6 +1236,11 @@ class APHandle {
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
+        let advanceVal = $('#total-value').valCurrency();
+        if (advanceVal) {
+            frm.dataForm['advance_value'] = parseFloat(advanceVal);
+        }
+
         // console.log(frm)
         return frm
     }
@@ -1249,49 +1263,52 @@ class APHandle {
                     sale_order_mapped_select.prop('disabled', true)
                     $('#employee_inherit_id').prop('disabled', true)
 
-                    if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
-                        new $x.cls.bastionField({
-                            has_opp: true,
-                            has_inherit: true,
-                            data_inherit: [{
-                                "id": data?.['employee_inherit']?.['id'],
-                                "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                                "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                                "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                                "email": data?.['employee_inherit']?.['email'] || '',
-                                "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                                "selected": true,
-                            }],
-                            data_opp: [{
-                                "id": data?.['opportunity_mapped']?.['id'] || '',
-                                "title": data?.['opportunity_mapped']?.['title'] || '',
-                                "code": data?.['opportunity_mapped']?.['code'] || '',
-                                "selected": true,
-                            }]
-                        }).init();
-                        APLoadPage.LoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
+                    const data_inherit = Object.keys(data?.['employee_inherit'] || {}).length > 0 ? [{
+                        "id": data?.['employee_inherit']?.['id'],
+                        "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                        "first_name": data?.['employee_inherit']?.['first_name'] || '',
+                        "last_name": data?.['employee_inherit']?.['last_name'] || '',
+                        "email": data?.['employee_inherit']?.['email'] || '',
+                        "is_active": data?.['employee_inherit']?.['is_active'] || false,
+                        "selected": true,
+                    }] : [];
+                    const data_opp = Object.keys(data?.['opportunity'] || {}).length > 0 ? [{
+                        "id": data?.['opportunity']?.['id'] || '',
+                        "title": data?.['opportunity']?.['title'] || '',
+                        "code": data?.['opportunity']?.['code'] || '',
+                        "selected": true,
+                    }] : [];
+                    const data_process = Object.keys(data?.['process'] || {}).length > 0 ? [
+                        {
+                            ...data?.['process'],
+                            selected: true,
+                        }
+                    ] : [];
+                    new $x.cls.bastionField({
+                        has_opp: true,
+                        opp_disabled: true,
+                        has_inherit: true,
+                        inherit_disabled: true,
+                        has_process: true,
+                        process_disabled: true,
+                        data_inherit: data_inherit,
+                        data_opp: data_opp,
+                        data_process: data_process,
+                    }).init();
+
+                    if (Object.keys(data?.['opportunity']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
+                        APLoadPage.LoadQuotation(data?.['opportunity']?.['quotation_mapped'])
                         APLoadTab.LoadPlanQuotation(
                             opp_mapped_select.val(),
-                            data?.['opportunity_mapped']?.['quotation_mapped']?.['id'],
+                            data?.['opportunity']?.['quotation_mapped']?.['id'],
                             data?.['workflow_runtime_id']
                         )
+                        APLoadPage.LoadSaleOrder(data?.['opportunity']?.['sale_order_mapped']);
                         ap_for = 'opportunity'
                     }
                     else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
-                        new $x.cls.bastionField({
-                            has_opp: false,
-                            has_inherit: true,
-                            data_inherit: [{
-                                "id": data?.['employee_inherit']?.['id'],
-                                "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                                "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                                "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                                "email": data?.['employee_inherit']?.['email'] || '',
-                                "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                                "selected": true,
-                            }],
-                        }).init();
                         APLoadPage.LoadQuotation(data?.['quotation_mapped'])
+                        APLoadPage.LoadSaleOrder(data?.['quotation_mapped']?.['sale_order_mapped'])
 
                         let dataParam = {'quotation_id': quotation_mapped_select.val()}
                         let ap_mapped_item = $.fn.callAjax2({
@@ -1335,19 +1352,6 @@ class APHandle {
                         ap_for = 'saleorder'
                     }
                     else {
-                        new $x.cls.bastionField({
-                            has_opp: false,
-                            has_inherit: true,
-                            data_inherit: [{
-                                "id": data?.['employee_inherit']?.['id'],
-                                "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                                "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                                "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                                "email": data?.['employee_inherit']?.['email'] || '',
-                                "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                                "selected": true,
-                            }],
-                        }).init();
                         ap_for = null
                     }
 

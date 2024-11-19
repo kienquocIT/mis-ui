@@ -504,18 +504,18 @@ $(async function () {
                             if (row?.['product']?.['general_traceability_method'] === 0) {
                                 disabled = 'disabled';
                             }
-                            return `<div class="d-flex align-items-center ml-3">
-                                        <div class="form-check">
-                                            <input
-                                                type="radio"
-                                                class="form-check-input table-row-checkbox cl-child"
-                                                data-id="${row?.['id']}"
-                                                data-row="${dataRow}"
-                                                ${checked}
-                                                ${disabled}
-                                            >
-                                        </div>
-                                        <span class="badge badge-soft-success">${row?.['warehouse']?.['code']}</span><span>${row?.['warehouse']?.['title']}</span>
+                            return `<div class="form-check form-check-lg">
+                                        <input
+                                            type="radio"
+                                            class="form-check-input table-row-checkbox cl-child"
+                                            id="pw-${row?.['id'].replace(/-/g, "")}"
+                                            data-id="${row?.['id']}"
+                                            data-row="${dataRow}"
+                                            ${checked}
+                                            ${disabled}
+                                        >
+                                        <label class="form-check-label" for="pw-${row?.['id'].replace(/-/g, "")}">${row?.['warehouse']?.['title']}</label>
+                                        <span class="badge badge-soft-success">${row?.['warehouse']?.['code']}</span>
                                     </div>`;
                         }
                     },
@@ -986,7 +986,7 @@ $(async function () {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if ($form.attr('data-method').toLowerCase() === 'put') {
                                 if (row?.['is_checked'] === true) {
-                                    return `<div class="form-check">
+                                    return `<div class="form-check form-check-lg">
                                                 <input
                                                     type="checkbox"
                                                     class="form-check-input table-row-checkbox"
@@ -996,7 +996,7 @@ $(async function () {
                                                 >
                                             </div>`;
                                 }
-                                return `<div class="form-check">
+                                return `<div class="form-check form-check-lg">
                                             <input
                                                 type="checkbox"
                                                 class="form-check-input table-row-checkbox"
@@ -1006,7 +1006,7 @@ $(async function () {
                                         </div>`;
                             } else {
                                 if (row?.['is_checked'] === true) {
-                                    return `<div class="form-check">
+                                    return `<div class="form-check form-check-lg">
                                         <input
                                             type="checkbox"
                                             class="form-check-input table-row-checkbox"
@@ -1017,7 +1017,7 @@ $(async function () {
                                         >
                                     </div>`;
                                 }
-                                return `<div class="form-check">
+                                return `<div class="form-check form-check-lg">
                                         <input
                                             type="checkbox"
                                             class="form-check-input table-row-checkbox"
@@ -1234,6 +1234,9 @@ $(async function () {
                 const res = $.fn.switcherResp(req);
                 prepareHTMLConfig(res?.['config_at_that_point'])
                 $x.fn.renderCodeBreadcrumb(res);
+
+                new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
+
                 const $saleOrder = $('#inputSaleOrder');
                 $saleOrder.html(res.sale_order_data.code)
                 $saleOrder.attr('data-so', JSON.stringify(res?.['sale_order_data']));

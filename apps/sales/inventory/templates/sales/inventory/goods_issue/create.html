@@ -16,6 +16,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'GoodsIssueListAPI' %}"
+        data-url-create="{% url 'GoodsIssueCreate' %}"
+        data-url-detail="{% url 'GoodsIssueDetail' '0' %}"
+        data-key-return="goods_issue_list"
+    ></script>
     <script id="script-url"
             data-url-ia="{% url 'InventoryAdjustmentDetailAPIForGIS' '0' %}"
             data-url-po="{% url 'ProductionOrderDetailAPIForGIS' '0' %}"
@@ -39,4 +45,5 @@
 
     <script src="{% static 'assets/sales/inventory/js/goods_issue/common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_issue/create.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

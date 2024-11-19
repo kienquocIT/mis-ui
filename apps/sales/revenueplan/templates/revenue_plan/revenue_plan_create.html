@@ -95,7 +95,7 @@
             </div>
             <div class="col-12 col-md-4 col-lg-4 main">
                 <div class="form-group">
-                    <label for="revenue-plan-period" class="form-label required">{% trans 'Period' %}</label>
+                    <label for="revenue-plan-period" class="form-label required">{% trans 'Fiscal year' %}</label>
                     <select class="form-select select2" id="revenue-plan-period"
                             data-url="{% url 'PeriodsConfigListAPI' %}"
                             data-method="GET"
@@ -156,7 +156,7 @@
             </div>
         </div>
         <div class="row mt-5 mb-10">
-            <div class="col-12 main" style="position: relative; overflow: auto; width: 100%; max-height: 55vh">
+            <div class="col-12 main" style="position: relative; overflow: auto; width: 100%; max-height: 70vh">
                 <table class="table nowrap w-100 fixed_header" id="revenue-plan-table"
                        data-group-url="{% url 'GroupDetailAPI' '0' %}"
                 >

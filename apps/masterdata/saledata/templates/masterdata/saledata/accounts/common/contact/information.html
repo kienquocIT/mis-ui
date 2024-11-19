@@ -1,0 +1,170 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12 mb-2">
+        <h4 class="text-primary text-decoration-underline fw-bold">{% trans 'Contact Information' %}</h4>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="select-box-emp" class="form-label required">{% trans "Contact Owner" %}</label>
+            <select id="select-box-emp" name="owner" class="form-select"
+                    data-method="GET"
+                    data-url="{% url "EmployeeListAPI" %}"
+                    required>
+            </select>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="select-box-account_name" class="form-label">{% trans "Account Name" %}</label>
+            <select id="select-box-account_name" name="account_name" class="form-select"
+                    data-url="{% url "AccountListAPI" %}"
+                    data-method="GET">
+            </select>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="select-box-report-to" class="form-label">{% trans "Report To" %}</label>
+            <select id="select-box-report-to" class="form-select" data-method="GET"
+                    data-url="{% url "AccountDetailAPI" pk='__pk__' %}" name="report_to" disabled>
+            </select>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="select-box-salutation" class="form-label">{% trans "Salutation" %}</label>
+            <select id="select-box-salutation" class="form-select" data-url="{% url "SalutationListAPI" %}"
+                    data-method="GET" name="salutation">
+            </select>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="first_name_id" class="form-label required">{% trans "Lastname" %}</label>
+            <input type="text" class="form-control" name="first_name" id="first_name_id" required>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="last_name_id" class="form-label required">{% trans "Firstname" %}</label>
+            <input type="text" class="form-control" name="last_name" id="last_name_id" required>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="full_name_id" class="form-label required">{% trans "Full Name" %}</label>
+            <input type="text" class="form-control form-control-line text-primary" name="fullname" id="full_name_id" disabled required>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="inp-phone" class="form-label">{% trans "Phone" %}</label>
+            <input id="inp-phone" type="text" class="form-control" name="phone">
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="inp-mobile" class="form-label">{% trans "Mobile" %}</label>
+            <input id="inp-mobile" type="text" class="form-control" name="mobile">
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="inp-mail" class="form-label">{% trans "Email" %}</label>
+            <input id="inp-mail" type="text" class="form-control" name="email" placeholder="abc@gmail.com">
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="inp-job-title" class="form-label">{% trans "Job Title" %}</label>
+            <input id="inp-job-title" type="text" class="form-control" name="job_title">
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-group">
+            <label for="bio" class="form-label">{% trans "Biography" %}</label>
+            <textarea id="bio" class="form-control" name="biography"></textarea>
+        </div>
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-12 mb-2">
+        <h4 class="text-primary text-decoration-underline fw-bold">{% trans 'Address Information' %}</h4>
+    </div>
+    <div class="col-12 col-md-12 col-lg-12">
+        <div class="form-group">
+            <label for="work_address_id" class="form-label">{% trans "Work address" %}</label>
+            <input data-bs-toggle="modal"
+                   data-bs-target="#modal-work-address"
+                   class="form-control form-control-line text-primary"
+                   readonly
+                   name="work_address"
+                   placeholder="{% trans 'Click to edit' %}"
+                   id="work_address_id">
+        </div>
+    </div>
+    <div class="col-12 col-md-12 col-lg-12">
+        <div class="form-group">
+            <label for="home_address_id" class="form-label">{% trans "Home address" %}</label>
+            <input data-bs-toggle="modal"
+                   data-bs-target="#modal-home-address"
+                   class="form-control form-control-line text-primary"
+                   readonly
+                   name="home_address"
+                   placeholder="{% trans 'Click to edit' %}"
+                   id="home_address_id">
+        </div>
+    </div>
+</div>
+<div class="row mt-5 mb-10">
+    <div class="col-12 mb-2">
+        <h4 class="text-primary text-decoration-underline fw-bold">{% trans 'Addition Information' %}</h4>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="facebook_id" class="form-label">Facebook</label>
+            <input type="text" class="form-control" name="facebook" id="facebook_id"
+                   placeholder="https://www.facebook.com/mtsolution">
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="twitter_id" class="form-label">Twitter</label>
+            <input type="text" class="form-control" name="twitter" id="twitter_id"
+                   placeholder="https://twitter.com/mtsolution">
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="linkedln_id" class="form-label">Linkedln</label>
+            <input type="text" class="form-control" name="linkedln" id="linkedln_id"
+                   placeholder="https://www.linkedin.com/in/mtsolution">
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="gmail_id" class="form-label">Gmail</label>
+            <input type="text" class="form-control" name="gmail" id="gmail_id"
+                   placeholder="mtsolution@gmail.com">
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="select-box-interests" class="form-label">{% trans "Interests" %}</label>
+            <select id="select-box-interests"
+                    class="form-select select2"
+                    multiple
+                    name="interests"
+                    data-url="{% url 'InterestListAPI' %}"
+                    data-method="GET">
+            </select>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="tag_id" class="form-label">Tag</label>
+            <input type="text" class="form-control" name="tags" id="tag_id">
+        </div>
+    </div>
+</div>

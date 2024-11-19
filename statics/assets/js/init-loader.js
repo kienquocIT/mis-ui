@@ -435,6 +435,7 @@ $.fn.extend({
             let isNotify = UtilControl.popKey(opts, 'isNotify', false, true);
             if (!$.fn.isBoolean(isNotify)) isNotify = false;
             let notifyOpts = UtilControl.popKey(opts, 'notifyOpts', {}, true);
+            const areaControl = UtilControl.popKey(opts, 'areaControl', $(''), false);
 
             let isLoading = UtilControl.popKey(opts, 'isLoading', false, true);
             let loadingOpts = UtilControl.popKey(opts, 'loadingOpts', {}, true);
@@ -487,7 +488,10 @@ $.fn.extend({
                                 if (onlySuccessCallback === false) {
                                     let data = $.fn.switcherResp(rest, {
                                         'isNotify': isNotify,
-                                        'notifyOpts': notifyOpts,
+                                        'notifyOpts': {
+                                            ...notifyOpts,
+                                            'areaControl': areaControl,
+                                        },
                                         'swalOpts': sweetAlertOpts,
                                         ...callbackStatus,
                                     });
@@ -521,7 +525,10 @@ $.fn.extend({
                                     if (resp_data && typeof resp_data === 'object') {
                                         $.fn.switcherResp(resp_data, {
                                             'isNotify': isNotify,
-                                            'notifyOpts': notifyOpts,
+                                            'notifyOpts': {
+                                                ...notifyOpts,
+                                                'areaControl': areaControl,
+                                            },
                                             'swalOpts': sweetAlertOpts,
                                             ...callbackStatus,
                                         });
@@ -546,13 +553,13 @@ $.fn.extend({
                                 },
                                 401: function () {
                                     if (isNotify === true) $.fn.notifyB({
-                                        'description': globeMsgAuthExpires
+                                        'description': $.fn.gettext('The session login was expired')
                                     }, 'failure');
                                     return WindowControl.redirectLogin(1000);
                                 },
                                 403: function () {
                                     if (isNotify === true) $.fn.notifyB({
-                                        'description': globeMsgHttp403
+                                        'description': $.fn.gettext("Forbidden")
                                     }, 'failure');
                                 },
                                 429: function (){
@@ -562,7 +569,7 @@ $.fn.extend({
                                 },
                                 404: function () {
                                     if (isNotify === true) $.fn.notifyB({
-                                        'description': globeMsgHttp404
+                                        'description': $.fn.gettext("Not found"),
                                     }, 'failure');
                                 }, ...statusCodeCallback,
                             },
@@ -626,6 +633,79 @@ $.fn.extend({
             return txt
         }
     },
+    serializeObject: function (){
+        let formData = {};
+
+        function addToFormData(_name, _value, override=false){
+            if (_name){
+                if (override === true){
+                    formData[_name] = _value;
+                } else {
+                    const existData = formData?.[_name] || undefined;
+                    if (existData !== undefined) {
+                        if (Array.isArray(existData)){
+                            formData[_name].push(_value);
+                        } else {
+                            formData[_name] = [existData, _value];
+                        }
+                    } else {
+                        formData[_name] = _value;
+                    }
+                }
+            }
+        }
+
+        if (this instanceof jQuery) {
+            const form$ = $(this);
+            let formArray = this.serializeArray();
+
+            formArray.forEach(function(item) {
+                const input$ = form$.find(`[name="${item.name}"]`);
+                if (!input$.hasClass('ignore-input')){
+                    const inputType = input$.attr("type");
+                    if (!item.name.startsWith("table-")){
+                        if (inputType === "checkbox") {
+                            addToFormData(item.name, true);
+                        } else if (inputType === "number") {
+                            addToFormData(item.name, item.value ? parseFloat(item.value) : null);
+                        } else if (inputType === "date" || inputType === "datetime-local") {
+                            addToFormData(item.name, item.value ? new Date(item.value).toISOString() : null);
+                        } else {
+                            addToFormData(item.name, item.value);
+                        }
+                    }
+                }
+            });
+
+            // Xử lý các checkbox chưa chọn
+            this.find('input[type="checkbox"]:not(:checked)').each(function() {
+                if (!formData.hasOwnProperty(this.name)) {
+                    addToFormData(this.name, false, true);
+                }
+            });
+
+            // Xử lý các radio button chưa chọn
+            this.find('input[type="radio"]').each(function() {
+                if (!formData.hasOwnProperty(this.name)) {
+                    addToFormData(
+                        this.name,
+                        $(`input[name="${this.name}"]:checked`).val() || null,
+                        true
+                    );
+                }
+            });
+
+            // Xử lý các select với multiple lựa chọn
+            this.find('select').not('[name^=table-]').each(function() {
+                if ($(this).attr("multiple")) {
+                    addToFormData(this.name, $(this).val() || [], true);
+                } else {
+                    addToFormData(this.name, $(this).val() || null, true);
+                }
+            });
+        }
+        return formData;
+    }
 });
 
 $(document).ready(function () {

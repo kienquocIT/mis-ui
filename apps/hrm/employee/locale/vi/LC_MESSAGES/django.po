@@ -1,0 +1,139 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "Single"
+msgstr "Độc thân"
+
+#
+msgid "Gender"
+msgstr "Giới tính"
+
+#
+msgid "Religion"
+msgstr "Tôn giáo"
+
+#
+msgid "Ethnicity"
+msgstr "Dân tộc"
+
+#
+msgid "Place of origin"
+msgstr "Nguyên quán"
+
+#
+msgid "Place of birth"
+msgstr "Nơi sinh"
+
+#
+msgid "Nationality"
+msgstr "Quốc gia"
+
+#
+msgid "Citizen ID"
+msgstr "CMND/CCCD"
+
+#
+msgid "Date of issue"
+msgstr "Ngày cấp"
+
+#
+msgid "Place of issue"
+msgstr "Nơi cấp"
+
+#
+msgid "Marital status"
+msgstr "Tình trạng hôn nhân"
+
+#
+msgid "Bank account No"
+msgstr "Số tài khoản ngân hàng"
+
+#
+msgid "Account name"
+msgstr "Tên tài khoản ngân hàng"
+
+#
+msgid "Tax code"
+msgstr "Mã số thuế"
+
+#
+msgid "Personal infomation"
+msgstr "Thông tin cá nhân"
+
+#
+msgid "Permanent address"
+msgstr "Địa chỉ thường trú"
+
+#
+msgid "Current resident"
+msgstr "Địa chỉ tạm trú"
+
+#
+msgid "Middle Name"
+msgstr "Tên đệm"
+
+#
+msgid "General Info"
+msgstr "Thông tin chung"
+
+
+#
+msgid "Engaged"
+msgstr "Đính hôn"
+
+#
+msgid "Man"
+msgstr "Nam"
+
+#
+msgid "Woman"
+msgstr "Nữ"
+
+#
+msgid "Other"
+msgstr "Khác"
+
+#
+msgid "Married"
+msgstr "Có gia đình"
+
+#
+msgid "Widowed"
+msgstr "Quả phụ"
+
+#
+msgid "Separated"
+msgstr "Ly thân"
+
+#
+msgid "Divorced"
+msgstr "Ly hôn"
+
+#
+msgid "HRM Employee info"
+msgstr "HRM Nhân viên"
+
+#
+msgid "Human resources"
+msgstr "Nguồn nhân lực"
+
+#
+msgid "Employee data"
+msgstr "Dữ liệu nhân viên"

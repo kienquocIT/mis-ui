@@ -171,14 +171,14 @@ def define_var(data):
 
 @register.simple_tag(name='priority_app')
 def priority_app(value):
-    default_value = ['opp', 'prj', 'inherit']
+    default_value = ['opp', 'process', 'prj', 'inherit']
     if value:
         try:
             default_value = []
             arr = value.split("-")
             for item in arr:
                 item = item.lower()
-                if item in ['opp', 'prj', 'inherit']:
+                if item in ['opp', 'process', 'prj', 'inherit']:
                     default_value.append(item)
             return default_value
         except Exception as err:

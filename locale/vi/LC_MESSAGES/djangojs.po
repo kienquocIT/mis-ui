@@ -18,6 +18,62 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
+msgid "Home Page"
+msgstr "Trang chủ"
+
+#
+msgid "Login page"
+msgstr "Trang đăng nhập"
+
+#
+msgid "Previous page"
+msgstr "Trang truớc"
+
+#
+msgid "Unlimited"
+msgstr "Không giới hạn"
+
+#
+msgid "The session login was expired"
+msgstr "Phiên đăng nhập đã hết hạn"
+
+#
+msgid "Failed to load resource"
+msgstr "Không tải được tài nguyên"
+
+#
+msgid "Not found"
+msgstr "Không tìm thấy"
+
+#
+msgid "Forbidden"
+msgstr "Không được phép"
+
+#
+msgid "Internal Server Errors"
+msgstr "Có lỗi xảy ra"
+
+#
+msgid "This image encountered an error during loading or does not exist"
+msgstr "Hình ảnh này gặp lỗi khi tải hoặc không tồn tại"
+
+#
+msgid "Maximum size {size}MiB"
+msgstr "Dung lượng tối đa {size}MiB"
+
+#
+msgid "Allows uploading multiple files"
+msgstr "Cho phép tải lên nhiều tệp"
+
+#
+msgid "File type not allowed for uploading"
+msgstr "Loại tệp tin không được phép"
+
+#
+msgid "It must be one of the following file types:"
+msgstr "Tệp tin phải là một trong các loại sau:"
+
+#
 msgid "This field is required"
 msgstr "Trường này là bắt buộc"
 
@@ -156,3 +212,63 @@ msgstr "Dự kiến khả dụng sau {time_sec} giây"
 #
 msgid "a few"
 msgstr "vài"
+
+#
+msgid "Stages"
+msgstr "Giai đoạn"
+
+#
+msgid "Save"
+msgstr "Lưu"
+
+#
+msgid "Title"
+msgstr "Tiêu đề"
+
+#
+msgid "Remarks"
+msgstr "Mô tả"
+
+#
+msgid "Application"
+msgstr "Ứng dụng"
+
+#
+msgid "The minimum number of documents created"
+msgstr "Số phiếu tối thiểu được tạo ra"
+
+#
+msgid "The maximum number of documents created"
+msgstr "Số phiếu tối đa được tạo ra"
+
+#
+msgid "You are being redirected to the feature creation page."
+msgstr "Bạn đang được điều hướng đến trang tạo của tính năng."
+
+#
+msgid "Redirect now"
+msgstr "Chuyển hướng ngay"
+
+#
+msgid "Number of documents created"
+msgstr "Số phiếu đã được tạo ra"
+
+#
+msgid "Number of documents approved"
+msgstr "Số phiếu đã được phê duyệt"
+
+#
+msgid "Click to create more documents"
+msgstr "Nhấn vào đây để tạo thêm phiếu"
+
+#
+msgid "Click to confirm complete"
+msgstr "nhấn vào đây để xác nhận hoàn thành"
+
+#
+msgid "Are you sure you have confirmed its completion?"
+msgstr "Bạn có chắc chắn đã xác nhận hoàn tất không?"
+
+#
+msgid "Are you sure remove it?"
+msgstr "Bạn có chắc chắn loại bỏ nó?"

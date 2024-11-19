@@ -56,8 +56,18 @@ $(function () {
         });
 
 // SUBMIT FORM
-        formSubmit.submit(function (e) {
-            e.preventDefault();
+        SetupFormSubmit.validate(formSubmit, {
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 100,
+                },
+            },
+            errorClass: 'is-invalid cl-red',
+            submitHandler: submitHandlerFunc
+        });
+
+        function submitHandlerFunc() {
             let _form = new SetupFormSubmit(formSubmit);
             let result = WorkOrderSubmitHandle.setupDataSubmit(_form);
             if (result === false) {
@@ -93,9 +103,7 @@ $(function () {
                 WorkOrderCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
             WFRTControl.callWFSubmitForm(_form);
-        });
-
-
+        }
 
     });
 });

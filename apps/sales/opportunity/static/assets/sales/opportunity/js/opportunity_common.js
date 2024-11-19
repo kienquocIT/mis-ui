@@ -430,15 +430,15 @@ class OpportunityLoadDetail {
         if (data.hasOwnProperty('opportunity_config_stage')) {
             list_stage = sortStage(data?.['opportunity_config_stage']);
             dict_stage = list_stage.reduce((obj, item) => {
-                obj[item.id] = item;
+                obj[item?.['id']] = item;
                 return obj;
             }, {});
 
             list_stage.reverse().map(function (item) {
                 ele.prepend(html);
                 let ele_first_stage = ele.find('.sub-stage').first();
-                ele_first_stage.attr('data-id', item.id);
-                ele_first_stage.find('.stage-indicator').text(item.indicator);
+                ele_first_stage.attr('data-id', item?.['id']);
+                ele_first_stage.find('.stage-indicator').text(item?.['indicator']);
                 if (item?.['is_closed_lost']) {
                     ele_first_stage.find('.dropdown').remove();
                     ele_first_stage.addClass('stage-lost')
@@ -1038,7 +1038,7 @@ class OpportunityActivity {
                         window.checklist.render()
                         $('.create-subtask, .create-checklist').addClass('hidden')
                         if (data?.['task_log_work'].length) OpportunityActivity.tabLogWork(data['task_log_work'])
-                        if (data?.['sub_task_list']) OpportunityActivity.tabSubtask(data['sub_task_list'])
+                        if (data?.['sub_task_list']) OpportunityActivity.tabSubtask(data.id)
                         if (data.attach) {
                             const fileDetail = data.attach[0]?.['files']
                             FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
@@ -1246,7 +1246,6 @@ function loadDtbOpportunityList() {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('opportunity_list')) {
-                        console.log(resp.data['opportunity_list'])
                         return resp.data['opportunity_list'] ? resp.data['opportunity_list'] : [];
                     }
                     throw Error('Call data raise errors.')
@@ -1348,6 +1347,16 @@ async function loadConfig() {
     let method = 'GET';
     let result = await callData(url, method);
     return result?.['opportunity_config'];
+}
+
+function loadConfigPromise() {
+    let url = urlEle.data('url-config');
+    let method = 'GET';
+    return callData(url, method).then(
+        result => {
+            return result?.['opportunity_config']
+        },
+    );
 }
 
 // page detail
@@ -2089,9 +2098,12 @@ function sortStage(list_stage) {
         return a.win_rate - b.win_rate;
     });
     list_result.push(object_lost);
-    if (delivery)
+    if (delivery) {
         list_result.push(delivery);
-    list_result.push(object_close);
+    }
+    // if (object_close) {
+        list_result.push(object_close);
+    // }
 
     return list_result
 }

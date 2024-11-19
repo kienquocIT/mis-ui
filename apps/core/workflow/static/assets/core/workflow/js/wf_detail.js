@@ -15,6 +15,7 @@ $(function () {
         }
         if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
         if (res.zone){
+            $('#table_workflow_zone').DataTable().destroy();
             initTableZone(res.zone);
             $('#zone-list').val(JSON.stringify(res.zone));
         }
@@ -92,7 +93,7 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         prepareDataAndRenderHTML(data);
-                        NodeLoadDataHandle.loadDetailNode(data?.['node']);
+                        NodeLoadDataHandle.loadDetail(data?.['node']);
                         // clickEditForm();
                         // UpdateFormSubmit();
                     }

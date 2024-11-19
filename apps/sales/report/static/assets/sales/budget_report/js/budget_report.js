@@ -436,7 +436,7 @@ $(document).ready(function () {
                         if (!row?.['planned']) {
                             return `<span class="text-danger rate_value_span">-</span>`
                         }
-                        return `<span class="text-primary rate_value_span">${row?.['rate_value']} %</span>`
+                        return row?.['rate_value'] === '-' ? `<span class="text-primary rate_value_span">${row?.['rate_value']}</span>` : `<span class="text-primary rate_value_span">${row?.['rate_value']} %</span>`
                     }
                 },
             ],
@@ -508,7 +508,7 @@ $(document).ready(function () {
         if (!init) {
             let dataParam = {}
             if ($month_filter.prop('checked') && $month_select.val()) {
-                dataParam['month_list'] = JSON.stringify([$month_select.val()])
+                dataParam['month_list'] = JSON.stringify([parseInt($month_select.val()) + parseInt(current_period?.['space_month'])])
             }
             else if ($quarter_filter.prop('checked') && $quarter_select.val()) {
                 dataParam['month_list'] = JSON.stringify(getQuarterMonth($quarter_select.val()))
@@ -553,7 +553,7 @@ $(document).ready(function () {
                         data['planned'] = true
                         data['actual_value'] = actual_value
                         data['difference_value'] = actual_value - plan_value
-                        data['rate_value'] = plan_value !== 0 ? parseFloat((actual_value * 100 / plan_value).toFixed(2)) : 0
+                        data['rate_value'] = plan_value !== 0 ? parseFloat((actual_value * 100 / plan_value).toFixed(2)) : '-'
                         table_data.push(data)
                     }
 

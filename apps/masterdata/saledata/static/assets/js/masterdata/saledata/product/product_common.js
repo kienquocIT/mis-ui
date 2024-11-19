@@ -1,3 +1,4 @@
+let url_script = $('#url_script')
 let titleEle = $('#title')
 let partNumberEle = $('#part-number')
 let suppliedByEle = $('#purchase-supplied-by')
@@ -22,17 +23,53 @@ let volumeEle = $('#volume');
 let weightEle = $('#weight');
 let productImageEle = $('#product-image');
 let available_notify_checkboxEle = $('#available_notify_checkbox')
-const currency_list = JSON.parse($('#currency_list').text());
+let currency_list = [];
 let currency_primary = null;
-for (let i = 0; i < currency_list.length; i++) {
-    if (currency_list[i]?.['is_primary']) {
-        currency_primary = currency_list[i].id
+let item_unit_dict = {}
+
+let ajax_currency_data = $.fn.callAjax2({
+    url: url_script.attr('data-url-currency'),
+    data: {},
+    method: 'GET'
+}).then(
+    (resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data && typeof data === 'object' && data.hasOwnProperty('currency_list')) {
+            return data?.['currency_list'];
+        }
+        return {};
+    },
+    (errs) => {
+        console.log(errs);
     }
-}
-const item_unit_dict = JSON.parse($('#id-unit-list').text()).reduce((obj, item) => {
-    obj[item.title] = item;
-    return obj;
-}, {});
+)
+let ajax_base_unit_data = $.fn.callAjax2({
+    url: url_script.attr('data-url-unit'),
+    data: {},
+    method: 'GET'
+}).then(
+    (resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data && typeof data === 'object' && data.hasOwnProperty('base_unit_list')) {
+            return data?.['base_unit_list'];
+        }
+        return {};
+    },
+    (errs) => {
+        console.log(errs);
+    }
+)
+
+Promise.all([ajax_currency_data, ajax_base_unit_data]).then(
+    (results) => {
+        currency_list = results[0];
+        item_unit_dict = results[1];
+        for (let i = 0; i < currency_list.length; i++) {
+            if (currency_list[i]?.['is_primary']) {
+                currency_primary = currency_list[i].id
+            }
+        }
+    })
 
 // for variant
 let Detail_data = null;
@@ -473,10 +510,16 @@ function loadPurchaseTaxCode(tax_list) {
 }
 
 function loadBaseItemUnit() {
-    $('#VolumeSpan').text(item_unit_dict['volume'].measure)
-    volumeEle.attr('data-id', item_unit_dict['volume'].id)
-    $('#WeightSpan').text(item_unit_dict['weight'].measure)
-    weightEle.attr('data-id', item_unit_dict['weight'].id)
+    for (let i = 0; i < item_unit_dict.length; i++) {
+        if (item_unit_dict[i]?.['title'] === 'volume') {
+            $('#VolumeSpan').text(item_unit_dict[i]?.['measure'])
+            volumeEle.attr('data-id', item_unit_dict[i]?.['id'])
+        }
+        if (item_unit_dict[i]?.['title'] === 'weight') {
+            $('#WeightSpan').text(item_unit_dict[i]?.['measure'])
+            weightEle.attr('data-id', item_unit_dict[i]?.['id'])
+        }
+    }
 }
 
 function loadPriceForChild(element_id, element_value) {

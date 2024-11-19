@@ -178,8 +178,8 @@ msgid "Reopened"
 msgstr "Mở lại"
 
 #
-msgid "Finish"
-msgstr "Hoàn thành"
+msgid "Finished"
+msgstr "Đã hoàn thành"
 
 #
 msgid "Closed"
@@ -256,3 +256,7 @@ msgstr "trong"
 #
 msgid "Project activities is empty"
 msgstr "Không có hoạt động nào"
+
+#
+msgid "Hour"
+msgstr "Giờ"

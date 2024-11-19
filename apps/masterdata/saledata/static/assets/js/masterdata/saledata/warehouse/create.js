@@ -12,28 +12,20 @@ $(document).ready(function () {
             title: {
                 required: true,
             },
-            advance_payment: {
-                required: true,
+            agency: {
+                required: function () {
+                    return $('#checkAgencyLocation').is(':checked');
+                },
             },
-            sale_code: {
-                required: true,
-            },
-            method: {
-                required: true,
-            },
-            date_created: {
-                required:true,
-            },
-            creator: {
-                required: true,
-            },
-            beneficiary: {
-                required: true,
+            full_address: {
+                required: function () {
+                    return !$('#checkDropShip').is(':checked');
+                },
             }
         },
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
-            let data = WarehouseLoadPage.getFormDataCreate();
+            let data = WarehouseLoadPage.getFormData();
             $.fn.callAjax2({
                 url: frm.dataUrl,
                 method: frm.dataMethod,
@@ -41,7 +33,7 @@ $(document).ready(function () {
             }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                    $.fn.notifyB({description: $.fn.transEle.attr('data-success')}, 'success');
                     setTimeout(() => {
                         window.location.href = frm.dataUrlRedirect;
                     }, 1000)

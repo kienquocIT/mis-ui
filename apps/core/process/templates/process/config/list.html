@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load i18n static bastion_fields %}
+
+{% block pageAction %}
+    <a href="{% url 'ProcessRuntimeListView' %}?{{ base.employee_current_data|process_runtime_to_me }}">
+        <p class="d-none">{{ base.employee_current_data }}</p>
+        <button class="btn btn-outline-primary">
+        <span>
+            <span class="no-transform">{% trans 'Runtime list of me' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-list-ul"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+    <a href="{% url 'ProcessCreate' %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <table
+            id="tbl-process-list"
+            class="table table-hover w-100 nowrap"
+            data-url="{% url 'ProcessListAPI' %}"
+            data-url-update="{% url 'ProcessUpdate' pk='__pk__' %}"
+            data-url-detail="{% url 'ProcessDetail' pk='__pk__' %}"
+            data-url-runtime="{% url 'ProcessRuntimeListView' %}"
+            data-url-employee="{% url 'EmployeeListAPI' %}"
+    >
+        <thead class="thead-primary">
+        <tr>
+            <th>#</th>
+            <th class="no-transform">{% trans 'Title' %}</th>
+            <th class="no-transform">{% trans 'Remarks' %}</th>
+            <th class="no-transform">{% trans 'Date created' %}</th>
+            <th class="no-transform">{% trans 'For Opportunity' %}</th>
+            <th class="no-transform">{% trans 'Active' %}</th>
+            <th class="no-transform">{% trans 'Creator' %}</th>
+            <th class="no-transform">{% trans 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'process/config/list.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% load i18n %}
+
+<div
+        class="modal fade" id="modalItemConfig" tabindex="-1" role="dialog" aria-labelledby="modalItemConfig"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Update block' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="inp-item-title" class="form-label required">{% trans 'Title' %}</label>
+                        <input type="text" class="form-control" id="inp-item-title" name="title" required maxlength="100" />
+                    </div>
+                    <div class="form-group">
+                        <label for="inp-item-remark" class="form-label">{% trans 'Remarks' %}</label>
+                        <input type="text" class="form-control" id="inp-item-remark" name="remark"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="inp-item-app" class="form-label required">{% trans 'Application' %}</label>
+                        <select
+                                name="application"
+                                id="inp-item-app"
+                                class="form-control"
+                                data-x-url="{% url 'TenantApplicationListAPI' %}"
+                                required
+                        ></select>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label" for="inp-bg-color">{% trans 'Background color' %}</label>
+                                <input type="color" class="ml-3" id="inp-bg-color" name="background_color"/>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label" for="inp-text-color">{% trans 'Text color' %}</label>
+                                <input type="color" class="ml-3" id="inp-text-color" name="color"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="inp-item-skip" name="skip"/>
+                        <label class="form-check-label" for="inp-item-skip">{% trans 'Allow skip' %}</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="inp-item-repeat" name="repeat"/>
+                        <label class="form-check-label" for="inp-item-repeat">{% trans 'Enable repeat' %}</label>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button
+                            type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                    >{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

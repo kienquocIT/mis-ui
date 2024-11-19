@@ -99,11 +99,11 @@ msgstr "Chọn công ty của bạn"
 
 #
 msgid "Phone"
-msgstr "Số Điện Thoại"
+msgstr "SĐT"
 
 #
 msgid "Contact to phone number"
-msgstr "Số điện thoại liên lạc"
+msgstr "SĐT liên lạc"
 
 #
 msgid "User Name"
@@ -175,7 +175,7 @@ msgid "Save"
 msgstr "Lưu"
 
 #
-msgid "Save Draft"
+msgid "Save draft"
 msgstr "Lưu nháp"
 
 #
@@ -392,11 +392,11 @@ msgstr "Email của người đại diện"
 
 #
 msgid "Phone Number"
-msgstr "Số Điện Thoại"
+msgstr "SĐT"
 
 #
 msgid "Phone number of Representative"
-msgstr "Số điện thoại của người đại diện"
+msgstr "SĐT của người đại diện"
 
 #
 msgid "Add"
@@ -1416,7 +1416,7 @@ msgstr "Chức danh"
 
 #
 msgid "Phone number"
-msgstr "Số điện thoại"
+msgstr "SĐT"
 
 #
 msgid "Email address"
@@ -1612,7 +1612,7 @@ msgstr "Báo cáo tới"
 
 #
 msgid "Address Information"
-msgstr "Thông tin liên hệ"
+msgstr "Thông tin địa chỉ"
 
 #
 msgid "Work address"
@@ -1644,7 +1644,7 @@ msgstr "Tỉnh"
 
 #
 msgid "Inventory activities"
-msgstr "Hoạt động kho hàng"
+msgstr "Các hoạt động kho"
 
 #
 msgid "Sale"
@@ -1697,10 +1697,6 @@ msgstr "Chi tiết"
 #
 msgid "Product"
 msgstr "Sản phẩm"
-
-#
-msgid "Warehouse"
-msgstr "Kho hàng"
 
 #
 msgid "Quantity"
@@ -1789,7 +1785,7 @@ msgstr "Chỉnh sửa Danh xưng"
 
 #
 msgid "Tax Category"
-msgstr "Loại thuế"
+msgstr "Danh mục thuế"
 
 #
 msgid "Selling rate"
@@ -2601,15 +2597,15 @@ msgstr "Tạo tài khoản"
 
 #
 msgid "Master Data Contact"
-msgstr "Liên hệ dùng chung"
+msgstr "Dữ liệu liên hệ dùng chung"
 
 #
 msgid "Master Data Account"
-msgstr "Tài khoản dùng chung"
+msgstr "Dữ liệu tài khoản dùng chung"
 
 #
 msgid "Master Data Product"
-msgstr "Sản phẩm dùng chung"
+msgstr "Dữ liệu sản phẩm dùng chung"
 
 #
 msgid "Product list"
@@ -2684,10 +2680,6 @@ msgid "Sale order detail"
 msgstr "Chi tiết đơn hàng"
 
 #
-msgid "WareHouse"
-msgstr "Kho Hàng"
-
-#
 msgid "Return Advance"
 msgstr "Hoàn ứng"
 
@@ -2714,10 +2706,6 @@ msgstr "Phiên đăng nhập đã hết hạn"
 #
 msgid "Login page"
 msgstr "Trang đăng nhập"
-
-#
-msgid "Internal Server Errors"
-msgstr "Đã có lỗi xảy ra"
 
 #
 msgid "Username and password are incorrect."
@@ -4100,10 +4088,6 @@ msgstr "Phân quyền"
 
 msgid "Limited"
 msgstr "Giới hạn"
-
-#
-msgid "Unlimited"
-msgstr "Không giới hạn"
 
 #
 msgid "Data of this tab will be used on 'Permission` tab after saving."
@@ -6062,7 +6046,7 @@ msgstr "Chi phí"
 
 #
 msgid "Expenses Item"
-msgstr ""
+msgstr "Chi phí"
 
 #
 msgid "Calendar"
@@ -6402,7 +6386,7 @@ msgstr "Chọn sản phẩm"
 
 #
 msgid "Warehouse is required"
-msgstr "Kho hàng là bắt buộc"
+msgstr "Kho là bắt buộc"
 
 #
 msgid "Done number is not valid value"
@@ -6566,11 +6550,11 @@ msgstr "Tuỳ chỉnh Dashboard"
 
 #
 msgid "Money display"
-msgstr "Hiển thị tiền theo:"
+msgstr "Hiển thị tiền theo"
 
 #
 msgid "Money round"
-msgstr "Làm tròn tiền:"
+msgstr "Làm tròn tiền"
 
 #
 msgid "Forecast"
@@ -6586,6 +6570,10 @@ msgstr "NV bán hàng"
 
 #
 msgid "Period"
+msgstr "Giai đoạn"
+
+#
+msgid "Accounting Period"
 msgstr "Kỳ kế toán"
 
 #
@@ -6601,7 +6589,7 @@ msgid "Period target equals total of sub period targets"
 msgstr "Mục tiêu cả kỳ bằng tổng mục tiêu các kỳ con của nó"
 
 #
-msgid "Periods"
+msgid "Accounting Periods"
 msgstr "Kỳ kế toán"
 
 #
@@ -6613,11 +6601,11 @@ msgid "Start month"
 msgstr "Tháng bắt đầu"
 
 #
-msgid "Update period"
+msgid "Update accounting period"
 msgstr "Cập nhật kỳ kế toán"
 
 #
-msgid "New period"
+msgid "New accounting period"
 msgstr "Thêm kỳ kế toán mới"
 
 #
@@ -6946,7 +6934,7 @@ msgstr "Báo cáo doanh thu chung"
 
 #
 msgid "Some Opening balance values can be wrong because last sub period have not been closed."
-msgstr "Các giá trị Opening balance có thể sai bởi vì kỳ kế toán tháng trước đó chưa được đóng."
+msgstr "Các giá trị Opening balance có thể sai bởi vì kỳ trước đó chưa được đóng."
 
 #
 msgid "Percent completed"
@@ -6974,7 +6962,7 @@ msgstr "SL đơn hàng"
 
 #
 msgid "Revenue average"
-msgstr "Doanh thu trung bình"
+msgstr "Doanh thu TB"
 
 #
 msgid "OPENING"
@@ -7290,7 +7278,7 @@ msgstr "Mã YCMH"
 
 #
 msgid "Merge same product in 1 line, convert to reference unit if there is more 1 UOM"
-msgstr "Gộp các sản phẩm giống nhau, chuyển đổi về cùng một đơn vị"
+msgstr "Gộp các sản phẩm giống nhau, chuyển đổi về cùng một đơn vị tiêu chuẩn"
 
 #
 msgid "Default all"
@@ -7301,19 +7289,19 @@ msgid "is not in stock"
 msgstr "không còn trong kho"
 
 #
-msgid "Posting periods"
+msgid "Posting accounting periods"
 msgstr "Kỳ kế toán"
 
 #
-msgid "Main period code"
+msgid "Main accounting period code"
 msgstr "Mã kỳ chính"
 
 #
-msgid "Sub period code"
+msgid "Sub accounting period code"
 msgstr "Mã kỳ phụ"
 
 #
-msgid "Period name"
+msgid "Accounting Period name"
 msgstr "Tên kỳ"
 
 #
@@ -7439,10 +7427,6 @@ msgstr "GT đơn hàng đã nhận"
 #
 msgid "Remaining value"
 msgstr "GT đơn hàng còn lại"
-
-#
-msgid "WareHouses"
-msgstr "Các kho hàng"
 
 #
 msgid "AR Invoice"
@@ -7621,7 +7605,7 @@ msgid "First month"
 msgstr "Tháng đầu kỳ"
 
 #
-msgid "Sub periods"
+msgid "Sub accounting periods"
 msgstr "Kỳ con"
 
 #
@@ -8694,7 +8678,7 @@ msgstr "Đang sản xuất"
 
 #
 msgid "All warehouse"
-msgstr "Tất cả kho hàng"
+msgstr "Tất cả kho"
 
 #
 msgid "Material/Component"
@@ -8949,12 +8933,12 @@ msgid "Select Finished goods or Services"
 msgstr "Chọn Thành phẩm hoặc Dịch vụ"
 
 #
-msgid "One collaborator actions"
-msgstr "Một cộng tác viên thao tác"
+msgid "Choose one collaborator actions"
+msgstr "Chọn một cộng tác viên thao tác"
 
 #
 msgid "Many collaborators action"
-msgstr "Nhiều cộng tác viên thao tác"
+msgstr "Một hoặc nhiều cộng tác viên cùng thao tác"
 
 #
 msgid "Config according to"
@@ -9343,3 +9327,355 @@ msgstr "Là dịch vụ"
 #
 msgid "Please select one option!"
 msgstr "Hãy chọn một tùy chọn"
+
+#
+msgid "General Price"
+msgstr "Giá general"
+
+#
+msgid "Select materials/components"
+msgstr "Chọn Vật liệu/Linh kiện"
+
+#
+msgid "Select tools"
+msgstr "Chọn Công cụ"
+
+#
+msgid "Company system settings need a Period year to match."
+msgstr "Những cấu hình hệ thống Công ty cần kết nối với một Kì kế toán."
+
+#
+msgid "You need to create current Period year before Update Company setting."
+msgstr "Bạn cần tạo Kì kế toán hiện tại trước khi cập nhập cấu hình Công ty"
+
+#
+msgid "You can see Period year list in Setting space."
+msgstr "Bạn có thể xem danh sách Kì kế toán ở Space Setting"
+
+#
+msgid "Create new Accounting Period year"
+msgstr "Tạo mới Kì kế toán"
+
+#
+msgid "Customer is required"
+msgstr "Khách hàng là bắt buộc"
+
+#
+msgid "Contact is required"
+msgstr "Liên hệ là bắt buộc"
+
+#
+msgid "Payment is required"
+msgstr "Thanh toán là bắt buộc"
+
+#
+msgid "Product is required"
+msgstr "Sản phẩm là bắt buộc"
+
+#
+msgid "First doc"
+msgstr "Phiếu đầu tiên"
+
+#
+msgid "Previous doc"
+msgstr "Phiếu trước đó"
+
+#
+msgid "Next doc"
+msgstr "Phiếu tiếp theo"
+
+#
+msgid "Last doc"
+msgstr "Phiếu cuối cùng"
+
+#
+msgid "Interest"
+msgstr "Sở thích"
+
+#
+msgid "Product Types"
+msgstr "Loại sản phẩm"
+
+#
+msgid "Product Categories"
+msgstr "Danh mục sản phẩm"
+
+#
+msgid "Unit Of Measures"
+msgstr "Đơn vị tính"
+
+#
+msgid "Unit Of Measure Groups"
+msgstr "Nhóm đơn vị tính"
+
+#
+msgid "Reference Unit"
+msgstr "Đơn vị tiêu chuẩn"
+
+#
+msgid "Tax Categories"
+msgstr "Danh mục thuế"
+
+#
+msgid "Currencies"
+msgstr "Tiền tệ"
+
+#
+msgid "Master data price"
+msgstr "Dữ liệu tiền tệ dùng chung"
+
+#
+msgid "Node configuration"
+msgstr "Cấu hình trạm"
+
+#
+msgid "Select action"
+msgstr "Chọn thao tác"
+
+#
+msgid "Actions at node"
+msgstr "Thao tác trên trạm"
+
+#
+msgid "Collaborators at node"
+msgstr "Cộng tác viên của trạm"
+
+#
+msgid "Collaborator list"
+msgstr "Danh sách cộng tác viên"
+
+#
+msgid "Exit condition"
+msgstr "Điều kiện thoát trạm"
+
+#
+msgid "Min collaborators"
+msgstr "CTV tối thiểu"
+
+#
+msgid "Jan "
+msgstr "Th.1"
+
+#
+msgid "Feb "
+msgstr "Th.2"
+
+#
+msgid "Mar "
+msgstr "Th.3"
+
+#
+msgid "Apr "
+msgstr "Th.4"
+
+#
+msgid "May "
+msgstr "Th.5"
+
+#
+msgid "Jun "
+msgstr "Th.6"
+
+#
+msgid "Jul "
+msgstr "Th.7"
+
+#
+msgid "Aug "
+msgstr "Th.8"
+
+#
+msgid "Sep "
+msgstr "Th.9"
+
+#
+msgid "Oct "
+msgstr "Th.10"
+
+#
+msgid "Nov "
+msgstr "Th.11"
+
+#
+msgid "Dec "
+msgstr "Th.12"
+
+#
+msgid "Period profit"
+msgstr "Lợi nhuận theo kỳ"
+
+#
+msgid "Accumulated profit"
+msgstr "Lợi nhuận tích luỹ"
+
+#
+msgid "This month revenue"
+msgstr "Doanh thu tháng này"
+
+#
+msgid "This month profit"
+msgstr "Lợi nhuận tháng này"
+
+#
+msgid "Time range"
+msgstr "Khoảng thời gian"
+
+#
+msgid "Bidding Name"
+msgstr "Tên thầu"
+
+#
+msgid "Bidding Date"
+msgstr "Ngày thầu"
+
+#
+msgid "Bidding Value"
+msgstr "Giá thầu"
+
+#
+msgid "Bid Bond Value"
+msgstr "Giá bảo lãnh thầu"
+
+#
+msgid "Bidding Document"
+msgstr "Hồ sơ mời thầu"
+
+#
+msgid "Joint Venture Partner"
+msgstr "Đối tác liên doanh"
+
+#
+msgid "Partner Code"
+msgstr "Mã đối tác"
+
+#
+msgid "Partner Name"
+msgstr "Tên đối tác"
+
+#
+msgid "Leader"
+msgstr "Người đứng đầu"
+
+#
+msgid "Bids"
+msgstr "Hồ sơ dự thầu"
+
+#
+msgid "Result"
+msgstr "Kết quả thầu"
+
+#
+msgid "Required Documents"
+msgstr "Tài liệu dự thầu"
+
+#
+msgid "Document Name"
+msgstr "Tên tài liệu"
+
+#
+msgid "Other Bidder"
+msgstr "Người dự thầu"
+
+#
+msgid "Won"
+msgstr "Thắng"
+
+#
+msgid "Bids result"
+msgstr "Kết quả thầu"
+
+#
+msgid "Cause of lost"
+msgstr "Nguyên nhân thua"
+
+#
+msgid "Bids withdrawal"
+msgstr "Rút thầu"
+
+#
+msgid "Higher bid price"
+msgstr "Giá cao"
+
+#
+msgid "Non-compliance"
+msgstr "Không đáp ứng điều kiện"
+
+#
+msgid "Other reasons"
+msgstr "Lí do khác"
+
+#
+msgid "Select Joint Venture Partner"
+msgstr "Chọn đối tác liên doanh"
+
+#
+msgid "Select Other Bidder"
+msgstr "Chọn người dự thầu"
+
+#
+msgid "Select required documents"
+msgstr "Chọn tài liệu cho thầu"
+
+#
+msgid "Out form"
+msgstr "Chọn một cộng tác viên thao tác"
+
+#
+msgid "In workflow"
+msgstr "Một hoặc nhiều cộng tác viên cùng thao tác"
+
+#
+msgid "Configuration"
+msgstr "Cấu hình"
+
+#
+msgid "Recurrence transaction"
+msgstr "Giao dich lặp lại"
+
+#
+msgid "Recurring order"
+msgstr "Cấu hình lặp lại"
+
+#
+msgid "Transaction template"
+msgstr "Mẫu giao dịch"
+
+#
+msgid "Set as recurring template"
+msgstr "Đặt làm mẫu lặp lại"
+
+#
+msgid "Agency/Partner Location"
+msgstr "Đại lí/Đối tác"
+
+#
+msgid "Agency"
+msgstr "Đại lí"
+
+#
+msgid "Partner"
+msgstr "Đối tác"
+
+#
+msgid "Warehouse Address"
+msgstr "Địa chỉ kho"
+
+#
+msgid "Edit Warehouse Address"
+msgstr "Sửa địa chỉ kho"
+
+#
+msgid "Click to edit"
+msgstr "Nhấn để chỉnh sửa"
+
+#
+msgid "Detail address"
+msgstr "Địa chỉ cụ thể"
+
+#
+msgid "Addition Information"
+msgstr "Thông tin bổ sung"
+
+#
+msgid "Item"
+msgstr "Danh mục"

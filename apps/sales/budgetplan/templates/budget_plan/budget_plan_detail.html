@@ -24,9 +24,6 @@
             position: sticky;
             left: 30px;
         }
-        th {
-            color: white !important;
-        }
         tr input {
             text-align: right;
         }
@@ -81,7 +78,7 @@
         </div>
         <div class="col-12 col-md-4 col-lg-4">
             <div class="form-group">
-                <label for="budget-plan-period" class="form-label required">{% trans 'Period' %}</label>
+                <label for="budget-plan-period" class="form-label required">{% trans 'Fiscal year' %}</label>
                 <select class="form-select select2" id="budget-plan-period"
                         data-url="{% url 'PeriodsConfigListAPI' %}"
                         data-method="GET"
@@ -122,7 +119,7 @@
     </div>
     <div class="row mt-5">
         <div class="col-12">
-            <ul class="nav nav-light nav-icon nav-tabs">
+            <ul class="nav nav-light nav-icon nav-pills">
                 <li class="nav-item" id="nav-item-company" hidden>
                     <a class="nav-link active" data-bs-toggle="pill" href="#tab_company">
                         <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-building"></i></span></span>

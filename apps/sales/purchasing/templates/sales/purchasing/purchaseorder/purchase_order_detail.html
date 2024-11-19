@@ -20,6 +20,12 @@
 {% endblock %}
 
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'PurchaseOrderListAPI' %}"
+        data-url-create="{% url 'PurchaseOrderCreate' %}"
+        data-url-detail="{% url 'PurchaseOrderDetail' '0' %}"
+        data-key-return="purchase_order_list"
+    ></script>
     <form
             data-url="{% url 'PurchaseOrderDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'PurchaseOrderList' %}"
@@ -516,6 +522,7 @@
         data-validate-order-actual="{% trans 'Must not less than quantity ordered' %}"
         data-valid="{% trans "Valid" %}"
         data-validate-total-payment="{% trans "Total payment must less than or equal to total before tax" %}"
+        data-required-product="{% trans "Product is required" %}"
     >
     <input
         type="text"
@@ -561,4 +568,5 @@
     <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_create.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_detail.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

@@ -4,8 +4,8 @@ __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI',
            'ProjectMemberDetailAPI', 'ProjectUpdateOrderAPI', 'ProjectTaskListAPI', 'ProjectGroupDDListAPI',
            'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectListBaselineAPI', 'ProjectBaselineDetail',
            'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI', 'ProjectExpenseListAPI',
-           'ProjectWorkList', 'ProjectActivities', 'ProjectActivitiesListAPI',
-           'ProjectCommentListAPI', 'ProjectActivitiesCommentDetail', 'ProjectCommentDetailFlowsAPI'
+           'ProjectWorkList', 'ProjectActivities', 'ProjectActivitiesListAPI', 'ProjectCommentListAPI',
+           'ProjectActivitiesCommentDetail', 'ProjectCommentDetailFlowsAPI', 'ProjectTaskList', 'ProjectTaskListAllAPI'
            ]
 
 from django.views import View
@@ -85,11 +85,16 @@ class ProjectDetail(View):
                 if item_id and emp_id and (item_id == emp_id):
                     can_close = True
                     break
+        unit_data = []
+        rep = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get({'group__code': 'labor'})
+        if rep.state:
+            unit_data = rep.result
         return {
                    'dependencies_list': DEPENDENCIES_TYPE,
                    'system_status': SYSTEM_STATUS,
                    'pk': pk,
-                   'can_close': can_close
+                   'can_close': can_close,
+                   'unit_data': unit_data,
                }, status.HTTP_200_OK
 
 
@@ -121,13 +126,18 @@ class ProjectEdit(View):
                 if item_id and emp_id and (item_id == emp_id):
                     can_close = True
                     break
+        unit_data = []
+        rep = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get({'group__code': 'labor'})
+        if rep.state:
+            unit_data = rep.result
         return {
                    'pk': pk,
                    'system_status': SYSTEM_STATUS,
                    'dependencies_list': DEPENDENCIES_TYPE,
                    'list_from_app': 'project.project.edit',
                    'employee_info': request.user.employee_current_data,
-                   'can_close': can_close
+                   'can_close': can_close,
+                   'unit_data': unit_data,
                }, status.HTTP_200_OK
 
 
@@ -359,6 +369,37 @@ class ProjectUpdateOrderAPI(APIView):
             resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class ProjectTaskList(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/project/extends/project-task-list.html',
+        breadcrumb='PROJECT_TASKS_LIST',
+        menu_active='menu_project_task_list',
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_CONFIG).get()
+        task_config = {}
+        if resp.state:
+            task_config = resp.result
+        return {
+                   'task_config': task_config,
+                   'employee_current': request.user.employee_current_data
+               }, status.HTTP_200_OK
+
+
+class ProjectTaskListAllAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        url = ApiURL.PROJECT_TASK_LIST_ALL
+        resp = ServerAPI(user=request.user, url=url).get(params)
+        return resp.auto_return(key_success='prj_task_list_all')
 
 
 class ProjectTaskListAPI(APIView):

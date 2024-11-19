@@ -28,6 +28,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'PurchaseQuotationListAPI' %}"
+        data-url-create="{% url 'PurchaseQuotationCreate' %}"
+        data-url-detail="{% url 'PurchaseQuotationDetail' '0' %}"
+        data-key-return="purchase_quotation_list"
+    ></script>
     <script id="url-script"
             data-url-tax="{% url "TaxListAPI" %}"
             data-url-product="{% url "ProductListAPI" %}"
@@ -100,7 +106,7 @@
         <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="text-primary btn btn-animated btn-icon btn-xs w-100"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Expand / Collapse' %}"><i class="fas fa-angle-double-up text-primary"></i></span></button>
         <div class="row">
             <div class="col-12">
-                <ul class="nav nav-tabs nav-icon nav-light">
+                <ul class="nav nav-pills nav-icon nav-light">
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                             <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list"></i></span></span>
@@ -195,4 +201,5 @@
 
     <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_detail.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

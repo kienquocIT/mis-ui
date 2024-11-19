@@ -2,6 +2,74 @@
 .no-transform {
     text-transform: initial !important;
 }
+.mt-1p {
+    margin-top: 1px;
+}
+.mt-2p {
+    margin-top: 2px;
+}
+.mt-3p {
+    margin-top: 3px;
+}
+.mt-4p {
+    margin-top: 4px;
+}
+.mt-5p {
+    margin-top: 5px;
+}
+.mt-01rem {
+    margin-top: 0.1rem;
+}
+.mt-02rem {
+    margin-top: 0.2rem;
+}
+.mt-03rem {
+    margin-top: 0.3rem;
+}
+.mt-04rem {
+    margin-top: 0.4rem;
+}
+.mt-05rem {
+    margin-top: 0.5rem;
+}
+
+.text-ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.text-ellipsis-multiple-1 {
+    overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+.text-ellipsis-multiple-2 {
+    overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.text-ellipsis-multiple-3 {
+    overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+.text-ellipsis-multiple-4 {
+    overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+.text-ellipsis-multiple-5 {
+    overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+}
+
 /* -- Button */
 
 /* */
@@ -328,6 +396,12 @@ div.dataTables_wrapper .dataTables_scrollBody table {
         margin-top: 10px !important;
         justify-content: center !important;
     }
+}
+
+.textFilter {
+    display: none;
+    overflow-x: auto !important;
+    overflow-y: hidden;
 }
 
 @media screen and (max-width: 768px) {
@@ -1072,8 +1146,6 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
 }
 
 .table-responsive-x-100-y-max thead tr {
-    background-color: white;
-    color: black;
     position: sticky;
     top: 0;
 }
@@ -1085,8 +1157,6 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
 }
 
 .table-responsive-x100-y35 thead tr {
-    background-color: white;
-    color: black;
     position: sticky;
     top: 0;
     z-index: 9999;
@@ -1099,8 +1169,6 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
 }
 
 .table-responsive-x100-y50 thead tr {
-    background-color: white;
-    color: black;
     position: sticky;
     top: 0;
     z-index: 9999;

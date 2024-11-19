@@ -17,160 +17,25 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'LeadListAPI' %}"
+        data-url-create="{% url 'LeadCreate' %}"
+        data-url-detail="{% url 'LeadDetail' '0' %}"
+        data-key-return="lead_list"
+    ></script>
     {{ data.stage_list | json_script:"stage_list" }}
     <script id="script-trans"
             data-trans-note="{% trans 'Note' %}"
     ></script>
     <form id="form-create-lead" data-url="{% url 'LeadListAPI' %}" data-method="POST" data-url-redirect="{% url "LeadList" %}">
-    {% csrf_token %}
-        <div class="row">
-            <div class="col-12">
-                <ul class="nav nav-light nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_main">
-                            <span class="nav-link-text"><i class="fa-regular fa-keyboard"></i>&nbsp;{% trans 'Lead create' %}</span>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab_block_main">
-                        <div class="row mt-2" style="position: relative; overflow: auto">
-                            <div class="col-12 d-flex mt-2" id="lead-stage"></div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12 col-md-12 col-lg-6">
-                                <div class="row">
-                                    <div class="col-12 col-lg-12">
-                                        <div class="form-group">
-                                            <label class="form-label" for="lead-name">{% trans "Lead name" %}</label>
-                                            <input class="form-control" id="lead-name">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label" for="contact-name">{% trans "Contact name" %}</label>
-                                            <input class="form-control" id="contact-name">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label" for="job-title">{% trans "Job title" %}</label>
-                                            <input class="form-control" id="job-title">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label" for="mobile">{% trans "Mobile" %}</label>
-                                            <input class="form-control" id="mobile">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label" for="email">{% trans "Email" %}</label>
-                                            <input class="form-control" id="email">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label" for="company-name">{% trans "Company name" %}</label>
-                                            <input class="form-control" id="company-name">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-12 col-lg-6">
-                                <div class="row">
-                                    <div class="col-12 col-lg-4">
-                                        <div class="form-group">
-                                            <label class="form-label" for="industry">{% trans "Industry" %}</label>
-                                            <select class="form-select select2" data-method="GET" data-url="{% url 'IndustryListAPI' %}" id="industry"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-4">
-                                        <div class="form-group">
-                                            <label class="form-label" for="total-employees">{% trans "Total employees" %}</label>
-                                            <select class="form-select select2" id="total-employees">
-                                                <option value=""></option>
-                                                {% for item in data.company_size %}
-                                                    <option value="{{ item.value }}">{{ item.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-4">
-                                        <div class="form-group">
-                                            <label class="form-label" for="revenue">{% trans "Revenue" %}</label>
-                                            <select class="form-select select2" id="revenue">
-                                                <option value=""></option>
-                                                {% for item in data.customer_revenue %}
-                                                    <option value="{{ item.value }}">{{ item.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-12">
-                                        <div class="form-group">
-                                            <label class="form-label" for="assign-to-sale">{% trans "Assign to sale" %}</label>
-                                            <select class="form-select select2" data-method="GET" data-url="{% url 'EmployeeListAPI' %}" id="assign-to-sale"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label" for="lead-source">{% trans "Lead source" %}</label>
-                                            <select disabled class="form-select select2" id="lead-source">
-                                                <option value="0" selected disabled>{% trans 'Manual' %}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label" for="lead-status">{% trans "Lead status" %}</label>
-                                            <select class="form-select" id="lead-status">
-                                                {% for item in data.lead_status %}
-                                                    <option value="{{ item.value }}">{{ item.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
-                                    <li class="nav-item">
-                                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
-                                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                                <div class="tab-content">
-                                    <div class="tab-pane fade show active" id="tab_line_detail">
-                                        <div class="row" style="position: relative; overflow: auto; max-height: 300px;">
-                                            <div class="col-12" id="note-area">
-                                                <textarea class="form-control lead-note mb-3" placeholder="{% trans 'Note' %} 1"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <button type="button" id="btn-add-note" class="mt-3 mb-5 btn btn-outline-primary btn-sm">
-                                                    <i class="fas fa-plus-circle"></i>
-                                                    {% trans 'Add new note' %}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% csrf_token %}
+        {% include 'sales/lead/common/stage.html' %}
+        {% include 'sales/lead/common/information.html' %}
+        {% include 'sales/lead/common/comments.html' %}
     </form>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/lead/js/lead_common.js' %}"></script>
     <script src="{% static 'assets/sales/lead/js/lead_create.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

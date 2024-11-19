@@ -15,6 +15,8 @@ function resetFormTask() {
     $('[name="parent_n"]').remove();
     window.editor.setData('')
     $('.create-task').attr('disabled', false);
+    $('.parents-block').addClass('hidden')
+
     const $attachElm = $('#assigner_attachment'), $attachElmAssignee = $('#assignee_attachment');
     $attachElm.find('.dm-uploader').dmUploader("reset")
     $attachElm.find('.dm-uploader-result-list').html('');
@@ -28,161 +30,6 @@ function resetFormTask() {
 function isValidString(inputString) {
     let pattern = /^\d+[dh]*$/;
     return pattern.test(inputString);
-}
-
-function logworkSubmit() {
-    $('#save-logtime').off().on('click', function () {
-        const startDate = $('#startDateLogTime').val()
-        const endDate = $('#endDateLogTime').val()
-        const est = $('#EstLogtime').val()
-        const taskID = $('#logtime_task_id').val()
-        if (!startDate && !endDate && !est) {
-            $.fn.notifyB({description: $('#form_valid').attr('data-logtime-valid')}, 'failure')
-            return false
-        }
-        const data = {
-            'start_date': moment(startDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-            'end_date': moment(endDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-            'time_spent': est,
-        }
-        // if has task id => log time
-        if (taskID && taskID.valid_uuid4()) {
-            data.task = taskID
-            let url = $('#url-factory').attr('data-logtime')
-            $.fn.callAjax2({
-                'url': url,
-                'method': 'POST',
-                'data': data
-            })
-                .then(
-                    (req) => {
-                        let data = $.fn.switcherResp(req);
-                        if (data?.['status'] === 200) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                        }
-                    },
-                    (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
-                )
-        } else {
-            $('[name="log_time"]').attr('value', JSON.stringify(data))
-        }
-        $('#logWorkModal').modal('hide')
-    });
-}
-
-class labelHandle {
-    deleteLabel(elm) {
-        elm.find('.tag-delete').on('click', function (e) {
-            const $taskLabelElm = $('#inputLabel')
-            e.stopPropagation();
-            const selfTxt = $(this).prev().text();
-            elm.remove();
-            let labelList = JSON.parse($taskLabelElm.val())
-            const idx = labelList.indexOf(selfTxt)
-            if (idx > -1) labelList.splice(idx, 1)
-            $taskLabelElm.attr('value', JSON.stringify(labelList))
-        })
-    }
-
-    renderLabel(list) {
-        // reset empty
-        let htmlElm = $('.label-mark')
-        htmlElm.html('')
-        for (let item of list) {
-            const labelHTML = $(`<span class="item-tag"><span>${item}</span><span class="tag-delete">x</span></span>`)
-            htmlElm.append(labelHTML)
-            this.deleteLabel(labelHTML)
-        }
-    }
-
-    // on click add label
-    addLabel() {
-        const $taskLabelElm = $('#inputLabel')
-        const _this = this
-        $('.form-tags-input-wrap .btn-add-tag').on('click', function () {
-            const $elmInputLabel = $('#inputLabelName')
-            const newTxt = $elmInputLabel.val()
-            let labelList = $taskLabelElm.attr('value')
-            if (labelList !== undefined && labelList !== '') labelList = JSON.parse(labelList)
-            else labelList = []
-            labelList.push(newTxt)
-            $taskLabelElm.attr('value', JSON.stringify(labelList))
-            const labelHTML = $(`<span class="item-tag"><span>${newTxt}</span><span class="tag-delete">x</span></span>`)
-            $('.label-mark').append(labelHTML)
-            $elmInputLabel.val('')
-            _this.deleteLabel(labelHTML)
-        })
-    }
-
-    showDropdown() {
-        $('.label-mark').off().on('click', function () {
-            const isParent = $(this).parent('.dropdown')
-            isParent.children().toggleClass('show')
-            $('input', isParent).focus()
-        });
-        $('.form-tags-input-wrap .btn-close-tag').on('click', function () {
-            $(this).parents('.dropdown').children().removeClass('show')
-        })
-    }
-
-    init() {
-        this.showDropdown()
-        this.addLabel()
-    }
-}
-
-class checklistHandle {
-    datalist = []
-
-    set setDataList(data) {
-        this.datalist = data;
-    }
-
-    render() {
-        let $elm = $('.wrap-checklist')
-        $elm.html('')
-        for (const item of this.datalist) {
-            let html = $($('.check-item-template').html())
-            // html.find
-            html.find('label').text(item.name)
-            html.find('input').prop('checked', item.done)
-            $elm.append(html)
-            html.find('label').focus()
-            this.delete(html)
-        }
-    }
-
-    delete(elm) {
-        elm.find('button').off().on('click', () => elm.remove())
-    }
-
-    get() {
-        let checklist = []
-        $('.wrap-checklist .checklist_item').each(function () {
-            checklist.push({
-                'name': $(this).find('label').text(),
-                'done': $(this).find('input').prop('checked')
-            })
-        })
-        return checklist
-    }
-
-    add() {
-        const _this = this;
-        $('.create-checklist').off().on('click', function () {
-            let html = $($('.check-item-template').html())
-            // html.find
-            $('.wrap-checklist').append(html)
-            html.find('label').focus(function () {
-                $(this).select();
-            });
-            _this.delete(html)
-        });
-    }
-
-    init() {
-        this.add()
-    }
 }
 
 $(document).ready(function () {
@@ -217,11 +64,27 @@ $(document).ready(function () {
         .then(
             (resp) => {
                 const data = $.fn.switcherResp(resp);
-                let todoItem = data[$sttElm.attr('data-keyResp')][0]
-                $('.btn-create-todo, .current-create-task').click(() => {
-                    $sttElm.attr('data-onload', JSON.stringify(todoItem))
-                    $sttElm.initSelect2()
-                })
+                let todoItem = data[$sttElm.attr('data-keyResp')][0];
+
+                let drawerEle = new Set([]);
+                $('.btn-create-todo, .current-create-task').each(function(){
+                    const idx = $(this).attr('data-drawer-target');
+                    if (idx) drawerEle.add(idx);
+                });
+
+                $(Array.from(drawerEle).join(", ")).on('drawer.show', function (){
+                    const loaded = $(this).attr('data-loaded') === '1';
+                    if (!loaded){
+                        $(this).attr('data-loaded', '1');
+                        $sttElm.attr('data-onload', JSON.stringify(todoItem));
+                        $sttElm.initSelect2();
+                    }
+                });
+
+                const create_open = $x.fn.getUrlParameter('create_open', '') === 'true';
+                if (create_open === true) {
+                    $("#drawer_task_create").trigger('drawer.show');
+                }
             })
 
     // load assigner
@@ -294,7 +157,7 @@ $(document).ready(function () {
                 },
             },
         )
-        .then(newEditor => window.editor = newEditor) // public global scope for clean purpose when reset form)
+        .then(newEditor => window.editor = newEditor) // public global scope for clean purpose when reset form
 
     // run checklist tab
     let checklist = new checklistHandle();

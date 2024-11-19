@@ -50,6 +50,7 @@ class ContractApprovalCreate(View):
             'employee_current': request.user.employee_current_data,
             'input_mapping_properties': InputMappingProperties.CONTRACT_APPROVAL_DATA_MAP,
             'form_id': 'frm_contract_create',
+            'list_from_app': 'contract.contractapproval.create',
         }
         return ctx, status.HTTP_200_OK
 
@@ -88,6 +89,7 @@ class ContractApprovalDetail(View):
     def get(self, request, pk, *args, **kwargs):
         return {
                    'data': {'doc_id': pk},
+                   'input_mapping_properties': InputMappingProperties.CONTRACT_APPROVAL_DATA_MAP,
                }, status.HTTP_200_OK
 
 
@@ -95,8 +97,8 @@ class ContractApprovalUpdate(View):
     @mask_view(
         auth_require=True,
         template='sales/contract/contract_update.html',
-        breadcrumb='menu_contract_approval_list',
-        menu_active='CONTRACT_UPDATE_PAGE',
+        menu_active='menu_contract_approval_list',
+        breadcrumb='CONTRACT_UPDATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         ctx = {
@@ -104,6 +106,7 @@ class ContractApprovalUpdate(View):
             'employee_current': request.user.employee_current_data,
             'input_mapping_properties': InputMappingProperties.CONTRACT_APPROVAL_DATA_MAP,
             'form_id': 'frm_contract_create',
+            'list_from_app': 'contract.contractapproval.edit',
 
         }
         return ctx, status.HTTP_200_OK

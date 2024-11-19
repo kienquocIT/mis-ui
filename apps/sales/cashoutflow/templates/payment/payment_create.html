@@ -30,6 +30,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'PaymentListAPI' %}"
+        data-url-create="{% url 'PaymentCreate' %}"
+        data-url-detail="{% url 'PaymentDetail' '0' %}"
+        data-key-return="payment_list"
+    ></script>
     <script id="script-trans"
             data-trans-payment-value="{% trans 'Payment value' %}"
             data-trans-converted-from-ap="{% trans 'Converted from AP' %}"
@@ -128,7 +134,8 @@
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'vendors/jquery-steps/build/jquery.steps.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>
     <script src="{% static "assets/js/payment/payment_common.js" %}"></script>
     <script src="{% static "assets/js/payment/payment_create.js" %}"></script>
-    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

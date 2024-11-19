@@ -64,6 +64,7 @@
                                 <a
                                         class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
                                         data-bs-target="#{{ item.code }}"
+                                        aria-expanded="{% if item.expanded %}true{% else %}false{% endif %}"
                                 >
                                 <span class="nav-icon-wrap">
                                     <span class="svg-icon menu-child-icon">
@@ -72,7 +73,7 @@
                                 </span>
                                     <span class="nav-link-text">{% trans item.name %}</span>
                                 </a>
-                                <ul id="{{ item.code }}" class="nav flex-column collapse  nav-children">
+                                <ul id="{{ item.code }}" class="nav flex-column collapse  nav-children {% if item.expanded %} show {% endif %}">
                                     <li class="nav-item">
                                         <ul class="nav flex-column">
                                             {% for child in item.child %}

@@ -28,7 +28,7 @@ class ReverseUrlCommon:
         return None
 
     @classmethod
-    def get_link(cls, plan, app, pk=None) -> any:
+    def get_link(cls, plan, app, pk=None, is_create=None) -> any:
         if pk in [0, '0']:
             pk = None
 
@@ -43,6 +43,10 @@ class ReverseUrlCommon:
                     try:
                         if pk:
                             return reverse(views_of_app['detail'], kwargs={views_of_app['key_pk']: pk})
+                        if is_create:
+                            if views_of_app.get('create', None):
+                                return reverse(views_of_app['create'])
+                            return None
                         return reverse(views_of_app['list'])
                     except NoReverseMatch as _err:
                         pass
@@ -54,9 +58,10 @@ class ReverseUrlCommon:
             return cls.get_link(plan=APP_ID_MAP_PLAN_APP[app_id]['plan'], app=APP_ID_MAP_PLAN_APP[app_id]['app'], pk=pk)
         return None
 
-    def __init__(self, list_view_name, detail_view_name, key_pk=None):
+    def __init__(self, list_view_name, detail_view_name, create_view_name=None, key_pk=None):
         self.list_view_name = list_view_name
         self.detail_view_name = detail_view_name
+        self.create_view_name = create_view_name
         self.key_pk = key_pk if key_pk else 'pk'
 
     @property
@@ -64,6 +69,7 @@ class ReverseUrlCommon:
         return {
             'list': self.list_view_name,
             'detail': self.detail_view_name,
+            'create': self.create_view_name,
             'key_pk': self.key_pk
         }
 
@@ -88,32 +94,48 @@ PLAN_APP_OF_SALE = {
         ).data,
         'opportunitycall': ReverseUrlCommon(
             list_view_name='OpportunityCallLogList', detail_view_name=None,
+            create_view_name='OpportunityCallLogList',
         ).data,
         'opportunityemail': ReverseUrlCommon(
-            list_view_name='OpportunityEmailList', detail_view_name=None,
+            list_view_name='OpportunityEmailList',
+            detail_view_name=None,
+            create_view_name='OpportunityEmailList',
         ).data,
         'meetingwithcustomer': ReverseUrlCommon(
-            list_view_name='OpportunityMeetingList', detail_view_name=None,
+            list_view_name='OpportunityMeetingList',
+            detail_view_name=None,
+            create_view_name='OpportunityMeetingList',
         ).data,
     },
     'task': {
-        # Task.OpportunityTask not has page detail!
-        # 'opportunitytask': ReverseUrlCommon(
-        #     list_view_name='OpportunityTaskList', detail_view_name='OpportunityTaskDetailAPI'
-        # ).data,
+        'opportunitytask': ReverseUrlCommon(
+            list_view_name='OpportunityTaskList',
+            detail_view_name=None,
+            create_view_name='OpportunityTaskList',
+        ).data,
     },
     'quotation': {
-        'quotation': ReverseUrlCommon(list_view_name='QuotationList', detail_view_name='QuotationDetail').data,
+        'quotation': ReverseUrlCommon(
+            list_view_name='QuotationList',
+            detail_view_name='QuotationDetail',
+            create_view_name='QuotationCreate',
+        ).data,
     },
     'saleorder': {
-        'saleorder': ReverseUrlCommon(list_view_name='SaleOrderList', detail_view_name='SaleOrderDetail').data,
+        'saleorder': ReverseUrlCommon(
+            list_view_name='SaleOrderList',
+            detail_view_name='SaleOrderDetail',
+            create_view_name='SaleOrderCreate',
+        ).data,
     },
     'delivery': {
         'orderpickingsub': ReverseUrlCommon(
-            list_view_name='OrderDeliveryList', detail_view_name='OrderDeliveryDetail'
+            list_view_name='OrderPickingList', detail_view_name='OrderPickingDetail',
         ).data,
         'orderdeliverysub': ReverseUrlCommon(
-            list_view_name='OrderPickingList', detail_view_name='OrderPickingDetail',
+            list_view_name='OrderDeliveryList',
+            detail_view_name='OrderDeliveryDetail',
+            create_view_name='OrderDeliveryCreate',
         ).data,
     },
     'promotion': {
@@ -121,18 +143,26 @@ PLAN_APP_OF_SALE = {
     },
     'cashoutflow': {
         'advancepayment': ReverseUrlCommon(
-            list_view_name='AdvancePaymentList', detail_view_name='AdvancePaymentDetail'
+            list_view_name='AdvancePaymentList',
+            detail_view_name='AdvancePaymentDetail',
+            create_view_name='AdvancePaymentCreate',
         ).data,
         'payment': ReverseUrlCommon(
-            list_view_name='PaymentList', detail_view_name='PaymentDetail',
+            list_view_name='PaymentList',
+            detail_view_name='PaymentDetail',
+            create_view_name='PaymentCreate',
         ).data,
         'returnadvance': ReverseUrlCommon(
-            list_view_name='ReturnAdvanceList', detail_view_name='ReturnAdvanceDetail',
+            list_view_name='ReturnAdvanceList',
+            detail_view_name='ReturnAdvanceDetail',
+            create_view_name='ReturnAdvanceCreate',
         ).data,
     },
     'contract': {
-        'contract': ReverseUrlCommon(
-            list_view_name='ContractApprovalList', detail_view_name='ContractApprovalDetail'
+        'contractapproval': ReverseUrlCommon(
+            list_view_name='ContractApprovalList',
+            detail_view_name='ContractApprovalDetail',
+            create_view_name='ContractApprovalCreate',
         ).data,
     },
     'distributionplan': {

@@ -20,6 +20,12 @@
 {% endblock %}
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'GoodsRegistrationListAPI' %}"
+        data-url-create="{% url 'GoodsRegistrationList' %}"
+        data-url-detail="{% url 'GoodsRegistrationDetail' '0' %}"
+        data-key-return="goods_registration_list"
+    ></script>
     <script id="script-url"
             data-url-gre-item-sub-list="{% url 'GReItemListAPI' %}"
             data-url-gre-item-available-quantity="{% url 'GReItemAvailableQuantityAPI' %}"
@@ -282,4 +288,5 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_registration/goods_registration_common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_registration/goods_registration_detail.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

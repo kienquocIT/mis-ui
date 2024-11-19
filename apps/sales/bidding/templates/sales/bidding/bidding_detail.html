@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'BiddingUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon"><i class="fa-regular fa-pen-to-square"></i></span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    {% include 'printer/print.html' %}
+    <form
+            data-url="{% url 'BiddingDetailAPI' pk=pk%}"
+            data-url-redirect="{% url 'BiddingList' %}"
+            data-method="POST"
+            id="frm_bidding_create"
+            method="post"
+    >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 text-right">
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans 'Print' %}">
+                        <button type="button" class="btn btn-outline-light btn-sm" id="print-document"><i class="fas fa-print"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% include 'sales/bidding/common/information.html' %}
+    </form>
+
+    <!-- comments -->
+
+    <div class="p-3 mt-5">
+        <h6>{% trans 'Comments' %}</h6>
+        <button class="btn btn-primary" id="btn-show-comment">{% trans 'Load comments' %}</button>
+        <div id="comment-group" style="display:none;">
+            {% include 'comment/list.html' %}
+        </div>
+    </div>
+
+
+    <!-- modal !-->
+    {% include 'sales/bidding/common/modal.html' %}
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input
+            type="text"
+            id="data-init-customer"
+            data-url="{% url "AccountForBiddingListAPI" %}"
+            data-method="GET"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
+    <script src="{% static 'assets/sales/bidding/js/bidding_common.js' %}"></script>
+    <script src="{% static 'assets/sales/bidding/js/bidding_detail.js' %}"></script>
+    <script src="{% static 'printer/print.js' %}"></script>
+    <script>
+        $(document).ready(function (){
+            $('#btn-show-comment').on('click', function (){
+                $(this).fadeOut({
+                    duration: 'fast',
+                    always: function (){
+                        $(this).remove();
+                        let appIdx = "b9650500-aba7-44e3-b6e0-2542622702a3";  // Application: Quotation - Quotation
+                        let docIdx = $.fn.getPkDetail();
+                        if (docIdx){
+                            let modalEle = $('#comment-group');
+                            new $x.cls.cmt(modalEle.find('.comment-group'), {'btn_goto_enabled': false}).init(docIdx, appIdx)
+                            modalEle.fadeIn('fast');
+                        } else {
+                            $.fn.notifyB({
+                                'description': `{% trans 'Document is not selected.' %}`,
+                            }, 'failure');
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#print-document').on('click', function () {
+                PrintTinymceControl.open_modal();
+            });
+        })
+    </script>
+{% endblock %}

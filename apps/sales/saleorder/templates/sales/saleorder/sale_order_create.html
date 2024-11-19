@@ -851,6 +851,7 @@
         data-md-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
         data-md-bom="{% url 'BOMOrderListAPI' %}"
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
+        data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
     >
 
     <input
@@ -961,6 +962,7 @@
     {{ data.payment_date_type|json_script:'payment_date_type' }}
     {{ data.employee_current|json_script:'employee_current' }}
     {{ data.opportunity|json_script:'init_opp' }}
+    {{ data.recurrence_template_id|json_script:'recurrence_template_id' }}
 {% endblock %}
 
 {% block jsFooter %}

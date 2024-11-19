@@ -2209,15 +2209,12 @@ class WFRTControl {
                 showCancelButton: true,
                 cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 didOpen: () => {
-                    // Add event listener after the modal is shown
-                    let checkboxes = document.querySelectorAll('.checkbox-save-status');
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.addEventListener('click', function () {
-                            let checked = checkbox.checked;
-                            for (let eleCheck of checkboxes) {
-                                eleCheck.checked = false;
-                            }
-                            checkbox.checked = checked;
+                    // Add event listener for click events on the group
+                    document.querySelectorAll('.group-checkbox-save-status').forEach((checkboxGr) => {
+                        checkboxGr.addEventListener('click', function () {
+                            // Mark the child radio button as checked
+                            const radio = this.querySelector('.checkbox-save-status');
+                            radio.checked = true; // Automatically unchecks other radios in the group
                         });
                     });
                 }
@@ -2550,9 +2547,9 @@ class WFRTControl {
             if (status === 0) {
                 checked = "checked";
             }
-            htmlCustom += `<div class="d-flex mb-5 border-bottom">
+            htmlCustom += `<div class="d-flex mb-5 border-bottom group-checkbox-save-status">
                                 <div class="form-check form-check-lg d-flex align-items-center">
-                                    <input type="radio" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}" ${checked}>
+                                    <input type="radio" name="save-status" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}" ${checked}>
                                     <label class="form-check-label" for="save-type-${status}">${statusMapText[status]}</label>
                                 </div>
                             </div>`;

@@ -150,7 +150,6 @@ $(document).ready(function () {
 
                 let placeGetData = $('#url-factory');
                 let urlWorkflowDetail = placeGetData.attr('data-url-workflow-detail');
-                let urlWorkflowUpdate = placeGetData.attr('data-url-workflow-update');
                 $('#' + idTbl).DataTableDefault({
                     "url-detail": urlWorkflowDetail,
                     ajax: {
@@ -167,43 +166,61 @@ $(document).ready(function () {
                         {
                             title: '#',
                             render: (data, type, row, meta) => {
-                                return '';
+                                return `<span class="table-row-order">${(meta.row + 1)}</span>`
                             }
-                        }, {
+                        },
+                        {
                             title: $transFact.attr('data-title'),
-                            data: 'title',
-                            render: (data, type, row, meta) => {
-                                return `${data}`;
+                            render: (data, type, row) => {
+                                return `${row?.['title']}`;
                             }
-                        }, {
-                            title: $transFact.attr('data-date-applied'),
-                            data: 'date_applied',
-                            render: (data, type, row, meta) => {
-                                let dateApplied = '--';
-                                if (data) {
-                                    dateApplied = moment(data).format('DD/MM/YYYY');
+                        },
+                        {
+                            title: $transFact.attr('data-transaction-type'),
+                            render: () => {
+                                return rowData?.['title'];
+                            }
+                        },
+                        {
+                            title: $transFact.attr('data-beneficiary'),
+                            render: (data, type, row) => {
+                                return `${row?.['employee_inherit']?.['full_name']}`;
+                            }
+                        },
+                        {
+                            title: $transFact.attr('data-date'),
+                            render: (data, type, row) => {
+                                if (row?.['date_created']) {
+                                    return moment(row?.['date_created'],
+                                        'YYYY-MM-DD').format('DD/MM/YYYY');
                                 }
-                                return dateApplied;
+                                return ``;
                             }
-                        }, {
-                            title: $transFact.attr('data-active'),
-                            data: 'is_active',
-                            render: (data, type, row, meta) => {
-                                if (data === true) return `<span class="badge-status"><span class="badge badge-info badge-indicator"></span><span class="badge-label">Working</span></span>`;
-                                return `<span class="badge-status"><span class="badge badge-secondary badge-indicator"></span><span class="badge-label">Deactivate</span></span>`;
+                        },
+                        {
+                            title: $transFact.attr('data-status'),
+                            render: (data, type, row) => {
+                                if (row?.['status'] === true) {
+                                    return $transFact.attr('data-linked');
+                                }
+                                return $transFact.attr('data-not-linked');
                             }
-                        }, {
-                            title: $transFact.attr('data-wait-complete'), // data: 'is_active',
-                            render: (data, type, row, meta) => {
-                                return `<span class="badge badge-soft-warning">0</span>`;
-                            }
-                        }, {
+                        },
+                        {
                             title: $transFact.attr('data-action'),
-                            render: (data, type, row, meta) => {
-                                let btnEdit = `<a href="${SetupFormSubmit.getUrlDetailWithID(urlWorkflowUpdate, row.id)}"><button class="btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-edit"></i></span></button></a>`
-                                let btnDelete = `<button class="btn-delete-wf btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
-                                let btnSend = `<button class="btn-change-wf-doc btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-paper-plane"></i></span></button>`
-                                return btnEdit + btnDelete + btnSend;
+                            render: (data, type, row) => {
+                                let body = `${$transFact.attr('data-no-data')}`;
+                                if (row?.['recurrence_list'].length > 0) {
+                                    body = ``;
+                                    for (let recurrence of row?.['recurrence_list']) {
+                                        let link = $urls.attr('data-recurrence-detail').format_url_with_uuid(recurrence?.['id']);
+                                        body += `<a class="dropdown-item" href="${link}">${recurrence?.['title']}</a>`;
+                                    }
+                                }
+                                return `<div class="dropdown">
+                                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-edit"></i></span></button>
+                                            <div role="menu" class="dropdown-menu">${body}</div>
+                                        </div>`;
                             }
                         },
                     ],
@@ -211,136 +228,5 @@ $(document).ready(function () {
             }
             trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
         }
-    });
-
-    // EVENT IN LINE WORKFLOW LIST
-    $(document).on('click', '.btn-delete-wf', function (event) {
-        event.preventDefault();
-        let rowData = DTBControl.getRowData($(this));
-        alert('Delete WF: ' + rowData?.['title']);
-    });
-    $(document).on('click', '.btn-change-wf-doc', function (event) {
-        event.preventDefault();
-        let rowData = DTBControl.getRowData($(this));
-        alert('Change WF of doc: ' + rowData?.['title']);
-    });
-
-    // EVENT CLICK TO COLLAPSE IN LINE WORKFLOW LIST
-    //      ACTION: INSERT RUNTIME OBJ LIST TO NEXT ROW (OF WORKFLOW LIST)
-    $(document).on('click', '.btn-collapse-doc-wf', function (event) {
-        event.preventDefault();
-        let idTbl = UtilControl.generateRandomString(12);
-        let trEle = $(this).closest('tr');
-        let iconEle = $(this).find('.icon-collapse-doc-wf');
-        iconEle.toggleClass('fa-caret-right').toggleClass('fa-caret-down');
-
-        if (iconEle.hasClass('fa-caret-right')) {
-            trEle.removeClass('bg-grey-light-5');
-            iconEle.removeClass('text-dark').addClass('text-secondary');
-            trEle.next().find('.child-workflow-group').slideToggle({
-                complete: function () {
-                    trEle.next().addClass('hidden');
-                }
-            });
-        }
-
-        if (iconEle.hasClass('fa-caret-down')) {
-            trEle.addClass('bg-grey-light-5');
-            iconEle.removeClass('text-secondary').addClass('text-dark');
-
-            if (!trEle.next().hasClass('child-workflow-list')) {
-                let dtlSub = `<table id="${idTbl}" class="table nowrap w-100 mb-5"><thead></thead><tbody></tbody></table>`
-                $(this).closest('tr').after(
-                    `<tr class="child-workflow-list"><td colspan="6"><div class="child-workflow-group pt-3 pb-3 ml-3 pl-5 pr-5 hidden-simple">${dtlSub}</div></td></tr>`
-                )
-
-                let rowData = DTBControl.getRowData($(this));
-                let urlRuntimeList = $('#url-factory').attr('data-url-workflow-runtime-list');
-                $('#' + idTbl).DataTableDefault({
-                    ajax: {
-                        url: SetupFormSubmit.getUrlDetailWithID(urlRuntimeList, rowData.id),
-                        type: 'GET',
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                console.log(data)
-                                return resp.data['runtime_list'] ? resp.data['runtime_list'] : [];
-                            }
-                            return [];
-                        },
-                    },
-                    columns: [
-                        {
-                            title: "#",
-                            render: () => {
-                                return '';
-                            }
-                        },
-                        {
-                            data: 'doc_title',
-                            title: "Title",
-                            render: (data, type, row) => {
-                                return data ? data : '';
-                            }
-                        },
-                        {
-                            data: 'doc_employee_created',
-                            title: "Creator",
-                            render: (data, type, row) => {
-                                if (data && $.fn.hasOwnProperties(data, ['id', 'full_name', 'is_active'])) {
-                                    if (data['is_active'] === true) return data['full_name'] + ` <span class="badge badge-success badge-indicator"></span>`;
-                                    return data['full_name'] + `<span class="badge badge-secondary badge-indicator"></span>`;
-                                }
-                                return '_';
-                            }
-                        },
-                        {
-                            data: "date_created",
-                            title: "Posting date",
-                            render: (data, type, row) => {
-                                return $x.fn.displayRelativeTime(data);
-                            }
-                        },
-                        {
-                            data: 'stage_currents',
-                            title: "Node currently",
-                            render: (data, type, row) => {
-                                if (typeof data === 'object' && $.fn.hasOwnProperties(data, ['id', 'title', 'code'])) {
-                                    if (data['code']) {
-                                        return `<span class="badge badge-warning badge-outline">${data['code']}</span>`;
-                                    } else {
-                                        return `<span class="badge badge-success badge-outline">${data['title']}</span>`;
-                                    }
-                                }
-                                return '_';
-                            }
-                        },
-                        {
-                            data: "state",
-                            title: "Status",
-                            render: (data, type, row, meta) => {
-                                if (data && Number.isFinite(data)) {
-                                    if (txt_state_wf_doc.hasOwnProperty(data)) {
-                                        return `<span class="badge ${txt_state_wf_doc[data][1]}">${txt_state_wf_doc[data][0]}</span>`;
-                                    }
-                                }
-                                return `<span class="badge badge-soft-success">OK</span>`;
-                            }
-                        },
-                        {
-                            title: "Action",
-                            render: (data, type, row) => {
-                                if (!(row.state === 2 || row.state === 3 || row.status === 1)) {
-                                    return `<button class="btn btn-icon btn-rounded bg-dark-hover mr-1"><span class="icon"><i class="far fa-paper-plane"></i></span></button>`;
-                                }
-                                return '_';
-                            }
-                        },
-                    ]
-                });
-            }
-            trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
-        }
-
     });
 });

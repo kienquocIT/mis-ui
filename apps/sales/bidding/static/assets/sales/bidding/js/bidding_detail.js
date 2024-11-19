@@ -40,7 +40,6 @@ $(document).ready(function () {
              let dataStore = JSON.parse(this.getAttribute('data-store'));
             BiddingLoadDataHandle.$remark.val(dataStore?.['remark']);
             BiddingLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
-            console.log(dataStore?.['attachment_data'])
              let ids = [];
             for (let fileData of dataStore?.['attachment_data']) {
                 ids.push(fileData?.['attachment']?.['id']);
@@ -190,7 +189,6 @@ $(document).ready(function () {
     $('#btn-save-result').on('click', function () {
         let dataSubmit = {}
         dataSubmit = BiddingSubmitHandle.setupDataResult()
-        console.log(dataSubmit)
         let submitFields = [
             'id',
             'cause_of_lost',
@@ -227,7 +225,6 @@ $(document).ready(function () {
     })
 
     function loadUIBidResult(empCurrent, sysStatus) {
-        console.log($urlBidResultConfig)
         $.fn.callAjax2({
             url: $urlBidResultConfig,
             method: 'GET',

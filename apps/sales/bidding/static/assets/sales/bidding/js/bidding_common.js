@@ -180,7 +180,6 @@ class BiddingLoadDataHandle {
             }
             order += 1;
         }
-        console.log(result)
         return result;
     };
 
@@ -335,7 +334,6 @@ class BiddingDataTableHandle {
                 data: data,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    console.log(data)
                     if (data && resp.data.hasOwnProperty('account_for_bidding_list')) {
                         return resp.data['account_for_bidding_list'] ? resp.data['account_for_bidding_list'] : []
                     }

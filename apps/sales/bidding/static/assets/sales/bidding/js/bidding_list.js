@@ -3,7 +3,6 @@ $(document).ready(function () {
             let $table = $('#table_bidding_list')
             let transScript = $('#trans-script')
             let urlDetail = $table.attr('data-url-detail');
-            console.log(urlDetail)
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 useDataServer: true,

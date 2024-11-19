@@ -223,13 +223,10 @@ class JSPlumbsHandle {
                                         <div class="control ${clsSys} ${bg}" id="drag-${item?.['order']}" data-drag="${item?.['order']}" title="${item?.['title']}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
                                             <p class="drag-title" contentEditable="true" title="${item?.['remark']}">${item?.['title']}</p>
                                         </div>
-                                        <div class="dropdown-menu w-160p">
-                                            <div class="dropdown-item">
-                                                <button type="button" class="btn btn-outline-blue btn-wth-icon btn-block config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><span><span class="icon"><span class="feather-icon"><i class="fas fa-cog"></i></span></span><span class="btn-text">${$trans.attr('data-config')}</span></span></button>
-                                            </div>
-                                            <div class="dropdown-item">
-                                                <button type="button" class="btn btn-outline-danger btn-wth-icon btn-block del-node"><span><span class="icon"><span class="feather-icon"><i class="fas fa-trash-alt"></i></span></span><span class="btn-text">${$trans.attr('data-delete')}</span></span></button>
-                                            </div>
+                                        <div class="dropdown-menu dropdown-bordered w-160p">
+                                            <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${$trans.attr('data-config')}</span></a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${$trans.attr('data-delete')}</span></a>
                                         </div>
                                     </div>`;
             }

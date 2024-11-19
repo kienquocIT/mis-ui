@@ -121,7 +121,8 @@ INSTALLED_APPS = \
     ] + [  # HRM
         'apps.hrm.employee'
     ] + [
-        'apps.accounting.accountingsettings'
+        'apps.accounting.accountingsettings',
+        'apps.accounting.journalentry'
     ]
 
 INSTALLED_APPS += [

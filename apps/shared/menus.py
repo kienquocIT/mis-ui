@@ -789,6 +789,9 @@ class MenusFinancials:
             ),
         ],
     )
+    JOURNAL_ENTRY = MenuCommon(
+        name='Journal entry', code='menu_journal_entry_list', view_name='JournalEntryList', icon='<i class="bi bi-journal-text"></i>',
+    )
 
 
 # Space Setup
@@ -888,6 +891,7 @@ class SpaceItem:
             menus=[
                 MenusFinancials.HOME,
                 MenusFinancials.ACCOUNTING_SETTING,
+                MenusFinancials.JOURNAL_ENTRY
             ]
         ),
         'forms': SpaceCommon(

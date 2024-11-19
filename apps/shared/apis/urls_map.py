@@ -768,3 +768,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     CHART_OF_ACCOUNTS_LIST = StringUrl('accounting-setting/chart-of-accounts')
     CHART_OF_ACCOUNTS_DETAIL = StringUrl('accounting-setting/chart-of-accounts/{pk}')
     DEFAULT_ACCOUNT_DEFINITION_LIST = StringUrl('accounting-setting/default-account-definition')
+    JOURNAL_ENTRY_LIST = StringUrl('journal-entry')

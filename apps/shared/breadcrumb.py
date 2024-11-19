@@ -425,6 +425,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Accounting
     CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of accounts'), 'ChartOfAccountsList')
     DEFAULT_ACCOUNT_DEFINITION_LIST_PAGE = BreadcrumbChildren(_('Default account definition'), 'DefaultAccountDefinitionList')
+    JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry'), 'JournalEntryList')
 
 
 class BreadcrumbView:
@@ -1122,4 +1123,7 @@ class BreadcrumbView:
     ]
     DEFAULT_ACCOUNT_DEFINITION_LIST_PAGE = [
         BreadcrumbItem.DEFAULT_ACCOUNT_DEFINITION_LIST_PAGE
+    ]
+    JOURNAL_ENTRY_LIST_PAGE = [
+        BreadcrumbItem.JOURNAL_ENTRY_LIST_PAGE
     ]

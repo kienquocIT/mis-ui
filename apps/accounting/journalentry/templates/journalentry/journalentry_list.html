@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Chart of accounts' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{#    <a href="{% url "AdvancePaymentCreate" %}">#}
+{#        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">#}
+{#            <span>#}
+{#                <span>{% trans 'Add' %}</span>#}
+{#                <span class="icon">#}
+{#                    <i class="fa-solid fa-plus"></i>#}
+{#                </span>#}
+{#            </span>#}
+{#        </button>#}
+{#    </a>#}
+{% endblock %}
+{% block pageContent %}
+    <script id="trans-script"
+            data-trans-all="{% trans 'Default all' %}"
+    ></script>
+    <script id="url-script"
+            data-url-journal-entry-list="{% url 'JournalEntryListAPI' %}"
+    ></script>
+
+    {% include 'journalentry/common/information.html' %}
+{% endblock %}
+{% block modalData %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/journalentry/journalentry_list.js' %}"></script>
+{% endblock %}

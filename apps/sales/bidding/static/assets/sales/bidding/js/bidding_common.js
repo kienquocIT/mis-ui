@@ -929,7 +929,7 @@ class BiddingSubmitHandle {
         }
         _form.dataForm['bid_value'] = $('#bid-value').attr('value')
         _form.dataForm['bid_bond_value'] = $('#bid-bond-value').attr('value')
-        if(! _form.dataForm['security_type']){
+        if(! _form.dataForm['security_type'] || ! _form.dataForm['bid_bond_value']){
             _form.dataForm['security_type'] = 0
         }
         _form.dataForm['opportunity'] = _form.dataForm['opportunity_id']

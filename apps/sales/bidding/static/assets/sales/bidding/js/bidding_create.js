@@ -262,8 +262,8 @@ $(document).ready(function () {
             let _form = new SetupFormSubmit(formSubmit);
             BiddingSubmitHandle.setupDataSubmit(_form)
             const bidBondValue = $("#bid-bond-value").attr('value');
-            const isSecurityChecked = $("input[name='security_type']:checked").length === 0
-            if (bidBondValue && isSecurityChecked){
+            const isSecurityChecked = $("input[name='security_type']:checked").length !== 0
+            if (bidBondValue && !isSecurityChecked){
                 $.fn.notifyB({description: "Please select a security type if Bid Bond Value has data."}, 'failure');
                 return
             }

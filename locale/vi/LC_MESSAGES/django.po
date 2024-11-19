@@ -9679,3 +9679,11 @@ msgstr "Thông tin bổ sung"
 #
 msgid "Item"
 msgstr "Danh mục"
+
+#
+msgid "Linked"
+msgstr "Liên kết"
+
+#
+msgid "Not linked"
+msgstr "Không liên kết"

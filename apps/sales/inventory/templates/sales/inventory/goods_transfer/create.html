@@ -38,13 +38,13 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    {{ data.company_current_data | json_script:"company_current_data" }}
     <script hidden id="direct-btn-group-url"
         data-url-list-api="{% url 'GoodsTransferListAPI' %}"
         data-url-create="{% url 'GoodsTransferCreate' %}"
         data-url-detail="{% url 'GoodsTransferDetail' '0' %}"
         data-key-return="goods_transfer_list"
     ></script>
+    {{ data.company_current_data | json_script:"company_current_data" }}
     <script id="trans-script"
             data-trans-product-list="{% trans 'Select product' %}"
             data-trans-out-warehouse-list="{% trans 'Select out warehouse' %}"

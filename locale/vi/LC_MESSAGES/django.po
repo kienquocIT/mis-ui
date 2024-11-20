@@ -9703,3 +9703,7 @@ msgstr "Kho"
 #
 msgid "State"
 msgstr "Trạng thái"
+
+#
+msgid "Collaborator must not be greater than 1 because the previous link node is in workflow"
+msgstr "Số lượng CTV không được lớn hơn 1 vì cấu hình trạm liên kết trước là in workflow"

@@ -936,11 +936,17 @@ class NodeStoreHandle {
                                 NodeLoadDataHandle.dataNode[i]['actions'] = data?.['actions'];
                             }
                             if (NodeLoadDataHandle.dataNode[i]?.['order'] > 1) {  // custom node
+                                // check collab count
+                                let checkCollab = NodeStoreHandle.storeCheckCollab(data, NodeLoadDataHandle.dataNode[i]?.['order']);
+                                if (checkCollab === false) {
+                                    $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-check-collab-count')}, 'failure');
+                                    return false;
+                                }
+
                                 let isEditTitle = false;
                                 if (NodeLoadDataHandle.dataNode[i]?.['title'] !== data?.['title']) {
                                     isEditTitle = true;
                                 }
-
                                 NodeLoadDataHandle.dataNode[i] = data;
                                 NodeLoadDataHandle.dataNode[i]['order'] = parseInt(NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-order'));
 
@@ -1049,6 +1055,29 @@ class NodeStoreHandle {
         }
         dataStore['is_system'] = false;
         return dataStore;
+    };
+
+    static storeCheckCollab(data, orderCheck) {
+        if (data?.['option_collaborator'] === 1 && data?.['collab_out_form']?.['employee_list']) {
+            if (data?.['collab_out_form']?.['employee_list'].length > 1) {
+                let $eleAssociate = $('#node-associate');
+                if ($eleAssociate.val()) {
+                    let associate = JSON.parse($eleAssociate.val());
+                    for (let key in associate) {
+                        if (associate[key]?.['node_out'] === orderCheck) {
+                            for (let dataNode of NodeLoadDataHandle.dataNode) {
+                                if (dataNode?.['order'] === associate[key]?.['node_in']) {
+                                    if (dataNode?.['option_collaborator'] === 2) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     };
 }
 

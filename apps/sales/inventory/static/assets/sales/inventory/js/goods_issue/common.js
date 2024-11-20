@@ -1,5 +1,6 @@
 const script_url = $('#script-url')
 const script_trans = $('#script-trans')
+const gis_type = $('#type')
 const IAEle = $('#box-select-ia')
 const POEle = $('#box-select-production-order')
 const IAItemTable = $('#dtbProductIA')
@@ -14,159 +15,116 @@ const done_none = $('#select-detail-table-none-done')
 const done_sn = $('#select-detail-table-sn-done')
 const done_lot = $('#select-detail-table-lot-done')
 const detail_modal = $('#select-detail-modal')
+const btn_select_ia = $('#btn-select-ia')
+const btn_accept_select_ia = $('#btn-accept-select-ia')
+const ia_table = $('#select-ia-table')
+const select_ia_modal = $('#select-ia-modal')
+const btn_select_powo = $('#btn-select-powo')
+const btn_accept_select_powo = $('#btn-accept-select-powo')
+const powo_table = $('#select-powo-table')
+const select_powo_modal = $('#select-powo-modal')
 let DetailBtn = null
 let IS_DETAIL_PAGE = false
 let IS_DONE_GIS = false
 
 class GISLoadPage {
-    static LoadIA(data) {
-        if (data) {
-            IAEle.prop('disabled', true)
-        }
-        IAEle.initSelect2({
-            data: data,
+    static LoadIA() {
+        let selected_ia = IAEle.attr('data-id')
+        ia_table.DataTable().clear().destroy()
+        ia_table.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            styleDom: 'hide-foot',
+            scrollY: '60vh',
+            scrollX: true,
+            scrollCollapse: true,
+            ordering: false,
+            paging: false,
             ajax: {
-                data: {'system_status': 3},
-                url: IAEle.attr('data-url'),
-                method: 'GET',
-            },
-            keyResp: 'inventory_adjustment_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            if (IAEle.val()) {
-                let dataParam = {}
-                let ia_list_ajax = $.fn.callAjax2({
-                    url: `${script_url.attr('data-url-ia').replace('/0', `/${IAEle.val()}`)}`,
-                    data: dataParam,
-                    method: 'GET'
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && typeof data === 'object' && data.hasOwnProperty('inventory_adjustment_detail')) {
-                            return data?.['inventory_adjustment_detail'];
-                        }
-                        return {};
-                    },
-                    (errs) => {
-                        console.log(errs);
+                url: ia_table.attr('data-ia-url'),
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('inventory_adjustment_list')) {
+                        return resp.data['inventory_adjustment_list'] ? resp.data['inventory_adjustment_list'] : [];
                     }
-                )
-
-                Promise.all([ia_list_ajax]).then(
-                    (results) => {
-                        console.log(results[0]?.['ia_data'])
-                        GISLoadTab.DrawTableIAItems(results[0]?.['ia_data'])
-                    })
-            }
-        })
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: (data, type, row) => {
+                        return ``
+                    }
+                }, {
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-primary w-80">${row?.['code']}</span>`
+                    }
+                }, {
+                    className: 'wrap-text w-35',
+                    render: (data, type, row) => {
+                        return `<span data-id="${row?.['id']}" class="ia-title text-primary">${row?.['title']}</span>`
+                    }
+                }, {
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        return `${moment(row?.['date_created'].split(' ')[0]).format('DD/MM/YYYY')}`
+                    }
+                }, {
+                    className: 'wrap-text text-right w-20',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                            <input ${row?.['id'] === selected_ia ? 'checked' : ''} type="radio" name="ia-group" class="ia-selected form-check-input">
+                        </div>`
+                    }
+                },
+            ],
+        });
     }
-    static LoadPOWO(data) {
-        if (data) {
-            POEle.prop('disabled', true)
-        }
-        let po_dataParam = {'system_status': 3}
-        let po_list_ajax = $.fn.callAjax2({
-            url: POEle.attr('data-url-po'),
-            data: po_dataParam,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('production_order_list')) {
-                    return data?.['production_order_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        let wo_dataParam = {'system_status': 3}
-        let wo_list_ajax = $.fn.callAjax2({
-            url: POEle.attr('data-url-wo'),
-            data: wo_dataParam,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('work_order_list')) {
-                    return data?.['work_order_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        Promise.all([po_list_ajax, wo_list_ajax]).then(
-            (results) => {
-                POEle.initSelect2({
-                    data: data ? data : results[0].concat(results[1]),
-                    templateResult: function (state) {
-                        let type_html = `<span class="badge badge-soft-primary">${state?.['data']?.['app'] ? state?.['data']?.['app'] : "--"}</span>`
-                        return $(`${type_html} <span>${state?.['data']?.['title']}</span>`);
-                    },
-                    keyResp: 'production_order_list',
-                    keyId: 'id',
-                    keyText: 'title',
-                }).on('change', function () {
-                    if (POEle.val()) {
-                        let selected = SelectDDControl.get_data_from_idx(POEle, POEle.val())
-                        if (selected?.['type'] === 0) {
-                            let dataParam = {}
-                            let po_detail_ajax = $.fn.callAjax2({
-                                url: `${script_url.attr('data-url-po').replace('/0', `/${POEle.val()}`)}`,
-                                data: dataParam,
-                                method: 'GET'
-                            }).then(
-                                (resp) => {
-                                    let data = $.fn.switcherResp(resp);
-                                    if (data && typeof data === 'object' && data.hasOwnProperty('production_order_detail')) {
-                                        return data?.['production_order_detail'];
-                                    }
-                                    return {};
-                                },
-                                (errs) => {
-                                    console.log(errs);
-                                }
-                            )
-
-                            Promise.all([po_detail_ajax]).then(
-                                (results) => {
-                                    console.log(results[0])
-                                    return results[0] ? GISLoadTab.DrawTablePOItems(results[0]?.['task_data']) : GISLoadTab.DrawTablePOItems([])
-                                })
-                        } else {
-                            let dataParam = {}
-                            let wo_detail_ajax = $.fn.callAjax2({
-                                url: `${script_url.attr('data-url-wo').replace('/0', `/${POEle.val()}`)}`,
-                                data: dataParam,
-                                method: 'GET'
-                            }).then(
-                                (resp) => {
-                                    let data = $.fn.switcherResp(resp);
-                                    if (data && typeof data === 'object' && data.hasOwnProperty('work_order_detail')) {
-                                        return data?.['work_order_detail'];
-                                    }
-                                    return {};
-                                },
-                                (errs) => {
-                                    console.log(errs);
-                                }
-                            )
-
-                            Promise.all([wo_detail_ajax]).then(
-                                (results) => {
-                                    console.log(results[0])
-                                    return results[0] ? GISLoadTab.DrawTablePOItems(results[0]?.['task_data']) : GISLoadTab.DrawTablePOItems([])
-                                })
-                        }
+    static LoadPOWO(dataList) {
+        let selected_powo = POEle.attr('data-id')
+        powo_table.DataTable().clear().destroy()
+        powo_table.DataTableDefault({
+            rowIdx: true,
+            styleDom: 'hide-foot',
+            scrollY: '60vh',
+            scrollX: true,
+            scrollCollapse: true,
+            paging: false,
+            data: dataList,
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: (data, type, row) => {
+                        return ``
                     }
-                })
-            })
+                }, {
+                    className: 'wrap-text w-30',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-soft-primary">${row?.['app']}</span> <span class="badge badge-primary">${row?.['code']}</span>`
+                    }
+                }, {
+                    className: 'wrap-text w-35',
+                    render: (data, type, row) => {
+                        return `<span data-id="${row?.['id']}" data-type="${row?.['type']}" class="powo-title text-primary">${row?.['title']}</span>`
+                    }
+                }, {
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        return `${moment(row?.['date_created'].split(' ')[0]).format('DD/MM/YYYY')}`
+                    }
+                }, {
+                    className: 'wrap-text text-right w-10',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                            <input ${row?.['id'] === selected_powo ? 'checked' : ''} type="radio" name="powo-group" class="powo-selected form-check-input">
+                        </div>`
+                    }
+                },
+            ],
+        });
     }
 }
 
@@ -515,17 +473,20 @@ class GISAction {
     }
     static DisabledDetailPage(option) {
         if (option === 'detail') {
-            $('.form-control').prop('readonly', true);
-            $('.form-select').prop('disabled', true);
-            $('.select2').prop('disabled', true);
-            $('form input').prop('disabled', true);
+            $('form input').prop('readonly', true);
+            $('form textarea').prop('readonly', true);
+            $('form select').prop('disabled', true);
+            btn_accept_select_ia.prop('disabled', true);
+            btn_accept_select_powo.prop('disabled', true);
+            done_none.prop('disabled', true);
+            done_sn.prop('disabled', true);
+            done_lot.prop('disabled', true);
         }
     }
 }
 
 class GISHandle {
     static LoadPage() {
-        GISLoadPage.LoadIA()
         GISLoadTab.DrawTableIAItems()
     }
     static LoadGoodsIssueDetail(option) {
@@ -537,7 +498,6 @@ class GISHandle {
                     data = data['goods_issue_detail'];
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
                     IS_DETAIL_PAGE = option === 'detail'
                     IS_DONE_GIS = data?.['system_status'] === 3
                     if (IS_DONE_GIS) {
@@ -552,8 +512,9 @@ class GISHandle {
                     $('#note').val(data?.['note'])
 
                     if (data?.['goods_issue_type'] === 0) {
-                        $('#for-ia').prop('checked', true)
-                        GISLoadPage.LoadIA(data?.['inventory_adjustment'])
+                        gis_type.val(0)
+                        IAEle.val(data?.['inventory_adjustment']?.['title'])
+                        IAEle.attr('data-id', data?.['inventory_adjustment']?.['id'])
                         $('#inventory-adjustment-select-space').prop('hidden', false)
                         GISLoadTab.DrawTableIAItems(data?.['detail_data_ia'])
                         IAItemTableDiv.prop('hidden', false)
@@ -562,17 +523,21 @@ class GISHandle {
                     else if (data?.['goods_issue_type'] === 1) {
                     }
                     else if (data?.['goods_issue_type'] === 2) {
-                        $('#for-production').prop('checked', true)
+                        gis_type.val(2)
                         if (Object.keys(data?.['production_order']).length > 0) {
-                            GISLoadPage.LoadPOWO(data?.['production_order'])
+                            POEle.val(data?.['production_order']?.['title'])
+                            POEle.attr('data-id', data?.['production_order']?.['id'])
+                            POEle.attr('data-type', 0)
                             $('#inventory-adjustment-select-space').prop('hidden', true)
                             $('#production-order-select-space').prop('hidden', false)
-                            GISLoadTab.DrawTablePOItems(data?.['detail_data_po'])
+                            GISLoadTab.DrawTablePOItems(data?.['detail_data_po'], option)
                             IAItemTableDiv.prop('hidden', true)
                             POItemTableDiv.prop('hidden', false)
                         }
                         else {
-                            GISLoadPage.LoadPOWO(data?.['work_order'])
+                            POEle.val(data?.['work_order']?.['title'])
+                            POEle.attr('data-id', data?.['work_order']?.['id'])
+                            POEle.attr('data-type', 1)
                             $('#inventory-adjustment-select-space').prop('hidden', true)
                             $('#production-order-select-space').prop('hidden', false)
                             GISLoadTab.DrawTablePOItems(data?.['detail_data_wo'], option)
@@ -600,9 +565,9 @@ class GISHandle {
         let detail_data_ia = []
         let detail_data_po = []
         let detail_data_wo = []
-        if ($('#for-ia').prop('checked')) {
+        if (gis_type.val() === '0') {
             frm.dataForm['goods_issue_type'] = 0
-            frm.dataForm['inventory_adjustment_id'] = IAEle.val()
+            frm.dataForm['inventory_adjustment_id'] = IAEle.attr('data-id')
             IAItemTable.find('tbody tr').each(function () {
                 let row = $(this);
                 detail_data_ia.push({
@@ -618,14 +583,14 @@ class GISHandle {
                 })
             })
         }
-        else if ($('#for-liquidation').prop('checked')) {
+        else if (gis_type.val() === '1') {
             frm.dataForm['goods_issue_type'] = 1
         }
-        else if ($('#for-production').prop('checked')) {
+        else if (gis_type.val() === '2') {
             frm.dataForm['goods_issue_type'] = 2
-            let selected = SelectDDControl.get_data_from_idx(POEle, POEle.val())
-            if (selected?.['type'] === 0) {
-                frm.dataForm['production_order_id'] = POEle.val()
+            let type = POEle.attr('data-type')
+            if (type === '0') {
+                frm.dataForm['production_order_id'] = POEle.attr('data-id')
                 POItemTable.find('tbody tr').each(function () {
                     let row = $(this);
                     detail_data_po.push({
@@ -642,7 +607,7 @@ class GISHandle {
                 })
             }
             else {
-                frm.dataForm['work_order_id'] = POEle.val()
+                frm.dataForm['work_order_id'] = POEle.attr('data-id')
                 POItemTable.find('tbody tr').each(function () {
                     let row = $(this);
                     detail_data_wo.push({
@@ -671,8 +636,8 @@ class GISHandle {
     }
 }
 
-$('input[name="issue-type"]').on('change', function () {
-    if ($('#for-ia').prop('checked')) {
+gis_type.on('change', function () {
+    if ($(this).val() === '0') {
         GISLoadPage.LoadIA()
         GISLoadTab.DrawTableIAItems()
         $('#inventory-adjustment-select-space').prop('hidden', false)
@@ -680,7 +645,7 @@ $('input[name="issue-type"]').on('change', function () {
         IAItemTableDiv.prop('hidden', false)
         POItemTableDiv.prop('hidden', true)
     }
-    else if ($('#for-production').prop('checked')) {
+    else if ($(this).val() === '2') {
         GISLoadPage.LoadPOWO()
         GISLoadTab.DrawTablePOItems()
         $('#inventory-adjustment-select-space').prop('hidden', true)
@@ -850,7 +815,7 @@ $(document).on("click", '.select-detail', function () {
 })
 
 $('#issue-quantity').on('change', function () {
-    if (!$('#for-production').prop('checked')) {
+    if (!gis_type.val() === '2') {
         const limit = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
         let selected = parseFloat($(this).val())
         if (selected > limit) {
@@ -861,7 +826,7 @@ $('#issue-quantity').on('change', function () {
 })
 
 $(document).on("change", '.sn-checkbox', function () {
-    if (!$('#for-production').prop('checked')) {
+    if (gis_type.val() !== '2') {
         const limit = parseFloat($('#amount-balance-sn').attr('data-value'))
         let selected = $('.sn-checkbox:checked').length
         $('#amount-selected-sn').text(selected)
@@ -875,7 +840,7 @@ $(document).on("change", '.sn-checkbox', function () {
 })
 
 $(document).on("change", '.lot-input', function () {
-    if (!$('#for-production').prop('checked')) {
+    if (gis_type.val() !== '2') {
         let old_value = parseInt($(this).val())
         const limit = parseFloat($('#amount-balance-lot').attr('data-value'))
         let selected = 0
@@ -895,7 +860,7 @@ done_none.on('click', function () {
     let issue_quantity = parseFloat($('#issue-quantity').val())
     let stock_quantity = parseFloat($('#stock-quantity').val())
     let limit_quantity = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
-    if (!$('#for-production').prop('checked')) {
+    if (gis_type.val() !== '2') {
         if (issue_quantity <= stock_quantity && issue_quantity <= limit_quantity) {
             DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
             detail_modal.modal('hide')
@@ -912,7 +877,7 @@ done_none.on('click', function () {
 done_sn.on('click', function () {
     let issue_quantity = $('.sn-checkbox:checked').length
     let remain_quantity = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
-    if (!$('#for-production').prop('checked')) {
+    if (gis_type.val() !== '2') {
         if (issue_quantity <= remain_quantity) {
             DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
             let sn_data = []
@@ -942,7 +907,7 @@ done_lot.on('click', function () {
         issue_quantity += $(this).val() ? parseFloat($(this).val()) : 0
     })
     let remain_quantity = parseFloat(DetailBtn.closest('tr').find('.remain-quantity').text())
-    if (!$('#for-production').prop('checked')) {
+    if (gis_type.val() !== '2') {
         if (issue_quantity <= remain_quantity) {
             DetailBtn.closest('tr').find('.selected-quantity').val(issue_quantity)
             let lot_data = []
@@ -981,4 +946,145 @@ done_lot.on('click', function () {
         DetailBtn.closest('tr').find('.lot-data-script').text(JSON.stringify(lot_data))
         detail_modal.modal('hide')
     }
+})
+
+btn_select_ia.on('click', function () {
+    GISLoadPage.LoadIA()
+})
+
+btn_select_powo.on('click', function () {
+    let po_dataParam = {'system_status': 3}
+    let po_list_ajax = $.fn.callAjax2({
+        url: powo_table.attr('data-url-po'),
+        data: po_dataParam,
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('production_order_list')) {
+                return data?.['production_order_list'];
+            }
+            return {};
+        },
+        (errs) => {
+            console.log(errs);
+        }
+    )
+
+    let wo_dataParam = {'system_status': 3}
+    let wo_list_ajax = $.fn.callAjax2({
+        url: powo_table.attr('data-url-wo'),
+        data: wo_dataParam,
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('work_order_list')) {
+                return data?.['work_order_list'];
+            }
+            return {};
+        },
+        (errs) => {
+            console.log(errs);
+        }
+    )
+
+    Promise.all([po_list_ajax, wo_list_ajax]).then(
+        (results) => {
+            GISLoadPage.LoadPOWO(results[0].concat(results[1]))
+        })
+})
+
+btn_accept_select_ia.on('click', function () {
+    ia_table.find('tbody tr').each(function () {
+        if ($(this).find('.ia-selected').prop('checked')) {
+            IAEle.val($(this).find('.ia-title').text())
+            IAEle.attr('data-id', $(this).find('.ia-title').attr('data-id'))
+            let dataParam = {}
+            let ia_list_ajax = $.fn.callAjax2({
+                url: `${script_url.attr('data-url-ia').replace('/0', `/${IAEle.attr('data-id')}`)}`,
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('inventory_adjustment_detail')) {
+                        return data?.['inventory_adjustment_detail'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([ia_list_ajax]).then(
+                (results) => {
+                    GISLoadTab.DrawTableIAItems(results[0]?.['ia_data'])
+                    select_ia_modal.modal('hide')
+                })
+        }
+    })
+})
+
+btn_accept_select_powo.on('click', function () {
+    powo_table.find('tbody tr').each(function () {
+        if ($(this).find('.powo-selected').prop('checked')) {
+            POEle.val($(this).find('.powo-title').text())
+            POEle.attr('data-id', $(this).find('.powo-title').attr('data-id'))
+            POEle.attr('data-type', $(this).find('.powo-title').attr('data-type'))
+
+            let type = $(this).find('.powo-title').attr('data-type')
+            if (type === '0') {
+                let dataParam = {}
+                let po_detail_ajax = $.fn.callAjax2({
+                    url: `${script_url.attr('data-url-po').replace('/0', `/${POEle.attr('data-id')}`)}`,
+                    data: dataParam,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('production_order_detail')) {
+                            return data?.['production_order_detail'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                Promise.all([po_detail_ajax]).then(
+                    (results) => {
+                        results[0] ? GISLoadTab.DrawTablePOItems(results[0]?.['task_data']) : GISLoadTab.DrawTablePOItems([])
+                        select_powo_modal.modal('hide')
+                    })
+            }
+            else {
+                let dataParam = {}
+                let wo_detail_ajax = $.fn.callAjax2({
+                    url: `${script_url.attr('data-url-wo').replace('/0', `/${POEle.attr('data-id')}`)}`,
+                    data: dataParam,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('work_order_detail')) {
+                            return data?.['work_order_detail'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+
+                Promise.all([wo_detail_ajax]).then(
+                    (results) => {
+                        results[0] ? GISLoadTab.DrawTablePOItems(results[0]?.['task_data']) : GISLoadTab.DrawTablePOItems([])
+                        select_powo_modal.modal('hide')
+                    })
+            }
+        }
+    })
 })

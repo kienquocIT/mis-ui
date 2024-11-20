@@ -470,14 +470,14 @@ $(document).ready(function () {
 
                 if (data_wh.length === 0) {
                     table.find('tbody tr').each(function () {
-                        sum_wh_open_quantity += parseFloat($(this).find('td:eq(6) span').text())
-                        sum_wh_open_value += parseFloat($(this).find('td:eq(7) span').attr('data-init-money'))
-                        sum_wh_in_quantity += parseFloat($(this).find('td:eq(8) span').text())
-                        sum_wh_in_value += parseFloat($(this).find('td:eq(9) span').attr('data-init-money'))
-                        sum_wh_out_quantity += parseFloat($(this).find('td:eq(10) span').text())
-                        sum_wh_out_value += parseFloat($(this).find('td:eq(11) span').attr('data-init-money'))
-                        sum_wh_end_quantity += parseFloat($(this).find('td:eq(12) span').text())
-                        sum_wh_end_value += parseFloat($(this).find('td:eq(13) span').attr('data-init-money'))
+                        sum_wh_open_quantity += $(this).find('td:eq(6) span').text() ? parseFloat($(this).find('td:eq(6) span').text()) : 0
+                        sum_wh_open_value += $(this).find('td:eq(7) span').attr('data-init-money') ? parseFloat($(this).find('td:eq(7) span').attr('data-init-money')) : 0
+                        sum_wh_in_quantity += $(this).find('td:eq(8) span').text() ? parseFloat($(this).find('td:eq(8) span').text()) : 0
+                        sum_wh_in_value += $(this).find('td:eq(9) span').attr('data-init-money') ? parseFloat($(this).find('td:eq(9) span').attr('data-init-money')) : 0
+                        sum_wh_out_quantity += $(this).find('td:eq(10) span').text() ? parseFloat($(this).find('td:eq(10) span').text()) : 0
+                        sum_wh_out_value += $(this).find('td:eq(11) span').attr('data-init-money') ? parseFloat($(this).find('td:eq(11) span').attr('data-init-money')) : 0
+                        sum_wh_end_quantity += $(this).find('td:eq(12) span').text() ? parseFloat($(this).find('td:eq(12) span').text()) : 0
+                        sum_wh_end_value += $(this).find('td:eq(13) span').attr('data-init-money') ? parseFloat($(this).find('td:eq(13) span').attr('data-init-money')) : 0
                     })
                 }
 

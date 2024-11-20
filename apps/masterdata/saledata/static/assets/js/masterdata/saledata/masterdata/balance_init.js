@@ -4,7 +4,6 @@ $(document).ready(function () {
     const selectWH_Ele = $('#select-wh')
     const dtb_balance_init_item_Ele = $('#table-balance-item');
     const dtb_wh_product_Ele = $('#table-add-item-wh');
-    const btn_save_modal = $('#save-modal')
     const modal_add_balance = $('#modal-add-balance')
     const trans_script = $('#trans-script')
 
@@ -55,13 +54,13 @@ $(document).ready(function () {
                         {
                             className: 'wrap-text',
                             render: (data, type, row) => {
-                                return `<span class="balance-quantity">${row?.['opening_balance_quantity']}</span>`;
+                                return `<span class="balance-quantity">${row?.['quantity']}</span>`;
                             }
                         },
                         {
                             className: 'wrap-text',
                             render: (data, type, row) => {
-                                return `<span class="balance-value mask-money" data-init-money="${row?.['opening_balance_value']}"></span>`;
+                                return `<span class="balance-value mask-money" data-init-money="${row?.['value']}"></span>`;
                             }
                         },
                         {
@@ -353,92 +352,6 @@ $(document).ready(function () {
             `)
         }
 
-        btn_save_modal.on('click', function () {
-            let result = {}
-            let tbody = dtb_wh_product_Ele.find('tbody')
-            let wh_selected = SelectDDControl.get_data_from_idx(selectWH_Ele, selectWH_Ele.val())
-            let item_selected = SelectDDControl.get_data_from_idx(tbody.find('.item-obj:first-child'), tbody.find('.item-obj:first-child').val())
-            if (selectWH_Ele.val() && tbody.find('.item-obj:first-child').val() && tbody.find('.item-quantity:first-child').val() && tbody.find('.item-value:first-child').attr('value')) {
-                result = {
-                    'wh_data': {
-                        'id': selectWH_Ele.val(),
-                        'code': wh_selected?.['code'],
-                        'title': wh_selected?.['title'],
-                    },
-                    'product_data': {
-                        'id': item_selected?.['id'],
-                        'code': item_selected?.['code'],
-                        'title': item_selected?.['title'],
-                    },
-                    'uom_data': {
-                        'id': item_selected?.['inventory_uom']?.['id'],
-                        'code': item_selected?.['inventory_uom']?.['code'],
-                        'title': item_selected?.['inventory_uom']?.['title'],
-                    },
-                    'quantity_balance': tbody.find('.item-quantity:first-child').val(),
-                    'value_balance': tbody.find('.item-value:first-child').attr('value'),
-                }
-
-                dtb_balance_init_item_Ele.find('tbody .dataTables_empty').remove()
-                dtb_balance_init_item_Ele.find('tbody').append(`
-                    <tr class="new-row-data">
-                        <script class="data-lot"></script>
-                        <script class="data-sn"></script>
-                        <td><span data-item-id="${result?.['product_data']?.['id']}" class="badge badge-light w-20 balance-item">${result?.['product_data']?.['code']}</span>&nbsp;<span>${result?.['product_data']?.['title']}</span></td>
-                        <td><span class="badge badge-soft-blue">${result?.['uom_data']?.['title']}</span></td>
-                        <td><span data-wh-id="${result?.['wh_data']?.['id']}" class="badge badge-soft-primary w-15 balance-wh">${result?.['wh_data']?.['code']}</span>&nbsp;<span>${result?.['wh_data']?.['title']}</span></td>
-                        <td><span class="balance-quantity">${result?.['quantity_balance']}</span></td>
-                        <td><span class="balance-value mask-money" data-init-money="${result?.['value_balance']}"></span></td>
-                        <td class="text-right"><a href="#" class="text-danger btn-delete-row"><i class="far fa-trash-alt"></i></a></td>
-                    </tr>
-                `)
-
-                $.fn.initMaskMoney2()
-
-                let data_sn = []
-                dtb_wh_product_Ele.find('.row-input-sn').each(function () {
-                    data_sn.push({
-                        'vendor_serial_number': $(this).find('.vendor-sn-input').val(),
-                        'serial_number': $(this).find('.sn-input').val(),
-                        'expire_date': $(this).find('.sn-expire-date-input').val(),
-                        'manufacture_date': $(this).find('.sn-manufacture-date-input').val(),
-                        'warranty_start': $(this).find('.sn-warranty-start-input').val(),
-                        'warranty_end': $(this).find('.sn-warranty-end-input').val(),
-                    })
-                })
-
-                let data_lot = []
-                dtb_wh_product_Ele.find('.row-input-lot').each(function () {
-                    data_lot.push({
-                        'lot_number': $(this).find('.lot-number-input').val(),
-                        'quantity_import': $(this).find('.lot-number-quantity-input').val(),
-                        'expire_date': $(this).find('.lot-expire-date-input').val(),
-                        'manufacture_date': $(this).find('.lot-manufacture-date-input').val(),
-                    })
-                })
-
-                $('.data-sn').last().text(JSON.stringify(data_sn))
-                $('.data-lot').last().text(JSON.stringify(data_lot))
-
-                modal_add_balance.modal('hide')
-                selectWH_Ele.empty()
-                $('.item-obj').empty()
-                $('.item-quantity').val('')
-                $('.item-value').attr('value', 0)
-                $('.sn-input-label').remove()
-                $('.row-input-sn').remove()
-                $('.lot-input-label').remove()
-                $('.row-input-lot').remove()
-            }
-            else {
-                $.fn.notifyB({description: "Missing information"}, 'warning')
-            }
-        })
-
-        $(document).on("click", '.btn-delete-row', function () {
-            $(this).closest('tr').remove()
-        });
-
         $(document).on("click", '.add-row-lot', function () {
             let lot_input_html =  `<tr class="row-input-lot">
                 <td class="w-40">
@@ -504,8 +417,87 @@ $(document).ready(function () {
         }
 
         form_balance_Ele.submit(function (event) {
-            event.preventDefault();
+            let result = {}
+            let tbody = dtb_wh_product_Ele.find('tbody')
+            let wh_selected = SelectDDControl.get_data_from_idx(selectWH_Ele, selectWH_Ele.val())
+            let item_selected = SelectDDControl.get_data_from_idx(tbody.find('.item-obj:first-child'), tbody.find('.item-obj:first-child').val())
+            if (selectWH_Ele.val() && tbody.find('.item-obj:first-child').val() && tbody.find('.item-quantity:first-child').val() && tbody.find('.item-value:first-child').attr('value')) {
+                result = {
+                    'wh_data': {
+                        'id': selectWH_Ele.val(),
+                        'code': wh_selected?.['code'],
+                        'title': wh_selected?.['title'],
+                    },
+                    'product_data': {
+                        'id': item_selected?.['id'],
+                        'code': item_selected?.['code'],
+                        'title': item_selected?.['title'],
+                    },
+                    'uom_data': {
+                        'id': item_selected?.['inventory_uom']?.['id'],
+                        'code': item_selected?.['inventory_uom']?.['code'],
+                        'title': item_selected?.['inventory_uom']?.['title'],
+                    },
+                    'quantity_balance': tbody.find('.item-quantity:first-child').val(),
+                    'value_balance': tbody.find('.item-value:first-child').attr('value'),
+                }
 
+                dtb_balance_init_item_Ele.find('tbody .dataTables_empty').remove()
+                dtb_balance_init_item_Ele.find('tbody').append(`
+                    <tr class="new-row-data">
+                        <script class="data-lot"></script>
+                        <script class="data-sn"></script>
+                        <td><span data-item-id="${result?.['product_data']?.['id']}" class="badge badge-light w-20 balance-item">${result?.['product_data']?.['code']}</span>&nbsp;<span>${result?.['product_data']?.['title']}</span></td>
+                        <td><span class="badge badge-soft-blue">${result?.['uom_data']?.['title']}</span></td>
+                        <td><span data-wh-id="${result?.['wh_data']?.['id']}" class="badge badge-soft-primary w-15 balance-wh">${result?.['wh_data']?.['code']}</span>&nbsp;<span>${result?.['wh_data']?.['title']}</span></td>
+                        <td><span class="balance-quantity">${result?.['quantity_balance']}</span></td>
+                        <td><span class="balance-value mask-money" data-init-money="${result?.['value_balance']}"></span></td>
+                        <td class="text-right"><span class="badge badge-success badge-indicator badge-indicator-xl"></span></td>
+                    </tr>
+                `)
+
+                $.fn.initMaskMoney2()
+
+                let data_sn = []
+                dtb_wh_product_Ele.find('.row-input-sn').each(function () {
+                    data_sn.push({
+                        'vendor_serial_number': $(this).find('.vendor-sn-input').val(),
+                        'serial_number': $(this).find('.sn-input').val(),
+                        'expire_date': $(this).find('.sn-expire-date-input').val(),
+                        'manufacture_date': $(this).find('.sn-manufacture-date-input').val(),
+                        'warranty_start': $(this).find('.sn-warranty-start-input').val(),
+                        'warranty_end': $(this).find('.sn-warranty-end-input').val(),
+                    })
+                })
+
+                let data_lot = []
+                dtb_wh_product_Ele.find('.row-input-lot').each(function () {
+                    data_lot.push({
+                        'lot_number': $(this).find('.lot-number-input').val(),
+                        'quantity_import': $(this).find('.lot-number-quantity-input').val(),
+                        'expire_date': $(this).find('.lot-expire-date-input').val(),
+                        'manufacture_date': $(this).find('.lot-manufacture-date-input').val(),
+                    })
+                })
+
+                $('.data-sn').last().text(JSON.stringify(data_sn))
+                $('.data-lot').last().text(JSON.stringify(data_lot))
+
+                modal_add_balance.modal('hide')
+                selectWH_Ele.empty()
+                $('.item-obj').empty()
+                $('.item-quantity').val('')
+                $('.item-value').attr('value', 0)
+                $('.sn-input-label').remove()
+                $('.row-input-sn').remove()
+                $('.lot-input-label').remove()
+                $('.row-input-lot').remove()
+            }
+            else {
+                $.fn.notifyB({description: "Missing information"}, 'warning')
+            }
+
+            event.preventDefault();
             let no_new_row = dtb_balance_init_item_Ele.find('tbody .new-row-data').length
             let count = 0
             dtb_balance_init_item_Ele.find('tbody .new-row-data').each(function() {

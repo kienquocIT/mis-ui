@@ -15,7 +15,7 @@
     <style>
         #table-add-item-wh tbody {
             display: block;
-            height: 500px;
+            height: 50vh;
             overflow: auto;
         }
         #table-add-item-wh thead, #table-add-item-wh tbody tr {
@@ -32,14 +32,6 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" id="save-balance" form="form-balance">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
-            </span>
-        </span>
-    </button>
 {% endblock %}
 {% block pageContent %}
     {{ data.data.period_setup_sw_start_using_time | json_script:"period_setup_sw_start_using_time" }}
@@ -156,7 +148,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="button" id="save-modal" class="btn btn-primary">{% trans 'Save' %}</button>
+                    <button type="submit" id="save-balance" form="form-balance" id="save-modal" class="btn btn-primary">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>

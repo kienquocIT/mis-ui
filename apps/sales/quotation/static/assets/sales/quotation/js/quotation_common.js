@@ -58,16 +58,63 @@ class QuotationLoadDataHandle {
         });
     };
 
-    static loadEventCheckbox($modal) {
-        let checkboxes = $modal[0].querySelectorAll('.form-check-input[type="radio"]');
-        checkboxes.forEach((checkbox) => {
-            checkbox.addEventListener('click', function () {
-                let checked = checkbox.checked;
+    static loadEventCheckbox($area, trigger = false) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function (event) {
+            // Prevent handling if the direct checkbox is clicked
+            if (event.target.classList.contains('form-check-input')) {
+                return; // Let the checkbox handler handle this
+            }
+
+            // Find the checkbox inside the clicked element
+            let checkbox = this.querySelector('.form-check-input[type="checkbox"]');
+            if (checkbox) {
+                // Check if the checkbox is disabled
+                if (checkbox.disabled) {
+                    return; // Exit early if the checkbox is disabled
+                }
+                // Prevent the default behavior
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                // Toggle the checkbox state manually
+                checkbox.checked = !checkbox.checked;
+                // Optional: Trigger a change event if needed
+                if (trigger === true) {
+                    $(checkbox).trigger('change');
+                }
+            }
+        });
+
+        // Handle direct clicks on the checkbox itself
+        $area.on('click', '.form-check-input', function (event) {
+            // Prevent the default behavior to avoid double-triggering
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            // Checkbox state is toggled naturally, so no need to modify it
+            if (trigger === true) {
+                $(this).trigger('change'); // Optional: Trigger change event explicitly
+            }
+        });
+
+        return true;
+    };
+
+    static loadEventRadio($area) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function () {
+            // Find and mark the radio button inside this group as checked
+            let radio = this.querySelector('.form-check-input');
+            if (radio) {
+                let checkboxes = $area[0].querySelectorAll('.form-check-input[type="radio"]');
+                // Uncheck all radio buttons and reset row styles
                 for (let eleCheck of checkboxes) {
                     eleCheck.checked = false;
                 }
-                checkbox.checked = checked;
-            });
+                // Set the current radio button as checked and apply style
+                radio.checked = true;
+            }
         });
         return true;
     };
@@ -855,7 +902,7 @@ class QuotationLoadDataHandle {
                                 }
                                 htmlPriceList += `<div class="d-flex justify-content-between align-items-center">
                                                     <div class="form-check form-check-lg">
-                                                        <input type="radio" class="form-check-input table-row-price-option" id="price-${priceData?.['id'].replace(/-/g, "")}" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checked}>
+                                                        <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="price-${priceData?.['id'].replace(/-/g, "")}" data-value="${parseFloat(priceData?.['value'])}" data-price="${JSON.stringify(priceData).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checked}>
                                                         <label class="form-check-label" for="price-${priceData?.['id'].replace(/-/g, "")}">${priceData?.['title']}</label>
                                                     </div>
                                                     <div class="d-flex justify-content-between align-items-center">
@@ -877,7 +924,7 @@ class QuotationLoadDataHandle {
                         deletePromotionRows($(tableProduct), true, false);
                         deletePromotionRows($(tableProduct), false, true);
                     }
-                    QuotationLoadDataHandle.loadEventCheckbox(QuotationLoadDataHandle.$priceModal);
+                    QuotationLoadDataHandle.loadEventRadio(QuotationLoadDataHandle.$priceModal);
                     $.fn.initMaskMoney2();
                     return lastPrice;
                 }
@@ -1734,7 +1781,7 @@ class QuotationLoadDataHandle {
                                         }
                                         htmlCostList += `<div class="d-flex justify-content-between">
                                                         <div class="form-check form-check-lg">
-                                                            <input type="radio" class="form-check-input table-row-price-option" id="cost-${costData?.['warehouse']?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checked}>
+                                                            <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="cost-${costData?.['warehouse']?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checked}>
                                                             <label class="form-check-label" for="cost-${costData?.['warehouse']?.['id'].replace(/-/g, "")}">${costData?.['warehouse']?.['title']}</label>
                                                         </div>
                                                         <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
@@ -1746,21 +1793,21 @@ class QuotationLoadDataHandle {
                                 htmlCostList += `<hr>`;
                                 htmlCostList += `<div class="d-flex justify-content-between">
                                                     <div class="form-check form-check-lg">
-                                                        <input type="radio" class="form-check-input table-row-price-option" id="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costBom'])}" data-wh="${JSON.stringify({'id': 'bom'}).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checkedBom}>
+                                                        <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costBom'])}" data-wh="${JSON.stringify({'id': 'bom'}).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checkedBom}>
                                                         <label class="form-check-label" for="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}">${QuotationLoadDataHandle.transEle.attr('data-cost-bom')}</label>
                                                     </div>
                                                     <span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costBom'])}"></span>
                                                 </div>`;
                                 htmlCostList += `<div class="d-flex justify-content-between">
                                                     <div class="form-check form-check-lg">
-                                                        <input type="radio" class="form-check-input table-row-price-option" id="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costStandard'])}" data-wh="${JSON.stringify({'id': 'standard'}).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checkedStandard}>
+                                                        <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costStandard'])}" data-wh="${JSON.stringify({'id': 'standard'}).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checkedStandard}>
                                                         <label class="form-check-label" for="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}">${QuotationLoadDataHandle.transEle.attr('data-cost-standard')}</label>
                                                     </div>
                                                     <span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costStandard'])}"></span>
                                                 </div>`;
                                 $(modalBody).append(`${htmlCostList}`);
                             }
-                            QuotationLoadDataHandle.loadEventCheckbox(QuotationLoadDataHandle.$costModal);
+                            QuotationLoadDataHandle.loadEventRadio(QuotationLoadDataHandle.$costModal);
                             $.fn.initMaskMoney2();
                             QuotationLoadDataHandle.loadSetWFRuntimeZone();
                         }
@@ -3340,9 +3387,9 @@ class QuotationDataTableHandle {
                         if (row?.['title'] && row?.['code']) {
                             return `<div class="d-flex align-items-center ml-2">
                                         <div class="form-check form-check-lg">
-                                            <input type="radio" class="form-check-input table-row-check" id="copy-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}">
-                                            <label class="form-check-label table-row-title" for="copy-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                            <input type="radio" name="row-check" class="form-check-input table-row-check" id="copy-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}">
                                             <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
+                                            <label class="form-check-label table-row-title" for="copy-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
                                         </div>
                                     </div>`;
                         }
@@ -3369,6 +3416,9 @@ class QuotationDataTableHandle {
                     },
                 }
             ],
+            drawCallback: function () {
+                QuotationLoadDataHandle.loadEventRadio($tables);
+            },
         });
     };
 
@@ -3757,9 +3807,9 @@ class QuotationDataTableHandle {
                         if (row?.['title'] && row?.['code']) {
                             return `<div class="d-flex align-items-center ml-2">
                                         <div class="form-check form-check-lg">
-                                            <input type="checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" data-row="${dataRow}" ${disabled} ${checked} data-zone="${dataZone}">
-                                            <label class="form-check-label table-row-title" for="s-product-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                            <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" data-row="${dataRow}" ${disabled} ${checked} data-zone="${dataZone}">
                                             <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
+                                            <label class="form-check-label table-row-title" for="s-product-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
                                         </div>
                                     </div>`;
                         }
@@ -3811,6 +3861,7 @@ class QuotationDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSProduct);
             },
         });
     };

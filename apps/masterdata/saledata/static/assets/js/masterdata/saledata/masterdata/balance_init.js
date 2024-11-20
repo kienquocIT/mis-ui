@@ -507,9 +507,9 @@ $(document).ready(function () {
                         <script class="data-lot"></script>
                         <script class="data-sn"></script>
                         <td></td>
-                        <td><span data-item-id="${result?.['product_data']?.['id']}" class="badge badge-light w-20 balance-item">${result?.['product_data']?.['code']}</span>&nbsp;<span>${result?.['product_data']?.['title']}</span></td>
-                        <td><span class="badge badge-soft-blue">${result?.['uom_data']?.['title']}</span></td>
-                        <td><span data-wh-id="${result?.['wh_data']?.['id']}" class="badge badge-soft-primary w-15 balance-wh">${result?.['wh_data']?.['code']}</span>&nbsp;<span>${result?.['wh_data']?.['title']}</span></td>
+                        <td><span data-item-id="${result?.['product_data']?.['id']}" class="badge badge-soft-primary balance-item">${result?.['product_data']?.['code']}</span>&nbsp;<span>${result?.['product_data']?.['title']}</span></td>
+                        <td><span class="text-muted uom-title">${result?.['uom_data']?.['title']}</span></td>
+                        <td><span data-wh-id="${result?.['wh_data']?.['id']}" class="badge badge-soft-blue balance-wh">${result?.['wh_data']?.['code']}</span>&nbsp;<span>${result?.['wh_data']?.['title']}</span></td>
                         <td><span class="balance-quantity">${result?.['quantity_balance']}</span></td>
                         <td><span class="balance-value mask-money" data-init-money="${result?.['value_balance']}"></span></td>
                         <td class="text-right"><span class="badge badge-success badge-indicator badge-indicator-xl"></span></td>

@@ -14,64 +14,75 @@ $(document).ready(function () {
         function LoadBalanceInitList() {
             dtb_balance_init_item_Ele.DataTable().clear().destroy()
             let frm = new SetupFormSubmit(dtb_balance_init_item_Ele);
-            dtb_balance_init_item_Ele.DataTableDefault(
-                {
-                    dom: '',
-                    useDataServer: true,
-                    reloadCurrency: true,
-                    paging: false,
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('balance_init_list')) {
-                                // console.log(resp.data['balance_init_list'])
-                                return resp.data['balance_init_list'] ? resp.data['balance_init_list'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
+            dtb_balance_init_item_Ele.DataTableDefault({
+                dom: '',
+                rowIdx: true,
+                useDataServer: true,
+                reloadCurrency: true,
+                paging: false,
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('balance_init_list')) {
+                            // console.log(resp.data['balance_init_list'])
+                            return resp.data['balance_init_list'] ? resp.data['balance_init_list'] : []
+                        }
+                        throw Error('Call data raise errors.')
                     },
-                    columns: [
-                        {
-                            className: 'wrap-text',
-                            render: (data, type, row) => {
-                                return `<span data-item-id="${row?.['product']?.['id']}" class="badge badge-light w-20 balance-item">${row?.['product']?.['code']}</span>&nbsp;<span>${row?.['product']?.['title']}</span>`;
-                            }
-                        },
-                        {
-                            className: 'wrap-text',
-                            render: (data, type, row) => {
-                                return `<span class="badge badge-soft-blue">${row?.['product']?.['uom']?.['title']}</span>`;
-                            }
-                        },
-                        {
-                            className: 'wrap-text',
-                            render: (data, type, row) => {
-                                return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-primary w-25 balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
-                            }
-                        },
-                        {
-                            className: 'wrap-text',
-                            render: (data, type, row) => {
-                                return `<span class="balance-quantity">${row?.['quantity']}</span>`;
-                            }
-                        },
-                        {
-                            className: 'wrap-text',
-                            render: (data, type, row) => {
-                                return `<span class="balance-value mask-money" data-init-money="${row?.['value']}"></span>`;
-                            }
-                        },
-                        {
-                            className: 'wrap-text text-right',
-                            render: (data, type, row) => {
-                                return `<a href="#" class="text-secondary clear-balance-init"><i class="bi bi-x-lg"></i></a>`;
-                            }
-                        },
-                    ],
                 },
-            );
+                columns: [
+                    {
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return ``;
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return `<span data-item-id="${row?.['product']?.['id']}"
+                                          class="badge badge-soft-primary balance-item">
+                                        ${row?.['product']?.['code']}
+                                    </span>&nbsp;<span>${row?.['product']?.['title']}</span>
+                                    <script class="script-lot">${JSON.stringify(row?.['data_lot'])}</script>
+                                    <script class="script-sn">${JSON.stringify(row?.['data_sn'])}</script>
+                            `;
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return `<span class="text-muted uom-title">${row?.['product']?.['uom']?.['title']}</span>`;
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-blue balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return `<span class="balance-quantity">${row?.['quantity']}</span>`;
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return `<span class="balance-value mask-money" data-init-money="${row?.['value']}"></span>`;
+                        }
+                    },
+                    {
+                        className: 'wrap-text text-right',
+                        render: (data, type, row) => {
+                            return `<a href="#" class="text-secondary clear-balance-init"><i class="bi bi-x-lg"></i></a>`;
+                        }
+                    },
+                ],
+            },);
         }
         LoadBalanceInitList()
 
@@ -405,6 +416,54 @@ $(document).ready(function () {
             $('.item-quantity:first-child').val(sum_quantity)
         });
 
+        $(document).on("click", 'tbody tr', function () {
+            let data_lot = JSON.parse($(this).find('.script-lot').text())
+            let data_sn = JSON.parse($(this).find('.script-sn').text())
+            if (data_lot.length > 0) {
+                let data_lot_html = ''
+                for (let i = 0; i < data_lot.length; i++) {
+                    data_lot_html += `<tr>
+                        <td>${data_lot[i]?.['lot_number']}</td>
+                        <td>${data_lot[i]?.['quantity_import']}</td>
+                        <td>${$(this).find('.uom-title').text()}</td>
+                        <td>${moment(data_lot[i]?.['expire_date']).format('DD/MM/YYYY')}</td>
+                        <td>${moment(data_lot[i]?.['manufacture_date']).format('DD/MM/YYYY')}</td>
+                    </tr>`
+                    }
+                    $('#table-detail-space-sn').prop('hidden', true)
+                    $('#detail-space-sn').html(``)
+                    $('#table-detail-space-lot').prop('hidden', false)
+                    $('#detail-space-lot').html(`
+                    ${data_lot_html}
+                `)
+            }
+            else if (data_sn.length > 0) {
+                let data_sn_html = ''
+                for (let i = 0; i < data_sn.length; i++) {
+                    data_sn_html += `<tr>
+                        <td>${data_sn[i]?.['vendor_serial_number']}</td>
+                        <td>${data_sn[i]?.['serial_number']}</td>
+                        <td>${moment(data_sn[i]?.['expire_date']).format('DD/MM/YYYY')}</td>
+                        <td>${moment(data_sn[i]?.['manufacture_date']).format('DD/MM/YYYY')}</td>
+                        <td>${moment(data_sn[i]?.['warranty_start']).format('DD/MM/YYYY')}</td>
+                        <td>${moment(data_sn[i]?.['warranty_end']).format('DD/MM/YYYY')}</td>
+                    </tr>`
+                    }
+                    $('#table-detail-space-lot').prop('hidden', true)
+                    $('#detail-space-lot').html(``)
+                    $('#table-detail-space-sn').prop('hidden', false)
+                    $('#detail-space-sn').html(`
+                    ${data_sn_html}
+                `)
+            }
+            else {
+                $('#table-detail-space-lot').prop('hidden', true)
+                $('#detail-space-lot').html(``)
+                $('#table-detail-space-sn').prop('hidden', true)
+                $('#detail-space-sn').html(``)
+            }
+        });
+
         function combinesData(frmEle, data) {
             let frm = new SetupFormSubmit($(frmEle));
 
@@ -447,6 +506,7 @@ $(document).ready(function () {
                     <tr class="new-row-data">
                         <script class="data-lot"></script>
                         <script class="data-sn"></script>
+                        <td></td>
                         <td><span data-item-id="${result?.['product_data']?.['id']}" class="badge badge-light w-20 balance-item">${result?.['product_data']?.['code']}</span>&nbsp;<span>${result?.['product_data']?.['title']}</span></td>
                         <td><span class="badge badge-soft-blue">${result?.['uom_data']?.['title']}</span></td>
                         <td><span data-wh-id="${result?.['wh_data']?.['id']}" class="badge badge-soft-primary w-15 balance-wh">${result?.['wh_data']?.['code']}</span>&nbsp;<span>${result?.['wh_data']?.['title']}</span></td>

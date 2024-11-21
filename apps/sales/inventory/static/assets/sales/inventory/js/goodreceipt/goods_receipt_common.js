@@ -58,36 +58,20 @@ class GRLoadDataHandle {
         return true;
     };
 
-    static loadCssS2($ele, maxWidth) {
-        if ($ele.is("select") && $ele.hasClass("select2-hidden-accessible")) {
-            let $render = $ele.next('.select2-container').find('.select2-selection__rendered');
-            if ($render && $render.length > 0) {
-                $render.css('max-width', maxWidth);
-            }
-        }
-        return true;
-    };
-
-    static loadEventCheckbox($table) {
-        let checkboxes = $table[0].querySelectorAll('.form-check-input[type="radio"]');
-        checkboxes.forEach((checkbox) => {
-            checkbox.addEventListener('click', function () {
-                let checked = checkbox.checked;
+    static loadEventRadio($area) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function () {
+            // Find and mark the radio button inside this group as checked
+            let radio = this.querySelector('.form-check-input');
+            if (radio) {
+                let checkboxes = $area[0].querySelectorAll('.form-check-input[type="radio"]');
+                // Uncheck all radio buttons and reset row styles
                 for (let eleCheck of checkboxes) {
                     eleCheck.checked = false;
-                    let row = eleCheck.closest('tr');
-                    if (row) {
-                        $(row).css('background-color', '');
-                    }
                 }
-                checkbox.checked = checked;
-                let row = checkbox.closest('tr');
-                if (row) {
-                    if (checked === true) {
-                        $(row).css('background-color', '#ebfcf5');
-                    }
-                }
-            });
+                // Set the current radio button as checked and apply style
+                radio.checked = true;
+            }
         });
         return true;
     };
@@ -284,7 +268,6 @@ class GRLoadDataHandle {
                                 GRLoadDataHandle.initPOProductEle.val(JSON.stringify(dataValid));
                                 GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                                 GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataValid).draw();
-                                GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
                             }
                         }
                     }
@@ -367,7 +350,6 @@ class GRLoadDataHandle {
         if (dataRow?.['pr_products_data'].length > 0) { // If PO have PR
             GRDataTableHandle.tablePR.DataTable().rows.add(dataRow?.['pr_products_data']).draw();
             $('#scroll-table-pr')[0].removeAttribute('hidden');
-            GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePR);
         } else { // If PO doesn't have PR
             // Check if product have inventory choice
             if (dataRow?.['product_data']?.['product_choice'].includes(1)) {
@@ -457,7 +439,6 @@ class GRLoadDataHandle {
                                 }
                                 tableWH.DataTable().clear().draw();
                                 tableWH.DataTable().rows.add(data.warehouse_list).draw();
-                                GRLoadDataHandle.loadEventCheckbox(tableWH);
                                 GRLoadDataHandle.loadAreaLotOrAreaSerial();
                             }
                         }
@@ -1292,7 +1273,6 @@ class GRLoadDataHandle {
                             }
                             GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                             GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
-                            GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
                         }
                     }
                 }
@@ -1316,7 +1296,6 @@ class GRLoadDataHandle {
             }
             GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
             GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
-            GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
         }
         if (typeGR === '3' && (GRLoadDataHandle.$boxProductionOrder.val() || GRLoadDataHandle.$boxWorkOrder.val())) {
             let idList = [];
@@ -1364,7 +1343,6 @@ class GRLoadDataHandle {
                                 }
                                 GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                                 GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
-                                GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
                             }
                         }
                     }
@@ -1531,6 +1509,7 @@ class GRDataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 GRLoadDataHandle.loadCssToDtb('datable-good-receipt-po-product');
+                GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePOProduct);
             },
         });
     };
@@ -1605,6 +1584,7 @@ class GRDataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 GRLoadDataHandle.loadCssToDtb('datable-good-receipt-purchase-request');
+                GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePR);
             },
         });
     };
@@ -1622,22 +1602,18 @@ class GRDataTableHandle {
                         return `<div class="form-check form-check-lg">
                                     <input 
                                         type="radio" 
-                                        class="form-check-input table-row-checkbox" 
+                                        class="form-check-input table-row-checkbox"
+                                        name="row-checkbox"
                                         id="wh-${row?.['warehouse_id'].replace(/-/g, "")}"
                                         data-id="${row?.['warehouse_id']}" 
                                     >
-                                    <label class="form-check-label table-row-code" for="wh-${row?.['warehouse_id'].replace(/-/g, "")}">${row?.['code'] ? row?.['code'] : ''}</label>
+                                    <span class="badge badge-success badge-outline table-row-code">${row?.['title'] ? row?.['title'] : ''}</span>
+                                    <label class="form-check-label table-row-title" for="wh-${row?.['warehouse_id'].replace(/-/g, "")}">${row?.['title'] ? row?.['title'] : ''}</label>
                                 </div>`;
                     }
                 },
                 {
                     targets: 1,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-item">${row?.['title'] ? row?.['title'] : ''}</span>`;
-                    }
-                },
-                {
-                    targets: 2,
                     render: (data, type, row) => {
                         let checked = ``;
                         if (row?.['is_additional'] === true) {
@@ -1661,7 +1637,7 @@ class GRDataTableHandle {
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: (data, type, row) => {
                         let disabled = '';
                         if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
@@ -1687,7 +1663,7 @@ class GRDataTableHandle {
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
                         return `<span class="table-row-uom">${row?.['uom_data']?.['title'] ? row?.['uom_data']?.['title'] : ''}</span>`;
                     }
@@ -1696,6 +1672,7 @@ class GRDataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 GRLoadDataHandle.loadCssToDtb('datable-good-receipt-warehouse');
+                GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tableWH);
             },
         });
     };
@@ -2261,7 +2238,6 @@ class GRStoreDataHandle {
             rowData['warehouse_id'] = rowData?.['id'];
             rowData['warehouse_data'] = {'id': rowData?.['id'], 'title': rowData?.['title'], 'code': rowData?.['code']};
             tableWH.DataTable().row(rowIndex).data(rowData).draw();
-            GRLoadDataHandle.loadEventCheckbox(tableWH);
             if (checked) {
                 row.querySelector('.table-row-checkbox').checked = true;
             }
@@ -2283,7 +2259,6 @@ class GRStoreDataHandle {
                 rowData['quantity_import'] = parseFloat(row.querySelector('.table-row-import').innerHTML);
             }
             tablePR.DataTable().row(rowIndex).data(rowData).draw();
-            GRLoadDataHandle.loadEventCheckbox(tablePR);
             if (checked) {
                 row.querySelector('.table-row-checkbox').checked = true;
             }
@@ -2306,7 +2281,6 @@ class GRStoreDataHandle {
                 }
                 rowData['quantity_import'] = parseFloat(rowChecked.querySelector('.table-row-import').innerHTML);
                 tablePO.DataTable().row(rowIndex).data(rowData).draw();
-                GRLoadDataHandle.loadEventCheckbox(tablePO);
                 rowChecked.querySelector('.table-row-checkbox').checked = true;
             }
         }

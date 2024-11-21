@@ -52,32 +52,32 @@ class WorkOrderLoadDataHandle {
         return true;
     };
 
-    static loadEventCheckbox($table) {
-        let checkboxes = $table[0].querySelectorAll('.form-check-input[type="radio"]');
-        checkboxes.forEach((checkbox) => {
-            checkbox.addEventListener('click', function () {
-                let checked = checkbox.checked;
+    static loadEventRadio($area) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function () {
+            // Find and mark the radio button inside this group as checked
+            let radio = this.querySelector('.form-check-input');
+            if (radio) {
+                let checkboxes = $area[0].querySelectorAll('.form-check-input[type="radio"]');
+                // Uncheck all radio buttons and reset row styles
                 for (let eleCheck of checkboxes) {
                     eleCheck.checked = false;
                     let row = eleCheck.closest('tr');
                     if (row) {
-                        $(row).css('background-color', '');
                         if (row.querySelector('.table-row-quantity')) {
                             row.querySelector('.table-row-quantity').setAttribute('disabled', 'true');
                         }
                     }
                 }
-                checkbox.checked = checked;
-                let row = checkbox.closest('tr');
+                // Set the current radio button as checked and apply style
+                radio.checked = true;
+                let row = radio.closest('tr');
                 if (row) {
-                    if (checked === true) {
-                        $(row).css('background-color', '#ebfcf5');
-                        if (row.querySelector('.table-row-quantity')) {
-                            row.querySelector('.table-row-quantity').removeAttribute('disabled');
-                        }
+                    if (row.querySelector('.table-row-quantity')) {
+                        row.querySelector('.table-row-quantity').removeAttribute('disabled');
                     }
                 }
-            });
+            }
         });
         return true;
     };
@@ -187,7 +187,6 @@ class WorkOrderLoadDataHandle {
                                         checkList.push(soProduct?.['product_data']?.['id']);
                                     }
                                     WorkOrderDataTableHandle.$tableSOProd.DataTable().rows.add(fnData).draw();
-                                    WorkOrderLoadDataHandle.loadEventCheckbox(WorkOrderDataTableHandle.$tableSOProd);
                                     WorkOrderLoadDataHandle.loadEventValidQuantity(WorkOrderDataTableHandle.$tableSOProd);
                                     for (let ele of WorkOrderDataTableHandle.$tableSOProd[0].querySelectorAll('.table-row-quantity')) {
                                         WorkOrderLoadDataHandle.loadEventValidNum(ele);
@@ -821,7 +820,7 @@ class WorkOrderDataTableHandle {
             ],
             drawCallback: function () {
                 // add css to Dtb
-                // WorkOrderLoadDataHandle.loadCssToDtb('datable-good-receipt-po-product');
+                WorkOrderLoadDataHandle.loadEventRadio(WorkOrderDataTableHandle.$tableSOProd);
             },
         });
     };

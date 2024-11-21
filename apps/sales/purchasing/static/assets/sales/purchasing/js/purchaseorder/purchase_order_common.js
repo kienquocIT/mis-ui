@@ -10,6 +10,8 @@ class POLoadDataHandle {
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
     static $btnAddProduct = $('#btn-add-product-purchase-order');
     static $btnAddShipping = $('#btn-add-shipping-purchase-order');
+    static $priceModal = $('#viewPriceModal');
+    static $elePQ = $('#purchase-order-purchase-quotation');
     static transEle = $('#app-trans-factory');
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -42,6 +44,67 @@ class POLoadDataHandle {
                 $render.css('max-width', maxWidth);
             }
         }
+        return true;
+    };
+
+    static loadEventCheckbox($area, trigger = false) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function (event) {
+            // Prevent handling if the direct checkbox is clicked
+            if (event.target.classList.contains('form-check-input')) {
+                return; // Let the checkbox handler handle this
+            }
+
+            // Find the checkbox inside the clicked element
+            let checkbox = this.querySelector('.form-check-input[type="checkbox"]');
+            if (checkbox) {
+                // Check if the checkbox is disabled
+                if (checkbox.disabled) {
+                    return; // Exit early if the checkbox is disabled
+                }
+                // Prevent the default behavior
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                // Toggle the checkbox state manually
+                checkbox.checked = !checkbox.checked;
+                // Optional: Trigger a change event if needed
+                if (trigger === true) {
+                    $(checkbox).trigger('change');
+                }
+            }
+        });
+
+        // Handle direct clicks on the checkbox itself
+        $area.on('click', '.form-check-input', function (event) {
+            // Prevent the default behavior to avoid double-triggering
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            // Checkbox state is toggled naturally, so no need to modify it
+            if (trigger === true) {
+                $(this).trigger('change'); // Optional: Trigger change event explicitly
+            }
+        });
+
+        return true;
+    };
+
+    static loadEventRadio($area) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function () {
+            // Find and mark the radio button inside this group as checked
+            let radio = this.querySelector('.form-check-input');
+            if (radio) {
+                let checkboxes = $area[0].querySelectorAll('.form-check-input[type="radio"]');
+                // Uncheck all radio buttons and reset row styles
+                for (let eleCheck of checkboxes) {
+                    eleCheck.checked = false;
+                }
+                // Set the current radio button as checked and apply style
+                radio.checked = true;
+            }
+        });
         return true;
     };
 
@@ -186,6 +249,7 @@ class POLoadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
+                            tablePurchaseRequestProduct.DataTable().clear().draw();
                             if (Object.keys(checked_data).length !== 0) {
                                 for (let prProduct of data.purchase_request_product_list) {
                                     if (checked_data.hasOwnProperty(prProduct.id)) {
@@ -253,7 +317,6 @@ class POLoadDataHandle {
                 eleAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                     <span>
                                         <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
-                                        <button type="button" class="btn-close custom-btn-remove" data-id="${prID}"></button>
                                     </span>
                                 </div>`;
                 purchase_requests_data.push(prID);
@@ -330,7 +393,6 @@ class POLoadDataHandle {
                         tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_sale_list).draw();
                         if (is_remove === true) {
                             POLoadDataHandle.loadDataShowPurchaseQuotation();
-                            POLoadDataHandle.loadPriceListByPurchaseQuotation();
                             POLoadDataHandle.loadAllTablesDisabled();
                         }
                     }
@@ -365,9 +427,8 @@ class POLoadDataHandle {
                                 <span>
                                     <div class="form-check">
                                         <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
-                                        <label class="form-check-label"><a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${pqCode}</span></a></label>
+                                        <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${pqCode}</span></a>
                                     </div>
-                                    <button type="button" class="btn-close custom-btn-remove" data-id="${pqID}"></button>
                                 </span>
                             </div>`;
             purchase_quotations_data.push({
@@ -422,7 +483,6 @@ class POLoadDataHandle {
                 }
             }
             POLoadDataHandle.loadDataShowPurchaseQuotation();
-            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         }
     };
 
@@ -541,7 +601,7 @@ class POLoadDataHandle {
         }
     };
 
-    static loadPriceListByPurchaseQuotation() {
+    static loadPriceListPQ(ele) {
         let eleQuotationProduct = $('#data-purchase-quotation-products');
         let PQIDList = [];
         let checked_id = null;
@@ -557,108 +617,112 @@ class POLoadDataHandle {
                 }
             }
         }
-        if (PQIDList.length > 0) { // Has PQ
-            $.fn.callAjax2({
-                    'url': eleQuotationProduct.attr('data-url'),
-                    'method': eleQuotationProduct.attr('data-method'),
-                    'data': {'purchase_quotation_id__in': PQIDList.join(',')},
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('purchase_quotation_product_list') && Array.isArray(data.purchase_quotation_product_list)) {
-                            let dataProduct = {};
-                            let dataPQMapProducts = {};
-                            for (let result of data.purchase_quotation_product_list) {
-                                // setup data to load price list
-                                if (!dataProduct.hasOwnProperty(result?.['product_id'])) {
-                                    dataProduct[result?.['product_id']] = [{
-                                        'purchase_quotation': result?.['purchase_quotation'],
-                                        'unit_price': result?.['unit_price'],
-                                        'uom': result?.['uom'],
-                                    }]
-                                } else {
-                                    dataProduct[result?.['product_id']].push({
-                                        'purchase_quotation': result?.['purchase_quotation'],
-                                        'unit_price': result?.['unit_price'],
-                                        'uom': result?.['uom'],
-                                    })
+        let modalBody = POLoadDataHandle.$priceModal[0].querySelector('.modal-body');
+        if (modalBody) {
+            $(modalBody).empty();
+            if (PQIDList.length > 0) { // Has PQ
+                $.fn.callAjax2({
+                        'url': eleQuotationProduct.attr('data-url'),
+                        'method': eleQuotationProduct.attr('data-method'),
+                        'data': {'purchase_quotation_id__in': PQIDList.join(',')},
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('purchase_quotation_product_list') && Array.isArray(data.purchase_quotation_product_list)) {
+                                let dataProduct = {};
+                                let dataPQMapProducts = {};
+                                for (let result of data.purchase_quotation_product_list) {
+                                    // setup data to load price list
+                                    if (!dataProduct.hasOwnProperty(result?.['product_id'])) {
+                                        dataProduct[result?.['product_id']] = [{
+                                            'purchase_quotation': result?.['purchase_quotation'],
+                                            'unit_price': result?.['unit_price'],
+                                            'uom': result?.['uom'],
+                                        }]
+                                    } else {
+                                        dataProduct[result?.['product_id']].push({
+                                            'purchase_quotation': result?.['purchase_quotation'],
+                                            'unit_price': result?.['unit_price'],
+                                            'uom': result?.['uom'],
+                                        })
+                                    }
+                                    // setup data to load again product by check PQ
+                                    if (!dataPQMapProducts.hasOwnProperty(result?.['purchase_quotation']?.['id'])) {
+                                        dataPQMapProducts[result?.['purchase_quotation']?.['id']] = [result?.['product_id']];
+                                    } else {
+                                        dataPQMapProducts[result?.['purchase_quotation']?.['id']].push(result?.['product_id']);
+                                    }
                                 }
-                                // setup data to load again product by check PQ
-                                if (!dataPQMapProducts.hasOwnProperty(result?.['purchase_quotation']?.['id'])) {
-                                    dataPQMapProducts[result?.['purchase_quotation']?.['id']] = [result?.['product_id']];
-                                } else {
-                                    dataPQMapProducts[result?.['purchase_quotation']?.['id']].push(result?.['product_id']);
-                                }
-                            }
-                            eleQuotationProduct.val(JSON.stringify(dataPQMapProducts));
-                            $table.DataTable().rows().every(function () {
-                                let row = this.node();
+                                eleQuotationProduct.val(JSON.stringify(dataPQMapProducts));
+                                let row = ele.closest('tr');
                                 let eleUOM = row.querySelector('.table-row-uom-order-actual');
                                 let priceListData = dataProduct[row.querySelector('.table-row-item').getAttribute('data-product-id')];
                                 let elePrice = row.querySelector('.table-row-price');
-                                let elePriceList = row.querySelector('.table-row-price-list');
                                 if (priceListData) {
-                                    elePrice.setAttribute('disabled', 'true');
-                                    $(elePrice).attr('value', String(0));
-                                    if (elePriceList) {
-                                        $(elePriceList).empty();
-                                        let htmlDD = ``;
-                                        for (let price of priceListData) {
-                                            let priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1" id="${price?.['purchase_quotation']?.['id']}" data-value="${parseFloat(price?.['unit_price'])}">
-                                                                    <div class="d-flex">
-                                                                        <span class="mr-5">${price?.['purchase_quotation']?.['title']}</span>
-                                                                        <span
-                                                                            class="mask-money mr-5" data-init-money="${parseFloat(price?.['unit_price'])}"
-                                                                        ></span>
-                                                                        <span>${price?.['uom']?.['title']}</span>
-                                                                    </div>
-                                                                </div>`
-                                            if (price?.['purchase_quotation']?.['id'] === checked_id) { // If check PQ
-                                                priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1 bg-light" id="${price?.['purchase_quotation']?.['id']}" data-value="${parseFloat(price?.['unit_price'])}">
-                                                                    <div class="d-flex">
-                                                                        <span class="mr-5">${price?.['purchase_quotation']?.['title']}</span>
-                                                                        <span
-                                                                            class="mask-money mr-5" data-init-money="${parseFloat(price?.['unit_price'])}"
-                                                                        ></span>
-                                                                        <span>${price?.['uom']?.['title']}</span>
-                                                                    </div>
-                                                                </div>`;
-                                                // Price && UOM must follow PQ checked
-                                                $(elePrice).attr('value', String(parseFloat(price?.['unit_price'])));
-                                                $(eleUOM).empty();
-                                                POLoadDataHandle.loadInitS2($(eleUOM), [price?.['uom']], {'group': price?.['uom']?.['uom_group']?.['id']});
-                                                $(eleUOM).change();
-                                                $(eleUOM).attr('disabled', 'true');
-                                            }
-                                            htmlDD += priceAppend;
-                                            // $(elePriceList).append(priceAppend);
+                                    let htmlPriceList = ``;
+                                    for (let price of priceListData) {
+                                        let checked = '';
+                                        if (price?.['purchase_quotation']?.['id'] === checked_id) {
+                                            checked = 'checked';
                                         }
-                                        $(elePriceList).append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-60p position-relative overflow-y-scroll">${htmlDD}</div>`);
-                                        $.fn.initMaskMoney2();
-                                        POCalculateHandle.calculateMain($table, row);
+                                        htmlPriceList += `<div class="d-flex justify-content-between align-items-center">
+                                                                <div class="form-check form-check-lg">
+                                                                    <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="pq-price-${price?.['purchase_quotation']?.['id'].replace(/-/g, "")}" data-value="${parseFloat(price?.['unit_price'])}" disabled ${checked}>
+                                                                    <label class="form-check-label" for="pq-price-${price?.['purchase_quotation']?.['id'].replace(/-/g, "")}">${price?.['purchase_quotation']?.['title']}</label>
+                                                                </div>
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <span class="mask-money mr-2" data-init-money="${parseFloat(price?.['unit_price'])}"></span>
+                                                                    <span class="mr-2">/</span>
+                                                                    <span class="badge badge-light">${price?.['uom']?.['title']}</span>
+                                                                </div>
+                                                            </div>`;
+
+                                        if (price?.['purchase_quotation']?.['id'] === checked_id) { // If check PQ
+                                            // Price && UOM must follow PQ checked
+                                            $(elePrice).attr('value', String(parseFloat(price?.['unit_price'])));
+                                            $(eleUOM).empty();
+                                            POLoadDataHandle.loadInitS2($(eleUOM), [price?.['uom']], {'group': price?.['uom']?.['uom_group']?.['id']});
+                                            $(eleUOM).change();
+                                            $(eleUOM).attr('disabled', 'true');
+                                        }
                                     }
+                                    $(modalBody).append(`${htmlPriceList}`);
+                                    $.fn.initMaskMoney2();
+                                    POCalculateHandle.calculateMain($table, row);
                                 }
-                            });
-                            // mask money
-                            $.fn.initMaskMoney2();
+                                // mask money
+                                $.fn.initMaskMoney2();
+                            }
                         }
                     }
-                }
-            )
-        } else { // No PQ
-            $table.DataTable().rows().every(function () {
-                let row = this.node();
-                let elePrice = row.querySelector('.table-row-price');
-                let elePriceList = row.querySelector('.table-row-price-list');
-                elePrice.removeAttribute('disabled');
-                $(elePriceList).empty();
-            });
+                )
+            }
         }
         return true
     };
+
+    static loadCheckPQ(ele) {
+        POLoadDataHandle.loadUpdateDataPQ(ele);
+        POLoadDataHandle.loadSupplierContactByCheckedQuotation(ele);
+        POLoadDataHandle.loadDataByCheckedQuotation(ele);
+        if (ele.checked === true) {
+            for (let item of POLoadDataHandle.$elePQ[0].querySelectorAll('.checkbox-quotation')) {
+                if (item.getAttribute('data-id') !== $(this)[0].getAttribute('data-id')) {
+                    item.checked = false;
+                }
+            }
+        }
+        PODataTableHandle.$tablePOByRequest.DataTable().rows().every(function () {
+            let row = this.node();
+            if (row.querySelector('.btn-view-price')) {
+                POLoadDataHandle.loadPriceListPQ(row.querySelector('.btn-view-price'));
+            }
+        });
+        return true;
+    }
 
     static loadDataByCheckedQuotation(ele) {
         if (POLoadDataHandle.PRDataEle.val()) {  // PO PR products
@@ -699,13 +763,10 @@ class POLoadDataHandle {
                 }
             }
             POLoadDataHandle.loadTableProductByPurchaseRequest();
-            POLoadDataHandle.loadPriceListByPurchaseQuotation();
             if (isProductNotIn === true) {
                 $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-product-not-in') + ' ' + POLoadDataHandle.transEle.attr('data-purchase-quotation')}, 'failure');
                 return false;
             }
-        } else {  // PO Add Products
-            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         }
     };
 
@@ -748,7 +809,6 @@ class POLoadDataHandle {
         // Load again data & events relate with Purchase Request
         $('#purchase-order-purchase-request').empty();
         POLoadDataHandle.loadModalPurchaseRequestTable(is_clear_all);
-        $('#datable-purchase-request')[0].querySelector('.table-checkbox-all').checked = false;
         POLoadDataHandle.loadModalPurchaseRequestProductTable(is_clear_all);
         // Load again data & events relate with Purchase Quotation
         $('#purchase-order-purchase-quotation').empty();
@@ -961,14 +1021,12 @@ class POLoadDataHandle {
                 elePRAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                     <span>
                                         <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
-                                        <button type="button" class="btn-close custom-btn-remove" data-id="${prID}" disabled></button>
                                     </span>
                                 </div>`;
             } else {
                 elePRAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                     <span>
                                         <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
-                                        <button type="button" class="btn-close custom-btn-remove" data-id="${prID}"></button>
                                     </span>
                                 </div>`;
             }
@@ -993,7 +1051,6 @@ class POLoadDataHandle {
                                                 <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" disabled>
                                                 <label class="form-check-label"><a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${pqCode}</span></a></label>
                                             </div>
-                                            <button type="button" class="btn-close custom-btn-remove" data-id="${pqID}" disabled></button>
                                         </span>
                                     </div>`;
                 } else {
@@ -1003,7 +1060,6 @@ class POLoadDataHandle {
                                                 <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked disabled>
                                                 <label class="form-check-label"><a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${pqCode}</span></a></label>
                                             </div>
-                                            <button type="button" class="btn-close custom-btn-remove" data-id="${pqID}" disabled></button>
                                         </span>
                                     </div>`;
                 }
@@ -1015,7 +1071,6 @@ class POLoadDataHandle {
                                                 <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
                                                 <label class="form-check-label"><a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${pqCode}</span></a></label>
                                             </div>
-                                            <button type="button" class="btn-close custom-btn-remove" data-id="${pqID}"></button>
                                         </span>
                                     </div>`;
                 } else {
@@ -1025,7 +1080,6 @@ class POLoadDataHandle {
                                                 <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked>
                                                 <label class="form-check-label"><a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${pqCode}</span></a></label>
                                             </div>
-                                            <button type="button" class="btn-close custom-btn-remove" data-id="${pqID}"></button>
                                         </span>
                                     </div>`;
                 }
@@ -1223,6 +1277,8 @@ class PODataTableHandle {
     static productInitEle = $('#data-init-product');
     static uomInitEle = $('#data-init-uom');
     static taxInitEle = $('#data-init-tax');
+    static $tablePOByRequest = $('#datable-purchase-order-product-request');
+    static $tablePOByAdd = $('#datable-purchase-order-product-add');
 
     static dataTablePurchaseRequest() {
         let $table = $('#datable-purchase-request');
@@ -1276,21 +1332,17 @@ class PODataTableHandle {
                             disabled = 'disabled';
                         }
                         return `<div class="form-check form-check-lg">
-                                    <input type="checkbox" class="form-check-input table-row-checkbox" id="pr-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}" ${checked} ${disabled}>
+                                    <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="pr-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}" ${checked} ${disabled}>
+                                    <span class="badge badge-soft-success table-row-code">${row?.['code']}</span>
                                     <label class="form-check-label table-row-title" for="pr-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
                                 </div>`;
                     },
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-code">${row.code}</span>`
-                    }
                 },
             ],
             drawCallback: function () {
                 // add css to Dtb
                 POLoadDataHandle.loadCssToDtb('datable-purchase-request');
+                POLoadDataHandle.loadEventCheckbox($table, true);
             },
         });
     };
@@ -1500,12 +1552,12 @@ class PODataTableHandle {
                                 disabled = 'disabled';
                             }
                             return `<div class="form-check form-check-lg">
-                                        <input type="checkbox" class="form-check-input table-row-checkbox" id="pq-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}" ${checked} ${disabled}>
-                                        <label class="form-check-label table-row-title" for="pq-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                        <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="pq-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}" ${checked} ${disabled}>
                                         <span class="badge badge-soft-success table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>
+                                        <label class="form-check-label table-row-title" for="pq-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
                                     </div>`;
                         }
-                        return `<span>--</span>`;
+                        return ``;
                     },
                 },
                 {
@@ -1516,7 +1568,7 @@ class PODataTableHandle {
                             return `<span class="badge badge-soft-pink">${row?.['supplier_mapped']?.['code'] ? row?.['supplier_mapped']?.['code'] : ''}</span>
                                     <span class="table-row-supplier" data-supplier="${dataSupplier}" id="${row?.['supplier_mapped']?.['id']}">${row?.['supplier_mapped']?.['name']}</span>`;
                         }
-                        return `<span>--</span>`;
+                        return ``;
                     }
                 },
                 {
@@ -1526,12 +1578,14 @@ class PODataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                POLoadDataHandle.loadEventCheckbox($table);
+            },
         });
     };
 
     static dataTablePurchaseOrderProductRequest(data) {
-        let $table = $('#datable-purchase-order-product-request');
-        $table.DataTableDefault({
+        PODataTableHandle.$tablePOByRequest.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
             ordering: false,
@@ -1630,19 +1684,20 @@ class PODataTableHandle {
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <div class="dropend">
-                                        <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
-                                        <span class="input-affix-wrapper">
+                                        <div class="input-group input-group-price">
                                             <input 
                                                 type="text" 
                                                 class="form-control mask-money table-row-price" 
                                                 value="${row?.['product_unit_price']}"
                                                 data-return-type="number"
                                             >
-                                            <span class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></span>
-                                        </span>
-                                        </div>
-                                        <div role="menu" class="dropdown-menu table-row-price-list w-460p">
-                                        <a class="dropdown-item" data-value=""></a>
+                                            <button
+                                                type="button"
+                                                class="btn btn-icon btn-light btn-view-price"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#viewPriceModal"
+                                            ><i class="fas fa-ellipsis-h"></i>
+                                            </button>
                                         </div>
                                     </div>`;
                     }
@@ -1699,8 +1754,7 @@ class PODataTableHandle {
     };
 
     static dataTablePurchaseOrderProductAdd(data) {
-        let $table = $('#datable-purchase-order-product-add');
-        $table.DataTableDefault({
+        PODataTableHandle.$tablePOByAdd.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
             ordering: false,

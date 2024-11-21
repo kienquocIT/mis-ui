@@ -27,6 +27,8 @@
     >
         {% csrf_token %}
         <div class="collapse show" id="collapseInfo">
+            {% trans 'Select Sale Person' as inherit_title %}
+            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
@@ -64,10 +66,6 @@
             </div>
 
             <div class="row">
-                <div class="col-12 col-md-6 col-lg-6">
-                    {% trans 'Select Sale Person' as inherit_title %}
-                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
-                </div>
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">

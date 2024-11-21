@@ -11,8 +11,8 @@ let NOW_ROW = null
 let IS_DETAIL_PAGE = false
 let IS_UPDATE_PAGE = false
 let DOC_DONE = false
-const company_current_data = JSON.parse($('#company_current_data').text());
 let is_project = false
+const company_current_data = JSON.parse($('#company_current_data').text());
 if (company_current_data) {
     let company_current_data_ajax = $.fn.callAjax2({
         url: $url_script.attr('data-url-company-detail').replace('/0', `/${company_current_data?.['id']}`),

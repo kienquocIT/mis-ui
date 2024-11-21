@@ -1529,7 +1529,7 @@ class QuotationLoadDataHandle {
                         dataUOM = data?.['uom_data'];
                         dataTax = data?.['tax_data'];
                         valueQuantity = 0;
-                        valueQuantity = data?.['product_unit_price'];
+                        valueQuantity = data?.['product_quantity'];
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,

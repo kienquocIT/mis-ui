@@ -158,7 +158,6 @@ class ReportInventoryList(View):
                     'current_period': resp1.result[0],
                     'definition_inventory_valuation': resp2.result['definition_inventory_valuation'],
                     'company_current_data': request.user.company_current_data,
-                    # 'is_project': resp3.result['cost_cfg'].get('cost_per_project')
                 },
             }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK

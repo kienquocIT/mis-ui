@@ -1,71 +1,56 @@
 {% load i18n %}
 
-<div class="accordion accordion-card accordion-soft accordion-icon" id="accordionPanelsStayOpenExampleOne">
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                <span class="d-flex align-items-center">
-                    <i class="fas fa-info-circle mr-2 text-primary"></i>
-                    <span>
-                        <span>{% trans 'Information' %}</span>
-                    </span>
-                </span>
-            </button>
-        </h2>
-        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-            <div class="accordion-body">
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-8">
-                        <div class="form-group">
-                            <label for="title" class="form-label required">{% trans 'Title' %}</label>
-                            <input type="text" class="form-control" id="title">
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3 col-lg-2">
-                        <div class="form-group">
-                            <label for="date" class="form-label">{% trans 'Date created' %}</label>
-                            <input type="text" class="form-control form-control-line" id="date">
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3 col-lg-2">
-                        <div class="form-group">
-                            <label for="date" class="form-label">{% trans 'Status' %}</label>
-                            <input disabled readonly type="text" class="form-control form-control-line" id="state-detail" value="{% trans 'IA Created' %}">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="form-group">
-                            <label for="warehouse-select-box" class="form-label required">{% trans 'Warehouse' %}</label>
-                            <select class="form-select select2 select-multiple"
-                                    data-url="{% url 'WareHouseListAPI' %}"
-                                    data-method="GET"
-                                    id="warehouse-select-box" multiple>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="form-group">
-                            <label for="in-charge-select-box" class="form-label required">{% trans 'In charge' %}</label>
-                            <select class="form-select select2 select-multiple"
-                                    data-url="{% url 'EmployeeListAPI' %}"
-                                    data-method="GET"
-                                    id="in-charge-select-box" multiple>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="form-group">
-                            <label for="status" class="form-label">{% trans 'Action' %}</label>
-                            <div class="row">
-                                <div class="col-6">
-                                    <button id="start-ia" type="button" class="btn btn-primary btn-animated w-100"><span><span class="icon"><span class="feather-icon"><i class="fas fa-tasks"></i></span></span><span>{% trans 'Start IA' %}</span></span></button>
-                                </div>
-                                <div class="col-6">
-                                    <button id="done-ia" type="button" class="btn btn-success btn-animated w-100"><span><span class="icon"><span class="feather-icon"><i class="fas fa-check"></i></span></span><span>{% trans 'Done IA' %}</span></span></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<div class="row">
+    <div class="col-12 mb-2">
+        <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'General Information' %}</h5>
+    </div>
+    <div class="col-12 col-md-6 col-lg-8">
+        <div class="form-group">
+            <label for="title" class="form-label required">{% trans 'Title' %}</label>
+            <input type="text" class="form-control" id="title">
+        </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-2">
+        <div class="form-group">
+            <label for="date" class="form-label">{% trans 'Date created' %}</label>
+            <input type="text" class="form-control form-control-line" id="date">
+        </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-2">
+        <div class="form-group">
+            <label for="date" class="form-label">{% trans 'Status' %}</label>
+            <input disabled readonly type="text" class="form-control form-control-line" id="state-detail" value="{% trans 'IA Created' %}">
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="form-group">
+            <label for="warehouse-select-box" class="form-label required">{% trans 'Warehouse' %}</label>
+            <select class="form-select select2 select-multiple"
+                    data-url="{% url 'WareHouseListAPI' %}"
+                    data-method="GET"
+                    id="warehouse-select-box" multiple>
+            </select>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="form-group">
+            <label for="in-charge-select-box" class="form-label required">{% trans 'In charge' %}</label>
+            <select class="form-select select2 select-multiple"
+                    data-url="{% url 'EmployeeListAPI' %}"
+                    data-method="GET"
+                    id="in-charge-select-box" multiple>
+            </select>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="form-group">
+            <label for="status" class="form-label">{% trans 'Action' %}</label>
+            <div class="row">
+                <div class="col-6">
+                    <button id="start-ia" type="button" class="btn btn-primary btn-animated w-100"><span><span class="icon"><span class="feather-icon"><i class="fas fa-tasks"></i></span></span><span>{% trans 'Start IA' %}</span></span></button>
+                </div>
+                <div class="col-6">
+                    <button id="done-ia" type="button" class="btn btn-success btn-animated w-100"><span><span class="icon"><span class="feather-icon"><i class="fas fa-check"></i></span></span><span>{% trans 'Done IA' %}</span></span></button>
                 </div>
             </div>
         </div>

@@ -69,7 +69,7 @@ class ReturnAPLoadTab {
         let $table = $('#dtbProduct')
         $table.DataTable().clear().destroy()
         $table.DataTableDefault({
-            styleDom: 'hide-foot',
+            dom: 't',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,

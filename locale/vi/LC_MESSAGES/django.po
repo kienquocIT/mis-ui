@@ -9703,3 +9703,9 @@ msgstr "Kho"
 #
 msgid "State"
 msgstr "Trạng thái"
+
+
+#
+msgid "New Contact Shortcut"
+msgstr "Tạo nhanh Liên hệ"
+

@@ -83,14 +83,9 @@ class SaleOrderCreate(View):
     )
     def get(self, request, *args, **kwargs):
         data_copy_to = request.GET.get('data_copy_to', "")
-        opportunity = request.GET.get('opportunity', "")
-        recurrence_template_id = request.GET.get('recurrence_template_id', None)
         result = {
             'employee_current': request.user.employee_current_data,
             'data_copy_to': data_copy_to,
-            'opportunity': json.loads(opportunity) if opportunity else {},
-            'recurrence_template_id': recurrence_template_id,
-
             'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
             'form_id': 'frm_quotation_create',
             'list_from_app': 'saleorder.saleorder.create',

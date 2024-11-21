@@ -1229,6 +1229,63 @@ class OpportunityActivity {
             }
         });
     };
+
+    static loadOpenRelateApp(ele, $tableTimeLine, oppParamStr) {
+        // check permission before redirect
+        let $dataDetail = $('#data-detail');
+        let transEle = $('#trans-factory');
+        if ($(ele).attr('data-label') && $dataDetail.val()) {
+            let detail = JSON.parse($dataDetail.val());
+            let label = $(ele).attr('data-label');
+            let appMapPerm = {
+                'quotation.quotation': 'quotation.quotation.create',
+                'saleorder.saleorder': 'saleorder.saleorder.create',
+            };
+            let tableData = $tableTimeLine.DataTable().rows().data().toArray();
+            $.fn.callAjax2({
+                    'url': $('#script-url').attr('data-url-opp-list'),
+                    'method': 'GET',
+                    'data': {'list_from_app': appMapPerm[label]},
+                    isLoading: true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                            for (let opp of data.opportunity_list) {  // check employee has opp permission on quotation/ sale order
+                                if (opp?.['id'] === detail?.['id']) {
+                                    // check opp already has quotation/ sale order
+                                    for (let tData of tableData) {
+                                        if (label === 'quotation.quotation') {
+                                            if (tData?.['app_code'] === 'saleorder.saleorder' && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
+                                                $.fn.notifyB({description: transEle.attr('data-cancel-quo-so')}, 'failure');
+                                                return false
+                                            }
+                                        }
+                                        if (tData?.['app_code'] === label && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
+                                            let errTxt = transEle.attr('data-cancel-quo');
+                                            if (label === 'saleorder.saleorder') {
+                                                errTxt = transEle.attr('data-cancel-so');
+                                            }
+                                            $.fn.notifyB({description: errTxt}, 'failure');
+                                            return false;
+                                        }
+                                    }
+                                    let url = $(ele).data('url') + `?opp_id=${oppParamStr?.['id']}`;
+                                    window.open(url, '_blank');
+                                    return true;
+                                }
+                            }
+                            $.fn.notifyB({description: transEle.attr('data-forbidden')}, 'failure');
+                            return false;
+                        }
+                    }
+                }
+            )
+        }
+        return true;
+    }
 }
 
 // function in page list

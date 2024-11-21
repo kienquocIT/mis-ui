@@ -2,7 +2,8 @@ $(document).ready(function () {
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
     const urlParams = new URLSearchParams(window.location.search)
-    let opportunity_json= urlParams.get('opp_id')
+
+    let opportunity_json = urlParams.get('opp_mapped')
     let opportunity = opportunity_json ? JSON.parse(decodeURIComponent(opportunity_json)) : null
     if (!opportunity) {
         opportunity = urlParams.get('opp_id') ? {
@@ -11,6 +12,7 @@ $(document).ready(function () {
             'code': urlParams.get('opp_code')
         } : null
     }
+
     let quotation_json= urlParams.get('quotation_object')
     let quotation = quotation_json ? JSON.parse(decodeURIComponent(quotation_json)) : null
     let sale_order_json= urlParams.get('sale_order_object')

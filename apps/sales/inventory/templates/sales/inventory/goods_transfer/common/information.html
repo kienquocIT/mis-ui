@@ -1,0 +1,25 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12 mb-2">
+        <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'General Information' %}</h5>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="title" class="form-label required">{% trans 'Title' %}</label>
+            <input type="text" class="form-control" id="title">
+        </div>
+    </div>
+    <div class="col-12 col-lg-2 col-md-2" hidden>
+        <div class="form-group">
+            <label for="date" class="form-label">{% trans 'Date created' %}</label>
+            <input type="text" class="form-control form-control-line" id="date" disabled readonly>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6 col-md-6">
+        <div class="form-group">
+            <label for="note" class="form-label">{% trans 'Note' %}</label>
+            <textarea type="text" class="form-control" id="note"></textarea>
+        </div>
+    </div>
+</div>

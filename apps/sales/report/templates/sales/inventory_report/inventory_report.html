@@ -59,7 +59,7 @@
 {% block pageContent %}
     {{ data.data.current_period | json_script:"current_period" }}
     {{ data.data.definition_inventory_valuation | json_script:"definition_inventory_valuation" }}
-    {{ data.data.is_project | json_script:"is_project" }}
+    {{ data.data.company_current_data | json_script:"company_current_data" }}
 
     <script id="trans-script"
             data-trans-m1th="{% trans 'January' %}"
@@ -102,6 +102,7 @@
             data-url-inventory-list-view="{% url 'ReportInventoryProductWarehouseViewAPI' %}"
             data-url-qr-code-sn-info="{% url 'GetQRCodeSerialInfoAPI' %}"
             data-url-qr-code-lot-info="{% url 'GetQRCodeLotInfoAPI' %}"
+            data-url-company-config-detail="{% url 'CompanyConfigDetailAPI' %}"
 {#            data-url-chatbot="{% url 'ReportInventoryChatBotAPI' %}"#}
     ></script>
 

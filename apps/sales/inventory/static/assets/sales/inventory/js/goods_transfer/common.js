@@ -15,14 +15,14 @@ let is_project = false
 const company_current_data = JSON.parse($('#company_current_data').text());
 if (company_current_data) {
     let company_current_data_ajax = $.fn.callAjax2({
-        url: $url_script.attr('data-url-company-detail').replace('/0', `/${company_current_data?.['id']}`),
+        url: $url_script.attr('data-url-company-config-detail') + `?company_id=${company_current_data?.['id']}`,
         data: {},
         method: 'GET'
     }).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                return data?.['company_detail'] ? data?.['company_detail'] : [];
+                return data?.['config'] ? data?.['config'] : [];
             }
             return [];
         },
@@ -33,7 +33,7 @@ if (company_current_data) {
 
     Promise.all([company_current_data_ajax]).then(
         (results) => {
-            is_project = results[0]?.['cost_cfg']?.['cost_per_project']
+            is_project = results[0]?.['cost_per_project']
             $('#tr_so').prop('hidden', !is_project)
         })
 }
@@ -54,69 +54,59 @@ function LoadDate() {
 }
 
 function loadDefaultTableLineDetail() {
-    if (!$.fn.DataTable.isDataTable('#tab_line_detail_datatable')) {
-        $tab_line_detail_datatable.DataTableDefault({
-            dom: '',
-            data: [],
-            columns: [
-                {
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },
-            ],
-        });
-    }
+    $tab_line_detail_datatable.DataTable().clear().destroy()
+    $tab_line_detail_datatable.DataTableDefault({
+        dom: '',
+        data: [],
+        columns: [
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            },
+        ],
+    });
 }
 
 function loadProductWarehouse(ele, data) {

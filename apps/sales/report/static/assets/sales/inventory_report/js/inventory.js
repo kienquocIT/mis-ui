@@ -15,7 +15,31 @@ $(document).ready(function () {
         periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
-    const $is_project = $('#is_project').text()
+    const $is_project = false
+    const company_current_data = JSON.parse($('#company_current_data').text());
+    if (company_current_data) {
+        let company_current_data_ajax = $.fn.callAjax2({
+            url: url_script.attr('data-url-company-config-detail') + `?company_id=${company_current_data?.['id']}`,
+            data: {},
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    return data?.['config'] ? data?.['config'] : [];
+                }
+                return [];
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([company_current_data_ajax]).then(
+            (results) => {
+                $is_project = results[0]?.['cost_per_project']
+            })
+    }
     let PERIODIC_CLOSED = false
 
     function get_final_date_of_current_month(filter_year, filter_month) {

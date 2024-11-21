@@ -152,17 +152,12 @@ class ReportInventoryList(View):
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
         resp2 = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()
-        resp3 = ServerAPI(
-            request=request,
-            user=request.user,
-            url=ApiURL.COMPANY_DETAIL + '/' + request.user.company_current_data.get('id', None)
-        ).get()
         if len(resp1.result) > 0:
             return {
                 'data': {
                     'current_period': resp1.result[0],
                     'definition_inventory_valuation': resp2.result['definition_inventory_valuation'],
-                    'is_project': resp3.result['cost_cfg'].get('cost_per_project')
+                    'company_current_data': request.user.company_current_data,
                 },
             }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK

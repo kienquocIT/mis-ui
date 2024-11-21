@@ -54,19 +54,25 @@ $(document).ready(function () {
                 }
             }, {
                 data: 'general_price',
-                className: 'wrap-text w-15 text-center',
+                className: 'wrap-text w-15',
                 render: (data, type, row) => {
                     return `<span class="mask-money text-primary" data-init-money="${row?.['general_price']}"></span>`
                 }
             }, {
-                className: 'wrap-text w-10 text-center',
+                className: 'wrap-text text-right w-10',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary">${row?.['stock_amount'] ? row?.['stock_amount'] : 0}</span>`;
+                    if (row?.['inventory_uom']?.['id']) {
+                        return `<span class="text-secondary">${row?.['stock_amount'] ? parseFloat(row?.['stock_amount']) / parseFloat(row?.['inventory_uom']?.['ratio']) : 0}</span>&nbsp;<span class="badge badge-soft-primary">${row?.['inventory_uom']?.['title']}</span>`;
+                    }
+                    return '--'
                 }
             }, {
-                className: 'wrap-text w-10 text-center',
+                className: 'wrap-text text-right w-10',
                 render: (data, type, row) => {
-                    return `<span class="text-primary">${row?.['available_amount'] ? row?.['available_amount']: 0}</span>`;
+                    if (row?.['inventory_uom']?.['id']) {
+                        return `<span class="text-primary">${row?.['available_amount'] ? parseFloat(row?.['available_amount']) / parseFloat(row?.['inventory_uom']?.['ratio']) : 0}</span>&nbsp;<span class="badge badge-soft-primary">${row?.['inventory_uom']?.['title']}</span>`;
+                    }
+                    return '--'
                 }
             }
         ],

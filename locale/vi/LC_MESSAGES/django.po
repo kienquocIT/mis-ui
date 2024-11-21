@@ -9711,3 +9711,9 @@ msgstr "Số lượng CTV không được lớn hơn 1 vì cấu hình trạm li
 #
 msgid "Price of purchase quotation"
 msgstr "Giá của báo giá mua hàng"
+
+
+#
+msgid "New Contact Shortcut"
+msgstr "Tạo nhanh Liên hệ"
+

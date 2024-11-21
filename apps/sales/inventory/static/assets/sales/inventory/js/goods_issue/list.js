@@ -5,19 +5,26 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 useDataServer: true,
+                rowIdx: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('goods_issue_list')) {
-                            console.log(resp.data['goods_issue_list'])
                             return resp.data['goods_issue_list'] ? resp.data['goods_issue_list'] : [];
                         }
                         throw Error('Call data raise errors.')
                     },
                 },
                 columns: [
+                    {
+                        className: 'w-5',
+                        data: 'code',
+                        render: (data, type, row) => {
+                            return ``;
+                        }
+                    },
                     {
                         className: 'w-10',
                         data: 'code',
@@ -27,7 +34,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'w-45',
+                        className: 'w-40',
                         data: 'title',
                         render: (data, type, row) => {
                             let urlDetail = $table.data('url-detail').format_url_with_uuid(row.id);

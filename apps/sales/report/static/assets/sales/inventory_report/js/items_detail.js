@@ -305,6 +305,21 @@ $(document).ready(function () {
                 const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
                 const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
                 $('.popover-prd:first-child').trigger('hover')
+
+                let wrapper$ = table.closest('.dataTables_wrapper');
+                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                headerToolbar$.prepend(textFilter$);
+                if (textFilter$.length > 0) {
+                    textFilter$.css('display', 'flex');
+                    textFilter$.append(
+                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append(`
+                            <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                <i class="fas fa-sliders-h"></i>&nbsp;${trans_script.attr('data-trans-filter')}
+                            </button>
+                        `)
+                    )
+                }
             },
         });
     }
@@ -999,7 +1014,8 @@ $(document).ready(function () {
             periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
         }
     })
-    $('#btn-filter').on('click', function () {
+
+    $(document).on("click", '#btn-filter', function () {
         LoadItemsSelectBox(items_select_Ele)
         LoadWarehouseSelectBox(warehouses_select_Ele)
     })

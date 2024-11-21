@@ -1,6 +1,5 @@
 $(document).ready(function () {
     const table_inventory_report = $('#table-inventory-report')
-
     const current_period_Ele = $('#current_period')
     const items_select_Ele = $('#items_select')
     const warehouses_select_Ele = $('#warehouses_select')
@@ -470,14 +469,14 @@ $(document).ready(function () {
 
                 if (data_wh.length === 0) {
                     table.find('tbody tr').each(function () {
-                        sum_wh_open_quantity += parseFloat($(this).find('td:eq(6) span').text())
-                        sum_wh_open_value += parseFloat($(this).find('td:eq(7) span').attr('data-init-money'))
-                        sum_wh_in_quantity += parseFloat($(this).find('td:eq(8) span').text())
-                        sum_wh_in_value += parseFloat($(this).find('td:eq(9) span').attr('data-init-money'))
-                        sum_wh_out_quantity += parseFloat($(this).find('td:eq(10) span').text())
-                        sum_wh_out_value += parseFloat($(this).find('td:eq(11) span').attr('data-init-money'))
-                        sum_wh_end_quantity += parseFloat($(this).find('td:eq(12) span').text())
-                        sum_wh_end_value += parseFloat($(this).find('td:eq(13) span').attr('data-init-money'))
+                        sum_wh_open_quantity += $(this).find('td:eq(6) span').text() ? parseFloat($(this).find('td:eq(6) span').text()) : 0
+                        sum_wh_open_value += $(this).find('td:eq(7) span').attr('data-init-money') ? parseFloat($(this).find('td:eq(7) span').attr('data-init-money')) : 0
+                        sum_wh_in_quantity += $(this).find('td:eq(8) span').text() ? parseFloat($(this).find('td:eq(8) span').text()) : 0
+                        sum_wh_in_value += $(this).find('td:eq(9) span').attr('data-init-money') ? parseFloat($(this).find('td:eq(9) span').attr('data-init-money')) : 0
+                        sum_wh_out_quantity += $(this).find('td:eq(10) span').text() ? parseFloat($(this).find('td:eq(10) span').text()) : 0
+                        sum_wh_out_value += $(this).find('td:eq(11) span').attr('data-init-money') ? parseFloat($(this).find('td:eq(11) span').attr('data-init-money')) : 0
+                        sum_wh_end_quantity += $(this).find('td:eq(12) span').text() ? parseFloat($(this).find('td:eq(12) span').text()) : 0
+                        sum_wh_end_value += $(this).find('td:eq(13) span').attr('data-init-money') ? parseFloat($(this).find('td:eq(13) span').attr('data-init-money')) : 0
                     })
                 }
 
@@ -525,6 +524,21 @@ $(document).ready(function () {
                 const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
                 const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
                 $('.popover-prd:first-child').trigger('hover')
+
+                let wrapper$ = table.closest('.dataTables_wrapper');
+                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                headerToolbar$.prepend(textFilter$);
+                if (textFilter$.length > 0) {
+                    textFilter$.css('display', 'flex');
+                    textFilter$.append(
+                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append(`
+                            <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                <i class="fas fa-sliders-h"></i>&nbsp;${trans_script.attr('data-trans-filter')}
+                            </button>
+                        `)
+                    )
+                }
             },
         });
     }
@@ -1389,7 +1403,8 @@ $(document).ready(function () {
             periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
         }
     })
-    $('#btn-filter').on('click', function () {
+
+    $(document).on("click", '#btn-filter', function () {
         LoadItemsSelectBox(items_select_Ele)
         LoadWarehouseSelectBox(warehouses_select_Ele)
         LoadProjectSelectBox(project_select_Ele)

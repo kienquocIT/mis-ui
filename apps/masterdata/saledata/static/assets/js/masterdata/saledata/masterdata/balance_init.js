@@ -54,7 +54,7 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="text-muted uom-title">${row?.['product']?.['uom']?.['title']}</span>`;
+                            return `<span class="text-muted uom-title">${row?.['uom']?.['title']}</span>`;
                         }
                     },
                     {

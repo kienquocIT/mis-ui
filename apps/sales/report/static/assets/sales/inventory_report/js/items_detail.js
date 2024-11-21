@@ -420,10 +420,10 @@ $(document).ready(function () {
                                             'Goods receipt': trans_script.attr('data-trans-grc'),
                                             'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                             'Goods return': trans_script.attr('data-trans-grt'),
-                                            'Goods transfer (in)': trans_script.attr('data-trans-gtf'),
+                                            'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                             'Delivery': trans_script.attr('data-trans-dlvr'),
                                             'Goods issue': trans_script.attr('data-trans-gis'),
-                                            'Goods transfer (out)': trans_script.attr('data-trans-gtf'),
+                                            'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         }
 
                                         table_inventory_report_data.push({
@@ -496,10 +496,10 @@ $(document).ready(function () {
                                         'Goods receipt': trans_script.attr('data-trans-grc'),
                                         'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                         'Goods return': trans_script.attr('data-trans-grt'),
-                                        'Goods transfer (in)': trans_script.attr('data-trans-gtf'),
+                                        'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                         'Delivery': trans_script.attr('data-trans-dlvr'),
                                         'Goods issue': trans_script.attr('data-trans-gis'),
-                                        'Goods transfer (out)': trans_script.attr('data-trans-gtf'),
+                                        'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         'Balance init input': trans_script.attr('data-trans-bii'),
                                     }
 
@@ -718,7 +718,7 @@ $(document).ready(function () {
                                                         'Goods receipt': trans_script.attr('data-trans-grc'),
                                                         'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                                         'Goods return': trans_script.attr('data-trans-grt'),
-                                                        'Goods transfer (in)': trans_script.attr('data-trans-gtf'),
+                                                        'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                                     }
                                                     let ob_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                                     items_detail_report_table_Ele.find('tbody').append(
@@ -756,7 +756,7 @@ $(document).ready(function () {
                                                     let trans_title_sub = {
                                                         'Delivery': trans_script.attr('data-trans-dlvr'),
                                                         'Goods issue': trans_script.attr('data-trans-gis'),
-                                                        'Goods transfer (out)': trans_script.attr('data-trans-gtf'),
+                                                        'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                                     }
                                                     let ob_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                                     items_detail_report_table_Ele.find('tbody').append(
@@ -873,7 +873,7 @@ $(document).ready(function () {
                                                     'Goods receipt': trans_script.attr('data-trans-grc'),
                                                     'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                                     'Goods return': trans_script.attr('data-trans-grt'),
-                                                    'Goods transfer (in)': trans_script.attr('data-trans-gtf'),
+                                                    'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                                 }
                                                 let ob_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                                 items_detail_report_table_Ele.find('tbody').append(
@@ -911,7 +911,7 @@ $(document).ready(function () {
                                                 let trans_title_sub = {
                                                     'Delivery': trans_script.attr('data-trans-dlvr'),
                                                     'Goods issue': trans_script.attr('data-trans-gis'),
-                                                    'Goods transfer (out)': trans_script.attr('data-trans-gtf'),
+                                                    'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                                 }
                                                 let ob_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                                 items_detail_report_table_Ele.find('tbody').append(

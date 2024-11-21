@@ -1,0 +1,76 @@
+{% load i18n %}
+
+<div class="row mt-5">
+    <div class="col-12">
+        <ul class="nav nav-line nav-tabs nav-light" id="tab-select">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                    <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                    <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_line_detail">
+                <div class="row">
+                    <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
+                        <table id="tab_line_detail_datatable" class="table nowrap w-100">
+                            <thead>
+                            <tr>
+                                <th style="min-width: 30px"></th>
+                                <th class="required" style="min-width: 230px">{% trans 'From warehouse' %}</th>
+                                <th class="required" style="min-width: 300px">{% trans 'Product' %}</th>
+                                <th style="min-width: 100px">{% trans 'UOM' %}</th>
+                                <th style="min-width: 280px" id="tr_so" hidden>
+                                    {% trans 'Project sale order' %}
+                                    <i class="fas fa-info-circle icon-info"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="right"
+                                       data-bs-original-title="{% trans 'None-project products if sale order is null' %}"></i>
+                                </th>
+                                <th class="required" style="min-width: 200px">
+                                    {% trans 'Quantity' %}
+                                    <i class="fas fa-info-circle icon-info"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="right"
+                                       data-bs-original-title="{% trans 'Click the button besides input element to select (for serial/lot product) of enter number for default product.' %}"></i>
+                                </th>
+                                <th class="required" style="min-width: 230px">{% trans 'To warehouse' %}</th>
+                                <th style="min-width: 280px">{% trans 'Cost' %}</th>
+                                <th style="min-width: 280px">{% trans 'Subtotal price' %}</th>
+                                <th class="text-center" style="min-width: 100px">{% trans 'Action' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-7">
+                        <button class="btn btn-outline-primary btn-sm" type="button" id="btn-add-row-line-detail">
+                            <span>
+                                <span class="icon">
+                                    <span class="feather-icon"><i class="bi bi-plus-lg"></i></span>
+                                </span>
+                                <span>{% trans 'Add new row' %}</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_attachment">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="w-100" id="attachment">
+                            {% include 'extends/files/all.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -54,69 +54,59 @@ function LoadDate() {
 }
 
 function loadDefaultTableLineDetail() {
-    if (!$.fn.DataTable.isDataTable('#tab_line_detail_datatable')) {
-        $tab_line_detail_datatable.DataTableDefault({
-            dom: '',
-            data: [],
-            columns: [
-                {
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },{
-                    data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },
-            ],
-        });
-    }
+    $tab_line_detail_datatable.DataTable().clear().destroy()
+    $tab_line_detail_datatable.DataTableDefault({
+        dom: '',
+        data: [],
+        columns: [
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            }, {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            },
+        ],
+    });
 }
 
 function loadProductWarehouse(ele, data) {

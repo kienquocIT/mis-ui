@@ -1335,7 +1335,7 @@ function loadDtbOpportunityList() {
                     targets: 3,
                     className: 'wrap-text w-20',
                     render: (data, type, row) => {
-                        return `<span class="fw-bold">${row.customer.title}</span>`
+                        return `<span class="text-muted">${row.customer.title}</span>`
                     }
                 },
                 {
@@ -1379,7 +1379,7 @@ function loadDtbOpportunityList() {
                         stage_current = row.stage.find(function (obj) {
                             return obj.is_current === true;
                         });
-                        return `<span class="badge badge-soft-secondary badge-outline w-80">${stage_current.indicator}</span>`
+                        return `<span class="badge badge-light badge-outline w-90">${stage_current.indicator}</span>`
                     }
                 },
             ],

@@ -12,6 +12,7 @@ const material_table = $('#material-table')
 const tools_table = $('#tools-table')
 const replacement_material_table = $('#replacement-material-table')
 const replacement_material_table_warning = $('#replacement-material-table-warning')
+const table_select_bom_copy = $('#table-select-bom-copy')
 let REPLACEMENT_ROW = null
 
 const select_material_table = $('#select-material-table')
@@ -82,6 +83,63 @@ class ProjectBOMLoadTab {
                 keyText: 'title',
             })
         }
+    }
+    static LoadBOMCopyTable() {
+        table_select_bom_copy.DataTable().clear().destroy()
+        table_select_bom_copy.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            reloadCurrency: true,
+            ajax: {
+                url: table_select_bom_copy.attr('data-url'),
+                data: {'system_status': 3},
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        return resp.data['bom_list'] ? resp.data['bom_list'] : [];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-30',
+                    'render': (data, type, row) => {
+                        return `<span class="badge badge-light">${row?.['code']}</span> ${row?.['title']}`;
+                    }
+                },
+                {
+                    className: 'w-30',
+                    'render': (data, type, row) => {
+                        return `<span class="badge badge-soft-primary">${row?.['product']?.['code']}</span> ${row?.['product']?.['title']}`;
+                    }
+                },
+                {
+                    className: 'w-30',
+                    'render': (data, type, row) => {
+                        if (row?.['opportunity']?.['id']) {
+                            return `<span class="badge badge-soft-blue">${row?.['opportunity']?.['code']}</span> ${row?.['opportunity']?.['title']}`;
+                        }
+                        return '--'
+                    }
+                },
+                {
+                    className: 'w-5 text-right',
+                    'render': (data, type, row) => {
+                        return `<div class="form-check">
+                            <input data-id="${row?.['id']}" type="radio" name="bom-copy-group" class="bom-copy-selected form-check-input">
+                        </div>`;
+                    }
+                },
+            ]
+        });
     }
     // process
     static LoadProcessDescriptionTable(data_list=[], option='create') {
@@ -1124,7 +1182,6 @@ class ProjectBOMHandle {
                     data = data['bom_detail'];
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
 
                     new $x.cls.bastionField({
                         has_opp: true,
@@ -1222,10 +1279,126 @@ function Clean_MaterialTable_ToolTable() {
     }
 }
 
-
 $(document).on("change", '#opportunity_id', function () {
     let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
     ProjectBOMLoadPage.LoadInherit(employeeInheritEle, selected?.['sale_person'])
+})
+
+$('#btn-copy-bom').on('click', function () {
+    ProjectBOMLoadTab.LoadBOMCopyTable()
+})
+
+$(document).on("change", '.bom-copy-selected', function () {
+    table_select_bom_copy.find('tbody tr').each(function () {
+        $(this).removeClass('bg-primary-light-5')
+    })
+    $(this).closest('tr').addClass('bg-primary-light-5')
+})
+
+$(document).on("click", '#table-select-bom-copy tbody tr', function () {
+    table_select_bom_copy.find('tr').each(function () {
+        $(this).removeClass('bg-primary-light-5')
+    })
+    $(this).addClass('bg-primary-light-5')
+    $(this).find('.bom-copy-selected').prop('checked', true)
+})
+
+$('#btn-accept-copy-bom').on('click', function () {
+    let dataParam = {}
+    let bom_copy_id = null
+    table_select_bom_copy.find('tbody tr .bom-copy-selected').each(function () {
+        if ($(this).prop('checked')) {
+            bom_copy_id = $(this).attr('data-id')
+        }
+    })
+    if (bom_copy_id) {
+        WindowControl.showLoading()
+        let bom_detail_ajax = $.fn.callAjax2({
+            url: script_url.attr('data-url-bom-detail-api').replace('/0', `/${bom_copy_id}`),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('bom_detail')) {
+                    return data?.['bom_detail']
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([bom_detail_ajax]).then(
+            (results) => {
+                let data = results[0];
+
+                priceEle.attr('value', data?.['sum_price'])
+                timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
+
+                ProjectBOMLoadTab.LoadProcessDescriptionTable(data?.['bom_process_data'], 'update')
+                ProjectBOMLoadTab.LoadLaborSummaryTable(data?.['bom_summary_process_data'])
+
+                material_table.find('tbody').html('')
+                tools_table.find('tbody').html('')
+                for (let i = 0; i < data?.['bom_process_data'].length; i++) {
+                    let process_row_index = i + 1
+                    let process_task_name = data?.['bom_process_data'][i]?.['task_name']
+                    ProjectBOMAction.Add_or_Update_material_group(process_row_index, process_task_name)
+                    ProjectBOMAction.Add_or_Update_tool_group(process_row_index, process_task_name)
+
+                    for (let j = 0; j < data?.['bom_material_component_data'].length; j++) {
+                        if (process_row_index === parseInt(data?.['bom_material_component_data'][j]?.['bom_process_order'])) {
+                            let new_material_row = ProjectBOMAction.Create_material_row(process_row_index)
+                            material_table.append(new_material_row)
+                            let material_selected = data?.['bom_material_component_data'][j]
+                            new_material_row.find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['material']?.['id'])
+                            new_material_row.find('.replacement-material-script').text(material_selected?.['replacement_data'] ? JSON.stringify(material_selected?.['replacement_data']) : '[]')
+                            ProjectBOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected?.['material'])
+                            new_material_row.find('.material-code').text(material_selected?.['material']?.['code'])
+                            new_material_row.find('.material-quantity').val(material_selected?.['quantity'])
+                            new_material_row.find('.material-unit-price').attr('value', material_selected?.['standard_price'])
+                            new_material_row.find('.material-subtotal-price').attr('value', material_selected?.['subtotal_price'])
+                            ProjectBOMLoadTab.LoadUOM(
+                                new_material_row.find('.material-uom'),
+                                material_selected?.['uom']?.['group_id'],
+                                material_selected?.['uom']
+                            )
+                            new_material_row.find('.material-disassemble').prop('checked', material_selected?.['disassemble'])
+                            new_material_row.find('.material-note').val(material_selected?.['note'])
+                            new_material_row.find('.del-row-material').prop('disabled', false)
+                        }
+                    }
+
+                    for (let k = 0; k < data?.['bom_tool_data'].length; k++) {
+                        if (process_row_index === parseInt(data?.['bom_tool_data'][k]?.['bom_process_order'])) {
+                            let new_tool_row = ProjectBOMAction.Create_tool_row(process_row_index)
+                            tools_table.append(new_tool_row)
+                            let tool_selected = data?.['bom_tool_data'][k]
+                            ProjectBOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected?.['tool'])
+                            new_tool_row.find('.tool-code').text(tool_selected?.['tool']?.['code'])
+                            new_tool_row.find('.tool-quantity').val(tool_selected?.['quantity'])
+                            ProjectBOMLoadTab.LoadUOM(
+                                new_tool_row.find('.tool-uom'),
+                                tool_selected?.['uom']?.['group_id'],
+                                tool_selected?.['uom']
+                            )
+                            new_tool_row.find('.tool-note').val(tool_selected?.['note'])
+                            new_tool_row.find('.del-row-tool').prop('disabled', false)
+                        }
+                    }
+                }
+
+                $.fn.initMaskMoney2()
+
+                $('#modal-select-BOM').modal('hide')
+                WindowControl.hideLoading()
+            })
+    }
+    else {
+        $.fn.notifyB({description: 'Please select BOM first!'}, 'warning');
+    }
 })
 
 // PROCESS
@@ -1314,7 +1487,6 @@ $(document).on("click", '.del-row-material', function () {
 $(document).on("click", '.add-new-swap-material', function () {
     REPLACEMENT_ROW = $(this).closest('tr')
     let root_material_id = $(this).attr('data-root-material-id')
-    console.log(root_material_id)
     let selected_list = REPLACEMENT_ROW.find('.replacement-material-script').text() ? JSON.parse(REPLACEMENT_ROW.find('.replacement-material-script').text()) : []
     ProjectBOMLoadTab.LoadMaterialReplacementTable([], root_material_id, selected_list)
 })
@@ -1390,6 +1562,7 @@ $('#btn-get-selected-material').on('click', function () {
             $.fn.initMaskMoney2()
             new_material_row.find('.material-disassemble').prop('checked', row.find('.material-disassemble').prop('checked'))
             new_material_row.find('.material-note').val(row.find('.material-note').val())
+            new_material_row.find('.add-new-swap-material').attr('data-root-material-id', row.find('.material-checkbox').attr('data-material-id'))
         }
     })
     $('#select-material-modal').offcanvas('hide')

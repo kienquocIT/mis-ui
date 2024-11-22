@@ -24,30 +24,19 @@ detail_email_cc_slb.select2({
 function loadEmailToList(contact_list) {
     email_to_slb.attr('disabled', false);
     email_to_slb.html(``);
-    // for (let i = 0; i < contact_list.length; i++) {
-    //     let item = contact_list[i];
-    //     if (item.email) {
-    //         email_to_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
-    //     }
-    // }
-    console.log('contact_list:', contact_list);
-    email_to_slb.initSelect2({
+    for (let i = 0; i < contact_list.length; i++) {
+        let item = contact_list[i];
+        if (item.email) {
+            email_to_slb.append(`<option selected value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+        }
+        else {
+            email_to_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
+        }
+    }
+    email_to_slb.select2({
         dropdownParent: send_email_modal,
         tags: true,
-        data: contact_list,
-        tokenSeparators: [',', ' '],
-        templateResult: function (data) {
-            let ele = $('<div class="row"></div>');
-            ele.append(`<div class="col-6">${data.data?.['fullname'] ? data.data?.['fullname'] : '-'}</div>`);
-            ele.append(`<div class="col-6">${data.data?.['email'] ? data.data?.['email'] : '-'}</div>`);
-            return ele;
-        },
-        templateSelection: function (state) {
-            if (state.id){
-                return $(`<span class="text-primary">${state.data?.['fullname'] || '-'}</span><span class="ml-2">${state.data?.['email'] ? state.data?.['email'] : '-'}</span>`);
-            }
-            return state.text;
-        },
+        tokenSeparators: [',', ' ']
     });
 }
 
@@ -57,7 +46,10 @@ function loadEmailCcList(contact_list) {
     for (let i = 0; i < contact_list.length; i++) {
         let item = contact_list[i];
         if (item.email) {
-            email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
+            email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+        }
+        else {
+            email_cc_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
         }
     }
     email_cc_slb.select2({

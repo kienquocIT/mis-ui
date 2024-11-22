@@ -896,11 +896,15 @@ $(document).ready(function () {
                 }
 
                 function loadEmailToList(contact_list) {
+                    email_to_slb.attr('disabled', false);
                     email_to_slb.html(``);
                     for (let i = 0; i < contact_list.length; i++) {
                         let item = contact_list[i];
-                        if (item.email !== null) {
-                            email_to_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
+                        if (item.email) {
+                            email_to_slb.append(`<option selected value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+                        }
+                        else {
+                            email_to_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
                         }
                     }
                     email_to_slb.select2({
@@ -911,11 +915,15 @@ $(document).ready(function () {
                 }
 
                 function loadEmailCcList(contact_list) {
+                    email_cc_slb.attr('disabled', false);
                     email_cc_slb.html(``);
                     for (let i = 0; i < contact_list.length; i++) {
                         let item = contact_list[i];
                         if (item.email) {
-                            email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
+                            email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+                        }
+                        else {
+                            email_cc_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
                         }
                     }
                     email_cc_slb.select2({

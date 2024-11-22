@@ -72,10 +72,10 @@
 
 .wrap-flowchart .control,
 .wrap-flowchart .clone {
-    /*background: white;*/
+    background: #fff2eb;
     padding: 10px 10px;
     margin-bottom: 10px;
-    border: solid 1px #298dff;
+    border: solid 1px #000000;
     border-radius: 8px;
     display: flex;
     width: 160px;

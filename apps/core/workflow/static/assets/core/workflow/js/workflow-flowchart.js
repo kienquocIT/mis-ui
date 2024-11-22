@@ -153,6 +153,8 @@ class JSPlumbsHandle {
     clsManage = new NodeHandler(this.nodeData, this.associationData); // class to check for connection the validation
     _commitNodeList = {};
     _ASSOCIATION = [];
+    static $trans = $('#node-trans-factory');
+
     set setNodeList(strData) {
         let temp = {};
         for (let item of strData) {
@@ -197,7 +199,7 @@ class JSPlumbsHandle {
     }
 
     htmlDragRender(target_elm) {
-        let $trans = $('#node-trans-factory');
+
         let strHTMLDragNode = '';
         if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
             for (let val in DEFAULT_NODE_LIST) {
@@ -219,9 +221,9 @@ class JSPlumbsHandle {
                                             <p class="drag-title" contentEditable="true" title="${item?.['remark']}">${item?.['title']}</p>
                                         </div>
                                         <div class="dropdown-menu dropdown-bordered w-160p">
-                                            <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${$trans.attr('data-config')}</span></a>
+                                            <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${$trans.attr('data-delete')}</span></a>
+                                            <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
                                         </div>
                                     </div>`;
             }
@@ -272,11 +274,28 @@ class JSPlumbsHandle {
                     $wrapWF.css("width", wrap_w);
                 }
                 let bg = '';
+                let clsModal = "modal";
+                let disabled = "";
                 if (item?.['is_system'] === true) {
                     bg = 'bg-blue-light-5';
+
+                    if (["approved", "completed"].includes(item?.['code'])) {
+                        clsModal = "";
+                        disabled = "disabled";
+                    }
                 }
-                HTML_temp += `<div class="clone ${bg}" data-drag="${val}" title="${item.title}" id="control-${val}" `
-                    + `style="left:${left_coord}px;top:${top_coord}px"><p class="drag-title">${item.title}</p></div>`;
+                // HTML_temp += `<div class="clone ${bg}" data-drag="${val}" title="${item.title}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px"><p class="drag-title">${item.title}</p></div>`;
+
+                HTML_temp += `<div class="btn-group dropdown">
+                                    <div class="clone ${bg}" data-drag="${val}" title="${item.title}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
+                                        <p class="drag-title">${item.title}</p>
+                                    </div>
+                                    <div class="dropdown-menu dropdown-bordered w-160p">
+                                        <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
+                                    </div>
+                                </div>`;
 
                 // get and set commit code to list in case detail page
                 let NodeListTemp = this.getCommitNode
@@ -309,13 +328,27 @@ class JSPlumbsHandle {
                 helper: function () {
                     let clsSys = '';
                     let bg = '';
+                    let clsModal = "modal";
                     if (this.classList.contains('control-system')) {
                         clsSys = 'clone-system'
                         bg = 'bg-blue-light-5';
                     }
-                    return `<div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" `
-                        + `title="${$(this).find('.drag-title').text()}">`
-                        + `<p class="drag-title">${$(this).find('.drag-title').text()}</p></div>`;
+
+
+//                     return `<div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" title="${$(this).find('.drag-title').text()}">
+// <p class="drag-title">${$(this).find('.drag-title').text()}</p>
+// </div>`;
+
+                    return `<div class="btn-group dropdown">
+                                <div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" title="${$(this).find('.drag-title').text()}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <p class="drag-title">${$(this).find('.drag-title').text()}</p>
+                                </div>
+                                <div class="dropdown-menu dropdown-bordered w-160p">
+                                    <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
+                                </div>
+                            </div>`;
                 },
                 appendTo: "#flowchart_workflow",
             });
@@ -885,7 +918,6 @@ class NodeHandler {
         let state = false;
         let msgFailed = null;
         let combinedValue = this.getGroup(node_input) + '|' + this.getGroup(node_output);
-        let $trans = $('#node-trans-factory');
         switch (combinedValue) {
             case 'null|null':
                 this.appendGroupNull(node_input, node_output);
@@ -898,7 +930,7 @@ class NodeHandler {
             case 'null|right':
                 //
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-1');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-1');
                 break;
             case 'null|middle':
                 this.replaceGroup(node_input, 'left');
@@ -907,12 +939,12 @@ class NodeHandler {
             case 'middle|null':
                 //
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-3');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-3');
                 break;
             case 'middle|left':
                 //
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-3');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-3');
                 break;
             case 'middle|right':
                 state = true;
@@ -920,7 +952,7 @@ class NodeHandler {
             case 'middle|middle':
                 // can't exist two middle node
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-4');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-4');
                 break;
             case 'left|null':
                 this.replaceGroup(node_output, 'left');
@@ -932,7 +964,7 @@ class NodeHandler {
             case 'left|right':
                 //
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-1');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-1');
                 break;
             case 'left|middle':
                 state = true;
@@ -944,7 +976,7 @@ class NodeHandler {
             case 'right|left':
                 //
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-1');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-1');
                 break;
             case 'right|right':
                 state = true;
@@ -952,7 +984,7 @@ class NodeHandler {
             case 'right|middle':
                 //
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-1');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-1');
                 break;
             default:
                 console.log('Over case with data:', combinedValue);

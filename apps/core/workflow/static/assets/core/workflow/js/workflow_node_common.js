@@ -3,6 +3,7 @@ class NodeLoadDataHandle {
     static $form = $('#form-create_workflow');
 
     static $nodeDragBox = $('#node_dragbox');
+    static $flowChart = $('#flowchart_workflow');
     static $initEmp = $('#data-init-employee');
     static $btnNewNode = $('#btn-new-node');
     static $btnSaveNode = $('#btn-save-node');
@@ -1002,8 +1003,7 @@ class NodeStoreHandle {
                                             control.querySelector('.drag-title').innerHTML = NodeLoadDataHandle.dataNode[i]['title'];
                                         }
                                     }
-                                    let $flowchart = $('#flowchart_workflow');
-                                    let clone = $flowchart[0].querySelector(`.clone[data-drag="${NodeLoadDataHandle.dataNode[i]['order']}"]`);
+                                    let clone = NodeLoadDataHandle.$flowChart[0].querySelector(`.clone[data-drag="${NodeLoadDataHandle.dataNode[i]['order']}"]`);
                                     if (clone) {
                                         if (clone.querySelector('.drag-title')) {
                                             clone.querySelector('.drag-title').innerHTML = NodeLoadDataHandle.dataNode[i]['title'];

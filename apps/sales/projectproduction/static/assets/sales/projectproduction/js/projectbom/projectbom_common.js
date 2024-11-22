@@ -88,13 +88,8 @@ class ProjectBOMLoadTab {
         table_select_bom_copy.DataTable().clear().destroy()
         table_select_bom_copy.DataTableDefault({
             useDataServer: true,
-            dom: 't',
             rowIdx: true,
             reloadCurrency: true,
-            paging: false,
-            scrollX: '100vh',
-            scrollY: '65vh',
-            scrollCollapse: true,
             ajax: {
                 url: table_select_bom_copy.attr('data-url'),
                 data: {'system_status': 3},
@@ -1372,7 +1367,7 @@ $('#btn-accept-copy-bom').on('click', function () {
                             )
                             new_material_row.find('.material-disassemble').prop('checked', material_selected?.['disassemble'])
                             new_material_row.find('.material-note').val(material_selected?.['note'])
-                            new_material_row.find('.del-row-material').prop('disabled', option === 'detail')
+                            new_material_row.find('.del-row-material').prop('disabled', false)
                         }
                     }
 
@@ -1390,7 +1385,7 @@ $('#btn-accept-copy-bom').on('click', function () {
                                 tool_selected?.['uom']
                             )
                             new_tool_row.find('.tool-note').val(tool_selected?.['note'])
-                            new_tool_row.find('.del-row-tool').prop('disabled', option === 'detail')
+                            new_tool_row.find('.del-row-tool').prop('disabled', false)
                         }
                     }
                 }

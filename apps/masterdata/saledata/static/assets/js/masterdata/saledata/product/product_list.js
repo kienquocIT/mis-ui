@@ -26,7 +26,7 @@ $(document).ready(function () {
                 data: 'code',
                 className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    const link = url_detail.replace(0, row.id);
+                    const link = url_detail.replace(0, row?.['id']);
                     return `<a href="${link}"><span class="w-70 badge badge-primary">${row?.['code']}</span></a> ${$x.fn.buttonLinkBlank(link)}`
                 }
             }, {
@@ -34,7 +34,7 @@ $(document).ready(function () {
                 className: 'wrap-text w-20',
                 render: (data, type, row) => {
                     const link = url_detail.replace(0, row.id);
-                    return `<a href="${link}" class="text-primary"><span><b>${row.title}</b></span></a>`
+                    return `<a href="${link}" class="text-primary"><span><b>${row?.['title']}</b></span></a>`
                 }
             }, {
                 data: 'general_product_types_mapped',
@@ -42,7 +42,7 @@ $(document).ready(function () {
                 render: (data, type, row) => {
                     let html = ``;
                     for (let i = 0; i < row?.['general_product_types_mapped'].length; i++) {
-                        html += `<span class="badge badge-outline badge-soft-blue span-product-type ml-1 mb-1" style="min-width: max-content; width: 50%">${row?.['general_product_types_mapped'][i].title}</span>`
+                        html += `<span class="badge badge-outline badge-soft-blue span-product-type ml-1 mb-1" style="min-width: max-content; width: 50%">${row?.['general_product_types_mapped'][i]?.['title']}</span>`
                     }
                     return html;
                 }
@@ -50,7 +50,13 @@ $(document).ready(function () {
                 data: 'general_product_category',
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    return `<span class="badge-status"><span class="badge badge-secondary badge-indicator"></span>&nbsp;<span class="text-secondary span-product-category">${row.general_product_category.title}</span></span>`
+                    return `<span class="badge-status"><span class="badge badge-secondary badge-indicator"></span>&nbsp;<span class="text-secondary span-product-category">${row?.['general_product_category']?.['title']}</span></span>`
+                }
+            }, {
+                className: 'wrap-text w-15',
+                render: (data, type, row) => {
+                    let trans_valuation_method = ['FIFO', 'Weighted average', ''][row?.['valuation_method']]
+                    return `<span class="text-secondary span-product-category">${trans_valuation_method}</span>`
                 }
             }, {
                 data: 'general_price',

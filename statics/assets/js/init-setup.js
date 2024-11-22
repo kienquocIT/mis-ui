@@ -2503,7 +2503,7 @@ class WFRTControl {
     static setupHTMLSelectAssociation(AssociationData, type) {
         let htmlCustom = ``;
         let commonTxt = $.fn.transEle.attr('data-select-association-type-1');
-        let commonImg = `<i class="fas fa-check-circle text-info"></i>`;
+        let commonImg = `<i class="fas fa-check-circle text-blue"></i>`;
         if (type === 1) {
             commonTxt = $.fn.transEle.attr('data-select-association-type-2');
             commonImg = `<i class="fas fa-exclamation-triangle text-danger"></i>`;
@@ -3089,29 +3089,20 @@ class WFRTControl {
                     typeWF = 1;
                 }
             }
-            // let eleStatus = $('#systemStatus');
-            // if (eleStatus && eleStatus.length > 0) {
-            //     if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
-            //         typeWF = 1;
-            //     }
-            // }
-        }
-        let $collabOFCreate = $('#idxCollabOFCreate');
-        let dataCreate = [];
-        let $collabOFRuntime = $('#idxCollabOFRuntime');
-        let dataRuntime = [];
-        if ($collabOFCreate && $collabOFCreate.length > 0) {
-            dataCreate = JSON.parse($collabOFCreate.text());
-        }
-        if ($collabOFRuntime && $collabOFRuntime.length > 0) {
-            dataRuntime = JSON.parse($collabOFRuntime.text());
         }
         if (typeWF === 0) {
-            return dataCreate;
+            let $collabOFCreate = $('#idxCollabOFCreate');
+            if ($collabOFCreate && $collabOFCreate.length > 0) {
+                return JSON.parse($collabOFCreate.text());
+            }
         }
         if (typeWF === 1) {
-            return dataRuntime;
+            let $collabOFRuntime = $('#idxCollabOFRuntime');
+            if ($collabOFRuntime && $collabOFRuntime.length > 0) {
+                return JSON.parse($collabOFRuntime.text());
+            }
         }
+        return [];
     }
 
     static getAssociateData() {
@@ -3127,29 +3118,20 @@ class WFRTControl {
                     typeWF = 1;
                 }
             }
-            // let eleStatus = $('#systemStatus');
-            // if (eleStatus && eleStatus.length > 0) {
-            //     if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
-            //         typeWF = 1;
-            //     }
-            // }
-        }
-        let $associateCreate = $('#idxAssociateCreate');
-        let dataCreate = [];
-        let $associateRuntime = $('#idxAssociateRuntime');
-        let dataRuntime = [];
-        if ($associateCreate && $associateCreate.length > 0) {
-            dataCreate = JSON.parse($associateCreate.text());
-        }
-        if ($associateRuntime && $associateRuntime.length > 0) {
-            dataRuntime = JSON.parse($associateRuntime.text());
         }
         if (typeWF === 0) {
-            return dataCreate;
+            let $associateCreate = $('#idxAssociateCreate');
+            if ($associateCreate && $associateCreate.length > 0) {
+                return JSON.parse($associateCreate.text());
+            }
         }
         if (typeWF === 1) {
-            return dataRuntime;
+            let $associateRuntime = $('#idxAssociateRuntime');
+            if ($associateRuntime && $associateRuntime.length > 0) {
+                return JSON.parse($associateRuntime.text());
+            }
         }
+        return [];
     }
 
     static getZoneKeyData() {

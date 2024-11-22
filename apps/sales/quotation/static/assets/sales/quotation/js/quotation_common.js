@@ -121,40 +121,39 @@ class QuotationLoadDataHandle {
 
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
-        if (form.attr('data-method').toLowerCase() === 'post') {
-            let dataInitOpp = JSON.parse($('#init_opp').text());
-            let list_from_app = 'quotation.quotation.create';
-            if (form[0].classList.contains('sale-order')) {
-                list_from_app = 'saleorder.saleorder.create';
-            }
-            $.fn.callAjax2({
-                    'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
-                    'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
-                    'data': {'list_from_app': list_from_app},
+        let urlParams = $x.fn.getManyUrlParameters(['opp_id']);
+        if (urlParams?.['opp_id']) {
+            if (form.attr('data-method').toLowerCase() === 'post') {
+                let list_from_app = 'quotation.quotation.create';
+                if (form[0].classList.contains('sale-order')) {
+                    list_from_app = 'saleorder.saleorder.create';
                 }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                            for (let opp of data.opportunity_list) {
-                                if (opp?.['id'] === dataInitOpp?.['id']) {
-                                    if (!QuotationLoadDataHandle.opportunitySelectEle.prop('disabled')) {
-                                        QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
-                                            data: opp,
-                                            'allowClear': true,
-                                            disabled: !(QuotationLoadDataHandle.opportunitySelectEle.attr('data-url')),
-                                        });
-                                        QuotationLoadDataHandle.opportunitySelectEle.change();
-                                        break;
+                $.fn.callAjax2({
+                        'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
+                        'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
+                        'data': {'list_from_app': list_from_app},
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                for (let opp of data.opportunity_list) {
+                                    if (opp?.['id'] === urlParams?.['opp_id']) {
+                                        if (!QuotationLoadDataHandle.opportunitySelectEle.prop('disabled')) {
+                                            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.opportunitySelectEle, [opp]);
+                                            QuotationLoadDataHandle.loadDataByOpportunity();
+                                            break;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-            )
+                )
+            }
         }
+        return true;
     };
 
     static loadDataByOpportunity() {
@@ -1530,7 +1529,7 @@ class QuotationLoadDataHandle {
                         dataUOM = data?.['uom_data'];
                         dataTax = data?.['tax_data'];
                         valueQuantity = 0;
-                        valueQuantity = data?.['product_unit_price'];
+                        valueQuantity = data?.['product_quantity'];
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
@@ -2072,54 +2071,51 @@ class QuotationLoadDataHandle {
     };
 
     static loadRecurrenceData() {
-        let $recurrenceTempID = $('#recurrence_template_id');
-        if ($recurrenceTempID.text()) {
-            let recurrenceTempID = JSON.parse($recurrenceTempID.text());
-            if (recurrenceTempID) {
-                // call ajax get info quotation detail
-                $.fn.callAjax2({
-                    url: QuotationLoadDataHandle.urlEle.attr('data-so-detail').format_url_with_uuid(recurrenceTempID),
-                    method: 'GET',
-                    isLoading: true,
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            QuotationLoadDataHandle.loadDetailQuotation(data);
-                            QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
-                            indicatorHandle.loadIndicator();
+        let urlParams = $x.fn.getManyUrlParameters(['recurrence_template_id']);
+        if (urlParams?.['recurrence_template_id']) {
+            // call ajax get info quotation detail
+            $.fn.callAjax2({
+                url: QuotationLoadDataHandle.urlEle.attr('data-so-detail').format_url_with_uuid(urlParams?.['recurrence_template_id']),
+                method: 'GET',
+                isLoading: true,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        QuotationLoadDataHandle.loadDetailQuotation(data);
+                        QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
+                        indicatorHandle.loadIndicator();
 
-                            //
-                            const processData = data?.['process'] || {};
-                            const oppData = data?.['opportunity'] || {};
-                            const inheritData = data?.['employee_inherit'] || {};
-                            new $x.cls.bastionField({
-                                has_opp: true,
-                                has_inherit: true,
-                                has_process: true,
-                                data_process: processData && Object.keys(processData).length > 0 ? [
-                                    {
-                                        ...processData,
-                                        'selected': true,
-                                    }
-                                ] : [],
-                                data_opp: oppData && Object.keys(oppData).length > 0 ? [
-                                    {
-                                        ...oppData,
-                                        'selected': true,
-                                    }
-                                ] : [],
-                                data_inherit: inheritData && Object.keys(inheritData).length > 0 ? [
-                                    {
-                                        ...inheritData,
-                                        'selected': true,
-                                    }
-                                ] : [],
-                            }).init();
-                        }
+                        //
+                        const processData = data?.['process'] || {};
+                        const oppData = data?.['opportunity'] || {};
+                        const inheritData = data?.['employee_inherit'] || {};
+                        new $x.cls.bastionField({
+                            has_opp: true,
+                            has_inherit: true,
+                            has_process: true,
+                            data_process: processData && Object.keys(processData).length > 0 ? [
+                                {
+                                    ...processData,
+                                    'selected': true,
+                                }
+                            ] : [],
+                            data_opp: oppData && Object.keys(oppData).length > 0 ? [
+                                {
+                                    ...oppData,
+                                    'selected': true,
+                                }
+                            ] : [],
+                            data_inherit: inheritData && Object.keys(inheritData).length > 0 ? [
+                                {
+                                    ...inheritData,
+                                    'selected': true,
+                                }
+                            ] : [],
+                        }).init();
                     }
-                )
-            }
+                }
+            )
         }
         return true;
     };
@@ -2733,7 +2729,7 @@ class QuotationDataTableHandle {
                         } else if (itemType === 1) {  // PROMOTION
                             des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '';
                         }
-                        return `<div class="row"><textarea class="form-control table-row-description zone-readonly" rows="2" data-zone="${dataZone}" readonly>${des}</textarea></div>`;
+                        return `<textarea class="form-control table-row-description zone-readonly" rows="2" data-zone="${dataZone}" readonly>${des}</textarea>`;
                     }
                 },
                 {

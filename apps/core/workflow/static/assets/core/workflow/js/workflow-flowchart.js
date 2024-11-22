@@ -214,11 +214,6 @@ class JSPlumbsHandle {
                         disabled = "disabled";
                     }
                 }
-                // strHTMLDragNode += `<div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" data-bs-toggle="${clsModal}"
-                //             data-bs-target="#nodeModal" `
-                //     + `title="${item.title}">` + `<p class="drag-title" contentEditable="true" `
-                //     + `title="${item.remark}">${item.title}</p></div>`;
-
                 strHTMLDragNode += `<div class="btn-group dropdown">
                                         <div class="control ${clsSys} ${bg}" id="drag-${item?.['order']}" data-drag="${item?.['order']}" title="${item?.['title']}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
                                             <p class="drag-title" contentEditable="true" title="${item?.['remark']}">${item?.['title']}</p>
@@ -295,7 +290,7 @@ class JSPlumbsHandle {
     initJSPlumbs() {
         const instance = jsPlumb.getInstance({
             ConnectionOverlays: [
-                ["Arrow", {location: 1, id: "arrow", length: 10, width: 10, height: 10, foldback: 0.9}],
+                ["Arrow", {location: 1, id: "arrow", length: 12, width: 12, height: 13, foldback: 1}],
             ],
             Container: "flowchart_workflow",
         });
@@ -305,7 +300,7 @@ class JSPlumbsHandle {
             // declare style connection type
             instance.registerConnectionTypes({
                 "pink-connection": {
-                    paintStyle: {stroke: "#eaeaea", strokeWidth: 3},
+                    paintStyle: {stroke: "#4f4f4f", strokeWidth: 1.5},
                     hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4}
                 }
             })
@@ -505,7 +500,7 @@ class JSPlumbsHandle {
                         anchors: ["Bottom", "Top"],
                         endpoint: ["Dot", {radius: 5}],
                         endpointStyle: {fill: "#374986", opacity: ".8"},
-                        paintStyle: {stroke: "#eaeaea", strokeWidth: 3},
+                        paintStyle: {stroke: "#4f4f4f", strokeWidth: 1.5},
                         hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
                         connectionType: "pink-connection",
                         connector: ["Flowchart", {cornerRadius: 5}],

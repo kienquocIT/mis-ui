@@ -99,6 +99,49 @@ class NodeLoadDataHandle {
         return true;
     };
 
+    static loadEventCheckbox($area, trigger = false) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function (event) {
+            // Prevent handling if the direct checkbox is clicked
+            if (event.target.classList.contains('form-check-input')) {
+                return; // Let the checkbox handler handle this
+            }
+
+            // Find the checkbox inside the clicked element
+            let checkbox = this.querySelector('.form-check-input[type="checkbox"]');
+            if (checkbox) {
+                // Check if the checkbox is disabled
+                if (checkbox.disabled) {
+                    return; // Exit early if the checkbox is disabled
+                }
+                // Prevent the default behavior
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                // Toggle the checkbox state manually
+                checkbox.checked = !checkbox.checked;
+                // Optional: Trigger a change event if needed
+                if (trigger === true) {
+                    $(checkbox).trigger('change');
+                }
+            }
+        });
+
+        // Handle direct clicks on the checkbox itself
+        $area.on('click', '.form-check-input', function (event) {
+            // Prevent the default behavior to avoid double-triggering
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            // Checkbox state is toggled naturally, so no need to modify it
+            if (trigger === true) {
+                $(this).trigger('change'); // Optional: Trigger change event explicitly
+            }
+        });
+
+        return true;
+    };
+
     static loadInitEmpData() {
         $.fn.callAjax2({
                 'url': NodeLoadDataHandle.$initEmp.attr('data-url'),
@@ -739,8 +782,7 @@ class NodeDataTableHandle {
                         if (row?.['is_checked']) {
                             checked = 'checked';
                         }
-                        return `<div class="d-flex align-items-center">
-                                    <div class="form-check form-check-lg">
+                        return `<div class="form-check form-check-lg">
                                         <input
                                             type="checkbox" 
                                             class="form-check-input table-row-checkbox"
@@ -749,10 +791,9 @@ class NodeDataTableHandle {
                                             data-row="${dataRow}"
                                             ${checked}
                                         >
-                                    </div>
-                                    <span class="badge badge-primary mr-2 table-row-code">${row?.['code']}</span>
-                                    <span class="badge badge-primary badge-outline table-row-title">${row?.['full_name']}</span>
-                                </div>`;
+                                        <span class="badge badge-primary mr-2 table-row-code">${row?.['code']}</span>
+                                        <span class="badge badge-primary badge-outline table-row-title">${row?.['full_name']}</span>
+                                    </div>`;
                     }
                 },
                 {
@@ -773,6 +814,9 @@ class NodeDataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                NodeLoadDataHandle.loadEventCheckbox(NodeDataTableHandle.$tableOFEmp);
+            },
         });
     };
 
@@ -936,10 +980,10 @@ class NodeStoreHandle {
                                 NodeLoadDataHandle.dataNode[i]['actions'] = data?.['actions'];
                             }
                             if (NodeLoadDataHandle.dataNode[i]?.['order'] > 1) {  // custom node
-                                // check collab count
+                                // check collab
                                 let checkCollab = NodeStoreHandle.storeCheckCollab(data, NodeLoadDataHandle.dataNode[i]?.['order']);
                                 if (checkCollab === false) {
-                                    $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-check-collab-count')}, 'failure');
+                                    $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-check-collab')}, 'failure');
                                     return false;
                                 }
 
@@ -1058,17 +1102,48 @@ class NodeStoreHandle {
     };
 
     static storeCheckCollab(data, orderCheck) {
-        if (data?.['option_collaborator'] === 1 && data?.['collab_out_form']?.['employee_list']) {
-            if (data?.['collab_out_form']?.['employee_list'].length > 1) {
+        if (data?.['option_collaborator'] === 1 && data?.['collab_out_form']) {  // out form
+            if (data?.['collab_out_form']?.['employee_list']) {
+                if (data?.['collab_out_form']?.['employee_list'].length > 1) {
+                    let $eleAssociate = $('#node-associate');
+                    if ($eleAssociate.val()) {
+                        let associate = JSON.parse($eleAssociate.val());
+                        for (let key in associate) {
+                            if (associate[key]?.['node_out'] === orderCheck) {
+                                for (let dataNode of NodeLoadDataHandle.dataNode) {
+                                    if (associate[key]?.['node_in'] === dataNode?.['order']) {
+                                        if (dataNode?.['option_collaborator'] === 2) {
+                                            if (dataNode?.['collab_in_workflow']) {
+                                                if (dataNode?.['collab_in_workflow'].length > 1) {
+                                                    return false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (data?.['option_collaborator'] === 2 && data?.['collab_in_workflow']) {  // in workflow
+            if (data?.['collab_in_workflow'].length > 1) {
                 let $eleAssociate = $('#node-associate');
                 if ($eleAssociate.val()) {
                     let associate = JSON.parse($eleAssociate.val());
                     for (let key in associate) {
-                        if (associate[key]?.['node_out'] === orderCheck) {
+                        if (associate[key]?.['node_in'] === orderCheck) {
                             for (let dataNode of NodeLoadDataHandle.dataNode) {
-                                if (dataNode?.['order'] === associate[key]?.['node_in']) {
-                                    if (dataNode?.['option_collaborator'] === 2) {
-                                        return false;
+                                if (associate[key]?.['node_out'] === dataNode?.['order']) {
+                                    if (dataNode?.['option_collaborator'] === 1) {
+                                        if (dataNode?.['collab_out_form']) {
+                                            if (dataNode?.['collab_out_form']?.['employee_list']) {
+                                                if (dataNode?.['collab_out_form']?.['employee_list'].length > 1) {
+                                                    return false;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -1079,6 +1154,7 @@ class NodeStoreHandle {
         }
         return true;
     };
+
 }
 
 // Submit Form
@@ -1123,7 +1199,6 @@ class NodeSubmitHandle {
     };
 
 }
-
 
 // COMMON FUNCTION
 function filterFieldList(field_list, data_json) {

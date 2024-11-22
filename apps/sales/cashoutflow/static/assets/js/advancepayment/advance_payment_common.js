@@ -188,7 +188,7 @@ class APLoadTab {
     static LoadLineDetailTable(data=[], option='create') {
         tableLineDetail.DataTable().clear().destroy()
         tableLineDetail.DataTableDefault({
-            styleDom: 'hide-foot',
+            dom: 't',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,

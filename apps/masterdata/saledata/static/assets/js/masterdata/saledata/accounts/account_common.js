@@ -169,7 +169,6 @@ function loadContactOwner(contactOwnerData) {
 }
 
 function loadTableSelectContact(selected_contact_list=[], selected_contact_list_detail=[]) {
-    console.log(selected_contact_list)
     let tbl = $('#datatable-add-contact');
     $.fn.callAjax(tbl.attr('data-url'), 'GET').then(
         (resp) => {
@@ -427,7 +426,6 @@ function LoadDetail(option) {
             if (data) {
                 $.fn.compareStatusShowPageAction(data);
                 data = data['account_detail'];
-                console.log(data)
 
                 accountName.val(data.name);
                 accountCode.val(data.code);
@@ -1294,7 +1292,6 @@ frm_create_contact.submit(function (event) {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 $('#modal-add-new-contact').hide();
-                $('#offcanvasRight').offcanvas('hide');
                 let contact_mapped_list = [];
                 $('#datatable_contact_list tbody').find('.selected_contact_full_name').each(function () {
                     contact_mapped_list.push($(this).attr('data-id'))

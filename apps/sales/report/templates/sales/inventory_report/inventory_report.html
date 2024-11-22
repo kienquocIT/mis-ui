@@ -59,7 +59,7 @@
 {% block pageContent %}
     {{ data.data.current_period | json_script:"current_period" }}
     {{ data.data.definition_inventory_valuation | json_script:"definition_inventory_valuation" }}
-    {{ data.data.is_project | json_script:"is_project" }}
+    {{ data.data.company_current_data | json_script:"company_current_data" }}
 
     <script id="trans-script"
             data-trans-m1th="{% trans 'January' %}"
@@ -94,6 +94,7 @@
             data-trans-fifo="{% trans 'FIFO' %}"
             data-trans-all="{% trans 'Default all' %}"
             data-trans-no-response="{% trans 'Tôi chưa hiểu bạn cần gì. Hãy đặt câu hỏi rõ hơn nhé!' %}"
+            data-trans-filter="{% trans 'Filter' %}"
     ></script>
 
     <script id="url-script"
@@ -101,109 +102,94 @@
             data-url-inventory-list-view="{% url 'ReportInventoryProductWarehouseViewAPI' %}"
             data-url-qr-code-sn-info="{% url 'GetQRCodeSerialInfoAPI' %}"
             data-url-qr-code-lot-info="{% url 'GetQRCodeLotInfoAPI' %}"
+            data-url-company-config-detail="{% url 'CompanyConfigDetailAPI' %}"
 {#            data-url-chatbot="{% url 'ReportInventoryChatBotAPI' %}"#}
     ></script>
 
     <div class="row">
         <div class="col-12">
-            <button id="btn-filter" class="btn border-primary bg-primary-light-5 text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
-            </button>
-            <div class="collapse mt-2" id="collapseExample">
-                <div class="card card-wth-line">
-		            <div class="card-line bg-primary-light-5"></div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6 col-lg-4 col-md-4">
-                                <div class="form-group">
-                                    <label for="period-select" class="form-label required">{% trans 'Fiscal year' %}</label>
-                                    <select class="form-select select2" id="period-select"
-                                            data-url="{% url 'PeriodsConfigListAPI' %}"
-                                            data-method="GET"
-                                    ></select>
-                                </div>
-                            </div>
-                            <div class="col-6 col-lg-4 col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
-                                    <select id="period-month" class="form-select"></select>
-                                </div>
-                            </div>
-                            <div class="col-6 col-lg-2 col-md-2">
-                                <div class="form-group">
-                                    <label class="form-label" for="period-day-from">{% trans 'From' %}</label>
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
-                                        <input type="number" min="1" max="31" id="period-day-from" class="form-control">
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="col-6 col-lg-2 col-md-2">
-                                <div class="form-group">
-                                    <label class="form-label" for="period-day-to">{% trans 'To' %}</label>
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
-                                        <input type="number" min="1" max="31" id="period-day-to" class="form-control">
-                                    </span>
-                                </div>
+            <div class="collapse" id="collapseExample">
+                <div class="border border-light rounded p-2">
+                    <div class="row">
+                        <div class="col-6 col-lg-4 col-md-4">
+                            <div class="form-group">
+                                <label for="period-select" class="form-label required">{% trans 'Fiscal year' %}</label>
+                                <select class="form-select select2" id="period-select"
+                                        data-url="{% url 'PeriodsConfigListAPI' %}"
+                                        data-method="GET"
+                                ></select>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12 col-lg-4 col-md-12">
-                                <div class="form-group">
-                                    <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
-                                    <select class="form-select select2 select-multiple" id="warehouses_select" multiple
-                                            data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-8 col-md-12">
-                                <div class="form-group">
-                                    <label class="form-label" for="items_select">{% trans 'Product' %}</label>
-                                    <select class="form-select select2 select-multiple" id="items_select" multiple
-                                            data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
-                                </div>
-                            </div>
-                            <div class="project-filter col-12 col-lg-4 col-md-12">
-                                <div class="form-group">
-                                    <label for="project-select" class="form-label">{% trans 'Project' %}</label>
-                                    <select class="form-select select2" id="project-select"
-                                            data-url="{% url 'SaleOrderListAPI' %}"
-                                            data-method="GET"
-                                    ></select>
-                                </div>
+                        <div class="col-6 col-lg-4 col-md-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="period-month">{% trans 'Month' %}</label>
+                                <select id="period-month" class="form-select"></select>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="btn-group dropup" role="group">
-                                    <button type="button" class="btn btn-primary btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <span>
-                                            <span class="icon">
-                                                <span class="feather-icon"><i class="fas fa-eye"></i></span>
-                                            </span>
-                                            <span>{% trans 'Apply' %}</span>
-                                        </span>
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="btn-action">
-                                        <a class="dropdown-item" id="btn-view" href="#"><i class="far fa-window-maximize"></i> <span>{% trans 'General' %}</span></a>
-                                        <a class="dropdown-item" id="btn-view-detail" href="#"><i class="fas fa-list-ul"></i> <span>{% trans 'Detail' %}</span></a>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-danger btn-sm" id="btn-reset">
-                                    <span>
-                                        <span class="icon">
-                                            <span class="feather-icon"><i class="fas fa-undo-alt"></i></span>
-                                        </span>
-                                        <span>{% trans 'Reset' %}</span>
-                                    </span>
+                        <div class="col-6 col-lg-2 col-md-2">
+                            <div class="form-group">
+                                <label class="form-label" for="period-day-from">{% trans 'From' %}</label>
+                                <span class="input-affix-wrapper">
+                                    <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
+                                    <input type="number" min="1" max="31" id="period-day-from" class="form-control">
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-2 col-md-2">
+                            <div class="form-group">
+                                <label class="form-label" for="period-day-to">{% trans 'To' %}</label>
+                                <span class="input-affix-wrapper">
+                                    <span class="input-prefix text-secondary"><i class="bi bi-calendar3"></i></span>
+                                    <input type="number" min="1" max="31" id="period-day-to" class="form-control">
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-4 col-md-12">
+                            <div class="form-group">
+                                <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
+                                <select class="form-select select2 select-multiple" id="warehouses_select" multiple
+                                        data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-8 col-md-12">
+                            <div class="form-group">
+                                <label class="form-label" for="items_select">{% trans 'Product' %}</label>
+                                <select class="form-select select2 select-multiple" id="items_select" multiple
+                                        data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+                            </div>
+                        </div>
+                        <div class="project-filter col-12 col-lg-4 col-md-12">
+                            <div class="form-group">
+                                <label for="project-select" class="form-label">{% trans 'Project' %}</label>
+                                <select class="form-select select2" id="project-select"
+                                        data-url="{% url 'SaleOrderListAPI' %}"
+                                        data-method="GET"
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="btn-group dropup" role="group">
+                                <button type="button" class="btn btn-primary btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% trans 'Apply' %}
                                 </button>
-                                <div hidden class="btn-group dropend" role="group">
-                                    <button id="btn-action" type="button" class="btn btn-gradient-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        {% trans 'Action' %}
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="btn-action">
-                                        <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
-                                    </div>
+                                <div class="dropdown-menu" aria-labelledby="btn-action">
+                                    <a class="dropdown-item" id="btn-view" href="#"><i class="far fa-window-maximize"></i> <span>{% trans 'General' %}</span></a>
+                                    <a class="dropdown-item" id="btn-view-detail" href="#"><i class="fas fa-list-ul"></i> <span>{% trans 'Detail' %}</span></a>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger btn-sm" id="btn-reset">
+                                {% trans 'Reset' %}
+                            </button>
+                            <div hidden class="btn-group dropend" role="group">
+                                <button id="btn-action" type="button" class="btn btn-gradient-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% trans 'Action' %}
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="btn-action">
+                                    <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
                                 </div>
                             </div>
                         </div>

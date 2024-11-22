@@ -440,7 +440,7 @@ class PaymentLoadTab {
     static DrawLineDetailTable(data_list = [], option = 'create') {
         tableLineDetail.DataTable().clear().destroy()
         tableLineDetail.DataTableDefault({
-            styleDom: 'hide-foot',
+            dom: 't',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,

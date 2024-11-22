@@ -340,6 +340,24 @@ $(async function () {
             return true;
         };
 
+        loadEventRadio($area) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function () {
+            // Find and mark the radio button inside this group as checked
+            let radio = this.querySelector('.form-check-input');
+            if (radio) {
+                let checkboxes = $area[0].querySelectorAll('.form-check-input[type="radio"]');
+                // Uncheck all radio buttons and reset row styles
+                for (let eleCheck of checkboxes) {
+                    eleCheck.checked = false;
+                }
+                // Set the current radio button as checked and apply style
+                radio.checked = true;
+            }
+        });
+        return true;
+    };
+
         setupDataPW(dataSrc, prod_data, config, type) {
             let finalData = [];
             let baseData = [];
@@ -507,6 +525,7 @@ $(async function () {
                             return `<div class="form-check form-check-lg">
                                         <input
                                             type="radio"
+                                            name="row-checkbox"
                                             class="form-check-input table-row-checkbox cl-child"
                                             id="pw-${row?.['id'].replace(/-/g, "")}"
                                             data-id="${row?.['id']}"
@@ -514,8 +533,8 @@ $(async function () {
                                             ${checked}
                                             ${disabled}
                                         >
-                                        <label class="form-check-label" for="pw-${row?.['id'].replace(/-/g, "")}">${row?.['warehouse']?.['title']}</label>
                                         <span class="badge badge-soft-success">${row?.['warehouse']?.['code']}</span>
+                                        <label class="form-check-label" for="pw-${row?.['id'].replace(/-/g, "")}">${row?.['warehouse']?.['title']}</label>
                                     </div>`;
                         }
                     },
@@ -614,6 +633,7 @@ $(async function () {
                 drawCallback: function () {
                     prodTable.setupCollapse();
                     prodTable.setupTotal();
+                    prodTable.loadEventRadio($table);
                 },
             })
         };
@@ -757,7 +777,6 @@ $(async function () {
                             }
                             prodTable.dataTableTableLot(dataLotFn);
                             eleChecked.checked = true;
-                            $(row).css('background-color', '#ebfcf5');
                         }
                     }
                 }
@@ -966,7 +985,6 @@ $(async function () {
                                 prodTable.dataTableTableSerial(dataSerialFn);
                             }
                             eleChecked.checked = true;
-                            $(row).css('background-color', '#ebfcf5');
                         }
                     }
                 }
@@ -1152,7 +1170,6 @@ $(async function () {
         loadUnCheckWH() {
             for (let eleCheck of $('#productStockDetail')[0].querySelectorAll('.table-row-checkbox')) {
                 eleCheck.checked = false;
-                $(eleCheck.closest('tr')).css('background-color', '');
             }
         };
 
@@ -1234,9 +1251,7 @@ $(async function () {
                 const res = $.fn.switcherResp(req);
                 prepareHTMLConfig(res?.['config_at_that_point'])
                 $x.fn.renderCodeBreadcrumb(res);
-
-                new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
-
+                // new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
                 const $saleOrder = $('#inputSaleOrder');
                 $saleOrder.html(res.sale_order_data.code)
                 $saleOrder.attr('data-so', JSON.stringify(res?.['sale_order_data']));

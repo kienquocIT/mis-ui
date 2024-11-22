@@ -58,6 +58,49 @@ class GRLoadDataHandle {
         return true;
     };
 
+    static loadEventCheckbox($area, trigger = false) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function (event) {
+            // Prevent handling if the direct checkbox is clicked
+            if (event.target.classList.contains('form-check-input')) {
+                return; // Let the checkbox handler handle this
+            }
+
+            // Find the checkbox inside the clicked element
+            let checkbox = this.querySelector('.form-check-input[type="checkbox"]');
+            if (checkbox) {
+                // Check if the checkbox is disabled
+                if (checkbox.disabled) {
+                    return; // Exit early if the checkbox is disabled
+                }
+                // Prevent the default behavior
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                // Toggle the checkbox state manually
+                checkbox.checked = !checkbox.checked;
+                // Optional: Trigger a change event if needed
+                if (trigger === true) {
+                    $(checkbox).trigger('change');
+                }
+            }
+        });
+
+        // Handle direct clicks on the checkbox itself
+        $area.on('click', '.form-check-input', function (event) {
+            // Prevent the default behavior to avoid double-triggering
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            // Checkbox state is toggled naturally, so no need to modify it
+            if (trigger === true) {
+                $(this).trigger('change'); // Optional: Trigger change event explicitly
+            }
+        });
+
+        return true;
+    };
+
     static loadEventRadio($area) {
         // Use event delegation for dynamically added elements
         $area.on('click', '.form-check', function () {
@@ -1464,15 +1507,22 @@ class GRDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<div class="form-check form-check-lg">
+                        let targetID = row?.['purchase_order_product_id'];
+                        if (row?.['production_order_id']) {
+                            targetID = row?.['production_order_id'];
+                        }
+                        if (targetID) {
+                            return `<div class="form-check form-check-lg">
                                     <input 
                                         type="radio" 
                                         class="form-check-input table-row-checkbox" 
-                                        id="po-pro-${row?.['purchase_order_product_id'].replace(/-/g, "")}"
+                                        id="po-pro-${targetID.replace(/-/g, "")}"
                                         data-id="${row?.['id']}"
                                     >
-                                    <label class="form-check-label table-row-item" for="po-pro-${row?.['purchase_order_product_id'].replace(/-/g, "")}">${row?.['product_data']?.['title']}</label>
+                                    <label class="form-check-label table-row-item" for="po-pro-${targetID.replace(/-/g, "")}">${row?.['product_data']?.['title']}</label>
                                 </div>`;
+                        }
+                        return ``;
                     }
                 },
                 {
@@ -1996,6 +2046,9 @@ class GRDataTableHandle {
                     },
                 },
             ],
+            drawCallback: function () {
+                GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tableProductionReport);
+            },
         });
     };
 

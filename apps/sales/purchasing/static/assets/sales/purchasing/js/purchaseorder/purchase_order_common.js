@@ -1207,6 +1207,12 @@ class POLoadDataHandle {
         for (let ele of table[0].querySelectorAll('.table-row-item')) {
             ele.setAttribute('readonly', 'true');
         }
+        for (let ele of table[0].querySelectorAll('.table-row-shipping')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-description')) {
+            ele.setAttribute('readonly', 'true');
+        }
         for (let ele of table[0].querySelectorAll('.table-row-uom-order-actual')) {
             ele.setAttribute('readonly', 'true');
         }
@@ -1777,7 +1783,7 @@ class PODataTableHandle {
                     width: '18%',
                     render: (data, type, row) => {
                         if (row?.['is_shipping'] === true) {
-                            return `<input type="text" class="form-control table-row-shipping" value="${row?.['shipping_title'] ? row?.['shipping_title'] : ''}">`;
+                            return `<input type="text" class="form-control table-row-shipping" value="${row?.['shipping_title'] ? row?.['shipping_title'] : ''}" required>`;
                         }
                         return `<div class="row table-row-item-area">
                                     <div class="col-12 col-md-12 col-lg-12">
@@ -1786,6 +1792,7 @@ class PODataTableHandle {
                                             data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
                                             data-method="GET"
                                             data-keyResp="product_sale_list"
+                                            required
                                         ></select>
                                     </div>
                                 </div>`;
@@ -1795,8 +1802,9 @@ class PODataTableHandle {
                     targets: 2,
                     width: '15%',
                     render: (data, type, row) => {
+                        let readonly = "readonly";
                         if (row?.['is_shipping'] === true) {
-                            return `<input type="text" class="form-control table-row-description" value="">`;
+                            readonly = "";
                         }
                         let des = '';
                         if (row?.['product']?.['description']) {
@@ -1804,7 +1812,7 @@ class PODataTableHandle {
                                 des = row?.['product']?.['description'];
                             }
                         }
-                        return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${des}</textarea></div>`;
+                        return `<textarea class="table-row-description form-control" rows="2" ${readonly}>${des}</textarea>`;
                     }
                 },
                 {
@@ -1836,24 +1844,12 @@ class PODataTableHandle {
                     targets: 5,
                     width: '16.9270833333%',
                     render: (data, type, row) => {
-                        return `<div class="row more-information-group">
-                                    <div class="dropend">
-                                        <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
-                                        <span class="input-affix-wrapper">
-                                            <input 
-                                                type="text" 
-                                                class="form-control mask-money table-row-price" 
-                                                value="${row?.['product_unit_price']}"
-                                                data-return-type="number"
-                                            >
-                                            <span class="input-suffix table-row-btn-dropdown-price-list"><small><i class="fas fa-caret-down"></i></small></span>
-                                        </span>
-                                        </div>
-                                        <div role="menu" class="dropdown-menu table-row-price-list w-460p">
-                                        <a class="dropdown-item" data-value=""></a>
-                                        </div>
-                                    </div>
-                                </div>`;
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-price" 
+                                    value="${row?.['product_unit_price']}"
+                                    data-return-type="number"
+                                >`;
                     }
                 },
                 {
@@ -2398,48 +2394,18 @@ class POSubmitHandle {
             let rowData = {};
             let row = this.node();
             let eleProduct = row.querySelector('.table-row-item');
-            if (eleProduct) { // PRODUCT
-                let dataInfo = {};
+            let eleShipping = row.querySelector('.table-row-shipping');
+            if (eleProduct) {  // PRODUCT
                 if ($(eleProduct).val()) {
-                    dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-                }
-                if (dataInfo) {
+                    let dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                     rowData['product'] = dataInfo?.['id'];
                     rowData['product_title'] = dataInfo?.['title'];
                     rowData['product_code'] = dataInfo?.['code'];
-                }
-                let eleDescription = row.querySelector('.table-row-description');
-                if (eleDescription) {
-                    rowData['product_description'] = eleDescription.innerHTML;
                 }
                 let eleUOMRequest = row.querySelector('.table-row-uom-order-request');
                 if (eleUOMRequest) {
                     let dataInfo = JSON.parse(eleUOMRequest.querySelector('.data-info').value);
                     rowData['uom_order_request'] = dataInfo?.['id'];
-                }
-                let eleUOMOrder = row.querySelector('.table-row-uom-order-actual');
-                if ($(eleUOMOrder).val()) {
-                    let dataInfo = SelectDDControl.get_data_from_idx($(eleUOMOrder), $(eleUOMOrder).val());
-                    if (dataInfo) {
-                        rowData['uom_order_actual'] = dataInfo?.['id'];
-                    }
-                }
-                let eleTax = row.querySelector('.table-row-tax');
-                if ($(eleTax).val()) {
-                    let dataInfo = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
-                    if (dataInfo) {
-                        rowData['tax'] = dataInfo?.['id'];
-                        rowData['product_tax_title'] = dataInfo?.['title'];
-                        rowData['product_tax_value'] = dataInfo?.['rate'];
-                    } else {
-                        rowData['product_tax_value'] = 0;
-                    }
-                }
-                let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-                if (eleTaxAmount) {
-                    if (eleTaxAmount.value) {
-                       rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
-                    }
                 }
                 let eleQuantityRequest = row.querySelector('.table-row-quantity-order-request');
                 if (eleQuantityRequest) {
@@ -2447,31 +2413,11 @@ class POSubmitHandle {
                         rowData['product_quantity_order_request'] = parseFloat(eleQuantityRequest.innerHTML);
                     }
                 }
-                let eleQuantityOrder = row.querySelector('.table-row-quantity-order-actual');
-                if (eleQuantityOrder) {
-                    if (eleQuantityOrder.value) {
-                        rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
-                        rowData['gr_remain_quantity'] = parseFloat(eleQuantityOrder.value);
-                    }
-                }
                 let stock = row.querySelector('.table-row-stock');
                 if (stock) {
                     if (stock.innerHTML) {
                         rowData['stock'] = parseFloat(stock.innerHTML);
                     }
-                }
-                let elePrice = row.querySelector('.table-row-price');
-                if (elePrice) {
-                    rowData['product_unit_price'] = $(elePrice).valCurrency();
-                }
-                let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-                if (eleSubtotal) {
-                    if (eleSubtotal.value) {
-                        rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
-                    }
-                }
-                if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
-                    rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount']
                 }
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
@@ -2503,6 +2449,64 @@ class POSubmitHandle {
                     }
                 }
             }
+            if (eleShipping) {  // SHIPPING
+                rowData['is_shipping'] = true;
+                rowData['shipping_title'] = eleShipping.value;
+                let eleOrder = row.querySelector('.table-row-order');
+                if (eleOrder) {
+                    rowData['order'] = parseInt(eleOrder.innerHTML);
+                }
+            }
+            // COMMON
+            let eleDescription = row.querySelector('.table-row-description');
+            if (eleDescription) {
+                rowData['product_description'] = eleDescription.innerHTML;
+            }
+            let eleUOMOrder = row.querySelector('.table-row-uom-order-actual');
+            if ($(eleUOMOrder).val()) {
+                let dataInfo = SelectDDControl.get_data_from_idx($(eleUOMOrder), $(eleUOMOrder).val());
+                if (dataInfo) {
+                    rowData['uom_order_actual'] = dataInfo?.['id'];
+                }
+            }
+            let eleQuantityOrder = row.querySelector('.table-row-quantity-order-actual');
+            if (eleQuantityOrder) {
+                if (eleQuantityOrder.value) {
+                    rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
+                    rowData['gr_remain_quantity'] = parseFloat(eleQuantityOrder.value);
+                }
+            }
+            let elePrice = row.querySelector('.table-row-price');
+            if (elePrice) {
+                rowData['product_unit_price'] = $(elePrice).valCurrency();
+            }
+            let eleTax = row.querySelector('.table-row-tax');
+            if ($(eleTax).val()) {
+                let dataInfo = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                if (dataInfo) {
+                    rowData['tax'] = dataInfo?.['id'];
+                    rowData['product_tax_title'] = dataInfo?.['title'];
+                    rowData['product_tax_value'] = dataInfo?.['rate'];
+                } else {
+                    rowData['product_tax_value'] = 0;
+                }
+            }
+            let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
+            if (eleTaxAmount) {
+                if (eleTaxAmount.value) {
+                    rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+                }
+            }
+            let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
+            if (eleSubtotal) {
+                if (eleSubtotal.value) {
+                    rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+                }
+            }
+            if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
+                rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount'];
+            }
+
             result.push(rowData);
         });
         return result
@@ -2610,12 +2614,6 @@ class POSubmitHandle {
 }
 
 // *** COMMON FUNCTIONS ***
-function clickCheckBoxAll(ele, table) {
-    for (let eleCheck of table[0].querySelectorAll('.table-row-checkbox')) {
-        eleCheck.checked = ele[0].checked;
-    }
-}
-
 function areAllEqual(arr) {
     if (arr.length === 0) {
         return true; // An empty array is considered as all elements being equal.

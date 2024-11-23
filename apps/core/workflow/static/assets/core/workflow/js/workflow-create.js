@@ -179,6 +179,16 @@ $(function () {
             }
         });
 
+        NodeLoadDataHandle.$flowChart.on('click', '.del-node', function () {
+            if (this.closest('.btn-group')) {
+                if (this.closest('.btn-group').querySelector('.clone')) {
+                    let target = parseInt(this.closest('.btn-group').querySelector('.clone').getAttribute('data-drag'));
+                    NodeLoadDataHandle.dataNode = NodeLoadDataHandle.dataNode.filter(data => data.order !== target);
+                    FlowJsP.init();
+                }
+            }
+        });
+
         NodeLoadDataHandle.$modalNode.on('shown.bs.modal', function () {
             NodeLoadDataHandle.loadModalNode();
             NodeLoadDataHandle.loadModalNodeDetail();

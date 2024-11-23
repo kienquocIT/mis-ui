@@ -9708,10 +9708,17 @@ msgstr "Trạng thái"
 msgid "Price of purchase quotation"
 msgstr "Giá của báo giá mua hàng"
 
-
 #
 msgid "New Contact Shortcut"
 msgstr "Tạo nhanh Liên hệ"
+
+#
+msgid "Copy BOM"
+msgstr "Sao chép BOM"
+
+#
+msgid "Select BOM to copy"
+msgstr "Chọn BOM để sao chép"
 
 #
 msgid "Collaborator configuration conflict with the association node"

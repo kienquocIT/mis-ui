@@ -359,11 +359,13 @@ class JSPlumbsHandle {
                     const clone = $(ui.helper).clone(true);
                     const numID = ui.draggable.attr('data-drag')
                     let is_id = 'control-' + numID
-                    clone.attr("id", is_id)
+                    // clone.attr("id", is_id)
+                    clone.find('.clone').attr("id", is_id);
                     clone.appendTo(this);
                     let $this_elm = ui.draggable;
                     $this_elm.draggable("disable");
-                    instance.draggable(is_id, {containment: true})
+                    // instance.draggable(is_id, {containment: true})
+                    instance.draggable(is_id);
                     let sys_code = "";
                     // check default system node
                     for (let idx in DEFAULT_NODE_LIST) {
@@ -446,7 +448,8 @@ class JSPlumbsHandle {
                 instance.doWhileSuspended(function () {
                     $('#flowchart_workflow .clone').each(function () {
                         let is_id = $(this).attr('id')
-                        instance.draggable(is_id, {containment: true})
+                        // instance.draggable(is_id, {containment: true})
+                        instance.draggable(is_id);
 
                         let sys_code = DEFAULT_NODE_LIST[$(this).data('drag')].code_node_system
                         if (sys_code !== 'completed')

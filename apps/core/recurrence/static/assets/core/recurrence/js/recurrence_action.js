@@ -54,24 +54,14 @@ $(function () {
                         targets: 1,
                         width: '5%',
                         render: (data, type, row) => {
-                            let link = "";
-                            if (row?.['recurrence']?.['id'] && row?.['recurrence']?.['code']) {
-                                link = $urls.data('link-detail').format_url_with_uuid(row?.['recurrence']?.['id']);
-                                return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['recurrence']?.['code']}</span></a>`;
-                            }
-                            return `<a href="${link}" class="link-primary underline_hover">--</a>`;
+                            return `<span class="badge badge-primary">${row?.['recurrence']?.['code'] ? row?.['recurrence']?.['code'] : ""}</span>`;
                         }
                     },
                     {
                         targets: 2,
                         width: '15%',
                         render: (data, type, row) => {
-                            let link = "";
-                            if (row?.['recurrence']?.['id'] && row?.['recurrence']?.['title']) {
-                                link = $urls.data('link-detail').format_url_with_uuid(row?.['recurrence']?.['id']);
-                                return `<a href="${link}" class="link-primary underline_hover">${row?.['recurrence']?.['title']}</a>`;
-                            }
-                            return `<a href="${link}" class="link-primary underline_hover">--</a>`;
+                            return `${row?.['recurrence']?.['title'] ? row?.['recurrence']?.['title'] : ""}`;
                         }
                     },
                     {

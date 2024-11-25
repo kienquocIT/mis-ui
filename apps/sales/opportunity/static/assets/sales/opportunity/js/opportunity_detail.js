@@ -181,6 +181,10 @@ $(document).ready(function () {
                         $('#check-lost-reason').prop('checked', false);
 
                     $('#input-budget').attr('value', opportunity_detail.budget_value);
+                    if (opportunity_detail?.['process']?.['id']) {
+                        $('#process-space').prop('hidden', false)
+                        $('#process-title').val(opportunity_detail?.['process']?.['title']);
+                    }
 
                     OpportunityLoadDropdown.loadCustomer(opportunity_detail.customer, config_is_AM_create, opportunity_detail?.['sale_person'].id);
                     OpportunityLoadDropdown.loadProductCategory(opportunity_detail.product_category);
@@ -1099,17 +1103,26 @@ $(document).ready(function () {
                 }
 
                 function loadEmployeeAttended(data) {
-                    meeting_employee_attended_slb.initSelect2({
-                        ajax: {
-                            url: meeting_employee_attended_slb.attr('data-url'),
-                            method: 'GET',
-                        },
-                        data: (data ? data : null),
-                        keyResp: 'employee_list',
-                        keyId: 'id',
-                        keyText: 'full_name',
-                    })
-                }
+    meeting_employee_attended_slb.initSelect2({
+        ajax: {
+            url: meeting_employee_attended_slb.attr('data-url'),
+            method: 'GET',
+        },
+        data: (data ? data : null),
+        templateResult: function (data) {
+            if (data.data?.['group']?.['id']) {
+                let ele = $(`<div class="row"></div>`);
+                ele.append(`<div class="col-8">${data.data?.['full_name']}</div>`);
+                ele.append(`<div class="col-4"><span class="badge badge-soft-primary badge-outline">${data.data?.['group']?.['title']}</span></div>`);
+                return ele;
+            }
+            return ''
+        },
+        keyResp: 'employee_list',
+        keyId: 'id',
+        keyText: 'full_name',
+    })
+}
 
                 meeting_date_input.daterangepicker({
                     singleDatePicker: true,

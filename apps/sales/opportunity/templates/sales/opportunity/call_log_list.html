@@ -23,37 +23,40 @@
             data-trans-alert-warn="{% trans 'This call log cannot be reactivated.' %}"
     ></script>
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
-    <table id="table_opportunity_call_log_list" class="table nowrap w-100 mb-5"
-           data-url-contact-detail="{% url 'ContactDetail' '0' %}"
-           data-url-delete="{% url 'OpportunityCallLogDetailAPI' '0' %}"
-           data-url-redirect="{% url 'OpportunityCallLogList' %}"
-           data-url="{% url 'OpportunityCallLogListAPI' %}" data-method="GET">
-        <thead>
-        <tr>
-            <th></th>
-            <th>{% trans 'To Contact' %}
-                <i class="fas fa-info-circle icon-info"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="bottom"
-                   title="{% trans 'Press row here to open detail page.' %}">
-                </i>
-            </th>
-            <th>{% trans 'Subject' %}
-                <i class="fas fa-info-circle icon-info"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="bottom"
-                   title="{% trans 'Press row here to see detail call log.' %}">
-                </i>
-            </th>
-            <th>{% trans 'Sale Code' %}</th>
-            <th>{% trans 'Date' %}</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-12 col-md-8 mol-lg-8">
+            <table id="table_opportunity_call_log_list" class="table nowrap w-100 mb-5"
+                   data-url-contact-detail="{% url 'ContactDetail' '0' %}"
+                   data-url-delete="{% url 'OpportunityCallLogDetailAPI' '0' %}"
+                   data-url-redirect="{% url 'OpportunityCallLogList' %}"
+                   data-url="{% url 'OpportunityCallLogListAPI' %}" data-method="GET">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Contact' %}
+                        <i class="fas fa-info-circle icon-info"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="bottom"
+                           title="{% trans 'Press row here to open detail page.' %}">
+                        </i>
+                    </th>
+                    <th>{% trans 'Subject' %}
+                        <i class="fas fa-info-circle icon-info"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="bottom"
+                           title="{% trans 'Press row here to see detail call log.' %}">
+                        </i>
+                    </th>
+                    <th>{% trans 'Sale Code' %}</th>
+                    <th>{% trans 'Date' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
-
 {% block modalData %}
     <div class="modal fade" id="create-new-call-log" tabindex="-1" role="dialog"
          aria-labelledby="createOpportunityCallLogModalForms" aria-hidden="true">
@@ -211,7 +214,6 @@
         </div>
     </div>
 {% endblock %}
-
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/call_log_list.js' %}"></script>

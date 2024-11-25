@@ -9723,3 +9723,19 @@ msgstr "Chọn BOM để sao chép"
 #
 msgid "Collaborator configuration conflict with the association node"
 msgstr "Cấu hình CTV mâu thuẫn với trạm liên kết"
+
+#
+msgid "Select address"
+msgstr "Chọn địa điểm"
+
+#
+msgid "Detail Meeting"
+msgstr "Chi tiết cuộc họp"
+
+#
+msgid "Input Result"
+msgstr "Nhập kết quả"
+
+#
+msgid "Cancelled"
+msgstr "Bị hủy bỏ"

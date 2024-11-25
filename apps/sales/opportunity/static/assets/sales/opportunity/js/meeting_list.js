@@ -28,44 +28,44 @@ function loadOpportunityMeetingList() {
             },
             columns: [
                 {
-                    className: 'wrap-text',
+                    className: 'wrap-text w-10',
                     render: () => {
                         return ``;
                     }
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text w-75',
+                    className: 'wrap-text w-55',
                     render: (data, type, row) => {
                         let status = ''
                         if (row?.['is_cancelled']) {
                             status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
                         }
-                        return `<a class="text-primary link-primary underline_hover detail-meeting-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
-                                    data-bs-target="#detail-meeting"><span><b>` + row.subject + `</b></span> ${status}</a>`
+                        return `<a class="text-primary link-primary underline_hover detail-meeting-button" href="" data-bs-toggle="modal" data-id="${row?.['id']}" data-bs-target="#detail-meeting">
+                                    <span class="mr-1">${row?.['subject']}</span>${status}
+                                </a>`
                     }
                 },
                 {
                     data: 'opportunity',
-                    className: 'wrap-text text-center w-15',
+                    className: 'wrap-text text-center w-20',
                     render: (data, type, row) => {
-                        return `<span class="text-secondary">${row.opportunity.code}</span>`
+                        return `<span class="badge badge-soft-blue badge-outline">${row?.['opportunity']?.['code']}</span>`
                     }
                 },
                 {
                     data: 'meeting_date',
-                    className: 'wrap-text text-center w-10',
+                    className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(data, {
-                            'outputFormat': 'DD-MM-YYYY',
+                            'outputFormat': 'DD/MM/YYYY',
                         });
                     }
                 },
             ],
             rowCallback: function(row, data, index){
                 $('.detail-meeting-button', row).on('click', function () {
-                    let $this = $(this)
-                    detailMeeting($this)
+                    detailMeeting($(this))
                 })
             },
         });
@@ -171,6 +171,15 @@ function loadEmployeeAttended(data) {
             method: 'GET',
         },
         data: (data ? data : null),
+        templateResult: function (data) {
+            if (data.data?.['group']?.['id']) {
+                let ele = $(`<div class="row"></div>`);
+                ele.append(`<div class="col-8">${data.data?.['full_name']}</div>`);
+                ele.append(`<div class="col-4"><span class="badge badge-soft-primary badge-outline">${data.data?.['group']?.['title']}</span></div>`);
+                return ele;
+            }
+            return ''
+        },
         keyResp: 'employee_list',
         keyId: 'id',
         keyText: 'full_name',

@@ -132,7 +132,7 @@ class TransactionTemplateList(View):
         auth_require=True,
         template='core/recurrence/recurrence_template.html',
         menu_active='menu_transaction_template',
-        breadcrumb='RECURRENCE_LIST_PAGE',
+        breadcrumb='RECURRENCE_TEMPLATE_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -145,7 +145,7 @@ class RecurrenceActionList(View):
         auth_require=True,
         template='core/recurrence/recurrence_action.html',
         menu_active='menu_action_list',
-        breadcrumb='RECURRENCE_LIST_PAGE',
+        breadcrumb='RECURRENCE_ACTION_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

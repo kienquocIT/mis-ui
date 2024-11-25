@@ -416,6 +416,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Recurrence
     RECURRENCE_LIST_PAGE = BreadcrumbChildren(_('Recurrence'), 'RecurrenceList')
+    RECURRENCE_TEMPLATE_LIST_PAGE = BreadcrumbChildren(_('Transaction template'), 'TransactionTemplateList')
+    RECURRENCE_ACTION_LIST_PAGE = BreadcrumbChildren(_('Action list'), 'RecurrenceActionList')
     # HRM
     HRM_EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('HRM Employee info'), 'HRMEmployeeList')
     HRM_EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'HRMEmployeeCreate')
@@ -1103,6 +1105,12 @@ class BreadcrumbView:
     RECURRENCE_CREATE_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     RECURRENCE_DETAIL_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     RECURRENCE_UPDATE_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    RECURRENCE_TEMPLATE_LIST_PAGE = [
+        BreadcrumbItem.RECURRENCE_TEMPLATE_LIST_PAGE
+    ]
+    RECURRENCE_ACTION_LIST_PAGE = [
+        BreadcrumbItem.RECURRENCE_ACTION_LIST_PAGE
+    ]
 
     HRM_EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,

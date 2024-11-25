@@ -487,7 +487,7 @@ class OpportunityLoadDetail {
                         ele_stage.addClass('stage-selected')
                         ele_stage.css('background-color', 'rgb(255,94,94)')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '15px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
                     }
                 } else if (ele_stage.hasClass('stage-close')) {
                     let el_close_deal = $('#input-close-deal');
@@ -498,13 +498,13 @@ class OpportunityLoadDetail {
                     ele_stage.css('background-color', '#5a82b7')
                     ele_stage.css('color', 'white')
                     ele_stage.find('.dropdown span').css('color', 'white')
-                    ele_stage.next().css('border-left', '15px solid #5a82b7')
+                    ele_stage.next().css('border-left', '16px solid #5a82b7')
                 } else {
                     ele_stage.addClass('stage-selected')
                     ele_stage.css('background-color', '#5a82b7')
                     ele_stage.css('color', 'white')
                     ele_stage.find('.dropdown span').css('color', 'white')
-                    ele_stage.next().css('border-left', '15px solid #5a82b7')
+                    ele_stage.next().css('border-left', '16px solid #5a82b7')
                 }
             })
         }
@@ -2042,7 +2042,7 @@ function autoLoadStage(
             ele_stage.css('background-color', '#e7e7e7')
             ele_stage.css('color', '#6f6f6f')
             ele_stage.find('.dropdown span').css('color', '#6f6f6f')
-            ele_stage.next().css('border-left', '15px solid #e7e7e7')
+            ele_stage.next().css('border-left', '16px solid #e7e7e7')
         }
         else {
             for (let i = 0; i <= ele_stage.length; i++) {
@@ -2052,21 +2052,21 @@ function autoLoadStage(
                         ele_stage.eq(i).css('background-color', '#5a82b7')
                         ele_stage.eq(i).css('color', 'white')
                         ele_stage.eq(i).find('.dropdown span').css('color', 'white')
-                        ele_stage.eq(i).next().css('border-left', '15px solid #5a82b7')
+                        ele_stage.eq(i).next().css('border-left', '16px solid #5a82b7')
                     }
                     else {
                         ele_stage.eq(i).removeClass('stage-selected');
                         ele_stage.eq(i).css('background-color', '#e7e7e7')
                         ele_stage.eq(i).css('color', '#6f6f6f')
                         ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
-                        ele_stage.eq(i).next().css('border-left', '15px solid #e7e7e7')
+                        ele_stage.eq(i).next().css('border-left', '16px solid #e7e7e7')
                     }
                 } else {
                     ele_stage.eq(i).removeClass('stage-selected');
                     ele_stage.eq(i).css('background-color', '#e7e7e7')
                     ele_stage.eq(i).css('color', '#6f6f6f')
                     ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
-                    ele_stage.eq(i).next().css('border-left', '15px solid #e7e7e7')
+                    ele_stage.eq(i).next().css('border-left', '16px solid #e7e7e7')
                 }
             }
         }
@@ -2077,7 +2077,7 @@ function autoLoadStage(
             ele_close_deal.closest('.sub-stage').css('background-color', '#5a82b7')
             ele_close_deal.closest('.sub-stage').css('color', 'white')
             ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', 'white')
-            ele_close_deal.closest('.sub-stage').next().css('border-left', '15px solid #5a82b7')
+            ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #5a82b7')
             $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
@@ -2090,7 +2090,7 @@ function autoLoadStage(
             ele_close_deal.closest('.sub-stage').css('background-color', '#e7e7e7')
             ele_close_deal.closest('.sub-stage').css('color', '#6f6f6f')
             ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', '#6f6f6f')
-            ele_close_deal.closest('.sub-stage').next().css('border-left', '15px solid #e7e7e7')
+            ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #e7e7e7')
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
                 $('#input-rate').prop('disabled', true);

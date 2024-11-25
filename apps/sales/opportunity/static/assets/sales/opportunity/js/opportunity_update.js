@@ -272,12 +272,12 @@ $(document).ready(function () {
                         ele_stage.addClass('stage-selected');
                         ele_stage.css('background-color', 'rgb(255,94,94)')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '15px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
                     } else {
                         $('.stage-lost').removeClass('stage-selected');
                         $('.stage-lost').css('background-color', '#e7e7e7')
                         $('.stage-lost').css('color', '#6f6f6f')
-                        $('.stage-lost').next().css('border-left', '15px solid #e7e7e7')
+                        $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
                     }
                 });
 
@@ -576,7 +576,7 @@ $(document).ready(function () {
                                 $('.stage-lost').removeClass('stage-selected');
                                 $('.stage-lost').css('background-color', '#e7e7e7')
                                 $('.stage-lost').css('color', '#6f6f6f')
-                                $('.stage-lost').next().css('border-left', '15px solid #e7e7e7')
+                                $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
                                 for (let i = 0; i <= ele_stage.length; i++) {
                                     if (i <= index) {
                                         if (!ele_stage.eq(i).hasClass('stage-lost')) {
@@ -584,14 +584,14 @@ $(document).ready(function () {
                                             ele_stage.eq(i).css('background-color', '#5a82b7')
                                             ele_stage.eq(i).css('color', 'white')
                                             ele_stage.eq(i).find('.dropdown span').css('color', 'white')
-                                            ele_stage.eq(i).next().css('border-left', '15px solid #5a82b7')
+                                            ele_stage.eq(i).next().css('border-left', '16px solid #5a82b7')
                                         }
                                     } else {
                                         ele_stage.eq(i).removeClass('stage-selected');
                                         ele_stage.eq(i).css('background-color', '#e7e7e7')
                                         ele_stage.eq(i).css('color', '#6f6f6f')
                                         ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
-                                        ele_stage.eq(i).next().css('border-left', '15px solid #e7e7e7')
+                                        ele_stage.eq(i).next().css('border-left', '16px solid #e7e7e7')
                                     }
                                 }
                                 loadWinRate();
@@ -646,12 +646,12 @@ $(document).ready(function () {
                         ele_stage.addClass('stage-selected');
                         ele_stage.css('background-color', 'rgb(255,94,94)')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '15px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
                     } else {
                         $('.stage-lost').removeClass('stage-selected');
                         $('.stage-lost').css('background-color', '#e7e7e7')
                         $('.stage-lost').css('color', '#6f6f6f')
-                        $('.stage-lost').next().css('border-left', '15px solid #e7e7e7')
+                        $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
                     }
                     $.fn.notifyB({description: "Stage has just updated!"}, 'success')
                 })
@@ -662,14 +662,14 @@ $(document).ready(function () {
                         $(this).closest('.sub-stage').css('background-color', '#5a82b7')
                         $(this).closest('.sub-stage').css('color', 'white')
                         $(this).closest('.sub-stage').find('.dropdown span').css('color', 'white')
-                        $(this).closest('.sub-stage').next().css('border-left', '15px solid #5a82b7')
+                        $(this).closest('.sub-stage').next().css('border-left', '16px solid #5a82b7')
                         $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
                     } else {
                         $(this).closest('.sub-stage').removeClass('stage-selected');
                         $(this).closest('.sub-stage').css('background-color', '#e7e7e7')
                         $(this).closest('.sub-stage').css('color', '#6f6f6f')
                         $(this).closest('.sub-stage').find('.dropdown span').css('color', '#6f6f6f')
-                        $(this).closest('.sub-stage').next().css('border-left', '15px solid #e7e7e7')
+                        $(this).closest('.sub-stage').next().css('border-left', '16px solid #e7e7e7')
                         $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', false);
                         if ($('#check-agency-role').is(':checked')) {
                             $('#select-box-end-customer').prop('disabled', false);

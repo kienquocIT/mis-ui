@@ -259,12 +259,12 @@ $(document).ready(function () {
                         ele_stage.addClass('stage-selected');
                         ele_stage.css('background-color', 'rgb(255,94,94)')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '15px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
                     } else {
                         $('.stage-lost').removeClass('stage-selected');
                         $('.stage-lost').css('background-color', '#e7e7e7')
                         $('.stage-lost').css('color', '#6f6f6f')
-                        $('.stage-lost').next().css('border-left', '15px solid #e7e7e7')
+                        $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
                     }
 
                     // Disable all select elements

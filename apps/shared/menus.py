@@ -354,6 +354,10 @@ class MenusCRM:
                 icon='<i class="fas fa-file"></i>',
             ),
             MenuCommon(
+                name='Action list', code='menu_action_list', view_name='RecurrenceActionList',
+                icon='<i class="fas fa-location-arrow"></i>',
+            ),
+            MenuCommon(
                 name='Transaction template', code='menu_transaction_template', view_name='TransactionTemplateList',
                 icon='<i class="fas fa-file-alt"></i>',
             ),

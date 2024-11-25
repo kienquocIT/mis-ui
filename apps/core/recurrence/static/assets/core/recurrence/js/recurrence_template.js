@@ -155,7 +155,7 @@ $(document).ready(function () {
                     ajax: {
                         url: urlData?.['url'],
                         type: 'GET',
-                        data: {'is_recurring': true},
+                        data: {'is_recurrence_template': true},
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data) return resp.data[urlData?.['keyResp']] ? resp.data[urlData?.['keyResp']] : [];

@@ -1062,7 +1062,9 @@ $(function () {
                     'is_change',
                     'document_root_id',
                     'document_change_order',
+                    'is_recurrence_template',
                     'is_recurring',
+                    'recurrence_task_id',
                 ]
             }
             if (_form.dataForm) {

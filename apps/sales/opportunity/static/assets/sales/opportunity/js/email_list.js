@@ -24,30 +24,19 @@ detail_email_cc_slb.select2({
 function loadEmailToList(contact_list) {
     email_to_slb.attr('disabled', false);
     email_to_slb.html(``);
-    // for (let i = 0; i < contact_list.length; i++) {
-    //     let item = contact_list[i];
-    //     if (item.email) {
-    //         email_to_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
-    //     }
-    // }
-    console.log('contact_list:', contact_list);
-    email_to_slb.initSelect2({
+    for (let i = 0; i < contact_list.length; i++) {
+        let item = contact_list[i];
+        if (item.email) {
+            email_to_slb.append(`<option selected value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+        }
+        else {
+            email_to_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
+        }
+    }
+    email_to_slb.select2({
         dropdownParent: send_email_modal,
         tags: true,
-        data: contact_list,
-        tokenSeparators: [',', ' '],
-        templateResult: function (data) {
-            let ele = $('<div class="row"></div>');
-            ele.append(`<div class="col-6">${data.data?.['fullname'] ? data.data?.['fullname'] : '-'}</div>`);
-            ele.append(`<div class="col-6">${data.data?.['email'] ? data.data?.['email'] : '-'}</div>`);
-            return ele;
-        },
-        templateSelection: function (state) {
-            if (state.id){
-                return $(`<span class="text-primary">${state.data?.['fullname'] || '-'}</span><span class="ml-2">${state.data?.['email'] ? state.data?.['email'] : '-'}</span>`);
-            }
-            return state.text;
-        },
+        tokenSeparators: [',', ' ']
     });
 }
 
@@ -57,7 +46,10 @@ function loadEmailCcList(contact_list) {
     for (let i = 0; i < contact_list.length; i++) {
         let item = contact_list[i];
         if (item.email) {
-            email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
+            email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+        }
+        else {
+            email_cc_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
         }
     }
     email_cc_slb.select2({
@@ -171,31 +163,34 @@ function loadOpportunityEmailList() {
             },
             columns: [
                 {
-                    className: 'wrap-text',
+                    className: 'wrap-text w-10',
                     'render': () => {
                         return ``;
                     }
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text w-75',
+                    className: 'wrap-text w-55',
                     render: (data, type, row) => {
-                        return `<a class="text-primary link-primary underline_hover detail-email-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
-                                    data-bs-target="#detail-send-email"><span><b>` + row.subject + `</b></span></a>`
+                        return `<a class="text-primary link-primary underline_hover detail-email-button" href="" data-bs-toggle="modal" data-id="${row?.['id']}"
+                                    data-bs-target="#detail-send-email"><span>${row?.['subject']}</span>
+                                </a>`
                     }
                 },
                 {
                     data: 'opportunity',
-                    className: 'wrap-text text-center w-15',
+                    className: 'wrap-text text-center w-20',
                     render: (data, type, row) => {
-                        return `<span class="text-secondary">${row.opportunity.code}</span>`
+                        return `<span class="badge badge-soft-blue badge-outline">${row?.['opportunity']?.['code']}</span>`
                     }
                 },
                 {
                     data: 'date_created',
-                    className: 'wrap-text text-center w-10',
+                    className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
-                        return $x.fn.displayRelativeTime(data);
+                        return $x.fn.displayRelativeTime(data, {
+                            'outputFormat': 'DD/MM/YYYY',
+                        });
                     }
                 },
             ],

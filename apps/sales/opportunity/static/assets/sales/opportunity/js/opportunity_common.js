@@ -438,6 +438,8 @@ class OpportunityLoadDetail {
                 ele.prepend(html);
                 let ele_first_stage = ele.find('.sub-stage').first();
                 ele_first_stage.attr('data-id', item?.['id']);
+                ele_first_stage.find('.stage-indicator').attr('data-bs-tongle', 'tooltip');
+                ele_first_stage.find('.stage-indicator').attr('title', item?.['indicator']);
                 ele_first_stage.find('.stage-indicator').text(item?.['indicator']);
                 if (item?.['is_closed_lost']) {
                     ele_first_stage.find('.dropdown').remove();
@@ -485,7 +487,7 @@ class OpportunityLoadDetail {
                         ele_stage.addClass('stage-selected')
                         ele_stage.css('background-color', 'rgb(255,94,94)')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '30px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
                     }
                 } else if (ele_stage.hasClass('stage-close')) {
                     let el_close_deal = $('#input-close-deal');
@@ -496,13 +498,13 @@ class OpportunityLoadDetail {
                     ele_stage.css('background-color', '#5a82b7')
                     ele_stage.css('color', 'white')
                     ele_stage.find('.dropdown span').css('color', 'white')
-                    ele_stage.next().css('border-left', '30px solid #5a82b7')
+                    ele_stage.next().css('border-left', '16px solid #5a82b7')
                 } else {
                     ele_stage.addClass('stage-selected')
                     ele_stage.css('background-color', '#5a82b7')
                     ele_stage.css('color', 'white')
                     ele_stage.find('.dropdown span').css('color', 'white')
-                    ele_stage.next().css('border-left', '30px solid #5a82b7')
+                    ele_stage.next().css('border-left', '16px solid #5a82b7')
                 }
             })
         }
@@ -1058,7 +1060,7 @@ class OpportunityActivity {
         $table.DataTableDefault({
             rowIdx: true,
             scrollX: '100vh',
-            scrollY: '25vh',
+            scrollY: '50vh',
             scrollCollapse: true,
             ajax: {
                 url: $table.attr('data-url-logs_list'),
@@ -1117,19 +1119,19 @@ class OpportunityActivity {
 
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code']) {
-                                return `<span class="badge ${appMapBadge[row?.['app_code']]}">
-                                                    <span>
-                                                        <span class="icon"><span class="feather-icon"><small><i class="${typeMapIcon[row?.['log_type']]}"></i></small></span></span>
-                                                        ${appMapTrans[row?.['app_code']]}
-                                                    </span>
-                                                </span>`;
+                                return `<span class="badge badge-sm ${appMapBadge[row?.['app_code']]}">
+                                            <span>
+                                                <span class="icon"><span class="feather-icon"><small><i class="${typeMapIcon[row?.['log_type']]}"></i></small></span></span>
+                                                ${appMapTrans[row?.['app_code']]}
+                                            </span>
+                                        </span>`;
                             }
                         } else {
                             let status = '';
                             if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
-                                status = `<span class="badge badge-sm badge-soft-danger">${$('#trans-script').attr('data-trans-activity-cancelled')}</i>`
+                                status = `<span class="badge badge-sm badge-icon-xs badge-soft-danger">${$('#trans-script').attr('data-trans-activity-cancelled')}</i>`
                             }
-                            return `<span class="badge badge-outline badge-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
+                            return `<span class="badge badge-sm badge-outline badge-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                         }
                         return `<p></p>`;
                     }
@@ -1182,7 +1184,7 @@ class OpportunityActivity {
                     render: (data, type, row) => {
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code'] && row?.['doc_data']?.['code']) {
-                                return `<span class="w-80 badge badge-soft-blue">${row?.['doc_data']?.['code']}</span>`;
+                                return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
                             }
                         }
                         return `<p>--</p>`;
@@ -1202,10 +1204,10 @@ class OpportunityActivity {
                                     "soft-success",
                                     "soft-danger",
                                 ]
-                                return `<div class="row"><span class="badge badge-${sttMapBadge[row?.['doc_data']?.['system_status']]}">${sttTxt[row?.['doc_data']?.['system_status']][1]}</span></div>`;
+                                return `<span class="badge badge-${sttMapBadge[row?.['doc_data']?.['system_status']]}">${sttTxt[row?.['doc_data']?.['system_status']][1]}</span>`;
                             }
                             if (row?.['log_type'] === 1 && row?.['doc_data']?.['task_status']) {
-                                return `<div class="row"><span class="w-80 badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span></div>`;
+                                return `<span class="badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span>`;
                             }
                         }
                         return `<p>--</p>`;
@@ -1213,11 +1215,11 @@ class OpportunityActivity {
                 },
                 {
                     targets: 5,
-                    className: 'text-right',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(row?.['date_created'], {
-                            'outputFormat': 'DD-MM-YYYY',
-                        });
+                            'outputFormat': 'DD/MM/YYYY',
+                        })
                     }
                 }
             ],
@@ -2040,7 +2042,7 @@ function autoLoadStage(
             ele_stage.css('background-color', '#e7e7e7')
             ele_stage.css('color', '#6f6f6f')
             ele_stage.find('.dropdown span').css('color', '#6f6f6f')
-            ele_stage.next().css('border-left', '30px solid #e7e7e7')
+            ele_stage.next().css('border-left', '16px solid #e7e7e7')
         }
         else {
             for (let i = 0; i <= ele_stage.length; i++) {
@@ -2050,21 +2052,21 @@ function autoLoadStage(
                         ele_stage.eq(i).css('background-color', '#5a82b7')
                         ele_stage.eq(i).css('color', 'white')
                         ele_stage.eq(i).find('.dropdown span').css('color', 'white')
-                        ele_stage.eq(i).next().css('border-left', '30px solid #5a82b7')
+                        ele_stage.eq(i).next().css('border-left', '16px solid #5a82b7')
                     }
                     else {
                         ele_stage.eq(i).removeClass('stage-selected');
                         ele_stage.eq(i).css('background-color', '#e7e7e7')
                         ele_stage.eq(i).css('color', '#6f6f6f')
                         ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
-                        ele_stage.eq(i).next().css('border-left', '30px solid #e7e7e7')
+                        ele_stage.eq(i).next().css('border-left', '16px solid #e7e7e7')
                     }
                 } else {
                     ele_stage.eq(i).removeClass('stage-selected');
                     ele_stage.eq(i).css('background-color', '#e7e7e7')
                     ele_stage.eq(i).css('color', '#6f6f6f')
                     ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
-                    ele_stage.eq(i).next().css('border-left', '30px solid #e7e7e7')
+                    ele_stage.eq(i).next().css('border-left', '16px solid #e7e7e7')
                 }
             }
         }
@@ -2075,7 +2077,7 @@ function autoLoadStage(
             ele_close_deal.closest('.sub-stage').css('background-color', '#5a82b7')
             ele_close_deal.closest('.sub-stage').css('color', 'white')
             ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', 'white')
-            ele_close_deal.closest('.sub-stage').next().css('border-left', '30px solid #5a82b7')
+            ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #5a82b7')
             $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
@@ -2088,7 +2090,7 @@ function autoLoadStage(
             ele_close_deal.closest('.sub-stage').css('background-color', '#e7e7e7')
             ele_close_deal.closest('.sub-stage').css('color', '#6f6f6f')
             ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', '#6f6f6f')
-            ele_close_deal.closest('.sub-stage').next().css('border-left', '30px solid #e7e7e7')
+            ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #e7e7e7')
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
                 $('#input-rate').prop('disabled', true);
@@ -2176,16 +2178,5 @@ $('#estimated-gross-profit-percent').on('input', function () {
         $(this).val(0)
         $('#estimated-gross-profit-value').attr('value', 0)
         $.fn.initMaskMoney2()
-    }
-})
-
-$('#general-information-collapse-btn').on('click', function () {
-    if ($(this).attr('class').includes('collapsed')) {
-        $('#group-general-info-opp').attr('class', 'col-12 col-md-12 col-lg-12 mb-3')
-        $('#group-relate-info-opp').attr('class', 'col-12 col-md-12 col-lg-12 mb-3')
-    }
-    else {
-        $('#group-general-info-opp').attr('class', 'col-12 col-md-12 col-lg-3 mb-3')
-        $('#group-relate-info-opp').attr('class', 'col-12 col-md-12 col-lg-9 mb-3')
     }
 })

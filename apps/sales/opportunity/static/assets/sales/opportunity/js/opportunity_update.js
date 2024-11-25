@@ -194,6 +194,10 @@ $(document).ready(function () {
                         $('#check-lost-reason').prop('checked', false);
 
                     $('#input-budget').attr('value', opportunity_detail.budget_value);
+                    if (opportunity_detail?.['process']?.['id']) {
+                        $('#process-space').prop('hidden', false)
+                        $('#process-title').val(opportunity_detail?.['process']?.['title']);
+                    }
 
                     OpportunityLoadDropdown.loadCustomer(opportunity_detail.customer, config_is_AM_create, opportunity_detail?.['sale_person'].id);
                     OpportunityLoadDropdown.loadProductCategory(opportunity_detail.product_category);
@@ -252,17 +256,29 @@ $(document).ready(function () {
                 }
 
                 loadDetail(opportunity_detail_data).then(function () {
-                    // autoLoadStage(
-                    //     true,
-                    //     false,
-                    //     list_stage_condition,
-                    //     list_stage,
-                    //     condition_sale_oder_approved,
-                    //     condition_is_quotation_confirm,
-                    //     condition_sale_oder_delivery_status,
-                    //     config_is_input_rate,
-                    //     dict_stage
-                    // )
+                    let _, is_lost = autoLoadStage(
+                        true,
+                        false,
+                        list_stage_condition,
+                        list_stage,
+                        condition_sale_oder_approved,
+                        condition_is_quotation_confirm,
+                        condition_sale_oder_delivery_status,
+                        config_is_input_rate,
+                        dict_stage
+                    );
+                    if (is_lost) {
+                        let ele_stage = $('.stage-lost')
+                        ele_stage.addClass('stage-selected');
+                        ele_stage.css('background-color', 'rgb(255,94,94)')
+                        ele_stage.css('color', 'white')
+                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
+                    } else {
+                        $('.stage-lost').removeClass('stage-selected');
+                        $('.stage-lost').css('background-color', '#e7e7e7')
+                        $('.stage-lost').css('color', '#6f6f6f')
+                        $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
+                    }
                 });
 
                 // even in tab product
@@ -560,7 +576,7 @@ $(document).ready(function () {
                                 $('.stage-lost').removeClass('stage-selected');
                                 $('.stage-lost').css('background-color', '#e7e7e7')
                                 $('.stage-lost').css('color', '#6f6f6f')
-                                $('.stage-lost').next().css('border-left', '30px solid #e7e7e7')
+                                $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
                                 for (let i = 0; i <= ele_stage.length; i++) {
                                     if (i <= index) {
                                         if (!ele_stage.eq(i).hasClass('stage-lost')) {
@@ -568,14 +584,14 @@ $(document).ready(function () {
                                             ele_stage.eq(i).css('background-color', '#5a82b7')
                                             ele_stage.eq(i).css('color', 'white')
                                             ele_stage.eq(i).find('.dropdown span').css('color', 'white')
-                                            ele_stage.eq(i).next().css('border-left', '30px solid #5a82b7')
+                                            ele_stage.eq(i).next().css('border-left', '16px solid #5a82b7')
                                         }
                                     } else {
                                         ele_stage.eq(i).removeClass('stage-selected');
                                         ele_stage.eq(i).css('background-color', '#e7e7e7')
                                         ele_stage.eq(i).css('color', '#6f6f6f')
                                         ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
-                                        ele_stage.eq(i).next().css('border-left', '30px solid #e7e7e7')
+                                        ele_stage.eq(i).next().css('border-left', '16px solid #e7e7e7')
                                     }
                                 }
                                 loadWinRate();
@@ -630,19 +646,14 @@ $(document).ready(function () {
                         ele_stage.addClass('stage-selected');
                         ele_stage.css('background-color', 'rgb(255,94,94)')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '30px solid rgb(255,94,94)')
-                        // $('.stage-close').addClass('fw-bolder text-blue bg-blue-light-5 border-blue stage-selected');
-                        // $('#input-close-deal').prop('checked', true)
+                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
                     } else {
                         $('.stage-lost').removeClass('stage-selected');
                         $('.stage-lost').css('background-color', '#e7e7e7')
                         $('.stage-lost').css('color', '#6f6f6f')
-                        $('.stage-lost').next().css('border-left', '30px solid #e7e7e7')
-                        // $('.stage-close').removeClass('fw-bolder text-blue bg-blue-light-5 border-blue stage-selected');
-                        // $('#input-close-deal').prop('checked', false)
+                        $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
                     }
                     $.fn.notifyB({description: "Stage has just updated!"}, 'success')
-                    $(this).tooltip('hide');
                 })
 
                 $(document).on('change', '#input-close-deal', function () {
@@ -651,14 +662,14 @@ $(document).ready(function () {
                         $(this).closest('.sub-stage').css('background-color', '#5a82b7')
                         $(this).closest('.sub-stage').css('color', 'white')
                         $(this).closest('.sub-stage').find('.dropdown span').css('color', 'white')
-                        $(this).closest('.sub-stage').next().css('border-left', '30px solid #5a82b7')
+                        $(this).closest('.sub-stage').next().css('border-left', '16px solid #5a82b7')
                         $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
                     } else {
                         $(this).closest('.sub-stage').removeClass('stage-selected');
                         $(this).closest('.sub-stage').css('background-color', '#e7e7e7')
                         $(this).closest('.sub-stage').css('color', '#6f6f6f')
                         $(this).closest('.sub-stage').find('.dropdown span').css('color', '#6f6f6f')
-                        $(this).closest('.sub-stage').next().css('border-left', '30px solid #e7e7e7')
+                        $(this).closest('.sub-stage').next().css('border-left', '16px solid #e7e7e7')
                         $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', false);
                         if ($('#check-agency-role').is(':checked')) {
                             $('#select-box-end-customer').prop('disabled', false);
@@ -944,11 +955,15 @@ $(document).ready(function () {
                 }
 
                 function loadEmailToList(contact_list) {
+                    email_to_slb.attr('disabled', false);
                     email_to_slb.html(``);
                     for (let i = 0; i < contact_list.length; i++) {
                         let item = contact_list[i];
-                        if (item.email !== null) {
-                            email_to_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
+                        if (item.email) {
+                            email_to_slb.append(`<option selected value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+                        }
+                        else {
+                            email_to_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
                         }
                     }
                     email_to_slb.select2({
@@ -959,11 +974,15 @@ $(document).ready(function () {
                 }
 
                 function loadEmailCcList(contact_list) {
+                    email_cc_slb.attr('disabled', false);
                     email_cc_slb.html(``);
                     for (let i = 0; i < contact_list.length; i++) {
                         let item = contact_list[i];
                         if (item.email) {
-                            email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
+                            email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+                        }
+                        else {
+                            email_cc_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
                         }
                     }
                     email_cc_slb.select2({
@@ -1139,17 +1158,26 @@ $(document).ready(function () {
                 }
 
                 function loadEmployeeAttended(data) {
-                    meeting_employee_attended_slb.initSelect2({
-                        ajax: {
-                            url: meeting_employee_attended_slb.attr('data-url'),
-                            method: 'GET',
-                        },
-                        data: (data ? data : null),
-                        keyResp: 'employee_list',
-                        keyId: 'id',
-                        keyText: 'full_name',
-                    })
-                }
+    meeting_employee_attended_slb.initSelect2({
+        ajax: {
+            url: meeting_employee_attended_slb.attr('data-url'),
+            method: 'GET',
+        },
+        data: (data ? data : null),
+        templateResult: function (data) {
+            if (data.data?.['group']?.['id']) {
+                let ele = $(`<div class="row"></div>`);
+                ele.append(`<div class="col-8">${data.data?.['full_name']}</div>`);
+                ele.append(`<div class="col-4"><span class="badge badge-soft-primary badge-outline">${data.data?.['group']?.['title']}</span></div>`);
+                return ele;
+            }
+            return ''
+        },
+        keyResp: 'employee_list',
+        keyId: 'id',
+        keyText: 'full_name',
+    })
+}
 
                 meeting_date_input.daterangepicker({
                     singleDatePicker: true,

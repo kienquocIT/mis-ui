@@ -48,6 +48,7 @@ class ReturnAPLoadPage {
             let selected_ap = SelectDDControl.get_data_from_idx(advancePaymentEle, advancePaymentEle.val())
             ReturnAPLoadTab.LoadDetailAdvancePayment(selected_ap)
             $('#inp-sale-code').val(selected_ap?.['sale_code'] !== 'null' ? selected_ap?.['sale_code'] : '')
+            $('#inp-process-mask').val(selected_ap?.['process']?.['id'] ? selected_ap?.['process']?.['title'] : '')
         })
     }
     static LoadBeneficiary(data) {
@@ -220,7 +221,6 @@ class ReturnAPHandle {
             })
         })
         frm.dataForm['returned_list'] = returned_list;
-
         // console.log(frm)
         return frm
     }
@@ -244,6 +244,7 @@ class ReturnAPHandle {
                     ReturnAPLoadPage.LoadBeneficiary(data?.['employee_inherit'])
                     ReturnAPLoadPage.LoadBeneficiaryInfor(data?.['employee_inherit'])
                     $('#inp-sale-code').val(data?.['advance_payment']?.['sale_code'])
+                    $('#inp-process-mask').val(data?.['process']?.['id'] ? data?.['process']?.['title'] : '')
                     ReturnAPLoadTab.DrawTableCost(data?.['returned_list'], option)
                     $('#total-value').attr('value', data?.['return_total'])
                     $('#money-received').prop('checked', data?.['money_received'])

@@ -9735,3 +9735,19 @@ msgstr "Bỏ qua"
 #
 msgid "Current execution date"
 msgstr "Ngày lặp hiện tại"
+
+#
+msgid "Select address"
+msgstr "Chọn địa điểm"
+
+#
+msgid "Detail Meeting"
+msgstr "Chi tiết cuộc họp"
+
+#
+msgid "Input Result"
+msgstr "Nhập kết quả"
+
+#
+msgid "Cancelled"
+msgstr "Bị hủy bỏ"

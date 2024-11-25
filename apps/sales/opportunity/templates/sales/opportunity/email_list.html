@@ -25,30 +25,34 @@
 {% endblock %}
 {% block pageContent %}
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
-
-    <table id="table_opportunity_email_list" class="table nowrap w-100 mb-5"
-           data-url="{% url 'OpportunityEmailListAPI' %}"
-           data-url-delete="{% url 'OpportunityEmailDetailAPI' '0' %}"
-           data-url-redirect="{% url 'OpportunityEmailList' %}"
-           data-method="GET">
-        <thead>
-        <tr>
-            <th></th>
-            <th>{% trans 'Subject' %}
-                <i class="fas fa-info-circle icon-info"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="bottom"
-                   title="{% trans 'Press row here to see detail email log.' %}">
-                </i>
-            </th>
-            <th>{% trans 'Sale Code' %}</th>
-            <th>{% trans 'Date' %}</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
+    <div class="row">
+        <div class="col-12 col-md-8 mol-lg-8">
+            <table id="table_opportunity_email_list" class="table nowrap w-100 mb-5"
+                   data-url="{% url 'OpportunityEmailListAPI' %}"
+                   data-url-delete="{% url 'OpportunityEmailDetailAPI' '0' %}"
+                   data-url-redirect="{% url 'OpportunityEmailList' %}"
+                   data-method="GET">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Subject' %}
+                        <i class="fas fa-info-circle icon-info"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="bottom"
+                           title="{% trans 'Press row here to see detail email log.' %}">
+                        </i>
+                    </th>
+                    <th>{% trans 'Sale Code' %}</th>
+                    <th>{% trans 'Date' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
     <div class="modal fade" id="send-email" tabindex="-1" role="dialog"
          aria-labelledby="createOpportunityEmailModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -103,7 +107,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="detail-send-email" tabindex="-1" role="dialog"
          aria-labelledby="detailOpportunityEmailModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">

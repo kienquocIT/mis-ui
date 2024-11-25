@@ -141,29 +141,28 @@ function loadOpportunityCallLogList() {
             },
             columns: [
                 {
-                    className: 'wrap-text',
+                    className: 'wrap-text w-5',
                     render: () => {
                         return ``;
                     }
                 },
                 {
                     data: 'contact',
-                    className: 'wrap-text w-15',
+                    className: 'wrap-text w-25',
                     render: (data, type, row) => {
-                        return `<a target="_blank" href="` + $('#table_opportunity_call_log_list').attr('data-url-contact-detail').replace('0', row.contact.id) + `"><span class="link-secondary underline_hover"><b>` + row.contact.fullname + `</b></span></a>`
+                        return `<a target="_blank" href="${$('#table_opportunity_call_log_list').attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="link-secondary underline_hover"><b>${row?.['contact']?.['fullname']}</b></span></a>`
                     }
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text w-55',
+                    className: 'wrap-text w-35',
                     render: (data, type, row) => {
                         let status = ''
                         if (row?.['is_cancelled']) {
                             status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
                         }
-                        return `<a class="text-primary link-primary underline_hover detail-call-log-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
-                                    data-bs-target="#detail-call-log">
-                                    <span><b>` + row.subject + `</b></span> <span></span> ${status}
+                        return `<a class="text-primary link-primary underline_hover detail-call-log-button" href="" data-bs-toggle="modal" data-id="${row?.['id']}" data-bs-target="#detail-call-log">
+                                    <span class="mr-1">${row?.['subject']}</span>${status}
                                 </a>`
                     }
                 },
@@ -171,15 +170,15 @@ function loadOpportunityCallLogList() {
                     data: 'opportunity',
                     className: 'wrap-text text-center w-20',
                     render: (data, type, row) => {
-                        return `<span class="text-secondary">` + row.opportunity.code + `</span>`
+                        return `<span class="badge badge-soft-blue badge-outline">${row?.['opportunity']?.['code']}</span>`
                     }
                 },
                 {
                     data: 'call_date',
-                    className: 'wrap-text text-center w-10',
+                    className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(data, {
-                            'outputFormat': 'DD-MM-YYYY',
+                            'outputFormat': 'DD/MM/YYYY',
                         });
                     }
                 },

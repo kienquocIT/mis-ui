@@ -256,17 +256,29 @@ $(document).ready(function () {
                 }
 
                 loadDetail(opportunity_detail_data).then(function () {
-                    // autoLoadStage(
-                    //     true,
-                    //     false,
-                    //     list_stage_condition,
-                    //     list_stage,
-                    //     condition_sale_oder_approved,
-                    //     condition_is_quotation_confirm,
-                    //     condition_sale_oder_delivery_status,
-                    //     config_is_input_rate,
-                    //     dict_stage
-                    // )
+                    let _, is_lost = autoLoadStage(
+                        true,
+                        false,
+                        list_stage_condition,
+                        list_stage,
+                        condition_sale_oder_approved,
+                        condition_is_quotation_confirm,
+                        condition_sale_oder_delivery_status,
+                        config_is_input_rate,
+                        dict_stage
+                    );
+                    if (is_lost) {
+                        let ele_stage = $('.stage-lost')
+                        ele_stage.addClass('stage-selected');
+                        ele_stage.css('background-color', 'rgb(255,94,94)')
+                        ele_stage.css('color', 'white')
+                        ele_stage.next().css('border-left', '15px solid rgb(255,94,94)')
+                    } else {
+                        $('.stage-lost').removeClass('stage-selected');
+                        $('.stage-lost').css('background-color', '#e7e7e7')
+                        $('.stage-lost').css('color', '#6f6f6f')
+                        $('.stage-lost').next().css('border-left', '15px solid #e7e7e7')
+                    }
                 });
 
                 // even in tab product
@@ -635,18 +647,13 @@ $(document).ready(function () {
                         ele_stage.css('background-color', 'rgb(255,94,94)')
                         ele_stage.css('color', 'white')
                         ele_stage.next().css('border-left', '15px solid rgb(255,94,94)')
-                        // $('.stage-close').addClass('fw-bolder text-blue bg-blue-light-5 border-blue stage-selected');
-                        // $('#input-close-deal').prop('checked', true)
                     } else {
                         $('.stage-lost').removeClass('stage-selected');
                         $('.stage-lost').css('background-color', '#e7e7e7')
                         $('.stage-lost').css('color', '#6f6f6f')
                         $('.stage-lost').next().css('border-left', '15px solid #e7e7e7')
-                        // $('.stage-close').removeClass('fw-bolder text-blue bg-blue-light-5 border-blue stage-selected');
-                        // $('#input-close-deal').prop('checked', false)
                     }
                     $.fn.notifyB({description: "Stage has just updated!"}, 'success')
-                    $(this).tooltip('hide');
                 })
 
                 $(document).on('change', '#input-close-deal', function () {

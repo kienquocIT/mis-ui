@@ -18,6 +18,12 @@ $(function () {
             4: $trans.attr('data-yearly'),
         };
 
+        let appMapUrl = {
+            'saleorder.saleorder': {
+                "create": $urls.attr('data-so-create'),
+            },
+        }
+
         function getCurrentDate() {
             let currentDate = new Date();
             let day = String(currentDate.getDate()).padStart(2, '0');
@@ -81,7 +87,7 @@ $(function () {
                     {
                         targets: 5,
                         className: 'action-center',
-                        width: '10%',
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['date_next']) {
                                 return `<span>${moment(data?.['date_next']).format('DD/MM/YYYY')}</span>`;
@@ -92,7 +98,7 @@ $(function () {
                     {
                         targets: 6,
                         className: 'action-center',
-                        width: '10%',
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['date_next'] && row?.['recurrence']?.['next_recurrences']) {
                                 let target = row?.['date_next'];
@@ -130,14 +136,21 @@ $(function () {
                     {
                         targets: 9,
                         className: 'action-center',
-                        width: '5%',
+                        width: '1%',
                         render: (data, type, row) => {
-                            if ([1, 2].includes(row?.['recurrence_action'])) {
-                                return ``;
+                            // if ([1, 2].includes(row?.['recurrence_action'])) {
+                            //     return ``;
+                            // }
+                            let link = "";
+                            if (row?.['id'] && row?.['recurrence']?.['app_code'] && row?.['recurrence']?.['doc_template_data']?.['id']) {
+                                if (appMapUrl?.[row?.['recurrence']?.['app_code']]?.['create']) {
+                                    link = appMapUrl[row?.['recurrence']?.['app_code']]['create'] + `?recurrence_template_id=${row?.['recurrence']?.['doc_template_data']?.['id']}&recurrence_task_id=${row?.['id']}`;
+                                }
                             }
                             return `<div class="d-flex justify-content-center">
                                         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-action" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${$trans.attr('data-done')}" data-id="${row?.['id']}" data-action="1"><span class="icon"><i class="fas fa-check"></i></span></button>
                                         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-action" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${$trans.attr('data-skip')}" data-id="${row?.['id']}" data-action="2"><span class="icon"><i class="fas fa-step-forward"></i></span></button>
+                                        <a href="${link}"><button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-action" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${$trans.attr('data-create')}" data-id="${row?.['id']}" data-action="3"><span class="icon"><i class="fas fa-location-arrow"></i></span></button></a>
                                     </div>`;
                         },
                     }
@@ -148,29 +161,31 @@ $(function () {
 
         function actionHandler(ele) {
             if ($(ele).attr('data-id') && $(ele).attr('data-action')) {
-                WindowControl.showLoading();
-                $.fn.callAjax2(
-                    {
-                        'url': $urls.attr('data-link-detail').format_url_with_uuid($(ele).attr('data-id')),
-                        'method': "PUT",
-                        'data': {'recurrence_action': parseInt($(ele).attr('data-action'))},
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && (data['status'] === 201 || data['status'] === 200)) {
-                            $.fn.notifyB({description: data.message}, 'success');
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 3000);
+                if ([1, 2].includes(parseInt($(ele).attr('data-action')))) {
+                    WindowControl.showLoading();
+                    $.fn.callAjax2(
+                        {
+                            'url': $urls.attr('data-link-detail').format_url_with_uuid($(ele).attr('data-id')),
+                            'method': "PUT",
+                            'data': {'recurrence_action': parseInt($(ele).attr('data-action'))},
                         }
-                    }, (err) => {
-                        setTimeout(() => {
-                            WindowControl.hideLoading();
-                        }, 1000)
-                        $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-                    }
-                )
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && (data['status'] === 201 || data['status'] === 200)) {
+                                $.fn.notifyB({description: data.message}, 'success');
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 3000);
+                            }
+                        }, (err) => {
+                            setTimeout(() => {
+                                WindowControl.hideLoading();
+                            }, 1000)
+                            $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                        }
+                    )
+                }
             }
             return true;
         }

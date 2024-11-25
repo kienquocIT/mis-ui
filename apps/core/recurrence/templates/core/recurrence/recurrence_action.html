@@ -36,6 +36,7 @@
     <input
             type="text" id="app-urls-factory"
             data-link-detail="{% url 'RecurrenceActionDetailAPI' pk=1 %}"
+            data-so-create="{% url 'SaleOrderCreate' %}"
     >
     <input
             type="text"
@@ -44,6 +45,7 @@
             data-wait="{% trans 'Wait' %}"
             data-done="{% trans 'Done' %}"
             data-skip="{% trans 'Skip' %}"
+            data-create="{% trans 'Create' %}"
             data-daily="{% trans 'Daily' %}"
             data-weekly="{% trans 'Weekly' %}"
             data-monthly="{% trans 'Monthly' %}"

@@ -1,32 +1,17 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Recurrence list' %}{% endblock %}
+{% block title %}{% trans 'Action list' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'RecurrenceCreate' %}"
-       data-bs-toggle="tooltip"
-       data-bs-placement="top"
-       title="{% trans 'Create recurrence' %}"
-       id="create_recurrence_button"
-       data-bs-original-title="Add Recurrence">
-            <button type="button" class="btn btn-outline-primary">
-                <span>
-                    <span>{% trans 'Add' %}</span>
-                    <span class="icon">
-                        <i class="fa-solid fa-plus"></i>
-                    </span>
-                </span>
-            </button>
-    </a>
 {% endblock %}
 
 {% block pageContent %}
     <table
-            id="table_recurrence_list"
+            id="table_recurrence_action"
             class="table nowrap w-100"
-            data-url="{% url 'RecurrenceListAPI' %}"
+            data-url="{% url 'RecurrenceActionListAPI' %}"
             data-method="get"
     >
         <thead>
@@ -35,11 +20,10 @@
             <th>{% trans 'Code' %}</th>
             <th>{% trans 'Title' %}</th>
             <th>{% trans 'Transaction type' %}</th>
-            <th>{% trans 'Period' %}</th>
-            <th>{% trans 'Repeat every' %}</th>
-            <th>{% trans 'Recurrence date' %}</th>
-            <th>{% trans 'Start date' %}</th>
+            <th>{% trans 'Beneficiary' %}</th>
+            <th>{% trans 'Current execution date' %}</th>
             <th>{% trans 'Next execution date' %}</th>
+            <th>{% trans 'Period' %}</th>
             <th>{% trans 'Status' %}</th>
             <th></th>
         </tr>
@@ -51,16 +35,15 @@
 {% block dataHiddenGroup %}
     <input
             type="text" id="app-urls-factory"
-            data-link-detail="{% url 'RecurrenceDetail' 1 %}"
-            data-link-update="{% url 'RecurrenceUpdate' 1 %}"
-            data-link-list="{% url 'RecurrenceList' %}"
+            data-link-detail="{% url 'RecurrenceActionDetailAPI' pk=1 %}"
     >
     <input
             type="text"
             id="app-trans-factory"
             data-edit="{% trans 'Edit' %}"
-            data-active="{% trans 'Active' %}"
-            data-expired="{% trans 'Expired' %}"
+            data-wait="{% trans 'Wait' %}"
+            data-done="{% trans 'Done' %}"
+            data-skip="{% trans 'Skip' %}"
             data-daily="{% trans 'Daily' %}"
             data-weekly="{% trans 'Weekly' %}"
             data-monthly="{% trans 'Monthly' %}"
@@ -81,5 +64,5 @@
 {% block jsFooter %}
 
 
-    <script src="{% static 'assets/core/recurrence/js/recurrence_list.js' %}"></script>
+    <script src="{% static 'assets/core/recurrence/js/recurrence_action.js' %}"></script>
 {% endblock %}

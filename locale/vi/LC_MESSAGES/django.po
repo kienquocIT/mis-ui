@@ -9725,6 +9725,14 @@ msgid "Collaborator configuration conflict with the association node"
 msgstr "Cấu hình CTV mâu thuẫn với trạm liên kết"
 
 #
+msgid "Action list"
+msgstr "Danh sách thao tác"
+
+#
+msgid "Skip"
+msgstr "Bỏ qua"
+
+#
 msgid "Select address"
 msgstr "Chọn địa điểm"
 

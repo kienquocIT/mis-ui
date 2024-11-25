@@ -9731,3 +9731,7 @@ msgstr "Danh sách thao tác"
 #
 msgid "Skip"
 msgstr "Bỏ qua"
+
+#
+msgid "Current execution date"
+msgstr "Ngày lặp hiện tại"

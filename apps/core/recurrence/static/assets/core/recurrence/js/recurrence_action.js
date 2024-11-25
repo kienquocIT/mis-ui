@@ -94,8 +94,19 @@ $(function () {
                         className: 'action-center',
                         width: '10%',
                         render: (data, type, row) => {
-                            if (row?.['date_next']) {
-                                return `<span>${moment(data?.['date_next']).format('DD/MM/YYYY')}</span>`;
+                            if (row?.['date_next'] && row?.['recurrence']?.['next_recurrences']) {
+                                let target = row?.['date_next'];
+                                let isCurrent = false;
+                                for (let date of row?.['recurrence']?.['next_recurrences']) {
+                                    if (isCurrent === true) {
+                                        target = date;
+                                        break;
+                                    }
+                                    if (date === row?.['date_next']) {
+                                        isCurrent = true;
+                                    }
+                                }
+                                return `<span>${moment(target).format('DD/MM/YYYY')}</span>`;
                             }
                             return ``;
                         },

@@ -159,10 +159,30 @@ $(function () {
             }
         });
 
+        NodeLoadDataHandle.$flowChart.on('click', '.config-node', function () {
+            if (this.closest('.btn-group')) {
+                if (this.closest('.btn-group').querySelector('.clone')) {
+                    let dataDrag = this.closest('.btn-group').querySelector('.clone').getAttribute('data-drag');
+                    NodeLoadDataHandle.$btnSaveNode[0].setAttribute('data-save-type', '1');
+                    NodeLoadDataHandle.$btnSaveNode[0].setAttribute('data-order', dataDrag);
+                }
+            }
+        });
+
         NodeLoadDataHandle.$nodeDragBox.on('click', '.del-node', function () {
             if (this.closest('.btn-group')) {
                 if (this.closest('.btn-group').querySelector('.control')) {
                     let target = parseInt(this.closest('.btn-group').querySelector('.control').getAttribute('data-drag'));
+                    NodeLoadDataHandle.dataNode = NodeLoadDataHandle.dataNode.filter(data => data.order !== target);
+                    FlowJsP.init();
+                }
+            }
+        });
+
+        NodeLoadDataHandle.$flowChart.on('click', '.del-node', function () {
+            if (this.closest('.btn-group')) {
+                if (this.closest('.btn-group').querySelector('.clone')) {
+                    let target = parseInt(this.closest('.btn-group').querySelector('.clone').getAttribute('data-drag'));
                     NodeLoadDataHandle.dataNode = NodeLoadDataHandle.dataNode.filter(data => data.order !== target);
                     FlowJsP.init();
                 }

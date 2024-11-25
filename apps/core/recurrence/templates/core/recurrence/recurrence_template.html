@@ -29,21 +29,6 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'WorkflowCreate' %}"
-       data-bs-toggle="tooltip"
-       data-bs-placement="top"
-       title="{% trans 'Create Workflow' %}"
-       id="create_workflow_button"
-       data-bs-original-title="Add Workflow">
-            <button class="btn btn-outline-primary">
-                <span>
-                    <span>{% trans 'Add' %}</span>
-                    <span class="icon">
-                        <i class="fa-solid fa-plus"></i>
-                    </span>
-                </span>
-            </button>
-    </a>
 {% endblock %}
 
 {% block pageContent %}
@@ -215,7 +200,7 @@
         data-title="{% trans 'Title' %}"
         data-transaction-type="{% trans 'Transaction type' %}"
         data-beneficiary="{% trans 'Beneficiary' %}"
-        data-date="{% trans 'Date' %}"
+        data-date="{% trans 'Date created' %}"
         data-status="{% trans 'Status' %}"
         data-action="{% trans 'Action' %}"
         data-linked="{% trans 'Linked' %}"

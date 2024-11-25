@@ -28,7 +28,7 @@ class ReturnAPLoadPage {
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
-    static LoadAdvancePayment(data, params={'system_status': 3}) {
+    static LoadAdvancePayment(data, params={}) {
         const oppId = $x.fn.getUrlParameter('opp_id');
         advancePaymentEle.initSelect2({
             allowClear: data === null,
@@ -181,12 +181,12 @@ class ReturnAPHandle {
         ReturnAPLoadPage.LoadCreatedDate()
         ReturnAPLoadPage.LoadCreator(initEmployee)
         ReturnAPLoadPage.LoadCreatorInfor(initEmployee)
-        ReturnAPLoadPage.LoadAdvancePayment(advance_payment ? advance_payment : null)
         if (advance_payment) {
             advancePaymentEle.trigger('change')
         }
         ReturnAPLoadTab.DrawTableCost();
 
+        let params = {'system_status': 3}
         const {
             opp_id, opp_code,
             process_id, process_title,
@@ -200,8 +200,10 @@ class ReturnAPHandle {
         if (process_id && $x.fn.checkUUID4(process_id)) {
             $('#inp-process-mask').val(process_title);
             $('#inp-process').val(process_id);
+            params['process_id'] = process_id
         }
         if (inherit_id && $x.fn.checkUUID4(inherit_id)) $('#chooseBeneficiary').val(inherit_title);
+        ReturnAPLoadPage.LoadAdvancePayment(advance_payment ? advance_payment : null, params)
     }
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));

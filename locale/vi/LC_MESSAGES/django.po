@@ -5826,7 +5826,7 @@ msgstr "Báo giá mua hàng"
 
 #
 msgid "Inventory adjustment"
-msgstr "Điều chỉnh tồn kho"
+msgstr "Kiểm kê kho"
 
 #
 msgid "Goods receipt type"
@@ -5838,7 +5838,7 @@ msgstr "Cho đơn mua hàng"
 
 #
 msgid "For inventory adjustment"
-msgstr "Cho điều chỉnh tồn kho"
+msgstr "Cho kiểm kê kho"
 
 #
 msgid "For production"
@@ -7190,19 +7190,19 @@ msgstr "Điều chuyển hàng"
 
 #
 msgid "Inventory adjustment create"
-msgstr "Tạo phiếu Điều chỉnh tồn kho"
+msgstr "Tạo phiếu Kiểm kê kho"
 
 #
 msgid "Inventory adjustment detail"
-msgstr "Chi tiết phiếu Điều chỉnh tồn kho"
+msgstr "Chi tiết phiếu Kiểm kê kho"
 
 #
 msgid "Inventory adjustment update"
-msgstr "Cập nhật phiếu Điều chỉnh tồn kho"
+msgstr "Cập nhật phiếu Kiểm kê kho"
 
 #
 msgid "Inventory adjustment list"
-msgstr "Danh sách phiếu Điều chỉnh tồn kho"
+msgstr "Danh sách phiếu Kiểm kê kho"
 
 #
 msgid "Goods issue type"

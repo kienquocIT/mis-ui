@@ -802,7 +802,7 @@ $(document).ready(function () {
                 $(document).on('click', '#table-timeline .detail-call-log-button', function () {
                     let call_log_id = $(this).attr('data-id');
                     let call_log_detail = $.fn.callAjax2({
-                        url: $('#detail-call-log').attr('data-url').replace(0, call_log_id),
+                        url: $('#script-url').attr('data-url').replace(0, call_log_id),
                         method: 'GET'
                     }).then(
                         (resp) => {
@@ -1041,25 +1041,6 @@ $(document).ready(function () {
                         })
                 })
 
-                $(document).on('click', '#table-timeline .delete-email-button', function () {
-                    let email_id = $(this).attr('data-id');
-                    $.fn.callAjax2({
-                        url: table_timeline.attr('data-url-delete-email').replace(0, email_id),
-                        method: 'DELETE'
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({description: "Successfully"}, 'success')
-                                OpportunityActivity.loadDblActivityLogs();
-                            }
-                        },
-                        (errs) => {
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
-                        }
-                    )
-                })
-
                 // for meeting
 
                 let meeting_Opp_slb = $('#meeting-sale-code-select-box');
@@ -1267,7 +1248,7 @@ $(document).ready(function () {
                 $(document).on('click', '#table-timeline .detail-meeting-button', function () {
                     let meeting_id = $(this).attr('data-id');
                     let meeting_detail = $.fn.callAjax2({
-                        url: $('#detail-meeting').attr('data-url').replace(0, meeting_id),
+                        url: $('#script-url').attr('data-url').replace(0, meeting_id),
                         method: 'GET'
                     }).then(
                         (resp) => {
@@ -1313,8 +1294,8 @@ $(document).ready(function () {
                             $('#detail-meeting-date-input').val(
                                 moment(meeting_obj.meeting_date.split(' ')[0], 'YYYY-MM-DD').format("DD/MM/YYYY")
                             ).prop('readonly', true);
-                            $('#detail-meeting #meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
-                            $('#detail-meeting #meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
+                            $('#detail-meeting #meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'))
+                            $('#detail-meeting #meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'))
 
                             $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 

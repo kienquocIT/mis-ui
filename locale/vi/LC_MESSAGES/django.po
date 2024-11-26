@@ -9747,3 +9747,7 @@ msgstr "Nhập kết quả"
 #
 msgid "Cancelled"
 msgstr "Bị hủy bỏ"
+
+#
+msgid "Detail Call Log"
+msgstr "Chi tiết cuộc gọi"

@@ -234,31 +234,33 @@ function calculate_break_event_point() {
     let sum_fixed_cost = 0
     let sum_variable_cost = 0
     fixed_costs_table.find('tbody tr').each(function () {
-        sum_fixed_cost += $(this).find('.fixed-cost-value').attr('value') ? parseFloat($(this).find('.fixed-cost-value').attr('value')) : 0
+        sum_fixed_cost += $(this).find('.fixed-cost-value').attr('value') ? parseFloat($(this).find('.fixed-cost-value').attr('value')).toFixed(2) : 0
     })
     variable_costs_table.find('tbody tr').each(function () {
-        sum_variable_cost += $(this).find('.variable-cost-value').attr('value') ? parseFloat($(this).find('.variable-cost-value').attr('value')) : 0
+        sum_variable_cost += $(this).find('.variable-cost-value').attr('value') ? parseFloat($(this).find('.variable-cost-value').attr('value')).toFixed(2) : 0
     })
     let break_event_point = (sum_fixed_cost / (product_price_value - sum_variable_cost)).toFixed(2)
-    let break_event_point_all = (break_event_point * parseFloat(no_of_months_box.val())).toFixed(2)
-    break_event_point_box.val(product_price_value !== sum_variable_cost ? parseFloat(break_event_point) : 0)
-    break_event_point_all_box.val(product_price_value !== sum_variable_cost ? parseFloat(break_event_point_all) : 0)
+    let no_of_months = no_of_months_box.val() ? parseFloat(no_of_months_box.val()) : 0
+    let break_event_point_all = (break_event_point * no_of_months).toFixed(2)
+    break_event_point_box.val(product_price_value !== sum_variable_cost ? parseFloat(break_event_point).toFixed(2) : 0)
+    break_event_point_all_box.val(product_price_value !== sum_variable_cost ? parseFloat(break_event_point_all).toFixed(2) : 0)
 }
 
 function calculate_net_income() {
     let product_price_value = product_price_box.attr('value') ? parseFloat(product_price_box.attr('value')) : 0
-    let expected_number_value = expected_number_box.val() ? parseFloat(expected_number_box.val()) : 0
+    let expected_number_value = expected_number_box.val() ? parseFloat(expected_number_box.val()).toFixed(2) : 0
     let sum_fixed_cost = 0
     fixed_costs_table.find('tbody tr').each(function () {
-        sum_fixed_cost += $(this).find('.fixed-cost-value').attr('value') ? parseFloat($(this).find('.fixed-cost-value').attr('value')) : 0
+        sum_fixed_cost += $(this).find('.fixed-cost-value').attr('value') ? parseFloat($(this).find('.fixed-cost-value').attr('value')).toFixed(2) : 0
     })
     let sum_variable_cost = 0
     variable_costs_table.find('tbody tr').each(function () {
-        sum_variable_cost += $(this).find('.variable-cost-value').attr('value') ? parseFloat($(this).find('.variable-cost-value').attr('value')) : 0
+        sum_variable_cost += $(this).find('.variable-cost-value').attr('value') ? parseFloat($(this).find('.variable-cost-value').attr('value')).toFixed(2) : 0
     })
-    let net_income_value = expected_number_value * (product_price_value - sum_variable_cost) - sum_fixed_cost
+    let net_income_value = (expected_number_value * (product_price_value - sum_variable_cost) - sum_fixed_cost).toFixed(2)
     net_income_box.attr('value', net_income_value)
-    net_income_all_box.attr('value', net_income_value * parseFloat(no_of_months_box.val()))
+    let no_of_months = no_of_months_box.val() ? parseFloat(no_of_months_box.val()) : 0
+    net_income_all_box.attr('value', net_income_value * no_of_months)
     $.fn.initMaskMoney2()
 
     let rate_value = expected_number_value * product_price_value !== 0 ? (net_income_value * 100 / (expected_number_value * product_price_value)).toFixed(2) : 0
@@ -364,12 +366,12 @@ function LoadDetailDP(option) {
                 loadFixedCostsTable(data?.['fixed_cost_list'], option)
                 loadVariableCostsTable(data?.['variable_cost_list'], option)
                 product_price_box.attr('value', data?.['product_price'])
-                break_event_point_box.val(data?.['break_event_point'])
-                break_event_point_all_box.val(data?.['break_event_point'] * data?.['no_of_month'])
+                break_event_point_box.val(parseFloat(data?.['break_event_point']).toFixed(2))
+                break_event_point_all_box.val((parseFloat(data?.['break_event_point']) * parseFloat(data?.['no_of_month'])).toFixed(2))
                 expected_number_box.val(data?.['expected_number'])
-                expected_number_all_box.val(data?.['expected_number'] * data?.['no_of_month'])
+                expected_number_all_box.val((parseFloat(data?.['expected_number']) * parseFloat(data?.['no_of_month'])).toFixed(2))
                 net_income_box.attr('value', data?.['net_income'])
-                net_income_all_box.attr('value', data?.['net_income'] * data?.['no_of_month'])
+                net_income_all_box.attr('value', (parseFloat(data?.['net_income']) * parseFloat(data?.['no_of_month'])).toFixed(2))
                 rate_box.attr('value', data?.['rate'])
 
                 plan_des_box.val(data?.['plan_description'])

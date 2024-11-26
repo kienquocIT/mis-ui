@@ -383,8 +383,8 @@ class MenusCRM:
         name='Product', code='id_menu_product_list', view_name='ProductList',
         icon='<i class="bi bi-nut-fill"></i>',
     )
-    PROJECT_BOM = MenuCommon(
-        name='Project BOM', code='menu_project_bom_list', view_name='ProjectBOMList',
+    OPP_BOM = MenuCommon(
+        name='Opportunity BOM', code='menu_project_bom_list', view_name='OpportunityBOMList',
         icon='<i class="fas fa-dice"></i>',
     )
     PRICING = MenuCommon(
@@ -833,7 +833,7 @@ class SpaceItem:
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.CONTRACT_APPROVAL,
                 MenusCRM.PRODUCT,
-                MenusCRM.PROJECT_BOM,
+                MenusCRM.OPP_BOM,
                 MenusCRM.PRICING,
                 MenusCRM.CASH_OUTFLOW,
                 MenusCRM.SALE_ACTIVITIES,

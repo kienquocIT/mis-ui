@@ -25,15 +25,15 @@ $(document).ready(function () {
             }]
 
         }).init();
-        ProjectBOMLoadPage.LoadFinishGoodsAndServices(productEle)
+        OpportunityBOMLoadPage.LoadFinishGoodsAndServices(productEle)
     }
 
-    ProjectBOMHandle.LoadPage();
+    OpportunityBOMHandle.LoadPage();
     WFRTControl.setWFInitialData('bom', 'POST')
 
     $('#form-create-prj-bom').submit(function (event) {
         event.preventDefault();
-        let form = ProjectBOMHandle.CombinesDataForProductionBOM($(this));
+        let form = OpportunityBOMHandle.CombinesDataForProductionBOM($(this));
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

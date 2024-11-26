@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    ProjectBOMHandle.LoadDetailBOM('detail');
+    OpportunityBOMHandle.LoadDetailBOM('detail');
 })

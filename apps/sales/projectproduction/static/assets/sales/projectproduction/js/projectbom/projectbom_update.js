@@ -1,12 +1,12 @@
 $(document).ready(function () {
-    ProjectBOMHandle.LoadPage();
+    OpportunityBOMHandle.LoadPage();
     WFRTControl.setWFInitialData('bom', 'PUT')
 
-    ProjectBOMHandle.LoadDetailBOM('update');
+    OpportunityBOMHandle.LoadDetailBOM('update');
 
     $('#form-detail-prj-bom').submit(function (event) {
         event.preventDefault();
-        let form = ProjectBOMHandle.CombinesDataForProductionBOM($(this));
+        let form = OpportunityBOMHandle.CombinesDataForProductionBOM($(this));
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

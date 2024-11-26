@@ -24,12 +24,12 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
-            data-url-labor="{% url 'LaborListForProjectBOMAPI' %}"
+            data-url-labor="{% url 'LaborListForOpportunityBOMAPI' %}"
             data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
-            data-url-material="{% url 'ProductMaterialListForProjectBOMAPI' %}"
-            data-url-tool="{% url 'ProductToolListForProjectBOMAPI' %}"
+            data-url-material="{% url 'ProductMaterialListForOpportunityBOMAPI' %}"
+            data-url-tool="{% url 'ProductToolListForOpportunityBOMAPI' %}"
             data-url-bom-detail="{% url 'BOMDetail' '0' %}"
-            data-url-project-bom-detail="{% url 'ProjectBOMDetail' '0' %}"
+            data-url-project-bom-detail="{% url 'OpportunityBOMDetail' '0' %}"
             data-url-bom-detail-api="{% url 'BOMDetailAPI' '0' %}"
     ></script>
     <script id="script-trans"
@@ -42,8 +42,8 @@
     ></script>
     <form id="form-create-prj-bom"
           data-method="POST"
-          data-url="{% url 'ProjectBOMListAPI' %}"
-          data-url-redirect="{% url 'ProjectBOMList' %}"
+          data-url="{% url 'OpportunityBOMListAPI' %}"
+          data-url-redirect="{% url 'OpportunityBOMList' %}"
     >
         {% csrf_token %}
         {% include 'sales/projectproduction/projectbom/common/information.html' %}

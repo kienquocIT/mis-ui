@@ -9069,18 +9069,6 @@ msgid "Production BOM"
 msgstr "BOM sản xuất"
 
 #
-msgid "Project BOM"
-msgstr "BOM dự án"
-
-#
-msgid "Project BOM create"
-msgstr "Tạo BOM dự án"
-
-#
-msgid "Project BOM list"
-msgstr "Danh sách BOM dự án"
-
-#
 msgid "Production BOM create"
 msgstr "Tạo BOM sản xuất"
 
@@ -9089,7 +9077,7 @@ msgid "Production BOM list"
 msgstr "Danh sách BOM sản xuất"
 
 #
-msgid "The product does not have project BOM"
+msgid "The product does not have opportunity BOM"
 msgstr "Sản phẩm không có định mức nguyên vật liệu dự án"
 
 #

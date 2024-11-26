@@ -42,7 +42,7 @@
             </select>
         </div>
     </div>
-    <div class="col-12 col-md-6 col-lg-4">
+    <div class="col-12 col-md-6 col-lg-4" {% if not show_action %}hidden{% endif %}>
         <div class="form-group">
             <label for="status" class="form-label">{% trans 'Action' %}</label>
             <div class="row">

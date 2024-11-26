@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, InputMappingProperties
 
 
-class ProductListForProjectBOMAPI(APIView):
+class ProductListForOpportunityBOMAPI(APIView):
     @mask_view(
         is_api=True,
         auth_require=True
@@ -16,7 +16,7 @@ class ProductListForProjectBOMAPI(APIView):
         return resp.auto_return(key_success='product_list')
 
 
-class LaborListForProjectBOMAPI(APIView):
+class LaborListForOpportunityBOMAPI(APIView):
     @mask_view(
         is_api=True,
         auth_require=True
@@ -27,7 +27,7 @@ class LaborListForProjectBOMAPI(APIView):
         return resp.auto_return(key_success='labor_list')
 
 
-class ProductMaterialListForProjectBOMAPI(APIView):
+class ProductMaterialListForOpportunityBOMAPI(APIView):
     @mask_view(
         is_api=True,
         auth_require=True
@@ -38,7 +38,7 @@ class ProductMaterialListForProjectBOMAPI(APIView):
         return resp.auto_return(key_success='material_list')
 
 
-class ProductToolListForProjectBOMAPI(APIView):
+class ProductToolListForOpportunityBOMAPI(APIView):
     @mask_view(
         is_api=True,
         auth_require=True
@@ -50,22 +50,22 @@ class ProductToolListForProjectBOMAPI(APIView):
 
 
 # BEGIN
-class ProjectBOMList(View):
+class OpportunityBOMList(View):
     @mask_view(
         auth_require=True,
         template='sales/projectproduction/projectbom/projectbom_list.html',
-        breadcrumb='PROJECT_BOM_LIST_PAGE',
+        breadcrumb='OPP_BOM_LIST_PAGE',
         menu_active='menu_project_bom_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
-class ProjectBOMCreate(View):
+class OpportunityBOMCreate(View):
     @mask_view(
         auth_require=True,
         template='sales/projectproduction/projectbom/projectbom_create.html',
-        breadcrumb='PROJECT_BOM_CREATE_PAGE',
+        breadcrumb='OPP_BOM_CREATE_PAGE',
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
@@ -74,22 +74,22 @@ class ProjectBOMCreate(View):
         }, status.HTTP_200_OK
 
 
-class ProjectBOMDetail(View):
+class OpportunityBOMDetail(View):
     @mask_view(
         auth_require=True,
         template='sales/projectproduction/projectbom/projectbom_detail.html',
-        breadcrumb='PROJECT_BOM_DETAIL_PAGE',
+        breadcrumb='OPP_BOM_DETAIL_PAGE',
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
-class ProjectBOMUpdate(View):
+class OpportunityBOMUpdate(View):
     @mask_view(
         auth_require=True,
         template='sales/projectproduction/projectbom/projectbom_update.html',
-        breadcrumb='PROJECT_BOM_UPDATE_PAGE',
+        breadcrumb='OPP_BOM_UPDATE_PAGE',
         menu_active='',
     )
     def get(self, request, *args, **kwargs):
@@ -98,7 +98,7 @@ class ProjectBOMUpdate(View):
         }, status.HTTP_200_OK
 
 
-class ProjectBOMListAPI(APIView):
+class OpportunityBOMListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
@@ -120,7 +120,7 @@ class ProjectBOMListAPI(APIView):
         return resp.auto_return()
 
 
-class ProjectBOMDetailAPI(APIView):
+class OpportunityBOMDetailAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,

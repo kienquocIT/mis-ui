@@ -22,7 +22,7 @@ let TOOL_ROW = null
 
 //// COMMON
 
-class ProjectBOMLoadPage {
+class OpportunityBOMLoadPage {
     static LoadInherit(ele, data) {
         if (data) {
             ele.initSelect2({
@@ -61,7 +61,7 @@ class ProjectBOMLoadPage {
     }
 }
 
-class ProjectBOMLoadTab {
+class OpportunityBOMLoadTab {
     // common
     static LoadUOM(ele, group_id, data) {
         if (group_id) {
@@ -212,10 +212,10 @@ class ProjectBOMLoadTab {
             initComplete: function () {
                 if (data_list.length > 0) {
                     process_description_table.find('tbody tr').each(function (index) {
-                        ProjectBOMLoadTab.LoadLabor($(this).find('.process-labor'), data_list[index]?.['labor'])
-                        ProjectBOMLoadTab.LoadUOM($(this).find('.process-uom'), data_list[index]?.['uom']?.['group_id'], data_list[index]?.['uom'])
+                        OpportunityBOMLoadTab.LoadLabor($(this).find('.process-labor'), data_list[index]?.['labor'])
+                        OpportunityBOMLoadTab.LoadUOM($(this).find('.process-uom'), data_list[index]?.['uom']?.['group_id'], data_list[index]?.['uom'])
                         let labor_selected = data_list[index]?.['labor']
-                        ProjectBOMLoadTab.LoadLaborPrice($(this).find('.process-labor'), labor_selected, $(this).find('.process-uom').val())
+                        OpportunityBOMLoadTab.LoadLaborPrice($(this).find('.process-labor'), labor_selected, $(this).find('.process-uom').val())
                     })
                 }
             }
@@ -278,11 +278,11 @@ class ProjectBOMLoadTab {
         }).on('change', function () {
             if (ele.val()) {
                 let labor_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
-                ProjectBOMLoadTab.LoadUOM(ele.closest('tr').find('.process-uom'), labor_selected?.['uom_group'], labor_selected?.['uom'])
-                ProjectBOMLoadTab.LoadLaborPrice(ele, labor_selected, ele.closest('tr').find('.process-uom').val())
-                ProjectBOMAction.Update_labor_summary_table()
-                ProjectBOMAction.Calculate_BOM_sum_price()
-                ProjectBOMAction.Calculate_BOM_sum_time()
+                OpportunityBOMLoadTab.LoadUOM(ele.closest('tr').find('.process-uom'), labor_selected?.['uom_group'], labor_selected?.['uom'])
+                OpportunityBOMLoadTab.LoadLaborPrice(ele, labor_selected, ele.closest('tr').find('.process-uom').val())
+                OpportunityBOMAction.Update_labor_summary_table()
+                OpportunityBOMAction.Calculate_BOM_sum_price()
+                OpportunityBOMAction.Calculate_BOM_sum_time()
             }
         })
     }
@@ -409,7 +409,7 @@ class ProjectBOMLoadTab {
                     ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge badge-light material-code w-100')
                     ele.closest('tr').find('.material-code').closest('a').attr('href', '').addClass('disabled')
                 }
-                ProjectBOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['inventory_uom'])
+                OpportunityBOMLoadTab.LoadUOM(ele.closest('tr').find('.material-uom'), material_selected?.['general_uom_group'], material_selected?.['inventory_uom'])
                 ele.closest('tr').find('.material-unit-price').attr('value', material_selected?.['standard_price'])
                 let quantity = parseFloat(ele.closest('tr').find('.material-quantity').val())
                 ele.closest('tr').find('.material-subtotal-price').attr('value', parseFloat(material_selected?.['standard_price']) * quantity)
@@ -515,7 +515,7 @@ class ProjectBOMLoadTab {
             ],
             initComplete: function () {
                 select_material_table.find('tbody tr').each(function () {
-                    ProjectBOMLoadTab.LoadUOM($(this).find('.material-uom'), $(this).find('.material-uom').attr('data-group-id'))
+                    OpportunityBOMLoadTab.LoadUOM($(this).find('.material-uom'), $(this).find('.material-uom').attr('data-group-id'))
                 })
                 for (let i = 0; i < selected_list.length; i++) {
                     select_material_table.find('tbody tr').each(function () {
@@ -523,7 +523,7 @@ class ProjectBOMLoadTab {
                             $(this).find('.material-checkbox').prop('checked', true)
                             $(this).find('.material-quantity').val(selected_list[i]?.['quantity']).prop('disabled', false)
                             $(this).find('.material-uom').prop('disabled', false)
-                            ProjectBOMLoadTab.LoadUOM($(this).find('.material-uom'), selected_list[i]?.['uom_data']?.['group_id'], selected_list[i]?.['uom_data'])
+                            OpportunityBOMLoadTab.LoadUOM($(this).find('.material-uom'), selected_list[i]?.['uom_data']?.['group_id'], selected_list[i]?.['uom_data'])
                             $(this).find('.material-disassemble').prop('disabled', false).prop('checked', selected_list[i]?.['disassemble'])
                             $(this).find('.material-note').val(selected_list[i]?.['note']).prop('disabled', false)
                         }
@@ -615,7 +615,7 @@ class ProjectBOMLoadTab {
                 ],
                 initComplete: function () {
                     replacement_material_table.find('tbody tr').each(function () {
-                        ProjectBOMLoadTab.LoadUOM($(this).find('.replacement-uom'), $(this).find('.replacement-uom').attr('data-group-id'))
+                        OpportunityBOMLoadTab.LoadUOM($(this).find('.replacement-uom'), $(this).find('.replacement-uom').attr('data-group-id'))
                     })
                     for (let i = 0; i < selected_list.length; i++) {
                         replacement_material_table.find('tbody tr').each(function () {
@@ -623,7 +623,7 @@ class ProjectBOMLoadTab {
                                 $(this).find('.replacement-checkbox').prop('checked', true)
                                 $(this).find('.replacement-quantity').val(selected_list[i]?.['quantity']).prop('disabled', false)
                                 $(this).find('.replacement-uom').prop('disabled', false)
-                                ProjectBOMLoadTab.LoadUOM($(this).find('.replacement-uom'), selected_list[i]?.['uom_data']?.['group_id'], selected_list[i]?.['uom_data'])
+                                OpportunityBOMLoadTab.LoadUOM($(this).find('.replacement-uom'), selected_list[i]?.['uom_data']?.['group_id'], selected_list[i]?.['uom_data'])
                                 $(this).find('.replacement-material-disassemble').prop('disabled', false).prop('checked', selected_list[i]?.['disassemble'])
                                 $(this).find('.replacement-note').val(selected_list[i]?.['note']).prop('disabled', false)
                             }
@@ -766,7 +766,7 @@ class ProjectBOMLoadTab {
             if (ele.val()) {
                 let tool_selected = SelectDDControl.get_data_from_idx(ele, ele.val())
                 ele.closest('tr').find('.tool-code').text(tool_selected?.['code'])
-                ProjectBOMLoadTab.LoadUOM(ele.closest('tr').find('.tool-uom'), tool_selected?.['general_uom_group'])
+                OpportunityBOMLoadTab.LoadUOM(ele.closest('tr').find('.tool-uom'), tool_selected?.['general_uom_group'])
             }
         })
     }
@@ -847,7 +847,7 @@ class ProjectBOMLoadTab {
             ],
             initComplete: function () {
                 select_tool_table.find('tbody tr').each(function () {
-                    ProjectBOMLoadTab.LoadUOM($(this).find('.tool-uom'), $(this).find('.tool-uom').attr('data-group-id'))
+                    OpportunityBOMLoadTab.LoadUOM($(this).find('.tool-uom'), $(this).find('.tool-uom').attr('data-group-id'))
                 })
                 for (let i = 0; i < selected_list.length; i++) {
                     select_tool_table.find('tbody tr').each(function () {
@@ -855,7 +855,7 @@ class ProjectBOMLoadTab {
                             $(this).find('.tool-checkbox').prop('checked', true)
                             $(this).find('.tool-quantity').val(selected_list[i]?.['quantity']).prop('disabled', false)
                             $(this).find('.tool-uom').prop('disabled', false)
-                            ProjectBOMLoadTab.LoadUOM($(this).find('.tool-uom'), selected_list[i]?.['uom_data']?.['group_id'], selected_list[i]?.['uom_data'])
+                            OpportunityBOMLoadTab.LoadUOM($(this).find('.tool-uom'), selected_list[i]?.['uom_data']?.['group_id'], selected_list[i]?.['uom_data'])
                             $(this).find('.tool-note').val(selected_list[i]?.['note']).prop('disabled', false)
                         }
                     })
@@ -865,7 +865,7 @@ class ProjectBOMLoadTab {
     }
 }
 
-class ProjectBOMAction {
+class OpportunityBOMAction {
     // common
     static BOMAddRow(table, data) {
         table.DataTable().row.add(data).draw();
@@ -923,7 +923,7 @@ class ProjectBOMAction {
         $.fn.initMaskMoney2()
     }
     static Update_labor_summary_table() {
-        ProjectBOMLoadTab.LoadLaborSummaryTable()
+        OpportunityBOMLoadTab.LoadLaborSummaryTable()
         process_description_table.find('tbody tr').each(function () {
             let this_row = $(this)
             let this_labor = this_row.find('.process-labor')
@@ -941,7 +941,7 @@ class ProjectBOMAction {
                     row_labor_summary.find('.labor-summary-quantity').text(old_quantity + this_quantity)
                     row_labor_summary.find('.labor-summary-subtotal-price').attr('data-init-money', old_subtotal_price + this_subtotal_price)
                 } else {
-                    ProjectBOMAction.BOMAddRow(labor_summary_table, {
+                    OpportunityBOMAction.BOMAddRow(labor_summary_table, {
                         'labor': {
                             'id': labor_selected?.['id'],
                             'title': labor_selected?.['title'],
@@ -1017,7 +1017,7 @@ class ProjectBOMAction {
         if (get_material_row_group.length > 0) {
             get_material_row_group.find('.material-group').text(task_name)
         } else {
-            let new_material_group_row = ProjectBOMAction.Create_material_group_row(index, task_name)
+            let new_material_group_row = OpportunityBOMAction.Create_material_group_row(index, task_name)
             material_table.find(`tbody`).append(new_material_group_row)
         }
     }
@@ -1065,7 +1065,7 @@ class ProjectBOMAction {
         if (get_tool_row_group.length > 0) {
             get_tool_row_group.find('.tool-group').text(task_name)
         } else {
-            let new_tool_group_row = ProjectBOMAction.Create_tool_group_row(index, task_name)
+            let new_tool_group_row = OpportunityBOMAction.Create_tool_group_row(index, task_name)
             tools_table.find(`tbody`).append(new_tool_group_row)
         }
     }
@@ -1080,15 +1080,15 @@ class ProjectBOMAction {
     }
 }
 
-class ProjectBOMHandle {
+class OpportunityBOMHandle {
     static LoadPage() {
-        ProjectBOMLoadPage.LoadFinishGoodsAndServices(productEle)
-        ProjectBOMLoadTab.LoadProcessDescriptionTable()
-        ProjectBOMLoadTab.LoadLaborSummaryTable()
+        OpportunityBOMLoadPage.LoadFinishGoodsAndServices(productEle)
+        OpportunityBOMLoadTab.LoadProcessDescriptionTable()
+        OpportunityBOMLoadTab.LoadLaborSummaryTable()
         // material
-        ProjectBOMLoadTab.LoadMaterialTable()
+        OpportunityBOMLoadTab.LoadMaterialTable()
         // tool
-        ProjectBOMLoadTab.LoadToolTable()
+        OpportunityBOMLoadTab.LoadToolTable()
     }
     static CombinesDataForProductionBOM(frmEle) {
         let frm = new SetupFormSubmit($(frmEle))
@@ -1203,34 +1203,34 @@ class ProjectBOMHandle {
                         }]
                     }).init();
 
-                    ProjectBOMLoadPage.LoadFinishGoodsAndServices(productEle, data?.['product'])
+                    OpportunityBOMLoadPage.LoadFinishGoodsAndServices(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
                     timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
 
-                    ProjectBOMLoadTab.LoadProcessDescriptionTable(data?.['bom_process_data'], option)
-                    ProjectBOMLoadTab.LoadLaborSummaryTable(data?.['bom_summary_process_data'])
+                    OpportunityBOMLoadTab.LoadProcessDescriptionTable(data?.['bom_process_data'], option)
+                    OpportunityBOMLoadTab.LoadLaborSummaryTable(data?.['bom_summary_process_data'])
 
                     material_table.find('tbody').html('')
                     tools_table.find('tbody').html('')
                     for (let i = 0; i < data?.['bom_process_data'].length; i++) {
                         let process_row_index = i + 1
                         let process_task_name = data?.['bom_process_data'][i]?.['task_name']
-                        ProjectBOMAction.Add_or_Update_material_group(process_row_index, process_task_name)
-                        ProjectBOMAction.Add_or_Update_tool_group(process_row_index, process_task_name)
+                        OpportunityBOMAction.Add_or_Update_material_group(process_row_index, process_task_name)
+                        OpportunityBOMAction.Add_or_Update_tool_group(process_row_index, process_task_name)
 
                         for (let j = 0; j < data?.['bom_material_component_data'].length; j++) {
                             if (process_row_index === parseInt(data?.['bom_material_component_data'][j]?.['bom_process_order'])) {
-                                let new_material_row = ProjectBOMAction.Create_material_row(process_row_index)
+                                let new_material_row = OpportunityBOMAction.Create_material_row(process_row_index)
                                 material_table.append(new_material_row)
                                 let material_selected = data?.['bom_material_component_data'][j]
                                 new_material_row.find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['material']?.['id'])
                                 new_material_row.find('.replacement-material-script').text(material_selected?.['replacement_data'] ? JSON.stringify(material_selected?.['replacement_data']) : '[]')
-                                ProjectBOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected?.['material'])
+                                OpportunityBOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected?.['material'])
                                 new_material_row.find('.material-code').text(material_selected?.['material']?.['code'])
                                 new_material_row.find('.material-quantity').val(material_selected?.['quantity'])
                                 new_material_row.find('.material-unit-price').attr('value', material_selected?.['standard_price'])
                                 new_material_row.find('.material-subtotal-price').attr('value', material_selected?.['subtotal_price'])
-                                ProjectBOMLoadTab.LoadUOM(
+                                OpportunityBOMLoadTab.LoadUOM(
                                     new_material_row.find('.material-uom'),
                                     material_selected?.['uom']?.['group_id'],
                                     material_selected?.['uom']
@@ -1243,13 +1243,13 @@ class ProjectBOMHandle {
 
                         for (let k = 0; k < data?.['bom_tool_data'].length; k++) {
                             if (process_row_index === parseInt(data?.['bom_tool_data'][k]?.['bom_process_order'])) {
-                                let new_tool_row = ProjectBOMAction.Create_tool_row(process_row_index)
+                                let new_tool_row = OpportunityBOMAction.Create_tool_row(process_row_index)
                                 tools_table.append(new_tool_row)
                                 let tool_selected = data?.['bom_tool_data'][k]
-                                ProjectBOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected?.['tool'])
+                                OpportunityBOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected?.['tool'])
                                 new_tool_row.find('.tool-code').text(tool_selected?.['tool']?.['code'])
                                 new_tool_row.find('.tool-quantity').val(tool_selected?.['quantity'])
-                                ProjectBOMLoadTab.LoadUOM(
+                                OpportunityBOMLoadTab.LoadUOM(
                                     new_tool_row.find('.tool-uom'),
                                     tool_selected?.['uom']?.['group_id'],
                                     tool_selected?.['uom']
@@ -1261,7 +1261,7 @@ class ProjectBOMHandle {
                     }
 
                     $.fn.initMaskMoney2()
-                    ProjectBOMAction.DisableDetailPage(option);
+                    OpportunityBOMAction.DisableDetailPage(option);
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
@@ -1272,20 +1272,20 @@ class ProjectBOMHandle {
 
 function Clean_MaterialTable_ToolTable() {
     if (material_table.find('tbody tr').length === 0) {
-        ProjectBOMLoadTab.LoadMaterialTable()
+        OpportunityBOMLoadTab.LoadMaterialTable()
     }
     if (tools_table.find('tbody tr').length === 0) {
-        ProjectBOMLoadTab.LoadToolTable()
+        OpportunityBOMLoadTab.LoadToolTable()
     }
 }
 
 $(document).on("change", '#opportunity_id', function () {
     let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-    ProjectBOMLoadPage.LoadInherit(employeeInheritEle, selected?.['sale_person'])
+    OpportunityBOMLoadPage.LoadInherit(employeeInheritEle, selected?.['sale_person'])
 })
 
 $('#btn-copy-bom').on('click', function () {
-    ProjectBOMLoadTab.LoadBOMCopyTable()
+    OpportunityBOMLoadTab.LoadBOMCopyTable()
 })
 
 $(document).on("change", '.bom-copy-selected', function () {
@@ -1337,30 +1337,30 @@ $('#btn-accept-copy-bom').on('click', function () {
                 priceEle.attr('value', data?.['sum_price'])
                 timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
 
-                ProjectBOMLoadTab.LoadProcessDescriptionTable(data?.['bom_process_data'], 'update')
-                ProjectBOMLoadTab.LoadLaborSummaryTable(data?.['bom_summary_process_data'])
+                OpportunityBOMLoadTab.LoadProcessDescriptionTable(data?.['bom_process_data'], 'update')
+                OpportunityBOMLoadTab.LoadLaborSummaryTable(data?.['bom_summary_process_data'])
 
                 material_table.find('tbody').html('')
                 tools_table.find('tbody').html('')
                 for (let i = 0; i < data?.['bom_process_data'].length; i++) {
                     let process_row_index = i + 1
                     let process_task_name = data?.['bom_process_data'][i]?.['task_name']
-                    ProjectBOMAction.Add_or_Update_material_group(process_row_index, process_task_name)
-                    ProjectBOMAction.Add_or_Update_tool_group(process_row_index, process_task_name)
+                    OpportunityBOMAction.Add_or_Update_material_group(process_row_index, process_task_name)
+                    OpportunityBOMAction.Add_or_Update_tool_group(process_row_index, process_task_name)
 
                     for (let j = 0; j < data?.['bom_material_component_data'].length; j++) {
                         if (process_row_index === parseInt(data?.['bom_material_component_data'][j]?.['bom_process_order'])) {
-                            let new_material_row = ProjectBOMAction.Create_material_row(process_row_index)
+                            let new_material_row = OpportunityBOMAction.Create_material_row(process_row_index)
                             material_table.append(new_material_row)
                             let material_selected = data?.['bom_material_component_data'][j]
                             new_material_row.find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['material']?.['id'])
                             new_material_row.find('.replacement-material-script').text(material_selected?.['replacement_data'] ? JSON.stringify(material_selected?.['replacement_data']) : '[]')
-                            ProjectBOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected?.['material'])
+                            OpportunityBOMLoadTab.LoadMaterial(new_material_row.find('.material-item'), material_selected?.['material'])
                             new_material_row.find('.material-code').text(material_selected?.['material']?.['code'])
                             new_material_row.find('.material-quantity').val(material_selected?.['quantity'])
                             new_material_row.find('.material-unit-price').attr('value', material_selected?.['standard_price'])
                             new_material_row.find('.material-subtotal-price').attr('value', material_selected?.['subtotal_price'])
-                            ProjectBOMLoadTab.LoadUOM(
+                            OpportunityBOMLoadTab.LoadUOM(
                                 new_material_row.find('.material-uom'),
                                 material_selected?.['uom']?.['group_id'],
                                 material_selected?.['uom']
@@ -1373,13 +1373,13 @@ $('#btn-accept-copy-bom').on('click', function () {
 
                     for (let k = 0; k < data?.['bom_tool_data'].length; k++) {
                         if (process_row_index === parseInt(data?.['bom_tool_data'][k]?.['bom_process_order'])) {
-                            let new_tool_row = ProjectBOMAction.Create_tool_row(process_row_index)
+                            let new_tool_row = OpportunityBOMAction.Create_tool_row(process_row_index)
                             tools_table.append(new_tool_row)
                             let tool_selected = data?.['bom_tool_data'][k]
-                            ProjectBOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected?.['tool'])
+                            OpportunityBOMLoadTab.LoadTool(new_tool_row.find('.tool-item'), tool_selected?.['tool'])
                             new_tool_row.find('.tool-code').text(tool_selected?.['tool']?.['code'])
                             new_tool_row.find('.tool-quantity').val(tool_selected?.['quantity'])
-                            ProjectBOMLoadTab.LoadUOM(
+                            OpportunityBOMLoadTab.LoadUOM(
                                 new_tool_row.find('.tool-uom'),
                                 tool_selected?.['uom']?.['group_id'],
                                 tool_selected?.['uom']
@@ -1412,9 +1412,9 @@ add_new_process_description.on('click', function () {
         }
     })
     if (flag) {
-        ProjectBOMAction.BOMAddRow(process_description_table, {})
+        OpportunityBOMAction.BOMAddRow(process_description_table, {})
         let row_added = process_description_table.find('tbody tr:last-child')
-        ProjectBOMLoadTab.LoadLabor(row_added.find('.process-labor'))
+        OpportunityBOMLoadTab.LoadLabor(row_added.find('.process-labor'))
     }
     else {
         $.fn.notifyB({description: 'Please fill in all "Task name" inputs first!'}, 'warning');
@@ -1423,13 +1423,13 @@ add_new_process_description.on('click', function () {
 
 $(document).on("click", '.del-row-process', function () {
     let row_index = $(this).closest('tr').find('td:eq(0)').text()
-    ProjectBOMAction.BOMDeleteRow($(this).closest('table'), row_index)
-    ProjectBOMAction.Remove_material_group(row_index)
-    ProjectBOMAction.Remove_tool_group(row_index)
-    ProjectBOMAction.Reload_index_for_material_and_tool_table()
-    ProjectBOMAction.Update_labor_summary_table()
-    ProjectBOMAction.Calculate_BOM_sum_price()
-    ProjectBOMAction.Calculate_BOM_sum_time()
+    OpportunityBOMAction.BOMDeleteRow($(this).closest('table'), row_index)
+    OpportunityBOMAction.Remove_material_group(row_index)
+    OpportunityBOMAction.Remove_tool_group(row_index)
+    OpportunityBOMAction.Reload_index_for_material_and_tool_table()
+    OpportunityBOMAction.Update_labor_summary_table()
+    OpportunityBOMAction.Calculate_BOM_sum_price()
+    OpportunityBOMAction.Calculate_BOM_sum_time()
     Clean_MaterialTable_ToolTable()
 })
 
@@ -1438,33 +1438,33 @@ $(document).on("change", '.process-task-name', function () {
     let process_task_name = $(this).closest('tr').find('.process-task-name').val()
     material_table.find('.dataTables_empty').closest('tr').remove()
     tools_table.find('.dataTables_empty').closest('tr').remove()
-    ProjectBOMAction.Add_or_Update_material_group(process_row_index, process_task_name)
-    ProjectBOMAction.Add_or_Update_tool_group(process_row_index, process_task_name)
+    OpportunityBOMAction.Add_or_Update_material_group(process_row_index, process_task_name)
+    OpportunityBOMAction.Add_or_Update_tool_group(process_row_index, process_task_name)
 })
 
 $(document).on("change", '.process-quantity', function () {
     let this_row = $(this).closest('tr')
-    ProjectBOMAction.Calculate_process_table(this_row)
-    ProjectBOMAction.Update_labor_summary_table()
-    ProjectBOMAction.Calculate_BOM_sum_price()
-    ProjectBOMAction.Calculate_BOM_sum_time()
+    OpportunityBOMAction.Calculate_process_table(this_row)
+    OpportunityBOMAction.Update_labor_summary_table()
+    OpportunityBOMAction.Calculate_BOM_sum_price()
+    OpportunityBOMAction.Calculate_BOM_sum_time()
 })
 
 $(document).on("change", '.process-uom', function () {
     let this_row = $(this).closest('tr')
     let labor_selected = SelectDDControl.get_data_from_idx(this_row.find('.process-labor'), this_row.find('.process-labor').val())
-    ProjectBOMLoadTab.LoadLaborPrice(this_row.find('.process-labor'), labor_selected, $(this).val())
-    ProjectBOMAction.Update_labor_summary_table()
-    ProjectBOMAction.Calculate_BOM_sum_price()
+    OpportunityBOMLoadTab.LoadLaborPrice(this_row.find('.process-labor'), labor_selected, $(this).val())
+    OpportunityBOMAction.Update_labor_summary_table()
+    OpportunityBOMAction.Calculate_BOM_sum_price()
 })
 
 $(document).on("click", '.labor-price-option', function () {
     let this_row = $(this).closest('tr')
     this_row.find('.process-unit-price').attr('value', $(this).find('.labor-price-value').attr('data-init-money'))
-    ProjectBOMAction.Calculate_process_table($(this).closest('tr'))
-    ProjectBOMAction.Update_labor_summary_table()
-    ProjectBOMAction.Calculate_BOM_sum_price()
-    ProjectBOMAction.Calculate_BOM_sum_time()
+    OpportunityBOMAction.Calculate_process_table($(this).closest('tr'))
+    OpportunityBOMAction.Update_labor_summary_table()
+    OpportunityBOMAction.Calculate_BOM_sum_price()
+    OpportunityBOMAction.Calculate_BOM_sum_time()
     $.fn.initMaskMoney2()
 })
 
@@ -1476,19 +1476,19 @@ $(document).on("click", '.add-new-material', function () {
     material_table.find(`tbody .${MATERIAL_ROW.attr('class')}`).each(function () {
         selected_list.push($(this).find('.material-item').val())
     })
-    ProjectBOMLoadTab.LoadMaterialSelectTable(selected_list)
+    OpportunityBOMLoadTab.LoadMaterialSelectTable(selected_list)
 })
 
 $(document).on("click", '.del-row-material', function () {
     $(this).closest('tr').remove()
-    ProjectBOMAction.Calculate_BOM_sum_price()
+    OpportunityBOMAction.Calculate_BOM_sum_price()
 })
 
 $(document).on("click", '.add-new-swap-material', function () {
     REPLACEMENT_ROW = $(this).closest('tr')
     let root_material_id = $(this).attr('data-root-material-id')
     let selected_list = REPLACEMENT_ROW.find('.replacement-material-script').text() ? JSON.parse(REPLACEMENT_ROW.find('.replacement-material-script').text()) : []
-    ProjectBOMLoadTab.LoadMaterialReplacementTable([], root_material_id, selected_list)
+    OpportunityBOMLoadTab.LoadMaterialReplacementTable([], root_material_id, selected_list)
 })
 
 $(document).on("change", '.replacement-checkbox', function () {
@@ -1503,7 +1503,7 @@ $(document).on("change", '.material-quantity', function () {
     let unit_price = parseFloat($(this).closest('tr').find('.material-unit-price').attr('value'))
     let quantity = parseFloat($(this).val())
     $(this).closest('tr').find('.material-subtotal-price').attr('value', unit_price * quantity)
-    ProjectBOMAction.Calculate_BOM_sum_price()
+    OpportunityBOMAction.Calculate_BOM_sum_price()
     $.fn.initMaskMoney2()
 })
 

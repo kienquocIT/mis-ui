@@ -1,0 +1,105 @@
+{% load static i18n %}
+<div class="row h-100vh">
+    <div class="col-xs-12 hidden-md">
+        <button class="btn btn-primary">
+            <span>
+                <span>{% trans 'Attachment file' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-paperclip"></i>
+                </span>
+            </span>
+        </button>
+    </div>
+    <div class="col-sm-12 col-md-9 left-content bg-blue-light-5">
+        <div class="row">
+            <div class="col-md-12 col-lg-6 form-group">
+                <label for="contract_type_id">{% trans 'Contract type' %}</label>
+                <select class="select2" id="contract_type_id" name="contract_type" data-onload="{{ data.contract_type }}"></select>
+            </div>
+            <div class="col-md-12 col-lg-6 form-check style-checkbox">
+                <input class="form-check-input" type="checkbox" id="gridCheck" name="limit_time" checked>
+                <label class="form-check-label" for="gridCheck">
+                    {% trans 'Limited time' %}
+                </label>
+            </div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label" for="effected_date">{% trans 'Effected date' %}</label>
+                <div class="input-affix-wrapper">
+                    <input class="form-control pl-2" id="effected_date" type="text" name="effected_date"/>
+                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label" for="expired_date">{% trans 'Expired date' %}</label>
+                <div class="input-affix-wrapper">
+                    <input class="form-control pl-2" id="expired_date" type="text" name="expired_date"/>
+                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label for="company_representative" class="form-label">{% trans 'Company representative' %}</label>
+                <select class="form-select select2" id="company_representative"
+                        data-url="{% url 'EmployeeListAPI' %}"
+                        data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
+                        name="company_representative"
+                ></select>
+            </div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label" for="signing_date">{% trans 'Signing date' %}</label>
+                <div class="input-affix-wrapper">
+                    <input class="form-control pl-2" id="signing_date" type="text" name="signing_date"/>
+                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6">
+                <div class="title required">{% trans 'File type' %}</div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="file_type" id="file_type1" value="0">
+                    <label class="form-check-label" for="file_type1">
+                        {% trans 'Attached files' %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="file_type" id="file_type2" value="1">
+                    <label class="form-check-label" for="file_type2">
+                        {% trans 'Online template' %}
+                    </label>
+                </div>
+            </div>
+            {% if edit %}
+                <div class="col-md-12 col-lg-6 hidden sign_check">
+                    <div class="title">{% trans 'Signature status' %}</div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="sign_status" id="sign_0" value="0">
+                        <label class="form-check-label" for="sign_0">
+                            {% trans 'Unsigned' %}
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="sign_status" id="sign_1" value="1">
+                        <label class="form-check-label" for="sign_1">
+                            {% trans 'Signed' %}
+                        </label>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="col-md-12 col-lg-12">
+                <textarea
+                        id="inp-remarks"
+                        data-css-url-render="{% static 'comment/css/style.css' %}"
+                        type="text"
+                        name="remarks"
+                        class="form-control {{ addClass }}"
+                ></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-3 right-content">
+        <div class="col-xs-12">
+            <label for="#" class="mb-2">{% trans 'Attached files' %}</label>
+            <div id="attachment" class="{{ addClass }}">
+                {% include 'extends/files/all.html' %}
+            </div>
+        </div>
+    </div>
+</div>

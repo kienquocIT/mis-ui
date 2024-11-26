@@ -108,7 +108,8 @@ class EmployeeHRMInit {
     static switchChoice(){
         $('.switch-choice').on('click', function(){
             $(this).toggleClass("is-select")
-            $(this).next().toggleClass("is-select")
+            if ($('#select-box-employee').attr('readonly') !== 'readonly')
+                $(this).next().toggleClass("is-select")
         })
     }
 
@@ -130,7 +131,7 @@ class EmployeeHRMInit {
                 $('#employee-first_name').val(employee.first_name);
                 $('#employee-middle_name').val(middName.join(" "));
                 $('#employee-last_name').val(employee.last_name.split(" ")[0]);
-                $('#employee-date-joined')[0]._flatpickr.setDate(new Date(employee.date_joined))
+                $('#date_joined')[0]._flatpickr.setDate(new Date(employee.date_joined))
                 $('#employee-email').val(employee.email)
                 $('#employee-phone').val(employee.phone)
                 $('#employee-code').val(employee.code)
@@ -143,20 +144,20 @@ class EmployeeHRMInit {
                 if (data?.['citizen_id'])
                     $('#employee-citizen_id').val(data['citizen_id'])
                 if (data?.['date_of_issue'])
-                    $('#employee-doi')[0]._flatpickr.setDate(new Date(data['date_of_issue']))
+                    $('#employee_doi')[0]._flatpickr.setDate(new Date(data['date_of_issue']))
                 if (data?.['place_of_issue'])
                     $('#place_of_issue').val(data['place_of_issue'])
                 if (data.employee.dob)
                     $('#employee-dob')[0]._flatpickr.setDate(new Date(data.employee.dob))
-                if (data?.['place_of_birth'])
+                if (Object.keys(data['place_of_birth']).length > 0)
                     $('#employee-pob').attr('data-onload', JSON.stringify(data?.['place_of_birth'])).append(
                         `<option value="${data?.['place_of_birth'].id}" selected>${data?.['place_of_birth'].title}</option>`
                     ).trigger('change')
-                if (data['nationality'])
+                if (Object.keys(data['nationality']).length > 0)
                     $('#employee-nationality').attr('data-onload', JSON.stringify(data['nationality'])).append(
                         `<option value="${data['nationality'].id}" selected>${data['nationality'].title}</option>`
                     ).trigger('change')
-                if (data?.['place_of_origin'])
+                if (Object.keys(data['place_of_origin']).length > 0)
                     $('#employee-poo').attr('data-onload', JSON.stringify(data['place_of_origin'])).append(
                         `<option value="${data['place_of_origin'].id}" selected>${data['place_of_origin'].title}</option>`
                     ).trigger('change')
@@ -170,6 +171,8 @@ class EmployeeHRMInit {
                 $('#employee-tax_code').val(data['tax_code'])
                 $('#employee-permanent_address').val(data['permanent_address'])
                 $('#employee-current_resident').val(data['current_resident'])
+
+                $(document).trigger('detail.DetailLoaded')
             }
         })
     }

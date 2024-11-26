@@ -765,3 +765,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     HRM_EMPLOYEE_NOT_MAP_HRM = StringUrl('hrm/employee-not-map/list')
     HRM_EMPLOYEE_INFO_LIST = StringUrl('hrm/employee-info/list')
     HRM_EMPLOYEE_INFO_DETAIL = StringUrl('hrm/employee-info/detail/{pk}')
+    HRM_EMPLOYEE_CONTRACT_LIST = StringUrl('hrm/employee-info/contract/list')
+    HRM_EMPLOYEE_CONTRACT_DETAIL = StringUrl('hrm/employee-info/contract/detail/{pk}')

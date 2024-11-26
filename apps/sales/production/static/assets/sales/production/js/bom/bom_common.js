@@ -1208,7 +1208,7 @@ class BOMHandle {
         // outsourcing
         BOMLoadTab.LoadOutsourcingMaterialTable()
     }
-    static CombinesDataForProductionBOM(frmEle) {
+    static CombinesBOMData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle))
         if ($('#for-production').prop('checked') ) {
             frm.dataForm['bom_type'] = 0

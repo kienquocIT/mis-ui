@@ -33,7 +33,7 @@ $(document).ready(function () {
 
     $('#form-create-prj-bom').submit(function (event) {
         event.preventDefault();
-        let form = OpportunityBOMHandle.CombinesDataForProductionBOM($(this));
+        let form = OpportunityBOMHandle.CombinesBOMData($(this));
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

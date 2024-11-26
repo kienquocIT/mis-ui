@@ -59,7 +59,7 @@ $(document).ready(function () {
                                 return `<span class="fst-italic">${trans_script.attr('data-trans-for-internal-expense')}</span>`;
                             }
                             else if (row?.['bom_type'] === 4) {
-                                return `<span class="fst-italic">${trans_script.attr('data-trans-for-project')}</span>`;
+                                return `<span class="fst-italic">${trans_script.attr('data-trans-for-opp')}</span>`;
                             }
                             return ''
                         }

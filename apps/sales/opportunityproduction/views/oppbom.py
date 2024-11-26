@@ -53,7 +53,7 @@ class ProductToolListForOpportunityBOMAPI(APIView):
 class OpportunityBOMList(View):
     @mask_view(
         auth_require=True,
-        template='sales/opportunityproduction/oppbom/oppbom_list.html',
+        template='sales/opportunityproduction/opportunitybom/oppbom_list.html',
         breadcrumb='OPP_BOM_LIST_PAGE',
         menu_active='menu_project_bom_list',
     )
@@ -64,7 +64,7 @@ class OpportunityBOMList(View):
 class OpportunityBOMCreate(View):
     @mask_view(
         auth_require=True,
-        template='sales/opportunityproduction/oppbom/oppbom_create.html',
+        template='sales/opportunityproduction/opportunitybom/oppbom_create.html',
         breadcrumb='OPP_BOM_CREATE_PAGE',
         menu_active='',
     )
@@ -77,7 +77,7 @@ class OpportunityBOMCreate(View):
 class OpportunityBOMDetail(View):
     @mask_view(
         auth_require=True,
-        template='sales/opportunityproduction/oppbom/oppbom_detail.html',
+        template='sales/opportunityproduction/opportunitybom/oppbom_detail.html',
         breadcrumb='OPP_BOM_DETAIL_PAGE',
         menu_active='',
     )
@@ -88,7 +88,7 @@ class OpportunityBOMDetail(View):
 class OpportunityBOMUpdate(View):
     @mask_view(
         auth_require=True,
-        template='sales/opportunityproduction/oppbom/oppbom_update.html',
+        template='sales/opportunityproduction/opportunitybom/oppbom_update.html',
         breadcrumb='OPP_BOM_UPDATE_PAGE',
         menu_active='',
     )

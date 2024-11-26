@@ -398,10 +398,10 @@ class OpportunityBOMLoadTab {
                 ele.closest('tr').find('.add-new-swap-material').attr('data-root-material-id', material_selected?.['id'])
                 if (material_selected?.['has_bom']) {
                     ele.closest('tr').find('.material-code').text(material_selected?.['code']).attr('class', 'badge btn-gradient-primary material-code w-100')
-                    let is_project_bom = material_selected?.['is_project_bom']
+                    let is_opp_bom = material_selected?.['is_opp_bom']
                     let url = script_url.attr('data-url-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`)
-                    if (is_project_bom) (
-                        url = script_url.attr('data-url-project-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`)
+                    if (is_opp_bom) (
+                        url = script_url.attr('data-url-opp-bom-detail').replace('/0', `/${material_selected?.['bom_id']}`)
                     )
                     ele.closest('tr').find('.material-code').closest('a').attr('href', url).removeClass('disabled')
                 }
@@ -1090,7 +1090,7 @@ class OpportunityBOMHandle {
         // tool
         OpportunityBOMLoadTab.LoadToolTable()
     }
-    static CombinesDataForProductionBOM(frmEle) {
+    static CombinesBOMData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle))
         frm.dataForm['bom_type'] = 4
         frm.dataForm['opportunity_id'] = opp_mapped_select.val()

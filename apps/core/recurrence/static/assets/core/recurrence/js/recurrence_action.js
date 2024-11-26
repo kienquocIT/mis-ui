@@ -147,10 +147,10 @@ $(function () {
                                     link = appMapUrl[row?.['recurrence']?.['app_code']]['create'] + `?recurrence_template_id=${row?.['recurrence']?.['doc_template_data']?.['id']}&recurrence_task_id=${row?.['id']}`;
                                 }
                             }
+                            `<!--<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-action" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${$trans.attr('data-done')}" data-id="${row?.['id']}" data-action="1"><span class="icon"><i class="fas fa-check"></i></span></button>-->`
                             return `<div class="d-flex justify-content-center">
-                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-action" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${$trans.attr('data-done')}" data-id="${row?.['id']}" data-action="1"><span class="icon"><i class="fas fa-check"></i></span></button>
-                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-action" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${$trans.attr('data-skip')}" data-id="${row?.['id']}" data-action="2"><span class="icon"><i class="fas fa-step-forward"></i></span></button>
                                         <a href="${link}"><button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-action" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${$trans.attr('data-create')}" data-id="${row?.['id']}" data-action="3"><span class="icon"><i class="fas fa-location-arrow"></i></span></button></a>
+                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-action" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${$trans.attr('data-skip')}" data-id="${row?.['id']}" data-action="2"><span class="icon"><i class="fas fa-step-forward"></i></span></button>
                                     </div>`;
                         },
                     }

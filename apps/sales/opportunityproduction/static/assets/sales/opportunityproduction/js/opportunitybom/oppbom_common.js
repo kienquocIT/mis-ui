@@ -1538,10 +1538,10 @@ $('#btn-get-selected-material').on('click', function () {
         let row = $(this)
         if (row.find('.material-checkbox').prop('checked')) {
             let row_index = MATERIAL_ROW.find('td:eq(0)').text()
-            let new_material_row = ProjectBOMAction.Create_material_row(row_index)
+            let new_material_row = OpportunityBOMAction.Create_material_row(row_index)
             MATERIAL_ROW.after(new_material_row)
             new_material_row.find('.material-code').text(row.find('.material-checkbox').attr('data-material-code'))
-            ProjectBOMLoadTab.LoadMaterial(
+            OpportunityBOMLoadTab.LoadMaterial(
                 new_material_row.find('.material-item'),
                 {
                     'id': row.find('.material-checkbox').attr('data-material-id'),
@@ -1550,7 +1550,7 @@ $('#btn-get-selected-material').on('click', function () {
                 }
             )
             new_material_row.find('.material-quantity').val(row.find('.material-quantity').val())
-            ProjectBOMLoadTab.LoadUOM(
+            OpportunityBOMLoadTab.LoadUOM(
                 new_material_row.find('.material-uom'),
                 row.find('.material-uom').attr('data-group-id'),
                 SelectDDControl.get_data_from_idx(row.find('.material-uom'), row.find('.material-uom').val())
@@ -1576,7 +1576,7 @@ $(document).on("click", '.add-new-tool', function () {
     tools_table.find(`tbody .${TOOL_ROW.attr('class')}`).each(function () {
         selected_list.push($(this).find('.tool-item').val())
     })
-    ProjectBOMLoadTab.LoadToolSelectTable(selected_list)
+    OpportunityBOMLoadTab.LoadToolSelectTable(selected_list)
 })
 
 $(document).on("click", '.del-row-tool', function () {
@@ -1595,10 +1595,10 @@ $('#btn-get-selected-tool').on('click', function () {
         let row = $(this)
         if (row.find('.tool-checkbox').prop('checked')) {
             let row_index = TOOL_ROW.find('td:eq(0)').text()
-            let new_tool_row = ProjectBOMAction.Create_tool_row(row_index)
+            let new_tool_row = OpportunityBOMAction.Create_tool_row(row_index)
             TOOL_ROW.after(new_tool_row)
             new_tool_row.find('.tool-code').text(row.find('.tool-checkbox').attr('data-tool-code'))
-            ProjectBOMLoadTab.LoadMaterial(
+            OpportunityBOMLoadTab.LoadMaterial(
                 new_tool_row.find('.tool-item'),
                 {
                     'id': row.find('.tool-checkbox').attr('data-tool-id'),
@@ -1607,7 +1607,7 @@ $('#btn-get-selected-tool').on('click', function () {
                 }
             )
             new_tool_row.find('.tool-quantity').val(row.find('.tool-quantity').val())
-            ProjectBOMLoadTab.LoadUOM(
+            OpportunityBOMLoadTab.LoadUOM(
                 new_tool_row.find('.tool-uom'),
                 row.find('.tool-uom').attr('data-group-id'),
                 SelectDDControl.get_data_from_idx(row.find('.tool-uom'), row.find('.tool-uom').val())

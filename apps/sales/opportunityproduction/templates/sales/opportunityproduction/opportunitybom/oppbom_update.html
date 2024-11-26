@@ -45,7 +45,7 @@
           data-method="PUT"
     >
         {% csrf_token %}
-        {% include 'sales/projectproduction/projectbom/common/information.html' %}
+        {% include 'sales/opportunityproduction/opportunitybom/common/information.html' %}
     </form>
 {% endblock %}
 {% block dataHiddenGroup %}
@@ -54,6 +54,6 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
-    <script src="{% static 'assets/sales/projectproduction/js/projectbom/projectbom_common.js' %}"></script>
-    <script src="{% static 'assets/sales/projectproduction/js/projectbom/projectbom_update.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunityproduction/js/opportunitybom/oppbom_common.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunityproduction/js/opportunitybom/oppbom_update.js' %}"></script>
 {% endblock %}

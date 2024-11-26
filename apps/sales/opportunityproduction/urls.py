@@ -1,5 +1,5 @@
 from django.urls import path
-from apps.sales.projectproduction.views import (
+from apps.sales.opportunityproduction.views import (
     OpportunityBOMList, OpportunityBOMCreate, OpportunityBOMDetail, OpportunityBOMUpdate,
     OpportunityBOMListAPI, OpportunityBOMDetailAPI, LaborListForOpportunityBOMAPI,
     ProductMaterialListForOpportunityBOMAPI, ProductToolListForOpportunityBOMAPI, ProductListForOpportunityBOMAPI

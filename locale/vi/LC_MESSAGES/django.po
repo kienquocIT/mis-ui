@@ -9733,6 +9733,10 @@ msgid "Skip"
 msgstr "Bỏ qua"
 
 #
+msgid "Current execution date"
+msgstr "Ngày lặp hiện tại"
+
+#
 msgid "Select address"
 msgstr "Chọn địa điểm"
 

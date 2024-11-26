@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // declare main variable
-    let $table = $('#table_workflow_list');
+    let $table = $('#table_template_list');
     let txt_state_wf_doc = {
         0: ["Created", "badge-soft-secondary"],
         1: ["In Progress", "badge-soft-warning"],

@@ -49,30 +49,20 @@ $(function () {
                         targets: 3,
                         width: '15%',
                         render: (data, type, row) => {
-                            let type_data = [
-                                "success badge-outline",
-                                "blue badge-outline",
-                                "pink badge-outline",
-                            ]
                             let typeTxt = JSON.parse($('#gr_type').text())
-                            return `<span class="badge badge-${type_data[row?.['goods_receipt_type']]}">${typeTxt[row?.['goods_receipt_type']][1]}</span>`;
+                            return `${typeTxt[row?.['goods_receipt_type']][1]}`;
                         }
                     },
                     {
                         targets: 4,
                         width: '10%',
                         render: (data, type, row) => {
-                            let type_data = [
-                                "success",
-                                "blue",
-                                "pink",
-                            ]
                             let type_code = {
                                 0: 'purchase_order_data',
                                 1: 'inventory_adjustment_data',
                                 2: 'production_order_data',
                             }
-                            return `<span class="badge badge-soft-${type_data[row?.['goods_receipt_type']]}">${row?.[type_code[row?.['goods_receipt_type']]]?.['code']}</span>`;
+                            return `<span class="badge badge-light badge-outline">${row?.[type_code[row?.['goods_receipt_type']]]?.['code']}</span>`;
                         }
                     },
                     {

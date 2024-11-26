@@ -3077,7 +3077,7 @@ class WFRTControl {
     }
 
     static getCollabOutFormData() {
-        // typeWF 0: dataCreate, 1: dataRuntime
+        // typeWF 0: dataInitial, 1: dataRuntime
         let typeWF = 0;
         if (window.location.href.includes('/detail/')) {
             typeWF = 1;
@@ -3100,13 +3100,18 @@ class WFRTControl {
             let $collabOFRuntime = $('#idxCollabOFRuntime');
             if ($collabOFRuntime && $collabOFRuntime.length > 0) {
                 return JSON.parse($collabOFRuntime.text());
+            } else {  // case if not $collabOFRuntime then check & use dataInitial
+                let $collabOFCreate = $('#idxCollabOFCreate');
+                if ($collabOFCreate && $collabOFCreate.length > 0) {
+                    return JSON.parse($collabOFCreate.text());
+                }
             }
         }
         return [];
     }
 
     static getAssociateData() {
-        // typeWF 0: dataCreate, 1: dataRuntime
+        // typeWF 0: dataInitial, 1: dataRuntime
         let typeWF = 0;
         if (window.location.href.includes('/detail/')) {
             typeWF = 1;
@@ -3119,16 +3124,21 @@ class WFRTControl {
                 }
             }
         }
-        if (typeWF === 0) {
+        if (typeWF === 0) {  // initial
             let $associateCreate = $('#idxAssociateCreate');
             if ($associateCreate && $associateCreate.length > 0) {
                 return JSON.parse($associateCreate.text());
             }
         }
-        if (typeWF === 1) {
+        if (typeWF === 1) {  // runtime
             let $associateRuntime = $('#idxAssociateRuntime');
             if ($associateRuntime && $associateRuntime.length > 0) {
                 return JSON.parse($associateRuntime.text());
+            } else {  // case if not $associateRuntime then check & use dataInitial
+                let $associateCreate = $('#idxAssociateCreate');
+                if ($associateCreate && $associateCreate.length > 0) {
+                    return JSON.parse($associateCreate.text());
+                }
             }
         }
         return [];
@@ -3324,7 +3334,9 @@ class WFRTControl {
         WFRTControl.setRuntimeDoc(resultDetail);
         switch (resultDetail?.['system_status']) {
             case 1:  // created
-                $realActions.addClass('hidden');
+                if (resultDetail?.['workflow_runtime_id']) {
+                    $realActions.addClass('hidden');
+                }
                 break
             case 2:  // added
                 break

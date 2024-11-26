@@ -146,19 +146,23 @@
                 <div class="row custom-area" id="custom-area-2" hidden>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="box-good-receipt-inventory-adjustment">{% trans 'Inventory adjustment' %}</label>
-                                <select
-                                        class="form-select"
-                                        id="box-good-receipt-inventory-adjustment"
-                                        data-url="{% url 'InventoryAdjustmentGRListAPI' %}"
-                                        data-method="GET"
-                                        data-link-detail=""
-                                        name="inventory_adjustment"
-                                        data-keyResp="inventory_adjustment_gr"
-                                        readonly
-                                >
-                                </select>
+                            <div class="row">
+                                <div class="col-12 col-md-7 col-lg-7">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-good-receipt-inventory-adjustment">{% trans 'Inventory adjustment' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-good-receipt-inventory-adjustment"
+                                                data-url="{% url 'InventoryAdjustmentGRListAPI' %}"
+                                                data-method="GET"
+                                                data-link-detail=""
+                                                name="inventory_adjustment"
+                                                data-keyResp="inventory_adjustment_gr"
+                                                readonly
+                                        >
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

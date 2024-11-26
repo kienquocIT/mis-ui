@@ -369,7 +369,7 @@ function LoadDetailDP(option) {
                 break_event_point_box.val(parseFloat(data?.['break_event_point']).toFixed(2))
                 break_event_point_all_box.val((parseFloat(data?.['break_event_point']) * parseFloat(data?.['no_of_month'])).toFixed(2))
                 expected_number_box.val(data?.['expected_number'])
-                expected_number_all_box.val((parseFloat(data?.['expected_number']) * parseFloat(data?.['no_of_month'])).toFixed(2))
+                expected_number_all_box.val(parseFloat(data?.['expected_number']) * parseFloat(data?.['no_of_month']))
                 net_income_box.attr('value', data?.['net_income'])
                 net_income_all_box.attr('value', (parseFloat(data?.['net_income']) * parseFloat(data?.['no_of_month'])).toFixed(2))
                 rate_box.attr('value', data?.['rate'])

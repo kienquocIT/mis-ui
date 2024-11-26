@@ -9126,7 +9126,7 @@ msgstr "Bắt đầu kiểm kê"
 
 #
 msgid "Done IA"
-msgstr "Kiểm kê hoàn tất"
+msgstr "Hoàn tất kiểm kê"
 
 #
 msgid "Created IA"

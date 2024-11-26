@@ -141,7 +141,7 @@ class IAHandle {
             $('.form-select').prop('disabled', true).prop('readonly', true);
             $('.select2').prop('disabled', true);
             $('#collapse-area input').prop('disabled', true);
-            $('#btn-add-row-line-detail').prop('disabled', true)
+            addRowLineDetailBtn.prop('disabled', true)
         }
         if (option === 'update') {
             $('#collapse-area .form-control').prop('disabled', true).prop('readonly', true);
@@ -274,16 +274,12 @@ class IAHandle {
                         $x.fn.renderCodeBreadcrumb(data);
                         // console.log(data)
 
-                        if (data?.['state'] === 1) {
-                            $('#start-ia').prop('disabled', true)
-                            $('.hidden-col').prop('hidden', false)
-                        }
-
-                        if (data?.['state'] === 2) {
-                            $('#start-ia').prop('disabled', true)
-                            $('#done-ia').prop('disabled', true)
-                            $('.hidden-col').prop('hidden', false)
-                        }
+                        $('#start-ia').prop('disabled', data?.['state'] !== 0);
+                        $('#done-ia').prop('disabled', data?.['state'] !== 1);
+                        $('#start-ia-space').prop('hidden', data?.['state'] !== 0);
+                        $('#done-ia-space').prop('hidden', data?.['state'] !== 1);
+                        $('.hidden-col').prop('hidden', data?.['state'] === 0);
+                        $('#action-space').prop('hidden', data?.['state'] === 2 || option!=='detail');
 
                         titleInput.val(data.title);
                         dateInput.val(moment(data?.['date_created'].split(' ')[0]).format('DD/MM/YYYY'));

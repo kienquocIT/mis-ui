@@ -18,7 +18,7 @@
     </div>
     <div class="col-6 col-md-3 col-lg-2">
         <div class="form-group">
-            <label for="date" class="form-label">{% trans 'Status' %}</label>
+            <label for="state-detail" class="form-label">{% trans 'Status' %}</label>
             <input disabled readonly type="text" class="form-control form-control-line" id="state-detail" value="{% trans 'IA Created' %}">
         </div>
     </div>
@@ -42,14 +42,14 @@
             </select>
         </div>
     </div>
-    <div class="col-12 col-md-6 col-lg-4" {% if not show_action %}hidden{% endif %}>
+    <div class="col-12 col-md-6 col-lg-4" id="action-space" hidden>
         <div class="form-group">
             <label for="status" class="form-label">{% trans 'Action' %}</label>
             <div class="row">
-                <div class="col-6">
+                <div class="col-6" id="start-ia-space" hidden>
                     <button id="start-ia" type="button" class="btn btn-primary btn-animated w-100"><span><span class="icon"><span class="feather-icon"><i class="fas fa-tasks"></i></span></span><span>{% trans 'Start IA' %}</span></span></button>
                 </div>
-                <div class="col-6">
+                <div class="col-6" id="done-ia-space" hidden>
                     <button id="done-ia" type="button" class="btn btn-success btn-animated w-100"><span><span class="icon"><span class="feather-icon"><i class="fas fa-check"></i></span></span><span>{% trans 'Done IA' %}</span></span></button>
                 </div>
             </div>

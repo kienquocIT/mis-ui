@@ -163,7 +163,7 @@ class GRLoadDataHandle {
         }
         if (type === "2") {
             if (!GRLoadDataHandle.IASelectEle.val()) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [], {'state': false}, null, false, {'res1': 'code', 'res2': 'title'});
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [], {'state': 2}, null, false, {'res1': 'code', 'res2': 'title'});
             }
         }
         if (type === "3") {
@@ -1254,7 +1254,7 @@ class GRLoadDataHandle {
             GRLoadDataHandle.loadDataShowPR(data?.['purchase_requests']);
         }
         if (idAreaShow === '2') {  // GR for IA
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [data?.['inventory_adjustment_data']], {'state': false});
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [data?.['inventory_adjustment_data']], {'state': 2});
         }
         if (idAreaShow === '3') {  // GR for Production
             if (data?.['production_report_type'] === 0) {
@@ -1507,8 +1507,11 @@ class GRDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        let targetID = row?.['purchase_order_product_id'];
-                        if (row?.['production_order_id']) {
+                        let targetID = row?.['purchase_order_product_id'];  // PO
+                        if (row?.['ia_item_id']) {  // IA
+                            targetID = row?.['ia_item_id'];
+                        }
+                        if (row?.['production_order_id']) {  // PRODUCTION
                             targetID = row?.['production_order_id'];
                         }
                         if (targetID) {

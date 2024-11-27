@@ -641,6 +641,7 @@
             data-url-payment-detail="{% url 'PaymentDetail' pk=0 %}"
             data-url-return-detail="{% url 'ReturnAdvanceDetail' pk=0 %}"
             data-url-bom-detail="{% url "ProjectBOMDetail" '0' %}"
+            data-url-bidding-detail="{% url "BiddingDetail" pk=0%}"
     ></script>
     <script
             type="text" id="trans-factory"
@@ -671,6 +672,7 @@
             data-cancel-quo="{% trans "Please cancel current quotation" %}"
             data-cancel-so="{% trans "Please cancel current sale order" %}"
             data-cancel-quo-so="{% trans "Please cancel current quotation, sale order" %}"
+            data-trans-bidding="{% trans "Bidding" %}"
     ></script>
     <input
             type="text"

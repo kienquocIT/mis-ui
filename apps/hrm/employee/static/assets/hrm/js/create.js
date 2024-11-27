@@ -12,6 +12,17 @@ $(document).ready(function () {
     EmployeeHRMInit.switchChoice();
     EmployeeHRMInit.loadBank();
 
+    // run tinyMCE
+    const contract_edt = new editor_handle();
+    const _clsContract = new contract_data()
+    contract_edt.init()
+
+    // load tab contract
+    new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+    EmployeeHRMInit.loadDate($('#effected_date'));
+    EmployeeHRMInit.loadDate($('#expired_date'));
+    EmployeeHRMInit.loadDate($('#signing_date'));
+
     SetupFormSubmit.validate(
         $('#frm_employee_hrm'),
         {
@@ -22,6 +33,8 @@ $(document).ready(function () {
                     const item = serializerArray[key]
                     if (item) employeeData[key] = item
                 }
+                let contract = _clsContract.valid_data()
+                if (contract) employeeData.contract = contract
                 employeeData.last_name = `${serializerArray.last_name} ${serializerArray['middle_name']}`
                 if ($('.select-wrap').hasClass('is-select')) delete employeeData['employee_create']
                 else delete employeeData.employee
@@ -33,10 +46,11 @@ $(document).ready(function () {
                 }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: data.message}, 'success')
+                        $.fn.notifyB({description: data.message}, 'success');
+                        $(form)[0].reset();
                         setTimeout(() => {
                             window.location.href = $(form).attr('data-url-redirect');
-                        }, 1000)
+                        }, 1000);
                     }
                 }, (errs) => {
                     $.fn.switcherResp(errs);

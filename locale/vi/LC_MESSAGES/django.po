@@ -5826,7 +5826,7 @@ msgstr "Báo giá mua hàng"
 
 #
 msgid "Inventory adjustment"
-msgstr "Điều chỉnh tồn kho"
+msgstr "Kiểm kê kho"
 
 #
 msgid "Goods receipt type"
@@ -5838,7 +5838,7 @@ msgstr "Cho đơn mua hàng"
 
 #
 msgid "For inventory adjustment"
-msgstr "Cho điều chỉnh tồn kho"
+msgstr "Cho kiểm kê kho"
 
 #
 msgid "For production"
@@ -7190,19 +7190,19 @@ msgstr "Điều chuyển hàng"
 
 #
 msgid "Inventory adjustment create"
-msgstr "Tạo phiếu Điều chỉnh tồn kho"
+msgstr "Tạo phiếu Kiểm kê kho"
 
 #
 msgid "Inventory adjustment detail"
-msgstr "Chi tiết phiếu Điều chỉnh tồn kho"
+msgstr "Chi tiết phiếu Kiểm kê kho"
 
 #
 msgid "Inventory adjustment update"
-msgstr "Cập nhật phiếu Điều chỉnh tồn kho"
+msgstr "Cập nhật phiếu Kiểm kê kho"
 
 #
 msgid "Inventory adjustment list"
-msgstr "Danh sách phiếu Điều chỉnh tồn kho"
+msgstr "Danh sách phiếu Kiểm kê kho"
 
 #
 msgid "Goods issue type"
@@ -9069,18 +9069,6 @@ msgid "Production BOM"
 msgstr "BOM sản xuất"
 
 #
-msgid "Project BOM"
-msgstr "BOM dự án"
-
-#
-msgid "Project BOM create"
-msgstr "Tạo BOM dự án"
-
-#
-msgid "Project BOM list"
-msgstr "Danh sách BOM dự án"
-
-#
 msgid "Production BOM create"
 msgstr "Tạo BOM sản xuất"
 
@@ -9089,7 +9077,7 @@ msgid "Production BOM list"
 msgstr "Danh sách BOM sản xuất"
 
 #
-msgid "The product does not have project BOM"
+msgid "The product does not have opportunity BOM"
 msgstr "Sản phẩm không có định mức nguyên vật liệu dự án"
 
 #
@@ -9138,7 +9126,7 @@ msgstr "Bắt đầu kiểm kê"
 
 #
 msgid "Done IA"
-msgstr "Kiểm kê hoàn tất"
+msgstr "Hoàn tất kiểm kê"
 
 #
 msgid "Created IA"
@@ -9705,15 +9693,69 @@ msgid "State"
 msgstr "Trạng thái"
 
 #
-msgid "Collaborator must not be greater than 1 because the previous link node is in workflow"
-msgstr "Số lượng CTV không được lớn hơn 1 vì cấu hình trạm liên kết trước là in workflow"
-
-#
 msgid "Price of purchase quotation"
 msgstr "Giá của báo giá mua hàng"
-
 
 #
 msgid "New Contact Shortcut"
 msgstr "Tạo nhanh Liên hệ"
 
+#
+msgid "Copy BOM"
+msgstr "Sao chép BOM"
+
+#
+msgid "Select BOM to copy"
+msgstr "Chọn BOM để sao chép"
+
+#
+msgid "Collaborator configuration conflict with the association node"
+msgstr "Cấu hình CTV mâu thuẫn với trạm liên kết"
+
+#
+msgid "Action list"
+msgstr "Danh sách thao tác"
+
+#
+msgid "Skip"
+msgstr "Bỏ qua"
+
+#
+msgid "Current execution date"
+msgstr "Ngày lặp hiện tại"
+
+#
+msgid "Select address"
+msgstr "Chọn địa điểm"
+
+#
+msgid "Detail Meeting"
+msgstr "Chi tiết cuộc họp"
+
+#
+msgid "Input Result"
+msgstr "Nhập kết quả"
+
+#
+msgid "Cancelled"
+msgstr "Bị hủy bỏ"
+
+#
+msgid "Detail Call Log"
+msgstr "Chi tiết cuộc gọi"
+
+#
+msgid "Bidding"
+msgstr "Thầu"
+
+#
+msgid "Bidding Status"
+msgstr "Trạng thái thầu"
+
+#
+msgid "Bidding list"
+msgstr "Danh sách thầu"
+
+#
+msgid "Bidding create"
+msgstr "Tạo thầu"

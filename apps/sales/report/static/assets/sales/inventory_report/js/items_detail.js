@@ -287,18 +287,13 @@ $(document).ready(function () {
                         sum_current_quantity += parseFloat($(this).text())
                     })
 
-                    let sum_current_cost = 0
-                    table.find(`.sum-current-cost-of-wh-${product_id}-${sale_order_id}`).each(function () {
-                        sum_current_cost += parseFloat($(this).attr('data-init-money'))
-                    })
-
                     let sum_current_value = 0
                     table.find(`.sum-current-value-of-wh-${product_id}-${sale_order_id}`).each(function () {
                         sum_current_value += parseFloat($(this).attr('data-init-money'))
                     })
 
                     table.find(`.sum-current-quantity-${product_id}-${sale_order_id}`).text(sum_current_quantity)
-                    table.find(`.sum-current-cost-${product_id}-${sale_order_id}`).attr('data-init-money', sum_current_cost)
+                    table.find(`.sum-current-cost-${product_id}-${sale_order_id}`).attr('data-init-money', sum_current_value/sum_current_quantity)
                     table.find(`.sum-current-value-${product_id}-${sale_order_id}`).attr('data-init-money', sum_current_value)
                 })
 

@@ -15,7 +15,7 @@ $(document).ready(function () {
         periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
-    const $is_project = false
+    let $is_project = false
     const company_current_data = JSON.parse($('#company_current_data').text());
     if (company_current_data) {
         let company_current_data_ajax = $.fn.callAjax2({
@@ -323,7 +323,7 @@ $(document).ready(function () {
                         if (row?.['type'] === 'warehouse_row') {
                             return `
                                 <div class="row">
-                                    <div class="col-4"><span class="text-primary fw-bold wh-opening-quantity-span wh-open-quantity-${row?.['warehouse_id']}">0</span></div>
+                                    <div class="col-4">--</div>
                                     <div class="col-8"><span class="text-primary fw-bold wh-opening-value-span mask-money wh-open-value-${row?.['warehouse_id']}" data-init-money="0"></span></div>
                                 </div>
                                 `
@@ -344,7 +344,7 @@ $(document).ready(function () {
                         if (row?.['type'] === 'warehouse_row') {
                             return `
                                 <div class="row">
-                                    <div class="col-4"><span class="text-primary fw-bold wh-in-quantity-span wh-in-quantity-${row?.['warehouse_id']}">0</span></div>
+                                    <div class="col-4">--</div>
                                     <div class="col-8"><span class="text-primary fw-bold wh-in-value-span wh-in-value-${row?.['warehouse_id']} mask-money" data-init-money="0"></span></div>
                                 </div>
                             `
@@ -371,7 +371,7 @@ $(document).ready(function () {
                         if (row?.['type'] === 'warehouse_row') {
                             return `
                                 <div class="row">
-                                    <div class="col-4"><span class="text-primary fw-bold wh-out-quantity-span wh-out-quantity-${row?.['warehouse_id']}">0</span></div>
+                                    <div class="col-4">--</div>
                                     <div class="col-8"><span class="text-primary fw-bold wh-out-value-span mask-money wh-out-value-${row?.['warehouse_id']}" data-init-money="0"></span></div>
                                 </div>
                             `
@@ -398,7 +398,7 @@ $(document).ready(function () {
                         if (row?.['type'] === 'warehouse_row') {
                             return `
                                 <div class="row">
-                                    <div class="col-4"><span class="text-primary fw-bold wh-ending-quantity-span wh-end-quantity-${row?.['warehouse_id']}">0</span></div>
+                                    <div class="col-4">--</div>
                                     <div class="col-8"><span class="text-primary fw-bold wh-ending-value-span mask-money wh-end-value-${row?.['warehouse_id']}" data-init-money="0"></span></div>
                                 </div>
                             `
@@ -423,33 +423,17 @@ $(document).ready(function () {
                     }
                 })
 
-                let sum_wh_open_quantity = 0;
                 let sum_wh_open_value = 0;
-                let sum_wh_in_quantity = 0;
                 let sum_wh_in_value = 0;
-                let sum_wh_out_quantity = 0;
                 let sum_wh_out_value = 0;
-                let sum_wh_end_quantity = 0;
                 let sum_wh_end_value = 0;
 
                 for (const wh of data_wh) {
-                    let wh_open_quantity = 0
-                    table.find(`.prd-open-quantity-${wh}`).each(function () {
-                        wh_open_quantity += parseFloat($(this).text())
-                    })
-                    table.find(`.wh-open-quantity-${wh}`).text(wh_open_quantity)
-
                     let wh_open_value = 0
                     table.find(`.prd-open-value-${wh}`).each(function () {
                         wh_open_value += parseFloat($(this).attr('data-init-money'))
                     })
                     table.find(`.wh-open-value-${wh}`).attr('data-init-money', wh_open_value)
-
-                    let wh_in_quantity = 0
-                    table.find(`.prd-in-quantity-${wh}`).each(function () {
-                        wh_in_quantity += parseFloat($(this).text())
-                    })
-                    table.find(`.wh-in-quantity-${wh}`).text(wh_in_quantity)
 
                     let wh_in_value = 0
                     table.find(`.prd-in-value-${wh}`).each(function () {
@@ -457,23 +441,11 @@ $(document).ready(function () {
                     })
                     table.find(`.wh-in-value-${wh}`).attr('data-init-money', wh_in_value)
 
-                    let wh_out_quantity = 0
-                    table.find(`.prd-out-quantity-${wh}`).each(function () {
-                        wh_out_quantity += parseFloat($(this).text())
-                    })
-                    table.find(`.wh-out-quantity-${wh}`).text(wh_out_quantity)
-
                     let wh_out_value = 0
                     table.find(`.prd-out-value-${wh}`).each(function () {
                         wh_out_value += parseFloat($(this).attr('data-init-money'))
                     })
                     table.find(`.wh-out-value-${wh}`).attr('data-init-money', wh_out_value)
-
-                    let wh_end_quantity = 0
-                    table.find(`.prd-end-quantity-${wh}`).each(function () {
-                        wh_end_quantity += parseFloat($(this).text())
-                    })
-                    table.find(`.wh-end-quantity-${wh}`).text(wh_end_quantity)
 
                     let wh_end_value = 0
                     table.find(`.prd-end-value-${wh}`).each(function () {
@@ -481,36 +453,24 @@ $(document).ready(function () {
                     })
                     table.find(`.wh-end-value-${wh}`).attr('data-init-money', wh_end_value)
 
-                    sum_wh_open_quantity += wh_open_quantity;
                     sum_wh_open_value += wh_open_value;
-                    sum_wh_in_quantity += wh_in_quantity;
                     sum_wh_in_value += wh_in_value;
-                    sum_wh_out_quantity += wh_out_quantity;
                     sum_wh_out_value += wh_out_value;
-                    sum_wh_end_quantity += wh_end_quantity;
                     sum_wh_end_value += wh_end_value;
                 }
 
                 if (data_wh.length === 0) {
                     table.find('tbody tr').each(function () {
-                        sum_wh_open_quantity += $(this).find('td:eq(6) span').text() ? parseFloat($(this).find('td:eq(6) span').text()) : 0
                         sum_wh_open_value += $(this).find('td:eq(7) span').attr('data-init-money') ? parseFloat($(this).find('td:eq(7) span').attr('data-init-money')) : 0
-                        sum_wh_in_quantity += $(this).find('td:eq(8) span').text() ? parseFloat($(this).find('td:eq(8) span').text()) : 0
                         sum_wh_in_value += $(this).find('td:eq(9) span').attr('data-init-money') ? parseFloat($(this).find('td:eq(9) span').attr('data-init-money')) : 0
-                        sum_wh_out_quantity += $(this).find('td:eq(10) span').text() ? parseFloat($(this).find('td:eq(10) span').text()) : 0
                         sum_wh_out_value += $(this).find('td:eq(11) span').attr('data-init-money') ? parseFloat($(this).find('td:eq(11) span').attr('data-init-money')) : 0
-                        sum_wh_end_quantity += $(this).find('td:eq(12) span').text() ? parseFloat($(this).find('td:eq(12) span').text()) : 0
                         sum_wh_end_value += $(this).find('td:eq(13) span').attr('data-init-money') ? parseFloat($(this).find('td:eq(13) span').attr('data-init-money')) : 0
                     })
                 }
 
-                $('.opening-total-quantity').text(sum_wh_open_quantity)
                 $('.opening-total-value').attr('data-init-money', sum_wh_open_value)
-                $('.in-total-quantity').text(sum_wh_in_quantity)
                 $('.in-total-value').attr('data-init-money', sum_wh_in_value)
-                $('.out-total-quantity').text(sum_wh_out_quantity)
                 $('.out-total-value').attr('data-init-money', sum_wh_out_value)
-                $('.ending-total-quantity').text(sum_wh_end_quantity)
                 $('.ending-total-value').attr('data-init-money', sum_wh_end_value)
 
                 if (!table_detail) {

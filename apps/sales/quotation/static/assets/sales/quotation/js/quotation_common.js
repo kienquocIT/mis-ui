@@ -6648,6 +6648,13 @@ class QuotationSubmitHandle {
                 _form.dataForm['payment_term_data'] = dataSelected;
             }
         }
+
+        // recurrence
+        let urlParams = $x.fn.getManyUrlParameters(['recurrence_task_id']);
+        if (urlParams?.['recurrence_task_id']) {
+            _form.dataForm['is_recurring'] = true;
+            _form.dataForm['recurrence_task_id'] = urlParams?.['recurrence_task_id'];
+        }
         return _form.dataForm;
     };
 }

@@ -28,46 +28,41 @@ function loadOpportunityMeetingList() {
             },
             columns: [
                 {
-                    className: 'wrap-text',
+                    className: 'wrap-text w-10',
                     render: () => {
                         return ``;
                     }
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text w-75',
+                    className: 'wrap-text w-55',
                     render: (data, type, row) => {
                         let status = ''
                         if (row?.['is_cancelled']) {
                             status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
                         }
-                        return `<a class="text-primary link-primary underline_hover detail-meeting-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
-                                    data-bs-target="#detail-meeting"><span><b>` + row.subject + `</b></span> ${status}</a>`
+                        return `<a class="text-primary link-primary underline_hover detail-meeting-button" href="" data-bs-toggle="modal" data-id="${row?.['id']}" data-bs-target="#detail-meeting">
+                                    <span class="mr-1">${row?.['subject']}</span>${status}
+                                </a>`
                     }
                 },
                 {
                     data: 'opportunity',
-                    className: 'wrap-text text-center w-15',
+                    className: 'wrap-text text-center w-20',
                     render: (data, type, row) => {
-                        return `<span class="text-secondary">${row.opportunity.code}</span>`
+                        return `<span class="badge badge-soft-blue badge-outline">${row?.['opportunity']?.['code']}</span>`
                     }
                 },
                 {
                     data: 'meeting_date',
-                    className: 'wrap-text text-center w-10',
-                    render: (data, type, row) => {
+                    className: 'wrap-text text-center w-15',
+                    render: (data) => {
                         return $x.fn.displayRelativeTime(data, {
-                            'outputFormat': 'DD-MM-YYYY',
+                            'outputFormat': 'DD/MM/YYYY',
                         });
                     }
                 },
             ],
-            rowCallback: function(row, data, index){
-                $('.detail-meeting-button', row).on('click', function () {
-                    let $this = $(this)
-                    detailMeeting($this)
-                })
-            },
         });
     }
 }
@@ -171,6 +166,15 @@ function loadEmployeeAttended(data) {
             method: 'GET',
         },
         data: (data ? data : null),
+        templateResult: function (data) {
+            if (data.data?.['group']?.['id']) {
+                let ele = $(`<div class="row"></div>`);
+                ele.append(`<div class="col-8">${data.data?.['full_name']}</div>`);
+                ele.append(`<div class="col-4"><span class="badge badge-soft-primary badge-outline">${data.data?.['group']?.['title']}</span></div>`);
+                return ele;
+            }
+            return ''
+        },
         keyResp: 'employee_list',
         keyId: 'id',
         keyText: 'full_name',
@@ -190,6 +194,22 @@ function loadMeetingAddress(shipping_address_list) {
     }
 }
 
+function convert12hto24h(date){
+    function padZero(num) {
+      return (num < 10 ? '0' : '') + num;
+    }
+    // Split the time into hours, minutes, and AM/PM
+    let timeArray = date.split(" ");
+    let hoursMinutes = timeArray[0].split(":");
+    let hours = parseInt(hoursMinutes[0]);
+    let minutes = parseInt(hoursMinutes[1]);
+
+    // Convert to 24-hour format
+    if (timeArray[1].toLowerCase() === "pm" && hours < 12) hours += 12;
+    else if (timeArray[1].toLowerCase() === "am" && hours === 12) hours = 0;
+    return padZero(hours) + ":" + padZero(minutes) + ":00";
+}
+
 meeting_date_input.daterangepicker({
     singleDatePicker: true,
     timePicker: true,
@@ -201,21 +221,10 @@ meeting_date_input.daterangepicker({
     },
     "cancelClass": "btn-secondary",
     maxYear: parseInt(moment().format('YYYY'), 10) + 100
-});
-meeting_date_input.val('');
+}).val('');
 
-$('#meeting-address-input-btn').on('click', function () {
-    $('#meeting-address-select-div').prop('hidden', true);
-    $('#meeting-address-input-div').prop('hidden', false);
-})
-
-$('#meeting-address-select-btn').on('click', function () {
-    $('#meeting-address-select-div').prop('hidden', false);
-    $('#meeting-address-input-div').prop('hidden', true);
-})
-
-function detailMeeting($this) {
-    let meeting_id = $this.attr('data-id');
+$(document).on('click', '#table_opportunity_meeting_list .detail-meeting-button', function () {
+    let meeting_id = $(this).attr('data-id');
     let meeting_obj = MEETING_LIST.filter(function (item) {
         return item.id === meeting_id;
     })[0]
@@ -255,8 +264,8 @@ function detailMeeting($this) {
 
     $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
     moment.locale('en')
-    $('#meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
-    $('#meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
+    $('#meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'))
+    $('#meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'))
 
     $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 
@@ -269,7 +278,17 @@ function detailMeeting($this) {
         $('#is-cancelled').text('')
     }
     $('#detail-meeting .modal-body').attr('data-id', meeting_obj.id)
-}
+})
+
+$('#meeting-address-input-btn').on('click', function () {
+    $('#meeting-address-select-div').prop('hidden', true);
+    $('#meeting-address-input-div').prop('hidden', false);
+})
+
+$('#meeting-address-select-btn').on('click', function () {
+    $('#meeting-address-select-div').prop('hidden', false);
+    $('#meeting-address-input-div').prop('hidden', true);
+})
 
 $(document).on('click', '#cancel-activity', function () {
     Swal.fire({
@@ -306,25 +325,6 @@ $(document).on('click', '#cancel-activity', function () {
 		}
 	})
 })
-
-function convert12hto24h(date){
-    let strConvert = ''
-    function padZero(num) {
-      return (num < 10 ? '0' : '') + num;
-    }
-    // Split the time into hours, minutes, and AM/PM
-    let timeArray = date.split(" ");
-    let hoursMinutes = timeArray[0].split(":");
-    let hours = parseInt(hoursMinutes[0]);
-    let minutes = parseInt(hoursMinutes[1]);
-
-    // Convert to 24-hour format
-    if (timeArray[1].toLowerCase() === "pm" && hours < 12) hours += 12;
-    else if (timeArray[1].toLowerCase() === "am" && hours === 12) hours = 0;
-    // Format the result
-    strConvert = padZero(hours) + ":" + padZero(minutes) + ":00";
-    return strConvert
-}
 
 class MeetingHandle {
     load() {

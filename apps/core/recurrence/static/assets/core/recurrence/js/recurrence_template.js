@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // declare main variable
-    let $table = $('#table_workflow_list');
+    let $table = $('#table_template_list');
     let txt_state_wf_doc = {
         0: ["Created", "badge-soft-secondary"],
         1: ["In Progress", "badge-soft-warning"],
@@ -155,7 +155,7 @@ $(document).ready(function () {
                     ajax: {
                         url: urlData?.['url'],
                         type: 'GET',
-                        data: {'is_recurring': true},
+                        data: {'is_recurrence_template': true},
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data) return resp.data[urlData?.['keyResp']] ? resp.data[urlData?.['keyResp']] : [];

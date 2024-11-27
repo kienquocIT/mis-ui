@@ -15,7 +15,7 @@ $(document).ready(function () {
             form = new PurchaseRequestHandle().combinesDataSF($(this));
         }
         else if (type === '3' || $('#request-for-db').attr('data-type') === '3') {
-            form = new PurchaseRequestHandle().combinesDataDB($(this));
+            form = new PurchaseRequestHandle().combinesDataDP($(this));
         }
         if (form) {
             WFRTControl.callWFSubmitForm(form);

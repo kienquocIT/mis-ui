@@ -181,6 +181,10 @@ $(document).ready(function () {
                         $('#check-lost-reason').prop('checked', false);
 
                     $('#input-budget').attr('value', opportunity_detail.budget_value);
+                    if (opportunity_detail?.['process']?.['id']) {
+                        $('#process-space').prop('hidden', false)
+                        $('#process-title').val(opportunity_detail?.['process']?.['title']);
+                    }
 
                     OpportunityLoadDropdown.loadCustomer(opportunity_detail.customer, config_is_AM_create, opportunity_detail?.['sale_person'].id);
                     OpportunityLoadDropdown.loadProductCategory(opportunity_detail.product_category);
@@ -239,17 +243,29 @@ $(document).ready(function () {
                 }
 
                 loadDetail(opportunity_detail_data).then(function () {
-                    // autoLoadStage(
-                    //     true,
-                    //     false,
-                    //     list_stage_condition,
-                    //     list_stage,
-                    //     condition_sale_oder_approved,
-                    //     condition_is_quotation_confirm,
-                    //     condition_sale_oder_delivery_status,
-                    //     config_is_input_rate,
-                    //     dict_stage
-                    // )
+                    let _, is_lost = autoLoadStage(
+                        true,
+                        false,
+                        list_stage_condition,
+                        list_stage,
+                        condition_sale_oder_approved,
+                        condition_is_quotation_confirm,
+                        condition_sale_oder_delivery_status,
+                        config_is_input_rate,
+                        dict_stage
+                    );
+                    if (is_lost) {
+                        let ele_stage = $('.stage-lost')
+                        ele_stage.addClass('stage-selected');
+                        ele_stage.css('background-color', 'rgb(255,94,94)')
+                        ele_stage.css('color', 'white')
+                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
+                    } else {
+                        $('.stage-lost').removeClass('stage-selected');
+                        $('.stage-lost').css('background-color', '#e7e7e7')
+                        $('.stage-lost').css('color', '#6f6f6f')
+                        $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
+                    }
 
                     // Disable all select elements
                     $('#btn-auto-update-stage').prop('hidden', true)
@@ -589,23 +605,6 @@ $(document).ready(function () {
                 //     }
                 // })
 
-
-                $('#btn-auto-update-stage').on('click', function () {
-                    autoLoadStage(
-                        true,
-                        false,
-                        list_stage_condition,
-                        list_stage,
-                        condition_sale_oder_approved,
-                        condition_is_quotation_confirm,
-                        condition_sale_oder_delivery_status,
-                        config_is_input_rate,
-                        dict_stage
-                    );
-                    $.fn.notifyB({description: "Stage has just updated!"}, 'success')
-                    $(this).tooltip('hide');
-                })
-
                 $(document).on('change', '#input-close-deal', function () {
                     if ($(this).is(':checked')) {
                         $(this).closest('.sub-stage').addClass('stage-selected');
@@ -803,7 +802,7 @@ $(document).ready(function () {
                 $(document).on('click', '#table-timeline .detail-call-log-button', function () {
                     let call_log_id = $(this).attr('data-id');
                     let call_log_detail = $.fn.callAjax2({
-                        url: $('#detail-call-log').attr('data-url').replace(0, call_log_id),
+                        url: $('#script-url').attr('data-url').replace(0, call_log_id),
                         method: 'GET'
                     }).then(
                         (resp) => {
@@ -896,11 +895,15 @@ $(document).ready(function () {
                 }
 
                 function loadEmailToList(contact_list) {
+                    email_to_slb.attr('disabled', false);
                     email_to_slb.html(``);
                     for (let i = 0; i < contact_list.length; i++) {
                         let item = contact_list[i];
-                        if (item.email !== null) {
-                            email_to_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
+                        if (item.email) {
+                            email_to_slb.append(`<option selected value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+                        }
+                        else {
+                            email_to_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
                         }
                     }
                     email_to_slb.select2({
@@ -911,11 +914,15 @@ $(document).ready(function () {
                 }
 
                 function loadEmailCcList(contact_list) {
+                    email_cc_slb.attr('disabled', false);
                     email_cc_slb.html(``);
                     for (let i = 0; i < contact_list.length; i++) {
                         let item = contact_list[i];
                         if (item.email) {
-                            email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
+                            email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+                        }
+                        else {
+                            email_cc_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
                         }
                     }
                     email_cc_slb.select2({
@@ -1034,25 +1041,6 @@ $(document).ready(function () {
                         })
                 })
 
-                $(document).on('click', '#table-timeline .delete-email-button', function () {
-                    let email_id = $(this).attr('data-id');
-                    $.fn.callAjax2({
-                        url: table_timeline.attr('data-url-delete-email').replace(0, email_id),
-                        method: 'DELETE'
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({description: "Successfully"}, 'success')
-                                OpportunityActivity.loadDblActivityLogs();
-                            }
-                        },
-                        (errs) => {
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
-                        }
-                    )
-                })
-
                 // for meeting
 
                 let meeting_Opp_slb = $('#meeting-sale-code-select-box');
@@ -1091,17 +1079,26 @@ $(document).ready(function () {
                 }
 
                 function loadEmployeeAttended(data) {
-                    meeting_employee_attended_slb.initSelect2({
-                        ajax: {
-                            url: meeting_employee_attended_slb.attr('data-url'),
-                            method: 'GET',
-                        },
-                        data: (data ? data : null),
-                        keyResp: 'employee_list',
-                        keyId: 'id',
-                        keyText: 'full_name',
-                    })
-                }
+    meeting_employee_attended_slb.initSelect2({
+        ajax: {
+            url: meeting_employee_attended_slb.attr('data-url'),
+            method: 'GET',
+        },
+        data: (data ? data : null),
+        templateResult: function (data) {
+            if (data.data?.['group']?.['id']) {
+                let ele = $(`<div class="row"></div>`);
+                ele.append(`<div class="col-8">${data.data?.['full_name']}</div>`);
+                ele.append(`<div class="col-4"><span class="badge badge-soft-primary badge-outline">${data.data?.['group']?.['title']}</span></div>`);
+                return ele;
+            }
+            return ''
+        },
+        keyResp: 'employee_list',
+        keyId: 'id',
+        keyText: 'full_name',
+    })
+}
 
                 meeting_date_input.daterangepicker({
                     singleDatePicker: true,
@@ -1251,7 +1248,7 @@ $(document).ready(function () {
                 $(document).on('click', '#table-timeline .detail-meeting-button', function () {
                     let meeting_id = $(this).attr('data-id');
                     let meeting_detail = $.fn.callAjax2({
-                        url: $('#detail-meeting').attr('data-url').replace(0, meeting_id),
+                        url: $('#script-url').attr('data-url').replace(0, meeting_id),
                         method: 'GET'
                     }).then(
                         (resp) => {
@@ -1297,8 +1294,8 @@ $(document).ready(function () {
                             $('#detail-meeting-date-input').val(
                                 moment(meeting_obj.meeting_date.split(' ')[0], 'YYYY-MM-DD').format("DD/MM/YYYY")
                             ).prop('readonly', true);
-                            $('#detail-meeting #meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
-                            $('#detail-meeting #meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
+                            $('#detail-meeting #meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'))
+                            $('#detail-meeting #meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'))
 
                             $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 
@@ -1430,6 +1427,10 @@ $(document).ready(function () {
                 })
                 $('#dropdown-menu-relate-app #create-project-bom-shortcut').on('click', function () {
                     let url = $(this).attr('data-url') + `?opp_mapped=${$(this).attr('data-opp-mapped')}&&sale_person_mapped=${$(this).attr('data-sale-person-mapped')}`
+                    window.open(url, '_blank');
+                })
+                $('#dropdown-menu-relate-app #create-bidding-shortcut').on('click', function () {
+                    let url = $(this).attr('data-url') + `?opportunity=${$(this).attr('data-opportunity')}&&employee_inherit=${$(this).attr('data-employee-inherit')}`
                     window.open(url, '_blank');
                 })
 
@@ -1565,6 +1566,44 @@ $(document).ready(function () {
                                     $('#create-project-bom-shortcut').removeClass('disabled')
                                     $('#create-project-bom-shortcut').attr('data-opp-mapped', opp_mapped)
                                     $('#create-project-bom-shortcut').attr('data-sale-person-mapped', sale_person_mapped)
+                                    break;
+                                }
+                            }
+                        })
+
+                    let dataParam_bidding = {'list_from_app': 'bidding.bidding.create'}
+                    opp_list_ajax = $.fn.callAjax2({
+                        url: $('#script-url').attr('data-url-opp-list'),
+                        data: dataParam_bidding,
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                    return data?.['opportunity_list'];
+                                }
+                            }
+                        },
+                        (errs) => {
+                            console.log(errs);
+                        }
+                    )
+
+                    Promise.all([opp_list_ajax]).then(
+                        (results) => {
+                            let opp_list = results[0];
+                            for (let opp of opp_list) {
+                                if (opp?.['id'] === dataInitSaleCode?.['id']) {
+                                    let opportunity = encodeURIComponent(JSON.stringify({
+                                        'id': opp?.['id'],
+                                        'code': opp?.['code'],
+                                        'title': opp?.['title']
+                                    }));
+                                    let employee_inherit = encodeURIComponent(JSON.stringify(opp?.['sale_person']));
+                                    $('#create-bidding-shortcut').removeClass('disabled')
+                                    $('#create-bidding-shortcut').attr('data-opportunity', opportunity)
+                                    $('#create-bidding-shortcut').attr('data-employee-inherit', employee_inherit)
                                     break;
                                 }
                             }

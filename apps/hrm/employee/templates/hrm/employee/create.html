@@ -313,16 +313,22 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab-contract">
+                {% include 'hrm/contract/create.html' %}
             </div>
         </div>
     </form>
 {% endblock %}
-
+{% block dataHiddenGroup %}
+    {{ data.template_list|json_script:'template_list' }}
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
     {% if base.language == 'vi' %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
+
+    <script src="{% static 'assets/hrm/js/extend/contract_editor.js' %}"></script>
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
+
     <script src="{% static 'assets/hrm/js/create.js' %}"></script>
 {% endblock %}

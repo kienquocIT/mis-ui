@@ -354,6 +354,10 @@ class MenusCRM:
                 icon='<i class="fas fa-file"></i>',
             ),
             MenuCommon(
+                name='Action list', code='menu_action_list', view_name='RecurrenceActionList',
+                icon='<i class="fas fa-location-arrow"></i>',
+            ),
+            MenuCommon(
                 name='Transaction template', code='menu_transaction_template', view_name='TransactionTemplateList',
                 icon='<i class="fas fa-file-alt"></i>',
             ),
@@ -379,8 +383,8 @@ class MenusCRM:
         name='Product', code='id_menu_product_list', view_name='ProductList',
         icon='<i class="bi bi-nut-fill"></i>',
     )
-    PROJECT_BOM = MenuCommon(
-        name='Project BOM', code='menu_project_bom_list', view_name='ProjectBOMList',
+    OPP_BOM = MenuCommon(
+        name='Opportunity BOM', code='menu_project_bom_list', view_name='OpportunityBOMList',
         icon='<i class="fas fa-dice"></i>',
     )
     PRICING = MenuCommon(
@@ -829,7 +833,7 @@ class SpaceItem:
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.CONTRACT_APPROVAL,
                 MenusCRM.PRODUCT,
-                MenusCRM.PROJECT_BOM,
+                MenusCRM.OPP_BOM,
                 MenusCRM.PRICING,
                 MenusCRM.CASH_OUTFLOW,
                 MenusCRM.SALE_ACTIVITIES,
@@ -981,7 +985,7 @@ class SpaceGroup:
             # SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
             SpaceItem.mapping['forms'],
-            # SpaceItem.mapping['hrm'],
+            SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],
             SpaceItem.mapping['purchase'],
             SpaceItem.mapping['production'],

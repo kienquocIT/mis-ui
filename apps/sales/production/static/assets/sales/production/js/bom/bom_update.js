@@ -6,7 +6,7 @@ $(document).ready(function () {
 
     $('#form-detail-bom').submit(function (event) {
         event.preventDefault();
-        let form = BOMHandle.CombinesDataForProductionBOM($(this));
+        let form = BOMHandle.CombinesBOMData($(this));
         if (form) {
             WFRTControl.callWFSubmitForm(form);
         }

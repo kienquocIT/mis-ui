@@ -1504,6 +1504,7 @@ $(function () {
     const $fOppElm = $('#filter_opportunity_id')
     const $fSttElm = $('#filter_task_status')
     const $fEmpElm = $('#filter_employee_id')
+    const $fPriority = $('#filter_priority_id')
     const $clearElm = $('.clear-all-btn')
     const listElm = [$fOppElm, $fSttElm, $fEmpElm]
     listElm.forEach(function (elm) {
@@ -1516,6 +1517,25 @@ $(function () {
             GanttViewTask.CallFilter(params)
             $clearElm.addClass('d-block')
         })
+    })
+    $fPriority.on('change', function(){
+        let params = {}
+        if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
+        if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
+        if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
+        if (this.value)
+            params.priority = this.value
+        if (Object.keys(params).length > 0){
+            callDataTaskList(kanbanTask, listTask, params)
+            GanttViewTask.CallFilter(params)
+            $clearElm.addClass('d-block')
+        }
+        else{
+            callDataTaskList(kanbanTask, listTask)
+            GanttViewTask.CallFilter({})
+            $clearElm.removeClass('d-block')
+        }
+
     })
     $clearElm.off().on('click', () => {
         listElm.forEach(function (elm) {

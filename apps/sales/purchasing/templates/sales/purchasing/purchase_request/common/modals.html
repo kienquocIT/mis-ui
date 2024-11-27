@@ -32,15 +32,14 @@
                         <table id="datatable-product-of-so"
                                class="table nowrap w-100"
                                data-method="GET"
-                               data-url="{% url 'ProductListSaleOrderAPI' pk=0 %}"
-                        >
+                               data-url="{% url 'ProductListSaleOrderAPI' pk=0 %}">
                             <thead class="bg-primary-light-5">
                                 <tr>
                                     <th style="min-width: 20px"></th>
                                     <th style="min-width: 150px">{% trans "Product" %}</th>
                                     <th style="min-width: 50px">{% trans "Quantity" %}</th>
                                     <th style="min-width: 50px">{% trans "Remain" %}</th>
-                                    <th style="min-width: 100px">{% trans "Request" %}</th>
+                                    <th style="min-width: 100px">{% trans "Request quantity" %}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -69,38 +68,38 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-12 col-md-12 col-lg-5 border rounded">
+                    <div class="col-12 col-md-12 col-lg-4 border rounded">
                         <table id="datatable-distribution"
                                class="table nowrap table-hover w-100"
                                data-url="{% url 'DistributionPlanListAPI' %}"
                                data-method="GET">
                             <thead class="bg-primary-light-5">
                                 <tr>
-                                    <th style="min-width: 20px"></th>
-                                    <th style="min-width: 100px">{% trans "Code" %}</th>
-                                    <th style="min-width: 200px">{% trans "Title" %}</th>
-                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 250px">{% trans "Stock plan" %}</th>
+                                    <th style="min-width: 30px"></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-7 border rounded">
+                    <div class="col-12 col-md-12 col-lg-8 border rounded">
                         <table id="datatable-product-of-distribution" class="table nowrap table-hover w-100"
                                data-method="GET"
-                               data-url="{% url 'DistributionPlanDetailAPI' pk=0 %}"
-                        >
+                               data-url="{% url 'DistributionPlanDetailAPI' pk=0 %}">
                             <thead class="bg-primary-light-5">
                                 <tr>
-                                    <th style="min-width: 20px"></th>
+                                    <th style="min-width: 30px"></th>
                                     <th style="min-width: 150px">{% trans "Product" %}</th>
-                                    <th style="min-width: 50px">{% trans "Quantity" %}</th>
-                                    <th style="min-width: 50px">{% trans "Remain" %}</th>
-                                    <th style="min-width: 100px">{% trans "Request" %}</th>
+                                    <th style="min-width: 150px">{% trans "Planned quantity" %}</th>
+                                    <th style="min-width: 150px">{% trans "Requested quantity" %}</th>
+                                    <th style="min-width: 150px">{% trans "Remain" %}</th>
+                                    <th style="min-width: 150px">{% trans "This time" %}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
+
                     </div>
                 </div>
             </div>

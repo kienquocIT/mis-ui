@@ -58,6 +58,7 @@ $(function () {
 
                     //
                     const processData = data?.['process'] || {};
+                    const processStageAppData = data?.['process_stage_app'] || {};
                     const oppData = data?.['opportunity'] || {};
                     const inheritData = data?.['employee_inherit'] || {};
                     new $x.cls.bastionField({
@@ -70,6 +71,15 @@ $(function () {
                                'selected': true,
                             }
                         ] : [],
+                        data_process_stage_app: processStageAppData && Object.keys(processStageAppData).length > 0 ? [
+                            {
+                                ...processStageAppData,
+                                'selected': true,
+                            }
+                        ] : [],
+                        processStageAppFlagData: {
+                            'disable': true,
+                        },
                         data_opp: oppData && Object.keys(oppData).length > 0 ? [
                             {
                                 ...oppData,

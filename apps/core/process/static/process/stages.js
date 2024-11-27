@@ -930,7 +930,10 @@ class ProcessStages {
                 'redirect': true,
                 'create_open': true,
                 'process_id': clsThis.data?.['id'] || '',
-                'process_title': clsThis.data?.['title'] || '', ...(clsThis.data?.['opp'] ? {
+                'process_title': clsThis.data?.['title'] || '',
+                'process_stage_app_id': appData.id,
+                'process_stage_app_title': appData.title,
+                ...(clsThis.data?.['opp'] ? {
                     'opp_id': clsThis.data['opp']?.['id'] || '',
                     'opp_title': clsThis.data['opp']?.['title'] || '',
                     'opp_code': clsThis.data['opp']?.['code'] || '',
@@ -938,6 +941,8 @@ class ProcessStages {
                     'inherit_id': $x.fn.getEmployeeCurrent('id'),
                     'inherit_title': $x.fn.getEmployeeCurrent('full_name'),
                 } : {}),
+                'stages_app_id': appData?.['id'] || '',
+                'stages_app_title': appData?.['title'] || '',
             });
             return urlResolved + '?' + paramData;
         }

@@ -272,3 +272,7 @@ msgstr "Bạn có chắc chắn đã xác nhận hoàn tất không?"
 #
 msgid "Are you sure remove it?"
 msgstr "Bạn có chắc chắn loại bỏ nó?"
+
+#
+msgid "Retrieving Opportunity Data that has been linked to Process"
+msgstr "Đang truy xuất dữ liệu Cơ hội Kinh Doanh đã được liên kết với Tiến trình"

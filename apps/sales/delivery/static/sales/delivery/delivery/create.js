@@ -1,23 +1,63 @@
 $(document).ready(function () {
     const frm$ = $('#form-create-delivery');
-    const process$ = frm$.find('#inp-process');
     const so$ = frm$.find('#inp-so');
     const tableSO$ = frm$.find('#table-list-saleorder');
+
+    let processData = [];
+    let processStageApp = [];
 
     const {
         process_id,
         process_title,
-    } = $x.fn.getManyUrlParameters(['process_id', 'process_title']);
+        process_stage_app_id,
+        process_stage_app_title,
+    } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title']);
 
-    process$.initSelect2({
-        data: process_id && $x.fn.checkUUID4(process_id) ? [
-            {
-                'id': process_id,
-                'title': process_title,
-                'selected': true,
-            }
-        ] : [],
-    });
+    if (process_id){
+        processData.push({
+            'id': process_id,
+            'title': process_title,
+            'selected': true,
+        })
+    }
+    if (process_stage_app_id){
+        processStageApp.push({
+            'id': process_stage_app_id,
+            'title': process_stage_app_title,
+            'selected': true,
+        })
+    }
+
+    const inpProcess$ = frm$.find(':input[name=process]');
+    const inpStageApp$ = frm$.find(':input[name=process_stage_app]');
+
+    function reinitProcessStageApp(data=[], process_id=null){
+        inpStageApp$.destroySelect2();
+        let dataParams = {"application_id": inpStageApp$.data('app-id')};
+        if (process_id && $x.fn.checkUUID4(process_id)) dataParams['process_id'] = process_id;
+        inpStageApp$.initSelect2({
+            allowClear: true,
+            dataParams: dataParams,
+            data: data
+        })
+    }
+
+    function reinitProcess(data=[], opp_id=null){
+        inpProcess$.destroySelect2();
+        let dataParams = {};
+        if (opp_id && $x.fn.checkUUID4(opp_id)) dataParams['opp_id'] = opp_id;
+        inpProcess$.initSelect2({
+            allowClear: true,
+            dataParams: dataParams,
+            data: data
+        }).on('change', function(){
+            const selectedVal = $(this).val();
+            reinitProcessStageApp([], selectedVal ? selectedVal : null);
+        })
+    }
+
+    reinitProcess(processData);
+    reinitProcessStageApp(processStageApp);
 
     const dtb = tableSO$.DataTableDefault({
         useDataServer: true,

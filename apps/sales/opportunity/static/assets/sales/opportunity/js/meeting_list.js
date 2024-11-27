@@ -56,18 +56,13 @@ function loadOpportunityMeetingList() {
                 {
                     data: 'meeting_date',
                     className: 'wrap-text text-center w-15',
-                    render: (data, type, row) => {
+                    render: (data) => {
                         return $x.fn.displayRelativeTime(data, {
                             'outputFormat': 'DD/MM/YYYY',
                         });
                     }
                 },
             ],
-            rowCallback: function(row, data, index){
-                $('.detail-meeting-button', row).on('click', function () {
-                    detailMeeting($(this))
-                })
-            },
         });
     }
 }
@@ -199,6 +194,22 @@ function loadMeetingAddress(shipping_address_list) {
     }
 }
 
+function convert12hto24h(date){
+    function padZero(num) {
+      return (num < 10 ? '0' : '') + num;
+    }
+    // Split the time into hours, minutes, and AM/PM
+    let timeArray = date.split(" ");
+    let hoursMinutes = timeArray[0].split(":");
+    let hours = parseInt(hoursMinutes[0]);
+    let minutes = parseInt(hoursMinutes[1]);
+
+    // Convert to 24-hour format
+    if (timeArray[1].toLowerCase() === "pm" && hours < 12) hours += 12;
+    else if (timeArray[1].toLowerCase() === "am" && hours === 12) hours = 0;
+    return padZero(hours) + ":" + padZero(minutes) + ":00";
+}
+
 meeting_date_input.daterangepicker({
     singleDatePicker: true,
     timePicker: true,
@@ -210,21 +221,10 @@ meeting_date_input.daterangepicker({
     },
     "cancelClass": "btn-secondary",
     maxYear: parseInt(moment().format('YYYY'), 10) + 100
-});
-meeting_date_input.val('');
+}).val('');
 
-$('#meeting-address-input-btn').on('click', function () {
-    $('#meeting-address-select-div').prop('hidden', true);
-    $('#meeting-address-input-div').prop('hidden', false);
-})
-
-$('#meeting-address-select-btn').on('click', function () {
-    $('#meeting-address-select-div').prop('hidden', false);
-    $('#meeting-address-input-div').prop('hidden', true);
-})
-
-function detailMeeting($this) {
-    let meeting_id = $this.attr('data-id');
+$(document).on('click', '#table_opportunity_meeting_list .detail-meeting-button', function () {
+    let meeting_id = $(this).attr('data-id');
     let meeting_obj = MEETING_LIST.filter(function (item) {
         return item.id === meeting_id;
     })[0]
@@ -264,8 +264,8 @@ function detailMeeting($this) {
 
     $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
     moment.locale('en')
-    $('#meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
-    $('#meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSSSSS').format('hh:mm A'))
+    $('#meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'))
+    $('#meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'))
 
     $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 
@@ -278,7 +278,17 @@ function detailMeeting($this) {
         $('#is-cancelled').text('')
     }
     $('#detail-meeting .modal-body').attr('data-id', meeting_obj.id)
-}
+})
+
+$('#meeting-address-input-btn').on('click', function () {
+    $('#meeting-address-select-div').prop('hidden', true);
+    $('#meeting-address-input-div').prop('hidden', false);
+})
+
+$('#meeting-address-select-btn').on('click', function () {
+    $('#meeting-address-select-div').prop('hidden', false);
+    $('#meeting-address-input-div').prop('hidden', true);
+})
 
 $(document).on('click', '#cancel-activity', function () {
     Swal.fire({
@@ -315,25 +325,6 @@ $(document).on('click', '#cancel-activity', function () {
 		}
 	})
 })
-
-function convert12hto24h(date){
-    let strConvert = ''
-    function padZero(num) {
-      return (num < 10 ? '0' : '') + num;
-    }
-    // Split the time into hours, minutes, and AM/PM
-    let timeArray = date.split(" ");
-    let hoursMinutes = timeArray[0].split(":");
-    let hours = parseInt(hoursMinutes[0]);
-    let minutes = parseInt(hoursMinutes[1]);
-
-    // Convert to 24-hour format
-    if (timeArray[1].toLowerCase() === "pm" && hours < 12) hours += 12;
-    else if (timeArray[1].toLowerCase() === "am" && hours === 12) hours = 0;
-    // Format the result
-    strConvert = padZero(hours) + ":" + padZero(minutes) + ":00";
-    return strConvert
-}
 
 class MeetingHandle {
     load() {

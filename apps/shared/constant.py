@@ -15,7 +15,11 @@ __all__ = [
     'PAID_BY',
     'SYSTEM_STATUS',
     'LEAVE_ACTION',
-    'DEPENDENCIES_TYPE'
+    'DEPENDENCIES_TYPE',
+    'GENDER_TYPE',
+    'MARITAL_STT',
+    'LIST_BANK',
+    'CONTRACT_TYPE'
 ]
 
 LEAD_STATUS = [
@@ -174,4 +178,9 @@ MARITAL_STT = (
     (3, _('Divorced')),
     (4, _('Single')),
     (5, _('Engaged')),
+)
+CONTRACT_TYPE = (
+    (0, _('Probationary contract')),
+    (1, _('Labor contract')),
+    (2, _('Addendum contract')),
 )

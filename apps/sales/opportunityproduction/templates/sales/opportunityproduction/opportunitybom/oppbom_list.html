@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Bill of material list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "OpportunityBOMCreate" %}">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <script id="trans-script"
+            data-trans-for-production="{% trans 'For production' %}"
+            data-trans-for-service="{% trans 'For service' %}"
+            data-trans-for-sale="{% trans 'For sale' %}"
+            data-trans-for-internal-expense="{% trans 'For internal expense' %}"
+            data-trans-for-opp="{% trans 'For opportunity' %}"
+            data-trans-outsourcing="{% trans 'Outsourcing' %}">
+    </script>
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100"
+                   id="prj-bom-list-table"
+                   data-method="GET"
+                   data-url="{% url 'OpportunityBOMListAPI' %}"
+                   data-url-detail="{% url 'OpportunityBOMDetail' '0' %}"
+                   data-url-opp-detail="{% url 'OpportunityDetail' '0' %}"
+            >
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Code' %}</th>
+                    <th>{% trans 'Product/Service name' %}</th>
+                    <th>{% trans 'Type' %}</th>
+                    <th>{% trans 'Opportunity' %}</th>
+                    <th>{% trans 'Sum time' %}</th>
+                    <th>{% trans 'Sum price' %}</th>
+                    <th>{% trans 'System status' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooterUnCompress %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/opportunityproduction/js/opportunitybom/oppbom_list.js' %}"></script>
+{% endblock %}

@@ -563,7 +563,7 @@ function LoadDistributionTable() {
             }, {
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-db" data-id="${row?.['id']}"/></span>`
+                    return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-dp" data-id="${row?.['id']}"/></span>`
                 }
             }
         ],
@@ -662,19 +662,19 @@ function LoadDistributionProductTable(distribution_id=null) {
                 {
                     className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
-                        return `<span class="quantity-span">${row?.['expected_number']}</span>`
+                        return `<span class="quantity-span">${parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month'])}</span>`
                     }
                 },
                 {
                     className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
-                        return `<span class="remain-span">${parseFloat(row?.['expected_number']) - parseFloat(row?.['purchase_request_number'])}</span>`
+                        return `<span class="remain-span">${parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month']) - parseFloat(row?.['purchase_request_number'])}</span>`
                     }
                 },
                 {
                     className: 'wrap-text text-center w-20',
                     render: (data, type, row) => {
-                        return `<input type="number" class="form-control text-center request-number-input" value="0" max="${parseFloat(row?.['expected_number']) - parseFloat(row?.['purchase_request_number'])}">`
+                        return `<input type="number" class="form-control text-center request-number-input" value="0" max="${parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month']) - parseFloat(row?.['purchase_request_number'])}">`
                     }
                 }
             ],
@@ -766,7 +766,7 @@ class PurchaseRequestHandle {
                 'uom': $(this).find('.product-uom-detail').attr('data-id'),
                 'quantity': $(this).find('.request-number-detail').text(),
                 'unit_price': $(this).find('.unit-price-detail').attr('value'),
-                'tax': $(this).find('.tax-detail').val(),
+                'tax': $(this).find('.tax-detail').val() ? $(this).find('.tax-detail').val() : null,
                 'sub_total_price': $(this).find('.subtotal-detail').attr('value'),
             })
         })
@@ -777,7 +777,7 @@ class PurchaseRequestHandle {
         return frm
     }
 
-    combinesDataDB(frmEle) {
+    combinesDataDP(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['title'] = $('#title-db').val()
@@ -798,7 +798,7 @@ class PurchaseRequestHandle {
                 'uom': $(this).find('.product-uom-detail').attr('data-id'),
                 'quantity': $(this).find('.request-number-detail').text(),
                 'unit_price': $(this).find('.unit-price-detail').attr('value'),
-                'tax': $(this).find('.tax-detail').val(),
+                'tax': $(this).find('.tax-detail').val() ? $(this).find('.tax-detail').val() : null,
                 'sub_total_price': $(this).find('.subtotal-detail').attr('value'),
             })
         })
@@ -829,7 +829,7 @@ class PurchaseRequestHandle {
                 'uom': $(this).find('.product-uom-detail').val(),
                 'quantity': $(this).find('.request-number-detail').val(),
                 'unit_price': $(this).find('.unit-price-detail').attr('value'),
-                'tax': $(this).find('.tax-detail').val(),
+                'tax': $(this).find('.tax-detail').val() ? $(this).find('.tax-detail').val() : null,
                 'sub_total_price': $(this).find('.subtotal-detail').attr('value'),
             })
         })
@@ -982,7 +982,7 @@ $(document).on('change', '.inp-check-so', function () {
     LoadSaleOrderProductTable($(this).attr('data-id'))
 })
 
-$(document).on('change', '.inp-check-db', function () {
+$(document).on('change', '.inp-check-dp', function () {
     LoadDistributionProductTable($(this).attr('data-id'))
 })
 
@@ -1064,7 +1064,7 @@ btnSelectDBProduct.on('click', function () {
     })
     if (flag) {
         LoadLineDetailTable(lineDetailTable_db, request_product_data)
-        $('.inp-check-db').each(function () {
+        $('.inp-check-dp').each(function () {
             if ($(this).prop('checked')) {
                 $('#code-db').val($(this).closest('tr').find('.p-db-code').text()).attr('data-id', $(this).attr('data-id'))
             }

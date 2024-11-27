@@ -7077,6 +7077,7 @@ class FileControl {
                                     ${opts.required ? "required" : ""}
                                 />
                             `);
+                            groupEle.addClass('dm-uploader-initializer');
 
                             // init table file cloud
                             clsThis.ui_on_show_file_cloud();

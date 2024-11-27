@@ -382,10 +382,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
-    PROJECT_BOM_LIST_PAGE = BreadcrumbChildren(_('Project BOM list'), 'ProjectBOMList')
-    PROJECT_BOM_CREATE_PAGE = BreadcrumbChildren(_('Project BOM create'), 'ProjectBOMCreate')
-    PROJECT_BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
-    PROJECT_BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+    OPP_BOM_LIST_PAGE = BreadcrumbChildren(_('Opportunity BOM list'), 'OpportunityBOMList')
+    OPP_BOM_CREATE_PAGE = BreadcrumbChildren(_('Opportunity BOM create'), 'OpportunityBOMCreate')
+    OPP_BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    OPP_BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
@@ -1026,10 +1026,10 @@ class BreadcrumbView:
     BOM_DETAIL_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     BOM_UPDATE_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
-    PROJECT_BOM_LIST_PAGE = [BreadcrumbItem.PROJECT_BOM_LIST_PAGE]
-    PROJECT_BOM_CREATE_PAGE = PROJECT_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
-    PROJECT_BOM_DETAIL_PAGE = PROJECT_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
-    PROJECT_BOM_UPDATE_PAGE = PROJECT_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    OPP_BOM_LIST_PAGE = [BreadcrumbItem.OPP_BOM_LIST_PAGE]
+    OPP_BOM_CREATE_PAGE = OPP_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    OPP_BOM_DETAIL_PAGE = OPP_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    OPP_BOM_UPDATE_PAGE = OPP_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     PRINTER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PRINTER_CONFIG_LIST_PAGE]
     PRINTER_CONFIG_LIST_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]

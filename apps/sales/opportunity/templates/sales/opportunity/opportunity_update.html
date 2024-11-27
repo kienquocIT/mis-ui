@@ -6,33 +6,7 @@
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
     <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
-    <style>
-        @media screen and (max-width: 991px) {
-            #group-general-info-opp {
-                border-right: unset !important;
-            }
-        }
-        .row-error-disabled {
-            position: relative;
-        }
-
-        .row-error-disabled::after {
-            content: "{% trans 'This application has been disabled for you or cannot be found!' %}";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 14px;
-            color: #fff;
-        }
-        .custom-layout .container-fluid .row:nth-child(2) > * {
-            width: 100% !important;
-        }
-    </style>
+    <style></style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -240,58 +214,6 @@
     {{ data.role_customer|json_script:'data_role_customer' }}
 
     <div class="modal fade" id="modalEditMember" tabindex="-1" role="dialog" aria-labelledby="modalEditMember" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
-                    <button
-                            type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                    >{% trans 'Cancel' %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endblock %}
-{% block dataHiddenGroup %}
-    <script
-            type="text" id="url-factory"
-            data-task_detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
-            data-task_list="{% url 'OpportunityTaskListAPI' %}"
-            data-url-product="{% url 'ProductForSaleListAPI' %}"
-            data-url-product-category="{% url 'ProductCategoryListAPI' %}"
-            data-url-tax="{% url 'TaxListAPI' %}"
-            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
-            data-url-competitor="{% url 'AccountForSaleListAPI' %}"
-            data-url-contact="{% url 'ContactListAPI' %}"
-            data-url-emp-detail="{% url 'EmployeeDetail' pk=0 %}"
-            data-url-config="{% url 'OpportunityConfigAPI' %}"
-            data-url-related-quotation="{% url 'QuotationDetail' pk=0 %}"
-            data-url-related-sale-order="{% url 'SaleOrderDetail' pk=0 %}"
-            data-url-member-detail="{% url 'OpportunityMemberDetailAPI' pk=0 %}"
-            data-url-delete-member="{% url 'OpportunityDeleteMemberAPI' pk=0 %}"
-            data-url-member-list="{% url 'OpportunityMemberListAPI' pk=0 %}"
-
-            data-url-account-list="{% url 'AccountListAPI' %}"
-            data-url-contact-list="{% url 'ContactListAPI' %}"
-            data-url-opp-list="{% url 'OpportunityListAPI' %}"
-            data-url-employee-list="{% url 'EmployeeListAPI' %}"
-
-            data-url-config-stage="{% url 'OpportunityConfigStageListAPI' %}"
-
-            data-url-quotation-detail="{% url 'QuotationDetail' pk=0 %}"
-            data-url-sale-order-detail="{% url 'SaleOrderDetail' pk=0 %}"
-            data-url-advance-detail="{% url 'AdvancePaymentDetail' pk=0 %}"
-            data-url-payment-detail="{% url 'PaymentDetail' pk=0 %}"
-            data-url-return-detail="{% url 'ReturnAdvanceDetail' pk=0 %}"
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">

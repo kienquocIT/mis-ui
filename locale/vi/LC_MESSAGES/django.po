@@ -9743,3 +9743,7 @@ msgstr "Bị hủy bỏ"
 #
 msgid "Detail Call Log"
 msgstr "Chi tiết cuộc gọi"
+
+#
+msgid "Exceed undelivered quantity"
+msgstr "Vượt quá số lượng chưa giao"

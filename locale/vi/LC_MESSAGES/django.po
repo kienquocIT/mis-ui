@@ -559,7 +559,7 @@ msgid "Department of the employee"
 msgstr "Phòng ban của nhân viên"
 
 #
-msgid "Date of Birthday"
+msgid "Date of birth"
 msgstr "Ngày Sinh"
 
 #
@@ -9759,3 +9759,7 @@ msgstr "Danh sách thầu"
 #
 msgid "Bidding create"
 msgstr "Tạo thầu"
+
+#
+msgid "Employee info"
+msgstr "Thông tin nhân viên"

@@ -193,3 +193,11 @@ msgstr "Ngày ký"
 #
 msgid "Effected date"
 msgstr "Ngày hiệu lực"
+
+#
+msgid "Choose gender"
+msgstr "Chọn giới tính"
+
+#
+msgid "Choose Marital status"
+msgstr "Chọn tình trạng hôn nhân"

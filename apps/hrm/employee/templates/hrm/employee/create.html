@@ -178,7 +178,7 @@
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label" for="employee-dob">{% trans 'Date of Birthday' %}</label>
+                                <label class="form-label" for="employee-dob">{% trans 'Date of birth' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input class="form-control pl-2" id="employee-dob" type="text" name="dob"/>
                                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
@@ -227,7 +227,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="employee-gender">{% trans 'Gender' %}</label>
                                 <select class="form-select" name="gender" id="employee-gender">
-                                    <option value="" selected disabled>{% trans 'Choice gender' %}...</option>
+                                    <option value="" selected disabled>{% trans 'Choose gender' %}...</option>
                                     {% for key, value in data.gender %}
                                         <option value="{{ key }}">{{ value }}</option>
                                     {% endfor %}
@@ -238,7 +238,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="employee-mstt">{% trans 'Marital status' %}</label>
                                 <select class="form-select" name="marital_status" id="employee-mstt">
-                                    <option value="" selected disabled>{% trans 'Choice Marital status' %}...</option>
+                                    <option value="" selected disabled>{% trans 'Choose Marital status' %}...</option>
                                     {% for key, value in data.marital %}
                                         <option value="{{ key }}">{{ value }}</option>
                                     {% endfor %}

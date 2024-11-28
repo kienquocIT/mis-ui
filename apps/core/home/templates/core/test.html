@@ -3,6 +3,11 @@
 {% load static %}
 
 {% block pageContent %}
+    <div class="my-20">
+        <select id="sel1" class="form-select" data-url="{% url 'EmployeeListAPI' %}" data-keyText="full_name" data-keyResp="employee_list"></select>
+    </div>
+
+
     <p id="url-x">{% url 'TestAPI' %}</p>
     <button id="btn-x">Click me!</button>
     {% include 'extends/files/all.html' with id="attachment" %}
@@ -12,6 +17,10 @@
 {% block jsFooter %}
     <script>
         $(document).ready(function () {
+            $('#sel1').initSelect2().on('change', function(event, data){
+                console.log('event:', event, data, $(this).val());
+            })
+
             $('#btn-x').on('click', function () {
                 $.fn.callAjax2({
                     url: $('#url-x').text(),

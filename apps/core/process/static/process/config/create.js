@@ -58,8 +58,8 @@ $(document).ready(function () {
     new SetupFormSubmit(frm$).validate({
         submitHandler: function (form, event) {
             const frm = new SetupFormSubmit($(form));
-            const stages = clsProcess.getFullStages();
-            if (stages) {
+            const config = clsProcess.getFullConfig();
+            if (config) {
                 $.fn.callAjax2({
                     url: $(form).data('url'),
                     method: 'POST',
@@ -67,7 +67,7 @@ $(document).ready(function () {
                         ...frm.dataForm,
                         'apply_start': frm.dataForm?.['appy_start'] ? frm.dataForm['appy_start'] : null,
                         'apply_finish': frm.dataForm?.['apply_finish'] ? frm.dataForm['apply_finish'] : null,
-                        'stages': stages,
+                        ...config,
                     },
                     isLoading: true,
                     isNotify: true,

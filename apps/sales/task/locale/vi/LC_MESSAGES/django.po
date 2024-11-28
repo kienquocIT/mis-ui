@@ -18,17 +18,5 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
-msgid "Create New Call Log"
-msgstr "Tạo mới nhật ký cuộc gọi"
-
-#
-msgid "Contents"
-msgstr "Nội dung"
-
-#
-msgid "Call Log list"
-msgstr "Danh sách nhật ký"
-
-#
-msgid "Process Stage Application"
-msgstr "Ứng dụng trong giai đoạn của tiến trình"
+msgid "Task parent"
+msgstr "Giao việc cha"

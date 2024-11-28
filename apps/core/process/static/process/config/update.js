@@ -50,8 +50,8 @@ $(document).ready(function () {
                     new SetupFormSubmit(frm$).validate({
                         submitHandler: function (form, event) {
                             const frm = new SetupFormSubmit($(form));
-                            const stages = clsProcess.getFullStages();
-                            if (stages){
+                            const config = clsProcess.getFullConfig();
+                            if (config){
                                 $.fn.callAjax2({
                                     url: $(form).data('url'),
                                     method: 'PUT',
@@ -59,7 +59,7 @@ $(document).ready(function () {
                                         ...frm.dataForm,
                                         'apply_start': frm.dataForm?.['appy_start'] ? frm.dataForm['appy_start'] : null,
                                         'apply_finish': frm.dataForm?.['apply_finish'] ? frm.dataForm['apply_finish'] : null,
-                                        'stages': stages,
+                                        ...config,
                                     }
                                 }).then(resp => {
                                     const data = $.fn.switcherResp(resp);
@@ -95,6 +95,14 @@ $(document).ready(function () {
                             clsProcess.init();
                             clsProcess.checkExistDataWithApplication();
                         }
+                    })
+                    const theme$ = $('#inp-theme');
+                    const appStyleSize$ = $('#inp-app-style');
+                    theme$.on('change', function(){
+                        clsProcess.applyThemes(`${$(theme$).val()},${appStyleSize$.val()}`)
+                    });
+                    appStyleSize$.on('change', function(){
+                        clsProcess.applyThemes(`${$(theme$).val()},${appStyleSize$.val()}`)
                     })
                 }
             }

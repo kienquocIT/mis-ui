@@ -9745,5 +9745,21 @@ msgid "Detail Call Log"
 msgstr "Chi tiết cuộc gọi"
 
 #
+msgid "Bidding"
+msgstr "Thầu"
+
+#
+msgid "Bidding Status"
+msgstr "Trạng thái thầu"
+
+#
+msgid "Bidding list"
+msgstr "Danh sách thầu"
+
+#
+msgid "Bidding create"
+msgstr "Tạo thầu"
+
+#
 msgid "Exceed undelivered quantity"
 msgstr "Vượt quá số lượng chưa giao"

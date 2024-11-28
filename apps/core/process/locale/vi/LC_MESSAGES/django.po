@@ -22,6 +22,10 @@ msgid "Process"
 msgstr "Tiến trình"
 
 #
+msgid "Process - Stages"
+msgstr "Tiến trình - Giai đoạn"
+
+#
 msgid "Process configuration"
 msgstr "Cấu hình Tiến trình"
 

@@ -32,6 +32,7 @@ class PaymentCreate(View):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_PAYMENT
         return {
             'data': {'employee_current': request.user.employee_current_data},
+            'app_id': '1010563f-7c94-42f9-ba99-63d5d26a1aca',
             'list_from_app': 'cashoutflow.payment.create',
             'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-create-payment'

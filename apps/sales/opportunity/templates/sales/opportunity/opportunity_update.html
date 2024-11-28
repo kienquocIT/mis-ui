@@ -6,33 +6,7 @@
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
     <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
-    <style>
-        @media screen and (max-width: 991px) {
-            #group-general-info-opp {
-                border-right: unset !important;
-            }
-        }
-        .row-error-disabled {
-            position: relative;
-        }
-
-        .row-error-disabled::after {
-            content: "{% trans 'This application has been disabled for you or cannot be found!' %}";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 14px;
-            color: #fff;
-        }
-        .custom-layout .container-fluid .row:nth-child(2) > * {
-            width: 100% !important;
-        }
-    </style>
+    <style></style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -293,6 +267,7 @@
             data-url-payment-detail="{% url 'PaymentDetail' pk=0 %}"
             data-url-return-detail="{% url 'ReturnAdvanceDetail' pk=0 %}"
             data-url-bom-detail="{% url "OpportunityBOMDetail" '0' %}"
+            data-url-bidding-detail="{% url "BiddingDetail" pk=0%}"
     ></script>
     <script
             type="text" id="trans-factory"
@@ -323,6 +298,7 @@
             data-cancel-quo="{% trans "Please cancel current quotation" %}"
             data-cancel-so="{% trans "Please cancel current sale order" %}"
             data-cancel-quo-so="{% trans "Please cancel current quotation, sale order" %}"
+            data-trans-bidding="{% trans "Bidding" %}"
     ></script>
     <input
             type="text"

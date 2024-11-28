@@ -1,6 +1,10 @@
 $(document).ready(function () {
      WFRTControl.setWFInitialData('bidding');
 
+     const urlParams = new URLSearchParams(window.location.search)
+
+
+
     let formSubmit = $('#frm_bidding_create');
     let transScript = $('#trans-script')
 
@@ -28,6 +32,31 @@ $(document).ready(function () {
             name: 'attachment',
             enable_edit: true,
         });
+        let opportunity = urlParams.get('opportunity') ? JSON.parse(decodeURIComponent(urlParams.get('opportunity'))) : null
+        let employee_inherit = urlParams.get('employee_inherit') ? JSON.parse(decodeURIComponent(urlParams.get('employee_inherit'))) : null
+
+        if (employee_inherit && opportunity) {
+            new $x.cls.bastionField({
+                has_opp: true,
+                has_inherit: true,
+                data_inherit: [{
+                    "id": employee_inherit?.['id'],
+                    "full_name": employee_inherit?.['full_name'] || '',
+                    "first_name": employee_inherit?.['first_name'] || '',
+                    "last_name": employee_inherit?.['last_name'] || '',
+                    "email": employee_inherit?.['email'] || '',
+                    "is_active": employee_inherit?.['is_active'] || false,
+                    "selected": true,
+                }],
+                data_opp: [{
+                    "id": opportunity?.['id'] || '',
+                    "title": opportunity?.['title'] || '',
+                    "code": opportunity?.['code'] || '',
+                    "selected": true,
+                }]
+
+            }).init();
+        }
         BiddingDataTableHandle.dataTableDocument({}, false);
         BiddingDataTableHandle.dataTableVenture({}, false);
         BiddingDataTableHandle.dataTableFile();

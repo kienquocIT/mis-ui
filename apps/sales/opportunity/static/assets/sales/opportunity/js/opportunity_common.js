@@ -1093,6 +1093,7 @@ class OpportunityActivity {
                             'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
                             'task.opportunitytask': transEle.attr('data-trans-task'),
                             'production.bom': transEle.attr('data-trans-bom'),
+                            'bidding.bidding': transEle.attr('data-trans-bidding'),
                         }
                         let appMapBadge = {
                             'quotation.quotation': "badge-primary badge-outline",
@@ -1102,6 +1103,7 @@ class OpportunityActivity {
                             'cashoutflow.returnadvance': "badge-purple badge-outline",
                             'task.opportunitytask': "badge-secondary badge-outline",
                             'production.bom': "badge-orange badge-outline",
+                            'bidding.bidding': "badge-info badge-outline",
                         }
                         let typeMapActivity = {
                             1: transEle.attr('data-trans-task'),
@@ -1146,6 +1148,7 @@ class OpportunityActivity {
                             'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
                             'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
                             'production.bom': urlFactory.attr('data-url-bom-detail'),
+                            'bidding.bidding': urlFactory.attr('data-url-bidding-detail'),
                         }
                         let link = '';
                         let title = '';

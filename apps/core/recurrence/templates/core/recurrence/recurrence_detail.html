@@ -252,7 +252,8 @@
     <input
         type="text"
         id="app-urls-factory"
-        data-sale-order="{% url 'SORecurrenceListAPI' %}"
+        data-so-recurrence="{% url 'SORecurrenceListAPI' %}"
+        data-ar-recurrence="{% url 'ARInvoiceRecurrenceListAPI' %}"
     >
     {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}

@@ -5,9 +5,13 @@ $(document).ready(function () {
     let $urls = $('#app-urls-factory');
     let appMapUrlRecurrence = {
         "saleorder.saleorder": {
-            'url': $urls.attr('data-sale-order'),
+            'url': $urls.attr('data-so-recurrence'),
             'keyResp': "sale_order_recurrence",
         },
+        "arinvoice.arinvoice": {
+            'url': $urls.attr('data-ar-recurrence'),
+            'keyResp': "ar_invoice_recurrence",
+        }
     }
     let appMapUrl = {
         'saleorder.saleorder': {

@@ -57,8 +57,12 @@ class RecurrenceLoadDataHandle {
     ];
     static appMapUrl = {
         'saleorder.saleorder': {
-            'url': RecurrenceLoadDataHandle.$urls.attr('data-sale-order'),
+            'url': RecurrenceLoadDataHandle.$urls.attr('data-so-recurrence'),
             'keyResp': "sale_order_recurrence",
+        },
+         'arinvoice.arinvoice': {
+            'url': RecurrenceLoadDataHandle.$urls.attr('data-ar-recurrence'),
+            'keyResp': "ar_invoice_recurrence",
         },
     }
 

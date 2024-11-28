@@ -372,7 +372,7 @@ $(async function () {
                     }
                 }
                 for (let deliveryData of prod_data?.['delivery_data']) {
-                    if (pwh?.['sale_order']?.['id'] === deliveryData?.['sale_order']) {
+                    if (pwh?.['sale_order']?.['id'] === deliveryData?.['sale_order'] && pwh?.['warehouse']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
                         pwh['picked'] = deliveryData?.['stock'];
                     }
                 }

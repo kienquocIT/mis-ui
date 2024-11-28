@@ -9759,3 +9759,7 @@ msgstr "Danh sách thầu"
 #
 msgid "Bidding create"
 msgstr "Tạo thầu"
+
+#
+msgid "Exceed undelivered quantity"
+msgstr "Vượt quá số lượng chưa giao"

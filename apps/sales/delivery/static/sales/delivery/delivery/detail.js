@@ -372,7 +372,7 @@ $(async function () {
                     }
                 }
                 for (let deliveryData of prod_data?.['delivery_data']) {
-                    if (pwh?.['sale_order']?.['id'] === deliveryData?.['sale_order']) {
+                    if (pwh?.['sale_order']?.['id'] === deliveryData?.['sale_order'] && pwh?.['warehouse']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
                         pwh['picked'] = deliveryData?.['stock'];
                     }
                 }
@@ -515,12 +515,12 @@ $(async function () {
                                         </div>`;
                             }
                             let checked = '';
-                            let disabled = '';
+                            let hidden = '';
                             if (row?.['is_checked'] === true) {
                                 checked = 'checked';
                             }
                             if (row?.['product']?.['general_traceability_method'] === 0) {
-                                disabled = 'disabled';
+                                hidden = 'hidden';
                             }
                             return `<div class="form-check form-check-lg">
                                         <input
@@ -531,7 +531,7 @@ $(async function () {
                                             data-id="${row?.['id']}"
                                             data-row="${dataRow}"
                                             ${checked}
-                                            ${disabled}
+                                            ${hidden}
                                         >
                                         <span class="badge badge-soft-success">${row?.['warehouse']?.['code']}</span>
                                         <label class="form-check-label" for="pw-${row?.['id'].replace(/-/g, "")}">${row?.['warehouse']?.['title']}</label>

@@ -1956,6 +1956,7 @@ class GRDataTableHandle {
                                     class="form-control mask-money table-row-price" 
                                     value="${row?.['product_unit_price'] ? row?.['product_unit_price'] : 0}"
                                     data-return-type="number"
+                                    readonly
                                 >`;
                     }
                 },

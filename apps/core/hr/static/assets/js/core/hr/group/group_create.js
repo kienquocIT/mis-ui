@@ -2,16 +2,18 @@ $(function () {
     $(document).ready(function () {
         let frm = $('#frm_group_create');
         let dataGroupEmployee = $('#data-group_employee');
-        GroupLoadDataHandle.loadDataCommon(frm);
+        GroupLoadDataHandle.loadDataCommon();
 
-        $(document).on('change', '#select-box-group-level', function () {
+        GroupLoadDataHandle.boxGroupLevel.on('change', function () {
             if ($(this).val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx($(this), $(this).val());
                 if (dataSelected) {
-                    $('#reference-group-title').val(dataSelected.description);
-                    $('#first-manager-system-title').val(dataSelected.first_manager_description);
-                    $('#second-manager-system-title').val(dataSelected.second_manager_description);
-                    GroupLoadDataHandle.loadGroupParentList({}, dataSelected.level);
+                    $('#reference-group-title').val(dataSelected?.['description'] ? dataSelected?.['description'] : "");
+                    $('#first-manager-system-title').val(dataSelected?.['first_manager_description'] ? dataSelected?.['first_manager_description'] : "");
+                    $('#second-manager-system-title').val(dataSelected?.['second_manager_description'] ? dataSelected?.['second_manager_description'] : "");
+                    if (dataSelected?.['level']) {
+                        GroupLoadDataHandle.loadInitS2(GroupLoadDataHandle.boxGroupParent, [], {'group_level__level__lt': parseInt(dataSelected?.['level'])});
+                    }
                 }
             }
         });

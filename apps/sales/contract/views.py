@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.models import AnonymousUser
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -46,8 +47,11 @@ class ContractApprovalCreate(View):
         breadcrumb='CONTRACT_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
         ctx = {
-            'employee_current': request.user.employee_current_data,
+            'employee_current': employee_current,
             'input_mapping_properties': InputMappingProperties.CONTRACT_APPROVAL_DATA_MAP,
             'form_id': 'frm_contract_create',
             'list_from_app': 'contract.contractapproval.create',
@@ -101,9 +105,12 @@ class ContractApprovalUpdate(View):
         breadcrumb='CONTRACT_UPDATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
         ctx = {
             'data': {'doc_id': pk},
-            'employee_current': request.user.employee_current_data,
+            'employee_current': employee_current,
             'input_mapping_properties': InputMappingProperties.CONTRACT_APPROVAL_DATA_MAP,
             'form_id': 'frm_contract_create',
             'list_from_app': 'contract.contractapproval.edit',

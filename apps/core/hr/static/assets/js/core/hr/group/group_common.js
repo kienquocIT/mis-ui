@@ -3,6 +3,7 @@ class GroupLoadDataHandle {
     static boxGroupParent = $('#select-box-group');
     static box1stManager = $('#select-box-first-manager');
     static box2ndManager = $('#select-box-second-manager');
+    static $eleGrEmp = $('#data-group_employee');
     static $trans = $('#app-trans-factory');
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -28,7 +29,18 @@ class GroupLoadDataHandle {
         return true;
     };
 
-    static loadDataCommon() {
+    static loadCssToDtb(tableID) {
+        let tableIDWrapper = tableID + '_wrapper';
+        let tableWrapper = document.getElementById(tableIDWrapper);
+        if (tableWrapper) {
+            let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+            if (headerToolbar) {
+                headerToolbar.classList.add('hidden');
+            }
+        }
+    };
+
+    static loadInit() {
         GroupLoadDataHandle.loadInitS2(GroupLoadDataHandle.boxGroupLevel);
         GroupLoadDataHandle.loadInitS2(GroupLoadDataHandle.boxGroupParent);
         GroupLoadDataHandle.loadInitS2(GroupLoadDataHandle.box1stManager, [], {}, null, true, {'res1': 'code', 'res2': 'full_name'});
@@ -58,7 +70,23 @@ class GroupLoadDataHandle {
         for (let emp of data?.['group_employee']) {
             emp_id_list.push(emp.id);
         }
-        $('#data-group_employee').val(JSON.stringify(emp_id_list));
+        GroupLoadDataHandle.$eleGrEmp.val(JSON.stringify(emp_id_list));
+    };
+
+    static loadDetailEmpChecked() {
+        let $table = $('#datable_employee_list');
+        if (GroupLoadDataHandle.$eleGrEmp.val()) {
+            let employee_id_checked_list = JSON.parse(GroupLoadDataHandle.$eleGrEmp.val());
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row.querySelector('.table-row-checkbox')) {
+                    if (employee_id_checked_list.includes(row.querySelector('.table-row-checkbox').id)) {
+                        row.querySelector('.table-row-checkbox').checked = true;
+                    }
+                }
+            });
+        }
+        return true;
     };
 
 // load data employee show
@@ -79,7 +107,7 @@ class GroupLoadDataHandle {
                 });
             }
         });
-        $('#data-group_employee').val(JSON.stringify(checked_id_list));
+        GroupLoadDataHandle.$eleGrEmp.val(JSON.stringify(checked_id_list));
         tableShow.DataTable().clear().draw();
         tableShow.DataTable().rows.add(data_emp_show).draw();
     }
@@ -89,14 +117,15 @@ class GroupLoadDataHandle {
 // FUNCTIONS COMMON
 // load data employee after delete row
 function deleteEmployeeShow(delID) {
-    let table = document.getElementById('datable_employee_list');
-    let rowsChecked = table.querySelectorAll('.table-row-checkbox:checked');
-    for (let item of rowsChecked) {
-        if (item.id === delID) {
-            item.checked = false;
-            break;
+    let $table = $('#datable_employee_list');
+    $table.DataTable().rows().every(function () {
+        let row = this.node();
+        if (row.querySelector('.table-row-checkbox')) {
+            if (row.querySelector('.table-row-checkbox').id === delID) {
+                row.querySelector('.table-row-checkbox').checked = false;
+            }
         }
-    }
+    });
     GroupLoadDataHandle.loadDataEmployeeShow();
 }
 
@@ -105,7 +134,6 @@ function dataTableEmployee() {
     let $table = $('#datable_employee_list');
     let frm = new SetupFormSubmit($table);
     $table.DataTableDefault({
-        // useDataServer: true,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
@@ -117,8 +145,6 @@ function dataTableEmployee() {
                 throw Error('Call data raise errors.')
             },
         },
-        // paging: false,
-        // info: false,
         columnDefs: [],
         columns: [
             {
@@ -170,37 +196,29 @@ function dataTableEmployee() {
                 targets: 6,
                 render: (data, type, row) => {
                     let role = JSON.stringify(row?.['role']).replace(/"/g, "&quot;");
-                    let dataGroupEmployee = $('#data-group_employee');
+                    let checked = "";
                     let employee_id_checked_list = [];
-                    if (dataGroupEmployee.val()) {
-                        employee_id_checked_list = JSON.parse(dataGroupEmployee.val());
+                    if (GroupLoadDataHandle.$eleGrEmp.val()) {
+                        employee_id_checked_list = JSON.parse(GroupLoadDataHandle.$eleGrEmp.val());
                     }
-                    if (!employee_id_checked_list.includes(row?.['id'])) {
-                        return `<div class="form-check form-check-lg">
+                    if (employee_id_checked_list.includes(row?.['id'])) {
+                        checked = "checked";
+                    }
+                    return `<div class="form-check form-check-lg">
                                 <input 
                                     type="checkbox" 
                                     class="form-check-input table-row-checkbox" 
                                     id="${row?.['id']}"
                                     data-title="${row?.['full_name']}"
                                     data-role="${role}"
+                                    ${checked}
                                 >
-                            </div>`
-                    } else {
-                        return `<div class="form-check form-check-lg">
-                                <input 
-                                    type="checkbox" 
-                                    class="form-check-input table-row-checkbox" 
-                                    id="${row?.['id']}"
-                                    data-title="${row?.['full_name']}"
-                                    data-role="${role}"
-                                    checked
-                                >
-                            </div>`
-                    }
+                            </div>`;
                 }
             },
         ],
         drawCallback: function () {
+            GroupLoadDataHandle.loadDetailEmpChecked();
         },
     });
 }
@@ -216,18 +234,21 @@ function dataTableEmployeeShow(data) {
         columns: [
             {
                 targets: 0,
+                width: '5%',
                 render: (data, type, row, meta) => {
                     return `<span class="table-row-order">${(meta.row + 1)}</span>`
                 }
             },
             {
                 targets: 1,
+                width: '20%',
                 render: (data, type, row) => {
                     return `<span class="table-row-title">${row?.['full_name']}</span>`
                 }
             },
             {
                 targets: 2,
+                width: '40%',
                 render: (data, type, row) => {
                     let result = [];
                     row.role.map(item => item.title ? result.push(`<span class="badge badge-light badge-outline">` + item.title + `</span>`) : null);
@@ -236,6 +257,7 @@ function dataTableEmployeeShow(data) {
             },
             {
                 targets: 3,
+                width: '5%',
                 render: (data, type, row) => {
                     let form = $('#frm_group_create');
                     if (form.attr('data-method') !== "GET") {
@@ -246,6 +268,9 @@ function dataTableEmployeeShow(data) {
                 }
             },
         ],
-        drawCallback: function () {},
+        drawCallback: function () {
+            // add css to Dtb
+            GroupLoadDataHandle.loadCssToDtb('datable_employee_show_list');
+        },
     });
 }

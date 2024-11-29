@@ -1,10 +1,6 @@
 $(document).ready(function () {
      WFRTControl.setWFInitialData('bidding');
 
-     const urlParams = new URLSearchParams(window.location.search)
-
-
-
     let formSubmit = $('#frm_bidding_create');
     let transScript = $('#trans-script')
 
@@ -32,31 +28,60 @@ $(document).ready(function () {
             name: 'attachment',
             enable_edit: true,
         });
-        let opportunity = urlParams.get('opportunity') ? JSON.parse(decodeURIComponent(urlParams.get('opportunity'))) : null
-        let employee_inherit = urlParams.get('employee_inherit') ? JSON.parse(decodeURIComponent(urlParams.get('employee_inherit'))) : null
+        const {
+            opp_id,
+            opp_title,
+            opp_code,
+            process_id,
+            process_title,
+            process_stage_app_id,
+            process_stage_app_title,
+            inherit_id,
+            inherit_title,
+        } = $x.fn.getManyUrlParameters([
+            'opp_id', 'opp_title', 'opp_code',
+            'process_id', 'process_title',
+            'process_stage_app_id', 'process_stage_app_title',
+            'inherit_id', 'inherit_title',
+        ])
 
-        if (employee_inherit && opportunity) {
-            new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                data_inherit: [{
-                    "id": employee_inherit?.['id'],
-                    "full_name": employee_inherit?.['full_name'] || '',
-                    "first_name": employee_inherit?.['first_name'] || '',
-                    "last_name": employee_inherit?.['last_name'] || '',
-                    "email": employee_inherit?.['email'] || '',
-                    "is_active": employee_inherit?.['is_active'] || false,
+        new $x.cls.bastionField({
+            has_opp: true,
+            has_inherit: true,
+            has_process: true,
+            has_prj: true,
+            data_opp: $x.fn.checkUUID4(opp_id) ? [
+                {
+                    "id": opp_id,
+                    "title": $x.fn.decodeURI(opp_title),
+                    "code": $x.fn.decodeURI(opp_code),
                     "selected": true,
-                }],
-                data_opp: [{
-                    "id": opportunity?.['id'] || '',
-                    "title": opportunity?.['title'] || '',
-                    "code": opportunity?.['code'] || '',
+                }
+            ] : [],
+            data_process: $x.fn.checkUUID4(process_id) ? [
+                {
+                    "id": process_id,
+                    "title": process_title,
                     "selected": true,
-                }]
-
-            }).init();
-        }
+                }
+            ] : [],
+            data_process_stage_app: $x.fn.checkUUID4(process_stage_app_id) ? [
+                {
+                    "id": process_stage_app_id,
+                    "title": process_stage_app_title,
+                    "selected": true,
+                }
+            ] : [],
+            data_inherit: $x.fn.checkUUID4(inherit_id) ? [
+                {
+                    "id": inherit_id,
+                    "full_name": inherit_title,
+                    "selected": true,
+                }
+            ] : [],
+            opp_call_trigger_change: true,
+            inherit_call_trigger_change: true
+        }).init();
         BiddingDataTableHandle.dataTableDocument({}, false);
         BiddingDataTableHandle.dataTableVenture({}, false);
         BiddingDataTableHandle.dataTableFile();
@@ -215,7 +240,6 @@ $(document).ready(function () {
     })
 
     let validator = SetupFormSubmit.call_validate(formSubmit, {
-
         onsubmit: true,
         submitHandler: function (form, event) {
             let _form = new SetupFormSubmit(formSubmit);

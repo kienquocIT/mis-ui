@@ -1430,7 +1430,16 @@ $(document).ready(function () {
                     window.open(url, '_blank');
                 })
                 $('#dropdown-menu-relate-app #create-bidding-shortcut').on('click', function () {
-                    let url = $(this).attr('data-url') + `?opportunity=${$(this).attr('data-opportunity')}&&employee_inherit=${$(this).attr('data-employee-inherit')}`
+                    let url = $(this).attr('data-url')
+                        + `?opp_id=${$(this).attr('data-opp-id')}`
+                        + `&&opp_title=${$(this).attr('data-opp-title')}`
+                        + `&&opp_code=${$(this).attr('data-opp-code')}`
+                        + `&&process_id=${$(this).attr('data-employee-inherit')}`
+                        + `&&process_title=${$(this).attr('data-employee-inherit')}`
+                        + `&&process_stage_app_id=${$(this).attr('data-employee-inherit')}`
+                        + `&&process_stage_app_title=${$(this).attr('data-employee-inherit')}`
+                        + `&&inherit_id=${$(this).attr('data-inherit-id')}`
+                        + `&&inherit_title=${$(this).attr('data-inherit-fullname')}`
                     window.open(url, '_blank');
                 })
 
@@ -1595,15 +1604,18 @@ $(document).ready(function () {
                             let opp_list = results[0];
                             for (let opp of opp_list) {
                                 if (opp?.['id'] === dataInitSaleCode?.['id']) {
-                                    let opportunity = encodeURIComponent(JSON.stringify({
-                                        'id': opp?.['id'],
-                                        'code': opp?.['code'],
-                                        'title': opp?.['title']
-                                    }));
-                                    let employee_inherit = encodeURIComponent(JSON.stringify(opp?.['sale_person']));
+                                    debugger
+                                    let opp_id = opp?.['id'];
+                                    let opp_title = opp?.['title'];
+                                    let opp_code = opp?.['code'];
+                                    let inherit_id = opp?.['sale_person']?.['id'];
+                                    let inherit_fullname = opp?.['sale_person']?.['full_name'];
                                     $('#create-bidding-shortcut').removeClass('disabled')
-                                    $('#create-bidding-shortcut').attr('data-opportunity', opportunity)
-                                    $('#create-bidding-shortcut').attr('data-employee-inherit', employee_inherit)
+                                    $('#create-bidding-shortcut').attr('data-opp-id', opp_id)
+                                    $('#create-bidding-shortcut').attr('data-opp-title', opp_title)
+                                    $('#create-bidding-shortcut').attr('data-opp-code', opp_code)
+                                    $('#create-bidding-shortcut').attr('data-inherit-id', inherit_id)
+                                    $('#create-bidding-shortcut').attr('data-inherit-fullname', inherit_fullname)
                                     break;
                                 }
                             }

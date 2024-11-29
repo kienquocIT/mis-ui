@@ -263,7 +263,9 @@ class BiddingLoadDataHandle {
                 "title": data?.['opportunity']?.['title'] || '',
                 "code": data?.['opportunity']?.['code'] || '',
                 "selected": true,
-            }]
+            }],
+            opp_call_trigger_change: true,
+            inherit_call_trigger_change: true
         }).init();
         $('#bid-name').val(data?.['title']);
         BiddingLoadDataHandle.$customerEle.val(data?.['customer']?.['title'])

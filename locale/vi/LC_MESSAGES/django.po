@@ -8502,7 +8502,7 @@ msgstr "Đã nhập"
 
 #
 msgid "This time"
-msgstr "Nhập"
+msgstr "Lần này"
 
 #
 msgid "Deliver"
@@ -9763,3 +9763,11 @@ msgstr "Tạo thầu"
 #
 msgid "Exceed undelivered quantity"
 msgstr "Vượt quá số lượng chưa giao"
+
+#
+msgid "Planned quantity"
+msgstr "SL theo kế hoạch"
+
+#
+msgid "Requested quantity"
+msgstr "SL đã yêu cầu"

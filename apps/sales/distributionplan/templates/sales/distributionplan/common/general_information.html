@@ -1,6 +1,9 @@
 {% load i18n %}
 
 <div class="row">
+    <div class="col-12 mb-2">
+        <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'General Information' %}</h5>
+    </div>
     <div class="col-12 col-md-12 col-lg-6">
         <div class="form-group">
             <label for="title" class="form-label required">{% trans 'Title' %}</label>
@@ -19,7 +22,7 @@
             <select class="form-select select2" multiple id="suppliers" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
         </div>
     </div>
-    <div class="col-12 col-md-8 col-lg-3">
+    <div class="col-6 col-md-4 col-lg-2">
         <div class="form-group">
             <label for="start-date" class="form-label required">{% trans 'Start date' %}</label>
             <div class="input-group mb-3">
@@ -30,10 +33,21 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-md-4 col-lg-3">
+    <div class="col-6 col-md-4 col-lg-2">
         <div class="form-group">
             <label for="no-of-months" class="form-label required">{% trans 'No of months' %}</label>
-            <input min="1" type="number" class="form-control" id="no-of-months">
+            <input min="1" type="number" class="form-control" id="no-of-months" value="1">
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="form-group">
+            <label for="end-date" class="form-label">{% trans 'End date' %}</label>
+            <div class="input-group mb-3">
+                <span class="input-affix-wrapper">
+                    <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                    <input disabled readonly type="text" class="form-control" id="end-date">
+                </span>
+            </div>
         </div>
     </div>
 </div>

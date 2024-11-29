@@ -8,6 +8,7 @@ const suppliers_box = $('#suppliers')
 const no_of_months_box = $('#no-of-months')
 const no_month_box = $('.no-month')
 const start_date_box = $('#start-date')
+const end_date_box = $('#end-date')
 const product_price_box = $('#product-price')
 const break_event_point_box = $('#break-event-point')
 const break_event_point_all_box = $('#break-event-point-all')
@@ -31,6 +32,8 @@ start_date_box.daterangepicker({
     drops: 'up',
     autoApply: true,
 });
+
+end_date_box.val(findEndDate(start_date_box.val(), parseFloat(no_of_months_box.val())))
 
 function loadFixedCostsTable(data_list=[], option='create') {
     fixed_costs_table.DataTable().clear().destroy()
@@ -204,11 +207,40 @@ function deleteRow(table, currentRow) {
     row.remove().draw();
 }
 
+function findEndDate(startDate, n) {
+    // Tách ngày, tháng, năm từ chuỗi ngày đầu vào
+    const [day, month, year] = startDate.split("/").map(Number);
+
+    // Tạo đối tượng Date từ ngày đầu vào
+    const date = new Date(year, month - 1, day);
+
+    // Thêm số tháng
+    date.setMonth(date.getMonth() + n);
+
+    // Xử lý trường hợp vượt quá ngày của tháng (ví dụ 31/01 + 1 tháng -> 02/03)
+    if (date.getDate() < day) {
+        date.setDate(0); // Lùi về ngày cuối cùng của tháng trước
+    }
+
+    // Định dạng lại ngày kết quả thành DD/MM/YYYY
+    const resultDay = String(date.getDate()).padStart(2, '0');
+    const resultMonth = String(date.getMonth() + 1).padStart(2, '0');
+    const resultYear = date.getFullYear();
+
+    return `${resultDay}/${resultMonth}/${resultYear}`;
+}
+
 no_of_months_box.on('change', function () {
-    no_month_box.text(no_of_months_box.val() ? no_of_months_box.val() : 0)
-    expected_number_all_box.val(expected_number_box.val() ? parseFloat(expected_number_box.val()) * parseFloat(no_of_months_box.val()) : 0)
-    calculate_break_event_point()
-    calculate_net_income()
+    if (no_of_months_box.val()) {
+        no_month_box.text(no_of_months_box.val() ? no_of_months_box.val() : 0)
+        expected_number_all_box.val(expected_number_box.val() ? parseFloat(expected_number_box.val()) * parseFloat(no_of_months_box.val()) : 0)
+        calculate_break_event_point()
+        calculate_net_income()
+    }
+    else {
+        no_of_months_box.val(1)
+    }
+    end_date_box.val(findEndDate(start_date_box.val(), parseFloat(no_of_months_box.val())))
 })
 
 add_new_fixed_expense_btn.on('click', function () {
@@ -302,6 +334,7 @@ class DistributionPlanHandle {
         frm.dataForm['title'] = title_box.val()
         frm.dataForm['product'] = product_box.val()
         frm.dataForm['start_date'] = moment(start_date_box.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['end_date'] = moment(end_date_box.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
         frm.dataForm['no_of_month'] = no_of_months_box.val()
 
         frm.dataForm['product_price'] = product_price_box.attr('value')

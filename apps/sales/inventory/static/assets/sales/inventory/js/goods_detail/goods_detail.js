@@ -220,7 +220,7 @@ $(document).ready(function () {
                     'product_id': $table_serial.attr('data-product-id'),
                     'warehouse_id': $table_serial.attr('data-warehouse-id'),
                     'goods_receipt_id': $table_serial.attr('data-goods-receipt-id'),
-                    'purchase_request_id': $table_serial.attr('data-purchase-request-id')
+                    'purchase_request_id': $table_serial.attr('data-purchase-request-id') ? $table_serial.attr('data-purchase-request-id') : null
                 },
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);

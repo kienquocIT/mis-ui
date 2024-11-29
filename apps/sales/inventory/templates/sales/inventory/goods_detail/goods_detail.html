@@ -96,13 +96,14 @@
                 <thead>
                     <tr>
                         <th style="min-width: 30px"></th>
-                        <th style="min-width: 250px">{% trans 'Product' %}</th>
-                        <th style="min-width: 150px">{% trans 'Receipt code' %}</th>
+                        <th style="min-width: 200px">{% trans 'Product' %}</th>
+                        <th style="min-width: 120px">{% trans 'Goods receipt' %}</th>
+                        <th style="min-width: 120px">{% trans 'Purchase request' %}</th>
                         <th style="min-width: 100px">{% trans 'Date' %}</th>
                         <th style="min-width: 200px">{% trans 'PIC' %}</th>
-                        <th style="min-width: 200px">{% trans 'Warehouse' %}</th>
+                        <th style="min-width: 150px">{% trans 'Warehouse' %}</th>
                         <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                        <th style="min-width: 100px">{% trans 'State' %}</th>
+                        <th style="min-width: 80px">{% trans 'State' %}</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -124,14 +125,13 @@
                         <div class="col-12">
                             <form id="form-serial" data-method="POST"
                                   data-url="{% url 'GoodsDetailAPI' %}"
-                                  data-url-redirect="{% url 'GoodsDetail' %}"
-                            >
+                                  data-url-redirect="{% url 'GoodsDetail' %}">
                                 {% csrf_token %}
                                 <div class="import-db-space">
                                     {% include 'extends/import-datatable/button-import-db.html' %}
                                     <script class="import-db-form-url"
-                                          data-import-db-method="POST"
-                                          data-import-db-url="{% url 'GoodsDetailListImportDBAPI' %}"
+                                            data-import-db-method="POST"
+                                            data-import-db-url="{% url 'GoodsDetailListImportDBAPI' %}"
                                     ></script>
                                     <table class="table nowrap w-100" id="table-serial">
                                         <thead class="bg-secondary-light-4">
@@ -148,6 +148,7 @@
                                         </thead>
                                         <tbody></tbody>
                                     </table>
+                                    <button type="button" id="add-row-sn" class="btn btn-primary btn-sm mt-2">{% trans 'Add new serial' %}</button>
                                 </div>
                             </form>
                         </div>
@@ -188,5 +189,4 @@
     <script src="{% static 'assets/sales/inventory/js/goods_detail/goods_detail.js' %}"></script>
     <script src="{% static 'assets/js/xlsx-0.18.5.full.min.js' %}"></script>
     <script src="{% static 'assets/js/import-datatable.js' %}"></script>
-    <script src="{% static 'assets/sales/inventory/js/goods_detail/goods_detail_import.js' %}"></script>
 {% endblock %}

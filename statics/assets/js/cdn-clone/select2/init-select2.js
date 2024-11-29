@@ -773,6 +773,7 @@ class SelectDDControl {
             if (!this._config) this._config = this.config();
             this.renderDataOnload(this._config);
             const sel2$ = this.ele.select2(this._config);
+            this.ele.data('clsSelect2', this);
             // on event in select2 => call DOM event
             // don't trigger change + valid when change : because call duplicate showErrors
             const form$ = this.ele.closest('form');

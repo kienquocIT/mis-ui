@@ -134,6 +134,22 @@ class ProcessRuntimeOfMeAPI(APIView):
         return resp.auto_return(key_success='process_runtime_list')
 
 
+class ProcessStagesAppOfMeAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        url = ApiURL.PROCESS_STAGES_APPS_OF_ME
+        resp = ServerAPI(request=request, user=request.user, url=url).get()
+        return resp.auto_return(key_success='process_runtime_stages_app_list')
+
+
+class ProcessRuntimeDataMatchAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        url = ApiURL.PROCESS_DATA_MATCH
+        resp = ServerAPI(request=request, user=request.user, url=url).get()
+        return resp.auto_return(key_success='opp_process_stage_app')
+
+
 class ProcessRuntimeAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, **kwargs):

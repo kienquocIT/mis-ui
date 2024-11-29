@@ -1,18 +1,21 @@
 $(document).ready(function () {
     // declare main variable
     let $table = $('#table_template_list');
-    let txt_state_wf_doc = {
-        0: ["Created", "badge-soft-secondary"],
-        1: ["In Progress", "badge-soft-warning"],
-        2: ["Finish", "badge-soft-success"],
-        3: ["Finish with flow non-apply", "badge-soft-info"],
-    }
     let $transFact = $('#app-trans-factory');
     let $urls = $('#app-urls-factory');
-    let appMapUrl = {
+    let appMapUrlRecurrence = {
         "saleorder.saleorder": {
-            'url': $urls.attr('data-sale-order'),
+            'url': $urls.attr('data-so-recurrence'),
             'keyResp': "sale_order_recurrence",
+        },
+        "arinvoice.arinvoice": {
+            'url': $urls.attr('data-ar-recurrence'),
+            'keyResp': "ar_invoice_recurrence",
+        }
+    }
+    let appMapUrl = {
+        'saleorder.saleorder': {
+            "detail": $urls.attr('data-so-detail'),
         },
     }
 
@@ -145,7 +148,7 @@ $(document).ready(function () {
                 let urlData = {};
                 if (rowData?.['app_label'] && rowData?.['model_code']) {
                     let contentType = rowData?.['app_label'] + "." + rowData?.['model_code'];
-                    urlData = appMapUrl[contentType];
+                    urlData = appMapUrlRecurrence[contentType];
                 }
 
                 let placeGetData = $('#url-factory');
@@ -155,7 +158,7 @@ $(document).ready(function () {
                     ajax: {
                         url: urlData?.['url'],
                         type: 'GET',
-                        data: {'is_recurrence_template': true},
+                        data: {'is_recurrence_template': true, 'employee_inherit_id': $x.fn.getEmployeeCurrentID()},
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data) return resp.data[urlData?.['keyResp']] ? resp.data[urlData?.['keyResp']] : [];
@@ -172,7 +175,12 @@ $(document).ready(function () {
                         {
                             title: $transFact.attr('data-title'),
                             render: (data, type, row) => {
-                                return `${row?.['title']}`;
+                                let link = "";
+                                let contentType = rowData?.['app_label'] + "." + rowData?.['model_code'];
+                                if (appMapUrl[contentType]?.['detail']) {
+                                    link = appMapUrl[contentType]?.['detail'].format_url_with_uuid(row?.['id']);
+                                }
+                                return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`;
                             }
                         },
                         {
@@ -214,12 +222,12 @@ $(document).ready(function () {
                                     body = ``;
                                     for (let recurrence of row?.['recurrence_list']) {
                                         let link = $urls.attr('data-recurrence-detail').format_url_with_uuid(recurrence?.['id']);
-                                        body += `<a class="dropdown-item" href="${link}">${recurrence?.['title']}</a>`;
+                                        body += `<a class="dropdown-item" href="${link}">${recurrence?.['title']}</a><div class="dropdown-divider"></div>`;
                                     }
                                 }
                                 return `<div class="dropdown">
                                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-edit"></i></span></button>
-                                            <div role="menu" class="dropdown-menu">${body}</div>
+                                            <div role="menu" class="dropdown-menu dropdown-bordered">${body}</div>
                                         </div>`;
                             }
                         },

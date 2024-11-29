@@ -22,30 +22,145 @@
             data-trans-alert-warn="{% trans 'This meeting cannot be reactivated.' %}"
     ></script>
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
-    <div class="row">
-        <div class="col-12 col-md-8 mol-lg-8">
-            <table id="table_opportunity_meeting_list" class="table nowrap w-100 mb-5"
-                   data-url="{% url 'OpportunityMeetingListAPI' %}"
-                   data-url-delete="{% url 'OpportunityMeetingDetailAPI' '0' %}"
-                   data-url-redirect="{% url 'OpportunityMeetingList' %}"
-                   data-method="GET">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>{% trans 'Subject' %}
-                        <i class="fas fa-info-circle icon-info"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="bottom"
-                           title="{% trans 'Press row here to see detail meeting.' %}">
-                        </i>
-                    </th>
-                    <th>{% trans 'Sale Code' %}</th>
-                    <th>{% trans 'Date' %}</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+
+    <table id="table_opportunity_meeting_list" class="table nowrap w-100 mb-5"
+           data-url="{% url 'OpportunityMeetingListAPI' %}"
+           data-url-delete="{% url 'OpportunityMeetingDetailAPI' '0' %}"
+           data-url="{% url 'OpportunityMeetingListAPI' %}"
+           data-url-delete="{% url 'OpportunityMeetingDetailAPI' '0' %}"
+           data-url-redirect="{% url 'OpportunityMeetingList' %}"
+           data-method="GET">
+        <thead>
+        <tr>
+            <th></th>
+            <th>{% trans 'Subject' %}
+                <i class="fas fa-info-circle icon-info"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="bottom"
+                   title="{% trans 'Press row here to see detail meeting.' %}">
+                </i>
+            </th>
+            <th>{% trans 'Sale Code' %}</th>
+            <th>{% trans 'Date' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="create-meeting" tabindex="-1" role="dialog"
+         aria-labelledby="createOpportunityMeetingModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Create meeting' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <form data-url="{% url 'OpportunityMeetingListAPI' %}"
+                          data-url-redirect="{% url 'OpportunityMeetingList' %}"
+                          data-method="POST"
+                          id="form-new-meeting"
+                          method="post"
+                    >
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label class="form-label required">{% trans 'Subject' %}</label>
+                            <input id="meeting-subject-input" placeholder="{% trans 'Input subject' %}" class="form-control">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label required">{% trans 'Sale Code' %}</label>
+                            <select id="meeting-sale-code-select-box"
+                                    data-url="{% url 'OpportunityListAPI' %}"
+                                    data-keyResp="opportunity_list"
+                                    data-method="GET" class="form-select"></select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="inp-process" class="form-label">{% trans 'Process' %}</label>
+                            <select
+                                    name="process" id="inp-process" class="form-select"
+                                    data-url="{% url 'ProcessRuntimeOfMeAPI' %}"
+                                    data-keyResp="process_runtime_list"
+                            ></select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="inp-process-stage-app" class="form-label">{% trans 'Process Stage Application' %}</label>
+                            <select
+                                    name="process_stage_app" id="inp-process-stage-app" class="form-select"
+                                    data-url="{% url 'ProcessStagesAppOfMeAPI' %}"
+                                    data-app-id="{{data.app_id}}"
+                                    data-keyResp="process_runtime_stages_app_list"
+                            ></select>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label class="form-label required">{% trans 'Date' %}</label>
+                                    <input id="meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="InputFromTime" class="form-label">{% trans 'From time' %}</label>
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='meeting_from_time' id_select='InputFromTime' %}
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="InputToTime" class="form-label">{% trans 'To time' %}</label>
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='meeting_to_time' id_select='InputToTime' %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label class="form-label required">{% trans 'Meeting address' %}</label>
+                                    <div id="meeting-address-select-div">
+                                        <select disabled id="meeting-address-select-box" class="select2"></select>
+                                        <a id="meeting-address-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'Input address' %}</a>
+                                    </div>
+                                    <div id="meeting-address-input-div" hidden>
+                                        <input id="meeting-address-input" placeholder="{% trans 'Input address' %}" class="form-control">
+                                        <a id="meeting-address-select-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'Select address' %}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label required">{% trans 'Room location' %}</label>
+                            <input id="meeting-room-location-input" placeholder="{% trans 'Input location' %}" class="form-control">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label required">{% trans 'Employee attended' %}</label>
+                            <select id="meeting-employee-attended-select-box" data-url="{% url 'EmployeeListAPI' %}"
+                                    multiple class="select2 select-multiple" data-closeOnSelect="false"></select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">{% trans 'Customer member' %}</label>
+                            <select disabled id="meeting-customer-member-select-box" multiple data-closeOnSelect="false" class="select2 select-multiple"></select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label required">
+                                {% trans 'Input result' %}
+                            </label>
+                            <textarea id="meeting-result-text-area" placeholder="{% trans 'Input result' %}" class="form-control" style="min-height: 100px"></textarea>
+                        </div>
+                        <div class="form-group mb-3 d-none">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="repeat-activity">
+                                <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="form-new-meeting"
+                            id="btn-create-meeting">{% trans 'Save' %}</button>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -70,12 +185,15 @@
             const modal$ = $("#create-meeting");
             const create_open = $x.fn.getUrlParameter('create_open', '') === 'true';
             let processData = [];
+            let processStageApp = [];
             if (create_open === true){
                 modal$.modal('show');
                 const {
                     process_id,
                     process_title,
-                } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'opp_id', 'opp_title', 'opp_code']);
+                    process_stage_app_id,
+                    process_stage_app_title,
+                } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title']);
                 if (process_id){
                     processData.push({
                         'id': process_id,
@@ -83,11 +201,51 @@
                         'selected': true,
                     })
                 }
+                if (process_stage_app_id){
+                    processStageApp.push({
+                        'id': process_stage_app_id,
+                        'title': process_stage_app_title,
+                        'selected': true,
+                    })
+                }
             }
-            modal$.find(':input[name=process]').initSelect2({
-                allowClear: true,
-                data: processData
+
+            const inpProcess$ = modal$.find(':input[name=process]');
+            const inpStageApp$ = modal$.find(':input[name=process_stage_app]');
+
+            function reinitProcessStageApp(data=[], process_id=null){
+                inpStageApp$.destroySelect2();
+                let dataParams = {"application_id": inpStageApp$.data('app-id')};
+                if (process_id && $x.fn.checkUUID4(process_id)) dataParams['process_id'] = process_id;
+                inpStageApp$.initSelect2({
+                    allowClear: true,
+                    dataParams: dataParams,
+                    data: data
+                })
+            }
+
+            function reinitProcess(data=[], opp_id=null){
+                inpProcess$.destroySelect2();
+                let dataParams = {};
+                if (opp_id && $x.fn.checkUUID4(opp_id)) dataParams['opp_id'] = opp_id;
+                inpProcess$.initSelect2({
+                    allowClear: true,
+                    dataParams: dataParams,
+                    data: data
+                }).on('change', function(){
+                    const selectedVal = $(this).val();
+                    reinitProcessStageApp([], selectedVal ? selectedVal : null);
+                })
+            }
+
+            modal$.find('#meeting-sale-code-select-box').on('change', function(){
+                const selectedVal = $(this).val();
+                reinitProcess([], selectedVal ? selectedVal : null);
+                inpProcess$.trigger('change');
             })
+
+            reinitProcess(processData);
+            reinitProcessStageApp(processStageApp);
         })
     </script>
 {% endblock %}

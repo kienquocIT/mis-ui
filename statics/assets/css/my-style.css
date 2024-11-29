@@ -2,33 +2,43 @@
 .no-transform {
     text-transform: initial !important;
 }
+
 .mt-1p {
     margin-top: 1px;
 }
+
 .mt-2p {
     margin-top: 2px;
 }
+
 .mt-3p {
     margin-top: 3px;
 }
+
 .mt-4p {
     margin-top: 4px;
 }
+
 .mt-5p {
     margin-top: 5px;
 }
+
 .mt-01rem {
     margin-top: 0.1rem;
 }
+
 .mt-02rem {
     margin-top: 0.2rem;
 }
+
 .mt-03rem {
     margin-top: 0.3rem;
 }
+
 .mt-04rem {
     margin-top: 0.4rem;
 }
+
 .mt-05rem {
     margin-top: 0.5rem;
 }
@@ -45,24 +55,28 @@
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
 }
+
 .text-ellipsis-multiple-2 {
     overflow: hidden;
     display: -webkit-box !important;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
+
 .text-ellipsis-multiple-3 {
     overflow: hidden;
     display: -webkit-box !important;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
 }
+
 .text-ellipsis-multiple-4 {
     overflow: hidden;
     display: -webkit-box !important;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
 }
+
 .text-ellipsis-multiple-5 {
     overflow: hidden;
     display: -webkit-box !important;
@@ -76,6 +90,7 @@
 .company_switch_item:hover {
     background-color: #f1f1f1;
 }
+
 /* Off Canvas responsive Screen */
 
 @media only screen and (min-width: 1001px) {
@@ -220,28 +235,29 @@ div.inline {
 .dataTables_scrollBody::-webkit-scrollbar ~ .dataTables_scrollHead .table {
     padding-right: 10px;
 }
+
 .dataTables_scrollBody::-webkit-scrollbar {
-  width: 0.5rem;
+    width: 0.5rem;
 }
 
 /* Track */
 .dataTables_scrollBody::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px #f1f1f1;
-  border-radius: 0;
+    box-shadow: inset 0 0 5px #f1f1f1;
+    border-radius: 0;
 }
 
 /* Handle */
 .dataTables_scrollBody::-webkit-scrollbar-thumb {
-  background: #eaeaea;
-  border-radius: 10px;
+    background: #eaeaea;
+    border-radius: 10px;
 }
 
 /* Handle on hover */
 .dataTables_scrollBody::-webkit-scrollbar-thumb:hover {
-  background: #cfcfcf;
+    background: #cfcfcf;
 }
 
-div.dataTables_wrapper .dataTables_scrollHeadInner  {
+div.dataTables_wrapper .dataTables_scrollHeadInner {
     width: 100% !important;
 }
 
@@ -282,12 +298,15 @@ div.dataTables_wrapper .dataTables_scrollBody table {
 .dtb-info-custom {
     font-size: 14px;
 }
+
 .dtb-length-custom {
     font-size: 14px;
 }
+
 .dtb-length-list-custom {
     font-size: 14px;
 }
+
 /*[type="search"] {*/
 /*    outline: none;*/
 /*}*/
@@ -350,6 +369,25 @@ div.dataTables_wrapper .dataTables_scrollBody table {
     width: 200px;
     margin-left: auto;
     justify-content: flex-end;
+}
+
+.input-group > .select2-container:not(:first-child):not(:first-of-type) .select2-selection {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.input-group > .select2-container:last-child .select2-selection {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+#bastionFieldTheDocument .input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    margin-left: 1px !important;
+}
+
+#bastionFieldTheDocument .input-group > * ,
+#bastionFieldTheDocument .input-group > .select2-container .select2-selection {
+    border-radius: 4px !important;
 }
 
 /*.dataTables_filter {*/
@@ -555,15 +593,18 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
 
 /* Select2  */
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    text-transform: unset!important;
+    text-transform: unset !important;
 }
-.select2-container--default .select2-search--inline .select2-search__field{
-    width:initial!important;
+
+.select2-container--default .select2-search--inline .select2-search__field {
+    width: initial !important;
 }
+
 .select2-container .select2-selection--multiple .select2-selection__choice {
     background-color: #f7f7f7;
     color: #262a2e;
 }
+
 /* Select2  */
 
 /* Group input has button info */
@@ -792,51 +833,67 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
 .overflow-y-hidden {
     overflow-y: hidden;
 }
+
 .min-w-10p {
     min-width: 10px;
 }
+
 .min-w-20p {
     min-width: 20px;
 }
+
 .min-w-25p {
     min-width: 25px;
 }
+
 .min-w-30p {
     min-width: 30px;
 }
+
 .min-w-40p {
     min-width: 40px;
 }
+
 .min-w-50p {
     min-width: 50px;
 }
+
 .min-w-75p {
     min-width: 75px;
 }
+
 .min-w-100p {
     min-width: 100px;
 }
+
 .min-w-125p {
     min-width: 125px;
 }
+
 .min-w-150p {
     min-width: 150px;
 }
+
 .min-w-175p {
     min-width: 175px;
 }
+
 .min-w-200p {
     min-width: 200px;
 }
+
 .min-w-225p {
     min-width: 225px;
 }
+
 .min-w-250p {
     min-width: 250px;
 }
+
 .min-w-275p {
     min-width: 275px;
 }
+
 .min-w-300p {
     min-width: 300px;
 }
@@ -896,6 +953,7 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
 .min-w-8000p {
     min-width: 8000px;
 }
+
 /* -- Extend Bootstrap Advance */
 
 /* File upload */
@@ -1034,17 +1092,21 @@ ul.dm-uploader-result-list li:hover .btn-download-file{
 
 /* Collapse Area */
 [data-bs-toggle="collapse"].collapsed > .icon:has(.fa-angle-double-down):has(.fa-angle-double-up) > i.fa-angle-double-up {
-    display: none!important;
+    display: none !important;
 }
+
 [data-bs-toggle="collapse"]:not(.collapsed) > .icon:has(.fa-angle-double-down):has(.fa-angle-double-up) > i.fa-angle-double-up {
-    display: block!important;
+    display: block !important;
 }
+
 [data-bs-toggle="collapse"].collapsed > .icon:has(.fa-angle-double-down):has(.fa-angle-double-up) > i.fa-angle-double-down {
-    display: block!important;
+    display: block !important;
 }
+
 [data-bs-toggle="collapse"]:not(.collapsed) > .icon:has(.fa-angle-double-down):has(.fa-angle-double-up) > i.fa-angle-double-down {
-    display: none!important;
+    display: none !important;
 }
+
 /* -- Collapse Area */
 
 /* Workflow */
@@ -1057,6 +1119,7 @@ ul.dm-uploader-result-list li:hover .btn-download-file{
 .hidden-zone::placeholder {
     color: #bfcbd0;
 }
+
 /* -- Workflow */
 
 /* Button */
@@ -1071,6 +1134,7 @@ ul.dm-uploader-result-list li:hover .btn-download-file{
     background-color: #298dff;
     color: white;
 }
+
 /* -- Button */
 
 /* Badge */
@@ -1078,6 +1142,7 @@ ul.dm-uploader-result-list li:hover .btn-download-file{
     background: #eef6ff;
     color: #298dff;
 }
+
 /* -- Badge */
 
 /* Badge parent */
@@ -1124,6 +1189,7 @@ ul.dm-uploader-result-list li:hover .btn-download-file{
     background-color: #298dff;
     color: #fff;
 }
+
 /* -- Badge parent */
 
 .bg-soft-success {
@@ -1137,6 +1203,7 @@ ul.dm-uploader-result-list li:hover .btn-download-file{
     margin-right: 5px;
     top: 1px;
 }
+
 /* -- Notify custom icon */
 
 /*.select2-container--open {*/

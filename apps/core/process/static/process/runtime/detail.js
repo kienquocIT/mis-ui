@@ -151,7 +151,13 @@ $(document).ready(function () {
 
     }
 
+    $('#btn-collapse-members').on('click', function () {
+        $(this).toggleClass('icon-caret-active');
+        membersGroup$.slideToggle();
+    })
+
     addMember$.initSelect2({
+        multiple: true,
         url: addMember$.data('url'),
         method: 'GET',
         keyResp: 'employee_list',
@@ -173,23 +179,31 @@ $(document).ready(function () {
     SetupFormSubmit.validate(frmAddMember$, {
         submitHandler: function (form, event) {
             event.preventDefault();
-            $.fn.callAjax2({
-                url: $(form).data('url'),
-                method: 'POST',
-                data: $(form).serializeObject(),
-            }).then(resp => {
-                const data = $.fn.switcherResp(resp);
-                if (data && data.hasOwnProperty('process_runtime_members')) {
-                    const result = data?.['process_runtime_members'] || {};
-                    if (result && result.hasOwnProperty('id')) {
-                        memberIDs.push(result?.['employee']?.['id']);
-                        memberData.push(result);
-                        $.fn.notifyB({'description': $.fn.gettext('Successful')}, 'success');
-                        modal$.modal('hide');
-                        render_members();
-                    }
+            const bodyData = $(form).serializeObject();
+            if (bodyData.hasOwnProperty('employees')) {
+                if (bodyData['employees'] && Array.isArray(bodyData['employees']) && bodyData['employees'].length > 0) {
+                    $.fn.callAjax2({
+                        url: $(form).data('url'),
+                        method: 'POST',
+                        data: bodyData,
+                        isLoading: true,
+                    }).then(resp => {
+                        const data = $.fn.switcherResp(resp);
+                        if (data && data.hasOwnProperty('process_runtime_members')) {
+                            const results = data?.['process_runtime_members'] || [];
+                            results.map(result => {
+                                if (result && result.hasOwnProperty('id')) {
+                                    memberIDs.push(result?.['employee']?.['id']);
+                                    memberData.push(result);
+                                }
+                            })
+                            $.fn.notifyB({'description': $.fn.gettext('Successful')}, 'success');
+                            modal$.modal('hide');
+                            render_members();
+                        }
+                    })
                 }
-            })
+            }
         },
     })
 })

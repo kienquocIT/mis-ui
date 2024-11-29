@@ -49,7 +49,13 @@
         <div class="form-group">
             <label class="form-label">
                 {% trans 'Members' %}
-                <button type="button" class="btn btn-soft-primary btn-xs ml-2" data-bs-toggle="modal" data-bs-target="#modalAddMember">
+                <button type="button" class="btn btn-soft-secondary btn-xs ml-1 icon-caret" id="btn-collapse-members">
+                    <i class="fa-solid fa-caret-up"></i>
+                </button>
+                <button
+                        type="button" class="btn btn-soft-primary btn-xs ml-1" data-bs-toggle="modal"
+                        data-bs-target="#modalAddMember"
+                >
                     <span>
                         <span>{% trans 'Add' %}</span>
                         <span class="icon"><i class="fa-solid fa-plus"></i></span>
@@ -57,11 +63,11 @@
                 </button>
             </label>
             <div
-                id="members-group"
-                data-url="{% url 'ProcessRuntimeMembersAPI' pk=pk %}"
-                data-url-avatar-default="{% static 'assets/images/systems/person-avt.png' %}"
-                data-url-member-delete="{% url 'ProcessRuntimeMemberDetailAPI' pk='__pk__' %}"
-                data-url-employee-detail="{% url 'EmployeeDetail' pk='__pk__' %}"
+                    id="members-group"
+                    data-url="{% url 'ProcessRuntimeMembersAPI' pk=pk %}"
+                    data-url-avatar-default="{% static 'assets/images/systems/person-avt.png' %}"
+                    data-url-member-delete="{% url 'ProcessRuntimeMemberDetailAPI' pk='__pk__' %}"
+                    data-url-employee-detail="{% url 'EmployeeDetail' pk='__pk__' %}"
             ></div>
         </div>
     </form>
@@ -97,10 +103,13 @@
                     >
                         {% csrf_token %}
                         <div class="form-group">
-                            <label for="inp-employee-members" class="form-label required">{% trans 'Choose employee' %}</label>
+                            <label
+                                    for="inp-employee-members" class="form-label required"
+                            >{% trans 'Choose employee' %}</label>
                             <select
-                                    name="employee" id="inp-employee-members" class="form-select"
+                                    name="employees" id="inp-employee-members" class="form-select"
                                     data-url="{% url 'EmployeeListAPI' %}"
+                                    multiple
                                     required
                             ></select>
                         </div>

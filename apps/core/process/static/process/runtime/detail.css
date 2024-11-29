@@ -24,6 +24,7 @@
 .members-item > *:first-child {
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
+
 .members-item > *:last-child {
     border-radius: 0 0 var(--border-radius) var(--border-radius);
 }
@@ -59,9 +60,19 @@
 .members-item .text-person {
     font-weight: bold;
 }
+
 .members-item .text-person-sub {
     font-style: italic;
 }
+
 .members-item .text-person-log {
     font-size: smaller;
+}
+
+.icon-caret > i {
+    transition: transform 0.2s;
+}
+
+.icon-caret-active > i {
+    transform: rotate(180deg);
 }

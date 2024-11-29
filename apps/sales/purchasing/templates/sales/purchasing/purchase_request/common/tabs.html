@@ -2,25 +2,21 @@
 
 <div class="row mb-5">
     <div class="col-12">
-        <div class="row">
-            <div class="col-12">
-                <ul class="nav nav-light nav-tabs" id="purchase-request-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
-                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content" id="tab-content-purchase-request-product">
-                    {% include 'sales/purchasing/purchase_request/common/tab_line_detail.html' %}
-                    {% include 'sales/purchasing/purchase_request/common/tab_attachment.html' %}
-                </div>
-            </div>
+        <ul class="nav nav-light nav-tabs nav-line" id="purchase-request-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                    <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                    <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" id="tab-content-purchase-request-product">
+            {% include 'sales/purchasing/purchase_request/common/tab_line_detail.html' %}
+            {% include 'sales/purchasing/purchase_request/common/tab_attachment.html' %}
         </div>
     </div>
 </div>

@@ -524,6 +524,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
 
     GOODS_DETAIL_LIST = StringUrl('inventory/goods-detail/list')
+    GOODS_DETAIL_SERIAL_DATA_LIST = StringUrl('inventory/goods-detail-sn-data/list')
     GOODS_DETAIL_DETAIL = StringUrl('inventory/goods-detail/{pk}')
     CREATE_UPDATE_GOODS_DETAIL_DATA = StringUrl('inventory/create-update-goods-detail-data/list')
     GOODS_DETAIL_IMPORT_DB = StringUrl('inventory/goods-detail-import-db')

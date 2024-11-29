@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Bill of material create' %}{% endblock %}
+{% block title %}{% trans 'Bill of material update' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
     <style>
@@ -13,7 +13,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-create-prj-bom">
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-prj-bom">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -30,7 +30,6 @@
             data-url-tool="{% url 'ProductToolListForOpportunityBOMAPI' %}"
             data-url-bom-detail="{% url 'BOMDetail' '0' %}"
             data-url-opp-bom-detail="{% url 'OpportunityBOMDetail' '0' %}"
-            data-url-bom-detail-api="{% url 'BOMDetailAPI' '0' %}"
     ></script>
     <script id="script-trans"
             data-trans-select-one="{% trans 'Select one' %}"
@@ -40,19 +39,21 @@
             data-trans-change-ok="{% trans 'Change' %}"
             data-trans-change-no="{% trans 'Cancel' %}"
     ></script>
-    <form id="form-create-prj-bom"
-          data-method="POST"
-          data-url="{% url 'OpportunityBOMListAPI' %}"
-          data-url-redirect="{% url 'OpportunityBOMList' %}"
+    <form id="form-detail-prj-bom"
+          data-url="{% url 'OpportunityBOMDetailAPI' pk=pk %}"
+          data-url-redirect="{% url 'OpportunityBOMDetail' pk=pk %}"
+          data-method="PUT"
     >
         {% csrf_token %}
-        {% include 'sales/opportunityproduction/opportunitybom/common/information.html' %}
+        {% include 'sales/production/opportunitybom/common/information.html' %}
     </form>
+{% endblock %}
+{% block dataHiddenGroup %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunityproduction/js/opportunitybom/oppbom_common.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunityproduction/js/opportunitybom/oppbom_create.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/opportunitybom/oppbom_common.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/opportunitybom/oppbom_update.js' %}"></script>
 {% endblock %}

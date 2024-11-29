@@ -76,6 +76,17 @@ class GoodsDetailAPI(APIView):
         return resp.auto_return(status_success=status.HTTP_201_CREATED)
 
 
+class GoodsDetailSerialDataAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_DETAIL_SERIAL_DATA_LIST).get(data)
+        return resp.auto_return(key_success='goods_detail_sn_data_list')
+
+
 class GoodsDetailListImportDBAPI(APIView):
     @mask_view(
         auth_require=True,

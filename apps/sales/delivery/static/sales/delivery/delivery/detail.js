@@ -633,39 +633,36 @@ $(async function () {
                             prodTable.setupTotal();
                         }
                     })
-                    // Check if Product has Lot or Serial then load table
-                    $(`input.form-check-input`, row).on('click', function (e) {
-                        e.preventDefault();
-                        prodTable.loadCheckPW(this, data, row);
-
-                        // if (this.checked === true) {
-                        //     prodTable.loadUnCheckWH();
-                        //     this.checked = true;
-                        //     if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
-                        //         let productWHID = this.getAttribute('data-id');
-                        //         if (data?.['product']?.['general_traceability_method'] === 1) {
-                        //             prodTable.loadLot(this, row, data, productWHID);
-                        //         }
-                        //         if (data?.['product']?.['general_traceability_method'] === 2) {
-                        //             prodTable.loadSerial(this, row, data, productWHID);
-                        //         }
-                        //     }
-                        // } else {
-                        //     prodTable.loadUnCheckWH();
-                        //     prodTable.dataTableTableLot();
-                        //     prodTable.dataTableTableSerial();
-                        //     data['is_checked'] = false;
-                        //     $table.DataTable().row(index).data(data).draw();
-                        // }
-                    })
                 },
                 drawCallback: function () {
                     prodTable.setupCollapse();
                     prodTable.setupTotal();
                     prodTable.loadEventRadio($table);
+                    prodTable.loadEventPW();
                 },
             })
         };
+
+        loadEventPW() {
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                let data = this.data();
+
+                // Find the checkbox only once
+                let checkbox = row.querySelector('.table-row-checkbox');
+                if (checkbox) {
+                    // Remove any previously bound event listeners to avoid duplication
+                    checkbox.replaceWith(checkbox.cloneNode(true)); // Clear all event listeners
+                    checkbox = row.querySelector('.table-row-checkbox'); // Reassign the reference
+
+                    // Add the event listener
+                    checkbox.addEventListener('click', function () {
+                        prodTable.loadCheckPW(checkbox, data, row); // Pass necessary parameters
+                    });
+                }
+            });
+            return true;
+        }
 
         loadCheckPW(ele, data, row) {
             if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {

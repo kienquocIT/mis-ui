@@ -205,7 +205,7 @@ $(document).ready(function () {
     }
     loadMainTable([], [], [], $status.val());
 
-    function loadSerialTable(table_data) {
+    function loadSerialTable() {
         $table_serial.DataTable().clear().destroy()
         $table_serial.DataTableDefault({
             rowIdx: true,
@@ -213,7 +213,23 @@ $(document).ready(function () {
             scrollY: '50vh',
             scrollX: '100vh',
             scrollCollapse: true,
-            data: table_data,
+            ajax: {
+                url: $table_serial.attr('data-url'),
+                type: 'GET',
+                data: {
+                    'product_id': $table_serial.attr('data-product-id'),
+                    'warehouse_id': $table_serial.attr('data-warehouse-id'),
+                    'goods_receipt_id': $table_serial.attr('data-goods-receipt-id'),
+                    'purchase_request_id': $table_serial.attr('data-purchase-request-id')
+                },
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        return resp.data['goods_detail_sn_data_list'] ? resp.data['goods_detail_sn_data_list'] : [];
+                    }
+                    return [];
+                },
+            },
             columns: [
                 {
                     data: '',
@@ -311,11 +327,6 @@ $(document).ready(function () {
                     }
                 },
             ],
-            initComplete: function () {
-                $('tbody tr .date-input').each(function () {
-                    LoadDate($(this), $(this).val() === '')
-                })
-            }
         });
     }
 
@@ -331,28 +342,12 @@ $(document).ready(function () {
     }
 
     $(document).on("click", '.btn-open-modal-serial', function () {
-        // let quantity_import = parseInt($(this).attr('data-quantity-import'))
-        let table_data = $(this).closest('td').find('.serial_list_data').text() ? JSON.parse($(this).closest('td').find('.serial_list_data').text()) : []
-        // let remain = quantity_import - table_data.length
-        // for (let i = 0; i < remain; i++) {
-        //     table_data.push(
-        //         {
-        //             "id": null,
-        //             "vendor_serial_number": null,
-        //             "serial_number": null,
-        //             "expire_date": null,
-        //             "manufacture_date": null,
-        //             "warranty_start": null,
-        //             "warranty_end": null
-        //         }
-        //     )
-        // }
         $table_serial.attr('data-product-id', $(this).attr('data-product-id') ? $(this).attr('data-product-id') : '')
         $table_serial.attr('data-warehouse-id', $(this).attr('data-warehouse-id') ? $(this).attr('data-warehouse-id') : '')
         $table_serial.attr('data-goods-receipt-id', $(this).attr('data-goods-receipt-id') ? $(this).attr('data-goods-receipt-id') : '')
         $table_serial.attr('data-purchase-request-id', $(this).attr('data-purchase-request-id') ? $(this).attr('data-purchase-request-id') : '')
         $table_serial.attr('data-quantity-import', $(this).attr('data-quantity-import') ? $(this).attr('data-quantity-import') : 0)
-        loadSerialTable(table_data)
+        loadSerialTable()
     })
 
     $add_row_sn_btn.on('click', function () {
@@ -397,6 +392,7 @@ $(document).ready(function () {
         })
         $(this).closest('tr').find('input').prop('disabled', false).prop('readonly', false).addClass('is-valid')
         $(this).closest('td').find('.btn-rollback').prop('hidden', false)
+        LoadDate($(this).closest('tr').find('.date-input'), $(this).closest('tr').find('.date-input').val() === '')
     })
 
     $(document).on("click", '.btn-rollback', function () {

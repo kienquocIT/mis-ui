@@ -71,6 +71,7 @@ class GroupLoadDataHandle {
             emp_id_list.push(emp.id);
         }
         GroupLoadDataHandle.$eleGrEmp.val(JSON.stringify(emp_id_list));
+        $('#datable_employee_list').DataTable().draw();
     };
 
     static loadDetailEmpChecked() {

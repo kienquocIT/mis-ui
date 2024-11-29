@@ -2,7 +2,7 @@ $(function () {
     $(document).ready(function () {
         let frm = $('#frm_group_create');
         let dataGroupEmployee = $('#data-group_employee');
-        GroupLoadDataHandle.loadDataCommon();
+        GroupLoadDataHandle.loadInit();
 
         GroupLoadDataHandle.boxGroupLevel.on('change', function () {
             if ($(this).val()) {

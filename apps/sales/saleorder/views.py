@@ -85,6 +85,7 @@ class SaleOrderCreate(View):
         data_copy_to = request.GET.get('data_copy_to', "")
         result = {
             'employee_current': request.user.employee_current_data,
+            'app_id': 'a870e392-9ad2-4fe2-9baa-298a38691cf2',
             'data_copy_to': data_copy_to,
             'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
             'form_id': 'frm_quotation_create',

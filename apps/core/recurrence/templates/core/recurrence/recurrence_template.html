@@ -75,7 +75,10 @@
         type="text"
         id="app-urls-factory"
         data-recurrence-detail="{% url 'RecurrenceDetail' pk=1 %}"
-        data-sale-order="{% url 'SORecurrenceListAPI' %}"
+        data-so-recurrence="{% url 'SORecurrenceListAPI' %}"
+        data-ar-recurrence="{% url 'ARInvoiceRecurrenceListAPI' %}"
+        data-so-detail="{% url 'SaleOrderDetail' pk=1 %}"
+        data-ar-detail="{% url 'ARInvoiceDetail' pk=1 %}"
     >
 {% endblock %}
 

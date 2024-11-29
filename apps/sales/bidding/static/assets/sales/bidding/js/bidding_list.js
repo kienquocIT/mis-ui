@@ -28,36 +28,45 @@ $(document).ready(function () {
                     },
                     {
                         targets: 1,
-                        width: '20%',
+                        width: '10%',
                         render: (data, type, row) => {
                             const link = urlDetail.replace('0', row.id);
-                            return `<a href=${link} class="text-primary fw-bold">${row?.['title']}</a> ${$x.fn.buttonLinkBlank(link)}`
+                            const code = row?.['code'] ? row['code'] : '_'
+                            return `<a href=${link} class="badge badge-primary w-7">${code}</a> ${$x.fn.buttonLinkBlank(link)}`
                         }
                     },
                     {
                         targets: 2,
                         width: '20%',
                         render: (data, type, row) => {
-                            return `${row?.['customer']?.['title']}`
+                            const link = urlDetail.replace('0', row.id);
+                            return `<a href=${link} class="text-primary fw-bold">${row?.['title']}</a>`
                         }
                     },
                     {
                         targets: 3,
                         width: '20%',
                         render: (data, type, row) => {
-                            return `${row?.['employee_inherit']?.['full_name']}`
+                            return `${row?.['customer']?.['title']}`
                         }
                     },
                     {
                         targets: 4,
                         width: '20%',
                         render: (data, type, row) => {
+                            return `${row?.['employee_inherit']?.['full_name']}`
+                        }
+                    },
+                    {
+                        targets: 5,
+                        width: '10%',
+                        render: (data, type, row) => {
                             const date =  row?.['bid_date'] ? moment(row?.['bid_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'): '';
                             return `${date}`
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 6,
                         width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = [
@@ -76,7 +85,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 7,
                         width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#stt_sys').text())

@@ -1157,10 +1157,14 @@ class APHandle {
             new $x.cls.bastionField({
                 has_opp: true,
                 opp_disabled: true,
+                oppFlagData: {
+                    'disabled': true,
+                },
+                not_change_opp: true,
                 has_inherit: true,
                 data_opp: [opportunity],
+                opp_call_trigger_change: true,
             }).init();
-            opp_mapped_select.trigger('change')
         }
         APLoadPage.LoadQuotation()
         APLoadPage.LoadSaleOrder()
@@ -1284,6 +1288,10 @@ class APHandle {
                             selected: true,
                         }
                     ] : [];
+                    const data_process_stage_app = Object.keys(data?.['process_stage_app'] || []).length > 0 ? [{
+                        ...data['process_stage_app'],
+                        'selected': true,
+                    }] : [];
                     new $x.cls.bastionField({
                         has_opp: true,
                         opp_disabled: true,
@@ -1294,6 +1302,7 @@ class APHandle {
                         data_inherit: data_inherit,
                         data_opp: data_opp,
                         data_process: data_process,
+                        data_process_stage_app: data_process_stage_app,
                     }).init();
 
                     if (Object.keys(data?.['opportunity']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {

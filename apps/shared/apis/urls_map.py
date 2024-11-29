@@ -503,6 +503,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROCESS_CONFIG_DETAIL = StringUrl('process/config/detail/{pk}')
     PROCESS_RUNTIME_LIST = StringUrl('process/runtime/list')
     PROCESS_RUNTIME_LIST_OF_ME = StringUrl('process/runtime/list/me')
+    PROCESS_STAGES_APPS_OF_ME = StringUrl('process/runtime/stages-apps/me')
+    PROCESS_DATA_MATCH = StringUrl('process/runtime/data-match')
     PROCESS_RUNTIME_DETAIL = StringUrl('process/runtime/detail/{pk}')
     PROCESS_RUNTIME_STAGES_APP_COMPLETE = StringUrl('process/runtime/app/{pk}')
 
@@ -656,6 +658,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
     AR_INVOICE_LIST = StringUrl('ar-invoice/list')
     AR_INVOICE_DETAIL = StringUrl('ar-invoice/detail/{pk}')
+    AR_INVOICE_RECURRENCE_LIST = StringUrl('ar-invoice/recurrence/list')
 
     # AP Invoice
     GOOD_RECEIPT_LIST_AP_INVOICE = StringUrl('ap-invoice/get-goods-receipts')
@@ -765,3 +768,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     HRM_EMPLOYEE_NOT_MAP_HRM = StringUrl('hrm/employee-not-map/list')
     HRM_EMPLOYEE_INFO_LIST = StringUrl('hrm/employee-info/list')
     HRM_EMPLOYEE_INFO_DETAIL = StringUrl('hrm/employee-info/detail/{pk}')
+    HRM_EMPLOYEE_CONTRACT_LIST = StringUrl('hrm/employee-info/contract/list')
+    HRM_EMPLOYEE_CONTRACT_DETAIL = StringUrl('hrm/employee-info/contract/detail/{pk}')

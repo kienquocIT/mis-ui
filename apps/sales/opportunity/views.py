@@ -327,6 +327,7 @@ class OpportunityCallLogList(View):
             'account_list': resp1.result,
             'contact_list': resp2.result,
             'opportunity_list': resp3.result,
+            'app_id': '14dbc606-1453-4023-a2cf-35b1cd9e3efd',
         }
         return result, status.HTTP_200_OK
 
@@ -384,6 +385,7 @@ class OpportunityEmailList(View):
             'account_list': resp1.result,
             'contact_list': resp2.result,
             'opportunity_list': resp3.result,
+            'app_id': 'dec012bf-b931-48ba-a746-38b7fd7ca73b',
         }
         return result, status.HTTP_200_OK
 

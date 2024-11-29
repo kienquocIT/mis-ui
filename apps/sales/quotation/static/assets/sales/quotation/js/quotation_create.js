@@ -964,6 +964,7 @@ $(function () {
             let submitFields = [
                 // process
                 'process',
+                'process_stage_app',
                 //
                 'title',
                 'opportunity_id',
@@ -1015,6 +1016,7 @@ $(function () {
                 submitFields = [
                     // process
                     'process',
+                    'process_stage_app',
                     //
                     'title',
                     'opportunity_id',

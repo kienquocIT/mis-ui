@@ -374,6 +374,10 @@ $(document).ready(function () {
             Swal.fire({
                 html: `<h5 class="text-success">${$trans_db_script.attr('data-trans-done')}</h5>
                        <h6 class="text-muted">${$trans_db_script.attr('data-trans-reload')}</h6>`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload()
+                }
             });
         }
     })

@@ -114,6 +114,15 @@ class GroupLoadDataHandle {
 
 }
 
+class GroupCommonHandle {
+    static filterFieldList(field_list, data_json) {
+        for (let key in data_json) {
+            if (!field_list.includes(key)) delete data_json[key]
+        }
+        return data_json;
+    }
+}
+
 // FUNCTIONS COMMON
 // load data employee after delete row
 function deleteEmployeeShow(delID) {
@@ -188,8 +197,10 @@ function dataTableEmployee() {
             {
                 targets: 5,
                 render: (data, type, row) => {
-                    let dataDate = new Date(row?.['date_joined']).toDateString();
-                    return `<span class="table-row-date-join">${dataDate}</span>`
+                    if (row?.['date_joined']) {
+                        return moment(row?.['date_joined']).format('DD/MM/YYYY');
+                    }
+                    return ``;
                 }
             },
             {

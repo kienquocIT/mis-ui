@@ -506,7 +506,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROCESS_STAGES_APPS_OF_ME = StringUrl('process/runtime/stages-apps/me')
     PROCESS_DATA_MATCH = StringUrl('process/runtime/data-match')
     PROCESS_RUNTIME_DETAIL = StringUrl('process/runtime/detail/{pk}')
+    PROCESS_RUNTIME_MEMBERS = StringUrl('process/runtime/detail/{pk}/members')
     PROCESS_RUNTIME_STAGES_APP_COMPLETE = StringUrl('process/runtime/app/{pk}')
+    PROCESS_RUNTIME_MEMBER_DETAIL = StringUrl('process/runtime/member/{pk}')
 
     # Chatbot
     CHATBOT_CHAT = StringUrl('chatbot/chat')
@@ -522,6 +524,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
 
     GOODS_DETAIL_LIST = StringUrl('inventory/goods-detail/list')
+    GOODS_DETAIL_SERIAL_DATA_LIST = StringUrl('inventory/goods-detail-sn-data/list')
     GOODS_DETAIL_DETAIL = StringUrl('inventory/goods-detail/{pk}')
     CREATE_UPDATE_GOODS_DETAIL_DATA = StringUrl('inventory/create-update-goods-detail-data/list')
     GOODS_DETAIL_IMPORT_DB = StringUrl('inventory/goods-detail-import-db')

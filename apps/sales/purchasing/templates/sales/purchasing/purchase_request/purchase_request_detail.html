@@ -40,7 +40,7 @@
           data-url="{% url "PurchaseRequestDetailAPI" pk=pk %}"
     >
         {% csrf_token %}
-        {% include 'sales/purchasing/purchase_request/common/body_block.html' %}
+        {% include 'sales/purchasing/purchase_request/common/information.html' %}
         {% include 'sales/purchasing/purchase_request/common/tabs.html' %}
     </form>
 {% endblock %}

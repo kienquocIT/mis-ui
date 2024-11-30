@@ -64,8 +64,8 @@ $(function () {
                                 title = row?.['delivery_sub']?.['title'] ? row?.['delivery_sub']?.['title'] : '';
                                 code = row?.['delivery_sub']?.['code'] ? row?.['delivery_sub']?.['code'] : '';
                             }
-                            return `<span class="badge badge-success badge-outline">${app}</span>
-                                    <span class="badge badge-soft-success">${code}</span>
+                            return `<span class="badge badge-light badge-outline">${app}</span>
+                                    <span class="badge badge-light">${code}</span>
                                     <span class="table-row-title">${title}</span>`;
                         }
                     },

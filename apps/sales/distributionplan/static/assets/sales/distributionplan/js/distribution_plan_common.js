@@ -388,6 +388,7 @@ function LoadDetailDP(option) {
                 loadProduct(data?.['product'])
                 loadSupplier(data?.['supplier_list'])
                 start_date_box.val(moment(data?.['start_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                end_date_box.val(moment(data?.['end_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                 no_of_months_box.val(data?.['no_of_month'])
                 no_month_box.text(data?.['no_of_month'])
                 loadFixedCostsTable(data?.['fixed_cost_list'], option)

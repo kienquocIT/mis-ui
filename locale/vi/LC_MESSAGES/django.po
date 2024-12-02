@@ -9771,3 +9771,15 @@ msgstr "SL theo kế hoạch"
 #
 msgid "Requested quantity"
 msgstr "SL đã yêu cầu"
+
+#
+msgid "For Fixed Asset"
+msgstr "Cho Tài sản cố định"
+
+#
+msgid "Start import now?"
+msgstr "Bắt đầu nhập bây giờ?"
+
+#
+msgid "Please wait until the import has finished!"
+msgstr "Làm ơn đợi cho đến khi nhập liệu hoàn tất! 😀"

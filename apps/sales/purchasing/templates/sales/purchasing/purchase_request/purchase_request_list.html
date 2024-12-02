@@ -57,22 +57,31 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6 p-2">
-                            <button type="button" class="p-3 btn btn-outline-danger w-100" id="btn-create-for-sale-order">{% trans 'For Sale Order' %}</button>
+                        <div class="col-6 col-md-3 col-lg-3">
+                            <div class="text-center rounded select-pr-type p-2" id="btn-create-for-sale-order">
+                                <p><i class="fas fa-file-invoice text-primary" style="font-size: 40px;"></i></p>
+                                <span class="text-muted small">{% trans 'For Sale Order' %}</span>
+                            </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6 p-2">
-                            <button type="button" class="p-3 btn btn-outline-success w-100" id="btn-create-for-stock-free">{% trans 'For Stock Free' %}</button>
+                        <div class="col-6 col-md-3 col-lg-3">
+                            <div class="text-center rounded select-pr-type p-2" id="btn-create-for-stock-plan">
+                                <p><i class="fas fa-expand-arrows-alt text-primary" style="font-size: 40px;"></i></p>
+                                <span class="text-muted small">{% trans 'For Stock Plan' %}</span>
+                            </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6 p-2">
-                            <button type="button" class="p-3 btn btn-outline-blue w-100" id="btn-create-for-stock-plan">{% trans 'For Stock Plan' %}</button>
+                        <div class="col-6 col-md-3 col-lg-3">
+                            <div class="text-center rounded select-pr-type p-2" id="btn-create-for-fixed-asset">
+                                <p><i class="fas fa-car text-primary" style="font-size: 40px;"></i></p>
+                                <span class="text-muted small">{% trans 'For Fixed Asset' %}</span>
+                            </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6 p-2">
-                            <button type="button" class="p-3 btn btn-outline-secondary w-100" id="btn-create-for-other">{% trans 'For Fixed Asset' %}</button>
+                        <div class="col-6 col-md-3 col-lg-3">
+                            <div class="text-center rounded select-pr-type p-2" id="btn-create-for-stock-free">
+                                <p><i class="fas fa-indent text-primary" style="font-size: 40px;"></i></p>
+                                <span class="text-muted small">{% trans 'For Stock Free' %}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
                 </div>
             </div>
         </div>

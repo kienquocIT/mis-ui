@@ -368,6 +368,8 @@ $(document).ready(function () {
         $table_serial.attr('data-purchase-request-id', $(this).attr('data-purchase-request-id') ? $(this).attr('data-purchase-request-id') : '')
         $table_serial.attr('data-quantity-import', $(this).attr('data-quantity-import') ? $(this).attr('data-quantity-import') : 0)
         $table_serial.attr('data-status', $(this).attr('data-status') === 'true' ? $(this).attr('data-status') : 'false')
+        $('#modal-serial .btn-group-import-datatable').closest('.space-import-btn').prop('hidden', $table_serial.attr('data-status') !== 'false')
+        $('#modal-serial .modal-footer').prop('hidden', $table_serial.attr('data-status') !== 'false')
         loadSerialTable()
     })
 

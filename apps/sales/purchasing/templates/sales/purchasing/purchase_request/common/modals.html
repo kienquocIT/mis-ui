@@ -11,34 +11,34 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-12 col-md-12 col-lg-5 border rounded">
+                    <div class="col-12 col-md-12 col-lg-4 border rounded">
                         <table id="datatable-sale-order"
-                               class="table nowrap w-100"
+                               class="table nowrap w-100 table-hover"
                                data-url="{% url "SaleOrderPurchasingStaffListAPI" %}"
                                data-method="GET">
                             <thead class="bg-primary-light-5">
                                 <tr>
-                                    <th style="min-width: 20px"></th>
-                                    <th style="min-width: 100px">{% trans "Code" %}</th>
-                                    <th style="min-width: 200px">{% trans "Name" %}</th>
-                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 200px">{% trans "Sale order" %}</th>
+                                    <th style="min-width: 30px"></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-7 border rounded">
+                    <div class="col-12 col-md-12 col-lg-8 border rounded">
                         <table id="datatable-product-of-so"
-                               class="table nowrap w-100"
+                               class="table nowrap w-100 table-hover"
                                data-method="GET"
                                data-url="{% url 'ProductListSaleOrderAPI' pk=0 %}">
                             <thead class="bg-primary-light-5">
                                 <tr>
-                                    <th style="min-width: 20px"></th>
-                                    <th style="min-width: 150px">{% trans "Product" %}</th>
-                                    <th style="min-width: 50px">{% trans "Quantity" %}</th>
-                                    <th style="min-width: 50px">{% trans "Remain" %}</th>
-                                    <th style="min-width: 100px">{% trans "Request quantity" %}</th>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 100px">{% trans "Product" %}</th>
+                                    <th style="min-width: 100px">{% trans "Quantity" %}</th>
+                                    <th style="min-width: 100px">{% trans "Requested quantity" %}</th>
+                                    <th style="min-width: 100px">{% trans "Remain" %}</th>
+                                    <th style="min-width: 100px">{% trans "This time" %}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -75,7 +75,7 @@
                             <thead class="bg-primary-light-5">
                                 <tr>
                                     <th style="min-width: 30px"></th>
-                                    <th style="min-width: 250px">{% trans "Stock plan" %}</th>
+                                    <th style="min-width: 200px">{% trans "Stock plan" %}</th>
                                     <th style="min-width: 30px"></th>
                                 </tr>
                             </thead>
@@ -89,16 +89,15 @@
                             <thead class="bg-primary-light-5">
                                 <tr>
                                     <th style="min-width: 30px"></th>
-                                    <th style="min-width: 150px">{% trans "Product" %}</th>
-                                    <th style="min-width: 150px">{% trans "Planned quantity" %}</th>
-                                    <th style="min-width: 150px">{% trans "Requested quantity" %}</th>
-                                    <th style="min-width: 150px">{% trans "Remain" %}</th>
-                                    <th style="min-width: 150px">{% trans "This time" %}</th>
+                                    <th style="min-width: 100px">{% trans "Product" %}</th>
+                                    <th style="min-width: 100px">{% trans "Planned quantity" %}</th>
+                                    <th style="min-width: 100px">{% trans "Requested quantity" %}</th>
+                                    <th style="min-width: 100px">{% trans "Remain" %}</th>
+                                    <th style="min-width: 100px">{% trans "This time" %}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
@@ -115,31 +114,40 @@
 <div class="modal fade" id="modal-select-request-for" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">{% trans 'Request For' %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-12 col-md-6 col-lg-6 p-2">
-                    <button type="button" class="p-3 btn btn-outline-danger w-100" id="btn-create-for-sale-order">{% trans 'For Sale Order' %}</button>
-                </div>
-                <div class="col-12 col-md-6 col-lg-6 p-2">
-                    <button type="button" class="p-3 btn btn-outline-success w-100" id="btn-create-for-stock-free">{% trans 'For Stock Free' %}</button>
-                </div>
-                <div class="col-12 col-md-6 col-lg-6 p-2">
-                    <button type="button" class="p-3 btn btn-outline-blue w-100" id="btn-create-for-stock-plan">{% trans 'For Stock Plan' %}</button>
-                </div>
-                <div class="col-12 col-md-6 col-lg-6 p-2">
-                    <button type="button" class="p-3 btn btn-outline-secondary w-100" id="btn-create-for-other">{% trans 'For Fixed Asset' %}</button>
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{% trans 'Request For' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6 col-md-3 col-lg-3">
+                        <div class="text-center rounded select-pr-type p-2" id="btn-create-for-sale-order">
+                            <p><i class="fas fa-file-invoice text-primary" style="font-size: 40px;"></i></p>
+                            <span class="text-muted small">{% trans 'For Sale Order' %}</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-3">
+                        <div class="text-center rounded select-pr-type p-2" id="btn-create-for-stock-plan">
+                            <p><i class="fas fa-expand-arrows-alt text-primary" style="font-size: 40px;"></i></p>
+                            <span class="text-muted small">{% trans 'For Stock Plan' %}</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-3">
+                        <div class="text-center rounded select-pr-type p-2" id="btn-create-for-fixed-asset">
+                            <p><i class="fas fa-car text-primary" style="font-size: 40px;"></i></p>
+                            <span class="text-muted small">{% trans 'For Fixed Asset' %}</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-3">
+                        <div class="text-center rounded select-pr-type p-2" id="btn-create-for-stock-free">
+                            <p><i class="fas fa-indent text-primary" style="font-size: 40px;"></i></p>
+                            <span class="text-muted small">{% trans 'For Stock Free' %}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-        </div>
-    </div>
     </div>
 </div>

@@ -524,20 +524,14 @@ function LoadDistributionTable() {
         ajax: {
             url: tableDistribution.attr('data-url'),
             data: {
-                'system_status': 3
+                'system_status': 3,
+                'filter_expired': true
             },
             type: 'GET',
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
                 if (data && resp.data.hasOwnProperty('distribution_plan_list')) {
-                    let distribution_plan_list = []
-                    for (let i = 0; i < resp.data['distribution_plan_list'].length; i++) {
-                        let item = resp.data['distribution_plan_list'][i]
-                        if (!item?.['is_create_purchase_request']) {
-                            distribution_plan_list.push(item)
-                        }
-                    }
-                    return distribution_plan_list;
+                    return resp.data['distribution_plan_list'];
                 }
                 throw Error('Call data raise errors.')
             },

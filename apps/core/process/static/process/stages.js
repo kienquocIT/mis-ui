@@ -518,7 +518,7 @@ class ProcessStages {
 
     render_cross_stages() {
         const clsThis = this;
-        const global_application = [
+        const global_application = clsThis.data?.['global_app'] || [
             {
                 "id": "",
                 "max": "1",
@@ -546,10 +546,10 @@ class ProcessStages {
                 "amount_approved": 0
             },
         ];
-        (clsThis.data?.['global_app'] || global_application).map((item, idx) => {
+        global_application.map((item, idx) => {
             clsThis.initAppCross(item);
         });
-        clsThis.on_crossStagesApps();
+        clsThis.on_crossStagesApps(global_application.length);
         return true;
     }
 
@@ -1605,7 +1605,7 @@ class ProcessStages {
         });
     }
 
-    on_crossStagesApps() {
+    on_crossStagesApps(amountCurrentApp=null) {
         const clsThis = this;
         clsThis.stagesAllBodyControl$.append(clsThis.stagesAllBodyControlAppItem$);
 
@@ -1645,6 +1645,9 @@ class ProcessStages {
             clean$.remove();
             addApp$.remove();
             collapse$.addClass('only-collapse');
+            if (amountCurrentApp === 0){
+                clsThis.stagesAllBodyFull$.remove();
+            }
         }
         collapse$.on('click', function () {
             $(this).toggleClass('active-toggle');

@@ -252,13 +252,14 @@ class PaymentAction {
         let tax_rate = 0;
         if (tr.find('.expense-tax-select-box').val()) {
             let tax_selected = SelectDDControl.get_data_from_idx(tr.find('.expense-tax-select-box'), tr.find('.expense-tax-select-box').val())
-            tax_rate = tax_selected?.['rate'] ? tax_selected?.['rate'] : 0;
+            tax_rate = tax_selected?.['rate'] ? parseFloat(tax_selected?.['rate']) : 0;
         }
         if (unit_price.attr('value') && quantity.val()) {
             let subtotal_value = parseFloat(unit_price.attr('value')) * parseFloat(quantity.val())
-            subtotal.attr('value', subtotal_value);
             let tax_value = subtotal_value * tax_rate / 100
-            subtotal_after_tax.attr('value', subtotal_value + parseFloat(tax_value.toFixed(0)));
+            let subtotal_after_tax_value = subtotal_value + tax_value
+            subtotal.attr('value', subtotal_value.toFixed(0));
+            subtotal_after_tax.attr('value', subtotal_after_tax_value.toFixed(0));
         }
         else {
             unit_price.attr('value', 0);
@@ -279,10 +280,10 @@ class PaymentAction {
             sum_subtotal_price_after_tax += $(this).attr('value') ? parseFloat($(this).attr('value')) : 0
         });
         let sum_tax = sum_subtotal_price_after_tax - sum_subtotal;
-        $('#pretax-value').attr('value', sum_subtotal);
-        $('#taxes-value').attr('value', sum_tax);
-        $('#total-value').attr('value', sum_subtotal_price_after_tax);
-        let total_value_by_words = PaymentAction.ReadMoneyVND(sum_subtotal_price_after_tax) + ' đồng'
+        $('#pretax-value').attr('value', sum_subtotal.toFixed(0));
+        $('#taxes-value').attr('value', sum_tax.toFixed(0));
+        $('#total-value').attr('value', sum_subtotal_price_after_tax.toFixed(0));
+        let total_value_by_words = PaymentAction.ReadMoneyVND(sum_subtotal_price_after_tax.toFixed(0)) + ' đồng'
         total_value_by_words = total_value_by_words.charAt(0).toUpperCase() + total_value_by_words.slice(1)
         if (total_value_by_words[total_value_by_words.length - 1] === ',') {
             total_value_by_words = total_value_by_words.substring(0, total_value_by_words.length - 1) + ' đồng'

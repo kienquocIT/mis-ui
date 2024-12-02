@@ -344,3 +344,19 @@ msgstr "Xoá"
 #
 msgid "Are you sure you cleaned all Cross-Stage Apps?"
 msgstr "Bạn có chắc chắn làm sạch tất cả các Ứng dụng toàn cầu không?"
+
+#
+msgid "Created by"
+msgstr "Tạo bởi"
+
+#
+msgid "at"
+msgstr "vào lúc"
+
+#
+msgid "Are you sure about this delete?"
+msgstr "Bạn chắc chắn xoá dữ liệu này?"
+
+#
+msgid "Loading process members"
+msgstr "Đang tải thành viên của tiến trình"

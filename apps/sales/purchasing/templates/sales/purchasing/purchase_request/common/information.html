@@ -1,0 +1,177 @@
+{% load i18n %}
+
+
+<div class="row for-sale-order-request" hidden>
+    <div class="col-12 mb-2">
+        <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'General Information' %}</h5>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="title-so" class="form-label required">{% trans 'Name' %}</label>
+            <input id="title-so" class="form-control">
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="date-delivery-so" class="form-label required">{% trans 'Delivered Date' %}</label>
+            <input id="date-delivery-so" class="form-control">
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="pr-status-so" class="form-label">{% trans 'Purchase Status' %}</label>
+            <input id="pr-status-so" class="form-control form-control-line fw-bold" value="{% trans 'Wait' %}" data-value="0" readonly>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="supplier-so" class="form-label required">{% trans 'Supplier' %}</label>
+            <select class="form-control select2" id="supplier-so" data-url="{% url "AccountForSaleListAPI" %}"></select>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="contact-so" class="form-label required">{% trans 'Contact' %}</label>
+            <select disabled class="form-select" id="contact-so" data-url="{% url "ContactListAPI" %}"></select>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="request-for-so" class="form-label required">{% trans 'Request For' %}</label>
+            <span class="input-affix-wrapper">
+                <span class="input-prefix" id="dropdownCreator">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-select-request-for">
+                        <i class="fa-solid fa-ellipsis text-primary"></i>
+                    </a>
+                </span>
+                <input id="request-for-so" type="text" class="form-control" readonly>
+            </span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="code-so" class="form-label required">{% trans 'Order Code' %}</label>
+            <input id="code-so" class="form-control form-control-line text-primary fw-bold" readonly>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="note-so" class="form-label">{% trans 'Note' %}</label>
+            <textarea id="note-so" class="form-control"></textarea>
+        </div>
+    </div>
+</div>
+<div class="row for-distribution-request" hidden>
+    <div class="col-12 mb-2">
+        <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'General Information' %}</h5>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="title-db" class="form-label required">{% trans 'Name' %}</label>
+            <input id="title-db" class="form-control">
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="date-delivery-db" class="form-label required">{% trans 'Delivered Date' %}</label>
+            <input id="date-delivery-db" class="form-control">
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="pr-status-db" class="form-label">{% trans 'Purchase Status' %}</label>
+            <input id="pr-status-db" class="form-control form-control-line fw-bold" value="{% trans 'Wait' %}" data-value="0" readonly>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="supplier-db" class="form-label required">{% trans 'Supplier' %}</label>
+            <select class="form-control select2" id="supplier-db" data-url="{% url "AccountForSaleListAPI" %}"></select>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="contact-db" class="form-label required">{% trans 'Contact' %}</label>
+            <select disabled class="form-select" id="contact-db" data-url="{% url "ContactListAPI" %}"></select>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="request-for-db" class="form-label required">{% trans 'Request For' %}</label>
+            <span class="input-affix-wrapper">
+                <span class="input-prefix" id="dropdownCreator">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-select-request-for">
+                        <i class="fa-solid fa-ellipsis text-primary"></i>
+                    </a>
+                </span>
+                <input id="request-for-db" type="text" class="form-control" readonly>
+            </span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="code-db" class="form-label required">{% trans 'Stock plan code' %}</label>
+            <input id="code-db" class="form-control form-control-line text-primary fw-bold" readonly>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="note-db" class="form-label">{% trans 'Note' %}</label>
+            <textarea id="note-db" class="form-control"></textarea>
+        </div>
+    </div>
+</div>
+<div class="row for-stock-free-request" hidden>
+    <div class="col-12 mb-2">
+        <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'General Information' %}</h5>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="title-sf" class="form-label required">{% trans 'Name' %}</label>
+            <input id="title-sf" class="form-control">
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="date-delivery-sf" class="form-label required">{% trans 'Delivered Date' %}</label>
+            <input id="date-delivery-sf" class="form-control">
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="pr-status-sf" class="form-label">{% trans 'Purchase Status' %}</label>
+            <input id="pr-status-sf" class="form-control form-control-line fw-bold" value="{% trans 'Wait' %}" data-value="0" readonly>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="supplier-sf" class="form-label required">{% trans 'Supplier' %}</label>
+            <select class="form-control select2" id="supplier-sf" data-url="{% url "AccountForSaleListAPI" %}"></select>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="contact-sf" class="form-label required">{% trans 'Contact' %}</label>
+            <select disabled class="form-select" id="contact-sf" data-url="{% url "ContactListAPI" %}"></select>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="request-for-sf" class="form-label required">{% trans 'Request For' %}</label>
+            <span class="input-affix-wrapper">
+                <span class="input-prefix" id="dropdownCreator">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-select-request-for">
+                        <i class="fa-solid fa-ellipsis text-primary"></i>
+                    </a>
+                </span>
+                <input id="request-for-sf" type="text" class="form-control" readonly>
+            </span>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="note-sf" class="form-label">{% trans 'Note' %}</label>
+            <textarea id="note-sf" class="form-control"></textarea>
+        </div>
+    </div>
+</div>

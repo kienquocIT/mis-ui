@@ -552,13 +552,7 @@ function LoadDistributionTable() {
                 data: 'code',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-primary p-db-code">${row?.['code']}</span>`
-                }
-            }, {
-                data: 'title',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="text-primary">${row?.['title']}</span>`
+                    return `<span class="badge badge-primary mr-2 p-db-code">${row?.['code']}</span><span class="text-secondary">${row?.['title']}</span>`
                 }
             }, {
                 className: 'wrap-text',
@@ -606,6 +600,12 @@ function LoadDistributionProductTable(distribution_id=null) {
                     }
                 },
                 {
+                    className: 'wrap-text text-center w-15',
+                    render: (data, type, row) => {
+                        return ``
+                    }
+                },
+                {
                     className: 'wrap-text text-center w-20',
                     render: (data, type, row) => {
                         return ``
@@ -630,23 +630,24 @@ function LoadDistributionProductTable(distribution_id=null) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('distribution_plan_detail')) {
                         let product_data = resp.data['distribution_plan_detail']?.['product']
-                        if (parseFloat(product_data?.['expected_number']) - parseFloat(product_data?.['purchase_request_number']) > 0) {
-                            return [product_data]
-                        }
-                        return []
+                        return [product_data]
+                        // if (parseFloat(product_data?.['expected_number']) - parseFloat(product_data?.['purchase_request_number']) > 0) {
+                        //     return [product_data]
+                        // }
+                        // return []
                     }
                     throw Error('Call data raise errors.')
                 },
             },
             columns: [
                 {
-                    className: 'wrap-text w-10',
+                    className: 'wrap-text w-5',
                     render: () => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-40',
+                    className: 'wrap-text w-25',
                     render: (data, type, row) => {
                         return `<span data-so-product-id="${row?.['id']}"
                                   data-product-id="${row?.['id']}"
@@ -655,26 +656,35 @@ function LoadDistributionProductTable(distribution_id=null) {
                                   data-product-uom-id="${row?.['uom']?.['id']}"
                                   data-product-uom-title="${row?.['uom']?.['title']}"
                                   data-product-description="${row?.['description']}"
-                                  class="w-30 badge badge-secondary product-span"
-                            >${row?.['code']}</span>&nbsp;<span class="text-secondary">${row?.['title']}</span>`
+                                  class="badge badge-blue mr-2 product-span"
+                            >${row?.['code']}</span><span class="text-secondary">${row?.['title']}</span>`
                     }
                 },
                 {
                     className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
-                        return `<span class="quantity-span">${parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month'])}</span>`
+                        let planned_quantity = parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month'])
+                        return `<span class="quantity-span">${planned_quantity}</span>`
                     }
                 },
                 {
                     className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
-                        return `<span class="remain-span">${parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month']) - parseFloat(row?.['purchase_request_number'])}</span>`
+                        let requested_quantity = parseFloat(row?.['purchase_request_number'])
+                        return `<span class="requested-span">${requested_quantity}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-20',
+                    className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
-                        return `<input type="number" class="form-control text-center request-number-input" value="0" max="${parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month']) - parseFloat(row?.['purchase_request_number'])}">`
+                        let remain_quantity = (parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month'])) - parseFloat(row?.['purchase_request_number'])
+                        return `<span class="remain-span">${remain_quantity >= 0 ? remain_quantity : '(' + remain_quantity * (-1) + ')'}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-center w-25',
+                    render: (data, type, row) => {
+                        return `<input type="number" class="form-control text-center request-number-input" value="0">`
                     }
                 }
             ],
@@ -1038,7 +1048,7 @@ btnSelectDBProduct.on('click', function () {
         let limit_number = $(this).find('.remain-span').text() ? parseFloat($(this).find('.remain-span').text()) : ''
         let request_number = $(this).find('.request-number-input').val() ? parseFloat($(this).find('.request-number-input').val()) : ''
 
-        if (limit_number && request_number && request_number <= limit_number) {
+        if (limit_number && request_number && request_number <= limit_number || TYPE === '3') {
             request_product_data.push({
                 'sale_order_product_id': $(this).find('.product-span').attr('data-so-product-id'),
                 'id': $(this).find('.product-span').attr('data-product-id'),

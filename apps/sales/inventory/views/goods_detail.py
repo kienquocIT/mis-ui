@@ -46,7 +46,6 @@ class GoodsDetail(View):
                                     {"col_key": "goods_receipt_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-goods-receipt-id"},
                                     {"col_key": "warehouse_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-warehouse-id"},
                                     {"col_key": "purchase_request_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-purchase-request-id"},
-                                    {"col_key": "is_serial_update", "col_index": -1, "data_default": True},
                                 ]
                             }
                         }
@@ -74,6 +73,17 @@ class GoodsDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.CREATE_UPDATE_GOODS_DETAIL_DATA).post(request.data)
         resp.result['message'] = SaleMsg.GOODS_DETAIL_UPDATE
         return resp.auto_return(status_success=status.HTTP_201_CREATED)
+
+
+class GoodsDetailSerialDataAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_DETAIL_SERIAL_DATA_LIST).get(data)
+        return resp.auto_return(key_success='goods_detail_sn_data_list')
 
 
 class GoodsDetailListImportDBAPI(APIView):

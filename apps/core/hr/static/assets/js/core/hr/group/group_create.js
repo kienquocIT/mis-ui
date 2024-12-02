@@ -1,8 +1,8 @@
 $(function () {
     $(document).ready(function () {
-        let frm = $('#frm_group_create');
+        let formSubmit = $('#frm_group_create');
         let dataGroupEmployee = $('#data-group_employee');
-        GroupLoadDataHandle.loadDataCommon();
+        GroupLoadDataHandle.loadInit();
 
         GroupLoadDataHandle.boxGroupLevel.on('change', function () {
             if ($(this).val()) {
@@ -26,51 +26,78 @@ $(function () {
             deleteEmployeeShow(this.id);
         });
 
-        frm.submit(function (e) {
-            e.preventDefault();
-            let frm = new SetupFormSubmit($(this));
+        SetupFormSubmit.validate(formSubmit, {
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 100,
+                },
+                code: {
+                    required: true,
+                    maxlength: 100,
+                },
+                group_level: {
+                    required: true,
+                },
+            },
+            errorClass: 'is-invalid cl-red',
+            submitHandler: submitHandlerFunc
+        });
+
+        function submitHandlerFunc() {
+            let _form = new SetupFormSubmit(formSubmit);
             if (dataGroupEmployee.val()) {
-                frm.dataForm['group_employee'] = JSON.parse(dataGroupEmployee.val());
+                _form.dataForm['group_employee'] = JSON.parse(dataGroupEmployee.val());
             }
             if (GroupLoadDataHandle.box1stManager.val()) {
-                frm.dataForm['first_manager'] = GroupLoadDataHandle.box1stManager.val();
+                _form.dataForm['first_manager'] = GroupLoadDataHandle.box1stManager.val();
             } else {
-                frm.dataForm['first_manager'] = null;
+                _form.dataForm['first_manager'] = null;
             }
             if (GroupLoadDataHandle.box2ndManager.val()) {
-                frm.dataForm['second_manager'] = GroupLoadDataHandle.box2ndManager.val();
+                _form.dataForm['second_manager'] = GroupLoadDataHandle.box2ndManager.val();
             } else {
-                frm.dataForm['second_manager'] = null;
+                _form.dataForm['second_manager'] = null;
             }
-            if (frm.dataForm) {
-                for (let key in frm.dataForm) {
-                    if (frm.dataForm[key] === '') {
-                        delete frm.dataForm[key]
-                    }
-                }
+            let submitFields = [
+                'group_level',
+                'parent_n',
+                'title',
+                'code',
+                'description',
+                'group_employee',
+                'first_manager',
+                'first_manager_title',
+                'second_manager',
+                'second_manager_title'
+            ]
+            if (_form.dataForm) {
+                GroupCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
+            WindowControl.showLoading();
             $.fn.callAjax2(
                 {
-                    'url': frm.dataUrl,
-                    'method': frm.dataMethod,
-                    'data': frm.dataForm,
+                    'url': _form.dataUrl,
+                    'method': _form.dataMethod,
+                    'data': _form.dataForm,
                 }
             ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && (data['status'] === 201 || data['status'] === 200)) {
-                            $.fn.notifyB({description: data.message}, 'success');
-                            setTimeout(() => {
-                                window.location.replace(frm.dataUrlRedirect);
-                            }, 1000);
-                        }
-                    }, (err) => {
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
                         setTimeout(() => {
-                            WindowControl.hideLoading();
-                        }, 1000)
-                        $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                            window.location.replace(_form.dataUrlRedirect);
+                        }, 2000);
                     }
-                )
-        });
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
+        }
+
     });
 });

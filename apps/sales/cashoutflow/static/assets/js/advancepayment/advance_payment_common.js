@@ -1129,11 +1129,11 @@ class APAction {
         table.DataTable().row.add(data).draw();
     }
     static DeleteRow(table, currentRow) {
-    currentRow = parseInt(currentRow) - 1
-    let rowIndex = table.DataTable().row(currentRow).index();
-    let row = table.DataTable().row(rowIndex);
-    row.remove().draw();
-}
+        currentRow = parseInt(currentRow) - 1
+        let rowIndex = table.DataTable().row(currentRow).index();
+        let row = table.DataTable().row(rowIndex);
+        row.remove().draw();
+    }
     static DisabledDetailPage(option) {
         if (option === 'detail') {
             $('.form-control').prop('readonly', true);

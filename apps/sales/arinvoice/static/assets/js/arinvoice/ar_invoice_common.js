@@ -17,7 +17,6 @@ const customerSelectBtn = $('#customer-select-btn')
 let invoice_signs_Ele = $('#invoice_signs')
 const invoice_signs = invoice_signs_Ele.text() ? JSON.parse(invoice_signs_Ele.text()) : {};
 
-
 postingDateEle.daterangepicker({
     singleDatePicker: true,
     timepicker: false,

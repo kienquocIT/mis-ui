@@ -330,7 +330,7 @@ class ProcessStages {
                     </div>
                     <div class="modal-body">
                         <table class="table w-100">
-                            <thead class="thead-secondary">
+                            <thead class="thead-light">
                                 <tr>
                                     <th class="no-transform">${$.fn.gettext('Date created')}</th>
                                     <th class="no-transform">

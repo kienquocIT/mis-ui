@@ -4,7 +4,7 @@
 {% block cssHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-create-pr">
+    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-select-request-for">
         <button class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Add' %}</span>
@@ -46,7 +46,7 @@
 
     <div id="url-data" class="hidden" ></div>
 
-    <div class="modal fade" id="modal-create-pr" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal-select-request-for" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -79,7 +79,7 @@
     </div>
 {% endblock %}
 {% block dataHiddenGroup %}
-    <input id="url-factory" data-url-create="{% url 'PurchaseRequestCreate' %}" data-url-detail="{% url 'PurchaseRequestDetail' pk=0 %}"/>
+    <script id="url-factory" data-url-create="{% url 'PurchaseRequestCreate' %}" data-url-detail="{% url 'PurchaseRequestDetail' pk=0 %}"></script>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/pr_list.js' %}"></script>

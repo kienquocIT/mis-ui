@@ -95,3 +95,17 @@ new $x.cls.bastionField({
 ### Tải lại chi tiết phiếu có process
 - Sử dụng lớp `$x.cls.bastionField` để khởi tạo các trường dữ liệu với tuỳ chỉnh đưa nội dung vào ở các trường `data_opp`, `data_process`, `data_process_stage_app`, `data_inherit`
 - Có thể bật disable các thẻ thông qua tuỳ chỉnh của `$x.cls.bastionField`, ví dụ disabled trường Opp như sau `oppFlagData={"disabled": true}`
+
+
+---
+
+### Thêm giá trị `app_id` vào context render view để bastion gửi `app_id` khi gọi lên server check process app.
+```python
+class XView(View):
+    @mask_view(...)
+    def get(self, request, *args, **kwargs):
+        ctx = {}
+        ...
+        ctx['app_id'] = '{APP_ID_IN_TABLE_BASE_APPLICATION}' 
+        return ctx, status.HTTP_200_OK
+```

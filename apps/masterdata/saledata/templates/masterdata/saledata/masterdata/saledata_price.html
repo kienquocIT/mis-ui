@@ -226,7 +226,7 @@
                         </div>
                         <div class="row">
                             <div class="col-3 mt-3 mb-3">
-                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                <button type="button" class="btn btn-sm btn-outline-primary btn_add_terms" data-bs-toggle="modal"
                                         data-bs-target="#modal-add-table">
                                     <span>
                                         <span>{% trans 'Add' %}</span>
@@ -240,6 +240,7 @@
                                 <thead>
                                 <tr>
                                     <th></th>
+                                    <th>{% trans "Title" %}</th>
                                     <th>{% trans "Value" %}</th>
                                     <th>{% trans "Value type" %}</th>
                                     <th>{% trans "No of days" %}</th>
@@ -549,6 +550,12 @@
                 <div class="modal-body">
                     <form method="get">
                         <div class="invalid-feedback text-danger mb-2"></div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label class="form-label" for="term_title">{% trans "Title" %}</label>
+                                <input class="form-control" type="text" id="term_title" name="title">
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="form-group col-6">
                                 <label for="select-box-unit-type" class="form-label">{% trans "Unit Type" %}</label>

@@ -509,6 +509,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROCESS_RUNTIME_MEMBERS = StringUrl('process/runtime/detail/{pk}/members')
     PROCESS_RUNTIME_STAGES_APP_COMPLETE = StringUrl('process/runtime/app/{pk}')
     PROCESS_RUNTIME_MEMBER_DETAIL = StringUrl('process/runtime/member/{pk}')
+    PROCESS_RUNTIME_LOG = StringUrl('process/runtime/detail/{pk}/log')
 
     # Chatbot
     CHATBOT_CHAT = StringUrl('chatbot/chat')

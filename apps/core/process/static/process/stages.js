@@ -32,6 +32,10 @@ class ProcessStages {
                     <i class="fa-solid fa-toolbox"></i>
                 </div>
                 <div class="all-tools-item-sub">
+                    <div class="all-tools-item" data-code="log" data-bs-toggle="tooltip" title="${$.fn.gettext('Log')}" data-bs-placement="right">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <div class="all-tools-item-divide"></div>
                     <div class="all-tools-item" data-code="hide" data-bs-toggle="tooltip" title="${$.fn.gettext('Minimize all applications at all stages')}" data-bs-placement="right">
                         <i class="fa-solid fa-chevron-up"></i>
                     </div>
@@ -286,7 +290,7 @@ class ProcessStages {
             </div>
         </div>
     `;
-    static htmlModelPasteConfig = `
+    static htmlModalPasteConfig = `
         <div class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
@@ -309,6 +313,36 @@ class ProcessStages {
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary no-transform" data-bs-dismiss="modal">${$.fn.gettext('Close')}</button>
                         <button type="button" id="btn-apply-paste-config" class="btn btn-primary no-transform">${$.fn.gettext('Apply')}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    static htmlModalShowLog = `
+        <div class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">${$.fn.gettext('Log')}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table w-100">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th class="no-transform">${$.fn.gettext('Date created')}</th>
+                                    <th class="no-transform">
+                                        <span class="badge badge-primary no-transform">${$.fn.gettext('Stages')}</span>
+                                        <span class="badge badge-warning no-transform">${$.fn.gettext('Application')}</span>
+                                        <span class="badge badge-danger no-transform">${$.fn.gettext('Documents')}</span>
+                                    </th>
+                                    <th class="no-transform">${$.fn.gettext('Title')}</th>
+                                    <th class="no-transform">${$.fn.gettext('Creator')}</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -407,41 +441,39 @@ class ProcessStages {
         return txt;
     }
 
-    applyThemes(code=null){
+    applyThemes(code = null) {
         if (!code) code = this.config.style;
         const stagesAll$ = this.target$.find('.stages-all');
         stagesAll$.alterClass('s-*');
-        code.split(",").map(item => item.trim()).map(
-            item => {
-                switch (item) {
-                    case 'app-sm':
-                        stagesAll$.addClass('s-app-sm');
-                        break
-                    case 'dome':
-                    case 'dome-square':
-                        stagesAll$.addClass('s-dome-square');
-                        break
-                    case 'dome-rectangle':
-                        stagesAll$.addClass('s-dome-rectangle');
-                        break
-                    case 'dome-circle':
-                        stagesAll$.addClass('s-dome-circle');
-                        break
-                    case 'triangle':
-                    case 'triangle-square':
-                        stagesAll$.addClass('s-triangle-square');
-                        break
-                    case 'triangle-circle':
-                        stagesAll$.addClass('s-triangle-circle');
-                        break
-                    case 'triangle-rectangle':
-                        stagesAll$.addClass('s-triangle-rectangle');
-                        break
-                    default:
-                        break
-                }
+        code.split(",").map(item => item.trim()).map(item => {
+            switch (item) {
+                case 'app-sm':
+                    stagesAll$.addClass('s-app-sm');
+                    break
+                case 'dome':
+                case 'dome-square':
+                    stagesAll$.addClass('s-dome-square');
+                    break
+                case 'dome-rectangle':
+                    stagesAll$.addClass('s-dome-rectangle');
+                    break
+                case 'dome-circle':
+                    stagesAll$.addClass('s-dome-circle');
+                    break
+                case 'triangle':
+                case 'triangle-square':
+                    stagesAll$.addClass('s-triangle-square');
+                    break
+                case 'triangle-circle':
+                    stagesAll$.addClass('s-triangle-circle');
+                    break
+                case 'triangle-rectangle':
+                    stagesAll$.addClass('s-triangle-rectangle');
+                    break
+                default:
+                    break
             }
-        )
+        })
     }
 
     constructor(target$, data = {}, config = {}) {
@@ -458,8 +490,7 @@ class ProcessStages {
             'title': '',
             'remark': '',
             'stages': [],
-            'global_app': [],
-            ...data,
+            'global_app': [], ...data,
         }
         this.config = {
             'debug': false,
@@ -472,7 +503,7 @@ class ProcessStages {
             'urlAppData': '/process/runtime/app/__pk__/api',
             'redirectMaskUrl': '/gateway/reverse-url/create/__plan__/__app__',
             'applicationList': null,
-            ...config,
+            'urlLog': '/process/runtime/log/__pk__', ...config,
         }
         this.debug = !!this.config.debug;
         this.enableEdit = !!this.config['enableEdit'];
@@ -488,12 +519,14 @@ class ProcessStages {
         }
         this.applicationList = this.config.applicationList;
         this.applicationDict = {};
+        this.urlLog = this.config['urlLog'];
 
         this.modalStageConfig$ = $(ProcessStages.htmlModalStageConfig);
         this.modalAppConfig$ = $(ProcessStages.htmlModalAppConfig);
         this.modalDocList$ = $(ProcessStages.htmlModalDocList);
         this.modalDocListDataTable = null;
-        this.modalPasteConfig$ = $(ProcessStages.htmlModelPasteConfig);
+        this.modalPasteConfig$ = $(ProcessStages.htmlModalPasteConfig);
+        this.htmlModalShowLog$ = $(ProcessStages.htmlModalShowLog);
 
         this.applyThemes();
 
@@ -531,8 +564,7 @@ class ProcessStages {
                 "mode_code": "",
                 "application": "14dbc606-1453-4023-a2cf-35b1cd9e3efd",
                 "amount_approved": 0
-            },
-            {
+            }, {
                 "id": "",
                 "max": "1",
                 "min": "0",
@@ -892,8 +924,7 @@ class ProcessStages {
             itemData: {},
             fromFreeApp: false,
             settingFunc: clsThis.initApp__settings,
-            deleteFunc: clsThis.initApp__delete,
-            ...config
+            deleteFunc: clsThis.initApp__delete, ...config
         };
         appData = {
             'id': '',
@@ -932,8 +963,7 @@ class ProcessStages {
                 'process_id': clsThis.data?.['id'] || '',
                 'process_title': clsThis.data?.['title'] || '',
                 'process_stage_app_id': appData.id,
-                'process_stage_app_title': appData.title,
-                ...(clsThis.data?.['opp'] ? {
+                'process_stage_app_title': appData.title, ...(clsThis.data?.['opp'] ? {
                     'opp_id': clsThis.data['opp']?.['id'] || '',
                     'opp_title': clsThis.data['opp']?.['title'] || '',
                     'opp_code': clsThis.data['opp']?.['code'] || '',
@@ -1264,6 +1294,7 @@ class ProcessStages {
     on_allTools() {
         const clsThis = this;
 
+        const log$ = clsThis.stagesAllTools$.find('.all-tools-item[data-code=log]');
         const deleteApp$ = clsThis.stagesAllTools$.find('.all-tools-item[data-code=delete-app]');
         const deleteStages$ = clsThis.stagesAllTools$.find('.all-tools-item[data-code=delete-stage]');
         const showApp$ = clsThis.stagesAllTools$.find('.all-tools-item[data-code=show]');
@@ -1272,10 +1303,68 @@ class ProcessStages {
         const pasteConfig$ = clsThis.stagesAllTools$.find('.all-tools-item[data-code=paste-config]');
 
         if (clsThis.enableEdit === false) {
+            log$.on('click', function () {
+                clsThis.htmlModalShowLog$.modal('show');
+            });
+            clsThis.htmlModalShowLog$.on('shown.bs.modal', function () {
+                const table$ = clsThis.htmlModalShowLog$.find('table');
+                if (table$.length > 0 && table$.attr('data-loaded') !== '1') {
+                    table$.attr('data-loaded', '1');
+                    table$.DataTableDefault({
+                        ajax: {
+                            url: clsThis.urlLog.replaceAll('__pk__', clsThis.data['id']),
+                            type: 'GET',
+                            dataSrc: function (resp) {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    return resp.data['process_log'] ? resp.data['process_log'] : [];
+                                }
+                                return [];
+                            },
+                        },
+                        styleDom: 'small',
+                        autoWidth: false,
+                        columns: [
+                            {
+                                data: 'date_created',
+                                width: '20%',
+                                render: (data) => $x.fn.displayRelativeTime(data)
+                            }, {
+                                width: '30%',
+                                render: (data, type, row) => {
+                                    const stage = row?.['stage']?.title;
+                                    const app = row?.['app']?.title;
+                                    const doc = row?.['doc']?.title;
+
+                                    let html = ``;
+                                    if (stage) html += `<span class="badge badge-primary no-transform ml-1">${stage}</span>`;
+                                    if (app) html += `<span class="badge badge-warning no-transform ml-1">${app}</span>`;
+                                    if (doc) html += `<span class="badge badge-danger no-transform ml-1">${doc}</span>`;
+
+                                    return html;
+                                }
+                            }, {
+                                data: 'title_i18n',
+                                width: '30%',
+                                render: (data) => data
+                            }, {
+                                data: 'employee_created',
+                                width: '20%',
+                                render: (data, type, row) => {
+                                    const fullName = data?.full_name || '';
+                                    const email = data?.email || '';
+                                    return `<p>${fullName}</p><p>${email}</p>`;
+                                }
+                            },
+                        ]
+                    })
+                }
+            })
             deleteApp$.remove();
             deleteStages$.remove();
             pasteConfig$.remove();
         } else {
+            log$.remove();
             deleteApp$.on('click', function () {
                 Swal.fire({
                     title: $.fn.gettext("Are you sure you want to remove all item?"),
@@ -1459,8 +1548,7 @@ class ProcessStages {
                             "clean_all_stages": true,
                             "apply_to_stages": true,
                             "clean_all_cross_stage": true,
-                            "apply_to_cross_stage": true,
-                            ...result.value,
+                            "apply_to_cross_stage": true, ...result.value,
                         };
 
                         async function runSteps() {
@@ -1473,8 +1561,7 @@ class ProcessStages {
                                         }
                                         return null;
                                     },
-                                },
-                                {
+                                }, {
                                     title: $.fn.gettext('Clean all stages'),
                                     handle: function () {
                                         if (optionSetup['clean_all_stages']) {
@@ -1482,8 +1569,7 @@ class ProcessStages {
                                         }
                                         return null;
                                     },
-                                },
-                                {
+                                }, {
                                     title: $.fn.gettext('Apply new configurations to stages'),
                                     handle: function () {
                                         const stagesNew = new_config?.['stages'] || [];
@@ -1493,8 +1579,7 @@ class ProcessStages {
                                         }
                                         return null;
                                     },
-                                },
-                                {
+                                }, {
                                     title: $.fn.gettext('Clean all Cross-Stage Applications'),
                                     handle: function () {
                                         if (optionSetup['clean_all_cross_stage']) {
@@ -1502,8 +1587,7 @@ class ProcessStages {
                                         }
                                         return null;
                                     },
-                                },
-                                {
+                                }, {
                                     title: $.fn.gettext('Apply new configurations to Cross-Stage Applications'),
                                     handle: function () {
                                         const crossStagesNew = new_config?.['global_app'] || [];
@@ -1548,20 +1632,18 @@ class ProcessStages {
                                             ...resolveConfig,
                                         })
                                         Swal.showLoading();
-                                        await keepWaitFunc(handle).then(
-                                            (result) => {
-                                                if (result === false) {
-                                                    isBreak = true;
-                                                    htmlContainer.append(`<div class="mb-3"><span class="text-danger"><i class="fa-regular fa-circle-xmark"></i></span><span class="ml-2">${steps[i]['title']}</span></div>`);
-                                                } else if (result === true) {
-                                                    htmlContainer.append(`<div class="mb-3"><span class="text-success"><i class="fa-regular fa-circle-check"></i></span><span class="ml-2">${steps[i]['title']}</span></div>`);
-                                                } else if (result === null) {
-                                                    htmlContainer.append(`<div class="mb-3"><span class="text-secondary"><i class="fa-solid fa-circle-dot"></i></span><span class="ml-2">${steps[i]['title']}</span></div>`);
-                                                }
-                                                Swal.update({html: htmlContainer.prop('outerHTML')});
-                                                Swal.showLoading();
-                                            },
-                                        );
+                                        await keepWaitFunc(handle).then((result) => {
+                                            if (result === false) {
+                                                isBreak = true;
+                                                htmlContainer.append(`<div class="mb-3"><span class="text-danger"><i class="fa-regular fa-circle-xmark"></i></span><span class="ml-2">${steps[i]['title']}</span></div>`);
+                                            } else if (result === true) {
+                                                htmlContainer.append(`<div class="mb-3"><span class="text-success"><i class="fa-regular fa-circle-check"></i></span><span class="ml-2">${steps[i]['title']}</span></div>`);
+                                            } else if (result === null) {
+                                                htmlContainer.append(`<div class="mb-3"><span class="text-secondary"><i class="fa-solid fa-circle-dot"></i></span><span class="ml-2">${steps[i]['title']}</span></div>`);
+                                            }
+                                            Swal.update({html: htmlContainer.prop('outerHTML')});
+                                            Swal.showLoading();
+                                        },);
                                         if (i === steps.length - 1) Swal.hideLoading();
                                         if (isBreak === true) {
                                             Swal.hideLoading();
@@ -1605,7 +1687,7 @@ class ProcessStages {
         });
     }
 
-    on_crossStagesApps(amountCurrentApp=null) {
+    on_crossStagesApps(amountCurrentApp = null) {
         const clsThis = this;
         clsThis.stagesAllBodyControl$.append(clsThis.stagesAllBodyControlAppItem$);
 
@@ -1617,8 +1699,7 @@ class ProcessStages {
                 const stagesNeedRemove$ = clsThis.stagesAllBody$.find('.' + clsThis.itemClsName);
                 if (stagesNeedRemove$.length > 0) {
                     Swal.fire({
-                        title: $.fn.gettext("Are you sure you cleaned all Cross-Stage Apps?"),
-                        // html: `<b class="text-primary mb-3">${itemData?.['title'] || ''}</b>`,
+                        title: $.fn.gettext("Are you sure you cleaned all Cross-Stage Apps?"), // html: `<b class="text-primary mb-3">${itemData?.['title'] || ''}</b>`,
                         icon: "question",
                         showCancelButton: true,
                         cancelButtonText: $.fn.gettext('Cancel'),
@@ -1645,7 +1726,7 @@ class ProcessStages {
             clean$.remove();
             addApp$.remove();
             collapse$.addClass('only-collapse');
-            if (amountCurrentApp === 0){
+            if (amountCurrentApp === 0) {
                 clsThis.stagesAllBodyFull$.remove();
             }
         }

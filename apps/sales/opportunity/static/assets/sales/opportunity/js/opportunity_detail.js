@@ -1604,7 +1604,6 @@ $(document).ready(function () {
                             let opp_list = results[0];
                             for (let opp of opp_list) {
                                 if (opp?.['id'] === dataInitSaleCode?.['id']) {
-                                    debugger
                                     let opp_id = opp?.['id'];
                                     let opp_title = opp?.['title'];
                                     let opp_code = opp?.['code'];

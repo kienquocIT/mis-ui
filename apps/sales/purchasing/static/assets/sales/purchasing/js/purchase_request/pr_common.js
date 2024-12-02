@@ -349,7 +349,7 @@ function LoadSaleOrderTable() {
             url: tableSaleOrder.attr('data-url'),
             data: {
                 'system_status': 3,
-                'employee_inherit': emp_current_id
+                'employee_inherit_id': emp_current_id
             },
             type: 'GET',
             dataSrc: function (resp) {
@@ -373,16 +373,9 @@ function LoadSaleOrderTable() {
                     return ``
                 }
             }, {
-                data: 'code',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-primary p-so-code">${row?.['code']}</span>`
-                }
-            }, {
-                data: 'title',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="text-primary">${row?.['title']}</span>`
+                    return `<span class="badge badge-primary p-so-code">${row?.['code']}</span><br><span class="text-primary">${row?.['title']}</span>`
                 }
             }, {
                 className: 'wrap-text',
@@ -406,13 +399,13 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
             data: [],
             columns: [
                 {
-                    className: 'wrap-text w-10',
+                    className: 'wrap-text w-5',
                     render: () => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-40',
+                    className: 'wrap-text w-35',
                     render: (data, type, row) => {
                         return ``
                     }
@@ -430,7 +423,13 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-20',
+                    className: 'wrap-text text-center w-15',
+                    render: (data, type, row) => {
+                        return ``
+                    }
+                },
+                {
+                    className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
                         return ``
                     }
@@ -467,13 +466,13 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
             },
             columns: [
                 {
-                    className: 'wrap-text w-10',
+                    className: 'wrap-text w-5',
                     render: () => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-40',
+                    className: 'wrap-text w-35',
                     render: (data, type, row) => {
                         return `<span data-so-product-id="${row?.['id']}"
                                   data-product-id="${row?.['product']?.['id']}"
@@ -485,8 +484,8 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
                                   data-product-tax-id="${row?.['tax']?.['id']}"
                                   data-product-tax-code="${row?.['tax']?.['code']}"
                                   data-product-tax-title="${row?.['tax']?.['title']}"
-                                  class="w-30 badge badge-secondary product-span"
-                            >${row?.['product']?.['code']}</span>&nbsp;<span class="text-secondary">${row?.['product']?.['title']}</span>`
+                                  class="badge badge-outline badge-primary product-span"
+                            >${row?.['product']?.['code']}</span><br><span class="text-secondary">${row?.['product']?.['title']}</span>`
                     }
                 },
                 {
@@ -498,11 +497,17 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
                 {
                     className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
-                        return `<span class="remain-span">${parseFloat(row?.['remain_for_purchase_request'])}</span>`
+                        return `<span class="requested-span">${parseFloat(row?.['product_quantity']) - parseFloat(row?.['remain_for_purchase_request'])}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-20',
+                    className: 'wrap-text text-center w-15',
+                    render: (data, type, row) => {
+                        return `<span class="remain-span">${row?.['remain_for_purchase_request']}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
                         return `<input type="number" class="form-control text-center request-number-input" value="0" max="${parseFloat(row?.['remain_for_purchase_request'])}">`
                     }
@@ -543,10 +548,9 @@ function LoadDistributionTable() {
                     return ``
                 }
             }, {
-                data: 'code',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-primary mr-2 p-db-code">${row?.['code']}</span><span class="text-secondary">${row?.['title']}</span>`
+                    return `<span class="badge badge-primary p-db-code">${row?.['code']}</span><br><span class="text-secondary">${row?.['title']}</span>`
                 }
             }, {
                 className: 'wrap-text',
@@ -570,13 +574,13 @@ function LoadDistributionProductTable(distribution_id=null) {
             data: [],
             columns: [
                 {
-                    className: 'wrap-text w-10',
+                    className: 'wrap-text w-5',
                     render: () => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-40',
+                    className: 'wrap-text w-35',
                     render: (data, type, row) => {
                         return ``
                     }
@@ -600,7 +604,7 @@ function LoadDistributionProductTable(distribution_id=null) {
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-20',
+                    className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
                         return ``
                     }
@@ -641,7 +645,7 @@ function LoadDistributionProductTable(distribution_id=null) {
                     }
                 },
                 {
-                    className: 'wrap-text w-25',
+                    className: 'wrap-text w-35',
                     render: (data, type, row) => {
                         return `<span data-so-product-id="${row?.['id']}"
                                   data-product-id="${row?.['id']}"
@@ -650,8 +654,8 @@ function LoadDistributionProductTable(distribution_id=null) {
                                   data-product-uom-id="${row?.['uom']?.['id']}"
                                   data-product-uom-title="${row?.['uom']?.['title']}"
                                   data-product-description="${row?.['description']}"
-                                  class="badge badge-blue mr-2 product-span"
-                            >${row?.['code']}</span><span class="text-secondary">${row?.['title']}</span>`
+                                  class="badge badge-outline badge-primary product-span"
+                            >${row?.['code']}</span><br><span class="text-secondary">${row?.['title']}</span>`
                     }
                 },
                 {
@@ -676,7 +680,7 @@ function LoadDistributionProductTable(distribution_id=null) {
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-25',
+                    className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
                         return `<input type="number" class="form-control text-center request-number-input" value="0">`
                     }
@@ -983,10 +987,14 @@ function LoadDetailPR(option) {
 }
 
 $(document).on('change', '.inp-check-so', function () {
+    $(this).closest('table').find('tr').removeClass('bg-secondary-light-5');
+    $(this).closest('tr').addClass('bg-secondary-light-5');
     LoadSaleOrderProductTable($(this).attr('data-id'))
 })
 
 $(document).on('change', '.inp-check-dp', function () {
+    $(this).closest('table').find('tr').removeClass('bg-secondary-light-5');
+    $(this).closest('tr').addClass('bg-secondary-light-5');
     LoadDistributionProductTable($(this).attr('data-id'))
 })
 
@@ -1140,4 +1148,10 @@ $(document).on('click', '#btn-create-for-stock-plan', function () {
         'type': '3',
     })
     changeHrefCreate(url_create, paramString);
+})
+
+$('.select-pr-type').on('mouseenter', function () {
+    $(this).addClass('bg-secondary-light-5')
+}).on('mouseleave', function () {
+    $(this).removeClass('bg-secondary-light-5')
 })

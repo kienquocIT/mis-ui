@@ -153,4 +153,10 @@ $(document).ready(function () {
         })
         changeHrefCreate(url_create, paramString);
     })
+
+    $('.select-pr-type').on('mouseenter', function () {
+        $(this).addClass('bg-secondary-light-5')
+    }).on('mouseleave', function () {
+        $(this).removeClass('bg-secondary-light-5')
+    })
 })

@@ -9771,3 +9771,7 @@ msgstr "SL theo kế hoạch"
 #
 msgid "Requested quantity"
 msgstr "SL đã yêu cầu"
+
+#
+msgid "For Fixed Asset"
+msgstr "Cho Tài sản cố định"

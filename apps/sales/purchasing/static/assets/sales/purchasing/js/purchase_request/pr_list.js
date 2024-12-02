@@ -140,7 +140,7 @@ $(document).ready(function () {
         changeHrefCreate(url_create, paramString);
     })
 
-    $(document).on('click', '#btn-create-for-other', function () {
+    $(document).on('click', '#btn-create-for-fixed-asset', function () {
         let paramString = $.param({
             'type': '2',
         })

@@ -19,6 +19,12 @@ const contact_sf = $('#contact-sf')
 const deliveryDate_sf = $('#date-delivery-sf')
 const lineDetailTable_sf = $('#datatable-pr-product-stock-free')
 const btnAddSFProduct = $('#btn-add-stock-free-product')
+// for fa
+const supplier_fa = $('#supplier-fa')
+const contact_fa = $('#contact-fa')
+const deliveryDate_fa = $('#date-delivery-fa')
+const lineDetailTable_fa = $('#datatable-pr-product-fixed-asset')
+const btnAddFAProduct = $('#btn-add-fixed-asset-product')
 // for db
 const supplier_db = $('#supplier-db')
 const contact_db = $('#contact-db')
@@ -57,6 +63,9 @@ function LoadSupplier(ele, data) {
             }
             else if (TYPE === '1' || $('#request-for-sf').attr('data-type') === '1') {
                 LoadContactOwner(contact_sf, contact_owner)
+            }
+            else if (TYPE === '2' || $('#request-for-sf').attr('data-type') === '1') {
+                LoadContactOwner(contact_fa, contact_owner)
             }
             else if (TYPE === '3' || $('#request-for-db').attr('data-type') === '3') {
                 LoadContactOwner(contact_db, contact_owner)
@@ -738,6 +747,13 @@ class PurchaseRequestHandle {
             LoadSupplier(supplier_sf)
             LoadLineDetailTableAddRow(lineDetailTable_sf, [])
         }
+        else if (type === '2') {
+            $('.for-fixed-asset-request').prop('hidden', false)
+            $('#request-for-fa').val(script_trans.attr('data-trans-for-fa')).attr('data-type', type)
+            LoadDeliveryDate(deliveryDate_fa)
+            LoadSupplier(supplier_fa)
+            LoadLineDetailTableAddRow(lineDetailTable_fa, [])
+        }
         else if (type === '3') {
             $('.for-distribution-request').prop('hidden', false)
             $('#request-for-db').val(script_trans.attr('data-trans-for-db')).attr('data-type', type)
@@ -847,6 +863,37 @@ class PurchaseRequestHandle {
         // console.log(frm)
         return frm
     }
+
+    combinesDataFA(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle));
+
+        frm.dataForm['title'] = $('#title-fa').val()
+        frm.dataForm['delivered_date'] = moment(deliveryDate_fa.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+        frm.dataForm['supplier'] = supplier_fa.val()
+        frm.dataForm['contact'] = contact_fa.val()
+        frm.dataForm['request_for'] = $('#request-for-fa').attr('data-type')
+        frm.dataForm['note'] = $('#note-fa').val()
+        frm.dataForm['pretax_amount'] = $('#input-product-pretax-amount').attr('value')
+        frm.dataForm['taxes'] = $('#input-product-taxes').attr('value')
+        frm.dataForm['total_price'] = $('#input-product-total').attr('value')
+        let purchase_request_product_datas = []
+        $('#datatable-pr-product-fixed-asset tbody tr').each(function () {
+            purchase_request_product_datas.push({
+                'sale_order_product': null,
+                'product': $(this).find('.product-detail').val(),
+                'uom': $(this).find('.product-uom-detail').val(),
+                'quantity': $(this).find('.request-number-detail').val(),
+                'unit_price': $(this).find('.unit-price-detail').attr('value'),
+                'tax': $(this).find('.tax-detail').val() ? $(this).find('.tax-detail').val() : null,
+                'sub_total_price': $(this).find('.subtotal-detail').attr('value'),
+            })
+        })
+        frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
+        // console.log(frm)
+        return frm
+    }
 }
 
 function Disable(option) {
@@ -933,6 +980,40 @@ function LoadDetailPR(option) {
                         })
                     }
                     LoadLineDetailTableAddRow(lineDetailTable_sf, request_product_data, option === 'detail' ? 'disabled readonly' : '')
+                    $('#input-product-pretax-amount').attr('value', data?.['pretax_amount'])
+                    $('#input-product-taxes').attr('value', data?.['taxes'])
+                    $('#input-product-total').attr('value', data?.['total_price'])
+                    $.fn.initMaskMoney2()
+                }
+                else if (data?.['request_for'] === 2) {
+                    $('.for-fixed-asset-request').prop('hidden', false)
+                    $('#request-for-fa').val(script_trans.attr('data-trans-for-fa')).attr('data-type', 2)
+                    $('#title-fa').val(data?.['title'])
+                    deliveryDate_fa.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                    $('#pr-status-fa').val(data?.['purchase_status'])
+                    LoadSupplier(supplier_fa, data?.['supplier'])
+                    LoadContactOwner(contact_fa, data?.['contact'])
+                    $('#note-fa').val(data?.['note'])
+
+                    let request_product_data = []
+                    for (let i = 0; i < data?.['purchase_request_product_datas'].length; i++) {
+                        let item = data?.['purchase_request_product_datas'][i]
+                        request_product_data.push({
+                            'sale_order_product_id': item?.['sale_order_product'],
+                            'id': item?.['product']?.['id'],
+                            'code': item?.['product']?.['code'],
+                            'title': item?.['product']?.['title'],
+                            'description': item?.['product']?.['description'],
+                            'uom_group_id': item?.['uom']?.['group_id'],
+                            'uom_title': item?.['uom']?.['title'],
+                            'uom_id': item?.['uom']?.['id'],
+                            'request_number': item?.['quantity'],
+                            'tax': item?.['tax'],
+                            'unit_price': item?.['unit_price'],
+                            'sub_total_price': item?.['sub_total_price']
+                        })
+                    }
+                    LoadLineDetailTableAddRow(lineDetailTable_fa, request_product_data, option === 'detail' ? 'disabled readonly' : '')
                     $('#input-product-pretax-amount').attr('value', data?.['pretax_amount'])
                     $('#input-product-taxes').attr('value', data?.['taxes'])
                     $('#input-product-total').attr('value', data?.['total_price'])
@@ -1104,6 +1185,14 @@ btnAddSFProduct.on('click', function () {
     LoadTaxLineDetail(row_added.find('.tax-detail'))
 })
 
+btnAddFAProduct.on('click', function () {
+    addRow(lineDetailTable_fa, {})
+    let row_added = lineDetailTable_fa.find('tbody tr:last-child')
+    LoadProductLineDetail(row_added.find('.product-detail'))
+    LoadUOMLineDetail(row_added.find('.product-uom-detail'))
+    LoadTaxLineDetail(row_added.find('.tax-detail'))
+})
+
 $(document).on("click", '.btn-del-line-detail', function () {
     deleteRow($(this).closest('table'), parseInt($(this).closest('tr').find('td:first-child').text()))
 });
@@ -1136,7 +1225,7 @@ $(document).on('click', '#btn-create-for-stock-free', function () {
     changeHrefCreate(url_create, paramString);
 })
 
-$(document).on('click', '#btn-create-for-other', function () {
+$(document).on('click', '#btn-create-for-fixed-asset', function () {
     let paramString = $.param({
         'type': '2',
     })

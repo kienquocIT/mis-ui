@@ -360,3 +360,7 @@ msgstr "Bạn chắc chắn xoá dữ liệu này?"
 #
 msgid "Loading process members"
 msgstr "Đang tải thành viên của tiến trình"
+
+#
+msgid "Documents"
+msgstr "Tài liệu"

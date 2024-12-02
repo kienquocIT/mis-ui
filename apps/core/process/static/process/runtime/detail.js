@@ -24,7 +24,6 @@ $(document).ready(function () {
             frm$.find(':input[name=title]').val(processDetail?.['title'] || '');
             frm$.find(':input[name=remark]').val(processDetail?.['remark'] || '');
 
-            console.log("processDetail?.['employee_created_id']:", processDetail?.['employee_created_id']);
             employee_created_id = processDetail?.['employee_created_id'];
 
             const linkProcessConfig$ = $('#link-process-config');
@@ -128,8 +127,6 @@ $(document).ready(function () {
             ele$.find('.text-employee-created').text(item?.['employee_created']?.['full_name'] || '');
             ele$.find('.text-date-created').text(item?.['date_created'] || '');
             membersGroup$.append(ele$);
-
-            console.log("item?.['employee']?.['id']:", item?.['employee']?.['id']);
 
             const employee_id = item?.['employee']?.['id'] || null;
             if (employee_id === employee_created_id) {

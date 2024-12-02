@@ -6,7 +6,7 @@ from apps.core.process.views import (
     ProcessRuntimeOfMeAPI, ProcessRuntimeAPI,
     ProcessRuntimeDetailView, ProcessRuntimeListView, ProcessRuntimeListMeRedirect, ProcessRuntimeDetailAPI,
     ProcessRuntimeStageAppDetailAPI, ProcessStagesAppOfMeAPI, ProcessRuntimeDataMatchAPI, ProcessRuntimeMembersAPI,
-    ProcessRuntimeMemberDetailAPI,
+    ProcessRuntimeMemberDetailAPI, ProcessRuntimeLogAPI,
 )
 
 urlpatterns = [
@@ -30,4 +30,5 @@ urlpatterns = [
     path('runtime/detail/<str:pk>/api', ProcessRuntimeDetailAPI.as_view(), name='ProcessRuntimeDetailAPI'),
     path('runtime/app/<str:pk>/api', ProcessRuntimeStageAppDetailAPI.as_view(), name='ProcessRuntimeStageAppDetailAPI'),
     path('runtime/member/<str:pk>', ProcessRuntimeMemberDetailAPI.as_view(), name='ProcessRuntimeMemberDetailAPI'),
+    path('runtime/log/<str:pk>', ProcessRuntimeLogAPI.as_view(), name='ProcessRuntimeLogAPI'),
 ]

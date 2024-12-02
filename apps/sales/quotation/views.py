@@ -93,7 +93,8 @@ class QuotationCreate(View):
                         }
                     ]
                 }
-            }
+            },
+            'app_id': 'b9650500-aba7-44e3-b6e0-2542622702a3',
         }
         return ctx, status.HTTP_200_OK
 

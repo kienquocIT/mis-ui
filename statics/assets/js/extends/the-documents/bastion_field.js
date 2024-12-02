@@ -468,7 +468,8 @@ class BastionFieldControl {
         }).then(resp => {
             const data = $.fn.switcherResp(resp);
             if (data) {
-                clsThis.selectedFillAllData(data['opp_process_stage_app']);
+                const linkedData = data?.['opp_process_stage_app'];
+                clsThis.selectedFillAllData(linkedData);
             }
         })
     }

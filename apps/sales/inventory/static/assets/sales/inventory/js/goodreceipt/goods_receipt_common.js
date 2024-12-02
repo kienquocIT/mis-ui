@@ -1088,7 +1088,7 @@ class GRLoadDataHandle {
             let link = "";
             let linkDetail = elePR.attr('data-link-detail');
             link = linkDetail.format_url_with_uuid(prID);
-            eleAppend += `<div class="chip chip-outline-primary bg-green-light-5 mr-1 mb-1">
+            eleAppend += `<div class="chip chip-secondary bg-green-light-5 mr-1 mb-1">
                                 <span>
                                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
                                 </span>

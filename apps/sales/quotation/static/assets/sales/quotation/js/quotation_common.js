@@ -3396,7 +3396,7 @@ class QuotationDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         if (row?.['opportunity']?.['title'] && row?.['opportunity']?.['code']) {
-                            return `<span class="badge badge-soft-pink">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
+                            return `<span class="badge badge-light">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
                                     <span class="table-row-customer">${row?.['opportunity']?.['title']}</span>`;
                         }
                         return ``;

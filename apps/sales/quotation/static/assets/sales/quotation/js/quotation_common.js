@@ -1419,7 +1419,7 @@ class QuotationLoadDataHandle {
         let eleDueDate = row.querySelector('.table-row-due-date');
         if ($(ele).val()) {
             if (eleRatio && eleDate && eleValueBT && eleDueDate && dataSelected) {
-                eleRatio.setAttribute('disabled', 'true');
+                eleRatio.setAttribute('readonly', 'true');
                 if (dataSelected?.['value']) {
                     eleRatio.value = parseFloat(dataSelected?.['value']);
                 }
@@ -1435,7 +1435,7 @@ class QuotationLoadDataHandle {
             }
         } else {
             if (eleRatio && eleValueBT && eleDueDate) {
-                eleRatio.removeAttribute('disabled');
+                eleRatio.removeAttribute('readonly');
                 eleDueDate.removeAttribute('disabled');
             }
         }
@@ -2479,27 +2479,30 @@ class QuotationLoadDataHandle {
             table.DataTable().rows().every(function () {
                 let row = this.node();
                 let dataRow = JSON.parse(row.querySelector('.table-row-remark')?.getAttribute('data-row'));
-                $(row.querySelector('.table-row-term')).empty();
-                let term = [];
-                if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                    let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-                    if (dataSelected) {
-                        term = dataSelected?.['term'];
-                        let dataDateType = JSON.parse($('#payment_date_type').text());
-                        for (let termData of term) {
-                            // termData['title'] = dataDateType[termData?.['after']][1];
-                            let isNum = parseFloat(termData?.['value']);
-                            if (!isNum) {  // balance
-                                termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
+                let eleTerm = row.querySelector('.table-row-term');
+                if (eleTerm) {
+                    $(eleTerm).empty();
+                    let term = [];
+                    if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                        let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+                        if (dataSelected) {
+                            term = dataSelected?.['term'];
+                            let dataDateType = JSON.parse($('#payment_date_type').text());
+                            for (let termData of term) {
+                                // termData['title'] = dataDateType[termData?.['after']][1];
+                                let isNum = parseFloat(termData?.['value']);
+                                if (!isNum) {  // balance
+                                    termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
+                                }
                             }
                         }
                     }
+                    $(eleTerm).initSelect2({
+                        data: term,
+                        'allowClear': true,
+                    });
+                    $(eleTerm).val(dataRow?.['term_id']).trigger('change');
                 }
-                $(row.querySelector('.table-row-term')).initSelect2({
-                    data: term,
-                    'allowClear': true,
-                });
-                $(row.querySelector('.table-row-term')).val(dataRow?.['term_id']).trigger('change');
             });
         }
         return true;

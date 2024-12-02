@@ -168,7 +168,9 @@ class NodeLoadDataHandle {
         NodeLoadDataHandle.loadZone();
         NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxSource, NodeLoadDataHandle.dataSource);
 
-        NodeDataTableHandle.dataTableCollabOutFormEmployee(JSON.parse(NodeLoadDataHandle.$initEmp.val()));
+        NodeDataTableHandle.dataTableCollabOutFormEmployee();
+        NodeDataTableHandle.$tableOFEmp.DataTable().clear().draw();
+        NodeDataTableHandle.$tableOFEmp.DataTable().rows.add(JSON.parse(NodeLoadDataHandle.$initEmp.val())).draw();
         NodeDataTableHandle.dataTableCollabInWFEmployee();
         NodeDataTableHandle.dataTableCollabInWFExitCon();
         let nodeActionRaw = $('#wf_action').text();

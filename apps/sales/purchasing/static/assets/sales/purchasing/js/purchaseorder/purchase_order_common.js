@@ -28,7 +28,7 @@ class POLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
                 let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
                 return $(`<span>${res1} ${res2}</span>`);
             }
@@ -314,7 +314,7 @@ class POLoadDataHandle {
                 let link = "";
                 let linkDetail = elePurchaseRequest.attr('data-link-detail');
                 link = linkDetail.format_url_with_uuid(prID);
-                eleAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                eleAppend += `<div class="chip chip-secondary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                     <span>
                                         <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
                                     </span>
@@ -331,11 +331,6 @@ class POLoadDataHandle {
         } else {
             POLoadDataHandle.PRDataEle.val('');
         }
-        // clear supplier, contact
-        // POLoadDataHandle.supplierSelectEle.empty();
-        // POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [], {'account_types_mapped__account_type_order': 1}, null, true);
-        // POLoadDataHandle.contactSelectEle.empty();
-        // POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
         POLoadDataHandle.loadResetPQAndPriceList();
         // uncheck merge product
         let eleMergeProduct = $('#merge-same-product');
@@ -423,10 +418,10 @@ class POLoadDataHandle {
             let link = "";
             let linkDetail = elePurchaseQuotation.attr('data-link-detail');
             link = linkDetail.format_url_with_uuid(pqID);
-            eleAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+            eleAppend += `<div class="chip chip-secondary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                 <span>
                                     <div class="form-check">
-                                        <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
+                                        <input type="radio" class="form-check-input checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
                                         <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${pqCode}</span></a>
                                     </div>
                                 </span>
@@ -452,6 +447,7 @@ class POLoadDataHandle {
                 }
             }
         }
+        POLoadDataHandle.loadEventRadio(elePurchaseQuotation);
         return true;
     };
 
@@ -710,7 +706,7 @@ class POLoadDataHandle {
         POLoadDataHandle.loadDataByCheckedQuotation(ele);
         if (ele.checked === true) {
             for (let item of POLoadDataHandle.$elePQ[0].querySelectorAll('.checkbox-quotation')) {
-                if (item.getAttribute('data-id') !== $(this)[0].getAttribute('data-id')) {
+                if (item.getAttribute('data-id') !== ele.getAttribute('data-id')) {
                     item.checked = false;
                 }
             }
@@ -1018,13 +1014,13 @@ class POLoadDataHandle {
             let linkDetail = elePurchaseRequest.attr('data-link-detail');
             link = linkDetail.format_url_with_uuid(prID);
             if (from.attr('data-method') === 'GET') {
-                elePRAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                elePRAppend += `<div class="chip chip-secondary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                     <span>
                                         <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
                                     </span>
                                 </div>`;
             } else {
-                elePRAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                elePRAppend += `<div class="chip chip-secondary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                     <span>
                                         <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
                                     </span>
@@ -1045,7 +1041,7 @@ class POLoadDataHandle {
             link = linkDetail.format_url_with_uuid(pqID);
             if (from.attr('data-method') === 'GET') {
                 if (dataPQ?.['is_use'] === false) {
-                    elePQAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                    elePQAppend += `<div class="chip chip-secondary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                         <span>
                                             <div class="form-check">
                                                 <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" disabled>
@@ -1054,7 +1050,7 @@ class POLoadDataHandle {
                                         </span>
                                     </div>`;
                 } else {
-                    elePQAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                    elePQAppend += `<div class="chip chip-secondary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                         <span>
                                             <div class="form-check">
                                                 <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked disabled>
@@ -1065,7 +1061,7 @@ class POLoadDataHandle {
                 }
             } else {
                 if (dataPQ?.['is_use'] === false) {
-                    elePQAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                    elePQAppend += `<div class="chip chip-secondary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                         <span>
                                             <div class="form-check">
                                                 <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
@@ -1074,7 +1070,7 @@ class POLoadDataHandle {
                                         </span>
                                     </div>`;
                 } else {
-                    elePQAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                    elePQAppend += `<div class="chip chip-secondary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                         <span>
                                             <div class="form-check">
                                                 <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked>
@@ -1571,7 +1567,7 @@ class PODataTableHandle {
                     render: (data, type, row) => {
                         let dataSupplier = JSON.stringify(row?.['supplier_mapped']).replace(/"/g, "&quot;");
                         if (row?.['supplier_mapped']?.['name'] && row?.['supplier_mapped']?.['code']) {
-                            return `<span class="badge badge-soft-pink">${row?.['supplier_mapped']?.['code'] ? row?.['supplier_mapped']?.['code'] : ''}</span>
+                            return `<span class="badge badge-light">${row?.['supplier_mapped']?.['code'] ? row?.['supplier_mapped']?.['code'] : ''}</span>
                                     <span class="table-row-supplier" data-supplier="${dataSupplier}" id="${row?.['supplier_mapped']?.['id']}">${row?.['supplier_mapped']?.['name']}</span>`;
                         }
                         return ``;

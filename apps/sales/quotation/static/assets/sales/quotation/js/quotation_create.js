@@ -9,15 +9,28 @@ $(function () {
         let tabPrice = $('#tab_terms');
         let btnAddProductGr = $('#btn-add-product-group-quotation');
         let btnAddProduct = $('#btn-add-product-quotation-create');
+        let tableProduct = $('#datable-quotation-create-product');
+        let tableCost = $('#datable-quotation-create-cost');
+        let tableExpense = $('#datable-quotation-create-expense');
+        let tablePS = $('#datable-quotation-payment-stage');
+        let tablePromotion = $('#datable-quotation-create-promotion');
+        let tableShipping = $('#datable-quotation-create-shipping');
+        let tableCopyQuotation = $('#datable-copy-quotation');
+        let divCopyOption = $('#copy-quotation-option');
+        let tableCopyQuotationProduct = $('#datable-copy-quotation-product');
+        let modalShipping = $('#quotation-create-modal-shipping-body');
+        let modalBilling = $('#quotation-create-modal-billing-body');
+        let $quotationTabs = $('#quotation-tabs');
+
 
         // Load inits
         QuotationLoadDataHandle.loadCustomCss();
+        QuotationLoadDataHandle.loadInitInherit();
         QuotationLoadDataHandle.loadInitCustomer();
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         QuotationLoadDataHandle.loadInitDate();
-
         // init dataTable
         QuotationDataTableHandle.dataTableSelectProduct();
         QuotationDataTableHandle.dataTableProduct();
@@ -31,25 +44,6 @@ $(function () {
         }
         // init config
         QuotationLoadDataHandle.loadInitQuotationConfig(formSubmit.attr('data-method'));
-        // ele tables
-        let tableProduct = $('#datable-quotation-create-product');
-        let tableCost = $('#datable-quotation-create-cost');
-        let tableExpense = $('#datable-quotation-create-expense');
-        let tablePS = $('#datable-quotation-payment-stage');
-        // promotion
-        let tablePromotion = $('#datable-quotation-create-promotion');
-        // shipping
-        let tableShipping = $('#datable-quotation-create-shipping');
-        // copy quotation
-        let tableCopyQuotation = $('#datable-copy-quotation');
-        let divCopyOption = $('#copy-quotation-option');
-        let tableCopyQuotationProduct = $('#datable-copy-quotation-product');
-
-        let modalShipping = $('#quotation-create-modal-shipping-body');
-        let modalBilling = $('#quotation-create-modal-billing-body');
-
-        let $quotationTabs = $('#quotation-tabs');
-
         $('input[name="date_created"]').daterangepicker({
             singleDatePicker: true,
             timePicker: true,
@@ -61,7 +55,6 @@ $(function () {
             },
         });
         $('.daterangepicker').remove();
-
         // get WF initial zones
         let appCode = 'quotation';
         if (formSubmit[0].classList.contains('sale-order')) {

@@ -33,7 +33,7 @@ class QuotationLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
                 let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
                 return $(`<span>${res1} ${res2}</span>`);
             }
@@ -152,6 +152,14 @@ class QuotationLoadDataHandle {
                     }
                 )
             }
+        }
+        return true;
+    };
+
+    static loadInitInherit() {
+        let dataStr = $('#employee_current').text();
+        if (dataStr) {
+            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.salePersonSelectEle, [JSON.parse(dataStr)]);
         }
         return true;
     };
@@ -321,19 +329,17 @@ class QuotationLoadDataHandle {
     };
 
     static loadBoxQuotationPaymentTerm(dataPayment = {}) {
-        QuotationLoadDataHandle.paymentSelectEle.empty();
+        QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle);
         if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
                 if (dataSelected?.['payment_term_customer_mapped']) {
                     dataPayment = dataSelected?.['payment_term_customer_mapped'];
+                    QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [dataPayment]);
                 }
             }
         }
-        QuotationLoadDataHandle.paymentSelectEle.initSelect2({
-            data: dataPayment,
-            disabled: !(QuotationLoadDataHandle.paymentSelectEle.attr('data-url')),
-        });
+        return true;
     };
 
     static loadDataBySalePerson() {
@@ -1279,7 +1285,7 @@ class QuotationLoadDataHandle {
             }
         }
         return 100 - totalValue;
-    }
+    };
 
     static loadChangePaymentTerm() {
         let formSubmit = $('#frm_quotation_create');
@@ -1292,7 +1298,7 @@ class QuotationLoadDataHandle {
                     term = dataSelected?.['term'];
                     let dataDateType = JSON.parse($('#payment_date_type').text());
                     for (let termData of term) {
-                        termData['title'] = dataDateType[termData?.['after']][1];
+                        // termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
                             termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
@@ -1302,11 +1308,12 @@ class QuotationLoadDataHandle {
             }
             $table.DataTable().rows().every(function () {
                 let row = this.node();
-                if (row.querySelector('.table-row-term')) {
-                    row.querySelector('.table-row-term').removeAttribute('disabled');
-                    $(row.querySelector('.table-row-term')).empty();
-                    $(row.querySelector('.table-row-term')).initSelect2({data: term, 'allowClear': true});
-                    $(row.querySelector('.table-row-term')).val('').trigger('change');
+                let eleTerm = row.querySelector('.table-row-term');
+                if (eleTerm) {
+                    eleTerm.removeAttribute('disabled');
+                    $(eleTerm).empty();
+                    $(eleTerm).initSelect2({data: term, 'allowClear': true});
+                    $(eleTerm).val('').trigger('change');
                 }
             });
         }
@@ -1323,8 +1330,9 @@ class QuotationLoadDataHandle {
         let newRow = $table.DataTable().row.add(dataAdd).draw().node();
         if (newRow) {
             // load datePicker
-            if (newRow.querySelector('.table-row-date')) {
-                $(newRow.querySelector('.table-row-date')).daterangepicker({
+            let eleDate = newRow.querySelector('.table-row-date');
+            if (eleDate) {
+                $(eleDate).daterangepicker({
                     singleDatePicker: true,
                     timepicker: false,
                     showDropdowns: false,
@@ -1336,10 +1344,11 @@ class QuotationLoadDataHandle {
                     drops: 'up',
                     autoApply: true,
                 });
-                $(newRow.querySelector('.table-row-date')).val(null).trigger('change');
+                $(eleDate).val(null).trigger('change');
             }
-            if (newRow.querySelector('.table-row-due-date')) {
-                $(newRow.querySelector('.table-row-due-date')).daterangepicker({
+            let eleDueDate = newRow.querySelector('.table-row-due-date');
+            if (eleDueDate) {
+                $(eleDueDate).daterangepicker({
                     singleDatePicker: true,
                     timepicker: false,
                     showDropdowns: false,
@@ -1351,7 +1360,7 @@ class QuotationLoadDataHandle {
                     drops: 'up',
                     autoApply: true,
                 });
-                $(newRow.querySelector('.table-row-due-date')).val(null).trigger('change');
+                $(eleDueDate).val(null).trigger('change');
             }
             // load init data
             let term = [];
@@ -1363,7 +1372,7 @@ class QuotationLoadDataHandle {
                     term = dataSelected?.['term'];
                     let dataDateType = JSON.parse($('#payment_date_type').text());
                     for (let termData of term) {
-                        termData['title'] = dataDateType[termData?.['after']][1];
+                        // termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
                             termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
@@ -1371,13 +1380,14 @@ class QuotationLoadDataHandle {
                     }
                 }
             }
-            if (newRow.querySelector('.table-row-term')) {
-                $(newRow.querySelector('.table-row-term')).initSelect2({
+            let eleTerm = newRow.querySelector('.table-row-term');
+            if (eleTerm) {
+                $(eleTerm).initSelect2({
                     data: term,
                     disabled: isDisabled,
                     'allowClear': true,
                 });
-                $(newRow.querySelector('.table-row-term')).val('').trigger('change');
+                $(eleTerm).val('').trigger('change');
             }
             // mask money
             $.fn.initMaskMoney2();
@@ -1415,7 +1425,7 @@ class QuotationLoadDataHandle {
         let eleDueDate = row.querySelector('.table-row-due-date');
         if ($(ele).val()) {
             if (eleRatio && eleDate && eleValueBT && eleDueDate && dataSelected) {
-                eleRatio.setAttribute('disabled', 'true');
+                eleRatio.setAttribute('readonly', 'true');
                 if (dataSelected?.['value']) {
                     eleRatio.value = parseFloat(dataSelected?.['value']);
                 }
@@ -1431,7 +1441,7 @@ class QuotationLoadDataHandle {
             }
         } else {
             if (eleRatio && eleValueBT && eleDueDate) {
-                eleRatio.removeAttribute('disabled');
+                eleRatio.removeAttribute('readonly');
                 eleDueDate.removeAttribute('disabled');
             }
         }
@@ -2475,27 +2485,30 @@ class QuotationLoadDataHandle {
             table.DataTable().rows().every(function () {
                 let row = this.node();
                 let dataRow = JSON.parse(row.querySelector('.table-row-remark')?.getAttribute('data-row'));
-                $(row.querySelector('.table-row-term')).empty();
-                let term = [];
-                if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                    let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-                    if (dataSelected) {
-                        term = dataSelected?.['term'];
-                        let dataDateType = JSON.parse($('#payment_date_type').text());
-                        for (let termData of term) {
-                            termData['title'] = dataDateType[termData?.['after']][1];
-                            let isNum = parseFloat(termData?.['value']);
-                            if (!isNum) {  // balance
-                                termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
+                let eleTerm = row.querySelector('.table-row-term');
+                if (eleTerm) {
+                    $(eleTerm).empty();
+                    let term = [];
+                    if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                        let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+                        if (dataSelected) {
+                            term = dataSelected?.['term'];
+                            let dataDateType = JSON.parse($('#payment_date_type').text());
+                            for (let termData of term) {
+                                // termData['title'] = dataDateType[termData?.['after']][1];
+                                let isNum = parseFloat(termData?.['value']);
+                                if (!isNum) {  // balance
+                                    termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
+                                }
                             }
                         }
                     }
+                    $(eleTerm).initSelect2({
+                        data: term,
+                        'allowClear': true,
+                    });
+                    $(eleTerm).val(dataRow?.['term_id']).trigger('change');
                 }
-                $(row.querySelector('.table-row-term')).initSelect2({
-                    data: term,
-                    'allowClear': true,
-                });
-                $(row.querySelector('.table-row-term')).val(dataRow?.['term_id']).trigger('change');
             });
         }
         return true;
@@ -3396,7 +3409,7 @@ class QuotationDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         if (row?.['opportunity']?.['title'] && row?.['opportunity']?.['code']) {
-                            return `<span class="badge badge-soft-pink">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
+                            return `<span class="badge badge-light">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
                                     <span class="table-row-customer">${row?.['opportunity']?.['title']}</span>`;
                         }
                         return ``;
@@ -3754,9 +3767,9 @@ class QuotationDataTableHandle {
                     targets: 6,
                     render: (data, type, row) => {
                         if (row?.['is_ar_invoice'] === true) {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice" checked></div>`;
+                            return `<div class="form-check form-check-lg"><input type="checkbox" class="form-check-input table-row-checkbox-invoice" checked></div>`;
                         } else {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice"></div>`;
+                            return `<div class="form-check form-check-lg"><input type="checkbox" class="form-check-input table-row-checkbox-invoice"></div>`;
                         }
                     }
                 },

@@ -649,7 +649,7 @@ $(async function () {
                 let data = this.data();
 
                 // Find the checkbox only once
-                let checkbox = row.querySelector('.table-row-checkbox');
+                let checkbox = row.querySelector('.form-check');
                 if (checkbox) {
                     // Remove any previously bound event listeners to avoid duplication
                     checkbox.replaceWith(checkbox.cloneNode(true)); // Clear all event listeners
@@ -662,7 +662,7 @@ $(async function () {
                 }
             });
             return true;
-        }
+        };
 
         loadCheckPW(ele, data, row) {
             if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {

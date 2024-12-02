@@ -156,6 +156,14 @@ class QuotationLoadDataHandle {
         return true;
     };
 
+    static loadInitInherit() {
+        let dataStr = $('#employee_current').text();
+        if (dataStr) {
+            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.salePersonSelectEle, [JSON.parse(dataStr)]);
+        }
+        return true;
+    };
+
     static loadDataByOpportunity() {
         let tableProduct = $('#datable-quotation-create-product');
         if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) {

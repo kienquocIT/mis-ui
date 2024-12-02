@@ -376,7 +376,7 @@ $(document).ready(function () {
     $import_db_form.submit(function (event) {
         event.preventDefault();
         Swal.fire({
-            title: `<h5>${$trans_db_script.attr('data-trans-start-import')}</h5><h6 class="text-warning">${$trans_db_script.attr('data-trans-start-import-noty')}</h6>`,
+            title: `<h5 class="text-muted">${$trans_db_script.attr('data-trans-start-import')}</h5><h6 class="text-danger mt-3">${$trans_db_script.attr('data-trans-start-import-noty')}</h6>`,
             showCancelButton: false,
             confirmButtonText: 'OK',
         }).then(async (result) => {

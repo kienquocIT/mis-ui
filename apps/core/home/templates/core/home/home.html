@@ -1270,6 +1270,7 @@
                 ele$.removeAttr('id');
 
                 let link = "#";
+                let title = `<span>${data?.['title'] || ''}</span>`;
                 let iconApp = $('<i class="fa-solid fa-calendar-day"></i>');
                 switch (data?.['category']) {
                     case 'Opportunity Meeting':
@@ -1297,6 +1298,7 @@
                         if (data?.['id'] && data?.['app_code'] && data?.['doc_template_data']?.['id']) {
                             if (appMapUrl?.[data?.['app_code']]?.['create']) {
                                 link = appMapUrl[data?.['app_code']]['create'] + `?recurrence_template_id=${data?.['doc_template_data']?.['id']}&recurrence_task_id=${data?.['id']}`;
+                                title = `<a href="${link}"><span>${data?.['title'] || ''}</span></a>`;
                             }
                         }
                         break
@@ -1308,7 +1310,7 @@
                 } else {
                     ele$.find('.event-at-category-title').text('');
                 }
-                ele$.find('.event-at-title').html(iconApp.prop('outerHTML') + `<a href="${link}" class="text-white"><span>${data?.['title'] || ''}</span></a>`);
+                ele$.find('.event-at-title').html(iconApp.prop('outerHTML') + `${title}`);
                 if (data?.['location_title'] && data?.['location_address']){
                     ele$.find('.event-at-location').html(`${data['location_address']} - ${data['location_title']}`);
                 } else if (data?.['location_address']) {

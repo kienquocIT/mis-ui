@@ -30,8 +30,10 @@
             data-trans-delivered="{% trans 'is not in stock' %}"
             data-trans-done="{% trans 'Done' %}"
             data-trans-not-yet="{% trans 'Not yet' %}"
+            data-trans-detail="{% trans 'Detail' %}"
             data-trans-current="{% trans 'current' %}"
             data-trans-filter="{% trans 'Filter' %}"
+            data-trans-add-new-row="{% trans 'Add new row' %}"
     ></script>
 
     <div class="row">
@@ -74,7 +76,7 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label for="status" class="form-label">{% trans 'Serial status' %}</label>
+                                <label for="status" class="form-label">{% trans 'Serial input status' %}</label>
                                 <select class="form-select select2 select-multiple" multiple id="status">
                                     <option value="0" selected>{% trans 'Not yet' %}</option>
                                     <option value="1" selected>{% trans 'Done' %}</option>
@@ -103,7 +105,7 @@
                         <th style="min-width: 200px">{% trans 'PIC' %}</th>
                         <th style="min-width: 150px">{% trans 'Warehouse' %}</th>
                         <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                        <th style="min-width: 80px">{% trans 'State' %}</th>
+                        <th style="min-width: 80px">{% trans 'Serial' %}/{% trans 'Lot' %}</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -148,7 +150,6 @@
                                         </thead>
                                         <tbody></tbody>
                                     </table>
-                                    <button type="button" id="add-row-sn" class="btn btn-primary btn-sm mt-2">{% trans 'Add new serial' %}</button>
                                 </div>
                             </form>
                         </div>

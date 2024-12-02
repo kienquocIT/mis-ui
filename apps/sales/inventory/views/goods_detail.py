@@ -46,7 +46,6 @@ class GoodsDetail(View):
                                     {"col_key": "goods_receipt_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-goods-receipt-id"},
                                     {"col_key": "warehouse_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-warehouse-id"},
                                     {"col_key": "purchase_request_id", "col_index": -2, "ele_id": '#table-serial', "get_value": False, "get_text": False, "get_attr": "data-purchase-request-id"},
-                                    {"col_key": "is_serial_update", "col_index": -1, "data_default": True},
                                 ]
                             }
                         }

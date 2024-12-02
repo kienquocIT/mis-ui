@@ -16,8 +16,10 @@
 
 {% block pageContent %}
     <form
-            id="frm_group_create" class="needs-validation" data-url="{% url 'GroupListAPI' %}" data-method="POST"
-            novalidate data-url-redirect="{% url 'GroupList' %}"
+            id="frm_group_create"
+            data-url="{% url 'GroupListAPI' %}"
+            data-method="POST"
+            data-url-redirect="{% url 'GroupList' %}"
     >
         {% csrf_token %}
         <div class="row">

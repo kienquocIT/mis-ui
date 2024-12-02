@@ -7,7 +7,6 @@ $(document).ready(function () {
     const $table_serial = $('#table-serial')
     const $trans_script = $('#trans-url')
     const $apply_btn = $('#apply-btn')
-    const $add_row_sn_btn = $('#add-row-sn')
 
     function loadProductCategory(data) {
         $prd_category.initSelect2({
@@ -58,9 +57,10 @@ $(document).ready(function () {
     loadWarehouse()
 
     function loadMainTable(category_list=[], product_list=[], warehouse_list=[], status_list=[]) {
+        $main_table.DataTable().clear().destroy()
         $main_table.DataTableDefault({
             rowIdx: true,
-            // useDataServer: true,
+            useDataServer: true,
             scrollX: true,
             scrollCollapse: true,
             reloadCurrency: true,
@@ -70,27 +70,23 @@ $(document).ready(function () {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        let result = []
-                        for (const item of resp.data['goods_detail_list'] ? resp.data['goods_detail_list'] : []) {
-                            result = result.concat(item?.['product_data'])
-                        }
-                        console.log(result)
+                        let result = resp.data['goods_detail_list'] ? resp.data['goods_detail_list'] : []
 
                         // filter 1: filter by category
                         if (category_list.length > 0) {
-                            result = result.filter(item => category_list.includes(item?.['product']?.['category']));
+                            result = result.filter(item => category_list.includes(item?.['product_data']?.['category']));
                         }
                         // filter 2: filter by product
                         if (product_list.length > 0) {
-                            result = result.filter(item => product_list.includes(item?.['product']?.['id']));
+                            result = result.filter(item => product_list.includes(item?.['product_data']?.['id']));
                         }
                         // filter 3: filter by warehouse
                         if (warehouse_list.length > 0) {
-                            result = result.filter(item => warehouse_list.includes(item?.['warehouse']?.['id']));
+                            result = result.filter(item => warehouse_list.includes(item?.['warehouse_data']?.['id']));
                         }
                         // filter 4: filter by status
                         if (status_list.length > 0) {
-                            result = result.filter(item => status_list.includes(item?.['status'].toString()));
+                            result = result.filter(item => status_list.includes(Number(item?.['status']).toString()));
                         }
 
                         return result;
@@ -107,28 +103,28 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    data: 'product',
+                    data: 'product_data',
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-secondary">${data?.['code']}</span><br><span class="text-muted">${data?.['title']}</span>`;
                     }
                 },
                 {
-                    data: 'goods_receipt',
+                    data: 'goods_receipt_data',
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-blue gr-code">${data?.['code']}</span>`;
                     }
                 },
                 {
-                    data: 'purchase_request',
+                    data: 'purchase_request_data',
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-primary pr-code">${data?.['code'] ? data?.['code'] : ''}</span>`;
                     }
                 },
                 {
-                    data: '',
+                    data: 'goods_receipt_data',
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         if (data?.['date_approved']) {
@@ -138,50 +134,54 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    data: 'person_in_charge',
+                    data: 'goods_receipt_data',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="text-muted">${data?.['full_name']}</span>`;
+                        return `<span class="text-muted">${data?.['pic']?.['fullname']}</span>`;
                     }
                 },
                 {
-                    data: 'warehouse',
+                    data: 'warehouse_data',
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-secondary">${data?.['code']}</span><br><span class="text-muted">${data?.['title']}</span>`;
                     }
                 },
                 {
-                    data: 'quantity_import',
+                    data: 'receipt_quantity',
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `${data}`;
                     }
                 },
                 {
-                    data: 'serial_list',
+                    data: '',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        if (row?.['product']?.['type'] === 2) {
-                            let status = row?.['status'] ? $trans_script.attr('data-trans-done') : $trans_script.attr('data-trans-not-yet')
+                        if (row?.['product_data']?.['general_traceability_method'] === 1) {
+                            return `<i class="text-blue fas fa-bookmark"></i>&nbsp;<span class="text-blue fw-bold">${row?.['lot_data']?.['lot_number']}</span>`;
+                        }
+                        else if (row?.['product_data']?.['general_traceability_method'] === 2) {
                             let color = row?.['status'] ? 'success' : 'warning'
                             return `
-                                <button type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal-serial"
-                                        class="btn btn-${color} btn-sm btn-open-modal-serial w-100"
-                                        data-quantity-import="${row?.['quantity_import']}"
-                                        data-product-id="${row?.['product']?.['id']}"
-                                        data-warehouse-id="${row?.['warehouse']?.['id']}"
-                                        data-goods-receipt-id="${row?.['goods_receipt']?.['id']}"
-                                        data-purchase-request-id="${row?.['purchase_request']?.['id'] ? row?.['purchase_request']?.['id'] : ''}"
-                                >
-                                    <span class="row-status">${status}</span>
-                                </button>
-                                <script class="serial_list_data">${JSON.stringify(data)}</script>
+                                <a href="#" data-bs-toggle="tooltip" title="${row?.['status'] ? $trans_script.attr('data-trans-done') : $trans_script.attr('data-trans-not-yet')}">
+                                    <button type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal-serial"
+                                            class="btn btn-${color} btn-xs btn-open-modal-serial w-100"
+                                            data-status="${row?.['status']}"
+                                            data-quantity-import="${row?.['receipt_quantity']}"
+                                            data-product-id="${row?.['product_data']?.['id']}"
+                                            data-warehouse-id="${row?.['warehouse_data']?.['id']}"
+                                            data-goods-receipt-id="${row?.['goods_receipt_data']?.['id']}"
+                                            data-purchase-request-id="${row?.['purchase_request_data']?.['id'] ? row?.['purchase_request_data']?.['id'] : ''}"
+                                    >
+                                        <span class="row-status">${$trans_script.attr('data-trans-detail')}</span>
+                                    </button>
+                                </a>
                             `;
                         }
-                        return ``
+                        return `--`
                     }
                 },
             ],
@@ -207,21 +207,25 @@ $(document).ready(function () {
 
     function loadSerialTable() {
         $table_serial.DataTable().clear().destroy()
+        let params = {
+            'product_id': $table_serial.attr('data-product-id'),
+            'warehouse_id': $table_serial.attr('data-warehouse-id'),
+            'goods_receipt_id': $table_serial.attr('data-goods-receipt-id')
+        }
+        if ($table_serial.attr('data-purchase-request-id')) {
+            params['purchase_request_id'] = $table_serial.attr('data-purchase-request-id')
+        }
         $table_serial.DataTableDefault({
             rowIdx: true,
-            paging: false,
+            // paging: false,
+            // useDataServer: true,
             scrollY: '50vh',
             scrollX: '100vh',
             scrollCollapse: true,
             ajax: {
                 url: $table_serial.attr('data-url'),
                 type: 'GET',
-                data: {
-                    'product_id': $table_serial.attr('data-product-id'),
-                    'warehouse_id': $table_serial.attr('data-warehouse-id'),
-                    'goods_receipt_id': $table_serial.attr('data-goods-receipt-id'),
-                    'purchase_request_id': $table_serial.attr('data-purchase-request-id') ? $table_serial.attr('data-purchase-request-id') : null
-                },
+                data: params,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -321,12 +325,28 @@ $(document).ready(function () {
                             `;
                         }
                         if (row?.['is_delete']) {
-                            return `${$trans_script.attr('data-trans-delivered')}`
+                            return `<span class="small">${$trans_script.attr('data-trans-delivered')}</span>`
                         }
                         return `<button class="btn-del-sn-row btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],
+            initComplete: function (settings, json) {
+                if ($table_serial.attr('data-status') === 'false') {
+                    let wrapper$ = $table_serial.closest('.dataTables_wrapper');
+                    const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                    const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                    headerToolbar$.prepend(textFilter$);
+                    if (textFilter$.length > 0) {
+                        textFilter$.css('display', 'flex');
+                        textFilter$.append(
+                            $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append(`
+                                <button type="button" id="add-row-sn" class="btn btn-primary btn-xs">${$trans_script.attr('data-trans-add-new-row')}</button>
+                            `)
+                        )
+                    }
+                }
+            },
         });
     }
 
@@ -347,11 +367,12 @@ $(document).ready(function () {
         $table_serial.attr('data-goods-receipt-id', $(this).attr('data-goods-receipt-id') ? $(this).attr('data-goods-receipt-id') : '')
         $table_serial.attr('data-purchase-request-id', $(this).attr('data-purchase-request-id') ? $(this).attr('data-purchase-request-id') : '')
         $table_serial.attr('data-quantity-import', $(this).attr('data-quantity-import') ? $(this).attr('data-quantity-import') : 0)
+        $table_serial.attr('data-status', $(this).attr('data-status') === 'true' ? $(this).attr('data-status') : 'false')
         loadSerialTable()
     })
 
-    $add_row_sn_btn.on('click', function () {
-        if ($table_serial.find('tbody tr').length < parseInt($table_serial.attr('data-quantity-import'))) {
+    $(document).on('click', '#add-row-sn', function () {
+        if ($table_serial.attr('data-status') === 'false') {
             AddRow($table_serial, {})
             let row_added = $table_serial.find('tbody tr:last-child')
             row_added.find('.date-input').each(function () {
@@ -408,7 +429,6 @@ $(document).ready(function () {
         frm.dataForm['warehouse_id'] = frmEle.find('#table-serial').attr('data-warehouse-id')
         frm.dataForm['goods_receipt_id'] = frmEle.find('#table-serial').attr('data-goods-receipt-id')
         frm.dataForm['purchase_request_id'] = frmEle.find('#table-serial').attr('data-purchase-request-id') !== 'undefined' ? frmEle.find('#table-serial').attr('data-purchase-request-id') : null
-        frm.dataForm['is_serial_update'] = true
         frm.dataForm['serial_data'] = []
         $table_serial.find('tbody tr').each(function () {
             let serial_id = $(this).find('.vendor_serial_number').attr('data-serial-id') !== "null" ? $(this).find('.vendor_serial_number').attr('data-serial-id') : null

@@ -7253,8 +7253,8 @@ msgid "Not yet"
 msgstr "Chưa xong"
 
 #
-msgid "Serial status"
-msgstr "Trạng thái Serial"
+msgid "Serial input status"
+msgstr "TT nhập Serial"
 
 #
 msgid "Inventory"
@@ -9045,8 +9045,8 @@ msgid "Import data from excel"
 msgstr "Nhập dữ liệu từ excel"
 
 #
-msgid "The table in excel file must have the same column order as selected table."
-msgstr "Bảng trong file excel phải có thứ cột giống như bảng đã chọn."
+msgid "The table in excel file must have the column order below: "
+msgstr "Bảng trong file excel phải có thứ cột như sau: "
 
 #
 msgid "From row"

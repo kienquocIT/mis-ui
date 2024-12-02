@@ -67,7 +67,8 @@ class BiddingCreate(View):
         ctx = {
             "list_from_app": 'bidding.bidding.create',
             'input_mapping_properties': InputMappingProperties.BIDDING_DATA_MAP,
-            'form_id': 'frm_bidding_create'
+            'form_id': 'frm_bidding_create',
+            'app_id': 'ad1e1c4e2a7e4b98977f88d069554657'
         }
         return ctx, status.HTTP_200_OK
 

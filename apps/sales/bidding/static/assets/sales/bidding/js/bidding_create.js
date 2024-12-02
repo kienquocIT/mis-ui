@@ -37,51 +37,62 @@ $(document).ready(function () {
             process_stage_app_id,
             process_stage_app_title,
             inherit_id,
-            inherit_title,
+            inherit_title
         } = $x.fn.getManyUrlParameters([
             'opp_id', 'opp_title', 'opp_code',
             'process_id', 'process_title',
             'process_stage_app_id', 'process_stage_app_title',
-            'inherit_id', 'inherit_title',
+            'inherit_id', 'inherit_title'
         ])
 
-        new $x.cls.bastionField({
-            has_opp: true,
-            has_inherit: true,
-            has_process: true,
-            has_prj: true,
-            data_opp: $x.fn.checkUUID4(opp_id) ? [
-                {
-                    "id": opp_id,
-                    "title": $x.fn.decodeURI(opp_title),
-                    "code": $x.fn.decodeURI(opp_code),
-                    "selected": true,
-                }
-            ] : [],
-            data_process: $x.fn.checkUUID4(process_id) ? [
-                {
-                    "id": process_id,
-                    "title": process_title,
-                    "selected": true,
-                }
-            ] : [],
-            data_process_stage_app: $x.fn.checkUUID4(process_stage_app_id) ? [
-                {
-                    "id": process_stage_app_id,
-                    "title": process_stage_app_title,
-                    "selected": true,
-                }
-            ] : [],
-            data_inherit: $x.fn.checkUUID4(inherit_id) ? [
-                {
-                    "id": inherit_id,
-                    "full_name": inherit_title,
-                    "selected": true,
-                }
-            ] : [],
-            opp_call_trigger_change: true,
-            inherit_call_trigger_change: true
-        }).init();
+        new Promise((resolve)=>{
+            const urlParams = new URLSearchParams(window.location.search)
+            let customer_json= urlParams.get('customer')
+            let customer = customer_json ? JSON.parse(decodeURIComponent(customer_json)) : null
+            new $x.cls.bastionField({
+                has_opp: true,
+                has_inherit: true,
+                has_process: true,
+                has_prj: true,
+                data_opp: $x.fn.checkUUID4(opp_id) ? [
+                    {
+                        "id": opp_id,
+                        "title": $x.fn.decodeURI(opp_title),
+                        "code": $x.fn.decodeURI(opp_code),
+                        "customer": customer,
+                        "selected": true,
+                    }
+                ] : [],
+                data_process: $x.fn.checkUUID4(process_id) ? [
+                    {
+                        "id": process_id,
+                        "title": process_title,
+                        "selected": true,
+                    }
+                ] : [],
+                data_process_stage_app: $x.fn.checkUUID4(process_stage_app_id) ? [
+                    {
+                        "id": process_stage_app_id,
+                        "title": process_stage_app_title,
+                        "selected": true,
+                    }
+                ] : [],
+                data_inherit: $x.fn.checkUUID4(inherit_id) ? [
+                    {
+                        "id": inherit_id,
+                        "full_name": inherit_title,
+                        "selected": true,
+                    }
+                ] : [],
+            }).init();
+            resolve()
+        }).then(()=>{
+                if($x.fn.checkUUID4(opp_id)){
+                BiddingLoadDataHandle.loadDataByOpportunity();
+            }
+        })
+
+
         BiddingDataTableHandle.dataTableDocument({}, false);
         BiddingDataTableHandle.dataTableVenture({}, false);
         BiddingDataTableHandle.dataTableFile();
@@ -266,6 +277,7 @@ $(document).ready(function () {
             if (_form.dataForm) {
                 BiddingCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
+
             WFRTControl.callWFSubmitForm(_form)
         },
     })

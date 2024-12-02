@@ -1440,6 +1440,7 @@ $(document).ready(function () {
                         + `&&process_stage_app_title=${$(this).attr('data-employee-inherit')}`
                         + `&&inherit_id=${$(this).attr('data-inherit-id')}`
                         + `&&inherit_title=${$(this).attr('data-inherit-fullname')}`
+                        + `&&customer=${$(this).attr('data-customer')}`
                     window.open(url, '_blank');
                 })
 
@@ -1609,12 +1610,14 @@ $(document).ready(function () {
                                     let opp_code = opp?.['code'];
                                     let inherit_id = opp?.['sale_person']?.['id'];
                                     let inherit_fullname = opp?.['sale_person']?.['full_name'];
+                                    let customer = encodeURIComponent(JSON.stringify(opp?.['customer']));
                                     $('#create-bidding-shortcut').removeClass('disabled')
                                     $('#create-bidding-shortcut').attr('data-opp-id', opp_id)
                                     $('#create-bidding-shortcut').attr('data-opp-title', opp_title)
                                     $('#create-bidding-shortcut').attr('data-opp-code', opp_code)
                                     $('#create-bidding-shortcut').attr('data-inherit-id', inherit_id)
                                     $('#create-bidding-shortcut').attr('data-inherit-fullname', inherit_fullname)
+                                    $('#create-bidding-shortcut').attr('data-customer', customer)
                                     break;
                                 }
                             }

@@ -356,6 +356,7 @@ $(document).ready(function () {
     async function processAllRows(form, table_data, type = 'import') {
         let frm = new SetupFormSubmit(form);
         $('.all-row').text(PREVIEW_TABLE.find('tbody tr').length)
+        PREVIEW_TABLE.find('tbody tr input').prop('disabled', true).prop('readonly', true)
         // Duyệt qua từng hàng và đợi từng AJAX hoàn tất trước khi tiếp tục, nếu gặp lỗi thì ngừng
         for (let i = 0; i < PREVIEW_TABLE.find('tbody tr').length; i++) {
             let row = PREVIEW_TABLE.find('tbody tr').eq(i);  // Lấy hàng hiện tại
@@ -372,21 +373,28 @@ $(document).ready(function () {
         return true
     }
 
-    $import_db_form.submit(async function (event) {
+    $import_db_form.submit(function (event) {
         event.preventDefault();
-
-        // Gọi hàm xử lý tất cả các hàng
-        let all_success = await processAllRows($import_db_form, $import_db_form_select_table, 'import').then();
-        if (all_success) {
-            Swal.fire({
-                html: `<h5 class="text-success">${$trans_db_script.attr('data-trans-done')}</h5>
-                       <h6 class="text-muted">${$trans_db_script.attr('data-trans-reload')}</h6>`,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    location.reload()
+        Swal.fire({
+            title: `<h5>${$trans_db_script.attr('data-trans-start-import')}</h5><h6 class="text-warning">${$trans_db_script.attr('data-trans-start-import-noty')}</h6>`,
+            showCancelButton: false,
+            confirmButtonText: 'OK',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                // Gọi hàm xử lý tất cả các hàng
+                let all_success = await processAllRows($import_db_form, $import_db_form_select_table, 'import').then();
+                if (all_success) {
+                    Swal.fire({
+                        html: `<h5 class="text-success">${$trans_db_script.attr('data-trans-done')}</h5>
+                               <h6 class="text-muted">${$trans_db_script.attr('data-trans-reload')}</h6>`,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload()
+                        }
+                    });
                 }
-            });
-        }
+            }
+        })
     })
 
     $(document).on('mouseenter', '.import-db-form-modal-table table tbody tr', function () {

@@ -333,9 +333,12 @@ class ProcessStages {
                             <thead class="thead-secondary">
                                 <tr>
                                     <th class="no-transform">${$.fn.gettext('Date created')}</th>
-                                    <th class="no-transform">${$.fn.gettext('Stages')}</th>
+                                    <th class="no-transform">
+                                        <span class="badge badge-primary no-transform">${$.fn.gettext('Stages')}</span>
+                                        <span class="badge badge-warning no-transform">${$.fn.gettext('Application')}</span>
+                                        <span class="badge badge-danger no-transform">${$.fn.gettext('Documents')}</span>
+                                    </th>
                                     <th class="no-transform">${$.fn.gettext('Title')}</th>
-                                    <th class="no-transform">${$.fn.gettext('Documents')}</th>
                                     <th class="no-transform">${$.fn.gettext('Creator')}</th>
                                 </tr>
                             </thead>
@@ -1324,23 +1327,29 @@ class ProcessStages {
                         columns: [
                             {
                                 data: 'date_created',
-                                width: '15%',
+                                width: '20%',
                                 render: (data) => $x.fn.displayRelativeTime(data)
                             }, {
-                                data: 'stage',
-                                width: '20%',
-                                render: (data) => data?.title || '-'
+                                width: '30%',
+                                render: (data, type, row) => {
+                                    const stage = row?.['stage']?.title;
+                                    const app = row?.['app']?.title;
+                                    const doc = row?.['doc']?.title;
+
+                                    let html = ``;
+                                    if (stage) html += `<span class="badge badge-primary no-transform ml-1">${stage}</span>`;
+                                    if (app) html += `<span class="badge badge-warning no-transform ml-1">${app}</span>`;
+                                    if (doc) html += `<span class="badge badge-danger no-transform ml-1">${doc}</span>`;
+
+                                    return html;
+                                }
                             }, {
                                 data: 'title_i18n',
-                                width: '20%',
+                                width: '30%',
                                 render: (data) => data
                             }, {
-                                data: 'doc',
-                                width: '15%',
-                                render: (data) => data?.title || '-'
-                            }, {
                                 data: 'employee_created',
-                                width: '15%',
+                                width: '20%',
                                 render: (data, type, row) => {
                                     const fullName = data?.full_name || '';
                                     const email = data?.email || '';

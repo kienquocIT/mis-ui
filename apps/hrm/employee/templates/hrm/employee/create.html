@@ -4,6 +4,8 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/online_sign/css/online_signature.css' %}" rel="stylesheet" type="text/css"/>
+
     <link rel="stylesheet" href="{% static 'assets/hrm/css/common.css' %}">
 {% endblock %}
 {% block pageAction %}
@@ -30,22 +32,19 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link disabled" data-bs-toggle="tab" href="#tab-app">
+            <a class="nav-link disabled" data-bs-toggle="tab" href="#aa">
                 <span class="nav-link-text">{% trans 'Education' %}</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link disabled" data-bs-toggle="tab" href="#tab-app">
+            <a class="nav-link disabled" data-bs-toggle="tab" href="#bb">
                 <span class="nav-link-text">{% trans 'Insurance' %}</span>
             </a>
         </li>
     </ul>
 
-    <form id="frm_employee_hrm" class="needs-validation"
-          data-url="{% url 'HRMEmployeeCreateAPI' %}"
-          data-method="POST"
-          data-url-redirect="{% url 'HRMEmployeeList' %}"
-    >
+    <form id="frm_employee_hrm" class="needs-validation" data-url="{% url 'HRMEmployeeCreateAPI' %}"
+          data-method="POST" data-url-redirect="{% url 'HRMEmployeeList' %}">
         {% csrf_token %}
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab-info">
@@ -318,6 +317,9 @@
         </div>
     </form>
 {% endblock %}
+{% block modalData %}
+    {% include 'online_signature/online-sign.html' with navigation=True %}
+{% endblock %}
 {% block dataHiddenGroup %}
     {{ data.template_list|json_script:'template_list' }}
 {% endblock %}
@@ -326,9 +328,11 @@
     {% if base.language == 'vi' %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
+    <script src="{% static 'vendors/fabric/index.min.js' %}"></script>
 
     <script src="{% static 'assets/hrm/js/extend/contract_editor.js' %}"></script>
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
+    <script src="{% static 'assets/online_sign/js/online_signature_common.js' %}"></script>
 
     <script src="{% static 'assets/hrm/js/create.js' %}"></script>
 {% endblock %}

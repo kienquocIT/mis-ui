@@ -15,6 +15,7 @@ class editor_handle {
                 'insertdatetime', 'advlist', 'lists', 'wordcount', 'imagetools', 'textpattern', 'noneditable',
                 'help', 'charmap', 'quickbars', 'emoticons'],
             toolbar: 'bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist table twoColumn threeColumn removeColumnsSplit cleanColumnItem | forecolor backcolor removeformat removeSelectionEle template | link hr pagebreak| preview print visualblocks | rarely_used',
+            quickbars_insert_toolbar: 'link image | numlist bullist table twoColumn threeColumn | hr pagebreak | removeSelectionEle',
             toolbar_groups: {
                 rarely_used: {
                     icon: 'more-drawer',

@@ -31,6 +31,8 @@ start_date_box.daterangepicker({
     maxYear: parseInt(moment().format('YYYY'), 10),
     drops: 'up',
     autoApply: true,
+}).on('change', function () {
+    end_date_box.val(findEndDate(start_date_box.val(), parseFloat(no_of_months_box.val())))
 });
 
 end_date_box.val(findEndDate(start_date_box.val(), parseFloat(no_of_months_box.val())))
@@ -208,26 +210,16 @@ function deleteRow(table, currentRow) {
 }
 
 function findEndDate(startDate, n) {
-    // Tách ngày, tháng, năm từ chuỗi ngày đầu vào
     const [day, month, year] = startDate.split("/").map(Number);
-
-    // Tạo đối tượng Date từ ngày đầu vào
     const date = new Date(year, month - 1, day);
-
-    // Thêm số tháng
     date.setMonth(date.getMonth() + n);
-
-    // Xử lý trường hợp vượt quá ngày của tháng (ví dụ 31/01 + 1 tháng -> 02/03)
     if (date.getDate() < day) {
         date.setDate(0); // Lùi về ngày cuối cùng của tháng trước
     }
-
-    // Định dạng lại ngày kết quả thành DD/MM/YYYY
     const resultDay = String(date.getDate()).padStart(2, '0');
     const resultMonth = String(date.getMonth() + 1).padStart(2, '0');
     const resultYear = date.getFullYear();
-
-    return `${resultDay}/${resultMonth}/${resultYear}`;
+    return moment(new Date(resultYear, resultMonth - 1, resultDay)).format('DD/MM/YYYY');
 }
 
 no_of_months_box.on('change', function () {

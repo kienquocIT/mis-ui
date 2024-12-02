@@ -1308,7 +1308,7 @@
                 } else {
                     ele$.find('.event-at-category-title').text('');
                 }
-                ele$.find('.event-at-title').html(iconApp.prop('outerHTML') + `<a href="${link}"><span>${data?.['title'] || ''}</span></a>`);
+                ele$.find('.event-at-title').html(iconApp.prop('outerHTML') + `<a href="${link}" class="text-white"><span>${data?.['title'] || ''}</span></a>`);
                 if (data?.['location_title'] && data?.['location_address']){
                     ele$.find('.event-at-location').html(`${data['location_address']} - ${data['location_title']}`);
                 } else if (data?.['location_address']) {

@@ -39,15 +39,21 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'wrap-text w-20 text-center',
+                        className: 'wrap-text w-15 text-center',
                         'render': (data, type, row) => {
                             return `${moment(row?.['start_date'].split(' ')[0]).format('DD/MM/YYYY')}`;
                         }
                     },
                     {
-                        className: 'wrap-text w-20 text-center',
+                        className: 'wrap-text w-10 text-center',
                         'render': (data, type, row) => {
                             return `${row?.['no_of_month']}`;
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-15 text-center',
+                        'render': (data, type, row) => {
+                            return `${moment(row?.['end_date'].split(' ')[0]).format('DD/MM/YYYY')}`;
                         }
                     },
                     {

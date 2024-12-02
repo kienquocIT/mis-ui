@@ -33,7 +33,7 @@ class QuotationLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
                 let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
                 return $(`<span>${res1} ${res2}</span>`);
             }
@@ -329,19 +329,17 @@ class QuotationLoadDataHandle {
     };
 
     static loadBoxQuotationPaymentTerm(dataPayment = {}) {
-        QuotationLoadDataHandle.paymentSelectEle.empty();
+        QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle);
         if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
                 if (dataSelected?.['payment_term_customer_mapped']) {
                     dataPayment = dataSelected?.['payment_term_customer_mapped'];
+                    QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [dataPayment]);
                 }
             }
         }
-        QuotationLoadDataHandle.paymentSelectEle.initSelect2({
-            data: dataPayment,
-            disabled: !(QuotationLoadDataHandle.paymentSelectEle.attr('data-url')),
-        });
+        return true;
     };
 
     static loadDataBySalePerson() {
@@ -3769,9 +3767,9 @@ class QuotationDataTableHandle {
                     targets: 6,
                     render: (data, type, row) => {
                         if (row?.['is_ar_invoice'] === true) {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice" checked></div>`;
+                            return `<div class="form-check form-check-lg"><input type="checkbox" class="form-check-input table-row-checkbox-invoice" checked></div>`;
                         } else {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox-invoice"></div>`;
+                            return `<div class="form-check form-check-lg"><input type="checkbox" class="form-check-input table-row-checkbox-invoice"></div>`;
                         }
                     }
                 },

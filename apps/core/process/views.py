@@ -232,3 +232,13 @@ class ProcessRuntimeMemberDetailAPI(APIView):
             resp = ServerAPI(request=request, user=request.user, url=url).delete()
             return resp.auto_return(key_success='stages_app_complete')
         return RespData.resp_404()
+
+
+class ProcessRuntimeLogAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.PROCESS_RUNTIME_LOG.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).get()
+            return resp.auto_return(key_success='process_log')
+        return RespData.resp_404()

@@ -69,10 +69,10 @@
     font-size: smaller;
 }
 
-.icon-caret > i {
+.icon-caret .icon > i {
     transition: transform 0.2s;
 }
 
-.icon-caret-active > i {
+.icon-caret-active .icon > i {
     transform: rotate(180deg);
 }

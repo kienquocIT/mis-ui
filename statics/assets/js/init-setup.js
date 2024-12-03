@@ -2506,7 +2506,7 @@ class WFRTControl {
                                 <div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="radio" name="next-node-collab" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
                                     <label class="form-check-label mr-2" for="collab-${collab?.['id'].replace(/-/g, "")}">${collab?.['full_name']}</label>
-                                    <span class="badge badge-success badge-outline badge-sm">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
+                                    <span class="badge badge-light badge-outline badge-sm">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                                 </div>
                             </div>`;
         }

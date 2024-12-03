@@ -5,6 +5,7 @@ $(function () {
         let formSubmit = $('#frm_contract_create');
 
         ContractLoadDataHandle.loadCustomCss();
+        ContractLoadDataHandle.loadInitInherit();
         ContractDataTableHandle.dataTableDocument();
 
         if (formSubmit.attr('data-method').toLowerCase() === 'post') {
@@ -72,6 +73,7 @@ $(function () {
                 'legal_content',
                 'payment_content',
                 'process',
+                'process_stage_app',
             ]
             if (_form.dataForm) {
                 ContractCommonHandle.filterFieldList(submitFields, _form.dataForm);

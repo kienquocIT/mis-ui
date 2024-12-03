@@ -1465,11 +1465,18 @@ class PaymentHandle {
         if (opportunity) {
             new $x.cls.bastionField({
                 has_opp: true,
-                opp_disabled: true,
                 has_inherit: true,
-                data_opp: [opportunity],
+                data_opp: [opportunity]
             }).init();
-            opp_mapped_select.trigger('change')
+
+            sale_order_mapped_select.prop('disabled', true)
+            quotation_mapped_select.prop('disabled', true)
+            let quo_mapped = opportunity['quotation'];
+            let so_mapped = opportunity['sale_order'];
+            PaymentLoadPage.LoadQuotation(quo_mapped)
+            PaymentLoadTab.LoadPlanQuotation(opportunity?.['id'], quo_mapped?.['id'])
+            PaymentLoadPage.LoadSaleOrder(so_mapped);
+            payment_for = 'opportunity'
         }
         PaymentLoadPage.LoadQuotation()
         PaymentLoadPage.LoadSaleOrder()

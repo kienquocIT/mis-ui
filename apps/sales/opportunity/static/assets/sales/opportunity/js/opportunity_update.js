@@ -778,7 +778,7 @@ $(document).ready(function () {
                     contact_slb.initSelect2();
                 }
 
-                $('.create-new-call-log-button').on('click', function () {
+                $('#create-new-call-log-button').on('click', function () {
                     $('#subject-input').val('');
                     date_input.val('');
                     $('#result-text-area').val('');
@@ -998,7 +998,7 @@ $(document).ready(function () {
                         console.error(error);
                     })
 
-                $('.send-email-button').on('click', function () {
+                $('#send-email-button').on('click', function () {
                     $('#email-subject-input').val('');
                     $('#email-content-area').val('');
 
@@ -1183,7 +1183,7 @@ $(document).ready(function () {
                     $('#meeting-address-input-div').prop('hidden', true);
                 })
 
-                $('.new-meeting-button').on('click', function () {
+                $('#new-meeting-button').on('click', function () {
                     $('#meeting-subject-input').val('');
                     meeting_date_input.val('');
                     $('#meeting-room-location-input').val('');

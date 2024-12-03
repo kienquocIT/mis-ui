@@ -1156,15 +1156,18 @@ class APHandle {
         if (opportunity) {
             new $x.cls.bastionField({
                 has_opp: true,
-                opp_disabled: true,
-                oppFlagData: {
-                    'disabled': true,
-                },
-                not_change_opp: true,
                 has_inherit: true,
-                data_opp: [opportunity],
-                opp_call_trigger_change: true,
+                data_opp: [opportunity]
             }).init();
+
+            sale_order_mapped_select.prop('disabled', true)
+            quotation_mapped_select.prop('disabled', true)
+            let quo_mapped = opportunity['quotation'];
+            let so_mapped = opportunity['sale_order'];
+            APLoadPage.LoadQuotation(quo_mapped)
+            APLoadTab.LoadPlanQuotation(opportunity?.['id'], quo_mapped?.['id'])
+            APLoadPage.LoadSaleOrder(so_mapped);
+            ap_for = 'opportunity'
         }
         APLoadPage.LoadQuotation()
         APLoadPage.LoadSaleOrder()

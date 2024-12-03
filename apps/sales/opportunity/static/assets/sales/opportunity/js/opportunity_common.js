@@ -1277,8 +1277,6 @@ class OpportunityActivity {
                                             return false;
                                         }
                                     }
-                                    let url = $(ele).data('url') + `?opp_id=${oppParamStr?.['id']}`;
-                                    window.open(url, '_blank');
                                     return true;
                                 }
                             }

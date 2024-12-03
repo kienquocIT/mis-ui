@@ -22,24 +22,15 @@
                     </button>
                     <div class="dropdown-menu" style="min-width: max-content" id="dropdown-menu-relate-app">
                         <h6 class="dropdown-header">{% trans 'Sale Activities' %}</h6>
-                        <a data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="dropdown-item create-new-call-log-button" href="#">
-                            {% trans 'Log a call' %}
-                        </a>
-                        <a data-bs-toggle="modal" data-bs-target="#send-email" class="dropdown-item send-email-button" href="#">
-                            {% trans 'Send email' %}
-                        </a>
-                        <a data-bs-toggle="modal" data-bs-target="#create-meeting" class="dropdown-item new-meeting-button" href="#">
-                            {% trans 'Meeting' %}
-                        </a>
-                        <a data-drawer-target="#drawer_task_create" data-drawer-active="false" class="dropdown-item ntt-drawer-toggle-link current-create-task" href="#">
-                            {% trans 'Task' %}
-                        </a>
+                        <a data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="dropdown-item" id="create-new-call-log-button" href="#">{% trans 'Log a call' %}</a>
+                        <a data-bs-toggle="modal" data-bs-target="#send-email" class="dropdown-item" id="send-email-button" href="#">{% trans 'Send email' %}</a>
+                        <a data-bs-toggle="modal" data-bs-target="#create-meeting" class="dropdown-item" id="new-meeting-button" href="#">{% trans 'Meeting' %}</a>
+                        <a data-drawer-target="#drawer_task_create" data-drawer-active="false" class="dropdown-item ntt-drawer-toggle-link current-create-task" href="#">{% trans 'Task' %}</a>
                         <div class="dropdown-divider"></div>
-
                         <h6 class="dropdown-header">{% trans 'Related features' %}</h6>
                         <div class="row">
                             <div class="col-6">
-                                <a id="create-quotation-shortcut" class="dropdown-item relate-app" data-label="quotation.quotation" data-url="{% url 'QuotationCreate' %}" href="#">{% trans 'Quotation' %}</a>
+                                <a id="create-quotation-shortcut" class="disabled dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#" target="_blank">{% trans 'Quotation' %}</a>
                             </div>
                             <div class="col-6">
                                 <a class="dropdown-item item-detail-related-feature text-blue" id="item-related-quotation" href="#" target="_blank">{% trans 'View Quotation' %}</a>
@@ -47,17 +38,17 @@
                         </div>
                         <div class="row">
                             <div class="col-6">
-                                <a id="create-sale-order-shortcut" class="dropdown-item relate-app" data-label="saleorder.saleorder" data-url="{% url 'SaleOrderCreate' %}" href="#">{% trans 'Sale Order' %}</a>
+                                <a id="create-sale-order-shortcut" class="disabled dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#" target="_blank">{% trans 'Sale Order' %}</a>
                             </div>
                             <div class="col-6">
                                 <a class="dropdown-item item-detail-related-feature text-blue" id="item-related-sale-order" href="#" target="_blank">{% trans 'View Sale Order' %}</a>
                             </div>
                         </div>
-                        <a id="create-advance-payment-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'AdvancePaymentCreate' %}" href="#">{% trans 'Advance Payment' %}</a>
-                        <a id="create-payment-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'PaymentCreate' %}" href="#">{% trans 'Payment' %}</a>
-                        <a id="create-return-advance-shortcut" class="dropdown-item btn-create-related-feature" data-url="{% url 'ReturnAdvanceCreate' %}" href="#">{% trans 'Return Advance' %}</a>
-                        <a id="create-project-bom-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'OpportunityBOMCreate' %}" href="#">{% trans 'Opportunity BOM' %}</a>
-                        <a id="create-bidding-shortcut" class="disabled dropdown-item btn-create-related-feature" data-url="{% url 'BiddingCreate' %}" href="#">{% trans 'Bidding' %}</a>
+                        <a id="create-advance-payment-shortcut" class="disabled dropdown-item" data-url="{% url 'AdvancePaymentCreate' %}" href="#" target="_blank">{% trans 'Advance Payment' %}</a>
+                        <a id="create-payment-shortcut" class="disabled dropdown-item" data-url="{% url 'PaymentCreate' %}" href="#" target="_blank">{% trans 'Payment' %}</a>
+                        <a id="create-return-advance-shortcut" class="dropdown-item" data-url="{% url 'ReturnAdvanceCreate' %}" href="#" target="_blank">{% trans 'Return Advance' %}</a>
+                        <a id="create-project-bom-shortcut" class="disabled dropdown-item" data-url="{% url 'OpportunityBOMCreate' %}" href="#" target="_blank">{% trans 'Opportunity BOM' %}</a>
+                        <a id="create-bidding-shortcut" class="disabled dropdown-item" data-url="{% url 'BiddingCreate' %}" href="#" target="_blank">{% trans 'Bidding' %}</a>
                     </div>
                 </div>
             </div>

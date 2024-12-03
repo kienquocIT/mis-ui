@@ -9,7 +9,8 @@ $(document).ready(function () {
     });
 
     const urlFactory = $('#url-factory');
-    let transEle = $('#trans-factory');
+    const script_url = $('#script-url');
+    const transEle = $('#trans-factory');
     const pk = $.fn.getPkDetail();
     const frmDetail = $('#frm-detail');
     // element
@@ -588,23 +589,6 @@ $(document).ready(function () {
                     }
                 }
 
-                // $('#check-lost-reason').on('change', function () {
-                //     let ele_stage_lost = $('.stage-lost')
-                //     if (!$(this).is(':checked')) {
-                //         ele_stage_lost.removeClass('bg-red-light-5 border-red stage-selected');
-                //         loadWinRate();
-                //     } else {
-                //         if (checkOppWonOrDelivery()) {
-                //             $(this).prop('checked', false);
-                //             OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
-                //         } else {
-                //             $('.input-win-deal').not(this).prop('checked', false);
-                //             ele_stage_lost.addClass('bg-red-light-5 border-red stage-selected');
-                //             loadWinRate();
-                //         }
-                //     }
-                // })
-
                 $(document).on('change', '#input-close-deal', function () {
                     if ($(this).is(':checked')) {
                         $(this).closest('.sub-stage').addClass('stage-selected');
@@ -620,16 +604,6 @@ $(document).ready(function () {
                     }
                     loadWinRate();
                 })
-
-                function checkOppWonOrDelivery() {
-                    let check = false;
-                    let stage_id = $('.stage-selected').last().data('id');
-                    let indicator = dict_stage[stage_id].indicator;
-                    if (indicator === 'Closed Won' || indicator === 'Delivery') {
-                        check = true;
-                    }
-                    return check;
-                }
 
                 $('.item-detail-related-feature').on('click', function () {
                     if ($(this).attr('href') === '#') {
@@ -719,7 +693,7 @@ $(document).ready(function () {
                     contact_slb.initSelect2();
                 }
 
-                $('.create-new-call-log-button').on('click', function () {
+                $('#create-new-call-log-button').on('click', function () {
                     $('#subject-input').val('');
                     date_input.val('');
                     $('#result-text-area').val('');
@@ -802,7 +776,7 @@ $(document).ready(function () {
                 $(document).on('click', '#table-timeline .detail-call-log-button', function () {
                     let call_log_id = $(this).attr('data-id');
                     let call_log_detail = $.fn.callAjax2({
-                        url: $('#script-url').attr('data-url').replace(0, call_log_id),
+                        url: script_url.attr('data-url').replace(0, call_log_id),
                         method: 'GET'
                     }).then(
                         (resp) => {
@@ -938,7 +912,7 @@ $(document).ready(function () {
                         console.error(error);
                     })
 
-                $('.send-email-button').on('click', function () {
+                $('#send-email-button').on('click', function () {
                     $('#email-subject-input').val('');
                     $('#email-content-area').val('');
 
@@ -1123,7 +1097,7 @@ $(document).ready(function () {
                     $('#meeting-address-input-div').prop('hidden', true);
                 })
 
-                $('.new-meeting-button').on('click', function () {
+                $('#new-meeting-button').on('click', function () {
                     $('#meeting-subject-input').val('');
                     meeting_date_input.val('');
                     $('#meeting-room-location-input').val('');
@@ -1248,7 +1222,7 @@ $(document).ready(function () {
                 $(document).on('click', '#table-timeline .detail-meeting-button', function () {
                     let meeting_id = $(this).attr('data-id');
                     let meeting_detail = $.fn.callAjax2({
-                        url: $('#script-url').attr('data-url').replace(0, meeting_id),
+                        url: script_url.attr('data-url').replace(0, meeting_id),
                         method: 'GET'
                     }).then(
                         (resp) => {
@@ -1357,50 +1331,217 @@ $(document).ready(function () {
 
                 // TIMELINE
 
-                function checkPermissionAppRelated() {
-                    let $dataDetail = $('#data-detail');
-                    let appRelateList = $('#dropdown-menu-relate-app')[0].querySelectorAll('.relate-app');
-                    if ($dataDetail.val() && appRelateList.length > 0) {
-                        let detail = JSON.parse($dataDetail.val());
-                        let appMapPerm = {
-                            'quotation.quotation': 'quotation.quotation.create',
-                            'saleorder.saleorder': 'saleorder.saleorder.create',
-                        };
-                        for (let eleApp of appRelateList) {
-                            if ($(eleApp).attr('data-label')) {
-                                let label = $(eleApp).attr('data-label');
-                                $.fn.callAjax2({
-                                        'url': $('#script-url').attr('data-url-opp-list'),
-                                        'method': 'GET',
-                                        'data': {'list_from_app': appMapPerm[label]},
-                                    }
-                                ).then(
-                                    (resp) => {
-                                        let data = $.fn.switcherResp(resp);
-                                        if (data) {
-                                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                                if (data.opportunity_list.length > 0) {
-                                                    let countCheck = 0;
-                                                    for (let opp of data.opportunity_list) {
-                                                        countCheck++;
-                                                        if (opp?.['id'] === detail?.['id']) {
-                                                            break;
-                                                        }
-                                                        if (countCheck >= data.opportunity_list.length) {
-                                                            eleApp.classList.add('disabled');
-                                                        }
-                                                    }
-                                                } else {
-                                                    eleApp.classList.add('disabled');
-                                                }
-                                            }
-                                        }
-                                    }
-                                )
-                            }
+                function push_param_to_url(url, params={}) {
+                    const [baseUrl, queryString] = url.split('?');
+                    const currentParams = new URLSearchParams(queryString);
+                    Object.keys(params).forEach(key => {
+                        if (params[key] !== undefined && params[key] !== null) {
+                            currentParams.set(key, params[key]);
                         }
-                    }
+                    });
+                    return `${baseUrl}?${currentParams.toString()}`;
                 }
+
+                function checkPermissionAppRelated() {
+                    const quotation_check_perm = $.fn.callAjax2({
+                        url: script_url.attr('data-url-opp-list'),
+                        data: {
+                            'list_from_app': 'quotation.quotation.create', 'id': pk
+                        },
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                                    return data?.['opportunity_list'][0];
+                                }
+                                return null
+                            }
+                        },
+                        (errs) => {
+                            console.log(errs);
+                        }
+                    )
+                    const sale_order_check_perm = $.fn.callAjax2({
+                        url: script_url.attr('data-url-opp-list'),
+                        data: {
+                            'list_from_app': 'saleorder.saleorder.create', 'id': pk
+                        },
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                                    return data?.['opportunity_list'][0];
+                                }
+                                return null
+                            }
+                        },
+                        (errs) => {
+                            console.log(errs);
+                        }
+                    )
+                    const advance_check_perm = $.fn.callAjax2({
+                        url: script_url.attr('data-url-opp-list'),
+                        data: {
+                            'list_from_app': 'cashoutflow.advancepayment.create', 'id': pk
+                        },
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                                    return data?.['opportunity_list'][0];
+                                }
+                                return null
+                            }
+                        },
+                        (errs) => {
+                            console.log(errs);
+                        }
+                    )
+                    const payment_check_perm = $.fn.callAjax2({
+                        url: script_url.attr('data-url-opp-list'),
+                        data: {
+                            'list_from_app': 'cashoutflow.payment.create', 'id': pk
+                        },
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                                    return data?.['opportunity_list'][0];
+                                }
+                                return null
+                            }
+                        },
+                        (errs) => {
+                            console.log(errs);
+                        }
+                    )
+                    const bom_check_perm = $.fn.callAjax2({
+                        url: script_url.attr('data-url-opp-list'),
+                        data: {
+                            'list_from_app': 'production.bom.create', 'id': pk
+                        },
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                                    return data?.['opportunity_list'][0];
+                                }
+                                return null
+                            }
+                        },
+                        (errs) => {
+                            console.log(errs);
+                        }
+                    )
+                    const biding_check_perm = $.fn.callAjax2({
+                        url: script_url.attr('data-url-opp-list'),
+                        data: {
+                            'list_from_app': 'bidding.bidding.create', 'id': pk
+                        },
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                                    return data?.['opportunity_list'][0];
+                                }
+                                return null
+                            }
+                        },
+                        (errs) => {
+                            console.log(errs);
+                        }
+                    )
+
+                    let create_return_sc = $('#create-return-advance-shortcut')
+                    create_return_sc.attr('href', create_return_sc.attr('data-url'))
+
+                    Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm]).then(
+                        (results_perm_app) => {
+                            if (results_perm_app[0]) {
+                                let create_quotation_sc = $('#create-quotation-shortcut')
+                                create_quotation_sc.removeClass('disabled');
+                                let param_url = push_param_to_url(create_quotation_sc.attr('data-url'), {
+                                    'opp_id': results_perm_app[0]?.['id']
+                                })
+                                create_quotation_sc.attr('href', param_url)
+                            }
+                            if (results_perm_app[1]) {
+                                let create_so_sc = $('#create-sale-order-shortcut')
+                                create_so_sc.removeClass('disabled');
+                                let param_url = push_param_to_url(create_so_sc.attr('data-url'), {
+                                    'opp_id': results_perm_app[1]?.['id']
+                                })
+                                create_so_sc.attr('href', param_url)
+                            }
+                            if (results_perm_app[2]) {
+                                let create_ap_sc = $('#create-advance-payment-shortcut')
+                                create_ap_sc.removeClass('disabled');
+                                let param_url = push_param_to_url(create_ap_sc.attr('data-url'), {
+                                    'opp_id': results_perm_app[2]?.['id'],
+                                    'opp_code': results_perm_app[2]?.['code'],
+                                    'opp_title': results_perm_app[2]?.['title'],
+                                    'quotation_object': encodeURIComponent(JSON.stringify(results_perm_app[2]?.['quotation'])),
+                                    'sale_order_object': encodeURIComponent(JSON.stringify(results_perm_app[2]?.['sale_order'])),
+                                })
+                                create_ap_sc.attr('href', param_url)
+                            }
+                            if (results_perm_app[3]) {
+                                let create_payment_sc = $('#create-payment-shortcut')
+                                create_payment_sc.removeClass('disabled');
+                                let param_url = push_param_to_url(create_payment_sc.attr('data-url'), {
+                                    'opp_id': results_perm_app[3]?.['id'],
+                                    'opp_code': results_perm_app[3]?.['code'],
+                                    'opp_title': results_perm_app[3]?.['title'],
+                                    'quotation_object': encodeURIComponent(JSON.stringify(results_perm_app[3]?.['quotation'])),
+                                    'sale_order_object': encodeURIComponent(JSON.stringify(results_perm_app[3]?.['sale_order'])),
+                                })
+                                create_payment_sc.attr('href', param_url)
+                            }
+                            if (results_perm_app[4]) {
+                                let create_bom_sc = $('#create-project-bom-shortcut')
+                                create_bom_sc.removeClass('disabled');
+                                let param_url = push_param_to_url(create_bom_sc.attr('data-url'), {
+                                    'opp_id': results_perm_app[4]?.['id'],
+                                    'opp_code': results_perm_app[4]?.['code'],
+                                    'opp_title': results_perm_app[4]?.['title'],
+                                    'sale_person_mapped': encodeURIComponent(JSON.stringify(results_perm_app[4]?.['sale_person'])),
+                                })
+                                create_bom_sc.attr('href', param_url)
+                            }
+                            if (results_perm_app[5]) {
+                                let create_bidding_sc = $('#create-bidding-shortcut')
+                                create_bidding_sc.removeClass('disabled');
+                                let param_url = push_param_to_url(create_bidding_sc.attr('data-url'), {
+                                    'opp_id': results_perm_app[5]?.['id'],
+                                    'opp_code': results_perm_app[5]?.['code'],
+                                    'opp_title': results_perm_app[5]?.['title'],
+                                    'inherit_id': results_perm_app[5]?.['sale_person']?.['id'],
+                                    'inherit_title': results_perm_app[5]?.['sale_person']?.['full_name'],
+                                    'customer': encodeURIComponent(JSON.stringify(results_perm_app[5]?.['customer'])),
+                                })
+                                create_bidding_sc.attr('href', param_url)
+                            }
+                            $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
+                        })
+                }
+
+                $('#btn-create-related-feature').on('click', function () {
+                    if ($(this).attr('data-call-check-perm') === 'true') {
+                        checkPermissionAppRelated()
+                    }
+                })
 
                 // for task
                 const $form = $('#formOpportunityTask')
@@ -1412,216 +1553,14 @@ $(document).ready(function () {
                     }
                 })
 
-                // event create related features
-                $('#dropdown-menu-relate-app #create-advance-payment-shortcut').on('click', function () {
-                    let url = $(this).attr('data-url') + `?type=0&&opp_mapped=${$(this).attr('data-opp_mapped')}&&quotation_object=${$(this).attr('data-quotation_object')}&&sale_order_object=${$(this).attr('data-sale_order_object')}`
-                    window.open(url, '_blank');
-                })
-                $('#dropdown-menu-relate-app #create-payment-shortcut').on('click', function () {
-                    let url = $(this).attr('data-url') + `?type=0&&opp_mapped=${$(this).attr('data-opp_mapped')}&&quotation_object=${$(this).attr('data-quotation_object')}&&sale_order_object=${$(this).attr('data-sale_order_object')}`
-                    window.open(url, '_blank');
-                })
-                $('#dropdown-menu-relate-app #create-return-advance-shortcut').on('click', function () {
-                    let url = $(this).attr('data-url') + `?opportunity=${$(this).attr('data-opportunity')}`
-                    window.open(url, '_blank');
-                })
-                $('#dropdown-menu-relate-app #create-project-bom-shortcut').on('click', function () {
-                    let url = $(this).attr('data-url') + `?opp_mapped=${$(this).attr('data-opp-mapped')}&&sale_person_mapped=${$(this).attr('data-sale-person-mapped')}`
-                    window.open(url, '_blank');
-                })
-                $('#dropdown-menu-relate-app #create-bidding-shortcut').on('click', function () {
-                    let url = $(this).attr('data-url')
-                        + `?opp_id=${$(this).attr('data-opp-id')}`
-                        + `&&opp_title=${$(this).attr('data-opp-title')}`
-                        + `&&opp_code=${$(this).attr('data-opp-code')}`
-                        + `&&process_id=${$(this).attr('data-employee-inherit')}`
-                        + `&&process_title=${$(this).attr('data-employee-inherit')}`
-                        + `&&process_stage_app_id=${$(this).attr('data-employee-inherit')}`
-                        + `&&process_stage_app_title=${$(this).attr('data-employee-inherit')}`
-                        + `&&inherit_id=${$(this).attr('data-inherit-id')}`
-                        + `&&inherit_title=${$(this).attr('data-inherit-fullname')}`
-                        + `&&customer=${$(this).attr('data-customer')}`
-                    window.open(url, '_blank');
-                })
-
                 $(document).on('click', '.btn-add-document', function () {
                     let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
                     window.open(url, '_blank');
                 })
 
-                // event on click to create relate apps from opportunity
+                // event on click to create relate apps from opportunity (for cancel quotation - sale order)
                 $('#dropdown-menu-relate-app').on('click', '.relate-app', function () {
                     OpportunityActivity.loadOpenRelateApp(this, table_timeline, paramString);
-                })
-
-                $('#btn-create-related-feature').on('click', function () {
-                    let dataInitSaleCode = results[0];
-
-                    let dataParam_ap = {'list_from_app': 'cashoutflow.advancepayment.create'}
-                    let opp_list_ajax = $.fn.callAjax2({
-                        url: $('#script-url').attr('data-url-opp-list'),
-                        data: dataParam_ap,
-                        method: 'GET'
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                    return data?.['opportunity_list'];
-                                }
-                            }
-                        },
-                        (errs) => {
-                            console.log(errs);
-                        }
-                    )
-
-                    Promise.all([opp_list_ajax]).then(
-                        (results) => {
-                            let opp_list = results[0];
-                            for (let opp of opp_list) {
-                                if (opp?.['id'] === dataInitSaleCode?.['id']) {
-                                    let opp_mapped = encodeURIComponent(JSON.stringify({
-                                        'id': opp?.['id'],
-                                        'code': opp?.['code'],
-                                        'title': opp?.['title']
-                                    }));
-                                    let quotation = encodeURIComponent(JSON.stringify(opp?.['quotation']));
-                                    let sale_order = encodeURIComponent(JSON.stringify(opp?.['sale_order']));
-                                    $('#create-advance-payment-shortcut').removeClass('disabled');
-                                    $('#create-advance-payment-shortcut').attr('data-opp_mapped', opp_mapped)
-                                    $('#create-advance-payment-shortcut').attr('data-quotation_object', quotation)
-                                    $('#create-advance-payment-shortcut').attr('data-sale_order_object', sale_order)
-                                    break;
-                                }
-                            }
-                        })
-
-                    let dataParam_payment = {'list_from_app': 'cashoutflow.payment.create'}
-                    opp_list_ajax = $.fn.callAjax2({
-                        url: $('#script-url').attr('data-url-opp-list'),
-                        data: dataParam_payment,
-                        method: 'GET'
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                    return data?.['opportunity_list'];
-                                }
-                            }
-                        },
-                        (errs) => {
-                            console.log(errs);
-                        }
-                    )
-
-                    Promise.all([opp_list_ajax]).then(
-                        (results) => {
-                            let opp_list = results[0];
-                            for (let opp of opp_list) {
-                                if (opp?.['id'] === dataInitSaleCode?.['id']) {
-                                    let opp_mapped = encodeURIComponent(JSON.stringify({
-                                        'id': opp?.['id'],
-                                        'code': opp?.['code'],
-                                        'title': opp?.['title']
-                                    }));
-                                    let quotation = encodeURIComponent(JSON.stringify(opp?.['quotation']));
-                                    let sale_order = encodeURIComponent(JSON.stringify(opp?.['sale_order']));
-                                    $('#create-payment-shortcut').removeClass('disabled')
-                                    $('#create-payment-shortcut').attr('data-opp_mapped', opp_mapped)
-                                    $('#create-payment-shortcut').attr('data-quotation_object', quotation)
-                                    $('#create-payment-shortcut').attr('data-sale_order_object', sale_order)
-                                    break;
-                                }
-                            }
-                        })
-
-                    $('#create-return-advance-shortcut').attr('data-opportunity', encodeURIComponent(JSON.stringify({
-                        'id': dataInitSaleCode?.['id'],
-                        'code': dataInitSaleCode?.['code'],
-                        'title': dataInitSaleCode?.['title']
-                    })))
-
-                    let dataParam_bom = {'list_from_app': 'production.bom.create'}
-                    opp_list_ajax = $.fn.callAjax2({
-                        url: $('#script-url').attr('data-url-opp-list'),
-                        data: dataParam_bom,
-                        method: 'GET'
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                    return data?.['opportunity_list'];
-                                }
-                            }
-                        },
-                        (errs) => {
-                            console.log(errs);
-                        }
-                    )
-
-                    Promise.all([opp_list_ajax]).then(
-                        (results) => {
-                            let opp_list = results[0];
-                            for (let opp of opp_list) {
-                                if (opp?.['id'] === dataInitSaleCode?.['id']) {
-                                    let opp_mapped = encodeURIComponent(JSON.stringify({
-                                        'id': opp?.['id'],
-                                        'code': opp?.['code'],
-                                        'title': opp?.['title']
-                                    }));
-                                    let sale_person_mapped = encodeURIComponent(JSON.stringify(opp?.['sale_person']));
-                                    $('#create-project-bom-shortcut').removeClass('disabled')
-                                    $('#create-project-bom-shortcut').attr('data-opp-mapped', opp_mapped)
-                                    $('#create-project-bom-shortcut').attr('data-sale-person-mapped', sale_person_mapped)
-                                    break;
-                                }
-                            }
-                        })
-
-                    let dataParam_bidding = {'list_from_app': 'bidding.bidding.create'}
-                    opp_list_ajax = $.fn.callAjax2({
-                        url: $('#script-url').attr('data-url-opp-list'),
-                        data: dataParam_bidding,
-                        method: 'GET'
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                    return data?.['opportunity_list'];
-                                }
-                            }
-                        },
-                        (errs) => {
-                            console.log(errs);
-                        }
-                    )
-
-                    Promise.all([opp_list_ajax]).then(
-                        (results) => {
-                            let opp_list = results[0];
-                            for (let opp of opp_list) {
-                                if (opp?.['id'] === dataInitSaleCode?.['id']) {
-                                    let opp_id = opp?.['id'];
-                                    let opp_title = opp?.['title'];
-                                    let opp_code = opp?.['code'];
-                                    let inherit_id = opp?.['sale_person']?.['id'];
-                                    let inherit_fullname = opp?.['sale_person']?.['full_name'];
-                                    let customer = encodeURIComponent(JSON.stringify(opp?.['customer']));
-                                    $('#create-bidding-shortcut').removeClass('disabled')
-                                    $('#create-bidding-shortcut').attr('data-opp-id', opp_id)
-                                    $('#create-bidding-shortcut').attr('data-opp-title', opp_title)
-                                    $('#create-bidding-shortcut').attr('data-opp-code', opp_code)
-                                    $('#create-bidding-shortcut').attr('data-inherit-id', inherit_id)
-                                    $('#create-bidding-shortcut').attr('data-inherit-fullname', inherit_fullname)
-                                    $('#create-bidding-shortcut').attr('data-customer', customer)
-                                    break;
-                                }
-                            }
-                        })
                 })
 
                 OpportunityActivity.loadDblActivityLogs();

@@ -644,7 +644,6 @@ class QuotationLoadDataHandle {
                                 }
                                 ele.append(option)
                             });
-                            // QuotationLoadDataHandle.loadInformationSelectBox(ele);
                         }
                     }
                 }
@@ -2142,17 +2141,17 @@ class QuotationLoadDataHandle {
                 data: data?.['sale_person'],
                 'allowClear': true,
             });
-            QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
-                data: data?.['opportunity'],
-                'allowClear': true,
-            });
-            QuotationLoadDataHandle.processSelectEle$.initSelect2({
-                data: {
-                    ...data?.['process'],
-                    'selected': true,
-                },
-                allowClear: true,
-            });
+            // QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
+            //     data: data?.['opportunity'],
+            //     'allowClear': true,
+            // });
+            // QuotationLoadDataHandle.processSelectEle$.initSelect2({
+            //     data: {
+            //         ...data?.['process'],
+            //         'selected': true,
+            //     },
+            //     allowClear: true,
+            // });
         }
         if ($(form).attr('data-method').toLowerCase() !== 'get') {
             QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
@@ -4376,7 +4375,7 @@ class QuotationCheckConfigHandle {
             }
         }
         return true;
-    }
+    };
 
 }
 

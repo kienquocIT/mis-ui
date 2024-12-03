@@ -1294,7 +1294,7 @@
                         iconApp = $(`<i class="fa-solid fa-cake-candles"></i>`)
                         break
                     case 'Recurrence':
-                        iconApp = $(`<i class="fas fa-recycle"></i>`)
+                        iconApp = $(`<i class="fas fa-sync-alt"></i>`)
                         if (data?.['id'] && data?.['app_code'] && data?.['doc_template_data']?.['id']) {
                             if (appMapUrl?.[data?.['app_code']]?.['create']) {
                                 link = appMapUrl[data?.['app_code']]['create'] + `?recurrence_template_id=${data?.['doc_template_data']?.['id']}&recurrence_task_id=${data?.['id']}`;

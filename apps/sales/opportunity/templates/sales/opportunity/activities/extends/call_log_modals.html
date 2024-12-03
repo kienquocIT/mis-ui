@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="modal fade" id="create-new-call-log" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg" style="min-width: 75%" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Create New Call Log' %}</h5>
@@ -17,35 +17,13 @@
                       method="post">
                     {% csrf_token %}
                     <div class="row">
+                        {% trans 'Select Sale Person' as inherit_title %}
+                        {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="subject-input" class="form-label required">{% trans 'Subject' %}</label>
                                 <input id="subject-input" class="form-control">
                             </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="sale-code-select-box" class="form-label required">{% trans 'Sale Code' %}</label>
-                                <select id="sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="inp-process" class="form-label">{% trans 'Process' %}</label>
-                                <select name="process" id="inp-process" class="form-select"
-                                        data-url="{% url 'ProcessRuntimeOfMeAPI' %}"
-                                        data-keyResp="process_runtime_list"
-                                ></select>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="inp-process-stage-app" class="form-label">{% trans 'Process Stage Application' %}</label>
-                            <select
-                                    name="process_stage_app" id="inp-process-stage-app" class="form-select"
-                                    data-url="{% url 'ProcessStagesAppOfMeAPI' %}"
-                                    data-app-id="{{data.app_id}}"
-                                    data-keyResp="process_runtime_stages_app_list"
-                            ></select>
                         </div>
                         <div class="col-12">
                             <div class="form-group">
@@ -87,7 +65,7 @@
     </div>
 </div>
 <div class="modal fade" id="detail-call-log" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg" style="min-width: 75%" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Detail Call Log' %} <span id="is-cancelled" class="badge badge-sm badge-soft-danger"></span></h5>
@@ -97,29 +75,12 @@
             </div>
             <div class="modal-body" style="overflow: auto; max-height: 75vh">
                 <div class="row">
+                    {% trans 'Select Sale Person' as inherit_title %}
+                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
                     <div class="col-12">
                         <div class="form-group">
                             <label for="detail-subject-input" class="form-label required">{% trans 'Subject' %}</label>
                             <input readonly id="detail-subject-input" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="detail-sale-code-select-box" class="form-label required">{% trans 'Sale Code' %}</label>
-                            <select disabled id="detail-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="detail-inp-process" class="form-label">{% trans 'Process' %}</label>
-                            <select name="process" id="detail-inp-process" class="form-select"
-                                    data-url="{% url 'ProcessRuntimeOfMeAPI' %}"
-                                    data-keyResp="process_runtime_list"
-                                    disabled
-                            ></select>
-                            <a class="link-process-detail" href='#' data-href="{% url 'ProcessRuntimeDetailView' pk='__pk__' %}" target="_blank">
-                                <small>{% trans 'Detail' %}</small>
-                            </a>
                         </div>
                     </div>
                     <div class="col-12">

@@ -55,6 +55,7 @@ class ContractApprovalCreate(View):
             'input_mapping_properties': InputMappingProperties.CONTRACT_APPROVAL_DATA_MAP,
             'form_id': 'frm_contract_create',
             'list_from_app': 'contract.contractapproval.create',
+            'app_id': '58385bcf-f06c-474e-a372-cadc8ea30ecc',
         }
         return ctx, status.HTTP_200_OK
 

@@ -284,6 +284,11 @@ class BiddingLoadDataHandle {
                     "selected": true,
                 }
             ] : [],
+             "oppFlagData": {"disabled": true},
+             "prjFlagData": {"disabled": true},
+             "inheritFlagData": {"disabled": true},
+             "processFlagData": {"disabled": true},
+             "processStageAppFlagData": {"disabled": true},
         }).init();
         $('#bid-name').val(data?.['title']);
         BiddingLoadDataHandle.$customerEle.val(data?.['customer']?.['title'])

@@ -21,43 +21,6 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <script id="trans-script"
-            data-trans-activity-cancelled="{% trans 'Cancelled' %}"
-            data-trans-alert-cancel-call-log="{% trans 'Cancel this call log ?' %}"
-            data-trans-alert-warn-call-log="{% trans 'This call log cannot be reactivated.' %}"
-            data-trans-alert-cancel-meeting="{% trans 'Cancel this meeting ?' %}"
-            data-trans-alert-warn-meeting="{% trans 'This meeting cannot be reactivated.' %}"
-            data-trans-notify-update-permission="{% trans 'Please save Update Opportunity page to apply all the permissions!' %}"
-    ></script>
-    <script id="script-url"
-            data-url-opp-list="{% url "OpportunityListAPI" %}"
-            data-url-quo-list="{% url "QuotationListAPI" %}"
-            data-url-so-list="{% url "SaleOrderListAPI" %}"
-            data-url-ap-list="{% url "AdvancePaymentListAPI" %}"
-            data-url-payment-list="{% url "PaymentListAPI" %}"
-            data-url-return-list="{% url "ReturnAdvanceListAPI" %}"
-            data-url-ap-detail="{% url "AdvancePaymentDetail" '0' %}"
-            data-url-payment-detail="{% url "PaymentDetail" '0' %}"
-            data-url-return-detail="{% url "ReturnAdvanceDetail" '0' %}"
-            data-url-bom-detail="{% url "OpportunityBOMDetail" '0' %}"
-            data-url-call-log-detail="{% url "OpportunityCallLogDetailAPI" '0' %}"
-            data-url-meeting-detail="{% url "OpportunityMeetingDetailAPI" '0' %}"
-    ></script>
-    <div id="json-data">
-        <input id="emp-current-id" class="hidden" value="{{ request.user.employee_current_data.id }}">
-    </div>
-    <div id="text-notify" hidden>
-        <span id="limit-rate">{% trans "rate must not be less than 0 or greater than 100" %}</span>
-        <span id="limit-close-date">{% trans "The closing date must not be later than the opening date" %}</span>
-        <span id="not-select-stage">{% trans "Configuration does not allow selecting stage" %}</span>
-        <span id="deal-close-lost">{% trans "Can not select stage because this opportunity is close lost" %}</span>
-        <span id="deal-closed">{% trans "Can not select stage because this opportunity has been closed" %}</span>
-        <span id="opp-updated">{% trans "Stage has been updated, Please Save!" %}</span>
-    </div>
-    <div id="div-url" hidden>
-        <input id="url-member" value="{% url "EmployeeDetail" pk=0 %}">
-    </diV>
-
     <div class="page-content" hidden>
         <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}"
               data-url-redirect="{% url 'OpportunityUpdate' '0' %}">
@@ -123,92 +86,10 @@
         </form>
     </div>
 
-    {% include 'sales/opportunity/extends/call_log_modals.html' %}
-    {% include 'sales/opportunity/extends/meeting_modals.html' %}
+    {% include 'sales/opportunity/activities/extends/call_log_modals.html' %}
+    {% include 'sales/opportunity/activities/extends/meeting_modals.html' %}
+    {% include 'sales/opportunity/activities/extends/email_modals.html' %}
     {% include 'sales/task/extend/task-form.html' with has_prj=False%}
-
-    <div class="modal fade" id="send-email" tabindex="-1" role="dialog"
-         aria-labelledby="createOpportunityEmailModalForms" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Send Email' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"></span>
-                    </button>
-                </div>
-                <div class="modal-body" style="overflow: auto; height: 58vh">
-                    <form data-url="{% url 'OpportunityEmailListAPI' %}"
-                          data-url-redirect="{% url 'OpportunityEmailList' %}"
-                          data-method="POST"
-                          id="form-new-email"
-                          method="post">
-                        {% csrf_token %}
-                        <div class="row mb-3">
-                            <label class="form-label required">{% trans 'Sale Code' %}</label>
-                            <select id="email-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
-                        </div>
-                        <div class="row mb-3">
-                            <label class="form-label required">{% trans 'To' %}</label>
-                            <select id="email-to-select-box" class="select2 form-select" multiple="multiple" data-account-list-url="{% url 'AccountDetailAPI' '0' %}" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                        </div>
-                        <div class="row mb-3">
-                            <label class="form-label">{% trans 'Cc' %}</label>
-                            <select id="email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                        </div>
-                        <div class="row mb-3">
-                            <label class="form-label required">{% trans 'Subject' %}</label>
-                            <div><input id="email-subject-input" class="form-control required"></div>
-                        </div>
-                        <div class="row mb-3">
-                            <label class="col-12 col-form-label">{% trans 'Content' %}</label>
-                            <div><textarea id="email-content-area"></textarea></div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" form="form-new-email"
-                                id="btn-send-email">{% trans 'Send' %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="detail-send-email" data-url="{% url 'OpportunityEmailDetailAPI' '0' %}" tabindex="-1" role="dialog" aria-labelledby="detailOpportunityEmailModalForms" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Detail Email' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"></span>
-                    </button>
-                </div>
-                <div class="modal-body" style="overflow: auto; height: 58vh">
-                    <div class="row mb-3">
-                        <label class="form-label required">{% trans 'Sale Code' %}</label>
-                        <select disabled id="detail-email-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
-                    </div>
-                    <div class="row mb-3">
-                        <label class="form-label required">{% trans 'To' %}</label>
-                        <select disabled id="detail-email-to-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                    </div>
-                    <div class="row mb-3">
-                        <label class="form-label">{% trans 'Cc' %}</label>
-                        <select disabled id="detail-email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                    </div>
-                    <div class="row mb-3">
-                        <label class="form-label required">{% trans 'Subject' %}</label>
-                        <div><input readonly id="detail-email-subject-input" class="form-control required"></div>
-                    </div>
-                    <div class="row mb-3">
-                        <label class="form-label">{% trans 'Content' %}</label>
-                        <div>
-                            <div class="row form-group mb-3" id="detail-email-content-area"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     {{ data.type_customer|json_script:'data_type_customer' }}
     {{ data.role_customer|json_script:'data_role_customer' }}
@@ -236,8 +117,7 @@
     </div>
 {% endblock %}
 {% block dataHiddenGroup %}
-    <script
-            type="text" id="url-factory"
+    <script type="text" id="url-factory"
             data-task_detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
             data-task_list="{% url 'OpportunityTaskListAPI' %}"
             data-url-product="{% url 'ProductForSaleListAPI' %}"
@@ -268,9 +148,16 @@
             data-url-return-detail="{% url 'ReturnAdvanceDetail' pk=0 %}"
             data-url-bom-detail="{% url "OpportunityBOMDetail" '0' %}"
             data-url-bidding-detail="{% url "BiddingDetail" pk=0%}"
+
+            data-url-quo-list="{% url "QuotationListAPI" %}"
+            data-url-so-list="{% url "SaleOrderListAPI" %}"
+            data-url-ap-list="{% url "AdvancePaymentListAPI" %}"
+            data-url-payment-list="{% url "PaymentListAPI" %}"
+            data-url-return-list="{% url "ReturnAdvanceListAPI" %}"
+            data-url-call-log-detail="{% url "OpportunityCallLogDetailAPI" '0' %}"
+            data-url-meeting-detail="{% url "OpportunityMeetingDetailAPI" '0' %}"
     ></script>
-    <script
-            type="text" id="trans-factory"
+    <script type="text" id="trans-factory"
             data-activity-type01="{% trans 'Call to customer' %}"
             data-activity-type02="{% trans 'Send email' %}"
             data-activity-type03="{% trans 'Meeting with customer' %}"
@@ -299,11 +186,9 @@
             data-cancel-so="{% trans "Please cancel current sale order" %}"
             data-cancel-quo-so="{% trans "Please cancel current quotation, sale order" %}"
             data-trans-bidding="{% trans "Bidding" %}"
+            data-trans-notify-update-permission="{% trans 'Please save Update Opportunity page to apply all the permissions!' %}"
     ></script>
-    <input
-            type="text"
-            id="data-detail"
-    >
+    <script type="text" id="data-detail"></script>
     {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 {% block jsFooter %}
@@ -334,7 +219,7 @@
     </script>
 
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/task_in_opps.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/activities/task/task_in_opps.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_update.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
 {% endblock %}

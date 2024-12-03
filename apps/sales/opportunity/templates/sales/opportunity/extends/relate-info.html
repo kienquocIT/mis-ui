@@ -30,7 +30,7 @@
                         <h6 class="dropdown-header">{% trans 'Related features' %}</h6>
                         <div class="row">
                             <div class="col-6">
-                                <a id="create-quotation-shortcut" class="disabled dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#" target="_blank">{% trans 'Quotation' %}</a>
+                                <a id="create-quotation-shortcut" data-label="quotation.quotation" class="disabled dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#" target="_blank">{% trans 'Quotation' %}</a>
                             </div>
                             <div class="col-6">
                                 <a class="dropdown-item item-detail-related-feature text-blue" id="item-related-quotation" href="#" target="_blank">{% trans 'View Quotation' %}</a>
@@ -38,7 +38,7 @@
                         </div>
                         <div class="row">
                             <div class="col-6">
-                                <a id="create-sale-order-shortcut" class="disabled dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#" target="_blank">{% trans 'Sale Order' %}</a>
+                                <a id="create-sale-order-shortcut" data-label="saleorder.saleorder" class="disabled dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#" target="_blank">{% trans 'Sale Order' %}</a>
                             </div>
                             <div class="col-6">
                                 <a class="dropdown-item item-detail-related-feature text-blue" id="item-related-sale-order" href="#" target="_blank">{% trans 'View Sale Order' %}</a>

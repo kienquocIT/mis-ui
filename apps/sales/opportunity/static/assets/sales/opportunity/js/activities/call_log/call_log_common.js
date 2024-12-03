@@ -261,12 +261,12 @@ $(document).on('click', '#cancel-activity', function () {
 })
 
 class CallLogHandle {
-    load() {
+    static load() {
         loadOpportunityCallLogList();
         loadSaleCodeList()
     }
 
-    combinesData(frmEle) {
+    static combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['subject'] = $('#subject-input').val();
@@ -289,41 +289,3 @@ class CallLogHandle {
         };
     }
 }
-
-$(document).ready(function () {
-    new CallLogHandle().load();
-
-    SetupFormSubmit.validate(
-        $('#form-create-new-call-log'),
-        {
-            submitHandler: function (form, event) {
-                event.preventDefault();
-                let combinesData = new CallLogHandle().combinesData($(form));
-                if (combinesData) {
-                    WindowControl.showLoading();
-                    $.fn.callAjax2(combinesData)
-                        .then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $.fn.notifyB({description: "Successfully"}, 'success')
-                                    setTimeout(() => {
-                                        window.location.href = $(form).attr('data-url-redirect');
-                                    }, 1000);
-                                }
-                            },
-                            (errs) => {
-                                setTimeout(
-                                    () => {
-                                        WindowControl.hideLoading();
-                                    },
-                                    1000
-                                )
-                                $.fn.notifyB({description: errs.data.errors}, 'failure');
-                            }
-                        )
-                }
-            },
-        }
-    )
-});

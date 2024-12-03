@@ -162,10 +162,10 @@ class OpportunityLoadDropdown {
 
 class OpportunityLoadDetail {
     static productTableEle = $('#table-products');
-
     static competitorTableEle = $('#table-competitors');
-
     static contactRoleTableEle = $('#table-contact-role');
+    static input_prd_total_Ele= $('#input-product-total');
+    static estimated_gross_profit_percent_Ele = $('#estimated-gross-profit-percent')
 
     static loadDetailTableProduct(table, data) {
         data.opportunity_product_datas.map(function (item) {
@@ -232,8 +232,8 @@ class OpportunityLoadDetail {
 
         $('#input-product-pretax-amount').attr('value', total_pretax);
         $('#input-product-taxes').attr('value', tax_value);
-        $('#input-product-total').attr('value', total_pretax + tax_value);
-        let value = parseFloat($('#input-product-total').attr('value')) * parseFloat($('#estimated-gross-profit-percent').val()) / 100
+        this.input_prd_total_Ele.attr('value', total_pretax + tax_value);
+        let value = parseFloat(this.input_prd_total_Ele.attr('value')) * parseFloat(this.estimated_gross_profit_percent_Ele.val()) / 100
         $('#estimated-gross-profit-value').attr('value', value)
         $.fn.initMaskMoney2();
     }
@@ -321,22 +321,6 @@ class OpportunityLoadDetail {
                     ele_decision_maker.addClass('tag-change');
                 }
         }
-    }
-
-    static getDataMember() {
-        let ele_tr = $('#dtbMember').find('tr.selected');
-        let list_result = []
-        ele_tr.each(function () {
-            if ($(this).hasClass('tr-added')) {
-                list_result.push(
-                    {
-                        'id': $(this).find('.input-select-member').data('id')
-                    }
-                )
-            }
-        })
-        return list_result
-
     }
 
     static async loadMemberForDtb() {
@@ -664,7 +648,7 @@ class OpportunityLoadDetail {
                         WindowControl.hideLoading()
                         Swal.fire({
                             html:
-                            `<h6 class="text-primary">${$('#trans-script').attr('data-trans-notify-update-permission')}</h6>`,
+                            `<h6 class="text-primary">${transEle.attr('data-trans-notify-update-permission')}</h6>`,
                             customClass: {
                                 confirmButton: 'btn btn-sm btn-primary',
                                 actions: '',
@@ -787,10 +771,10 @@ class OpportunityLoadDetail {
                 list_product_data.push(data);
             })
         }
-        data_form['total_product'] = $('#input-product-total').valCurrency();
+        data_form['total_product'] = OpportunityLoadDetail.input_prd_total_Ele.valCurrency();
         data_form['total_product_pretax_amount'] = $('#input-product-pretax-amount').valCurrency();
         data_form['total_product_tax'] = $('#input-product-taxes').valCurrency();
-        data_form['estimated_gross_profit_percent'] = $('#estimated-gross-profit-percent').val();
+        data_form['estimated_gross_profit_percent'] = OpportunityLoadDetail.estimated_gross_profit_percent_Ele.val();
         data_form['estimated_gross_profit_value'] = $('#estimated-gross-profit-value').valCurrency();
 
         if (OpportunityLoadDetail.productTableEle.hasClass('tag-change')) {
@@ -1239,8 +1223,8 @@ class OpportunityActivity {
         // check permission before redirect
         let $dataDetail = $('#data-detail');
         let transEle = $('#trans-factory');
-        if ($(ele).attr('data-label') && $dataDetail.val()) {
-            let detail = JSON.parse($dataDetail.val());
+        if ($(ele).attr('data-label') && $dataDetail.text()) {
+            let detail = JSON.parse($dataDetail.text());
             let label = $(ele).attr('data-label');
             let appMapPerm = {
                 'quotation.quotation': 'quotation.quotation.create',
@@ -1400,13 +1384,6 @@ function callData(url, method) {
         (errs) => {
             console.log(errs)
         });
-}
-
-async function loadConfig() {
-    let url = urlEle.data('url-config');
-    let method = 'GET';
-    let result = await callData(url, method);
-    return result?.['opportunity_config'];
 }
 
 function loadConfigPromise() {
@@ -2121,21 +2098,6 @@ function autoLoadStage(
     return id_stage_current, is_lost
 }
 
-//common
-function toggleShowActivity() {
-    $('#btn-show-activity').on('click', function () {
-        $('.div-activity').removeClass('hidden');
-        $('.div-action').addClass('hidden');
-    })
-
-    $('#btn-show-action').on('click', function () {
-        $('.div-activity').addClass('hidden');
-        $('.div-action').removeClass('hidden');
-    })
-
-    $('#btn-show-activity').click();
-}
-
 function sortStage(list_stage) {
     let object_lost = null;
     let delivery = null;
@@ -2161,17 +2123,15 @@ function sortStage(list_stage) {
     if (delivery) {
         list_result.push(delivery);
     }
-    // if (object_close) {
-        list_result.push(object_close);
-    // }
+    list_result.push(object_close);
 
     return list_result
 }
 
-$('#estimated-gross-profit-percent').on('input', function () {
+OpportunityLoadDetail.estimated_gross_profit_percent_Ele.on('input', function () {
     if ($(this).val()) {
         $(this).val(parseFloat($(this).val()))
-        let value = parseFloat($('#input-product-pretax-amount').attr('value')) * parseFloat($('#estimated-gross-profit-percent').val()) / 100
+        let value = parseFloat($('#input-product-pretax-amount').attr('value')) * parseFloat(OpportunityLoadDetail.estimated_gross_profit_percent_Ele.val()) / 100
         $('#estimated-gross-profit-value').attr('value', value)
         $.fn.initMaskMoney2()
     }
@@ -2181,3 +2141,274 @@ $('#estimated-gross-profit-percent').on('input', function () {
         $.fn.initMaskMoney2()
     }
 })
+
+/////////////////////////// haind
+class OpportunityLoadPage {
+    static loadLeadList(datasource) {
+        if (!$.fn.DataTable.isDataTable('#lead-list-table')) {
+            let dtb = $('#lead-list-table');
+            dtb.DataTableDefault({
+                styleDom: 'hide-foot',
+                rowIdx: true,
+                scrollX: '100vh',
+                scrollY: '25vh',
+                data: datasource,
+                columns: [
+                    {
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['lead'].id);
+                            return `<a href="${link}"><span class="badge badge-soft-primary w-70">${row?.['lead'].code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['lead'].id);
+                            return `<a href="${link}">${row?.['lead']?.['title']}</a>`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            return `<span class="badge badge-sm badge-primary">${row?.['lead']?.['source']}</span>`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            return `${row?.['lead']?.['contact_name']}`;
+                        }
+                    },
+                    {
+                        'render': (data, type, row) => {
+                            return `${moment(row?.['lead']?.['date_created'].split(' ')[0]).format('DD/MM/YYYY')}`;
+                        }
+                    },
+                ],
+            });
+        }
+    }
+
+    static push_param_to_url(url, params = {}) {
+        const [baseUrl, queryString] = url.split('?');
+        const currentParams = new URLSearchParams(queryString);
+        Object.keys(params).forEach(key => {
+            if (params[key] !== undefined && params[key] !== null) {
+                currentParams.set(key, params[key]);
+            }
+        });
+        return `${baseUrl}?${currentParams.toString()}`;
+    }
+
+    static checkPermissionAppRelated() {
+        const urlFactory = $('#url-factory');
+
+        const quotation_check_perm = $.fn.callAjax2({
+            url: urlFactory.attr('data-url-opp-list'),
+            data: {
+                'list_from_app': 'quotation.quotation.create', 'id': pk
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                        return data?.['opportunity_list'][0];
+                    }
+                    return null
+                }
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+        const sale_order_check_perm = $.fn.callAjax2({
+            url: urlFactory.attr('data-url-opp-list'),
+            data: {
+                'list_from_app': 'saleorder.saleorder.create', 'id': pk
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                        return data?.['opportunity_list'][0];
+                    }
+                    return null
+                }
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+        const advance_check_perm = $.fn.callAjax2({
+            url: urlFactory.attr('data-url-opp-list'),
+            data: {
+                'list_from_app': 'cashoutflow.advancepayment.create', 'id': pk
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                        return data?.['opportunity_list'][0];
+                    }
+                    return null
+                }
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+        const payment_check_perm = $.fn.callAjax2({
+            url: urlFactory.attr('data-url-opp-list'),
+            data: {
+                'list_from_app': 'cashoutflow.payment.create', 'id': pk
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                        return data?.['opportunity_list'][0];
+                    }
+                    return null
+                }
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+        const bom_check_perm = $.fn.callAjax2({
+            url: urlFactory.attr('data-url-opp-list'),
+            data: {
+                'list_from_app': 'production.bom.create', 'id': pk
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                        return data?.['opportunity_list'][0];
+                    }
+                    return null
+                }
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+        const biding_check_perm = $.fn.callAjax2({
+            url: urlFactory.attr('data-url-opp-list'),
+            data: {
+                'list_from_app': 'bidding.bidding.create', 'id': pk
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                        return data?.['opportunity_list'][0];
+                    }
+                    return null
+                }
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        let create_return_sc = $('#create-return-advance-shortcut')
+        create_return_sc.attr('href', create_return_sc.attr('data-url'))
+
+        Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm]).then(
+            (results_perm_app) => {
+                if (results_perm_app[0]) {
+                    let create_quotation_sc = $('#create-quotation-shortcut')
+                    create_quotation_sc.removeClass('disabled');
+                    let param_url = this.push_param_to_url(create_quotation_sc.attr('data-url'), {
+                        'opp_id': results_perm_app[0]?.['id']
+                    })
+                    create_quotation_sc.attr('href', param_url)
+                }
+                if (results_perm_app[1]) {
+                    let create_so_sc = $('#create-sale-order-shortcut')
+                    create_so_sc.removeClass('disabled');
+                    let param_url = this.push_param_to_url(create_so_sc.attr('data-url'), {
+                        'opp_id': results_perm_app[1]?.['id']
+                    })
+                    create_so_sc.attr('href', param_url)
+                }
+                if (results_perm_app[2]) {
+                    let create_ap_sc = $('#create-advance-payment-shortcut')
+                    create_ap_sc.removeClass('disabled');
+                    let param_url = this.push_param_to_url(create_ap_sc.attr('data-url'), {
+                        'opp_id': results_perm_app[2]?.['id'],
+                        'opp_code': results_perm_app[2]?.['code'],
+                        'opp_title': results_perm_app[2]?.['title'],
+                        'quotation_object': encodeURIComponent(JSON.stringify(results_perm_app[2]?.['quotation'])),
+                        'sale_order_object': encodeURIComponent(JSON.stringify(results_perm_app[2]?.['sale_order'])),
+                    })
+                    create_ap_sc.attr('href', param_url)
+                }
+                if (results_perm_app[3]) {
+                    let create_payment_sc = $('#create-payment-shortcut')
+                    create_payment_sc.removeClass('disabled');
+                    let param_url = this.push_param_to_url(create_payment_sc.attr('data-url'), {
+                        'opp_id': results_perm_app[3]?.['id'],
+                        'opp_code': results_perm_app[3]?.['code'],
+                        'opp_title': results_perm_app[3]?.['title'],
+                        'quotation_object': encodeURIComponent(JSON.stringify(results_perm_app[3]?.['quotation'])),
+                        'sale_order_object': encodeURIComponent(JSON.stringify(results_perm_app[3]?.['sale_order'])),
+                    })
+                    create_payment_sc.attr('href', param_url)
+                }
+                if (results_perm_app[4]) {
+                    let create_bom_sc = $('#create-project-bom-shortcut')
+                    create_bom_sc.removeClass('disabled');
+                    let param_url = this.push_param_to_url(create_bom_sc.attr('data-url'), {
+                        'opp_id': results_perm_app[4]?.['id'],
+                        'opp_code': results_perm_app[4]?.['code'],
+                        'opp_title': results_perm_app[4]?.['title'],
+                        'sale_person_mapped': encodeURIComponent(JSON.stringify(results_perm_app[4]?.['sale_person'])),
+                    })
+                    create_bom_sc.attr('href', param_url)
+                }
+                if (results_perm_app[5]) {
+                    let create_bidding_sc = $('#create-bidding-shortcut')
+                    create_bidding_sc.removeClass('disabled');
+                    let param_url = this.push_param_to_url(create_bidding_sc.attr('data-url'), {
+                        'opp_id': results_perm_app[5]?.['id'],
+                        'opp_code': results_perm_app[5]?.['code'],
+                        'opp_title': results_perm_app[5]?.['title'],
+                        'inherit_id': results_perm_app[5]?.['sale_person']?.['id'],
+                        'inherit_title': results_perm_app[5]?.['sale_person']?.['full_name'],
+                        'customer': encodeURIComponent(JSON.stringify(results_perm_app[5]?.['customer'])),
+                    })
+                    create_bidding_sc.attr('href', param_url)
+                }
+                $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
+            })
+    }
+
+    static getDataMemberAddNew() {
+        return $('#dtbMember').DataTable().data().filter((item) => item.is_checked_new === true).map((item) => item.id).toArray();
+    }
+
+    static loadWinRate(dict_stage, checkInputRateEle, inputRateEle, rangeInputEle) {
+        let ele_deal_close = $('.stage-close');
+        let win_rate = dict_stage[$('.stage-selected').not(ele_deal_close).last().data('id')].win_rate;
+        if (!checkInputRateEle.is(':checked')) {
+            inputRateEle.val(win_rate);
+            rangeInputEle.val(win_rate);
+        }
+    }
+}

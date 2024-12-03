@@ -236,11 +236,11 @@ ClassicEditor
     })
 
 class EmailHandle {
-    load() {
+    static load() {
         loadOpportunityEmailList();
         loadEmailSaleCodeList();
     }
-    combinesData(frmEle) {
+    static combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['subject'] = $('#email-subject-input').val();
@@ -257,37 +257,3 @@ class EmailHandle {
         };
     }
 }
-
-$(document).ready(function () {
-    new EmailHandle().load();
-
-    $('#form-new-email').submit(function (event) {
-        event.preventDefault();
-        let combinesData = new EmailHandle().combinesData($(this));
-        if (combinesData) {
-            WindowControl.showLoading();
-            $.fn.callAjax2(combinesData)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
-                                location.reload.bind(location);
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        setTimeout(
-                            () => {
-                                WindowControl.hideLoading();
-                            },
-                            1000
-                        )
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
-        }
-    })
-});

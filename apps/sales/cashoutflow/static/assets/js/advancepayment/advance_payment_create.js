@@ -1,6 +1,7 @@
 $(document).ready(function () {
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
+    // get params
     const {opp_id, opp_title, opp_code} = $x.fn.getManyUrlParameters(['opp_id', 'opp_title', 'opp_code'])
     let opportunity = opp_id ? {
         'id': opp_id,
@@ -18,7 +19,8 @@ $(document).ready(function () {
         opportunity['sale_order'] = sale_order
     }
 
-    APHandle.LoadPage(opportunity);
+    // call load page
+    APHandle.LoadPage(opportunity, 'create');
     WFRTControl.setWFInitialData('advancepayment', 'POST')
 
     // SUBMIT FORM CREATE ADVANCE PAYMENT

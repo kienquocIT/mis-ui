@@ -1459,27 +1459,36 @@ class PaymentLoadTab {
 }
 
 class PaymentHandle {
-    static LoadPage(opportunity=null) {
+    static LoadPage(opportunity=null, option='create') {
         PaymentLoadPage.LoadCreatedDate()
         PaymentLoadPage.LoadCreator(initEmployee)
-        if (opportunity) {
+
+        if (option === 'create') {
             new $x.cls.bastionField({
                 has_opp: true,
                 has_inherit: true,
-                data_opp: [opportunity]
+                has_process: true,
+                data_opp: $x.fn.checkUUID4(opportunity?.['id']) ? [{
+                    "id": opportunity?.['id'],
+                    "title": $x.fn.decodeURI(opportunity?.['title']),
+                    "code": $x.fn.decodeURI(opportunity?.['code']),
+                    "selected": true,
+                }] : [],
+                inheritFlagData: {"disabled": false, "readonly": false},
             }).init();
+        }
 
+        if (opportunity) {
             sale_order_mapped_select.prop('disabled', true)
             quotation_mapped_select.prop('disabled', true)
-            let quo_mapped = opportunity['quotation'];
-            let so_mapped = opportunity['sale_order'];
-            PaymentLoadPage.LoadQuotation(quo_mapped)
-            PaymentLoadTab.LoadPlanQuotation(opportunity?.['id'], quo_mapped?.['id'])
-            PaymentLoadPage.LoadSaleOrder(so_mapped);
             payment_for = 'opportunity'
         }
-        PaymentLoadPage.LoadQuotation()
-        PaymentLoadPage.LoadSaleOrder()
+
+        let quo_mapped = opportunity?.['quotation'];
+        let so_mapped = opportunity?.['sale_order'];
+        PaymentLoadPage.LoadQuotation(quo_mapped)
+        PaymentLoadTab.LoadPlanQuotation(opportunity?.['id'], quo_mapped?.['id'])
+        PaymentLoadPage.LoadSaleOrder(so_mapped);
         PaymentLoadPage.LoadSupplier()
         PaymentLoadPage.LoadEmployee()
         PaymentLoadTab.DrawLineDetailTable()
@@ -1632,13 +1641,22 @@ class PaymentHandle {
                         ...data?.['process'],
                         "selected": true,
                     }] : [];
+                    const data_process_stage_app = Object.keys(data?.['process_stage_app'] || []).length > 0 ? [{
+                        ...data['process_stage_app'],
+                        'selected': true,
+                    }] : [];
                     new $x.cls.bastionField({
                         has_opp: true,
                         has_inherit: true,
                         has_process: true,
-                        data_inherit: data_inherit,
                         data_opp: data_opp,
+                        data_inherit: data_inherit,
                         data_process: data_process,
+                        data_process_stage_app: data_process_stage_app,
+                        oppFlagData: {"disabled": true},
+                        inheritFlagData: {"disabled": true},
+                        processFlagData: {"disabled": true},
+                        processStageAppFlagData: {"disabled": true},
                     }).init();
 
                     if (Object.keys(data?.['opportunity']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {

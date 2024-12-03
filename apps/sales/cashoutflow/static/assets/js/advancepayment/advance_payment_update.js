@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    APHandle.LoadPage()
+    APHandle.LoadPage(null, 'update')
     WFRTControl.setWFInitialData('advancepayment', 'PUT')
     APHandle.LoadDetailAP('update');
 

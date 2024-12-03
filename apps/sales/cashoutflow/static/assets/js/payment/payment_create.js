@@ -1,6 +1,7 @@
 $(document).ready(function () {
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
+    // get params
     const {opp_id, opp_title, opp_code} = $x.fn.getManyUrlParameters(['opp_id', 'opp_title', 'opp_code'])
     let opportunity = opp_id ? {
         'id': opp_id,
@@ -18,7 +19,8 @@ $(document).ready(function () {
         opportunity['sale_order'] = sale_order
     }
 
-    PaymentHandle.LoadPage(opportunity)
+    // call load page
+    PaymentHandle.LoadPage(opportunity, 'create')
     WFRTControl.setWFInitialData('payment', 'POST')
 
     let form_validator = $('#form-create-payment').validate({

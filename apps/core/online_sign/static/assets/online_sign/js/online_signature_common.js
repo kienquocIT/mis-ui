@@ -24,7 +24,7 @@ class Signature {
             $('#sign_export').on('click', () => {
                 canvas.getElement().toBlob(blob => {
                     // const href = URL.createObjectURL(blob);
-                    const date = moment(new Date()).format('YYYYMMDD')
+                    const date = new Date().getTime()
                     let fileNew = new File([blob], `signature-${date}.png`, {type: blob.type});
                     this.uploadDataFile(fileNew)
                 }, 'image/png');
@@ -38,62 +38,51 @@ class Signature {
         formData.append('file', dataFile);
         const signElm = $('#attach_sign');
 
+
         $.fn.callAjax2({
             url: signElm.find('.dad-file-control-group').attr('data-url'),
             method: 'POST',
             data: formData,
             contentType: 'multipart/form-data',
-            // xhr: function () {
-            //     let xhr = new XMLHttpRequest();
-            //     xhr.upload.addEventListener("progress", function (evt) {
-            //         if (evt.lengthComputable) {
-            //             let percentComplete = evt.loaded / evt.total;
-            //             percentComplete = parseInt(percentComplete * 100);
-            //             progressBarEle.find('.progress-bar').alterClass('w-*', 'w-' + Math.ceil(percentComplete).toString());
-            //
-            //             if (percentComplete === 100) {
-            //                 console.log('complete upload');
-            //             }
-            //
-            //         }
-            //     }, false);
-            //     return xhr;
-            // },
-            // error: function (jqXHR, textStatus, errorThrown) {
-            //     let resp_data = jqXHR.responseJSON;
-            //     if ((!resp_data || typeof resp_data !== 'object') && jqXHR.status !== 204) {
-            //         WindowControl.hideLoadingButton($(btnMainEle));
-            //         progressBarEle.remove();
-            //     }
-            // },
         }).then((resp) => {
             let detailFile = resp?.data?.detail ? resp.data.detail : resp?.data?.['file_detail'];
             console.log(detailFile)
             const fileID = detailFile.id;
-
+            let lst = []
+            lst.push(detailFile)
+            this.checkInit(lst)
             // clsThis.setIdFile(detailFile?.['id']);
             // clsThis.setFileNameUploaded(detailFile?.['file_name'], detailFile?.['file_size']);
-            // WindowControl.hideLoadingButton($(btnMainEle));
-            // progressBarEle.remove();
         }, (errs) => {
             // progressBarEle.remove();
             // let existData = errs?.data?.['errors']?.['exist'];
             console.log(errs);
+            // todo here
         });
 
-        // let progressBarEle = $(`<div class="progress">
-        //     <div
-        //         class="progress-bar progress-bar-striped bg-info progress-bar-animated" role="progressbar"
-        //         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
-        //     ></div>
-        // </div>
-        // `)
-        // $(btnMainEle).parent().append(progressBarEle);
+
     }
 
     checkInit(Data){
         const isInit = $('#attach_sign .dad-file-control-group').find('.dm-uploader-initializer').length > 0
-        if (isInit)
+        const attchElm = $('#attach_sign')
+        if (isInit){
+            // đã init => reinit lại data
+            attchElm.find('.dm-uploader-results input[name="attachment"]').remove()
+            attchElm.find('.dm-uploader').dmUploader("destroy");
+        }
+        new $x.cls.file(
+            attchElm,
+            {
+                allowedTypes: 'image',
+                extFilter: ['png'],
+            }
+        ).init({
+            name: 'attach_sign',
+            enable_edit: true,
+            data: Data,
+        });
+
     }
 }
 var activeSignature;

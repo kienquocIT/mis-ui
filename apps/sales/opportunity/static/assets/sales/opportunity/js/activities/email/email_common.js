@@ -1,4 +1,4 @@
-let employee_current_id = $('#employee_current_id').val()
+let email_employee_current_id = $('#employee_current_id').val()
 let email_Opp_slb = $('#email-sale-code-select-box')
 let email_to_slb = $('#email-to-select-box')
 let email_cc_slb = $('#email-cc-select-box')
@@ -87,13 +87,13 @@ function loadEmailSaleCodeList(data) {
             for (let i = 0; i < resp.data[keyResp].length; i++) {
                 let added = false;
                 let item = resp.data[keyResp][i];
-                if (item?.['sale_person']['id'] === employee_current_id) {
+                if (item?.['sale_person']['id'] === email_employee_current_id) {
                     result.push(item);
                     added = true;
                 }
                 if (item.opportunity_sale_team_datas.length > 0 && added === false) {
                     $.each(item.opportunity_sale_team_datas, function(index, member_obj) {
-                        if (member_obj.member.id === employee_current_id) {
+                        if (member_obj.member.id === email_employee_current_id) {
                             result.push(item);
                         }
                     });

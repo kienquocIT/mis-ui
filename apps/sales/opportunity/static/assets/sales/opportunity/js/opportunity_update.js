@@ -224,7 +224,7 @@ $(document).ready(function () {
                     OpportunityActivity.loadDblActivityLogs();
                 });
                 $('#btn-create-related-feature').on('click', function () {
-                    if ($(this).attr('data-call-check-perm') === 'true') {
+                    if ($(this).attr('data-call-check-perm') !== 'true') {
                         OpportunityLoadPage.checkPermissionAppRelated()
                     }
                 })

@@ -2208,7 +2208,7 @@ class OpportunityLoadPage {
         const quotation_check_perm = $.fn.callAjax2({
             url: urlFactory.attr('data-url-opp-list'),
             data: {
-                'list_from_app': 'quotation.quotation.create', 'id': pk
+                'list_from_app': 'quotation.quotation.create', 'id': $.fn.getPkDetail()
             },
             method: 'GET'
         }).then(
@@ -2228,7 +2228,7 @@ class OpportunityLoadPage {
         const sale_order_check_perm = $.fn.callAjax2({
             url: urlFactory.attr('data-url-opp-list'),
             data: {
-                'list_from_app': 'saleorder.saleorder.create', 'id': pk
+                'list_from_app': 'saleorder.saleorder.create', 'id': $.fn.getPkDetail()
             },
             method: 'GET'
         }).then(
@@ -2248,7 +2248,7 @@ class OpportunityLoadPage {
         const advance_check_perm = $.fn.callAjax2({
             url: urlFactory.attr('data-url-opp-list'),
             data: {
-                'list_from_app': 'cashoutflow.advancepayment.create', 'id': pk
+                'list_from_app': 'cashoutflow.advancepayment.create', 'id': $.fn.getPkDetail()
             },
             method: 'GET'
         }).then(
@@ -2268,7 +2268,7 @@ class OpportunityLoadPage {
         const payment_check_perm = $.fn.callAjax2({
             url: urlFactory.attr('data-url-opp-list'),
             data: {
-                'list_from_app': 'cashoutflow.payment.create', 'id': pk
+                'list_from_app': 'cashoutflow.payment.create', 'id': $.fn.getPkDetail()
             },
             method: 'GET'
         }).then(
@@ -2288,7 +2288,7 @@ class OpportunityLoadPage {
         const bom_check_perm = $.fn.callAjax2({
             url: urlFactory.attr('data-url-opp-list'),
             data: {
-                'list_from_app': 'production.bom.create', 'id': pk
+                'list_from_app': 'production.bom.create', 'id': $.fn.getPkDetail()
             },
             method: 'GET'
         }).then(
@@ -2308,7 +2308,7 @@ class OpportunityLoadPage {
         const biding_check_perm = $.fn.callAjax2({
             url: urlFactory.attr('data-url-opp-list'),
             data: {
-                'list_from_app': 'bidding.bidding.create', 'id': pk
+                'list_from_app': 'bidding.bidding.create', 'id': $.fn.getPkDetail()
             },
             method: 'GET'
         }).then(

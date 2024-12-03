@@ -131,22 +131,21 @@ class QuotationLoadDataHandle {
                 $.fn.callAjax2({
                         'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
                         'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
-                        'data': {'list_from_app': list_from_app},
+                        'data': {'list_from_app': list_from_app, 'id': urlParams?.['opp_id']},
                     }
                 ).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                for (let opp of data.opportunity_list) {
-                                    if (opp?.['id'] === urlParams?.['opp_id']) {
-                                        if (!QuotationLoadDataHandle.opportunitySelectEle.prop('disabled')) {
-                                            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.opportunitySelectEle, [opp]);
-                                            QuotationLoadDataHandle.loadDataByOpportunity();
-                                            break;
-                                        }
+                                if (data.opportunity_list.length > 0) {
+                                    if (!QuotationLoadDataHandle.opportunitySelectEle.prop('disabled')) {
+                                        QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.opportunitySelectEle, [data.opportunity_list[0]]);
+                                        QuotationLoadDataHandle.loadDataByOpportunity();
                                     }
+                                    return true;
                                 }
+                                WindowControl.showForbidden();
                             }
                         }
                     }

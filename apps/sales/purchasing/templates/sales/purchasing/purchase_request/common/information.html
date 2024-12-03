@@ -174,3 +174,57 @@
         </div>
     </div>
 </div>
+<div class="row for-fixed-asset-request" hidden>
+    <div class="col-12 mb-2">
+        <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'General Information' %}</h5>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="title-fa" class="form-label required">{% trans 'Name' %}</label>
+            <input id="title-fa" class="form-control">
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="date-delivery-fa" class="form-label required">{% trans 'Delivered Date' %}</label>
+            <input id="date-delivery-fa" class="form-control">
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="pr-status-fa" class="form-label">{% trans 'Purchase Status' %}</label>
+            <input id="pr-status-fa" class="form-control form-control-line fw-bold" value="{% trans 'Wait' %}" data-value="0" readonly>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="supplier-fa" class="form-label required">{% trans 'Supplier' %}</label>
+            <select class="form-control select2" id="supplier-fa" data-url="{% url "AccountForSaleListAPI" %}"></select>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="contact-fa" class="form-label required">{% trans 'Contact' %}</label>
+            <select disabled class="form-select" id="contact-fa" data-url="{% url "ContactListAPI" %}"></select>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="request-for-fa" class="form-label required">{% trans 'Request For' %}</label>
+            <span class="input-affix-wrapper">
+                <span class="input-prefix" id="dropdownCreator">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-select-request-for">
+                        <i class="fa-solid fa-ellipsis text-primary"></i>
+                    </a>
+                </span>
+                <input id="request-for-fa" type="text" class="form-control" readonly>
+            </span>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="note-fa" class="form-label">{% trans 'Note' %}</label>
+            <textarea id="note-fa" class="form-control"></textarea>
+        </div>
+    </div>
+</div>

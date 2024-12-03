@@ -140,7 +140,7 @@ $(document).ready(function () {
         changeHrefCreate(url_create, paramString);
     })
 
-    $(document).on('click', '#btn-create-for-other', function () {
+    $(document).on('click', '#btn-create-for-fixed-asset', function () {
         let paramString = $.param({
             'type': '2',
         })
@@ -152,5 +152,11 @@ $(document).ready(function () {
             'type': '3',
         })
         changeHrefCreate(url_create, paramString);
+    })
+
+    $('.select-pr-type').on('mouseenter', function () {
+        $(this).addClass('bg-secondary-light-5')
+    }).on('mouseleave', function () {
+        $(this).removeClass('bg-secondary-light-5')
     })
 })

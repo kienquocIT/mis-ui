@@ -9787,3 +9787,7 @@ msgstr "Làm ơn đợi cho đến khi nhập liệu hoàn tất! 😀"
 #
 msgid "Bidding Result Config"
 msgstr "Cấu hình cập nhật kết quả thầu"
+
+#
+msgid "Bid Value"
+msgstr "Giá thầu"

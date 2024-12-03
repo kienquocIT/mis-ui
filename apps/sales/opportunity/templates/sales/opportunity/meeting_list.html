@@ -26,6 +26,8 @@
     <table id="table_opportunity_meeting_list" class="table nowrap w-100 mb-5"
            data-url="{% url 'OpportunityMeetingListAPI' %}"
            data-url-delete="{% url 'OpportunityMeetingDetailAPI' '0' %}"
+           data-url="{% url 'OpportunityMeetingListAPI' %}"
+           data-url-delete="{% url 'OpportunityMeetingDetailAPI' '0' %}"
            data-url-redirect="{% url 'OpportunityMeetingList' %}"
            data-method="GET">
         <thead>
@@ -48,7 +50,7 @@
 
     <div class="modal fade" id="create-meeting" tabindex="-1" role="dialog"
          aria-labelledby="createOpportunityMeetingModalForms" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans 'Create meeting' %}</h5>
@@ -61,30 +63,40 @@
                           data-url-redirect="{% url 'OpportunityMeetingList' %}"
                           data-method="POST"
                           id="form-new-meeting"
-                          method="post">
+                          method="post"
+                    >
                         {% csrf_token %}
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label class="form-label required">{% trans 'Subject' %}</label>
-                                    <input id="meeting-subject-input" placeholder="{% trans 'Input subject' %}" class="form-control">
-                                </div>
-                            </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label required">{% trans 'Subject' %}</label>
+                            <input id="meeting-subject-input" placeholder="{% trans 'Input subject' %}" class="form-control">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label required">{% trans 'Sale Code' %}</label>
+                            <select id="meeting-sale-code-select-box"
+                                    data-url="{% url 'OpportunityListAPI' %}"
+                                    data-keyResp="opportunity_list"
+                                    data-method="GET" class="form-select"></select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="inp-process" class="form-label">{% trans 'Process' %}</label>
+                            <select
+                                    name="process" id="inp-process" class="form-select"
+                                    data-url="{% url 'ProcessRuntimeOfMeAPI' %}"
+                                    data-keyResp="process_runtime_list"
+                            ></select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="inp-process-stage-app" class="form-label">{% trans 'Process Stage Application' %}</label>
+                            <select
+                                    name="process_stage_app" id="inp-process-stage-app" class="form-select"
+                                    data-url="{% url 'ProcessStagesAppOfMeAPI' %}"
+                                    data-app-id="{{data.app_id}}"
+                                    data-keyResp="process_runtime_stages_app_list"
+                            ></select>
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <div class="mb-3">
-                                    <label class="form-label required">{% trans 'Sale Code' %}</label>
-                                    <select id="meeting-sale-code-select-box"
-                                            data-url="{% url 'OpportunityListAPI' %}"
-                                            data-keyResp="opportunity_list"
-                                            data-method="GET" class="form-select"></select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="mb-3">
+                                <div class="form-group mb-3">
                                     <label class="form-label required">{% trans 'Date' %}</label>
                                     <input id="meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
                                 </div>
@@ -104,7 +116,7 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <div class="mb-3">
+                                <div class="form-group mb-3">
                                     <label class="form-label required">{% trans 'Meeting address' %}</label>
                                     <div id="meeting-address-select-div">
                                         <select disabled id="meeting-address-select-box" class="select2"></select>
@@ -117,49 +129,29 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label class="form-label required">{% trans 'Room location' %}</label>
-                                    <input id="meeting-room-location-input" placeholder="{% trans 'Input location' %}" class="form-control">
-                                </div>
-                            </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label required">{% trans 'Room location' %}</label>
+                            <input id="meeting-room-location-input" placeholder="{% trans 'Input location' %}" class="form-control">
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label class="form-label required">{% trans 'Employee attended' %}</label>
-                                    <select id="meeting-employee-attended-select-box" data-url="{% url 'EmployeeListAPI' %}"
-                                            multiple class="select2 select-multiple" data-closeOnSelect="false"></select>
-                                </div>
-                            </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label required">{% trans 'Employee attended' %}</label>
+                            <select id="meeting-employee-attended-select-box" data-url="{% url 'EmployeeListAPI' %}"
+                                    multiple class="select2 select-multiple" data-closeOnSelect="false"></select>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label class="form-label">{% trans 'Customer member' %}</label>
-                                    <select disabled id="meeting-customer-member-select-box" multiple data-closeOnSelect="false" class="select2 select-multiple"></select>
-                                </div>
-                            </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">{% trans 'Customer member' %}</label>
+                            <select disabled id="meeting-customer-member-select-box" multiple data-closeOnSelect="false" class="select2 select-multiple"></select>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label class="form-label required">
-                                        {% trans 'Input result' %}
-                                    </label>
-                                    <textarea id="meeting-result-text-area" placeholder="{% trans 'Input result' %}" class="form-control" style="min-height: 100px"></textarea>
-                                </div>
-                            </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label required">
+                                {% trans 'Input result' %}
+                            </label>
+                            <textarea id="meeting-result-text-area" placeholder="{% trans 'Input result' %}" class="form-control" style="min-height: 100px"></textarea>
                         </div>
-                        <div class="row" hidden>
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="repeat-activity">
-                                        <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
-                                    </div>
-                                </div>
+                        <div class="form-group mb-3 d-none">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="repeat-activity">
+                                <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
                             </div>
                         </div>
                     </form>
@@ -171,116 +163,9 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="detail-meeting" tabindex="-1" role="dialog"
-         aria-labelledby="detailOpportunityMeetingModalForms" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Detail Meeting' %} <span id="is-cancelled" class="badge badge-sm badge-soft-danger"></span></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"></span>
-                    </button>
-                </div>
-                <div class="modal-body" data-id="">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <label class="form-label required">{% trans 'Subject' %}</label>
-                                <input disabled style="color: #6f6f6f" id="detail-meeting-subject-input" placeholder="{% trans 'Input subject' %}" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <label class="form-label required">{% trans 'Sale Code' %}</label>
-                                <select disabled id="detail-meeting-sale-code-select-box" class="select2 form-select"></select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-md-12">
-                            <div class="mb-3">
-                                <label class="form-label required">{% trans 'Date' %}</label>
-                                <input disabled style="color: black" id="detail-meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-md-6 form-group">
-                            <label for="meeting-from-time" class="form-label required">{% trans 'From time' %}</label>
-                            <input disabled style="color: black" id="meeting-from-time"
-                                   placeholder="{% trans 'From time' %}" class="form-control">
-                        </div>
-                        <div class="col-xs-12 col-md-6 form-group">
-                            <label class="form-label required" for="meeting-to-time">{% trans 'To time' %}</label>
-                            <input disabled style="color: black" id="meeting-to-time"
-                                   placeholder="{% trans 'To time' %}" class="form-control">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <label class="form-label required">{% trans 'Meeting address' %}</label>
-                                <select disabled id="detail-meeting-address-select-box" class="select2 form-select"></select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <label class="form-label required">{% trans 'Room location' %}</label>
-                                <input disabled style="color: #6f6f6f" id="detail-meeting-room-location-input" placeholder="{% trans 'Input location' %}" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <label class="form-label required">{% trans 'Employee attended' %}</label>
-                                <select disabled style="color: #6f6f6f" id="detail-meeting-employee-attended-select-box" multiple class="select2 select-multiple"></select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <label class="form-label">{% trans 'Customer member' %}</label>
-                                <select disabled style="color: #6f6f6f" id="detail-meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <label class="form-label required">
-                                    {% trans 'Input Result' %}
-                                </label>
-                                <textarea disabled style="color: #6f6f6f" id="detail-meeting-result-text-area" placeholder="{% trans 'Input result' %}" class="form-control" style="min-height: 100px"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" hidden>
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <div class="form-check">
-                                    <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity">
-                                    <label for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <button id="cancel-activity" type="button" class="btn btn-custom btn-soft-danger btn-rounded btn-sm">
-                            <span><span>{% trans 'Cancel' %}</span><span class="icon"><i class="fa fa-times"></i></span></span>
-                        </button>
-                    </div>
-                </div>
-                <div class="modal-footer"></div>
-            </div>
-        </div>
-    </div>
+{% endblock %}
+{% block modalData %}
+    {% include 'sales/opportunity/extends/meeting_modals.html' %}
 {% endblock %}
 {%  block dataHiddenGroup %}
     <div class="delete-btn">
@@ -293,7 +178,74 @@
     <input type="hidden" id="trans-factory" data-time-valid="{% trans 'To time need larger than From time' %}">
 {% endblock %}
 {% block jsFooter %}
-
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/meeting_list.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            const modal$ = $("#create-meeting");
+            const create_open = $x.fn.getUrlParameter('create_open', '') === 'true';
+            let processData = [];
+            let processStageApp = [];
+            if (create_open === true){
+                modal$.modal('show');
+                const {
+                    process_id,
+                    process_title,
+                    process_stage_app_id,
+                    process_stage_app_title,
+                } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title']);
+                if (process_id){
+                    processData.push({
+                        'id': process_id,
+                        'title': process_title,
+                        'selected': true,
+                    })
+                }
+                if (process_stage_app_id){
+                    processStageApp.push({
+                        'id': process_stage_app_id,
+                        'title': process_stage_app_title,
+                        'selected': true,
+                    })
+                }
+            }
+
+            const inpProcess$ = modal$.find(':input[name=process]');
+            const inpStageApp$ = modal$.find(':input[name=process_stage_app]');
+
+            function reinitProcessStageApp(data=[], process_id=null){
+                inpStageApp$.destroySelect2();
+                let dataParams = {"application_id": inpStageApp$.data('app-id')};
+                if (process_id && $x.fn.checkUUID4(process_id)) dataParams['process_id'] = process_id;
+                inpStageApp$.initSelect2({
+                    allowClear: true,
+                    dataParams: dataParams,
+                    data: data
+                })
+            }
+
+            function reinitProcess(data=[], opp_id=null){
+                inpProcess$.destroySelect2();
+                let dataParams = {};
+                if (opp_id && $x.fn.checkUUID4(opp_id)) dataParams['opp_id'] = opp_id;
+                inpProcess$.initSelect2({
+                    allowClear: true,
+                    dataParams: dataParams,
+                    data: data
+                }).on('change', function(){
+                    const selectedVal = $(this).val();
+                    reinitProcessStageApp([], selectedVal ? selectedVal : null);
+                })
+            }
+
+            modal$.find('#meeting-sale-code-select-box').on('change', function(){
+                const selectedVal = $(this).val();
+                reinitProcess([], selectedVal ? selectedVal : null);
+                inpProcess$.trigger('change');
+            })
+
+            reinitProcess(processData);
+            reinitProcessStageApp(processStageApp);
+        })
+    </script>
 {% endblock %}

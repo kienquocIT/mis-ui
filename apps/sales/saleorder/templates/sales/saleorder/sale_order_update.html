@@ -32,7 +32,7 @@
                         <span class="nav-link-text">{% trans 'Sale Order' %}</span>
                     </a>
                 </li>
-                <li class="nav-item quotation-tab-item" id="tab-indicator">
+                <li class="nav-item quotation-tab-item" id="tab-indicator" data-zone="sale_order_indicators_data">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
                         <span class="nav-link-text">{% trans 'Indicator' %}</span>
                     </a>
@@ -241,7 +241,7 @@
                                                         <input type="text" class="form-control quotation-create-product-taxes-raw" value="0" hidden>
                                                     </div>
                                                 </div>
-                                                <hr class="bg-dark">
+                                                <hr>
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
@@ -393,7 +393,7 @@
                                                         <input type="text" class="form-control quotation-create-cost-taxes-raw" value="0" hidden>
                                                     </div>
                                                 </div>
-                                                <hr class="bg-dark">
+                                                <hr>
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
@@ -455,7 +455,7 @@
                                                         <input type="text" class="form-control quotation-create-expense-taxes-raw" value="0" hidden>
                                                     </div>
                                                 </div>
-                                                <hr class="bg-dark">
+                                                <hr>
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
@@ -709,8 +709,8 @@
                                 <thead>
                                 <tr class="bg-light">
                                     <th class="w-30">{% trans 'Product' %}</th>
-                                    <th class="w-25">{% trans 'Description' %}</th>
-                                    <th class="w-15">{% trans 'UOM' %}</th>
+                                    <th class="w-30">{% trans 'Description' %}</th>
+                                    <th class="w-10">{% trans 'UOM' %}</th>
                                     <th class="w-10">{% trans 'Status' %}</th>
                                     <th class="w-20">{% trans 'Note' %}</th>
                                 </tr>
@@ -806,7 +806,7 @@
         data-unavailable="{% trans "Unavailable" %}"
         data-product-note-1="{% trans "Selected" %}"
         data-product-note-2="{% trans "The product is in the design stage for another project" %}"
-        data-product-note-3="{% trans "The product does not have project BOM" %}"
+        data-product-note-3="{% trans "The product does not have opportunity BOM" %}"
         data-product-note-4="{% trans "The product is only used for project sale" %}"
         data-product-no-cost="{% trans "The product does not have warehouse cost list. You can choose bill of material cost, standard cost or input cost." %}"
         data-cost-bom="{% trans "Bill of material cost" %}"
@@ -926,7 +926,6 @@
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
     {{ data.payment_date_type|json_script:'payment_date_type' }}
     {{ data.employee_current|json_script:'employee_current' }}
-    {{ data.opportunity|json_script:'init_opp' }}
 {% endblock %}
 
 {% block jsFooter %}

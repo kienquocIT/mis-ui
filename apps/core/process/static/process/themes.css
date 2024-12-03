@@ -1,0 +1,132 @@
+/* App Small */
+.s-app-sm .app-item-text {
+    padding: 3px;
+}
+
+/* -- App Small */
+/* Dome Square */
+.s-dome-square {
+    --stages-item-w: 200px;
+    --stages-item-h: 200px;
+    --stages-head-height: calc(var(--stages-item-h) + 2rem);
+    --stages-head-small: calc(var(--stages-item-w) / 4);
+    --stages-head-border-radius: 5px;
+}
+
+.s-dome-square .head-decor {
+    border-radius: 100% 100% 0 0;
+}
+
+.s-dome-square .stages-item.stages-item-current .head-decor {
+    border-radius: 0 0 100% 100%;
+}
+
+/* -- Dome Rectangle */
+
+/* Dome Rectangle */
+.s-dome-rectangle {
+    --stages-item-w: 200px;
+    --stages-item-h: 120px;
+    --stages-head-height: calc(var(--stages-item-h) + 2rem);
+    --stages-head-small: calc(var(--stages-item-w) / 4);
+    --stages-head-border-radius: 5px;
+}
+
+.s-dome-rectangle .head-decor {
+    border-radius: 100% 100% 0 0;
+}
+
+.s-dome-rectangle .stages-item.stages-item-current .head-decor {
+    border-radius: 0 0 100% 100%;
+}
+
+/* -- Dome Rectangle */
+
+/* Dome Circle */
+.s-dome-circle {
+    --stages-item-w: 200px;
+    --stages-item-h: 200px;
+    --stages-head-height: calc(var(--stages-item-h) + 2rem);
+    --stages-head-small: calc(var(--stages-item-w) / 4);
+    --stages-head-border-radius: 100%;
+}
+
+.s-dome-circle .head-decor {
+    border-radius: 100% 100% 0 0;
+}
+
+.s-dome-circle .stages-item.stages-item-current .head-decor {
+    border-radius: 0 0 100% 100%;
+}
+
+/* -- Dome Circle */
+
+/* Triangle Square */
+.s-triangle-square {
+    --stages-item-w: 200px;
+    --stages-item-h: 200px;
+    --stages-head-height: calc(var(--stages-item-h) + 2rem);
+    --stages-head-small: calc(var(--stages-item-w) / 4);
+    --stages-head-border-radius: 5px;
+}
+
+.s-triangle-square .head-decor {
+    border-left: calc(var(--stages-item-w) / 2) solid transparent;
+    border-right: calc(var(--stages-item-w) / 2) solid transparent;
+    border-bottom: calc(var(--stages-item-w) / 2) solid var(--bg-color);
+    width: 0;
+    height: 0;
+}
+
+.s-triangle-square .stages-item.stages-item-current .head-decor {
+    border-bottom: 0;
+    border-top: calc(var(--stages-item-w) / 2) solid var(--bg-color);
+}
+
+/* -- Triangle Square */
+/* Triangle Rectangle */
+.s-triangle-rectangle {
+    --stages-item-w: 200px;
+    --stages-item-h: 120px;
+    --stages-head-height: calc(var(--stages-item-h) + 2rem);
+    --stages-head-small: calc(var(--stages-item-w) / 4);
+    --stages-head-border-radius: 5px;
+}
+
+.s-triangle-rectangle .head-decor {
+    border-left: calc(var(--stages-item-w) / 2) solid transparent;
+    border-right: calc(var(--stages-item-w) / 2) solid transparent;
+    border-bottom: calc(var(--stages-item-h) / 2) solid var(--bg-color);
+    width: 0;
+    height: 0;
+}
+
+.s-triangle-rectangle .stages-item.stages-item-current .head-decor {
+    border-bottom: 0;
+    border-top: calc(var(--stages-item-h) / 2) solid var(--bg-color);
+}
+
+/* -- Triangle Rectangle */
+/* Triangle Circle */
+.s-triangle-circle {
+    --stages-item-w: 200px;
+    --stages-item-h: 200px;
+    --stages-head-height: calc(var(--stages-item-h) + 2rem);
+    --stages-head-small: calc(var(--stages-item-w) / 3);
+    --stages-head-border-radius: 100%;
+}
+
+.s-triangle-circle .head-decor {
+    border-left: calc(var(--stages-item-w) / 2) solid transparent;
+    border-right: calc(var(--stages-item-w) / 2) solid transparent;
+    border-bottom: calc(var(--stages-item-w) / 2) solid var(--bg-color);
+    width: 0;
+    height: 0;
+}
+
+.s-triangle-circle .stages-item.stages-item-current .head-decor {
+    border-bottom: 0;
+    border-top: calc(var(--stages-item-w) / 2) solid var(--bg-color);
+}
+
+/* -- Triangle Circle */

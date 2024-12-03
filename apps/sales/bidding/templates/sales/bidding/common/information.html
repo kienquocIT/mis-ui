@@ -1,11 +1,11 @@
 {% load i18n %}
 
 <div class="row pb-10">
-    <div class="col-12 col-lg-7 border-right" id="content-area">
+    <div class="col-12 col-lg-8 border-right" id="content-area">
         <!-- bidding data -->
         <div>
             {% trans 'Select Sale Person' as inherit_title %}
-            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True opp_required=True %}
+            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
             <div class="row">
                 <div class="col-12">
                     <div class="form-group">
@@ -74,7 +74,7 @@
 
             <div class="row mt-3">
                 <div class="col-12">
-                    <div class="form-control rounded-5">
+                    <div class="form-control rounded-5" data-zone="document_data">
                         <div class="row px-3">
                             <div class="col-8">
                                 <label class="col-form-label required">{% trans 'Bidding Document' %}</label>
@@ -102,7 +102,7 @@
         <div class="separator"></div>
 
         <!-- venture partner -->
-        <div>
+        <div data-zone="venture_partner">
             <label class="form-label fs-5" for="datatable-venture">{% trans 'Joint Venture Partner' %}</label>
             <table
                     id="datatable-venture"
@@ -149,9 +149,9 @@
 
         <!-- tabs content -->
         <div class="tab-content" id="tab-content-bidding">
-            <div class="tab-pane fade show active" id="tab_bids" data-zone="bids_data">
+            <div class="tab-pane fade show active" id="tab_bids">
                 <!-- document -->
-                <div class="form-group">
+                <div class="form-group" data-zone="document_data">
                     <label class="form-label fs-5" for="datatable-document">{% trans 'Required Documents' %}</label>
                     <table
                             id="datatable-document"
@@ -177,13 +177,13 @@
                 </div>
 
                  <!-- abstract -->
-                <div class="form-group">
+                <div class="form-group" data-zone="tinymce_content">
                     <label class="form-label fs-5" for="inp-contents">{% trans 'Abstract' %}</label>
                     <textarea class="form-control" id="inp-contents"></textarea>
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="tab_result" data-zone="results_data" disabled>
+            <div class="tab-pane fade" id="tab_result" disabled>
 
                 <!-- other bidder -->
                 <div>
@@ -260,22 +260,22 @@
                         <div class="form-group">
                             <label class="form-label" >{% trans 'Cause of lost' %}</label>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="cause-withdrawal" name="cause_of_lost" value="1">
+                                <input disabled class="form-check-input" type="checkbox" id="cause-withdrawal" name="cause_of_lost" value="1">
                                 <label class="form-check-label" for="cause-withdrawal">{% trans 'Bids withdrawal' %}</label>
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="cause-price" name="cause_of_lost" value="2">
+                                <input disabled class="form-check-input" type="checkbox" id="cause-price" name="cause_of_lost" value="2">
                                 <label class="form-check-label" for="cause-price">{% trans 'Higher bid price' %}</label>
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="cause-non-compliance" name="cause_of_lost" value="3">
+                                <input disabled class="form-check-input" type="checkbox" id="cause-non-compliance" name="cause_of_lost" value="3">
                                 <label class="form-check-label" for="cause-non-compliance">{% trans 'Non-compliance' %}</label>
                             </div>
 
                              <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="cause-other" name="cause_of_lost" value="4">
+                                <input disabled class="form-check-input" type="checkbox" id="cause-other" name="cause_of_lost" value="4">
                                 <label class="form-check-label" for="cause-other">{% trans 'Other reasons' %}</label>
                             </div>
 
@@ -290,7 +290,7 @@
         </div>
 
     </div>
-    <div class="col-12 col-lg-5" id="file-area" style="position: sticky; top: 0; align-self: start">
+    <div class="col-12 col-lg-4" data-zone="attachment" id="file-area" style="position: sticky; top: 0; align-self: start">
         <!-- description -->
         <div class="form-group">
             <label class="form-label" for="bidding-doc-remark">{% trans 'Description' %}</label>
@@ -337,6 +337,7 @@
             data-md-account="{% url 'AccountForBiddingListAPI' %}"
             data-md-document="{% url 'DocumentMasterDataBiddingListAPI' %}"
             data-md-result = "{% url 'BiddingResultAPI'%}"
+            data-bid-result-config="{% url 'BiddingResultConfigListAPI' %}"
     >
     <script id="doc-data-script"
         data-doc-list="[]"

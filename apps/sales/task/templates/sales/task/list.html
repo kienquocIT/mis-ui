@@ -95,6 +95,23 @@
                         data-allowClear="true"
                 ></select>
             </div>
+            <div class="filter-new_row" style="flex-basis: 100%">
+                <div class="d-flex justify-content-end align-items-center gap-3">
+                    <label class="filter-label" for="filter_employee_id">
+                        {% trans 'Priority' %}
+                    </label>
+                    <div class="max-w-280">
+                        <select id="filter_priority_id"
+                                class="form-select w-280p"
+                        >
+                            <option value=""></option>
+                            <option value="0">{% trans 'Low' %}</option>
+                            <option value="1">{% trans 'Medium' %}</option>
+                            <option value="2">{% trans 'High' %}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -240,7 +257,7 @@
         >
         {{ data.task_config|json_script:'task_config' }}
     </div>
-    {% include 'sales/task/extend/task-form.html' with has_prj=True%}
+    {% include 'sales/task/extend/task-form.html' with has_prj=True %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
@@ -251,7 +268,7 @@
 
     <script src="{% static 'assets/sales/task/js/extend/common_task.js' %}"></script>
 
-    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/extend/create-task.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/list.js' %}"></script>
     <script>

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     const HEIGHT = 280
     const scriptUrlEle = $('#script-url')
-    const trans_script = $('#trans-url')
+    const trans_script = $('#trans-script')
     const moneyDisplayEle = $('#money-display')
     const moneyRoundEle = $('#money-round')
     const periodFiscalYearFilterEle = $('#period-filter')

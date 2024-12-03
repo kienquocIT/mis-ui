@@ -9,16 +9,28 @@ $(function () {
         let tabPrice = $('#tab_terms');
         let btnAddProductGr = $('#btn-add-product-group-quotation');
         let btnAddProduct = $('#btn-add-product-quotation-create');
+        let tableProduct = $('#datable-quotation-create-product');
+        let tableCost = $('#datable-quotation-create-cost');
+        let tableExpense = $('#datable-quotation-create-expense');
+        let tablePS = $('#datable-quotation-payment-stage');
+        let tablePromotion = $('#datable-quotation-create-promotion');
+        let tableShipping = $('#datable-quotation-create-shipping');
+        let tableCopyQuotation = $('#datable-copy-quotation');
+        let divCopyOption = $('#copy-quotation-option');
+        let tableCopyQuotationProduct = $('#datable-copy-quotation-product');
+        let modalShipping = $('#quotation-create-modal-shipping-body');
+        let modalBilling = $('#quotation-create-modal-billing-body');
+        let $quotationTabs = $('#quotation-tabs');
+
 
         // Load inits
         QuotationLoadDataHandle.loadCustomCss();
+        QuotationLoadDataHandle.loadInitInherit();
         QuotationLoadDataHandle.loadInitCustomer();
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         QuotationLoadDataHandle.loadInitDate();
-
-        // QuotationLoadDataHandle.loadInitQuotationProduct();
         // init dataTable
         QuotationDataTableHandle.dataTableSelectProduct();
         QuotationDataTableHandle.dataTableProduct();
@@ -32,25 +44,6 @@ $(function () {
         }
         // init config
         QuotationLoadDataHandle.loadInitQuotationConfig(formSubmit.attr('data-method'));
-        // ele tables
-        let tableProduct = $('#datable-quotation-create-product');
-        let tableCost = $('#datable-quotation-create-cost');
-        let tableExpense = $('#datable-quotation-create-expense');
-        let tablePS = $('#datable-quotation-payment-stage');
-        // promotion
-        let tablePromotion = $('#datable-quotation-create-promotion');
-        // shipping
-        let tableShipping = $('#datable-quotation-create-shipping');
-        // copy quotation
-        let tableCopyQuotation = $('#datable-copy-quotation');
-        let divCopyOption = $('#copy-quotation-option');
-        let tableCopyQuotationProduct = $('#datable-copy-quotation-product');
-
-        let modalShipping = $('#quotation-create-modal-shipping-body');
-        let modalBilling = $('#quotation-create-modal-billing-body');
-
-        let $quotationTabs = $('#quotation-tabs');
-
         $('input[name="date_created"]').daterangepicker({
             singleDatePicker: true,
             timePicker: true,
@@ -62,7 +55,6 @@ $(function () {
             },
         });
         $('.daterangepicker').remove();
-
         // get WF initial zones
         let appCode = 'quotation';
         if (formSubmit[0].classList.contains('sale-order')) {
@@ -216,7 +208,6 @@ $(function () {
             // ReCalculate Total
             QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
             // load again table cost
-            // QuotationLoadDataHandle.loadDataTableCost();
             QuotationLoadDataHandle.loadSetWFRuntimeZone();
         });
 
@@ -622,6 +613,7 @@ $(function () {
         }
 
         QuotationLoadDataHandle.loadInitOpportunity();
+        QuotationLoadDataHandle.loadRecurrenceData();
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
@@ -912,7 +904,7 @@ $(function () {
         });
 
         function submitHandlerFunc() {
-            if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
+            if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method').toLowerCase() === "post") { // HAS PROMOTION => Check condition again
                 QuotationPromotionHandle.callPromotion(1);
                 // Check promotion then Submit Form
                 submitCheckPromotion();
@@ -965,6 +957,7 @@ $(function () {
             let submitFields = [
                 // process
                 'process',
+                'process_stage_app',
                 //
                 'title',
                 'opportunity_id',
@@ -1016,6 +1009,7 @@ $(function () {
                 submitFields = [
                     // process
                     'process',
+                    'process_stage_app',
                     //
                     'title',
                     'opportunity_id',
@@ -1063,6 +1057,9 @@ $(function () {
                     'is_change',
                     'document_root_id',
                     'document_change_order',
+                    'is_recurrence_template',
+                    'is_recurring',
+                    'recurrence_task_id',
                 ]
             }
             if (_form.dataForm) {

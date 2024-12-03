@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Action list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+{% endblock %}
+
+{% block pageContent %}
+    <table
+            id="table_recurrence_action"
+            class="table nowrap w-100"
+            data-url="{% url 'RecurrenceActionListAPI' %}"
+            data-method="get"
+    >
+        <thead>
+        <tr>
+            <th></th>
+            <th>{% trans 'Code' %}</th>
+            <th>{% trans 'Title' %}</th>
+            <th>{% trans 'Transaction type' %}</th>
+            <th>{% trans 'Beneficiary' %}</th>
+            <th>{% trans 'Current execution date' %}</th>
+            <th>{% trans 'Next execution date' %}</th>
+            <th>{% trans 'Period' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input
+            type="text" id="app-urls-factory"
+            data-link-detail="{% url 'RecurrenceActionDetailAPI' pk=1 %}"
+            data-so-create="{% url 'SaleOrderCreate' %}"
+    >
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-edit="{% trans 'Edit' %}"
+            data-wait="{% trans 'Wait' %}"
+            data-done="{% trans 'Done' %}"
+            data-skip="{% trans 'Skip' %}"
+            data-create="{% trans 'Create' %}"
+            data-daily="{% trans 'Daily' %}"
+            data-weekly="{% trans 'Weekly' %}"
+            data-monthly="{% trans 'Monthly' %}"
+            data-yearly="{% trans 'Yearly' %}"
+            data-day="{% trans 'Day' %}"
+            data-week="{% trans 'Week' %}"
+            data-month="{% trans 'Month' %}"
+            data-year="{% trans 'Year' %}"
+            data-monday="{% trans 'Monday' %}"
+            data-tuesday="{% trans 'Tuesday' %}"
+            data-wednesday="{% trans 'Wednesday' %}"
+            data-thursday="{% trans 'Thursday' %}"
+            data-friday="{% trans 'Friday' %}"
+            data-saturday="{% trans 'Saturday' %}"
+            data-sunday="{% trans 'Sunday' %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+
+
+    <script src="{% static 'assets/core/recurrence/js/recurrence_action.js' %}"></script>
+{% endblock %}

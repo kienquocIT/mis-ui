@@ -1,0 +1,19 @@
+.custom-dropdown-tb .dropdown-toggle:after,
+.custom-dropdown-tb-2 .dropdown-toggle:after {
+    display: none!important;
+}
+.table i{color: #0b2e13;}
+.main-tb-ico:hover{
+    cursor: pointer;
+}
+/*child table*/
+.child-table,
+.grand-child-table{
+    width: 100%;
+}
+i.main-tb-ico{
+    transition: transform .25s ease-in;
+}
+.shown i.main-tb-ico{
+    transform: rotate(180deg);
+}

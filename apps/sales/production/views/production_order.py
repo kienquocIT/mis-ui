@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.models import AnonymousUser
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -42,7 +43,7 @@ class ProductionOrderCreate(View):
     @mask_view(
         auth_require=True,
         template='sales/production/productionorder/production_order_create.html',
-        menu_active='',
+        menu_active='menu_production_order_list',
         breadcrumb='PRODUCTION_ORDER_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
@@ -82,9 +83,12 @@ class ProductionOrderDetail(View):
         breadcrumb='PRODUCTION_ORDER_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
         return {
                    'data': {'doc_id': pk},
-                   'employee_current': request.user.employee_current_data,
+                   'employee_current': employee_current,
                }, status.HTTP_200_OK
 
 
@@ -96,9 +100,12 @@ class ProductionOrderUpdate(View):
         breadcrumb='PRODUCTION_ORDER_UPDATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
         ctx = {
             'data': {'doc_id': pk},
-            'employee_current': request.user.employee_current_data,
+            'employee_current': employee_current,
         }
         return ctx, status.HTTP_200_OK
 

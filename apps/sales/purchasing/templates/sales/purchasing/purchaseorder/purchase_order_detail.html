@@ -63,7 +63,7 @@
                                         <div class="input-suffix">
                                             <button
                                                 type="button"
-                                                class="btn btn-icon btn-soft-light btn-xs"
+                                                class="btn btn-icon btn-outline-secondary btn-xs"
                                                 id="btn-purchase-request-modal"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#purchaseRequestModalCenter"
@@ -85,7 +85,7 @@
                                         <div class="input-suffix">
                                             <button
                                                 type="button"
-                                                class="btn btn-icon btn-soft-light btn-xs"
+                                                class="btn btn-icon btn-outline-secondary btn-xs"
                                                 id="btn-purchase-quotation-modal"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#purchaseQuotationModalCenter"
@@ -229,7 +229,7 @@
                                                     <input type="text" class="form-control purchase-order-product-taxes-raw" value="0" hidden>
                                                 </div>
                                             </div>
-                                            <hr class="bg-dark">
+                                            <hr>
                                             <div class="row">
                                                 <div class="col-6">
                                                     <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
@@ -293,7 +293,7 @@
                                                     <input type="text" class="form-control purchase-order-product-taxes-raw" value="0" hidden>
                                                 </div>
                                             </div>
-                                            <hr class="bg-dark">
+                                            <hr>
                                             <div class="row">
                                                 <div class="col-6">
                                                     <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
@@ -341,7 +341,8 @@
         </div>
 
 
-        <div class="modal fade" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
+        <div class="modal-area">
+            <div class="modal fade" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -373,8 +374,7 @@
                                         <thead>
                                         <tr class="bg-light">
                                             <th class="w-5"></th>
-                                            <th class="w-60"><div class="d-flex align-items-center"><div class="form-check"><input type="checkbox" class="form-check-input table-checkbox-all"></div>{% trans 'Purchase request' %}</div></th>
-                                            <th class="w-35">{% trans 'Code' %}</th>
+                                            <th class="w-80">{% trans 'Purchase request' %}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -441,52 +441,73 @@
             </div>
         </div>
 
-        <div class="modal fade" id="purchaseQuotationModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseQuotationModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><b>{% trans 'Select purchase quotation' %}</b></h5>
-                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row" hidden>
-                            <label for="filterByPurchaseRequest" class="col-sm-3 col-form-label">{% trans 'PQ Request' %}</label>
-                            <div class="col-sm-6">
-                                <select class="form-select w-60 select-filter" id="filterByPurchaseRequest">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
+            <div class="modal fade" id="purchaseQuotationModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseQuotationModalCenter" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select purchase quotation' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row" hidden>
+                                <label for="filterByPurchaseRequest" class="col-sm-3 col-form-label">{% trans 'PQ Request' %}</label>
+                                <div class="col-sm-6">
+                                    <select class="form-select w-60 select-filter" id="filterByPurchaseRequest">
+                                        <option selected>Select</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row expense-option-list" id="sroll-datable-purchase-quotation">
+                                <table
+                                    id="datable-purchase-quotation"
+                                    class="table nowrap w-100"
+                                    data-url="{% url 'PurchaseQuotationSaleListAPI' %}"
+                                    data-method="get"
+                                >
+                                    <thead>
+                                    <tr class="bg-light">
+                                        <th class="w-5"></th>
+                                        <th class="w-30">{% trans 'Purchase quotation' %}</th>
+                                        <th class="w-30">{% trans 'Supplier' %}</th>
+                                        <th class="w-20">{% trans 'PQ request' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div class="row expense-option-list" id="sroll-datable-purchase-quotation">
-                            <table
-                                id="datable-purchase-quotation"
-                                class="table nowrap w-100"
-                                data-url="{% url 'PurchaseQuotationSaleListAPI' %}"
-                                data-method="get"
-                            >
-                                <thead>
-                                <tr class="bg-light">
-                                    <th class="w-5"></th>
-                                    <th class="w-30">{% trans 'Purchase quotation' %}</th>
-                                    <th class="w-30">{% trans 'Supplier' %}</th>
-                                    <th class="w-20">{% trans 'PQ request' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-confirm-add-purchase-quotation" data-bs-dismiss="modal" disabled>{% trans 'Next' %}</button>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-                        <button type="button" class="btn btn-primary" id="btn-confirm-add-purchase-quotation" data-bs-dismiss="modal" disabled>{% trans 'Next' %}</button>
+                </div>
+            </div>
+
+            <div
+                    class="modal fade" id="viewPriceModal" tabindex="-1"
+                    role="dialog" aria-labelledby="viewPriceModal"
+            >
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Price of purchase quotation' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Close' %}</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
 
         <button type="button" class="btn btn-primary" id="btn-warning-add-product" data-bs-toggle="modal" data-bs-target="#warningAddProductModalCenter" hidden></button>
         <div class="modal fade" id="warningAddProductModalCenter" tabindex="-1" role="dialog" aria-labelledby="warningAddProductModalCenter" aria-hidden="true">

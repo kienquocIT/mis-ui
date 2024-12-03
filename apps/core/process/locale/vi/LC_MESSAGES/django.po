@@ -22,6 +22,10 @@ msgid "Process"
 msgstr "Tiến trình"
 
 #
+msgid "Process - Stages"
+msgstr "Tiến trình - Giai đoạn"
+
+#
 msgid "Process configuration"
 msgstr "Cấu hình Tiến trình"
 
@@ -100,3 +104,15 @@ msgstr "Giai đoạn hiện tại"
 #
 msgid "My Process Runtime"
 msgstr "Thực hiện tiến trình của tôi"
+
+#
+msgid "Supported applications will vary based on this selection."
+msgstr "Các ứng dụng được hỗ trợ sẽ khác nhau tùy theo lựa chọn này."
+
+#
+msgid "Add members"
+msgstr "Thêm thành viên"
+
+#
+msgid "Choose employee"
+msgstr "Chọn nhân viên"

@@ -1,76 +1,7 @@
 $(document).ready(function () {
     let formSubmit = $('#frm_bidding_create');
-    BiddingDataTableHandle.dataTableFile();
-    BiddingDataTableHandle.$tableDocument.on('click', '.attach-file', function () {
-        BiddingStoreHandle.storeAttachment();
-        BiddingLoadDataHandle.loadOpenAttachFile(this);
-    });
     let transScript = $('#trans-script')
-    $('#btn-attach-invite-doc').on('click', function () {
-        BiddingStoreHandle.storeAttachment()
-        BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
-            let row = this.node();
-            $(row).css('background-color', '');
-        });
-        $(this).closest('.form-control').css('background-color', '#ebfcf5');
-        let eleId = this.id
-        let isManual = this.getAttribute('data-is-manual')
-        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
-        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-is-manual', isManual);
-        BiddingLoadDataHandle.$remark[0].removeAttribute('readonly');
-        BiddingLoadDataHandle.$remark.val('');
-        BiddingLoadDataHandle.loadAddFile([]);
-        let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-        if (fileIds) {
-            fileIds.value = "";
-        }
-        if(!this.getAttribute('data-store')){
-            let data = {
-                "id": eleId,
-                "title": '',
-                "attachment_data": [],
-                "isManual": true
-            }
-            this.setAttribute('data-store', JSON.stringify(data))
-        }
-         if (fileIds) {
-             let dataStore = JSON.parse(this.getAttribute('data-store'));
-            BiddingLoadDataHandle.$remark.val(dataStore?.['remark']);
-            BiddingLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
-            console.log(dataStore?.['attachment_data'])
-             let ids = [];
-            for (let fileData of dataStore?.['attachment_data']) {
-                ids.push(fileData?.['attachment']?.['id']);
-            }
-            let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-            fileIds.value = ids.join(',');
-            let attachmentParse = [];
-            for (let attachData of dataStore?.['attachment_data']) {
-                attachmentParse.push(attachData?.['attachment']);
-            }
-            // append html file again
-            BiddingLoadDataHandle.$attachment.empty().html(`${BiddingLoadDataHandle.$attachmentTmp.html()}`);
-            // init file again
-            new $x.cls.file(BiddingLoadDataHandle.$attachment).init({
-                name: 'attachment',
-                enable_edit: true,
-                enable_download: true,
-                data: attachmentParse,
-            });
-            // add event
-            let inputs = BiddingLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
-
-            inputs.forEach((input) => {
-                input.addEventListener('change', function () {
-                    let dataList = BiddingLoadDataHandle.loadSetupAddFile();
-                    BiddingLoadDataHandle.loadAddFile(dataList);
-                });
-            });
-         }
-         BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
-    });
-
-
+    let $urlBidResultConfig = $('#app-url-factory').attr('data-bid-result-config')
     // call ajax get data detail
     $.fn.callAjax2({
         url: formSubmit.data('url'),
@@ -105,36 +36,41 @@ $(document).ready(function () {
                     $('#btn-open-bidder-modal').prop('disabled',true)
                     $('#inp-contents').prop('disabled',true)
                     data['isDetail'] = true
-                } else {
-                    if ($('#bid-bond-value').attr('value')) {
-                        $('#bid-guarantee').attr('disabled',false)
-                        $('#bid-guarantee').attr('readonly',false)
-                        $('#bid-deposit').attr('disabled',false)
-                        $('#bid-deposit').attr('readonly',false)
-                    }
+                    new PrintTinymceControl().render('ad1e1c4e-2a7e-4b98-977f-88d069554657', data, false);
                 }
                 BiddingLoadDataHandle.loadDetail(data);
-                let empCurrent = JSON.parse($('#employee_current').text());
-                console.log(empCurrent)
-                let isCreatedUser = empCurrent?.["id"] === data?.["employee_created_id"]
-                if(isCreatedUser && (data?.['system_status'] === 3)){
-                    $('#btn-save-result').attr('disabled', false)
-                    $('#btn-open-bidder-modal').attr('disabled', false)
-                    $('#bid-status-won').attr('disabled', false)
-                    $('#bid-status-lost').attr('disabled', false)
+                if ($('#bid-bond-value').attr('value') && formSubmit.attr('data-method').toLowerCase() === 'put') {
+                    $('#bid-guarantee').attr('disabled',false)
+                    $('#bid-guarantee').attr('readonly',false)
+                    $('#bid-deposit').attr('disabled',false)
+                    $('#bid-deposit').attr('readonly',false)
                 }
+                let empCurrent = JSON.parse($('#employee_current').text());
+                let systemStatus = data?.['system_status']
+                loadUIBidResult(empCurrent, systemStatus)
+
                 // file
                 new $x.cls.file($('#attachment')).init({
                     name: 'attachment',
                     enable_edit: true,
+                    enable_download: true,
                     data: data?.['attachment'],
                 });
                 // init workflow
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
-                // get WF initial zones for change
             }
         }
     )
+
+    BiddingDataTableHandle.dataTableFile();
+    BiddingDataTableHandle.$tableDocument.on('click', '.attach-file', function () {
+        BiddingStoreHandle.storeAttachment();
+        if (formSubmit.attr('data-method').toLowerCase() !== 'put') {
+            BiddingLoadDataHandle.loadOpenAttachFile(this, false);
+        } else {
+            BiddingLoadDataHandle.loadOpenAttachFile(this, true);
+        }
+    });
 
     BiddingLoadDataHandle.$btnAddAccount.on('click', function (e) {
         let data = []
@@ -161,22 +97,42 @@ $(document).ready(function () {
         })
     })
 
+    BiddingDataTableHandle.$tableBidder.on('click', '.del-row', function () {
+        let row = $(this).closest('tr');
+
+        let rowData = BiddingDataTableHandle.$tableBidder.DataTable().row(row).data();
+
+        let checkbox = BiddingDataTableHandle.$tableAccountModal.find(`input[type="checkbox"][data-id="${rowData.bidder_account}"]`);
+        if (checkbox.length) {
+            checkbox.prop('checked', false);
+        }
+        BiddingCommonHandle.commonDeleteRow(row, BiddingDataTableHandle.$tableBidder);
+    });
+
+    $('#btn-attach-invite-doc').on('click', function () {
+        let isUpdatePage = formSubmit.attr('data-method').toLowerCase() === 'put'
+        BiddingLoadDataHandle.loadOpenBtnAttachInviteDoc(this, isUpdatePage)
+    });
+
     $('#bid-status-lost').on('change',function () {
          if ($(this).is(':checked')) {
             $('#cause-of-lost').attr('hidden',false)
          }
     })
+
     $('#bid-status-won').on('change',function () {
          if ($(this).is(':checked')) {
             $('#cause-of-lost').attr('hidden',true)
          }
     })
+
     $('#cause-withdrawal').on('change', function () {
         if ($(this).is(':checked')) {
             $('input[name="cause_of_lost"]').not(this).prop('checked', false);
             $('#cause-other-input').prop('disabled', true);
         }
     });
+
     $('#cause-other').on('change', function () {
         if ($(this).is(':checked')) {
             $('#cause-other-input').prop('disabled', false);
@@ -194,7 +150,6 @@ $(document).ready(function () {
     $('#btn-save-result').on('click', function () {
         let dataSubmit = {}
         dataSubmit = BiddingSubmitHandle.setupDataResult()
-        console.log(dataSubmit)
         let submitFields = [
             'id',
             'cause_of_lost',
@@ -229,4 +184,39 @@ $(document).ready(function () {
             }
         )
     })
+
+    function loadUIBidResult(empCurrent, sysStatus) {
+        $.fn.callAjax2({
+            url: $urlBidResultConfig,
+            method: 'GET',
+        }).then(
+            (resp)=>{
+                let dataConfig = $.fn.switcherResp(resp);
+                if(dataConfig){
+                    let employeeList = dataConfig?.["bidding_result_config"][0]?.["employee"]
+                    let isAllowedModify = false
+                    if(employeeList){
+                        // !! convert value to boolean
+                        isAllowedModify = !!employeeList.find(item => item?.["id"] === empCurrent?.["id"])
+                    }
+                    if(isAllowedModify && sysStatus === 3){
+                        $('#btn-save-result').attr('disabled', false)
+                        $('#btn-open-bidder-modal').attr('disabled', false)
+                        $('#bid-status-won').attr('disabled', false)
+                        $('#bid-status-lost').attr('disabled', false)
+                        $('input[name="cause_of_lost"]').each(function () {
+                            $(this).attr('disabled', false)
+                        })
+                        if($('#cause-other').is(':checked')){
+                            $('#cause-other-input').prop('disabled', false);
+                        }
+                        BiddingDataTableHandle.$tableBidder.find('tbody tr').each(function (){
+                            $(this).find(".bidder-checkbox").prop("disabled", false)
+                            $(this).find("button").prop("disabled", false)
+                        })
+                    }
+                }
+            }
+        );
+    }
 });

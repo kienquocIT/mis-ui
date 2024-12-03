@@ -54,6 +54,24 @@
                 <tbody></tbody>
             </table>
         </div>
+        <div class="col-12 for-fixed-asset-request" hidden>
+            <table id="datatable-pr-product-fixed-asset" class="table nowrap w-100 mb-5">
+                <thead>
+                    <tr>
+                        <th style="min-width: 50px"></th>
+                        <th style="min-width: 200px">{% trans "Product" %}</th>
+                        <th style="min-width: 100px">{% trans "Description" %}</th>
+                        <th style="min-width: 100px">{% trans "UoM" %}</th>
+                        <th style="min-width: 100px">{% trans "Request quantity" %}</th>
+                        <th style="min-width: 200px">{% trans "Unit Price" %}</th>
+                        <th style="min-width: 200px">{% trans "Tax" %}</th>
+                        <th style="min-width: 200px">{% trans "Subtotal Price" %}</th>
+                        <th style="min-width: 50px"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
     <div class="row">
         <div class="col-12 col-lg-7 mt-3 for-sale-order-request" hidden>
@@ -77,6 +95,13 @@
         <div class="col-12 col-lg-7 mt-3 for-stock-free-request" hidden>
             <button type="button"
                     id="btn-add-stock-free-product"
+                    class="btn btn-primary btn-sm">
+                {% trans "New product" %}
+            </button>
+        </div>
+        <div class="col-12 col-lg-7 mt-3 for-fixed-asset-request" hidden>
+            <button type="button"
+                    id="btn-add-fixed-asset-product"
                     class="btn btn-primary btn-sm">
                 {% trans "New product" %}
             </button>

@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm_recurrence_create">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            data-url="{% url 'RecurrenceListAPI' %}"
+            data-url-redirect="{% url 'RecurrenceList' %}"
+            data-method="POST"
+            id="frm_recurrence_create"
+            method="post"
+    >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required" for="title">{% trans 'Title' %}</label>
+                    <input
+                            type="text" class="form-control"
+                            name="title"
+                            id="title"
+                            required
+                    >
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label class="form-label required" for="box-status">{% trans 'Status' %}</label>
+                    <select
+                        class="form-select"
+                        id="box-status"
+                        data-url=""
+                        data-method="GET"
+                        data-link-detail=""
+                        name="recurrence_status"
+                        data-keyResp=""
+                        readonly
+                    ></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required" for="box-app">{% trans 'Application' %}</label>
+                    <select
+                            class="form-select"
+                            id="box-app"
+                            data-url="{% url "TenantApplicationListAPI" %}"
+                            data-method="GET"
+                            name="application"
+                            data-keyResp="tenant_application_list"
+                            data-keyText="title_i18n"
+                            required
+                    ></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required" for="box-doc-template">{% trans 'Transaction template' %}</label>
+                    <select
+                            class="form-select"
+                            id="box-doc-template"
+                            data-url=""
+                            data-method="GET"
+                            name="doc_template"
+                            data-keyResp=""
+                            data-keyText=""
+                            required
+                    ></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="box-period">{% trans 'Recurrence period' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-period"
+                                    data-url=""
+                                    data-method="GET"
+                                    name="doc_template"
+                                    data-keyResp=""
+                                    data-keyText=""
+                                    required
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="box-repeat">{% trans 'Repeat every' %}</label>
+                            <select
+                                    class="form-select mr-2"
+                                    id="box-repeat"
+                                    data-url=""
+                                    data-method="GET"
+                                    name="doc_template"
+                                    data-keyResp=""
+                                    data-keyText=""
+                                    required
+                            ></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3" id="period-area">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group custom-area" id="custom-area-1" hidden>
+                            <label class="form-label required" for="date-recurrence-daily">{% trans 'Recurrence date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="" id="date-recurrence-daily"
+                                       class="form-control date-picker" autocomplete="off" disabled>
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group custom-area" id="custom-area-2" hidden>
+                            <label class="form-label required" for="box-date-recurrence-weekly">{% trans 'Recurrence date' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-date-recurrence-weekly"
+                                    data-url=""
+                                    data-method="GET"
+                                    data-keyResp=""
+                                    data-keyText=""
+                                    disabled
+                            ></select>
+                        </div>
+                        <div class="form-group custom-area" id="custom-area-3" hidden>
+                            <label class="form-label required" for="box-date-recurrence-monthly">{% trans 'Recurrence date' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-date-recurrence-monthly"
+                                    data-url=""
+                                    data-method="GET"
+                                    data-keyResp=""
+                                    data-keyText=""
+                                    disabled
+                            ></select>
+                        </div>
+                        <div class="form-group custom-area" id="custom-area-4" hidden>
+                            <label class="form-label required" for="date-recurrence-yearly">{% trans 'Recurrence date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="" id="date-recurrence-yearly"
+                                       class="form-control date-picker" autocomplete="off" disabled>
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="date-start">{% trans 'Start date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="start-date" id="date-start"
+                                       class="form-control date-picker" autocomplete="off" required>
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="date-end">{% trans 'End date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="end-date" id="date-end"
+                                       class="form-control date-picker" autocomplete="off" required>
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="date-next">{% trans 'Next execution date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="start-date" id="date-next"
+                                       class="form-control date-picker" autocomplete="off" required disabled>
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </form>
+
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-active="{% trans 'Active' %}"
+        data-expired="{% trans 'Expired' %}"
+        data-daily="{% trans 'Daily' %}"
+        data-weekly="{% trans 'Weekly' %}"
+        data-monthly="{% trans 'Monthly' %}"
+        data-yearly="{% trans 'Yearly' %}"
+        data-day="{% trans 'Day' %}"
+        data-week="{% trans 'Week' %}"
+        data-month="{% trans 'Month' %}"
+        data-year="{% trans 'Year' %}"
+        data-monday="{% trans 'Monday' %}"
+        data-tuesday="{% trans 'Tuesday' %}"
+        data-wednesday="{% trans 'Wednesday' %}"
+        data-thursday="{% trans 'Thursday' %}"
+        data-friday="{% trans 'Friday' %}"
+        data-saturday="{% trans 'Saturday' %}"
+        data-sunday="{% trans 'Sunday' %}"
+    >
+    <input
+        type="text"
+        id="app-urls-factory"
+        data-so-recurrence="{% url 'SORecurrenceListAPI' %}"
+        data-ar-recurrence="{% url 'ARInvoiceRecurrenceListAPI' %}"
+    >
+    {{ data.employee_current|json_script:'employee_current' }}
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+
+    <script src="{% static 'assets/core/recurrence/js/recurrence_common.js' %}"></script>
+    <script src="{% static 'assets/core/recurrence/js/recurrence_create.js' %}"></script>
+{% endblock %}

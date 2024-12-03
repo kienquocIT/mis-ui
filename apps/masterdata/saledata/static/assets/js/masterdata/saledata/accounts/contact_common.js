@@ -5,16 +5,12 @@ function loadAddressDisplay(idx, addr, ward, district, city) {
 
 let [firstNameEle, lastNameEle, fullNameEle] = [$("#first_name_id"), $("#last_name_id"), $("#full_name_id")];
 
-firstNameEle.on('change', function () {
-    if ($(this).val() !== '' && lastNameEle.val() !== '') {
-        fullNameEle.val($(this).val() + ' ' + lastNameEle.val())
-    }
+firstNameEle.on('input', function () {
+    fullNameEle.val($(this).val() + ' ' + lastNameEle.val())
 })
 
-lastNameEle.on('change', function () {
-    if (firstNameEle.val() !== '' && $(this).val() !== '') {
-        fullNameEle.val(firstNameEle.val() + ' ' + $(this).val())
-    }
+lastNameEle.on('input', function () {
+    fullNameEle.val(firstNameEle.val() + ' ' + $(this).val())
 })
 
 let [empEle, salEle, accEle, repEle, intEle] = [$('#select-box-emp'), $('#select-box-salutation'), $('#select-box-account_name'), $('#select-box-report-to'), $('#select-box-interests')];
@@ -44,24 +40,30 @@ function loadSalutation(salData) {
 
 function loadAccount(accData) {
     accEle.initSelect2({
+        allowClear: true,
         data: (accData ? accData : null),
         keyResp: 'account_list',
         keyText: 'name',
     }).on('change', function () {
         let selectedVal = $(this).val();
-
-        let reportEleUrl = repEle.attr('data-url');
-        reportEleUrl = reportEleUrl.replace("__pk__", selectedVal);
-        repEle.attr('data-url', reportEleUrl);
-
-        if (repEle.data('select2')) {
-            repEle.select2("destroy")
+        if (selectedVal) {
+            loadReportTo()
         }
-        repEle.initSelect2({
-            keyResp: 'account_detail--contact_mapped',
-            keyText: 'fullname',
-        }).prop('disabled', false);
+        else {
+            repEle.empty().prop('disabled', true);
+        }
     });
+}
+
+function loadReportTo(data) {
+    let reportEleUrl = repEle.attr('data-url');
+    reportEleUrl = reportEleUrl.replace("__pk__", accEle.val());
+    repEle.attr('data-url', reportEleUrl);
+    repEle.initSelect2({
+        data: (data ? data : null),
+        keyResp: 'account_detail--contact_mapped',
+        keyText: 'fullname',
+    }).prop('disabled', false);
 }
 
 function loadInterest(interestData) {
@@ -108,14 +110,13 @@ $('#save-changes-modal-work-address').on('click', function () {
         let district_id = wDistrictEle.val();
         let ward_id = wWardEle.val();
 
-        if (country_id && city_id && district_id && ward_id) {
+        if (country_id && city_id && district_id) {
             let detail_work_address = wWorkAddrDetail.val();
             let city = wCityEle.find(`option[value="` + city_id + `"]`).text();
             let district = wDistrictEle.find(`option[value="` + district_id + `"]`).text();
             let ward = wWardEle.find(`option[value="` + ward_id + `"]`).text();
 
             if (detail_work_address || city || district || ward) {
-                console.log(wAddr, detail_work_address, ward, district, city)
                 loadAddressDisplay(wAddr, detail_work_address, ward, district, city);
                 $(this).closest('div.modal').modal('hide');
             } else {
@@ -166,7 +167,7 @@ $('#save-changes-modal-home-address').on('click', function () {
         let district_id = hDistrict.val();
         let ward_id = hWard.val();
 
-        if (country_id && city_id && district_id && ward_id) {
+        if (country_id && city_id && district_id) {
             let detail_home_address = wHomeAddrDetail.val();
             let city = hCity.find(`option:selected`).text();
             let district = hDistrict.find(`option:selected`).text();
@@ -187,7 +188,7 @@ $('#save-changes-modal-home-address').on('click', function () {
 })
 
 class ContactHandle {
-    load(respData) {
+    static load(respData) {
         loadEmployee(respData?.['owner']);
         loadSalutation(respData?.['salutation']);
         loadAccount(respData?.['account_name']);
@@ -200,8 +201,11 @@ class ContactHandle {
         loadHWard(respData?.['home_ward']);
     }
 
-    combinesData(frmEle) {
+    static combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
+
+        frm.dataForm['fullname'] = fullNameEle.val()
+
         frm.dataForm['additional_information'] = {
             'facebook': $('#facebook_id').val(),
             'twitter': $('#twitter_id').val(),
@@ -216,33 +220,82 @@ class ContactHandle {
             'home_address': hAddr.val(),
         };
 
-        if (frm.dataForm['account_name'] === '') {
-            delete frm.dataForm['account_name'];
+        if (!frm.dataForm['account_name']) {
+            frm.dataForm['account_name'] = null;
         }
 
-        if (frm.dataForm['report_to'] === '') {
-            delete frm.dataForm['report_to'];
+        if (!frm.dataForm['report_to']) {
+            frm.dataForm['report_to'] = null;
         }
 
-        if (frm.dataForm['owner'] === '') {
+        if (!frm.dataForm['owner']) {
             frm.dataForm['owner'] = null;
         }
 
-        if (frm.dataForm['email'] === '') {
-            delete frm.dataForm['email'];
+        if (!frm.dataForm['email']) {
+            frm.dataForm['email'] = null;
         }
 
-        if (frm.dataForm['mobile'] === '') {
-            delete frm.dataForm['mobile'];
+        if (!frm.dataForm['mobile']) {
+            frm.dataForm['mobile'] = null;
         }
-
-        frm.dataForm['system_status'] = 1; // save, not draft
 
         return {
-            url: frm.dataUrl,
+            url: $.fn.getPkDetail() === 'None' ? frm.dataUrl : frm.dataUrl.replace('/0', `/${$.fn.getPkDetail()}`),
             method: frm.dataMethod,
             data: frm.dataForm,
             urlRedirect: frm.dataUrlRedirect,
         };
+    }
+
+    static loadDetailContact(option='detail') {
+        let pk = $.fn.getPkDetail()
+        let frmEle = $("#form-detail-contact");
+        let url_loaded = frmEle.attr('data-detail-url').replace(0, pk);
+
+        $.fn.callAjax2({
+            'url': url_loaded,
+            'method': 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let contact_detail = data?.['contact_detail'];
+                    $.fn.compareStatusShowPageAction(contact_detail);
+                    $x.fn.renderCodeBreadcrumb(contact_detail);
+
+                    loadEmployee(contact_detail.owner);
+                    loadSalutation(contact_detail.salutation);
+                    loadAccount(contact_detail.account_name);
+                    loadReportTo(contact_detail.report_to)
+                    $('#first_name_id').val(contact_detail.fullname.first_name);
+                    $('#last_name_id').val(contact_detail.fullname.last_name);
+                    $('#full_name_id').val(contact_detail.fullname.fullname);
+                    $('#bio').val(contact_detail.biography);
+                    $('#inp-phone').val(contact_detail.phone);
+                    $('#inp-mobile').val(contact_detail.mobile);
+                    $('#inp-mail').val(contact_detail.email);
+                    $('#inp-job-title').val(contact_detail.job_title);
+                    $('#work_address_id').val(contact_detail.address_information.work_address);
+                    $('#home_address_id').val(contact_detail.address_information.home_address);
+                    if (Object.keys(contact_detail.additional_information).length > 0) {
+                        loadInterest(contact_detail.additional_information.interests.map(obj => obj.id));
+                        $('#tag_id').val(contact_detail.additional_information.tags);
+                        $('#facebook_id').val(contact_detail.additional_information.facebook);
+                        $('#gmail_id').val(contact_detail.additional_information.gmail);
+                        $('#linkedln_id').val(contact_detail.additional_information.linkedln);
+                        $('#twitter_id').val(contact_detail.additional_information.twitter);
+                    } else {
+                        loadInterest([]);
+                    }
+
+                    if (option === 'detail') {
+                        $(document.getElementsByTagName('input')).prop('disabled', true).prop('readonly', true)
+                        $(document.getElementsByTagName('select')).prop('disabled', true)
+                        $(document.getElementsByTagName('textarea')).prop('disabled', true).prop('readonly', true)
+                    }
+                }
+            }
+        )
     }
 }

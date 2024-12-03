@@ -2,6 +2,8 @@
 class NodeLoadDataHandle {
     static $form = $('#form-create_workflow');
 
+    static $nodeDragBox = $('#node_dragbox');
+    static $flowChart = $('#flowchart_workflow');
     static $initEmp = $('#data-init-employee');
     static $btnNewNode = $('#btn-new-node');
     static $btnSaveNode = $('#btn-save-node');
@@ -89,12 +91,55 @@ class NodeLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
                 let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
                 return $(`<span>${res1} ${res2}</span>`);
             }
         }
         $ele.initSelect2(opts);
+        return true;
+    };
+
+    static loadEventCheckbox($area, trigger = false) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function (event) {
+            // Prevent handling if the direct checkbox is clicked
+            if (event.target.classList.contains('form-check-input')) {
+                return; // Let the checkbox handler handle this
+            }
+
+            // Find the checkbox inside the clicked element
+            let checkbox = this.querySelector('.form-check-input[type="checkbox"]');
+            if (checkbox) {
+                // Check if the checkbox is disabled
+                if (checkbox.disabled) {
+                    return; // Exit early if the checkbox is disabled
+                }
+                // Prevent the default behavior
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                // Toggle the checkbox state manually
+                checkbox.checked = !checkbox.checked;
+                // Optional: Trigger a change event if needed
+                if (trigger === true) {
+                    $(checkbox).trigger('change');
+                }
+            }
+        });
+
+        // Handle direct clicks on the checkbox itself
+        $area.on('click', '.form-check-input', function (event) {
+            // Prevent the default behavior to avoid double-triggering
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            // Checkbox state is toggled naturally, so no need to modify it
+            if (trigger === true) {
+                $(this).trigger('change'); // Optional: Trigger change event explicitly
+            }
+        });
+
         return true;
     };
 
@@ -123,7 +168,9 @@ class NodeLoadDataHandle {
         NodeLoadDataHandle.loadZone();
         NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxSource, NodeLoadDataHandle.dataSource);
 
-        NodeDataTableHandle.dataTableCollabOutFormEmployee(JSON.parse(NodeLoadDataHandle.$initEmp.val()));
+        NodeDataTableHandle.dataTableCollabOutFormEmployee();
+        NodeDataTableHandle.$tableOFEmp.DataTable().clear().draw();
+        NodeDataTableHandle.$tableOFEmp.DataTable().rows.add(JSON.parse(NodeLoadDataHandle.$initEmp.val())).draw();
         NodeDataTableHandle.dataTableCollabInWFEmployee();
         NodeDataTableHandle.dataTableCollabInWFExitCon();
         let nodeActionRaw = $('#wf_action').text();
@@ -430,10 +477,12 @@ class NodeLoadDataHandle {
                         </div>`;
         }
         for (let ele of NodeLoadDataHandle.$modalNode[0].querySelectorAll('.zone-edit')) {
-            $(ele).empty().append(`<div data-simplebar class="nicescroll-bar">${htmlEdit}</div>`);
+            // $(ele).empty().append(`<div data-simplebar class="nicescroll-bar">${htmlEdit}</div>`);
+            $(ele).empty().append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">${htmlEdit}</div>`);
         }
         for (let ele of NodeLoadDataHandle.$modalNode[0].querySelectorAll('.zone-hidden')) {
-            $(ele).empty().append(`<div data-simplebar class="nicescroll-bar">${htmlHidden}</div>`);
+            // $(ele).empty().append(`<div data-simplebar class="nicescroll-bar">${htmlHidden}</div>`);
+            $(ele).empty().append(`<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-150p position-relative overflow-y-scroll">${htmlHidden}</div>`);
         }
         return true;
     };
@@ -736,8 +785,7 @@ class NodeDataTableHandle {
                         if (row?.['is_checked']) {
                             checked = 'checked';
                         }
-                        return `<div class="d-flex align-items-center">
-                                    <div class="form-check form-check-lg">
+                        return `<div class="form-check form-check-lg">
                                         <input
                                             type="checkbox" 
                                             class="form-check-input table-row-checkbox"
@@ -746,10 +794,9 @@ class NodeDataTableHandle {
                                             data-row="${dataRow}"
                                             ${checked}
                                         >
-                                    </div>
-                                    <span class="badge badge-primary mr-2 table-row-code">${row?.['code']}</span>
-                                    <span class="badge badge-primary badge-outline table-row-title">${row?.['full_name']}</span>
-                                </div>`;
+                                        <span class="badge badge-primary mr-2 table-row-code">${row?.['code']}</span>
+                                        <span class="badge badge-primary badge-outline table-row-title">${row?.['full_name']}</span>
+                                    </div>`;
                     }
                 },
                 {
@@ -770,6 +817,9 @@ class NodeDataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                NodeLoadDataHandle.loadEventCheckbox(NodeDataTableHandle.$tableOFEmp);
+            },
         });
     };
 
@@ -933,25 +983,29 @@ class NodeStoreHandle {
                                 NodeLoadDataHandle.dataNode[i]['actions'] = data?.['actions'];
                             }
                             if (NodeLoadDataHandle.dataNode[i]?.['order'] > 1) {  // custom node
+                                // check collab
+                                let checkCollab = NodeStoreHandle.storeCheckCollab(data, NodeLoadDataHandle.dataNode[i]?.['order']);
+                                if (checkCollab === false) {
+                                    $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-check-collab')}, 'failure');
+                                    return false;
+                                }
+
                                 let isEditTitle = false;
                                 if (NodeLoadDataHandle.dataNode[i]?.['title'] !== data?.['title']) {
                                     isEditTitle = true;
                                 }
-
                                 NodeLoadDataHandle.dataNode[i] = data;
                                 NodeLoadDataHandle.dataNode[i]['order'] = parseInt(NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-order'));
 
                                 // if edit title then change node's title in left & right of flowchart
                                 if (isEditTitle === true) {
-                                    let $dragBox = $('#node_dragbox');
-                                    let control = $dragBox[0].querySelector(`.control[data-drag="${NodeLoadDataHandle.dataNode[i]['order']}"]`);
+                                    let control = NodeLoadDataHandle.$nodeDragBox[0].querySelector(`.control[data-drag="${NodeLoadDataHandle.dataNode[i]['order']}"]`);
                                     if (control) {
                                         if (control.querySelector('.drag-title')) {
                                             control.querySelector('.drag-title').innerHTML = NodeLoadDataHandle.dataNode[i]['title'];
                                         }
                                     }
-                                    let $flowchart = $('#flowchart_workflow');
-                                    let clone = $flowchart[0].querySelector(`.clone[data-drag="${NodeLoadDataHandle.dataNode[i]['order']}"]`);
+                                    let clone = NodeLoadDataHandle.$flowChart[0].querySelector(`.clone[data-drag="${NodeLoadDataHandle.dataNode[i]['order']}"]`);
                                     if (clone) {
                                         if (clone.querySelector('.drag-title')) {
                                             clone.querySelector('.drag-title').innerHTML = NodeLoadDataHandle.dataNode[i]['title'];
@@ -1048,6 +1102,61 @@ class NodeStoreHandle {
         dataStore['is_system'] = false;
         return dataStore;
     };
+
+    static storeCheckCollab(data, orderCheck) {
+        if (data?.['option_collaborator'] === 1 && data?.['collab_out_form']) {  // out form
+            if (data?.['collab_out_form']?.['employee_list']) {
+                if (data?.['collab_out_form']?.['employee_list'].length > 1) {
+                    let $eleAssociate = $('#node-associate');
+                    if ($eleAssociate.val()) {
+                        let associate = JSON.parse($eleAssociate.val());
+                        for (let key in associate) {
+                            if (associate[key]?.['node_out'] === orderCheck) {
+                                for (let dataNode of NodeLoadDataHandle.dataNode) {
+                                    if (associate[key]?.['node_in'] === dataNode?.['order']) {
+                                        if (dataNode?.['option_collaborator'] === 2) {
+                                            if (dataNode?.['collab_in_workflow']) {
+                                                if (dataNode?.['collab_in_workflow'].length > 1) {
+                                                    return false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (data?.['option_collaborator'] === 2 && data?.['collab_in_workflow']) {  // in workflow
+            if (data?.['collab_in_workflow'].length > 1) {
+                let $eleAssociate = $('#node-associate');
+                if ($eleAssociate.val()) {
+                    let associate = JSON.parse($eleAssociate.val());
+                    for (let key in associate) {
+                        if (associate[key]?.['node_in'] === orderCheck) {
+                            for (let dataNode of NodeLoadDataHandle.dataNode) {
+                                if (associate[key]?.['node_out'] === dataNode?.['order']) {
+                                    if (dataNode?.['option_collaborator'] === 1) {
+                                        if (dataNode?.['collab_out_form']) {
+                                            if (dataNode?.['collab_out_form']?.['employee_list']) {
+                                                if (dataNode?.['collab_out_form']?.['employee_list'].length > 1) {
+                                                    return false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    };
+
 }
 
 // Submit Form
@@ -1092,7 +1201,6 @@ class NodeSubmitHandle {
     };
 
 }
-
 
 // COMMON FUNCTION
 function filterFieldList(field_list, data_json) {

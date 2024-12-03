@@ -14,8 +14,11 @@ $(document).ready(function () {
         else if (type === '1' || $('#request-for-sf').attr('data-type') === '1') {
             form = new PurchaseRequestHandle().combinesDataSF($(this));
         }
+        else if (type === '2' || $('#request-for-fa').attr('data-type') === '2') {
+            form = new PurchaseRequestHandle().combinesDataFA($(this));
+        }
         else if (type === '3' || $('#request-for-db').attr('data-type') === '3') {
-            form = new PurchaseRequestHandle().combinesDataDB($(this));
+            form = new PurchaseRequestHandle().combinesDataDP($(this));
         }
         if (form) {
             WFRTControl.callWFSubmitForm(form);

@@ -9,7 +9,8 @@ from apps.shared import mask_view, ServerAPI, ApiURL, PICKING_STATE, InputMappin
 __all__ = [
     'DeliveryConfigDetail', 'DeliveryConfigDetailAPI', 'OrderPickingList', 'OrderPickingListAPI', 'OrderPickingDetail',
     'OrderPickingDetailAPI', 'OrderDeliveryList', 'OrderDeliveryListAPI', 'OrderDeliveryDetail',
-    'OrderDeliveryDetailAPI', 'OrderDeliveryEdit', 'OrderPickingEdit'
+    'OrderDeliveryDetailAPI', 'OrderDeliveryEdit', 'OrderPickingEdit',
+    'OrderDeliveryCreate',
 ]
 
 from apps.shared.constant import DELIVERY_STATE, SYSTEM_STATUS
@@ -164,6 +165,18 @@ class OrderDeliveryList(View):
                    'state_choices': {key: value for key, value in DELIVERY_STATE},
                    'stt_sys': SYSTEM_STATUS,
                }, status.HTTP_200_OK
+
+
+class OrderDeliveryCreate(View):
+    @mask_view(
+        login_require=True,
+        template='sales/delivery/create.html',
+        breadcrumb='ORDER_DELIVERY_CREATE_PAGE',
+        menu_active='menu_order_delivery_list',
+        jsi18n='delivery',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
 
 
 class OrderDeliveryListAPI(APIView):

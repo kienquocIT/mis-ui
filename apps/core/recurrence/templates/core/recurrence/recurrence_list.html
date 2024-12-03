@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Recurrence list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'RecurrenceCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create recurrence' %}"
+       id="create_recurrence_button"
+       data-bs-original-title="Add Recurrence">
+            <button type="button" class="btn btn-outline-primary">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                </span>
+            </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <table
+            id="table_recurrence_list"
+            class="table nowrap w-100"
+            data-url="{% url 'RecurrenceListAPI' %}"
+            data-method="get"
+    >
+        <thead>
+        <tr>
+            <th></th>
+            <th>{% trans 'Code' %}</th>
+            <th>{% trans 'Title' %}</th>
+            <th>{% trans 'Transaction type' %}</th>
+            <th>{% trans 'Period' %}</th>
+            <th>{% trans 'Repeat every' %}</th>
+            <th>{% trans 'Recurrence date' %}</th>
+            <th>{% trans 'Start date' %}</th>
+            <th>{% trans 'Next execution date' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input
+            type="text" id="app-urls-factory"
+            data-link-detail="{% url 'RecurrenceDetail' 1 %}"
+            data-link-update="{% url 'RecurrenceUpdate' 1 %}"
+            data-link-list="{% url 'RecurrenceList' %}"
+    >
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-edit="{% trans 'Edit' %}"
+            data-active="{% trans 'Active' %}"
+            data-expired="{% trans 'Expired' %}"
+            data-daily="{% trans 'Daily' %}"
+            data-weekly="{% trans 'Weekly' %}"
+            data-monthly="{% trans 'Monthly' %}"
+            data-yearly="{% trans 'Yearly' %}"
+            data-day="{% trans 'Day' %}"
+            data-week="{% trans 'Week' %}"
+            data-month="{% trans 'Month' %}"
+            data-year="{% trans 'Year' %}"
+            data-monday="{% trans 'Monday' %}"
+            data-tuesday="{% trans 'Tuesday' %}"
+            data-wednesday="{% trans 'Wednesday' %}"
+            data-thursday="{% trans 'Thursday' %}"
+            data-friday="{% trans 'Friday' %}"
+            data-saturday="{% trans 'Saturday' %}"
+            data-sunday="{% trans 'Sunday' %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+
+
+    <script src="{% static 'assets/core/recurrence/js/recurrence_list.js' %}"></script>
+{% endblock %}

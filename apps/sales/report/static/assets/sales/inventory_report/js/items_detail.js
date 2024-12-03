@@ -287,24 +287,34 @@ $(document).ready(function () {
                         sum_current_quantity += parseFloat($(this).text())
                     })
 
-                    let sum_current_cost = 0
-                    table.find(`.sum-current-cost-of-wh-${product_id}-${sale_order_id}`).each(function () {
-                        sum_current_cost += parseFloat($(this).attr('data-init-money'))
-                    })
-
                     let sum_current_value = 0
                     table.find(`.sum-current-value-of-wh-${product_id}-${sale_order_id}`).each(function () {
                         sum_current_value += parseFloat($(this).attr('data-init-money'))
                     })
 
                     table.find(`.sum-current-quantity-${product_id}-${sale_order_id}`).text(sum_current_quantity)
-                    table.find(`.sum-current-cost-${product_id}-${sale_order_id}`).attr('data-init-money', sum_current_cost)
+                    table.find(`.sum-current-cost-${product_id}-${sale_order_id}`).attr('data-init-money', sum_current_value/sum_current_quantity)
                     table.find(`.sum-current-value-${product_id}-${sale_order_id}`).attr('data-init-money', sum_current_value)
                 })
 
                 const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
                 const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
                 $('.popover-prd:first-child').trigger('hover')
+
+                let wrapper$ = table.closest('.dataTables_wrapper');
+                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                headerToolbar$.prepend(textFilter$);
+                if (textFilter$.length > 0) {
+                    textFilter$.css('display', 'flex');
+                    textFilter$.append(
+                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append(`
+                            <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                <i class="fas fa-sliders-h"></i>&nbsp;${trans_script.attr('data-trans-filter')}
+                            </button>
+                        `)
+                    )
+                }
             },
         });
     }
@@ -405,10 +415,10 @@ $(document).ready(function () {
                                             'Goods receipt': trans_script.attr('data-trans-grc'),
                                             'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                             'Goods return': trans_script.attr('data-trans-grt'),
-                                            'Goods transfer (in)': trans_script.attr('data-trans-gtf'),
+                                            'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                             'Delivery': trans_script.attr('data-trans-dlvr'),
                                             'Goods issue': trans_script.attr('data-trans-gis'),
-                                            'Goods transfer (out)': trans_script.attr('data-trans-gtf'),
+                                            'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         }
 
                                         table_inventory_report_data.push({
@@ -481,10 +491,10 @@ $(document).ready(function () {
                                         'Goods receipt': trans_script.attr('data-trans-grc'),
                                         'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                         'Goods return': trans_script.attr('data-trans-grt'),
-                                        'Goods transfer (in)': trans_script.attr('data-trans-gtf'),
+                                        'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                         'Delivery': trans_script.attr('data-trans-dlvr'),
                                         'Goods issue': trans_script.attr('data-trans-gis'),
-                                        'Goods transfer (out)': trans_script.attr('data-trans-gtf'),
+                                        'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         'Balance init input': trans_script.attr('data-trans-bii'),
                                     }
 
@@ -703,7 +713,7 @@ $(document).ready(function () {
                                                         'Goods receipt': trans_script.attr('data-trans-grc'),
                                                         'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                                         'Goods return': trans_script.attr('data-trans-grt'),
-                                                        'Goods transfer (in)': trans_script.attr('data-trans-gtf'),
+                                                        'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                                     }
                                                     let ob_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                                     items_detail_report_table_Ele.find('tbody').append(
@@ -741,7 +751,7 @@ $(document).ready(function () {
                                                     let trans_title_sub = {
                                                         'Delivery': trans_script.attr('data-trans-dlvr'),
                                                         'Goods issue': trans_script.attr('data-trans-gis'),
-                                                        'Goods transfer (out)': trans_script.attr('data-trans-gtf'),
+                                                        'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                                     }
                                                     let ob_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                                     items_detail_report_table_Ele.find('tbody').append(
@@ -858,7 +868,7 @@ $(document).ready(function () {
                                                     'Goods receipt': trans_script.attr('data-trans-grc'),
                                                     'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                                     'Goods return': trans_script.attr('data-trans-grt'),
-                                                    'Goods transfer (in)': trans_script.attr('data-trans-gtf'),
+                                                    'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
                                                 }
                                                 let ob_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                                 items_detail_report_table_Ele.find('tbody').append(
@@ -896,7 +906,7 @@ $(document).ready(function () {
                                                 let trans_title_sub = {
                                                     'Delivery': trans_script.attr('data-trans-dlvr'),
                                                     'Goods issue': trans_script.attr('data-trans-gis'),
-                                                    'Goods transfer (out)': trans_script.attr('data-trans-gtf'),
+                                                    'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                                 }
                                                 let ob_label = `<span class="text-${text_color}">${trans_title_sub?.[activity?.['trans_title']]}</span>`
                                                 items_detail_report_table_Ele.find('tbody').append(
@@ -999,7 +1009,8 @@ $(document).ready(function () {
             periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
         }
     })
-    $('#btn-filter').on('click', function () {
+
+    $(document).on("click", '#btn-filter', function () {
         LoadItemsSelectBox(items_select_Ele)
         LoadWarehouseSelectBox(warehouses_select_Ele)
     })

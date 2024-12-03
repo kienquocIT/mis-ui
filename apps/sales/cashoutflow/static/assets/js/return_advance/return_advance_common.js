@@ -28,7 +28,7 @@ class ReturnAPLoadPage {
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
-    static LoadAdvancePayment(data, params={'system_status': 3}) {
+    static LoadAdvancePayment(data, params={}) {
         const oppId = $x.fn.getUrlParameter('opp_id');
         advancePaymentEle.initSelect2({
             allowClear: data === null,
@@ -40,7 +40,7 @@ class ReturnAPLoadPage {
             data: (data ? data : null),
             keyResp: 'advance_payment_list',
             dataParams: oppId && $x.fn.checkUUID4(oppId) ? {
-                'opportunity_mapped_id': oppId,
+                'opportunity_id': oppId,
             } : {},
             keyId: 'id',
             keyText: 'title',
@@ -48,6 +48,7 @@ class ReturnAPLoadPage {
             let selected_ap = SelectDDControl.get_data_from_idx(advancePaymentEle, advancePaymentEle.val())
             ReturnAPLoadTab.LoadDetailAdvancePayment(selected_ap)
             $('#inp-sale-code').val(selected_ap?.['sale_code'] !== 'null' ? selected_ap?.['sale_code'] : '')
+            $('#inp-process-mask').val(selected_ap?.['process']?.['id'] ? selected_ap?.['process']?.['title'] : '')
         })
     }
     static LoadBeneficiary(data) {
@@ -69,7 +70,7 @@ class ReturnAPLoadTab {
         let $table = $('#dtbProduct')
         $table.DataTable().clear().destroy()
         $table.DataTableDefault({
-            styleDom: 'hide-foot',
+            dom: 't',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
@@ -180,12 +181,12 @@ class ReturnAPHandle {
         ReturnAPLoadPage.LoadCreatedDate()
         ReturnAPLoadPage.LoadCreator(initEmployee)
         ReturnAPLoadPage.LoadCreatorInfor(initEmployee)
-        ReturnAPLoadPage.LoadAdvancePayment(advance_payment ? advance_payment : null)
         if (advance_payment) {
             advancePaymentEle.trigger('change')
         }
         ReturnAPLoadTab.DrawTableCost();
 
+        let params = {'system_status': 3}
         const {
             opp_id, opp_code,
             process_id, process_title,
@@ -199,8 +200,10 @@ class ReturnAPHandle {
         if (process_id && $x.fn.checkUUID4(process_id)) {
             $('#inp-process-mask').val(process_title);
             $('#inp-process').val(process_id);
+            params['process_id'] = process_id
         }
         if (inherit_id && $x.fn.checkUUID4(inherit_id)) $('#chooseBeneficiary').val(inherit_title);
+        ReturnAPLoadPage.LoadAdvancePayment(advance_payment ? advance_payment : null, params)
     }
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
@@ -220,7 +223,6 @@ class ReturnAPHandle {
             })
         })
         frm.dataForm['returned_list'] = returned_list;
-
         // console.log(frm)
         return frm
     }
@@ -244,6 +246,7 @@ class ReturnAPHandle {
                     ReturnAPLoadPage.LoadBeneficiary(data?.['employee_inherit'])
                     ReturnAPLoadPage.LoadBeneficiaryInfor(data?.['employee_inherit'])
                     $('#inp-sale-code').val(data?.['advance_payment']?.['sale_code'])
+                    $('#inp-process-mask').val(data?.['process']?.['id'] ? data?.['process']?.['title'] : '')
                     ReturnAPLoadTab.DrawTableCost(data?.['returned_list'], option)
                     $('#total-value').attr('value', data?.['return_total'])
                     $('#money-received').prop('checked', data?.['money_received'])

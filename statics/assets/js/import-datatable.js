@@ -131,6 +131,11 @@ $(document).ready(function () {
             $import_db_form_modal_table.html(tableEle)
             $import_db_form_modal_table.find('table').attr('id', tableEle.attr('data-table-id')).prop('hidden', false)
             PREVIEW_TABLE = $import_db_form_modal_table.find('table')
+            let col_order_list = []
+            PREVIEW_TABLE.find('thead tr th').each(function () {
+                col_order_list.push($(this).text())
+            })
+            $('.col-order-list').text(col_order_list.slice(2))
         }
     })
 
@@ -141,7 +146,6 @@ $(document).ready(function () {
             if (to_index >= data.length) {
                 to_index = data.length - 1
             }
-            console.log(to_index)
 
             if (from_index && to_index) {
                 PREVIEW_TABLE.find('tbody').html('')
@@ -250,7 +254,7 @@ $(document).ready(function () {
         return data_combined
     }
 
-    async function processRow(row, frm, data_combined, type) {
+    async function processRow(row, frm, data_combined, type, row_order) {
         let data = {
             url: frm.dataUrl,
             method: frm.dataMethod,
@@ -263,17 +267,20 @@ $(document).ready(function () {
             let resultData = $.fn.switcherResp(resp);
 
             if (resultData) {
+                $('.importing-row').text((row_order+1).toString() + ' /')
                 let import_data_rows = THIS_IMPORT_SPACE.find('.import_data_rows');
                 let old_rows = import_data_rows.text() ? JSON.parse(import_data_rows.text()) : [];
                 old_rows.push(resultData?.['import_data_row']);
                 import_data_rows.text(JSON.stringify(old_rows));
                 row.find('.status-ok').prop('hidden', false);
                 row.find('.err-title').prop('hidden', true);
+                row.addClass('bg-success-light-5');
                 return true
             }
         } catch (errs) {
             row.find('.status-ok').prop('hidden', true);
             row.find('.err-title').prop('hidden', false);
+            row.addClass('bg-danger-light-5');
 
             if (type === 'import') {
                 for (let key in errs.data ? errs.data.errors : {}) {
@@ -348,7 +355,8 @@ $(document).ready(function () {
 
     async function processAllRows(form, table_data, type = 'import') {
         let frm = new SetupFormSubmit(form);
-
+        $('.all-row').text(PREVIEW_TABLE.find('tbody tr').length)
+        PREVIEW_TABLE.find('tbody tr input').prop('disabled', true).prop('readonly', true)
         // Duyệt qua từng hàng và đợi từng AJAX hoàn tất trước khi tiếp tục, nếu gặp lỗi thì ngừng
         for (let i = 0; i < PREVIEW_TABLE.find('tbody tr').length; i++) {
             let row = PREVIEW_TABLE.find('tbody tr').eq(i);  // Lấy hàng hiện tại
@@ -356,7 +364,7 @@ $(document).ready(function () {
                 let data_combined = combinesDataImportDB(
                     row, table_data, APPLY_ALL_CREATE_NEW_LIST, APPLY_ALL_GET_OLD_LIST
                 )
-                let status = await processRow(row, frm, data_combined, type);   // Đợi AJAX hoàn thành cho từng hàng
+                let status = await processRow(row, frm, data_combined, type, i);   // Đợi AJAX hoàn thành cho từng hàng
                 if (status === false) {
                     return false
                 }
@@ -365,17 +373,28 @@ $(document).ready(function () {
         return true
     }
 
-    $import_db_form.submit(async function (event) {
+    $import_db_form.submit(function (event) {
         event.preventDefault();
-
-        // Gọi hàm xử lý tất cả các hàng
-        let all_success = await processAllRows($import_db_form, $import_db_form_select_table, 'import').then();
-        if (all_success) {
-            Swal.fire({
-                html: `<h5 class="text-success">${$trans_db_script.attr('data-trans-done')}</h5>
-                       <h6 class="text-muted">${$trans_db_script.attr('data-trans-reload')}</h6>`,
-            });
-        }
+        Swal.fire({
+            title: `<h5 class="text-muted">${$trans_db_script.attr('data-trans-start-import')}</h5><h6 class="text-danger mt-3">${$trans_db_script.attr('data-trans-start-import-noty')}</h6>`,
+            showCancelButton: false,
+            confirmButtonText: 'OK',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                // Gọi hàm xử lý tất cả các hàng
+                let all_success = await processAllRows($import_db_form, $import_db_form_select_table, 'import').then();
+                if (all_success) {
+                    Swal.fire({
+                        html: `<h5 class="text-success">${$trans_db_script.attr('data-trans-done')}</h5>
+                               <h6 class="text-muted">${$trans_db_script.attr('data-trans-reload')}</h6>`,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload()
+                        }
+                    });
+                }
+            }
+        })
     })
 
     $(document).on('mouseenter', '.import-db-form-modal-table table tbody tr', function () {

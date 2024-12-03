@@ -2,7 +2,6 @@ $(function () {
 
     $(document).ready(function () {
         let $form = $('#frm_quotation_create');
-        let eleDataDetail = $('#quotation-detail-data');
 
         // call ajax get info quotation detail
         $.fn.callAjax2({
@@ -16,7 +15,7 @@ $(function () {
                     $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data);
                     // store && load data detail
-                    eleDataDetail.val(JSON.stringify(data));
+                    QuotationLoadDataHandle.$eleStoreDetail.val(JSON.stringify(data));
                     QuotationLoadDataHandle.loadDetailQuotation(data);
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
                     indicatorHandle.loadIndicator();
@@ -59,6 +58,7 @@ $(function () {
 
                     //
                     const processData = data?.['process'] || {};
+                    const processStageAppData = data?.['process_stage_app'] || {};
                     const oppData = data?.['opportunity'] || {};
                     const inheritData = data?.['employee_inherit'] || {};
                     new $x.cls.bastionField({
@@ -71,6 +71,15 @@ $(function () {
                                'selected': true,
                             }
                         ] : [],
+                        data_process_stage_app: processStageAppData && Object.keys(processStageAppData).length > 0 ? [
+                            {
+                                ...processStageAppData,
+                                'selected': true,
+                            }
+                        ] : [],
+                        processStageAppFlagData: {
+                            'disable': true,
+                        },
                         data_opp: oppData && Object.keys(oppData).length > 0 ? [
                             {
                                 ...oppData,

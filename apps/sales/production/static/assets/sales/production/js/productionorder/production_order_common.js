@@ -47,7 +47,7 @@ class ProdOrderLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
                 let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
                 return $(`<span>${res1} ${res2}</span>`);
             }
@@ -56,7 +56,7 @@ class ProdOrderLoadDataHandle {
         return true;
     };
 
-    static loadProductData() {
+    static loadProductData(productID = null) {
         let fnData = [];
         WindowControl.showLoading();
         $.fn.callAjax2({
@@ -97,6 +97,9 @@ class ProdOrderLoadDataHandle {
                                             'title': 'Select...',
                                         });
                                         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, fnData);
+                                        if (productID) {
+                                            ProdOrderLoadDataHandle.$boxProd.val(productID).trigger('change');
+                                        }
                                         WindowControl.hideLoading();
                                     }
                                 }
@@ -117,7 +120,7 @@ class ProdOrderLoadDataHandle {
         ProdOrderLoadDataHandle.loadProductData();
         // ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [], {'general_product_types_mapped__is_finished_goods': true, 'bom_product__isnull': false, 'bom_product__opportunity_id__isnull': true});
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSupplier);
-        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxPO);
+        ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxPO, [], {'supplier_id': ProdOrderLoadDataHandle.$boxSupplier.val(), 'system_status': 3});
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxWH);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSO, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
@@ -482,7 +485,16 @@ class ProdOrderLoadDataHandle {
         ProdOrderLoadDataHandle.$title.val(data?.['title']);
         ProdOrderLoadDataHandle.$quantity.val(data?.['quantity']);
         if (data?.['product_data']?.['id']) {
-            ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [data?.['product_data']], {'general_product_types_mapped__is_finished_goods': true});
+            ProdOrderLoadDataHandle.loadProductData(data?.['product_data']?.['id']);
+            // ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxProd, [data?.['product_data']]);
+        }
+        if (data?.['supplier_data']?.['id']) {
+            ProdOrderLoadDataHandle.$outsourcingArea[0].removeAttribute('hidden');
+            ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxSupplier, [data?.['supplier_data']]);
+        }
+        if (data?.['purchase_order_data']?.['id']) {
+            ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxPO, [data?.['purchase_order_data']], {'supplier_id': ProdOrderLoadDataHandle.$boxSupplier.val(), 'system_status': 3});
+            ProdOrderLoadDataHandle.$boxPO[0].removeAttribute('disabled');
         }
         if (data?.['uom_data']?.['id']) {
            ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxUOM, [data?.['uom_data']]);
@@ -825,6 +837,20 @@ class ProdOrderSubmitHandle {
                 let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxProd, ProdOrderLoadDataHandle.$boxProd.val());
                 if (data) {
                     _form.dataForm['product_data'] = data;
+                }
+            }
+            if (ProdOrderLoadDataHandle.$boxSupplier.val()) {
+                _form.dataForm['supplier_id'] = ProdOrderLoadDataHandle.$boxSupplier.val();
+                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxSupplier, ProdOrderLoadDataHandle.$boxSupplier.val());
+                if (data) {
+                    _form.dataForm['supplier_data'] = data;
+                }
+            }
+            if (ProdOrderLoadDataHandle.$boxPO.val()) {
+                _form.dataForm['purchase_order_id'] = ProdOrderLoadDataHandle.$boxPO.val();
+                let data = SelectDDControl.get_data_from_idx(ProdOrderLoadDataHandle.$boxPO, ProdOrderLoadDataHandle.$boxPO.val());
+                if (data) {
+                    _form.dataForm['purchase_order_data'] = data;
                 }
             }
             if (ProdOrderLoadDataHandle.$quantity.val()) {

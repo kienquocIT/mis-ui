@@ -770,22 +770,26 @@ class SelectDDControl {
     init() {
         // call this for init select with options
         if (this.ele.length > 0) {
-            let clsThis = this;
-
             if (!this._config) this._config = this.config();
             this.renderDataOnload(this._config);
-            return this.ele.select2(this._config).on('change', function (e) {
-                const frm$ = $(this).closest('form');
-                if (frm$.length > 0) {
-                    // Make sure form was initialized before call valid().
-                    // Because valid() was called, form not initialized, form is creating validate with empty config!
-                    if (frm$.data('validator')){
-                        if ($(this).valid()) $(this).closest(".form-group").removeClass("has-error");
-                        else $(this).closest(".form-group").addClass("has-error");
-                    }
-                }
-                clsThis.loadInfoMore($(this));
+            const sel2$ = this.ele.select2(this._config);
+            this.ele.data('clsSelect2', this);
+            // on event in select2 => call DOM event
+            // don't trigger change + valid when change : because call duplicate showErrors
+            const form$ = this.ele.closest('form');
+            function hasCallValid(){
+                return !!(form$.length > 0 && form$.data('validator'));
+            }
+            sel2$.on('select2:select', function(){
+                if (hasCallValid()) $(this).valid();
             });
+            sel2$.on('select2:unselect', function(){
+                if (hasCallValid()) $(this).valid();
+            });
+            sel2$.on('select2:clear', function(){
+                if (hasCallValid()) $(this).valid();
+            });
+            return sel2$;
         }
     }
 }

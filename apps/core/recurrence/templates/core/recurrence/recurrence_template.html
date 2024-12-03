@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Transaction template' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/core/recurrence/css/recurrence_template.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        .child-workflow-group {
+            border-left: 1px groove #bfcbd0;
+        }
+
+        .btn-collapse-app-wf:hover, .btn-collapse-doc-wf:hover {
+            background-color: slategrey !important;
+        }
+
+        .btn-collapse-app-wf:hover .icon-collapse-app-wf, .btn-collapse-doc-wf:hover .icon-collapse-doc-wf {
+            color: #FFFFFF !important;
+        }
+
+        .bg-grey-light-5 {
+            background-color: #f7f7f7;
+        }
+        .bg-gray-light-4 {
+            background-color: #eaeaea;
+        }
+        .miner-group {
+            display: none!important;
+        }
+    </style>
+{% endblock %}
+
+{% block pageAction %}
+{% endblock %}
+
+{% block pageContent %}
+
+    <input
+            type="hidden" id="workflow-link"
+            data-link-update="{% url 'WorkflowDetail' 1 %}"
+            data-link-list="{% url 'WorkflowList' %}"
+    >
+    <table
+            id="table_template_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'WorkflowListAPI' %}"
+            data-method="get"
+            data-app-list="{% url 'TenantApplicationListAPI' %}"
+    >
+        {% csrf_token %}
+        <thead>
+        <tr>
+            <th>{% trans 'Application name' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <span class="hidden" id="idxSpanMsgGroup" data-make-sure="{% trans 'Make sure change to' %}"></span>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-title="{% trans 'Title' %}"
+        data-transaction-type="{% trans 'Transaction type' %}"
+        data-beneficiary="{% trans 'Beneficiary' %}"
+        data-date="{% trans 'Date created' %}"
+        data-status="{% trans 'Status' %}"
+        data-action="{% trans 'Action' %}"
+        data-linked="{% trans 'Linked' %}"
+        data-not-linked="{% trans 'Not linked' %}"
+        data-no-data="{% trans 'Empty' %}"
+    >
+    <input
+        type="text"
+        id="app-urls-factory"
+        data-recurrence-detail="{% url 'RecurrenceDetail' pk=1 %}"
+        data-so-recurrence="{% url 'SORecurrenceListAPI' %}"
+        data-ar-recurrence="{% url 'ARInvoiceRecurrenceListAPI' %}"
+        data-so-detail="{% url 'SaleOrderDetail' pk=1 %}"
+        data-ar-detail="{% url 'ARInvoiceDetail' pk=1 %}"
+    >
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/moment.js' %}"></script>
+    <script src="{% static 'assets/core/recurrence/js/recurrence_template.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            DocumentControl.buildSelect2();
+        });
+    </script>
+{% endblock %}

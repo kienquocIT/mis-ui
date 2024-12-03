@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Employee info list' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee/employee_list.css' %}">
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'HRMEmployeeCreate' %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <table id="datable_employee_info_list" class="table nowrap w-100 mb-5"
+           data-url="{% url 'HRMEmployeeListAPI' %}"
+           data-method="GET"
+           data-url-detail="{% url 'HRMEmployeeDetail' pk='0' %}"
+    >
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>{% trans 'Employee ID' %}</th>
+            <th>{% trans 'Full Name' %}</th>
+            <th>{% trans 'User ID' %}</th>
+            <th>{% trans 'Date Joined' %}</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'assets/hrm/js/list.js' %}"></script>
+{% endblock %}

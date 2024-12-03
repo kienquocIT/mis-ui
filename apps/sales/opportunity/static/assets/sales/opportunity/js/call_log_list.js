@@ -6,6 +6,74 @@ let contact_slb = $('#contact-select-box');
 let CALL_LOG_LIST = [];
 let trans_script = $('#trans-script')
 
+function loadOpportunityCallLogList() {
+    if (!$.fn.DataTable.isDataTable('#table_opportunity_call_log_list')) {
+        let dtb = $('#table_opportunity_call_log_list');
+        let frm = new SetupFormSubmit(dtb);
+        dtb.DataTableDefault({
+            rowIdx: true,
+            useDataServer: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('call_log_list')) {
+                        CALL_LOG_LIST = resp.data['call_log_list'];
+                        // console.log(CALL_LOG_LIST)
+                        return resp.data['call_log_list'] ? resp.data['call_log_list'] : [];
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return ``;
+                    }
+                },
+                {
+                    data: 'contact',
+                    className: 'wrap-text w-25',
+                    render: (data, type, row) => {
+                        return `<a target="_blank" href="${$('#table_opportunity_call_log_list').attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="link-secondary underline_hover"><b>${row?.['contact']?.['fullname']}</b></span></a>`
+                    }
+                },
+                {
+                    data: 'subject',
+                    className: 'wrap-text w-35',
+                    render: (data, type, row) => {
+                        let status = ''
+                        if (row?.['is_cancelled']) {
+                            status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
+                        }
+                        return `<a class="text-primary link-primary underline_hover detail-call-log-button" href="" data-bs-toggle="modal" data-id="${row?.['id']}" data-bs-target="#detail-call-log">
+                                    <span class="mr-1">${row?.['subject']}</span>${status}
+                                </a>`
+                    }
+                },
+                {
+                    data: 'opportunity',
+                    className: 'wrap-text text-center w-20',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-soft-blue badge-outline">${row?.['opportunity']?.['code']}</span>`
+                    }
+                },
+                {
+                    data: 'call_date',
+                    className: 'wrap-text text-center w-15',
+                    render: (data) => {
+                        return $x.fn.displayRelativeTime(data, {
+                            'outputFormat': 'DD/MM/YYYY',
+                        });
+                    }
+                },
+            ],
+        });
+    }
+}
+
 function loadSaleCodeList(data) {
     function callbackDataResp(resp, keyResp) {
         let result = [];
@@ -116,77 +184,7 @@ date_input.daterangepicker({
     },
     "cancelClass": "btn-secondary",
     maxYear: parseInt(moment().format('YYYY'), 10) + 100
-});
-date_input.val('');
-
-function loadOpportunityCallLogList() {
-    if (!$.fn.DataTable.isDataTable('#table_opportunity_call_log_list')) {
-        let dtb = $('#table_opportunity_call_log_list');
-        let frm = new SetupFormSubmit(dtb);
-        dtb.DataTableDefault({
-            rowIdx: true,
-            useDataServer: true,
-            ajax: {
-                url: frm.dataUrl,
-                type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && resp.data.hasOwnProperty('call_log_list')) {
-                        CALL_LOG_LIST = resp.data['call_log_list'];
-                        // console.log(CALL_LOG_LIST)
-                        return resp.data['call_log_list'] ? resp.data['call_log_list'] : [];
-                    }
-                    throw Error('Call data raise errors.')
-                },
-            },
-            columns: [
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return ``;
-                    }
-                },
-                {
-                    data: 'contact',
-                    className: 'wrap-text w-15',
-                    render: (data, type, row) => {
-                        return `<a target="_blank" href="` + $('#table_opportunity_call_log_list').attr('data-url-contact-detail').replace('0', row.contact.id) + `"><span class="link-secondary underline_hover"><b>` + row.contact.fullname + `</b></span></a>`
-                    }
-                },
-                {
-                    data: 'subject',
-                    className: 'wrap-text w-55',
-                    render: (data, type, row) => {
-                        let status = ''
-                        if (row?.['is_cancelled']) {
-                            status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
-                        }
-                        return `<a class="text-primary link-primary underline_hover detail-call-log-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
-                                    data-bs-target="#detail-call-log">
-                                    <span><b>` + row.subject + `</b></span> <span></span> ${status}
-                                </a>`
-                    }
-                },
-                {
-                    data: 'opportunity',
-                    className: 'wrap-text text-center w-20',
-                    render: (data, type, row) => {
-                        return `<span class="text-secondary">` + row.opportunity.code + `</span>`
-                    }
-                },
-                {
-                    data: 'call_date',
-                    className: 'wrap-text text-center w-10',
-                    render: (data, type, row) => {
-                        return $x.fn.displayRelativeTime(data, {
-                            'outputFormat': 'DD-MM-YYYY',
-                        });
-                    }
-                },
-            ],
-        });
-    }
-}
+}).val('');
 
 $(document).on('click', '#table_opportunity_call_log_list .detail-call-log-button', function () {
     let call_log_id = $(this).attr('data-id');
@@ -200,6 +198,16 @@ $(document).on('click', '#table_opportunity_call_log_list .detail-call-log-butto
 
     $('#detail-account-select-box option').remove();
     $('#detail-account-select-box').append(`<option selected>${call_log_obj.opportunity.customer.title}</option>`);
+
+    const process$ = $('#detail-inp-process');
+    process$.find('option').remove();
+    if (call_log_obj?.process){
+        process$.append(`<option selected>${call_log_obj.process.title}</option>`).initSelect2({
+            disabled: true,
+        });
+        const link$ = process$.siblings('.link-process-detail');
+        link$.attr('href', link$.data('href').replaceAll('__pk__', call_log_obj.process.id));
+    }
 
     $('#detail-contact-select-box option').remove();
     $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);
@@ -290,7 +298,7 @@ $(document).ready(function () {
         {
             submitHandler: function (form, event) {
                 event.preventDefault();
-                let combinesData = new CallLogHandle().combinesData($(this));
+                let combinesData = new CallLogHandle().combinesData($(form));
                 if (combinesData) {
                     WindowControl.showLoading();
                     $.fn.callAjax2(combinesData)
@@ -300,7 +308,7 @@ $(document).ready(function () {
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
                                     setTimeout(() => {
-                                        window.location.href = $(this).attr('data-url-redirect');
+                                        window.location.href = $(form).attr('data-url-redirect');
                                     }, 1000);
                                 }
                             },

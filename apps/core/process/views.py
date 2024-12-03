@@ -134,6 +134,22 @@ class ProcessRuntimeOfMeAPI(APIView):
         return resp.auto_return(key_success='process_runtime_list')
 
 
+class ProcessStagesAppOfMeAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        url = ApiURL.PROCESS_STAGES_APPS_OF_ME
+        resp = ServerAPI(request=request, user=request.user, url=url).get()
+        return resp.auto_return(key_success='process_runtime_stages_app_list')
+
+
+class ProcessRuntimeDataMatchAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        url = ApiURL.PROCESS_DATA_MATCH
+        resp = ServerAPI(request=request, user=request.user, url=url).get()
+        return resp.auto_return(key_success='opp_process_stage_app')
+
+
 class ProcessRuntimeAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
@@ -172,6 +188,24 @@ class ProcessRuntimeDetailAPI(APIView):
         return RespData.resp_404()
 
 
+class ProcessRuntimeMembersAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.PROCESS_RUNTIME_MEMBERS.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).get()
+            return resp.auto_return(key_success='process_runtime_members')
+        return RespData.resp_404()
+
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.PROCESS_RUNTIME_MEMBERS.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).post(request.data)
+            return resp.auto_return(key_success='process_runtime_members')
+        return RespData.resp_404()
+
+
 class ProcessRuntimeStageAppDetailAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, pk, **kwargs):
@@ -187,4 +221,24 @@ class ProcessRuntimeStageAppDetailAPI(APIView):
             url = ApiURL.PROCESS_RUNTIME_STAGES_APP_COMPLETE.fill_key(pk=pk)
             resp = ServerAPI(request=request, user=request.user, url=url).put(data=request.data)
             return resp.auto_return(key_success='stages_app_complete')
+        return RespData.resp_404()
+
+
+class ProcessRuntimeMemberDetailAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def delete(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.PROCESS_RUNTIME_MEMBER_DETAIL.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).delete()
+            return resp.auto_return(key_success='stages_app_complete')
+        return RespData.resp_404()
+
+
+class ProcessRuntimeLogAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.PROCESS_RUNTIME_LOG.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).get()
+            return resp.auto_return(key_success='process_log')
         return RespData.resp_404()

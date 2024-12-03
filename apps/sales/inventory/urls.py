@@ -25,7 +25,7 @@ from apps.sales.inventory.views import (
     ProductionOrderDetailAPIForGIS, InventoryAdjustmentListAPIForGIS, InventoryAdjustmentDetailAPIForGIS,
     ProductWarehouseSerialListAPIForGIS, ProductWarehouseLotListAPIForGIS, ProductWarehouseListAPIForGIS,
     WorkOrderListAPIForGIS, WorkOrderDetailAPIForGIS, GoodsIssueProductListAPI,
-    GoodsDetailListImportDBAPI
+    GoodsDetailListImportDBAPI, GoodsDetailSerialDataAPI
 )
 
 urlpatterns = [
@@ -134,6 +134,7 @@ urlpatterns += [
 # goods detail
 urlpatterns += [
     path('goods-detail', GoodsDetail.as_view(), name='GoodsDetail'),
+    path('goods-detail-sn-data/api', GoodsDetailSerialDataAPI.as_view(), name='GoodsDetailSerialDataAPI'),
     path('goods-detail/api', GoodsDetailAPI.as_view(), name='GoodsDetailAPI'),
     path('goods-detail-import-db/api', GoodsDetailListImportDBAPI.as_view(), name='GoodsDetailListImportDBAPI')
 ]

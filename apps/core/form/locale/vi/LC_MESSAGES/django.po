@@ -642,7 +642,7 @@ msgid "Checked"
 msgstr "Chọn"
 
 #
-msgid "Single"
+msgid "Separate"
 msgstr "Một lựa chọn"
 
 #

@@ -8,6 +8,7 @@ const suppliers_box = $('#suppliers')
 const no_of_months_box = $('#no-of-months')
 const no_month_box = $('.no-month')
 const start_date_box = $('#start-date')
+const end_date_box = $('#end-date')
 const product_price_box = $('#product-price')
 const break_event_point_box = $('#break-event-point')
 const break_event_point_all_box = $('#break-event-point-all')
@@ -30,7 +31,11 @@ start_date_box.daterangepicker({
     maxYear: parseInt(moment().format('YYYY'), 10),
     drops: 'up',
     autoApply: true,
+}).on('change', function () {
+    end_date_box.val(findEndDate(start_date_box.val(), parseFloat(no_of_months_box.val())))
 });
+
+end_date_box.val(findEndDate(start_date_box.val(), parseFloat(no_of_months_box.val())))
 
 function loadFixedCostsTable(data_list=[], option='create') {
     fixed_costs_table.DataTable().clear().destroy()
@@ -50,19 +55,19 @@ function loadFixedCostsTable(data_list=[], option='create') {
             },
             {
                 className: 'wrap-text w-50',
-                'render': (data, type, row) => {
+                'render': () => {
                     return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 fixed-cost-expense-item"></select>`
                 }
             },
             {
                 className: 'wrap-text w-40',
-                'render': (data, type, row) => {
+                'render': () => {
                     return `<input ${option === 'detail' ? 'readonly disabled' : ''} class="form-control mask-money text-right fixed-cost-value" value="0">`;
                 }
             },
             {
                 className: 'wrap-text w-10 text-center',
-                'render': (data, type, row) => {
+                'render': () => {
                     return `<button type="button" class="btn ${option === 'detail' ? 'disabled' : ''} del-expense-row"><i class="fas fa-trash-alt text-secondary"></i></button>`;
                 }
             },
@@ -96,19 +101,19 @@ function loadVariableCostsTable(data_list=[], option='create') {
             },
             {
                 className: 'wrap-text w-50',
-                'render': (data, type, row) => {
+                'render': () => {
                     return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 variable-cost-expense-item"></select>`
                 }
             },
             {
                 className: 'wrap-text w-40',
-                'render': (data, type, row) => {
+                'render': () => {
                     return `<input ${option === 'detail' ? 'readonly disabled' : ''} class="form-control text-right mask-money variable-cost-value" value="0">`;
                 }
             },
             {
                 className: 'wrap-text w-10 text-center',
-                'render': (data, type, row) => {
+                'render': () => {
                     return `<button type="button" class="btn ${option === 'detail' ? 'disabled' : ''} del-expense-row"><i class="fas fa-trash-alt text-secondary"></i></button>`;
                 }
             },
@@ -204,11 +209,30 @@ function deleteRow(table, currentRow) {
     row.remove().draw();
 }
 
+function findEndDate(startDate, n) {
+    const [day, month, year] = startDate.split("/").map(Number);
+    const date = new Date(year, month - 1, day);
+    date.setMonth(date.getMonth() + n);
+    if (date.getDate() < day) {
+        date.setDate(0); // Lùi về ngày cuối cùng của tháng trước
+    }
+    const resultDay = String(date.getDate()).padStart(2, '0');
+    const resultMonth = String(date.getMonth() + 1).padStart(2, '0');
+    const resultYear = date.getFullYear();
+    return moment(new Date(resultYear, resultMonth - 1, resultDay)).format('DD/MM/YYYY');
+}
+
 no_of_months_box.on('change', function () {
-    no_month_box.text(no_of_months_box.val() ? no_of_months_box.val() : 0)
-    expected_number_all_box.val(expected_number_box.val() ? parseFloat(expected_number_box.val()) * parseFloat(no_of_months_box.val()) : 0)
-    calculate_break_event_point()
-    calculate_net_income()
+    if (no_of_months_box.val()) {
+        no_month_box.text(no_of_months_box.val() ? no_of_months_box.val() : 0)
+        expected_number_all_box.val(expected_number_box.val() ? parseFloat(expected_number_box.val()) * parseFloat(no_of_months_box.val()) : 0)
+        calculate_break_event_point()
+        calculate_net_income()
+    }
+    else {
+        no_of_months_box.val(1)
+    }
+    end_date_box.val(findEndDate(start_date_box.val(), parseFloat(no_of_months_box.val())))
 })
 
 add_new_fixed_expense_btn.on('click', function () {
@@ -230,6 +254,7 @@ $(document).on("click", '.del-expense-row', function () {
 })
 
 function calculate_break_event_point() {
+    debugger
     let product_price_value = product_price_box.attr('value') ? parseFloat(product_price_box.attr('value')) : 0
     let sum_fixed_cost = 0
     let sum_variable_cost = 0
@@ -239,10 +264,11 @@ function calculate_break_event_point() {
     variable_costs_table.find('tbody tr').each(function () {
         sum_variable_cost += $(this).find('.variable-cost-value').attr('value') ? parseFloat($(this).find('.variable-cost-value').attr('value')) : 0
     })
-    let break_event_point = (sum_fixed_cost / (product_price_value - sum_variable_cost)).toFixed(2)
-    let break_event_point_all = (break_event_point * parseFloat(no_of_months_box.val())).toFixed(2)
-    break_event_point_box.val(product_price_value !== sum_variable_cost ? parseFloat(break_event_point) : 0)
-    break_event_point_all_box.val(product_price_value !== sum_variable_cost ? parseFloat(break_event_point_all) : 0)
+    let break_event_point = product_price_value !== sum_variable_cost ? sum_fixed_cost / (product_price_value - sum_variable_cost) : 0
+    let no_of_months = no_of_months_box.val() ? parseFloat(no_of_months_box.val()) : 0
+    let break_event_point_all = break_event_point * no_of_months
+    break_event_point_box.val(break_event_point.toFixed(2))
+    break_event_point_all_box.val(break_event_point_all.toFixed(2))
 }
 
 function calculate_net_income() {
@@ -257,12 +283,14 @@ function calculate_net_income() {
         sum_variable_cost += $(this).find('.variable-cost-value').attr('value') ? parseFloat($(this).find('.variable-cost-value').attr('value')) : 0
     })
     let net_income_value = expected_number_value * (product_price_value - sum_variable_cost) - sum_fixed_cost
-    net_income_box.attr('value', net_income_value)
-    net_income_all_box.attr('value', net_income_value * parseFloat(no_of_months_box.val()))
+    let no_of_months = no_of_months_box.val() ? parseFloat(no_of_months_box.val()) : 0
+    let net_income_value_all = net_income_value * no_of_months
+    net_income_box.attr('value', net_income_value.toFixed(2))
+    net_income_all_box.attr('value', net_income_value_all.toFixed(2))
     $.fn.initMaskMoney2()
 
-    let rate_value = expected_number_value * product_price_value !== 0 ? (net_income_value * 100 / (expected_number_value * product_price_value)).toFixed(2) : 0
-    rate_box.val(rate_value)
+    let rate_value = expected_number_value * product_price_value !== 0 ? (net_income_value * 100 / (expected_number_value * product_price_value)) : 0
+    rate_box.val(rate_value.toFixed(2))
 }
 
 $(document).on("change", '.fixed-cost-value', function () {
@@ -300,6 +328,7 @@ class DistributionPlanHandle {
         frm.dataForm['title'] = title_box.val()
         frm.dataForm['product'] = product_box.val()
         frm.dataForm['start_date'] = moment(start_date_box.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['end_date'] = moment(end_date_box.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
         frm.dataForm['no_of_month'] = no_of_months_box.val()
 
         frm.dataForm['product_price'] = product_price_box.attr('value')
@@ -359,18 +388,19 @@ function LoadDetailDP(option) {
                 loadProduct(data?.['product'])
                 loadSupplier(data?.['supplier_list'])
                 start_date_box.val(moment(data?.['start_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                end_date_box.val(moment(data?.['end_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                 no_of_months_box.val(data?.['no_of_month'])
                 no_month_box.text(data?.['no_of_month'])
                 loadFixedCostsTable(data?.['fixed_cost_list'], option)
                 loadVariableCostsTable(data?.['variable_cost_list'], option)
                 product_price_box.attr('value', data?.['product_price'])
-                break_event_point_box.val(data?.['break_event_point'])
-                break_event_point_all_box.val(data?.['break_event_point'] * data?.['no_of_month'])
+                break_event_point_box.val(parseFloat(data?.['break_event_point']).toFixed(2))
+                break_event_point_all_box.val((parseFloat(data?.['break_event_point']) * parseFloat(data?.['no_of_month'])).toFixed(2))
                 expected_number_box.val(data?.['expected_number'])
-                expected_number_all_box.val(data?.['expected_number'] * data?.['no_of_month'])
+                expected_number_all_box.val(parseFloat(data?.['expected_number']) * parseFloat(data?.['no_of_month']))
                 net_income_box.attr('value', data?.['net_income'])
-                net_income_all_box.attr('value', data?.['net_income'] * data?.['no_of_month'])
-                rate_box.attr('value', data?.['rate'])
+                net_income_all_box.attr('value', (parseFloat(data?.['net_income']) * parseFloat(data?.['no_of_month'])).toFixed(2))
+                rate_box.attr('value', parseFloat(data?.['rate']).toFixed(2))
 
                 plan_des_box.val(data?.['plan_description'])
                 setTimeout(function() {

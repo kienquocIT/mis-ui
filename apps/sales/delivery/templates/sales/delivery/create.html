@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create-delivery">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            id="form-create-delivery"
+            data-url="{% url 'SaleOrderDetailDeliveryAPI' pk='__pk__' %}"
+            data-url-redirect="{% url 'SaleOrderList' %}"
+            data-url-picking="{% url 'OrderPickingList' %}"
+    >
+        <div class="form-group">
+            <label for="inp-process" class="form-label">{% trans 'Process' %}</label>
+            <select
+                    class="form-select" name="process" id="inp-process"
+                    data-url="{% url 'ProcessRuntimeOfMeAPI' %}"
+                    data-keyResp="process_runtime_list"
+            ></select>
+        </div>
+        <div class="form-group">
+            <label for="inp-process-stage-app" class="form-label">{% trans 'Process Stage Application' %}</label>
+            <select
+                    name="process_stage_app" id="inp-process-stage-app" class="form-select"
+                    data-url="{% url 'ProcessStagesAppOfMeAPI' %}"
+                    data-app-id="{{data.app_id}}"
+                    data-keyResp="process_runtime_stages_app_list"
+            ></select>
+        </div>
+        <div class="form-group">
+            <label for="inp-so" class="form-label">{% trans 'Sale Order' %}</label>
+            <select name="saleorder" id="inp-so" class="form-select" readonly></select>
+        </div>
+        <table
+                class="table table-bordered w-100 nowrap"
+                id="table-list-saleorder"
+                data-url="{% url 'SaleOrderListAPI' %}?is_minimal=true&delivery_call=true&system_status__in=2%2C3"
+{#                data-url="{% url 'SaleOrderListAPI' %}?delivery_call=true&system_status__in=2%2C3"#}
+        >
+            <thead class="thead-light">
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Title' %}</th>
+                <th>{% trans 'Code' %}</th>
+                <th>{% trans 'Date created' %}</th>
+            </tr>
+            </thead>
+        </table>
+    </form>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'sales/delivery/delivery/create.js' %}"></script>
+{% endblock %}

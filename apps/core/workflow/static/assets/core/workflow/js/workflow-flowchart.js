@@ -153,6 +153,8 @@ class JSPlumbsHandle {
     clsManage = new NodeHandler(this.nodeData, this.associationData); // class to check for connection the validation
     _commitNodeList = {};
     _ASSOCIATION = [];
+    static $trans = $('#node-trans-factory');
+
     set setNodeList(strData) {
         let temp = {};
         for (let item of strData) {
@@ -197,6 +199,7 @@ class JSPlumbsHandle {
     }
 
     htmlDragRender(target_elm) {
+
         let strHTMLDragNode = '';
         if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
             for (let val in DEFAULT_NODE_LIST) {
@@ -204,17 +207,25 @@ class JSPlumbsHandle {
                 let clsSys = '';
                 let bg = '';
                 let clsModal = "modal";
+                let disabled = "";
                 if (item?.['is_system'] === true) {
                     clsSys = 'control-system'
                     bg = 'bg-blue-light-5';
                     if (["approved", "completed"].includes(item?.['code'])) {
                         clsModal = "";
+                        disabled = "disabled";
                     }
                 }
-                strHTMLDragNode += `<div class="control ${clsSys} ${bg}" id="drag-${item.order}" data-drag="${item.order}" data-bs-toggle="${clsModal}"
-                            data-bs-target="#nodeModal" `
-                    + `title="${item.title}">` + `<p class="drag-title" contentEditable="true" `
-                    + `title="${item.remark}">${item.title}</p></div>`;
+                strHTMLDragNode += `<div class="btn-group dropdown">
+                                        <div class="control ${clsSys} ${bg}" id="drag-${item?.['order']}" data-drag="${item?.['order']}" title="${item?.['title']}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
+                                            <p class="drag-title" contentEditable="true" title="${item?.['remark']}">${item?.['title']}</p>
+                                        </div>
+                                        <div class="dropdown-menu dropdown-bordered w-160p">
+                                            <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
+                                        </div>
+                                    </div>`;
             }
         }
         if (!target_elm) $('#node_dragbox').html(strHTMLDragNode)
@@ -263,11 +274,28 @@ class JSPlumbsHandle {
                     $wrapWF.css("width", wrap_w);
                 }
                 let bg = '';
+                let clsModal = "modal";
+                let disabled = "";
                 if (item?.['is_system'] === true) {
                     bg = 'bg-blue-light-5';
+
+                    if (["approved", "completed"].includes(item?.['code'])) {
+                        clsModal = "";
+                        disabled = "disabled";
+                    }
                 }
-                HTML_temp += `<div class="clone ${bg}" data-drag="${val}" title="${item.title}" id="control-${val}" `
-                    + `style="left:${left_coord}px;top:${top_coord}px"><p class="drag-title">${item.title}</p></div>`;
+                // HTML_temp += `<div class="clone ${bg}" data-drag="${val}" title="${item.title}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px"><p class="drag-title">${item.title}</p></div>`;
+
+                HTML_temp += `<div class="btn-group dropdown">
+                                    <div class="clone ${bg}" data-drag="${val}" title="${item.title}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
+                                        <p class="drag-title">${item.title}</p>
+                                    </div>
+                                    <div class="dropdown-menu dropdown-bordered w-160p">
+                                        <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
+                                    </div>
+                                </div>`;
 
                 // get and set commit code to list in case detail page
                 let NodeListTemp = this.getCommitNode
@@ -281,7 +309,7 @@ class JSPlumbsHandle {
     initJSPlumbs() {
         const instance = jsPlumb.getInstance({
             ConnectionOverlays: [
-                ["Arrow", {location: 1, id: "arrow", length: 10, width: 10, height: 10, foldback: 0.9}],
+                ["Arrow", {location: 1, id: "arrow", length: 12, width: 12, height: 13, foldback: 1}],
             ],
             Container: "flowchart_workflow",
         });
@@ -291,7 +319,7 @@ class JSPlumbsHandle {
             // declare style connection type
             instance.registerConnectionTypes({
                 "pink-connection": {
-                    paintStyle: {stroke: "#eaeaea", strokeWidth: 3},
+                    paintStyle: {stroke: "#4f4f4f", strokeWidth: 1.5},
                     hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4}
                 }
             })
@@ -300,13 +328,27 @@ class JSPlumbsHandle {
                 helper: function () {
                     let clsSys = '';
                     let bg = '';
+                    let clsModal = "modal";
                     if (this.classList.contains('control-system')) {
                         clsSys = 'clone-system'
                         bg = 'bg-blue-light-5';
                     }
-                    return `<div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" `
-                        + `title="${$(this).find('.drag-title').text()}">`
-                        + `<p class="drag-title">${$(this).find('.drag-title').text()}</p></div>`;
+
+
+//                     return `<div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" title="${$(this).find('.drag-title').text()}">
+// <p class="drag-title">${$(this).find('.drag-title').text()}</p>
+// </div>`;
+
+                    return `<div class="btn-group dropdown">
+                                <div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" title="${$(this).find('.drag-title').text()}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <p class="drag-title">${$(this).find('.drag-title').text()}</p>
+                                </div>
+                                <div class="dropdown-menu dropdown-bordered w-160p">
+                                    <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
+                                </div>
+                            </div>`;
                 },
                 appendTo: "#flowchart_workflow",
             });
@@ -317,11 +359,13 @@ class JSPlumbsHandle {
                     const clone = $(ui.helper).clone(true);
                     const numID = ui.draggable.attr('data-drag')
                     let is_id = 'control-' + numID
-                    clone.attr("id", is_id)
+                    // clone.attr("id", is_id)
+                    clone.find('.clone').attr("id", is_id);
                     clone.appendTo(this);
                     let $this_elm = ui.draggable;
                     $this_elm.draggable("disable");
-                    instance.draggable(is_id, {containment: true})
+                    // instance.draggable(is_id, {containment: true})
+                    instance.draggable(is_id);
                     let sys_code = "";
                     // check default system node
                     for (let idx in DEFAULT_NODE_LIST) {
@@ -404,7 +448,8 @@ class JSPlumbsHandle {
                 instance.doWhileSuspended(function () {
                     $('#flowchart_workflow .clone').each(function () {
                         let is_id = $(this).attr('id')
-                        instance.draggable(is_id, {containment: true})
+                        // instance.draggable(is_id, {containment: true})
+                        instance.draggable(is_id);
 
                         let sys_code = DEFAULT_NODE_LIST[$(this).data('drag')].code_node_system
                         if (sys_code !== 'completed')
@@ -491,7 +536,7 @@ class JSPlumbsHandle {
                         anchors: ["Bottom", "Top"],
                         endpoint: ["Dot", {radius: 5}],
                         endpointStyle: {fill: "#374986", opacity: ".8"},
-                        paintStyle: {stroke: "#eaeaea", strokeWidth: 3},
+                        paintStyle: {stroke: "#4f4f4f", strokeWidth: 1.5},
                         hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
                         connectionType: "pink-connection",
                         connector: ["Flowchart", {cornerRadius: 5}],
@@ -876,7 +921,6 @@ class NodeHandler {
         let state = false;
         let msgFailed = null;
         let combinedValue = this.getGroup(node_input) + '|' + this.getGroup(node_output);
-        let $trans = $('#node-trans-factory');
         switch (combinedValue) {
             case 'null|null':
                 this.appendGroupNull(node_input, node_output);
@@ -889,7 +933,7 @@ class NodeHandler {
             case 'null|right':
                 //
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-1');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-1');
                 break;
             case 'null|middle':
                 this.replaceGroup(node_input, 'left');
@@ -898,12 +942,12 @@ class NodeHandler {
             case 'middle|null':
                 //
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-3');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-3');
                 break;
             case 'middle|left':
                 //
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-3');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-3');
                 break;
             case 'middle|right':
                 state = true;
@@ -911,7 +955,7 @@ class NodeHandler {
             case 'middle|middle':
                 // can't exist two middle node
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-4');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-4');
                 break;
             case 'left|null':
                 this.replaceGroup(node_output, 'left');
@@ -923,7 +967,7 @@ class NodeHandler {
             case 'left|right':
                 //
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-1');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-1');
                 break;
             case 'left|middle':
                 state = true;
@@ -935,7 +979,7 @@ class NodeHandler {
             case 'right|left':
                 //
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-1');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-1');
                 break;
             case 'right|right':
                 state = true;
@@ -943,7 +987,7 @@ class NodeHandler {
             case 'right|middle':
                 //
                 // return false;
-                msgFailed = $trans.attr('data-validate-association-1');
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-1');
                 break;
             default:
                 console.log('Over case with data:', combinedValue);

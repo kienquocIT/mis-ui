@@ -39,15 +39,21 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'wrap-text w-20 text-center',
+                        className: 'wrap-text w-15 text-center',
                         'render': (data, type, row) => {
-                            return `${moment(row?.['start_date'].split(' ')[0]).format('DD/MM/YYYY')}`;
+                            return `<span class="text-muted">${moment(row?.['start_date'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-20 text-center',
+                        className: 'wrap-text w-10 text-center',
                         'render': (data, type, row) => {
-                            return `${row?.['no_of_month']}`;
+                            return `<span class="text-muted">${row?.['no_of_month']}</span>`;
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-15 text-center',
+                        'render': (data, type, row) => {
+                            return `<span class="${row?.['is_expired'] ? 'text-danger' : 'text-primary'}">${moment(row?.['end_date'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
                         }
                     },
                     {

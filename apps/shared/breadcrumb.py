@@ -162,7 +162,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     SALE_ORDER_UPDATE_PAGE = BreadcrumbChildren(_('Sale order update'))
 
     # WareHouse
-    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
+    WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('Warehouse'), 'WareHouseList')
 
     # Good receipt
     GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt'), 'GoodReceiptList')
@@ -200,7 +200,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
 
     #Document
-    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Bidding'), 'DocumentTypeMasterDataList')
+    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Document'), 'DocumentTypeMasterDataList')
+
+    #Bidding Result config
+    BIDDING_RESULT_CONFIG_PAGE = BreadcrumbChildren(_('Bidding'), 'BiddingResultConfigList')
 
     # Sale Activities
     CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call log'), 'OpportunityCallLogList')
@@ -379,10 +382,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
-    PROJECT_BOM_LIST_PAGE = BreadcrumbChildren(_('Project BOM list'), 'ProjectBOMList')
-    PROJECT_BOM_CREATE_PAGE = BreadcrumbChildren(_('Project BOM create'), 'ProjectBOMCreate')
-    PROJECT_BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
-    PROJECT_BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+    OPP_BOM_LIST_PAGE = BreadcrumbChildren(_('Opportunity BOM list'), 'OpportunityBOMList')
+    OPP_BOM_CREATE_PAGE = BreadcrumbChildren(_('Opportunity BOM create'), 'OpportunityBOMCreate')
+    OPP_BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    OPP_BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
@@ -410,6 +413,16 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCTION_ORDER_LIST_PAGE = BreadcrumbChildren(_('Production order'), 'ProductionOrderList')
     PRODUCTION_REPORT_LIST_PAGE = BreadcrumbChildren(_('Production report'), 'ProductionReportList')
     WORK_ORDER_LIST_PAGE = BreadcrumbChildren(_('Work order'), 'WorkOrderList')
+
+    # Recurrence
+    RECURRENCE_LIST_PAGE = BreadcrumbChildren(_('Recurrence'), 'RecurrenceList')
+    RECURRENCE_TEMPLATE_LIST_PAGE = BreadcrumbChildren(_('Transaction template'), 'TransactionTemplateList')
+    RECURRENCE_ACTION_LIST_PAGE = BreadcrumbChildren(_('Action list'), 'RecurrenceActionList')
+    # HRM
+    HRM_EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('HRM Employee info'), 'HRMEmployeeList')
+    HRM_EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'HRMEmployeeCreate')
+    HRM_EMPLOYEE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    HRM_EMPLOYEE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
 
 class BreadcrumbView:
@@ -567,8 +580,8 @@ class BreadcrumbView:
         BreadcrumbItem.CONTACT_LIST_PAGE
     ]
     CONTACT_CREATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_CREATE_PAGE]
-    CONTACT_DETAIL_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_DETAIL_PAGE]
-    CONTACT_UPDATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.CONTACT_UPDATE_PAGE]
+    CONTACT_DETAIL_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CONTACT_UPDATE_PAGE = CONTACT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     ACCOUNT_LIST_PAGE = [
         BreadcrumbItem.ACCOUNT_LIST_PAGE
@@ -721,6 +734,10 @@ class BreadcrumbView:
     ORDER_DELIVERY_LIST_PAGE = [
         BreadcrumbItem.DELIVERY_LIST_PAGE,
     ]
+    ORDER_DELIVERY_CREATE_PAGE = [
+        BreadcrumbItem.DELIVERY_LIST_PAGE,
+        BreadcrumbItem.BASTION_CREATE
+    ]
     ORDER_DELIVERY_DETAIL_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     ORDER_DELIVERY_EDIT_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
@@ -741,6 +758,9 @@ class BreadcrumbView:
 
     #Document
     DOCUMENT_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.DOCUMENT_MASTER_DATA_LIST_PAGE]
+
+    #Bidding Result config
+    BIDDING_RESULT_CONFIG_PAGE = [BreadcrumbItem.BIDDING_RESULT_CONFIG_PAGE]
 
     # Sale Activities
     CALL_LOG_LIST_PAGE = [
@@ -1006,10 +1026,10 @@ class BreadcrumbView:
     BOM_DETAIL_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     BOM_UPDATE_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
-    PROJECT_BOM_LIST_PAGE = [BreadcrumbItem.PROJECT_BOM_LIST_PAGE]
-    PROJECT_BOM_CREATE_PAGE = PROJECT_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
-    PROJECT_BOM_DETAIL_PAGE = PROJECT_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
-    PROJECT_BOM_UPDATE_PAGE = PROJECT_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    OPP_BOM_LIST_PAGE = [BreadcrumbItem.OPP_BOM_LIST_PAGE]
+    OPP_BOM_CREATE_PAGE = OPP_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    OPP_BOM_DETAIL_PAGE = OPP_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    OPP_BOM_UPDATE_PAGE = OPP_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     PRINTER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PRINTER_CONFIG_LIST_PAGE]
     PRINTER_CONFIG_LIST_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]
@@ -1078,4 +1098,24 @@ class BreadcrumbView:
     WORK_ORDER_DETAIL_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     WORK_ORDER_UPDATE_PAGE = WORK_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    # Recurrence
+    RECURRENCE_LIST_PAGE = [
+        BreadcrumbItem.RECURRENCE_LIST_PAGE
+    ]
+    RECURRENCE_CREATE_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    RECURRENCE_DETAIL_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    RECURRENCE_UPDATE_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    RECURRENCE_TEMPLATE_LIST_PAGE = [
+        BreadcrumbItem.RECURRENCE_TEMPLATE_LIST_PAGE
+    ]
+    RECURRENCE_ACTION_LIST_PAGE = [
+        BreadcrumbItem.RECURRENCE_ACTION_LIST_PAGE
+    ]
 
+    HRM_EMPLOYEE_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.HRM_EMPLOYEE_LIST_PAGE
+    ]
+    HRM_EMPLOYEE_CREATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    HRM_EMPLOYEE_DETAIL_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    HRM_EMPLOYEE_UPDATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

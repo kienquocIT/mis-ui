@@ -47,7 +47,7 @@
         data-key-return="goods_transfer_list"
     ></script>
     {% include 'printer/print.html' %}
-    {{ data.is_project | json_script:"is_project" }}
+    {{ data.company_current_data | json_script:"company_current_data" }}
     <script id="trans-script"
             data-trans-product-list="{% trans 'Select product' %}"
             data-trans-out-warehouse-list="{% trans 'Select out warehouse' %}"
@@ -60,6 +60,7 @@
             data-url-project-product-list="{% url 'ProjectProductListAPI' %}"
             data-url-none-project-product-list="{% url 'NoneProjectProductListAPI' %}"
             data-url-so-list="{% url 'SaleOrderListAPI' %}"
+            data-url-company-config-detail="{% url 'CompanyConfigDetailAPI' %}"
     ></script>
 
     <form id="frm_goods_transfer_detail"
@@ -67,210 +68,10 @@
           data-method="GET"
           data-url-redirect="{% url "GoodsTransferList" %}">
         {% csrf_token %}
-        <div class="collapse multi-collapse show" id="collapse-area">
-            <div class="row">
-                <div class="col-12 text-right">
-                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                        <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="{% trans 'Print' %}">
-                            <button type="button" class="btn btn-outline-light btn-sm" id="print-document"><i class="fas fa-print"></i></button>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="form-group">
-                        <label for="title" class="form-label required">{% trans 'Title' %}</label>
-                        <input type="text" class="form-control" id="title">
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="row">
-                        <div class="col-12 col-lg-12 col-md-12">
-                            <div class="form-group">
-                                <label for="date" class="form-label">{% trans 'Date' %}</label>
-                                <input type="text" class="form-control" id="date" disabled readonly>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-12 col-md-12">
-                            <div class="form-group">
-                                <label for="note" class="form-label">{% trans 'Note' %}</label>
-                                <textarea type="text" class="form-control" id="note"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="text-primary btn btn-animated btn-icon btn-xs w-100"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Expand / Collapse' %}"><i class="fas fa-angle-double-up text-primary"></i></span></button>
-        <div class="row">
-            <div class="col-12">
-                <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
-                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
-                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-file-alt"></i></span></span>
-                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab_line_detail">
-                        <div id="common-alert" hidden class="alert alert-danger" role="alert">
-                            {% trans 'Inventory data has been changed.' %}
-                        </div>
-                        <div class="row">
-                            <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
-                                <table id="tab_line_detail_datatable" class="table nowrap w-100">
-                                    <thead>
-                                    <tr>
-                                        <th style="min-width: 50px"></th>
-                                        <th style="min-width: 230px">{% trans 'From warehouse' %}</th>
-                                        <th style="min-width: 300px">{% trans 'Product' %}</th>
-                                        <th style="min-width: 200px">{% trans 'UOM' %}</th>
-                                        <th style="min-width: 300px" id="tr_so" hidden>
-                                            {% trans 'Project sale order' %}
-                                            <i class="fas fa-info-circle icon-info"
-                                               data-bs-toggle="tooltip"
-                                               data-bs-placement="right"
-                                               data-bs-original-title="{% trans 'None-project products if sale order is null' %}"></i>
-                                        </th>
-                                        <th style="min-width: 200px">
-                                            {% trans 'Quantity' %}
-                                            <i class="fas fa-info-circle icon-info"
-                                               data-bs-toggle="tooltip"
-                                               data-bs-placement="right"
-                                               data-bs-original-title="{% trans 'Click the button besides input element to see detail (for serial/lot product).' %}"></i>
-                                        </th>
-                                        <th style="min-width: 230px">{% trans 'To warehouse' %}</th>
-                                        <th style="min-width: 300px">{% trans 'Cost' %}</th>
-                                        <th style="min-width: 300px">{% trans 'Subtotal price' %}</th>
-                                        <th class="text-center" style="min-width: 100px">{% trans 'Action' %}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="row mt-5">
-                            <div class="col-7">
-                                <button class="btn btn-outline-primary btn-sm" type="button" id="btn-add-row-line-detail">
-                                    <span>
-                                        <span class="icon">
-                                            <span class="feather-icon"><i class="bi bi-plus-lg"></i></span>
-                                        </span>
-                                        <span>{% trans 'Add new row' %}</span>
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab_attachment">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="w-100" id="attachment">
-                                    {% include 'extends/files/all.html' %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    {% include 'sales/inventory/goods_transfer/common/information.html' %}
+        {% include 'sales/inventory/goods_transfer/common/tabs.html' %}
     </form>
-
-    <div class="modal fade" id="modal-serial" tabindex="-1" role="dialog" aria-labelledby="modal-serial" aria-hidden="true">
-        <div class="modal-dialog modal-lg" style="min-width: 1700px" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Serial information' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="serial-alert" hidden class="alert alert-danger" role="alert">
-                        {% trans 'Some Serials you selected are no longer in stock anymore.' %}
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="custom-scroll">
-                                <div class="table-wrap" style="max-height: 60vh">
-                                    <table class="table nowrap w-100 fixed_header" id="table-serial">
-                                        <thead class="row-fixed bg-secondary-light-4">
-                                        <tr>
-                                            <th class="w-5"></th>
-                                            <th class="w-10">{% trans 'Vendor serial No.' %}</th>
-                                            <th class="w-15">{% trans 'Serial No.' %}</th>
-                                            <th class="w-15">{% trans 'Expired date' %}</th>
-                                            <th class="w-15">{% trans 'Mfr date' %}</th>
-                                            <th class="w-15">{% trans 'Warranty start' %}</th>
-                                            <th class="w-15">{% trans 'Warranty end' %}</th>
-                                            <th class="w-10">{% trans 'Get' %}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-{#                <div class="modal-footer">#}
-{#                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>#}
-{#                    <button type="button" id="ok-btn-modal-serial" class="btn btn-primary">{% trans 'OK' %}</button>#}
-{#                </div>#}
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modal-lot" tabindex="-1" role="dialog" aria-labelledby="modal-lot" aria-hidden="true">
-        <div class="modal-dialog modal-lg min-w-1500p" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Lot information' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="lot-alert" hidden class="alert alert-danger" role="alert">
-                        {% trans 'Lot available quantity now is < get quantity value OR Lot is empty now.' %}
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="custom-scroll">
-                                <div class="table-wrap" style="max-height: 60vh">
-                                    <table class="table nowrap w-100 fixed_header" id="table-lot">
-                                        <thead class="row-fixed bg-secondary-light-4">
-                                        <tr>
-                                            <th class="w-5"></th>
-                                            <th class="w-25">{% trans 'Lot number' %}</th>
-                                            <th class="w-15">{% trans 'Stock quantity' %}</th>
-                                            <th class="w-20">{% trans 'Expired date' %}</th>
-                                            <th class="w-20">{% trans 'Mfr date' %}</th>
-                                            <th class="w-15">{% trans 'Get' %}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-{#                <div class="modal-footer">#}
-{#                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>#}
-{#                    <button type="button" id="ok-btn-modal-lot" class="btn btn-primary">{% trans 'OK' %}</button>#}
-{#                </div>#}
-            </div>
-        </div>
-    </div>
+    {% include 'sales/inventory/goods_transfer/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

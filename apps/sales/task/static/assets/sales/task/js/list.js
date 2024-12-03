@@ -86,8 +86,8 @@ $(function () {
                     // Function to wait form create on submit
                     $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
                     let observer = new MutationObserver(callBackModalChange);
-                    const DOMCheck = document.getElementById('drawer_task_create')
-                    observer.observe(DOMCheck, {attributeFilter: ['class']});
+                    // const DOMCheck = document.getElementById('drawer_task_create')
+                    // observer.observe(DOMCheck, {attributeFilter: ['class']});
                     let temp = $.extend(true, {}, data)
                     delete temp['task_list']
                     $('.btn-task-bar').data('task_info', temp)
@@ -680,6 +680,8 @@ $(function () {
             $btnCreateSub.off().on('click', function () {
                 // call form create-task.js
                 const taskID = $(this).closest('form').find('[name="id"]').val()
+                const taskTxt = $(this).closest('form').find('[name="title"]').val()
+                $('#drawer_task_create .simplebar-content-wrapper').animate({ scrollTop: 0}, "fast");
                 let oppData = {}
                 if ($oppElm.val())
                     oppData = {
@@ -691,7 +693,9 @@ $(function () {
                     $('.title-create').removeClass("hidden")
                     $('.title-detail').addClass("hidden")
                     $('.btn-assign').removeClass('disabled')
+                    $('.parents-block').removeClass('hidden')
                     // after reset
+                    $('[name="parent"]', $formElm).val(taskTxt)
                     $formElm.append(`<input type="hidden" name="parent_n" value="${taskID}"/>`)
                     if (Object.keys(oppData).length) {
                         $oppElm.append(`<option value="${oppData.id}" selected>${oppData.title}</option>`)
@@ -1500,6 +1504,7 @@ $(function () {
     const $fOppElm = $('#filter_opportunity_id')
     const $fSttElm = $('#filter_task_status')
     const $fEmpElm = $('#filter_employee_id')
+    const $fPriority = $('#filter_priority_id')
     const $clearElm = $('.clear-all-btn')
     const listElm = [$fOppElm, $fSttElm, $fEmpElm]
     listElm.forEach(function (elm) {
@@ -1512,6 +1517,25 @@ $(function () {
             GanttViewTask.CallFilter(params)
             $clearElm.addClass('d-block')
         })
+    })
+    $fPriority.on('change', function(){
+        let params = {}
+        if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
+        if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
+        if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
+        if (this.value)
+            params.priority = this.value
+        if (Object.keys(params).length > 0){
+            callDataTaskList(kanbanTask, listTask, params)
+            GanttViewTask.CallFilter(params)
+            $clearElm.addClass('d-block')
+        }
+        else{
+            callDataTaskList(kanbanTask, listTask)
+            GanttViewTask.CallFilter({})
+            $clearElm.removeClass('d-block')
+        }
+
     })
     $clearElm.off().on('click', () => {
         listElm.forEach(function (elm) {

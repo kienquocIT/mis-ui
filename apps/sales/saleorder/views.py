@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.models import AnonymousUser
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -83,12 +84,13 @@ class SaleOrderCreate(View):
     )
     def get(self, request, *args, **kwargs):
         data_copy_to = request.GET.get('data_copy_to', "")
-        opportunity = request.GET.get('opportunity', "")
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
         result = {
-            'employee_current': request.user.employee_current_data,
+            'employee_current': employee_current,
+            'app_id': 'a870e392-9ad2-4fe2-9baa-298a38691cf2',
             'data_copy_to': data_copy_to,
-            'opportunity': json.loads(opportunity) if opportunity else {},
-
             'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
             'form_id': 'frm_quotation_create',
             'list_from_app': 'saleorder.saleorder.create',
@@ -219,7 +221,7 @@ class SaleOrderDetailDeliveryAPI(APIView):
         is_api=True,
     )
     def post(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SALEORDER_CALL.fill_key(pk=pk)).post(data={})
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SALEORDER_CALL.fill_key(pk=pk)).post(data=request.data)
         return resp.auto_return()
 
 
@@ -351,3 +353,14 @@ class SOProductWOListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.SALE_ORDER_PRODUCT_WO_LIST).get(data)
         return resp.auto_return(key_success='sale_order_product_wo')
+
+
+class SORecurrenceListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.SALE_ORDER_RECURRENCE_LIST).get(data)
+        return resp.auto_return(key_success='sale_order_recurrence')

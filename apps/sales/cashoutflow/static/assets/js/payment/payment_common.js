@@ -252,13 +252,14 @@ class PaymentAction {
         let tax_rate = 0;
         if (tr.find('.expense-tax-select-box').val()) {
             let tax_selected = SelectDDControl.get_data_from_idx(tr.find('.expense-tax-select-box'), tr.find('.expense-tax-select-box').val())
-            tax_rate = tax_selected?.['rate'] ? tax_selected?.['rate'] : 0;
+            tax_rate = tax_selected?.['rate'] ? parseFloat(tax_selected?.['rate']) : 0;
         }
         if (unit_price.attr('value') && quantity.val()) {
             let subtotal_value = parseFloat(unit_price.attr('value')) * parseFloat(quantity.val())
-            subtotal.attr('value', subtotal_value);
             let tax_value = subtotal_value * tax_rate / 100
-            subtotal_after_tax.attr('value', subtotal_value + parseFloat(tax_value.toFixed(0)));
+            let subtotal_after_tax_value = subtotal_value + tax_value
+            subtotal.attr('value', subtotal_value.toFixed(0));
+            subtotal_after_tax.attr('value', subtotal_after_tax_value.toFixed(0));
         }
         else {
             unit_price.attr('value', 0);
@@ -279,10 +280,10 @@ class PaymentAction {
             sum_subtotal_price_after_tax += $(this).attr('value') ? parseFloat($(this).attr('value')) : 0
         });
         let sum_tax = sum_subtotal_price_after_tax - sum_subtotal;
-        $('#pretax-value').attr('value', sum_subtotal);
-        $('#taxes-value').attr('value', sum_tax);
-        $('#total-value').attr('value', sum_subtotal_price_after_tax);
-        let total_value_by_words = PaymentAction.ReadMoneyVND(sum_subtotal_price_after_tax) + ' đồng'
+        $('#pretax-value').attr('value', sum_subtotal.toFixed(0));
+        $('#taxes-value').attr('value', sum_tax.toFixed(0));
+        $('#total-value').attr('value', sum_subtotal_price_after_tax.toFixed(0));
+        let total_value_by_words = PaymentAction.ReadMoneyVND(sum_subtotal_price_after_tax.toFixed(0)) + ' đồng'
         total_value_by_words = total_value_by_words.charAt(0).toUpperCase() + total_value_by_words.slice(1)
         if (total_value_by_words[total_value_by_words.length - 1] === ',') {
             total_value_by_words = total_value_by_words.substring(0, total_value_by_words.length - 1) + ' đồng'
@@ -440,7 +441,7 @@ class PaymentLoadTab {
     static DrawLineDetailTable(data_list = [], option = 'create') {
         tableLineDetail.DataTable().clear().destroy()
         tableLineDetail.DataTableDefault({
-            styleDom: 'hide-foot',
+            dom: 't',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
@@ -468,7 +469,7 @@ class PaymentLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-name-input" value="${row?.['expense_description'] ? row?.['expense_description'] : ''}"></textarea>`;
+                        return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control des-input">${row?.['expense_description'] ? row?.['expense_description'] : ''}</textarea>`;
                     }
                 },
                 {
@@ -559,8 +560,8 @@ class PaymentLoadTab {
         AP_db.DataTable().clear().destroy();
         let current_sale_code = []
         if (DETAIL_DATA) {
-            if (DETAIL_DATA?.['opportunity_mapped']) {
-                current_sale_code.push(DETAIL_DATA?.['opportunity_mapped']?.['id'])
+            if (DETAIL_DATA?.['opportunity']) {
+                current_sale_code.push(DETAIL_DATA?.['opportunity']?.['id'])
             } else if (DETAIL_DATA?.['quotation_mapped']) {
                 current_sale_code.push(DETAIL_DATA?.['quotation_mapped']?.['id'])
             } else if (DETAIL_DATA?.['sale_order_mapped']) {
@@ -570,22 +571,22 @@ class PaymentLoadTab {
             const urlParams = new URLSearchParams(window.location.search);
             let type = urlParams.get('type');
             if (type) {
-                let opportunity_mapped = opp_mapped_select.val();
+                let opportunity = opp_mapped_select.val();
                 let quotation_mapped = quotation_mapped_select.val();
                 let sale_order_mapped = sale_order_mapped_select.val();
-                if (opportunity_mapped && type === '0') {
-                    current_sale_code.push(opportunity_mapped)
+                if (opportunity && type === '0') {
+                    current_sale_code.push(opportunity)
                 } else if (quotation_mapped && type === '1') {
                     current_sale_code.push(quotation_mapped)
                 } else if (sale_order_mapped && type === '2') {
                     current_sale_code.push(sale_order_mapped)
                 }
             } else {
-                let opportunity_mapped = opp_mapped_select.val();
+                let opportunity = opp_mapped_select.val();
                 let quotation_mapped = quotation_mapped_select.val();
                 let sale_order_mapped = sale_order_mapped_select.val();
-                if (opportunity_mapped && opp_mapped_select.prop('disabled') === false) {
-                    current_sale_code.push(opportunity_mapped)
+                if (opportunity && opp_mapped_select.prop('disabled') === false) {
+                    current_sale_code.push(opportunity)
                 } else if (quotation_mapped && quotation_mapped_select.prop('disabled') === false) {
                     current_sale_code.push(quotation_mapped)
                 } else if (sale_order_mapped && sale_order_mapped_select.prop('disabled') === false) {
@@ -610,7 +611,7 @@ class PaymentLoadTab {
                                 for (let i = 0; i < resp.data['advance_payment_list'].length; i++) {
                                     let item = resp.data['advance_payment_list'][i]
                                     let this_sale_code = []
-                                    if (item?.['opportunity_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['opportunity_mapped']?.['id'])
+                                    if (item?.['opportunity']?.['id']) this_sale_code = this_sale_code.concat(item?.['opportunity']?.['id'])
                                     if (item?.['quotation_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['quotation_mapped']?.['id'])
                                     if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
                                     if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === $('#employee_inherit_id').val()) {
@@ -630,7 +631,7 @@ class PaymentLoadTab {
                                 for (let i = 0; i < resp.data['advance_payment_list'].length; i++) {
                                     let item = resp.data['advance_payment_list'][i]
                                     let this_sale_code = []
-                                    if (item?.['opportunity_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['opportunity_mapped']?.['id'])
+                                    if (item?.['opportunity']?.['id']) this_sale_code = this_sale_code.concat(item?.['opportunity']?.['id'])
                                     if (item?.['quotation_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['quotation_mapped']?.['id'])
                                     if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
                                     if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === $('#employee_inherit_id').val() && item?.['id'] === AP_filter) {
@@ -811,7 +812,7 @@ class PaymentLoadTab {
                 }
             )
 
-            let dataParam2 = {'opportunity_mapped_id': opportunity_id}
+            let dataParam2 = {'opportunity_id': opportunity_id}
             let ap_mapped_item = $.fn.callAjax2({
                 url: script_url.attr('data-url-ap-cost-list'),
                 data: dataParam2,
@@ -829,7 +830,7 @@ class PaymentLoadTab {
                 }
             )
 
-            let dataParam3 = {'opportunity_mapped_id': opportunity_id}
+            let dataParam3 = {'opportunity_id': opportunity_id}
             let payment_mapped_item = $.fn.callAjax2({
                 url: script_url.attr('data-url-payment-cost-list'),
                 data: dataParam3,
@@ -1458,9 +1459,18 @@ class PaymentLoadTab {
 }
 
 class PaymentHandle {
-    static LoadPage() {
+    static LoadPage(opportunity=null) {
         PaymentLoadPage.LoadCreatedDate()
         PaymentLoadPage.LoadCreator(initEmployee)
+        if (opportunity) {
+            new $x.cls.bastionField({
+                has_opp: true,
+                opp_disabled: true,
+                has_inherit: true,
+                data_opp: [opportunity],
+            }).init();
+            opp_mapped_select.trigger('change')
+        }
         PaymentLoadPage.LoadQuotation()
         PaymentLoadPage.LoadSaleOrder()
         PaymentLoadPage.LoadSupplier()
@@ -1474,7 +1484,7 @@ class PaymentHandle {
         frm.dataForm['title'] = $('#title').val()
         if (option === 'create') {
             if (payment_for === 'opportunity') {
-                frm.dataForm['opportunity_mapped_id'] = opp_mapped_select.val()
+                frm.dataForm['opportunity_id'] = opp_mapped_select.val()
                 frm.dataForm['sale_code_type'] = 0
             }
             else if (payment_for === 'quotation') {
@@ -1486,7 +1496,7 @@ class PaymentHandle {
                 frm.dataForm['sale_code_type'] = 0
             }
             else {
-                frm.dataForm['opportunity_mapped_id'] = null
+                frm.dataForm['opportunity_id'] = null
                 frm.dataForm['quotation_mapped_id'] = null
                 frm.dataForm['sale_order_mapped_id'] = null
                 frm.dataForm['sale_code_type'] = 2
@@ -1505,7 +1515,7 @@ class PaymentHandle {
                 let expense_detail_value = 0;
                 let row_id = '#row-' + i.toString();
                 let expense_type = tableLineDetail.find(row_id + ' .expense-type-select-box').val();
-                let expense_name_input = tableLineDetail.find(row_id + ' .expense-name-input').val();
+                let des_input = tableLineDetail.find(row_id + ' .des-input').val();
                 let expense_uom_name = tableLineDetail.find(row_id + ' .expense-uom-input').val();
                 let expense_quantity = tableLineDetail.find(row_id + ' .expense_quantity').val();
                 let expense_tax = tableLineDetail.find(row_id + ' .expense-tax-select-box option:selected').attr('value');
@@ -1542,7 +1552,7 @@ class PaymentHandle {
                     expense_detail_value = expense_detail_value + sum_value;
                     payment_item_list.push({
                         'expense_type_id': expense_type,
-                        'expense_description': expense_name_input,
+                        'expense_description': des_input,
                         'expense_uom_name': expense_uom_name,
                         'expense_quantity': expense_quantity,
                         'expense_unit_price': expense_unit_price,
@@ -1586,7 +1596,7 @@ class PaymentHandle {
                     if (option === 'detail') {
                         new PrintTinymceControl().render('1010563f-7c94-42f9-ba99-63d5d26a1aca', data, false);
                     }
-                    console.log(data)
+                    // console.log(data)
                     DETAIL_DATA = data;
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
@@ -1596,17 +1606,47 @@ class PaymentHandle {
                     sale_order_mapped_select.prop('disabled', true)
                     $('#employee_inherit_id').prop('disabled', true)
 
-                    if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
-                        PaymentLoadPage.LoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
+                    const data_inherit = Object.keys(data?.['employee_inherit'] || {}).length > 0 ? [{
+                        "id": data?.['employee_inherit']?.['id'],
+                        "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                        "first_name": data?.['employee_inherit']?.['first_name'] || '',
+                        "last_name": data?.['employee_inherit']?.['last_name'] || '',
+                        "email": data?.['employee_inherit']?.['email'] || '',
+                        "is_active": data?.['employee_inherit']?.['is_active'] || false,
+                        "selected": true,
+                    }] : [];
+                    const data_opp = Object.keys(data?.['opportunity'] || {}).length > 0 ? [{
+                        "id": data?.['opportunity']?.['id'] || '',
+                        "title": data?.['opportunity']?.['title'] || '',
+                        "code": data?.['opportunity']?.['code'] || '',
+                        "selected": true,
+                    }] : [];
+                    const data_process = Object.keys(data?.['process'] || {}).length > 0 ? [{
+                        ...data?.['process'],
+                        "selected": true,
+                    }] : [];
+                    new $x.cls.bastionField({
+                        has_opp: true,
+                        has_inherit: true,
+                        has_process: true,
+                        data_inherit: data_inherit,
+                        data_opp: data_opp,
+                        data_process: data_process,
+                    }).init();
+
+                    if (Object.keys(data?.['opportunity']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
+                        PaymentLoadPage.LoadQuotation(data?.['opportunity']?.['quotation_mapped'])
                         PaymentLoadTab.LoadPlanQuotation(
                             opp_mapped_select.val(),
-                            data?.['opportunity_mapped']?.['quotation_mapped']?.['id'],
+                            data?.['opportunity']?.['quotation_mapped']?.['id'],
                             data?.['workflow_runtime_id']
                         )
+                        PaymentLoadPage.LoadSaleOrder(data?.['opportunity']?.['sale_order_mapped']);
                         payment_for = 'opportunity'
                     }
                     else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
                         PaymentLoadPage.LoadQuotation(data?.['quotation_mapped'])
+                        PaymentLoadPage.LoadSaleOrder(data?.['quotation_mapped']?.['sale_order_mapped'])
 
                         let dataParam = {'quotation_id': quotation_mapped_select.val()}
                         let ap_mapped_item = $.fn.callAjax2({
@@ -1653,34 +1693,6 @@ class PaymentHandle {
                     else {
                         payment_for = null
                     }
-
-                    const data_inherit = Object.keys(data?.['employee_inherit'] || {}).length > 0 ? [{
-                        "id": data?.['employee_inherit']?.['id'],
-                        "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                        "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                        "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                        "email": data?.['employee_inherit']?.['email'] || '',
-                        "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                        "selected": true,
-                    }] : [];
-                    const data_opp = Object.keys(data?.['opportunity_mapped'] || {}).length > 0 ? [{
-                        "id": data?.['opportunity_mapped']?.['id'] || '',
-                        "title": data?.['opportunity_mapped']?.['title'] || '',
-                        "code": data?.['opportunity_mapped']?.['code'] || '',
-                        "selected": true,
-                    }] : [];
-                    const data_process = Object.keys(data?.['process'] || {}).length > 0 ? [{
-                        ...data?.['process'],
-                        "selected": true,
-                    }] : [];
-                    new $x.cls.bastionField({
-                        has_opp: true,
-                        has_inherit: true,
-                        has_process: true,
-                        data_inherit: data_inherit,
-                        data_opp: data_opp,
-                        data_process: data_process,
-                    }).init();
 
                     $('#title').val(data?.['title']);
 

@@ -5,11 +5,14 @@ $(document).ready(function () {
         opp_code,
         process_id,
         process_title,
+        process_stage_app_id,
+        process_stage_app_title,
         inherit_id,
         inherit_title,
     } = $x.fn.getManyUrlParameters([
         'opp_id', 'opp_title', 'opp_code',
         'process_id', 'process_title',
+        'process_stage_app_id', 'process_stage_app_title',
         'inherit_id', 'inherit_title',
     ])
 
@@ -17,6 +20,7 @@ $(document).ready(function () {
         has_opp: true,
         has_inherit: true,
         has_process: true,
+        has_prj: true,
         data_opp: $x.fn.checkUUID4(opp_id) ? [
             {
                 "id": opp_id,
@@ -29,6 +33,13 @@ $(document).ready(function () {
             {
                 "id": process_id,
                 "title": process_title,
+                "selected": true,
+            }
+        ] : [],
+        data_process_stage_app: $x.fn.checkUUID4(process_stage_app_id) ? [
+            {
+                "id": process_stage_app_id,
+                "title": process_stage_app_title,
                 "selected": true,
             }
         ] : [],

@@ -438,6 +438,8 @@ class OpportunityLoadDetail {
                 ele.prepend(html);
                 let ele_first_stage = ele.find('.sub-stage').first();
                 ele_first_stage.attr('data-id', item?.['id']);
+                ele_first_stage.find('.stage-indicator').attr('data-bs-tongle', 'tooltip');
+                ele_first_stage.find('.stage-indicator').attr('title', item?.['indicator']);
                 ele_first_stage.find('.stage-indicator').text(item?.['indicator']);
                 if (item?.['is_closed_lost']) {
                     ele_first_stage.find('.dropdown').remove();
@@ -485,7 +487,7 @@ class OpportunityLoadDetail {
                         ele_stage.addClass('stage-selected')
                         ele_stage.css('background-color', 'rgb(255,94,94)')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '30px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
                     }
                 } else if (ele_stage.hasClass('stage-close')) {
                     let el_close_deal = $('#input-close-deal');
@@ -496,13 +498,13 @@ class OpportunityLoadDetail {
                     ele_stage.css('background-color', '#5a82b7')
                     ele_stage.css('color', 'white')
                     ele_stage.find('.dropdown span').css('color', 'white')
-                    ele_stage.next().css('border-left', '30px solid #5a82b7')
+                    ele_stage.next().css('border-left', '16px solid #5a82b7')
                 } else {
                     ele_stage.addClass('stage-selected')
                     ele_stage.css('background-color', '#5a82b7')
                     ele_stage.css('color', 'white')
                     ele_stage.find('.dropdown span').css('color', 'white')
-                    ele_stage.next().css('border-left', '30px solid #5a82b7')
+                    ele_stage.next().css('border-left', '16px solid #5a82b7')
                 }
             })
         }
@@ -1038,7 +1040,7 @@ class OpportunityActivity {
                         window.checklist.render()
                         $('.create-subtask, .create-checklist').addClass('hidden')
                         if (data?.['task_log_work'].length) OpportunityActivity.tabLogWork(data['task_log_work'])
-                        if (data?.['sub_task_list']) OpportunityActivity.tabSubtask(data['sub_task_list'])
+                        if (data?.['sub_task_list']) OpportunityActivity.tabSubtask(data.id)
                         if (data.attach) {
                             const fileDetail = data.attach[0]?.['files']
                             FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
@@ -1058,7 +1060,7 @@ class OpportunityActivity {
         $table.DataTableDefault({
             rowIdx: true,
             scrollX: '100vh',
-            scrollY: '25vh',
+            scrollY: '50vh',
             scrollCollapse: true,
             ajax: {
                 url: $table.attr('data-url-logs_list'),
@@ -1091,6 +1093,7 @@ class OpportunityActivity {
                             'cashoutflow.returnadvance': transEle.attr('data-trans-return'),
                             'task.opportunitytask': transEle.attr('data-trans-task'),
                             'production.bom': transEle.attr('data-trans-bom'),
+                            'bidding.bidding': transEle.attr('data-trans-bidding'),
                         }
                         let appMapBadge = {
                             'quotation.quotation': "badge-primary badge-outline",
@@ -1100,6 +1103,7 @@ class OpportunityActivity {
                             'cashoutflow.returnadvance': "badge-purple badge-outline",
                             'task.opportunitytask': "badge-secondary badge-outline",
                             'production.bom': "badge-orange badge-outline",
+                            'bidding.bidding': "badge-info badge-outline",
                         }
                         let typeMapActivity = {
                             1: transEle.attr('data-trans-task'),
@@ -1117,19 +1121,19 @@ class OpportunityActivity {
 
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code']) {
-                                return `<span class="badge ${appMapBadge[row?.['app_code']]}">
-                                                    <span>
-                                                        <span class="icon"><span class="feather-icon"><small><i class="${typeMapIcon[row?.['log_type']]}"></i></small></span></span>
-                                                        ${appMapTrans[row?.['app_code']]}
-                                                    </span>
-                                                </span>`;
+                                return `<span class="badge badge-sm ${appMapBadge[row?.['app_code']]}">
+                                            <span>
+                                                <span class="icon"><span class="feather-icon"><small><i class="${typeMapIcon[row?.['log_type']]}"></i></small></span></span>
+                                                ${appMapTrans[row?.['app_code']]}
+                                            </span>
+                                        </span>`;
                             }
                         } else {
                             let status = '';
                             if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
-                                status = `<span class="badge badge-sm badge-soft-danger">${$('#trans-script').attr('data-trans-activity-cancelled')}</i>`
+                                status = `<span class="badge badge-sm badge-icon-xs badge-soft-danger">${$('#trans-script').attr('data-trans-activity-cancelled')}</i>`
                             }
-                            return `<span class="badge badge-outline badge-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
+                            return `<span class="badge badge-sm badge-outline badge-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                         }
                         return `<p></p>`;
                     }
@@ -1144,6 +1148,7 @@ class OpportunityActivity {
                             'cashoutflow.payment': urlFactory.attr('data-url-payment-detail'),
                             'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
                             'production.bom': urlFactory.attr('data-url-bom-detail'),
+                            'bidding.bidding': urlFactory.attr('data-url-bidding-detail'),
                         }
                         let link = '';
                         let title = '';
@@ -1182,7 +1187,7 @@ class OpportunityActivity {
                     render: (data, type, row) => {
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code'] && row?.['doc_data']?.['code']) {
-                                return `<span class="w-80 badge badge-soft-blue">${row?.['doc_data']?.['code']}</span>`;
+                                return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
                             }
                         }
                         return `<p>--</p>`;
@@ -1202,10 +1207,10 @@ class OpportunityActivity {
                                     "soft-success",
                                     "soft-danger",
                                 ]
-                                return `<div class="row"><span class="badge badge-${sttMapBadge[row?.['doc_data']?.['system_status']]}">${sttTxt[row?.['doc_data']?.['system_status']][1]}</span></div>`;
+                                return `<span class="badge badge-${sttMapBadge[row?.['doc_data']?.['system_status']]}">${sttTxt[row?.['doc_data']?.['system_status']][1]}</span>`;
                             }
                             if (row?.['log_type'] === 1 && row?.['doc_data']?.['task_status']) {
-                                return `<div class="row"><span class="w-80 badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span></div>`;
+                                return `<span class="badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span>`;
                             }
                         }
                         return `<p>--</p>`;
@@ -1213,11 +1218,11 @@ class OpportunityActivity {
                 },
                 {
                     targets: 5,
-                    className: 'text-right',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(row?.['date_created'], {
-                            'outputFormat': 'DD-MM-YYYY',
-                        });
+                            'outputFormat': 'DD/MM/YYYY',
+                        })
                     }
                 }
             ],
@@ -1229,6 +1234,63 @@ class OpportunityActivity {
             }
         });
     };
+
+    static loadOpenRelateApp(ele, $tableTimeLine, oppParamStr) {
+        // check permission before redirect
+        let $dataDetail = $('#data-detail');
+        let transEle = $('#trans-factory');
+        if ($(ele).attr('data-label') && $dataDetail.val()) {
+            let detail = JSON.parse($dataDetail.val());
+            let label = $(ele).attr('data-label');
+            let appMapPerm = {
+                'quotation.quotation': 'quotation.quotation.create',
+                'saleorder.saleorder': 'saleorder.saleorder.create',
+            };
+            let tableData = $tableTimeLine.DataTable().rows().data().toArray();
+            $.fn.callAjax2({
+                    'url': $('#script-url').attr('data-url-opp-list'),
+                    'method': 'GET',
+                    'data': {'list_from_app': appMapPerm[label]},
+                    isLoading: true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                            for (let opp of data.opportunity_list) {  // check employee has opp permission on quotation/ sale order
+                                if (opp?.['id'] === detail?.['id']) {
+                                    // check opp already has quotation/ sale order
+                                    for (let tData of tableData) {
+                                        if (label === 'quotation.quotation') {
+                                            if (tData?.['app_code'] === 'saleorder.saleorder' && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
+                                                $.fn.notifyB({description: transEle.attr('data-cancel-quo-so')}, 'failure');
+                                                return false
+                                            }
+                                        }
+                                        if (tData?.['app_code'] === label && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
+                                            let errTxt = transEle.attr('data-cancel-quo');
+                                            if (label === 'saleorder.saleorder') {
+                                                errTxt = transEle.attr('data-cancel-so');
+                                            }
+                                            $.fn.notifyB({description: errTxt}, 'failure');
+                                            return false;
+                                        }
+                                    }
+                                    let url = $(ele).data('url') + `?opp_id=${oppParamStr?.['id']}`;
+                                    window.open(url, '_blank');
+                                    return true;
+                                }
+                            }
+                            $.fn.notifyB({description: transEle.attr('data-forbidden')}, 'failure');
+                            return false;
+                        }
+                    }
+                }
+            )
+        }
+        return true;
+    }
 }
 
 // function in page list
@@ -1278,7 +1340,7 @@ function loadDtbOpportunityList() {
                     targets: 3,
                     className: 'wrap-text w-20',
                     render: (data, type, row) => {
-                        return `<span class="fw-bold">${row.customer.title}</span>`
+                        return `<span class="text-muted">${row.customer.title}</span>`
                     }
                 },
                 {
@@ -1322,7 +1384,7 @@ function loadDtbOpportunityList() {
                         stage_current = row.stage.find(function (obj) {
                             return obj.is_current === true;
                         });
-                        return `<span class="badge badge-soft-secondary badge-outline w-80">${stage_current.indicator}</span>`
+                        return `<span class="badge badge-light badge-outline w-90">${stage_current.indicator}</span>`
                     }
                 },
             ],
@@ -1983,7 +2045,7 @@ function autoLoadStage(
             ele_stage.css('background-color', '#e7e7e7')
             ele_stage.css('color', '#6f6f6f')
             ele_stage.find('.dropdown span').css('color', '#6f6f6f')
-            ele_stage.next().css('border-left', '30px solid #e7e7e7')
+            ele_stage.next().css('border-left', '16px solid #e7e7e7')
         }
         else {
             for (let i = 0; i <= ele_stage.length; i++) {
@@ -1993,21 +2055,21 @@ function autoLoadStage(
                         ele_stage.eq(i).css('background-color', '#5a82b7')
                         ele_stage.eq(i).css('color', 'white')
                         ele_stage.eq(i).find('.dropdown span').css('color', 'white')
-                        ele_stage.eq(i).next().css('border-left', '30px solid #5a82b7')
+                        ele_stage.eq(i).next().css('border-left', '16px solid #5a82b7')
                     }
                     else {
                         ele_stage.eq(i).removeClass('stage-selected');
                         ele_stage.eq(i).css('background-color', '#e7e7e7')
                         ele_stage.eq(i).css('color', '#6f6f6f')
                         ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
-                        ele_stage.eq(i).next().css('border-left', '30px solid #e7e7e7')
+                        ele_stage.eq(i).next().css('border-left', '16px solid #e7e7e7')
                     }
                 } else {
                     ele_stage.eq(i).removeClass('stage-selected');
                     ele_stage.eq(i).css('background-color', '#e7e7e7')
                     ele_stage.eq(i).css('color', '#6f6f6f')
                     ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
-                    ele_stage.eq(i).next().css('border-left', '30px solid #e7e7e7')
+                    ele_stage.eq(i).next().css('border-left', '16px solid #e7e7e7')
                 }
             }
         }
@@ -2018,7 +2080,7 @@ function autoLoadStage(
             ele_close_deal.closest('.sub-stage').css('background-color', '#5a82b7')
             ele_close_deal.closest('.sub-stage').css('color', 'white')
             ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', 'white')
-            ele_close_deal.closest('.sub-stage').next().css('border-left', '30px solid #5a82b7')
+            ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #5a82b7')
             $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
@@ -2031,7 +2093,7 @@ function autoLoadStage(
             ele_close_deal.closest('.sub-stage').css('background-color', '#e7e7e7')
             ele_close_deal.closest('.sub-stage').css('color', '#6f6f6f')
             ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', '#6f6f6f')
-            ele_close_deal.closest('.sub-stage').next().css('border-left', '30px solid #e7e7e7')
+            ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #e7e7e7')
             if (!config_is_input_rate) {
                 input_rate_ele.prop('disabled', true);
                 $('#input-rate').prop('disabled', true);
@@ -2119,16 +2181,5 @@ $('#estimated-gross-profit-percent').on('input', function () {
         $(this).val(0)
         $('#estimated-gross-profit-value').attr('value', 0)
         $.fn.initMaskMoney2()
-    }
-})
-
-$('#general-information-collapse-btn').on('click', function () {
-    if ($(this).attr('class').includes('collapsed')) {
-        $('#group-general-info-opp').attr('class', 'col-12 col-md-12 col-lg-12 mb-3')
-        $('#group-relate-info-opp').attr('class', 'col-12 col-md-12 col-lg-12 mb-3')
-    }
-    else {
-        $('#group-general-info-opp').attr('class', 'col-12 col-md-12 col-lg-3 mb-3')
-        $('#group-relate-info-opp').attr('class', 'col-12 col-md-12 col-lg-9 mb-3')
     }
 })

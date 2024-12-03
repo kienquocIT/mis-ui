@@ -188,7 +188,7 @@ class APLoadTab {
     static LoadLineDetailTable(data=[], option='create') {
         tableLineDetail.DataTable().clear().destroy()
         tableLineDetail.DataTableDefault({
-            styleDom: 'hide-foot',
+            dom: 't',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
@@ -364,7 +364,7 @@ class APLoadTab {
                 }
             )
     
-            let dataParam2 = {'opportunity_mapped_id': opportunity_id}
+            let dataParam2 = {'opportunity_id': opportunity_id}
             let ap_mapped_item = $.fn.callAjax2({
                 url: script_url.attr('data-url-ap-cost-list'),
                 data: dataParam2,
@@ -382,7 +382,7 @@ class APLoadTab {
                 }
             )
     
-            let dataParam3 = {'opportunity_mapped_id': opportunity_id}
+            let dataParam3 = {'opportunity_id': opportunity_id}
             let payment_mapped_item = $.fn.callAjax2({
                 url: script_url.attr('data-url-payment-cost-list'),
                 data: dataParam3,
@@ -1129,11 +1129,11 @@ class APAction {
         table.DataTable().row.add(data).draw();
     }
     static DeleteRow(table, currentRow) {
-    currentRow = parseInt(currentRow) - 1
-    let rowIndex = table.DataTable().row(currentRow).index();
-    let row = table.DataTable().row(rowIndex);
-    row.remove().draw();
-}
+        currentRow = parseInt(currentRow) - 1
+        let rowIndex = table.DataTable().row(currentRow).index();
+        let row = table.DataTable().row(rowIndex);
+        row.remove().draw();
+    }
     static DisabledDetailPage(option) {
         if (option === 'detail') {
             $('.form-control').prop('readonly', true);
@@ -1150,9 +1150,22 @@ class APAction {
 }
 
 class APHandle {
-    static LoadPage() {
+    static LoadPage(opportunity=null) {
         APLoadPage.LoadCreatedDate()
         APLoadPage.LoadCreator(initEmployee)
+        if (opportunity) {
+            new $x.cls.bastionField({
+                has_opp: true,
+                opp_disabled: true,
+                oppFlagData: {
+                    'disabled': true,
+                },
+                not_change_opp: true,
+                has_inherit: true,
+                data_opp: [opportunity],
+                opp_call_trigger_change: true,
+            }).init();
+        }
         APLoadPage.LoadQuotation()
         APLoadPage.LoadSaleOrder()
         APLoadPage.LoadSupplier()
@@ -1167,7 +1180,7 @@ class APHandle {
 
         if (option === 'create') {
             if (ap_for === 'opportunity') {
-                frm.dataForm['opportunity_mapped_id'] = opp_mapped_select.val()
+                frm.dataForm['opportunity_id'] = opp_mapped_select.val()
                 frm.dataForm['sale_code_type'] = 0
             }
             else if (ap_for === 'quotation') {
@@ -1179,7 +1192,7 @@ class APHandle {
                 frm.dataForm['sale_code_type'] = 0
             }
             else {
-                frm.dataForm['opportunity_mapped_id'] = null
+                frm.dataForm['opportunity_id'] = null
                 frm.dataForm['quotation_mapped_id'] = null
                 frm.dataForm['sale_order_mapped_id'] = null
                 frm.dataForm['sale_code_type'] = 2
@@ -1254,17 +1267,57 @@ class APHandle {
                     sale_order_mapped_select.prop('disabled', true)
                     $('#employee_inherit_id').prop('disabled', true)
 
-                    if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
-                        APLoadPage.LoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
+                    const data_inherit = Object.keys(data?.['employee_inherit'] || {}).length > 0 ? [{
+                        "id": data?.['employee_inherit']?.['id'],
+                        "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                        "first_name": data?.['employee_inherit']?.['first_name'] || '',
+                        "last_name": data?.['employee_inherit']?.['last_name'] || '',
+                        "email": data?.['employee_inherit']?.['email'] || '',
+                        "is_active": data?.['employee_inherit']?.['is_active'] || false,
+                        "selected": true,
+                    }] : [];
+                    const data_opp = Object.keys(data?.['opportunity'] || {}).length > 0 ? [{
+                        "id": data?.['opportunity']?.['id'] || '',
+                        "title": data?.['opportunity']?.['title'] || '',
+                        "code": data?.['opportunity']?.['code'] || '',
+                        "selected": true,
+                    }] : [];
+                    const data_process = Object.keys(data?.['process'] || {}).length > 0 ? [
+                        {
+                            ...data?.['process'],
+                            selected: true,
+                        }
+                    ] : [];
+                    const data_process_stage_app = Object.keys(data?.['process_stage_app'] || []).length > 0 ? [{
+                        ...data['process_stage_app'],
+                        'selected': true,
+                    }] : [];
+                    new $x.cls.bastionField({
+                        has_opp: true,
+                        opp_disabled: true,
+                        has_inherit: true,
+                        inherit_disabled: true,
+                        has_process: true,
+                        process_disabled: true,
+                        data_inherit: data_inherit,
+                        data_opp: data_opp,
+                        data_process: data_process,
+                        data_process_stage_app: data_process_stage_app,
+                    }).init();
+
+                    if (Object.keys(data?.['opportunity']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
+                        APLoadPage.LoadQuotation(data?.['opportunity']?.['quotation_mapped'])
                         APLoadTab.LoadPlanQuotation(
                             opp_mapped_select.val(),
-                            data?.['opportunity_mapped']?.['quotation_mapped']?.['id'],
+                            data?.['opportunity']?.['quotation_mapped']?.['id'],
                             data?.['workflow_runtime_id']
                         )
+                        APLoadPage.LoadSaleOrder(data?.['opportunity']?.['sale_order_mapped']);
                         ap_for = 'opportunity'
                     }
                     else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
                         APLoadPage.LoadQuotation(data?.['quotation_mapped'])
+                        APLoadPage.LoadSaleOrder(data?.['quotation_mapped']?.['sale_order_mapped'])
 
                         let dataParam = {'quotation_id': quotation_mapped_select.val()}
                         let ap_mapped_item = $.fn.callAjax2({
@@ -1310,39 +1363,6 @@ class APHandle {
                     else {
                         ap_for = null
                     }
-
-                    const data_inherit = Object.keys(data?.['employee_inherit'] || {}).length > 0 ? [{
-                        "id": data?.['employee_inherit']?.['id'],
-                        "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                        "first_name": data?.['employee_inherit']?.['first_name'] || '',
-                        "last_name": data?.['employee_inherit']?.['last_name'] || '',
-                        "email": data?.['employee_inherit']?.['email'] || '',
-                        "is_active": data?.['employee_inherit']?.['is_active'] || false,
-                        "selected": true,
-                    }] : [];
-                    const data_opp = Object.keys(data?.['opportunity_mapped'] || {}).length > 0 ? [{
-                        "id": data?.['opportunity_mapped']?.['id'] || '',
-                        "title": data?.['opportunity_mapped']?.['title'] || '',
-                        "code": data?.['opportunity_mapped']?.['code'] || '',
-                        "selected": true,
-                    }] : [];
-                    const data_process = Object.keys(data?.['process'] || {}).length > 0 ? [
-                        {
-                            ...data?.['process'],
-                            selected: true,
-                        }
-                    ] : [];
-                    new $x.cls.bastionField({
-                        has_opp: true,
-                        opp_disabled: true,
-                        has_inherit: true,
-                        inherit_disabled: true,
-                        has_process: true,
-                        process_disabled: true,
-                        data_inherit: data_inherit,
-                        data_opp: data_opp,
-                        data_process: data_process,
-                    }).init();
 
                     $('#title').val(data.title);
 

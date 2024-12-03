@@ -385,6 +385,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_FOR_BIDDING_LIST = StringUrl('bidding/account-list')
     DOCUMENT_MASTERDATA_BIDDING_LIST = StringUrl('bidding/document-list')
     BIDDING_DETAIL = StringUrl('bidding/detail')
+    BIDDING_RESULT_CONFIG_LIST = StringUrl('bidding/bidding-result-config')
 
     # address
     COUNTRIES = StringUrl('base/location/countries')
@@ -413,6 +414,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore')
     PRODUCT_LIST_SALE_ORDER = StringUrl('saleorder/product/list/{pk}')
     SALE_ORDER_PRODUCT_WO_LIST = StringUrl('saleorder/sale-order-product-wo/list')
+    SALE_ORDER_RECURRENCE_LIST = StringUrl('saleorder/sale-order-recurrence/list')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
@@ -501,8 +503,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROCESS_CONFIG_DETAIL = StringUrl('process/config/detail/{pk}')
     PROCESS_RUNTIME_LIST = StringUrl('process/runtime/list')
     PROCESS_RUNTIME_LIST_OF_ME = StringUrl('process/runtime/list/me')
+    PROCESS_STAGES_APPS_OF_ME = StringUrl('process/runtime/stages-apps/me')
+    PROCESS_DATA_MATCH = StringUrl('process/runtime/data-match')
     PROCESS_RUNTIME_DETAIL = StringUrl('process/runtime/detail/{pk}')
+    PROCESS_RUNTIME_MEMBERS = StringUrl('process/runtime/detail/{pk}/members')
     PROCESS_RUNTIME_STAGES_APP_COMPLETE = StringUrl('process/runtime/app/{pk}')
+    PROCESS_RUNTIME_MEMBER_DETAIL = StringUrl('process/runtime/member/{pk}')
+    PROCESS_RUNTIME_LOG = StringUrl('process/runtime/detail/{pk}/log')
 
     # Chatbot
     CHATBOT_CHAT = StringUrl('chatbot/chat')
@@ -518,6 +525,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
 
     GOODS_DETAIL_LIST = StringUrl('inventory/goods-detail/list')
+    GOODS_DETAIL_SERIAL_DATA_LIST = StringUrl('inventory/goods-detail-sn-data/list')
     GOODS_DETAIL_DETAIL = StringUrl('inventory/goods-detail/{pk}')
     CREATE_UPDATE_GOODS_DETAIL_DATA = StringUrl('inventory/create-update-goods-detail-data/list')
     GOODS_DETAIL_IMPORT_DB = StringUrl('inventory/goods-detail-import-db')
@@ -654,6 +662,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
     AR_INVOICE_LIST = StringUrl('ar-invoice/list')
     AR_INVOICE_DETAIL = StringUrl('ar-invoice/detail/{pk}')
+    AR_INVOICE_RECURRENCE_LIST = StringUrl('ar-invoice/recurrence/list')
 
     # AP Invoice
     GOOD_RECEIPT_LIST_AP_INVOICE = StringUrl('ap-invoice/get-goods-receipts')
@@ -752,3 +761,16 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WORK_ORDER_DETAIL = StringUrl('production/work-order')
     WORK_ORDER_DD_LIST = StringUrl('production/work-order-dd/list')
     WORK_ORDER_MANUAL_DONE_LIST = StringUrl('production/work-order-manual-done/list')
+
+    # Recurrence
+    RECURRENCE_LIST = StringUrl('recurrence/list')
+    RECURRENCE_DETAIL = StringUrl('recurrence')
+    RECURRENCE_ACTION_LIST = StringUrl('recurrence/action/list')
+    RECURRENCE_ACTION_DETAIL = StringUrl('recurrence/action')
+
+    # HRM
+    HRM_EMPLOYEE_NOT_MAP_HRM = StringUrl('hrm/employee-not-map/list')
+    HRM_EMPLOYEE_INFO_LIST = StringUrl('hrm/employee-info/list')
+    HRM_EMPLOYEE_INFO_DETAIL = StringUrl('hrm/employee-info/detail/{pk}')
+    HRM_EMPLOYEE_CONTRACT_LIST = StringUrl('hrm/employee-info/contract/list')
+    HRM_EMPLOYEE_CONTRACT_DETAIL = StringUrl('hrm/employee-info/contract/detail/{pk}')

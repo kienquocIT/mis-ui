@@ -27,7 +27,7 @@ class ContractLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
                 let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
                 return $(`<span>${res1} ${res2}</span>`);
             }
@@ -40,6 +40,14 @@ class ContractLoadDataHandle {
         $('.accordion-item').css({
             'margin-bottom': 0
         });
+    };
+
+    static loadInitInherit() {
+        let dataStr = $('#employee_current').text();
+        if (dataStr) {
+            ContractLoadDataHandle.loadInitS2(ContractLoadDataHandle.$boxEmp, [JSON.parse(dataStr)]);
+        }
+        return true;
     };
 
     static loadDataByOpp() {
@@ -254,12 +262,44 @@ class ContractLoadDataHandle {
     // DETAIL
     static loadDetail(data) {
         $('#contract-title').val(data?.['title']);
-        if (data?.['opportunity_data']?.['id']) {
-            ContractLoadDataHandle.loadInitS2(ContractLoadDataHandle.$boxOpp, [data?.['opportunity_data']], {}, null, false, {'res1': 'code', 'res2': 'title'});
-        }
-        if (data?.['employee_inherit_data']?.['id']) {
-            ContractLoadDataHandle.loadInitS2(ContractLoadDataHandle.$boxEmp, [data?.['employee_inherit_data']], {}, null, false, {'res1': 'code', 'res2': 'title'});
-        }
+
+        const processData = data?.['process'] || {};
+        const processStageAppData = data?.['process_stage_app'] || {};
+        const oppData = data?.['opportunity'] || {};
+        const inheritData = data?.['employee_inherit'] || {};
+        new $x.cls.bastionField({
+            has_opp: true,
+            has_inherit: true,
+            has_process: true,
+            data_process: processData && Object.keys(processData).length > 0 ? [
+                {
+                    ...processData,
+                    'selected': true,
+                }
+            ] : [],
+            data_process_stage_app: processStageAppData && Object.keys(processStageAppData).length > 0 ? [
+                {
+                    ...processStageAppData,
+                    'selected': true,
+                }
+            ] : [],
+            processStageAppFlagData: {
+                'disable': true,
+            },
+            data_opp: oppData && Object.keys(oppData).length > 0 ? [
+                {
+                    ...oppData,
+                    'selected': true,
+                }
+            ] : [],
+            data_inherit: inheritData && Object.keys(inheritData).length > 0 ? [
+                {
+                    ...inheritData,
+                    'selected': true,
+                }
+            ] : [],
+        }).init();
+
         ContractLoadDataHandle.setupDetailDocAttach(data);
         ContractDataTableHandle.$tableDocument.DataTable().rows.add(data?.['document_data']).draw();
         ContractDataTableHandle.$tableDocument.DataTable().rows().every(function () {

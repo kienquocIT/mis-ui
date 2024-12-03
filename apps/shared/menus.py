@@ -347,7 +347,7 @@ class MenusCRM:
     )
     RECURRENCE = MenuCommon(
         name='Recurrence transaction', code='menu_recurrence', view_name='',
-        icon='<i class="fas fa-recycle"></i>',
+        icon='<i class="fas fa-sync-alt"></i>',
         child=[
             MenuCommon(
                 name='Recurring order', code='menu_recurring_order', view_name='RecurrenceList',

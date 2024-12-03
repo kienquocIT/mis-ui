@@ -417,35 +417,14 @@ class LogController {
                     if (itemLog['is_system'] === true) {
                         childLogHTML += `<span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span>`;
                         if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                            childLogHTML += `<span class="badge badge-primary badge-outline mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
+                            childLogHTML += `<span class="badge badge-light badge-outline mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
                         }
                     } else {
                         if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                            childLogHTML += `<span class="badge badge-primary badge-outline mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
+                            childLogHTML += `<span class="badge badge-light badge-outline mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
                         }
                     }
-                    let msgMapIcon = "";
-                    let arrayNew = ["new"];
-                    let arrayDone = ["finish", "approved"];
-                    let arrayCancel = ["canceled", "rejected"];
-                    let arrayUpdate = ["update", "zone"];
-                    let isNew = arrayNew.some(item => itemLog?.['msg'].toLowerCase().includes(item));
-                    let isDone = arrayDone.some(item => itemLog?.['msg'].toLowerCase().includes(item));
-                    let isCancel = arrayCancel.some(item => itemLog?.['msg'].toLowerCase().includes(item));
-                    let isUpdate = arrayUpdate.some(item => itemLog?.['msg'].toLowerCase().includes(item));
-                    if (isNew === true) {
-                        msgMapIcon = '<i class="fas fa-tasks ml-2 mt-1"></i>';
-                    }
-                    if (isDone === true) {
-                        msgMapIcon = '<i class="fas fa-check text-green ml-2 mt-1"></i>';
-                    }
-                    if (isCancel === true) {
-                        msgMapIcon = '<i class="fas fa-times text-red ml-2 mt-1"></i>';
-                    }
-                    if (isUpdate === true) {
-                        msgMapIcon = '<i class="fas fa-user-edit ml-2 mt-1"></i>';
-                    }
-                    childLogHTML += ` <span class="fs-7">${itemLog['msg']}</span>${msgMapIcon}</div>`;
+                    childLogHTML += ` <span class="fs-7">${itemLog['msg']}</span></div>`;
                     logHTML.push(childLogHTML);
                 })
                 let logGroupHTML = `<div class="card-body mt-4"><div class="card-text">${logHTML.join("")}</div></div>`
@@ -2527,7 +2506,7 @@ class WFRTControl {
                                 <div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="radio" name="next-node-collab" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
                                     <label class="form-check-label mr-2" for="collab-${collab?.['id'].replace(/-/g, "")}">${collab?.['full_name']}</label>
-                                    <span class="badge badge-success badge-outline badge-sm">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
+                                    <span class="badge badge-light badge-outline badge-sm">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                                 </div>
                             </div>`;
         }

@@ -570,6 +570,12 @@ class BastionFieldControl {
         clsThis.empInheritEle.destroySelect2();
         clsThis.empInheritEle.empty().initSelect2(clsThis.configInheritSelect({
             'data-params': dataParams,
+            data: resolveData?.['opp']?.['employee_inherit'] ? [
+                {
+                    ...resolveData['opp']['employee_inherit'],
+                    'selected': true,
+                }
+            ] : [],
         }));
     }
 

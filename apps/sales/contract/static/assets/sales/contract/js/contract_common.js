@@ -42,6 +42,14 @@ class ContractLoadDataHandle {
         });
     };
 
+    static loadInitInherit() {
+        let dataStr = $('#employee_current').text();
+        if (dataStr) {
+            ContractLoadDataHandle.loadInitS2(ContractLoadDataHandle.$boxEmp, [JSON.parse(dataStr)]);
+        }
+        return true;
+    };
+
     static loadDataByOpp() {
         if (ContractLoadDataHandle.$boxOpp.val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(ContractLoadDataHandle.$boxOpp, ContractLoadDataHandle.$boxOpp.val());
@@ -255,22 +263,41 @@ class ContractLoadDataHandle {
     static loadDetail(data) {
         $('#contract-title').val(data?.['title']);
 
+        const processData = data?.['process'] || {};
+        const processStageAppData = data?.['process_stage_app'] || {};
+        const oppData = data?.['opportunity'] || {};
+        const inheritData = data?.['employee_inherit'] || {};
         new $x.cls.bastionField({
             has_opp: true,
             has_inherit: true,
             has_process: true,
-            data_opp: [{
-                ...data?.['opportunity_data'],
-                'selected': true,
-            }],
-            data_process: [{
-                ...data?.['process'],
-                'selected': true,
-            }],
-            data_inherit: [{
-                ...data?.['employee_inherit_data'],
-                'selected': true,
-            }],
+            data_process: processData && Object.keys(processData).length > 0 ? [
+                {
+                    ...processData,
+                    'selected': true,
+                }
+            ] : [],
+            data_process_stage_app: processStageAppData && Object.keys(processStageAppData).length > 0 ? [
+                {
+                    ...processStageAppData,
+                    'selected': true,
+                }
+            ] : [],
+            processStageAppFlagData: {
+                'disable': true,
+            },
+            data_opp: oppData && Object.keys(oppData).length > 0 ? [
+                {
+                    ...oppData,
+                    'selected': true,
+                }
+            ] : [],
+            data_inherit: inheritData && Object.keys(inheritData).length > 0 ? [
+                {
+                    ...inheritData,
+                    'selected': true,
+                }
+            ] : [],
         }).init();
 
         ContractLoadDataHandle.setupDetailDocAttach(data);

@@ -249,23 +249,41 @@ class BiddingLoadDataHandle {
 
     //DETAIL
     static loadDetail(data) {
-        new $x.cls.bastionField({
+         new $x.cls.bastionField({
             has_opp: true,
             has_inherit: true,
-            data_inherit: [{
-                "id": data?.['employee_inherit']?.['id'],
-                "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                "code": data?.['employee_inherit']?.['code'] || '',
-                "selected": true,
-            }],
-            data_opp: [{
-                "id": data?.['opportunity']?.['id'] || '',
-                "title": data?.['opportunity']?.['title'] || '',
-                "code": data?.['opportunity']?.['code'] || '',
-                "selected": true,
-            }],
-            opp_call_trigger_change: true,
-            inherit_call_trigger_change: true
+            has_process: true,
+            has_prj: true,
+            data_opp: data?.['opportunity']?.['id'] ? [
+                {
+                    "id": data?.['opportunity']?.['id'],
+                    "title": data?.['opportunity']?.['title'] || '',
+                    "code": data?.['opportunity']?.['code'] || '',
+                    "selected": true,
+                }
+            ] : [],
+            data_process: data?.['process']?.['id'] ? [
+                {
+                    "id": data?.['process']?.['id'],
+                    "title": data?.['process']?.['title'] || '',
+                    "selected": true,
+                }
+            ] : [],
+            data_process_stage_app: data?.['process_stage_app']?.['id'] ? [
+                {
+                    "id": data?.['process_stage_app']?.['id'],
+                    "title": data?.['process_stage_app']?.['title'] || '',
+                    "selected": true,
+                }
+            ] : [],
+            data_inherit: data?.['employee_inherit']?.['id'] ? [
+                {
+                    "id": data?.['employee_inherit']?.['id'],
+                    "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                    "code": data?.['employee_inherit']?.['code'] || '',
+                    "selected": true,
+                }
+            ] : [],
         }).init();
         $('#bid-name').val(data?.['title']);
         BiddingLoadDataHandle.$customerEle.val(data?.['customer']?.['title'])

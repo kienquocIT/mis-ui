@@ -273,6 +273,8 @@ $(document).ready(function () {
                 'bid_date',
                 'employee_inherit_id',
                 'tinymce_content',
+                'process',
+                'process_stage_app'
             ]
             if (_form.dataForm) {
                 BiddingCommonHandle.filterFieldList(submitFields, _form.dataForm);

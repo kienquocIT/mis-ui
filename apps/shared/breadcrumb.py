@@ -1,4 +1,5 @@
 """system module"""
+import sys
 from operator import itemgetter
 from django.urls import reverse, NoReverseMatch
 from django.utils.translation import gettext_lazy as _
@@ -8,8 +9,10 @@ from unidecode import unidecode
 class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
     """prepare url breadcrumbs"""
 
-    def __init__(self, title: object, url: object = None,
-            arg_pattern: object = None, kw_pattern: object = None, is_append_code: object = False) -> object:
+    def __init__(
+            self, title: object, url: object = None,
+            arg_pattern: object = None, kw_pattern: object = None, is_append_code: object = False
+    ):
         self.title = title
         self.url = url if url else ''
         self.arg_pattern = arg_pattern if arg_pattern and isinstance(arg_pattern, list) else []
@@ -199,10 +202,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_CONFIG_PAGE = BreadcrumbChildren(_('Task config'), 'OpportunityTaskConfig')
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
 
-    #Document
+    # Document
     DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Document'), 'DocumentTypeMasterDataList')
 
-    #Bidding Result config
+    # Bidding Result config
     BIDDING_RESULT_CONFIG_PAGE = BreadcrumbChildren(_('Bidding'), 'BiddingResultConfigList')
 
     # Sale Activities
@@ -455,31 +458,33 @@ class BreadcrumbView:
             True : Nothing happened
             or NoReverseMatch : raise Error and interrupt runtime process
         """
-        view_errs = {}
-        for att in dir(BreadcrumbItem()):
-            if not att.startswith('__'):
-                child = getattr(BreadcrumbItem, att)
-                try:
-                    if child.url:
-                        if child.kw_pattern and child.arg_pattern:
-                            reverse(child.url, args=child.arg_pattern, kwargs=child.kw_pattern)
-                        elif child.arg_pattern:
-                            reverse(child.url, args=child.arg_pattern)
-                        elif child.kw_pattern:
-                            reverse(child.url, kwargs=child.kw_pattern)
-                        else:
-                            reverse(child.url)
+        if hasattr(sys, 'argv') and isinstance(sys.argv, list) and len(sys.argv) > 0:
+            if sys.argv[0].endswith('mange.py') or sys.argv[0].endswith('wsgi.py'):  # allow check when runserver
+                view_errs = {}
+                for att in dir(BreadcrumbItem()):
+                    if not att.startswith('__'):
+                        child = getattr(BreadcrumbItem, att)
+                        try:
+                            if child.url:
+                                if child.kw_pattern and child.arg_pattern:
+                                    reverse(child.url, args=child.arg_pattern, kwargs=child.kw_pattern)
+                                elif child.arg_pattern:
+                                    reverse(child.url, args=child.arg_pattern)
+                                elif child.kw_pattern:
+                                    reverse(child.url, kwargs=child.kw_pattern)
+                                else:
+                                    reverse(child.url)
 
-                except NoReverseMatch as err:
-                    view_errs[att] = str(err)
+                        except NoReverseMatch as err:
+                            view_errs[att] = str(err)
 
-        if view_errs:
-            msg = 'Some view was used in Breadcrumb does not exist. It is: \n'
-            msg += '************************************************************\n'
-            for k, value in view_errs.items():
-                msg += f'* {k}: {value}\n'
-            msg += '************************************************************\n'
-            raise NoReverseMatch(msg)
+                if view_errs:
+                    msg = 'Some view was used in Breadcrumb does not exist. It is: \n'
+                    msg += '************************************************************\n'
+                    for k, value in view_errs.items():
+                        msg += f'* {k}: {value}\n'
+                    msg += '************************************************************\n'
+                    raise NoReverseMatch(msg)
         return True
 
     @classmethod
@@ -595,8 +600,8 @@ class BreadcrumbView:
     ]
 
     MEETING_CONFIG_PAGE = [
-        BreadcrumbItem.MEETING_CONFIG_PAGE
-    ],
+                              BreadcrumbItem.MEETING_CONFIG_PAGE
+                          ],
 
     CONTACT_MASTER_DATA_LIST_PAGE = [
         BreadcrumbItem.CONTACT_MASTER_DATA_LIST_PAGE
@@ -756,10 +761,10 @@ class BreadcrumbView:
     OPPORTUNITY_TASK_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_CONFIG_PAGE]
     OPPORTUNITY_TASK_LIST_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_LIST_PAGE]
 
-    #Document
+    # Document
     DOCUMENT_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.DOCUMENT_MASTER_DATA_LIST_PAGE]
 
-    #Bidding Result config
+    # Bidding Result config
     BIDDING_RESULT_CONFIG_PAGE = [BreadcrumbItem.BIDDING_RESULT_CONFIG_PAGE]
 
     # Sale Activities

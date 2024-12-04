@@ -502,7 +502,7 @@ class SelectDDControl {
         //  1. attr('disabled')
         //  2. opts
         //  3. false
-        return this.ele.attr('disabled') ? true : !!this.opts?.disabled;
+        return this.ele.prop('disabled') || this.ele.attr('readonly') ? true : !!this.opts?.disabled;
     }
 
     get dropdownParent() {

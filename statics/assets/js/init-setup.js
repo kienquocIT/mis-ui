@@ -8546,8 +8546,6 @@ let $x = {
         closeCard: DocumentControl.closeCard,
         openCard: DocumentControl.openCard,
 
-        getFeatureCode: BastionFieldControl.getFeatureCode,
-
         parseDateTime: UtilControl.parseDateTime,
         parseDate: UtilControl.parseDate,
         parseJson: UtilControl.parseJson,

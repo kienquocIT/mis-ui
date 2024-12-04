@@ -449,12 +449,7 @@ $(document).ready(function () {
 
                 // event on click to create relate apps from opportunity (for cancel quotation - sale order)
                 $('#dropdown-menu-relate-app').on('click', '.relate-app', function () {
-                    OpportunityActivity.loadOpenRelateApp(this, table_timeline, {
-                        'id': opportunity_detail_data.id,
-                        'code': opportunity_detail_data.code,
-                        'title': opportunity_detail_data.title,
-                        'sale_person': opportunity_detail_data.sale_person,
-                    });
+                    OpportunityActivity.loadOpenRelateApp(this, table_timeline);
                 })
 
                 // tab add member for sale

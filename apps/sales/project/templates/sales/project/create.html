@@ -58,6 +58,9 @@
                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                 </div>
             </div>
+            <div class="col-xs-12 col-md-6 form-group">
+                {% include 'extends/the-documents/bastion.html' with priority_app='process-inherit' has_opp=False has_process=True is_open=True %}
+            </div>
             <input type="hidden" name="system_status" id="SystemStatusInput" class="form-control" value="1">
         </div>
     </form>
@@ -72,4 +75,49 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/project/js/project-common.js' %}"></script>
     <script src="{% static 'assets/project/js/create.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+        // run init process
+            const {
+                opp_id,
+                opp_title,
+                opp_code,
+                process_id,
+                process_title,
+                process_stage_app_id,
+                process_stage_app_title,
+                inherit_id,
+                inherit_title,
+            } = $x.fn.getManyUrlParameters([
+                'opp_id', 'opp_title', 'opp_code',
+                'process_id', 'process_title',
+                'process_stage_app_id', 'process_stage_app_title',
+                'inherit_id', 'inherit_title',
+            ])
+
+            new $x.cls.bastionField({
+                has_opp: false,
+                has_inherit: false,
+                has_process: true,
+                has_prj: false,
+
+                // Thêm dành cho việc load dữ liệu chọn sẵn
+                // Dữ liệu có thể lấy từ paramter hoặc doc detail. (Ví dụ là lấy từ paramter)
+                data_process: $x.fn.checkUUID4(process_id) ? [
+                    {
+                        "id": process_id,
+                        "title": process_title,
+                        "selected": true,
+                    }
+                ] : [],
+                data_process_stage_app: $x.fn.checkUUID4(process_stage_app_id) ? [
+                    {
+                        "id": process_stage_app_id,
+                        "title": process_stage_app_title,
+                        "selected": true,
+                    }
+                ] : [],
+            }).init();
+        });
+    </script>
 {% endblock %}

@@ -121,8 +121,8 @@ class QuotationLoadDataHandle {
 
     static loadInitOpportunity() {
         let form = $('#frm_quotation_create');
-        let urlParams = $x.fn.getManyUrlParameters(['opp_id']);
-        if (urlParams?.['opp_id']) {
+        let urlParams = $x.fn.getManyUrlParameters(['opp_id', 'opp_title', 'opp_code']);
+        if (urlParams?.['opp_id'] && urlParams?.['opp_title'] && urlParams?.['opp_code']) {
             if (form.attr('data-method').toLowerCase() === 'post') {
                 let list_from_app = 'quotation.quotation.create';
                 if (form[0].classList.contains('sale-order')) {
@@ -140,8 +140,8 @@ class QuotationLoadDataHandle {
                             if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                                 if (data.opportunity_list.length > 0) {
                                     if (!QuotationLoadDataHandle.opportunitySelectEle.prop('disabled')) {
-                                        QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.opportunitySelectEle, [data.opportunity_list[0]]);
-                                        QuotationLoadDataHandle.loadDataByOpportunity();
+                                        QuotationLoadDataHandle.opportunitySelectEle.trigger('change');
+                                        QuotationLoadDataHandle.loadDataByOpportunity(data.opportunity_list[0]);
                                     }
                                     return true;
                                 }
@@ -163,29 +163,26 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadDataByOpportunity() {
+    static loadDataByOpportunity(oppData) {
         let tableProduct = $('#datable-quotation-create-product');
         if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) {
             QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
             QuotationLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
             QuotationLoadDataHandle.contactSelectEle[0].setAttribute('readonly', 'true');
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(QuotationLoadDataHandle.opportunitySelectEle).val());
-            if (dataSelected) {
-                // load sale person
-                QuotationLoadDataHandle.salePersonSelectEle.empty();
-                QuotationLoadDataHandle.salePersonSelectEle.initSelect2({
-                    data: dataSelected?.['sale_person'],
-                    'allowClear': true,
+            // load sale person
+            QuotationLoadDataHandle.salePersonSelectEle.empty();
+            QuotationLoadDataHandle.salePersonSelectEle.initSelect2({
+                data: oppData?.['sale_person'],
+                'allowClear': true,
+            });
+            // load customer
+            if (QuotationLoadDataHandle.customerInitEle.val()) {
+                let initCustomer = JSON.parse(QuotationLoadDataHandle.customerInitEle.val());
+                QuotationLoadDataHandle.customerSelectEle.empty();
+                QuotationLoadDataHandle.customerSelectEle.initSelect2({
+                    data: initCustomer?.[oppData?.['customer']?.['id']],
                 });
-                // load customer
-                if (QuotationLoadDataHandle.customerInitEle.val()) {
-                    let initCustomer = JSON.parse(QuotationLoadDataHandle.customerInitEle.val());
-                    QuotationLoadDataHandle.customerSelectEle.empty();
-                    QuotationLoadDataHandle.customerSelectEle.initSelect2({
-                        data: initCustomer?.[dataSelected?.['customer']?.['id']],
-                    });
-                    QuotationLoadDataHandle.customerSelectEle.trigger('change');
-                }
+                QuotationLoadDataHandle.customerSelectEle.trigger('change');
             }
         } else {
             QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');

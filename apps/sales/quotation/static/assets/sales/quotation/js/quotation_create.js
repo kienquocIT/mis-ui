@@ -62,9 +62,11 @@ $(function () {
         }
         WFRTControl.setWFInitialData(appCode);
 
-
         QuotationLoadDataHandle.opportunitySelectEle.on('change', function () {
-            QuotationLoadDataHandle.loadDataByOpportunity();
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, QuotationLoadDataHandle.opportunitySelectEle.val());
+            if (dataSelected) {
+                QuotationLoadDataHandle.loadDataByOpportunity(dataSelected);
+            }
         });
 
         QuotationLoadDataHandle.customerSelectEle.on('change', function () {

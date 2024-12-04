@@ -70,23 +70,23 @@ class BastionFieldControl {
     }
 
     get oppEle() {
-        return this.globalOpts?.['oppEle'] || this.mainDiv.find('[name=opportunity_id]');
+        return this.globalOpts?.['oppEle'] || this.mainDiv.find(':input[name=opportunity_id]');
     }
 
     get prjEle() {
-        return this.globalOpts?.['prjEle'] || this.mainDiv.find('[name=project_id]');
+        return this.globalOpts?.['prjEle'] || this.mainDiv.find(':input[name=project_id]');
     }
 
     get empInheritEle() {
-        return this.globalOpts?.['empInheritEle'] || this.mainDiv.find('[name=employee_inherit_id]');
+        return this.globalOpts?.['empInheritEle'] || this.mainDiv.find(':input[name=employee_inherit_id]');
     }
 
     get processEle() {
-        return this.globalOpts?.['processEle'] || this.mainDiv.find('[name=process]');
+        return this.globalOpts?.['processEle'] || this.mainDiv.find(':input[name=process]');
     }
 
     get processStageAppEle$() {
-        return this.globalOpts?.['processStageAppEle$'] || this.mainDiv.find('[name="process_stage_app"]');
+        return this.globalOpts?.['processStageAppEle$'] || this.mainDiv.find(':input[name="process_stage_app"]');
     }
 
     get list_from_app() {

@@ -47,9 +47,9 @@ new $x.cls.bastionField({
     mainDiv: group$,  // [jQuery] Element bao bọc tất cả các thẻ select
     oppEle: group$.find(':input[name=opportunity_id]'),  // Tìm trong mainDiv thẻ `:input` khớp với Opp 
     prjEle: group$.find(':input[name=project_id]'),  // Tìm trong mainDiv thẻ `:input` khớp với Project 
-    empInheritEle: group$.find('[name=employee_inherit_id]'),   // Tìm trong mainDiv thẻ `:input` khớp với Inheritor
-    processEle: group$.find('[name=processX]'),  // Tìm trong mainDiv thẻ `:input` khớp với Process
-    processStageAppEle$: group$.find('[name=processStageAppX]'),   // Tìm trong mainDiv thẻ `:input` khớp với Process Stage App
+    empInheritEle: group$.find(':input[name=employee_inherit_id]'),   // Tìm trong mainDiv thẻ `:input` khớp với Inheritor
+    processEle: group$.find(':input[name=processX]'),  // Tìm trong mainDiv thẻ `:input` khớp với Process
+    processStageAppEle$: group$.find(':input[name=processStageAppX]'),   // Tìm trong mainDiv thẻ `:input` khớp với Process Stage App
     
     // Thêm dành cho việc load dữ liệu chọn sẵn 
     // Dữ liệu có thể lấy từ paramter hoặc doc detail. (Ví dụ là lấy từ paramter)

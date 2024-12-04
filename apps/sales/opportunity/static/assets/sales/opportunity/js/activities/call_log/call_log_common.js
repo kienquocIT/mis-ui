@@ -1,10 +1,10 @@
-let employee_current_id = $('#employee_current_id').val();
+let call_log_employee_current_id = $('#employee_current_id').val();
 let call_log_Opp_slb = $('#sale-code-select-box');
 let date_input = $('#date-input');
 let customer_slb = $('#account-select-box');
 let contact_slb = $('#contact-select-box');
 let CALL_LOG_LIST = [];
-let trans_script = $('#trans-script')
+let call_log_trans_script = $('#trans-script')
 
 function loadOpportunityCallLogList() {
     if (!$.fn.DataTable.isDataTable('#table_opportunity_call_log_list')) {
@@ -46,7 +46,7 @@ function loadOpportunityCallLogList() {
                     render: (data, type, row) => {
                         let status = ''
                         if (row?.['is_cancelled']) {
-                            status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
+                            status = `<span class="badge badge-sm badge-soft-danger">${call_log_trans_script.attr('data-trans-activity-cancelled')}</i>`
                         }
                         return `<a class="text-primary link-primary underline_hover detail-call-log-button" href="" data-bs-toggle="modal" data-id="${row?.['id']}" data-bs-target="#detail-call-log">
                                     <span class="mr-1">${row?.['subject']}</span>${status}
@@ -80,13 +80,13 @@ function loadSaleCodeList(data) {
         for (let i = 0; i < resp.data[keyResp].length; i++) {
             let added = false;
             let item = resp.data[keyResp][i];
-            if (item?.['sale_person']['id'] === employee_current_id) {
+            if (item?.['sale_person']['id'] === call_log_employee_current_id) {
                 result.push(item);
                 added = true;
             }
             if (item.opportunity_sale_team_datas.length > 0 && added === false) {
                 $.each(item.opportunity_sale_team_datas, function (index, member_obj) {
-                    if (member_obj.member.id === employee_current_id) {
+                    if (member_obj.member.id === call_log_employee_current_id) {
                         result.push(item);
                     }
                 });
@@ -217,7 +217,7 @@ $(document).on('click', '#table_opportunity_call_log_list .detail-call-log-butto
     $('#detail-result-text-area').val(call_log_obj.input_result);
     $('#cancel-activity').prop('hidden', call_log_obj.is_cancelled)
     if (call_log_obj.is_cancelled) {
-        $('#is-cancelled').text(trans_script.attr('data-trans-activity-cancelled'))
+        $('#is-cancelled').text(call_log_trans_script.attr('data-trans-activity-cancelled'))
     } else {
         $('#is-cancelled').text('')
     }
@@ -228,8 +228,8 @@ $(document).on('click', '#cancel-activity', function () {
     Swal.fire({
         html:
             `<div class="mb-3"><i class="bi bi-x-square text-danger"></i></div>
-             <h5 class="text-danger">${trans_script.attr('data-trans-alert-cancel')}</h5>
-             <p>${trans_script.attr('data-trans-alert-warn')}</p>`,
+             <h5 class="text-danger">${call_log_trans_script.attr('data-trans-alert-cancel')}</h5>
+             <p>${call_log_trans_script.attr('data-trans-alert-warn')}</p>`,
         customClass: {
             confirmButton: 'btn btn-outline-secondary text-danger',
             cancelButton: 'btn btn-outline-secondary text-gray',
@@ -261,12 +261,12 @@ $(document).on('click', '#cancel-activity', function () {
 })
 
 class CallLogHandle {
-    load() {
+    static load() {
         loadOpportunityCallLogList();
         loadSaleCodeList()
     }
 
-    combinesData(frmEle) {
+    static combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['subject'] = $('#subject-input').val();
@@ -289,41 +289,3 @@ class CallLogHandle {
         };
     }
 }
-
-$(document).ready(function () {
-    new CallLogHandle().load();
-
-    SetupFormSubmit.validate(
-        $('#form-create-new-call-log'),
-        {
-            submitHandler: function (form, event) {
-                event.preventDefault();
-                let combinesData = new CallLogHandle().combinesData($(form));
-                if (combinesData) {
-                    WindowControl.showLoading();
-                    $.fn.callAjax2(combinesData)
-                        .then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $.fn.notifyB({description: "Successfully"}, 'success')
-                                    setTimeout(() => {
-                                        window.location.href = $(form).attr('data-url-redirect');
-                                    }, 1000);
-                                }
-                            },
-                            (errs) => {
-                                setTimeout(
-                                    () => {
-                                        WindowControl.hideLoading();
-                                    },
-                                    1000
-                                )
-                                $.fn.notifyB({description: errs.data.errors}, 'failure');
-                            }
-                        )
-                }
-            },
-        }
-    )
-});

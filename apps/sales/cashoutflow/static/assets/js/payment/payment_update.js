@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    PaymentHandle.LoadPage()
+    PaymentHandle.LoadPage(null, 'update')
     PaymentHandle.LoadDetailPayment('update');
     WFRTControl.setWFInitialData('payment', 'PUT')
 

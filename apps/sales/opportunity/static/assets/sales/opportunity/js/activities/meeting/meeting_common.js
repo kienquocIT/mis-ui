@@ -1,11 +1,11 @@
-let employee_current_id = $('#employee_current_id').val();
+let meeting_employee_current_id = $('#employee_current_id').val();
 let meeting_Opp_slb = $('#meeting-sale-code-select-box');
 let meeting_customer_member_slb = $('#meeting-customer-member-select-box');
 let meeting_address_slb = $('#meeting-address-select-box');
 let meeting_employee_attended_slb = $('#meeting-employee-attended-select-box');
 let meeting_date_input = $('#meeting-date-input');
 let MEETING_LIST = []
-let trans_script = $('#trans-script')
+let meeting_trans_script = $('#trans-script')
 
 function loadOpportunityMeetingList() {
     if (!$.fn.DataTable.isDataTable('#table_opportunity_meeting_list')) {
@@ -39,7 +39,7 @@ function loadOpportunityMeetingList() {
                     render: (data, type, row) => {
                         let status = ''
                         if (row?.['is_cancelled']) {
-                            status = `<span class="badge badge-sm badge-soft-danger">${trans_script.attr('data-trans-activity-cancelled')}</i>`
+                            status = `<span class="badge badge-sm badge-soft-danger">${meeting_trans_script.attr('data-trans-activity-cancelled')}</i>`
                         }
                         return `<a class="text-primary link-primary underline_hover detail-meeting-button" href="" data-bs-toggle="modal" data-id="${row?.['id']}" data-bs-target="#detail-meeting">
                                     <span class="mr-1">${row?.['subject']}</span>${status}
@@ -94,13 +94,13 @@ function loadMeetingSaleCodeList(data) {
             for (let i = 0; i < resp.data[keyResp].length; i++) {
                 let added = false;
                 let item = resp.data[keyResp][i];
-                if (item?.['sale_person']['id'] === employee_current_id) {
+                if (item?.['sale_person']['id'] === meeting_employee_current_id) {
                     result.push(item);
                     added = true;
                 }
                 if (item.opportunity_sale_team_datas.length > 0 && added === false) {
                     $.each(item.opportunity_sale_team_datas, function (index, member_obj) {
-                        if (member_obj.member.id === employee_current_id) {
+                        if (member_obj.member.id === meeting_employee_current_id) {
                             result.push(item);
                         }
                     });
@@ -272,7 +272,7 @@ $(document).on('click', '#table_opportunity_meeting_list .detail-meeting-button'
     $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
     $('#cancel-activity').prop('hidden', meeting_obj.is_cancelled)
     if (meeting_obj.is_cancelled) {
-        $('#is-cancelled').text(trans_script.attr('data-trans-activity-cancelled'))
+        $('#is-cancelled').text(meeting_trans_script.attr('data-trans-activity-cancelled'))
     }
     else {
         $('#is-cancelled').text('')
@@ -294,8 +294,8 @@ $(document).on('click', '#cancel-activity', function () {
     Swal.fire({
 		html:
 		`<div class="mb-3"><i class="bi bi-x-square text-danger"></i></div>
-             <h5 class="text-danger">${trans_script.attr('data-trans-alert-cancel')}</h5>
-             <p>${trans_script.attr('data-trans-alert-warn')}</p>`,
+             <h5 class="text-danger">${meeting_trans_script.attr('data-trans-alert-cancel')}</h5>
+             <p>${meeting_trans_script.attr('data-trans-alert-warn')}</p>`,
 		customClass: {
 			confirmButton: 'btn btn-outline-secondary text-danger',
 			cancelButton: 'btn btn-outline-secondary text-gray',
@@ -327,13 +327,13 @@ $(document).on('click', '#cancel-activity', function () {
 })
 
 class MeetingHandle {
-    load() {
+    static load() {
         loadOpportunityMeetingList();
         loadMeetingSaleCodeList();
         loadEmployeeAttended();
     }
 
-    combinesData(frmEle) {
+    static combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['subject'] = $('#meeting-subject-input').val();
@@ -388,42 +388,3 @@ class MeetingHandle {
         };
     }
 }
-
-$(document).ready(function () {
-    new MeetingHandle().load();
-
-    SetupFormSubmit.validate(
-        $('#form-new-meeting'),
-        {
-            submitHandler: function(form, event){
-                event.preventDefault();
-                let combinesData = new MeetingHandle().combinesData($(form));
-                if (combinesData) {
-                    WindowControl.showLoading();
-                    $.fn.callAjax2(combinesData)
-                        .then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $.fn.notifyB({description: "Successfully"}, 'success')
-                                    setTimeout(() => {
-                                        window.location.replace($(form).attr('data-url-redirect'));
-                                        location.reload.bind(location);
-                                    }, 1000);
-                                }
-                            },
-                            (errs) => {
-                                setTimeout(
-                                    () => {
-                                        WindowControl.hideLoading();
-                                    },
-                                    1000
-                                )
-                                $.fn.notifyB({description: errs.data.errors}, 'failure');
-                            }
-                        )
-                }
-            }
-        }
-    );
-});

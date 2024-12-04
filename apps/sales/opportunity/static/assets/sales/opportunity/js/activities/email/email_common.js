@@ -1,4 +1,4 @@
-let employee_current_id = $('#employee_current_id').val()
+let email_employee_current_id = $('#employee_current_id').val()
 let email_Opp_slb = $('#email-sale-code-select-box')
 let email_to_slb = $('#email-to-select-box')
 let email_cc_slb = $('#email-cc-select-box')
@@ -87,13 +87,13 @@ function loadEmailSaleCodeList(data) {
             for (let i = 0; i < resp.data[keyResp].length; i++) {
                 let added = false;
                 let item = resp.data[keyResp][i];
-                if (item?.['sale_person']['id'] === employee_current_id) {
+                if (item?.['sale_person']['id'] === email_employee_current_id) {
                     result.push(item);
                     added = true;
                 }
                 if (item.opportunity_sale_team_datas.length > 0 && added === false) {
                     $.each(item.opportunity_sale_team_datas, function(index, member_obj) {
-                        if (member_obj.member.id === employee_current_id) {
+                        if (member_obj.member.id === email_employee_current_id) {
                             result.push(item);
                         }
                     });
@@ -236,11 +236,11 @@ ClassicEditor
     })
 
 class EmailHandle {
-    load() {
+    static load() {
         loadOpportunityEmailList();
         loadEmailSaleCodeList();
     }
-    combinesData(frmEle) {
+    static combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['subject'] = $('#email-subject-input').val();
@@ -257,37 +257,3 @@ class EmailHandle {
         };
     }
 }
-
-$(document).ready(function () {
-    new EmailHandle().load();
-
-    $('#form-new-email').submit(function (event) {
-        event.preventDefault();
-        let combinesData = new EmailHandle().combinesData($(this));
-        if (combinesData) {
-            WindowControl.showLoading();
-            $.fn.callAjax2(combinesData)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
-                                location.reload.bind(location);
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        setTimeout(
-                            () => {
-                                WindowControl.hideLoading();
-                            },
-                            1000
-                        )
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
-        }
-    })
-});

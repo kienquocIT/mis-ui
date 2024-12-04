@@ -1,0 +1,134 @@
+{% load i18n %}
+
+<div class="modal fade" id="send-email" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Send Email' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body" style="overflow: auto; height: 75vh">
+                <form data-url="{% url 'OpportunityEmailListAPI' %}"
+                      data-url-redirect="{% url 'OpportunityEmailList' %}"
+                      data-method="POST"
+                      id="form-new-email"
+                      method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="email-sale-code-select-box" class="form-label required">{% trans 'Sale Code' %}</label>
+                                <select id="email-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="inp-process" class="form-label">{% trans 'Process' %}</label>
+                                <select name="process" id="inp-process" class="form-select"
+                                        data-url="{% url 'ProcessRuntimeOfMeAPI' %}"
+                                        data-keyResp="process_runtime_list"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="inp-process-stage-app" class="form-label">{% trans 'Process Stage Application' %}</label>
+                                <select name="process_stage_app" id="inp-process-stage-app" class="form-select"
+                                        data-url="{% url 'ProcessStagesAppOfMeAPI' %}"
+                                        data-app-id="{{data.app_id}}"
+                                        data-keyResp="process_runtime_stages_app_list"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="email-to-select-box" class="form-label required">{% trans 'To' %}</label>
+                                <select disabled id="email-to-select-box" class="form-select" multiple="multiple"></select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="email-cc-select-box" class="form-label">{% trans 'Cc' %}</label>
+                                <select disabled id="email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="email-subject-input" class="form-label required">{% trans 'Subject' %}</label>
+                                <input id="email-subject-input" class="form-control required">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="email-content-area" class="form-label">{% trans 'Content' %}</label>
+                                <textarea id="email-content-area"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" form="form-new-email" id="btn-send-email">{% trans 'Send' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="detail-send-email" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Detail Email' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body" style="overflow: auto; height: 75vh">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="detail-email-sale-code-select-box" class="form-label required">{% trans 'Sale Code' %}</label>
+                            <select disabled id="detail-email-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="detail-inp-process" class="form-label">{% trans 'Process' %}</label>
+                            <select name="process" id="detail-inp-process" class="form-select"
+                                    data-url="{% url 'ProcessRuntimeOfMeAPI' %}"
+                                    data-keyResp="process_runtime_list"
+                                    disabled
+                            ></select>
+                            <a href="#" data-href="{% url 'ProcessRuntimeDetailView' pk='__pk__' %}" target="_blank" class="link-to-process">{% trans 'Detail' %}</a>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="detail-email-to-select-box" class="form-label required">{% trans 'To' %}</label>
+                            <select disabled id="detail-email-to-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="detail-email-cc-select-box" class="form-label">{% trans 'Cc' %}</label>
+                            <select disabled id="detail-email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="detail-email-subject-input" class="form-label required">{% trans 'Subject' %}</label>
+                            <input readonly id="detail-email-subject-input" class="form-control required">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label">{% trans 'Content' %}</label>
+                            <div id="detail-email-content-area"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

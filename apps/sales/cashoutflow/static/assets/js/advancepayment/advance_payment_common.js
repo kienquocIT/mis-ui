@@ -1150,24 +1150,37 @@ class APAction {
 }
 
 class APHandle {
-    static LoadPage(opportunity=null) {
+    static LoadPage(opportunity=null, option='create') {
         APLoadPage.LoadCreatedDate()
         APLoadPage.LoadCreator(initEmployee)
-        if (opportunity) {
+
+        if (option === "create") {
             new $x.cls.bastionField({
                 has_opp: true,
-                opp_disabled: true,
-                oppFlagData: {
-                    'disabled': true,
-                },
-                not_change_opp: true,
                 has_inherit: true,
-                data_opp: [opportunity],
-                opp_call_trigger_change: true,
+                has_process: true,
+                has_prj: true,
+                data_opp: $x.fn.checkUUID4(opportunity?.['id']) ? [{
+                    "id": opportunity?.['id'],
+                    "title": $x.fn.decodeURI(opportunity?.['title']),
+                    "code": $x.fn.decodeURI(opportunity?.['code']),
+                    "selected": true,
+                }] : [],
+                inheritFlagData: {"disabled": false, "readonly": false},
             }).init();
         }
-        APLoadPage.LoadQuotation()
-        APLoadPage.LoadSaleOrder()
+
+        if (opportunity) {
+            sale_order_mapped_select.prop('disabled', true)
+            quotation_mapped_select.prop('disabled', true)
+            ap_for = 'opportunity'
+        }
+
+        let quo_mapped = opportunity?.['quotation'];
+        let so_mapped = opportunity?.['sale_order'];
+        APLoadPage.LoadQuotation(quo_mapped)
+        APLoadTab.LoadPlanQuotation(opportunity?.['id'], quo_mapped?.['id'])
+        APLoadPage.LoadSaleOrder(so_mapped);
         APLoadPage.LoadSupplier()
         APLoadPage.LoadReturnDate()
         APLoadTab.LoadLineDetailTable()
@@ -1294,15 +1307,16 @@ class APHandle {
                     }] : [];
                     new $x.cls.bastionField({
                         has_opp: true,
-                        opp_disabled: true,
                         has_inherit: true,
-                        inherit_disabled: true,
                         has_process: true,
-                        process_disabled: true,
-                        data_inherit: data_inherit,
                         data_opp: data_opp,
+                        data_inherit: data_inherit,
                         data_process: data_process,
                         data_process_stage_app: data_process_stage_app,
+                        oppFlagData: {"disabled": true},
+                        inheritFlagData: {"disabled": true},
+                        processFlagData: {"disabled": true},
+                        processStageAppFlagData: {"disabled": true},
                     }).init();
 
                     if (Object.keys(data?.['opportunity']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {

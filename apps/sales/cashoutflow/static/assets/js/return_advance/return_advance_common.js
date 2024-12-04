@@ -202,7 +202,9 @@ class ReturnAPHandle {
             $('#inp-process').val(process_id);
             params['process_id'] = process_id
         }
-        if (inherit_id && $x.fn.checkUUID4(inherit_id)) $('#chooseBeneficiary').val(inherit_title);
+        if (inherit_id && $x.fn.checkUUID4(inherit_id)) {
+            chooseBeneficiaryEle.val(inherit_title);
+        }
         ReturnAPLoadPage.LoadAdvancePayment(advance_payment ? advance_payment : null, params)
     }
     static CombinesData(frmEle) {

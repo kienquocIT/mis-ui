@@ -185,6 +185,11 @@ PLAN_APP_OF_SALE = {
         ).data,
     },
     'project': {
+        'project': ReverseUrlCommon(
+            list_view_name='ProjectList',
+            detail_view_name='ProjectDetail',
+            create_view_name='ProjectCreate',
+        ).data,
         'projectbaseline': ReverseUrlCommon(
             list_view_name='ProjectList',
             detail_view_name='ProjectBaselineDetail'

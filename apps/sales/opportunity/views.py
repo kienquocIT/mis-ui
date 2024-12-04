@@ -314,7 +314,7 @@ class OpportunityCallLogList(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/call_log_list.html',
+        template='sales/opportunity/activities/call_log/call_log_list.html',
         menu_active='id_menu_log_a_call',
         breadcrumb='CALL_LOG_LIST_PAGE',
     )
@@ -372,7 +372,7 @@ class OpportunityEmailList(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/email_list.html',
+        template='sales/opportunity/activities/email/email_list.html',
         menu_active='id_menu_email',
         breadcrumb='EMAIL_LIST_PAGE',
     )
@@ -430,7 +430,7 @@ class OpportunityMeetingList(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/meeting_list.html',
+        template='sales/opportunity/activities/meeting/meeting_list.html',
         menu_active='id_menu_meeting',
         breadcrumb='MEETING_LIST_PAGE',
     )
@@ -502,7 +502,7 @@ class OpportunityActivityLogListAPI(APIView):
 class OpportunityDocumentList(View):
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/activities/document_list.html',
+        template='sales/opportunity/activities/document/document_list.html',
         menu_active='menu_opportunity_document',
         breadcrumb='OPPORTUNITY_DOCUMENT_LIST_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DOCUMENT_LIST, method='GET'),
@@ -514,7 +514,7 @@ class OpportunityDocumentList(View):
 class OpportunityDocumentCreate(View):
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/activities/document_create.html',
+        template='sales/opportunity/activities/document/document_create.html',
         menu_active='menu_opportunity_document',
         breadcrumb='OPPORTUNITY_DOCUMENT_CREATE_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DOCUMENT_LIST, method='POST'),
@@ -526,7 +526,7 @@ class OpportunityDocumentCreate(View):
 class OpportunityDocumentDetail(View):
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/activities/document_detail.html',
+        template='sales/opportunity/activities/document/document_detail.html',
         menu_active='menu_opportunity_document',
         breadcrumb='OPPORTUNITY_DOCUMENT_DETAIL_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DOCUMENT_DETAIL, method='GET', fill_key=['pk']),

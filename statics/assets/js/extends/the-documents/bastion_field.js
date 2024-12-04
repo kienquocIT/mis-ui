@@ -265,19 +265,19 @@ class BastionFieldControl {
             this.prjEle.initSelect2(config).on('change', function (event, data) {
                 if (data === BastionFieldControl.skipBastionChange) return;  // skip on first change from bastion config
 
-                let hasVal = !!$(this).val();
+                let PrjHasVal = !!$(this).val();
 
                 // re-check inherit
                 clsThis.initInheritSelect({
-                    'data-params': hasVal ? {
+                    'data-params': PrjHasVal ? {
                         'list_from_prj': $(this).val(),
                     } : {}
                 });
 
                 // re-check project
-                if (clsThis.AllOppConfig('showing') === true && hasVal) {
-                    if (clsThis.AllOppConfig('disabled') === false) clsThis.oppEle.prop('disabled', hasVal);
-                    if (clsThis.AllOppConfig('readonly') === false) clsThis.oppEle.prop('readonly', hasVal);
+                if (clsThis.AllOppConfig?.['showing'] === true && PrjHasVal) {
+                    if (clsThis.AllOppConfig?.['disabled'] === false) clsThis.oppEle.prop('disabled', PrjHasVal);
+                    if (clsThis.AllOppConfig?.['readonly'] === false) clsThis.oppEle.prop('readonly', PrjHasVal);
                 }
             });
             if (this.prj_call_trigger_change === true) this.prjEle.trigger('change', BastionFieldControl.skipBastionChange);

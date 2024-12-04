@@ -345,7 +345,7 @@ class handle_tasks_cls {
             edit_elm.removeClass('fa-eye').addClass('fa-eye-slash')
         } else {
             if (!$('.hk-wrapper').hasClass('open'))
-                $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                $("#drawer_task_create").trigger('drawer.show');
             else{
                 // case click task khác mà chưa đóng task cũ
                 tbl.find('.btn_task-list-action i').removeClass('fa-eye').addClass('fa-eye-slash')

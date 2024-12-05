@@ -9550,7 +9550,7 @@ msgstr "Hồ sơ dự thầu"
 
 #
 msgid "Result"
-msgstr "Kết quả thầu"
+msgstr "Kết quả"
 
 #
 msgid "Required Documents"
@@ -9745,6 +9745,10 @@ msgid "Detail Call Log"
 msgstr "Chi tiết cuộc gọi"
 
 #
+msgid "New Call Log"
+msgstr "Cuộc gọi mới"
+
+#
 msgid "Bidding"
 msgstr "Thầu"
 
@@ -9791,3 +9795,31 @@ msgstr "Cấu hình cập nhật kết quả thầu"
 #
 msgid "Bid Value"
 msgstr "Giá thầu"
+
+#
+msgid "To Contact"
+msgstr "Tới liên hệ"
+
+#
+msgid "Cancel this call log?"
+msgstr "Huỷ cuộc gọi này?"
+
+#
+msgid "Cancel this meeting?"
+msgstr "Huỷ cuộc họp này?"
+
+#
+msgid "This action cannot be back."
+msgstr "Hành động này không thể hoàn tác."
+
+#
+msgid "Load by Opportunity"
+msgstr "Tải theo Cơ hội kinh doanh"
+
+#
+msgid "New Meeting With Customer"
+msgstr "Cuộc họp mới với khách hàng"
+
+#
+msgid "Detail Meeting With Customer"
+msgstr "Chi tiết cuộc họp với khách hàng"

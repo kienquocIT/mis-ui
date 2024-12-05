@@ -6,7 +6,23 @@
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
     <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
-    <style></style>
+
+    <link rel="stylesheet" href="{% static 'process/stages.css' %}">
+    <link rel="stylesheet" href="{% static 'process/themes.css' %}">
+    <link rel="stylesheet" href="{% static 'process/style.css' %}">
+    <link rel="stylesheet" href="{% static 'process/runtime/detail.css' %}">
+    <style>
+        #process-runtime-detail {
+            border-radius: 5px;
+        }
+
+        #btn-collapse-process-show .icon i {
+            transition: transform 0.6s;
+        }
+        #btn-collapse-process-show.collapsed-active .icon i {
+            transform: rotate(180deg);
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -21,6 +37,24 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <div
+            id="process-runtime-detail"
+            data-url="{% url 'ProcessRuntimeDetailAPI' pk='__pk__' %}"
+            data-url-app="{% url 'TenantApplicationListAPI' %}"
+            class="w-100"
+            style="display: none;"
+    >
+    </div>
+    <button
+            id="btn-collapse-process-show"
+            class="btn btn-icon w-100 btn-xs my-2 btn-flush-light collapsed-active"
+            data-bs-toggle="tooltip"
+            title="{% trans 'Process' %}"
+    >
+        <span>
+            <span class="icon"><i class="fa-solid fa-angles-up"></i></span>
+        </span>
+    </button>
     <div class="page-content" hidden>
         <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}"
               data-url-redirect="{% url 'OpportunityUpdate' '0' %}">
@@ -86,9 +120,9 @@
         </form>
     </div>
 
-    {% include 'sales/opportunity/activities/extends/call_log_modals.html' %}
-    {% include 'sales/opportunity/activities/extends/meeting_modals.html' %}
-    {% include 'sales/opportunity/activities/extends/email_modals.html' %}
+{#    {% include 'sales/opportunity/activities/extends/call_log_modals.html' %}#}
+{#    {% include 'sales/opportunity/activities/extends/meeting_modals.html' %}#}
+{#    {% include 'sales/opportunity/activities/extends/email_modals.html' %}#}
     {% include 'sales/task/extend/task-form.html' with has_prj=False%}
 
     {{ data.type_customer|json_script:'data_type_customer' }}
@@ -116,6 +150,7 @@
         </div>
     </div>
 {% endblock %}
+
 {% block dataHiddenGroup %}
     <script type="text" id="url-factory"
             data-task_detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
@@ -186,6 +221,7 @@
             data-cancel-so="{% trans "Please cancel current sale order" %}"
             data-cancel-quo-so="{% trans "Please cancel current quotation, sale order" %}"
             data-trans-bidding="{% trans "Bidding" %}"
+            data-trans-activity-cancelled="{% trans 'Cancelled' %}"
             data-trans-notify-update-permission="{% trans 'Please save Update Opportunity page to apply all the permissions!' %}"
     ></script>
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
@@ -196,6 +232,9 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
+
+    <script src="{% static 'vendors/jquery/dist/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'process/stages.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
@@ -220,10 +259,10 @@
     </script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_update.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/activities/call_log/call_log_common.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/activities/email/email_common.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/activities/meeting/meeting_common.js' %}"></script>
+{#    <script src="{% static 'assets/sales/opportunity/js/activities/call_log/call_log_common.js' %}"></script>#}
+{#    <script src="{% static 'assets/sales/opportunity/js/activities/email/email_common.js' %}"></script>#}
+{#    <script src="{% static 'assets/sales/opportunity/js/activities/meeting/meeting_common.js' %}"></script>#}
     <script src="{% static 'assets/sales/opportunity/js/activities/task/task_in_opps.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/activities/activities_load_page.js' %}"></script>
+{#    <script src="{% static 'assets/sales/opportunity/js/activities/activities_load_page.js' %}"></script>#}
     <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
 {% endblock %}

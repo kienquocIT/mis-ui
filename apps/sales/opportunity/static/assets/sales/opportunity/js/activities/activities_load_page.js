@@ -1,7 +1,14 @@
 $(document).ready(function () {
     // call log
+    new $x.cls.bastionField({
+        has_opp: true,
+        has_inherit: true,
+        has_process: true,
+        has_prj: true,
+        inheritFlagData: {"disabled": false, "readonly": false},
+    }).init();
     loadSaleCodeList()
-    SetupFormSubmit.validate($('#form-create-new-call-log'), {
+    SetupFormSubmit.validate($('#form-call-log'), {
         submitHandler: function (form, event) {
             event.preventDefault();
             let combinesData = CallLogHandle.combinesData($(form));

@@ -5,8 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
-    <button id="create-meeting-button" class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
-            data-bs-target="#create-meeting">
+    <button id="create-meeting-button" class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-meeting">
         <span>
             <span>{% trans 'Add' %}</span>
             <span class="icon">
@@ -18,13 +17,14 @@
 {% block pageContent %}
     <script id="trans-script"
             data-trans-activity-cancelled="{% trans 'Cancelled' %}"
-            data-trans-alert-cancel="{% trans 'Cancel this meeting ?' %}"
-            data-trans-alert-warn="{% trans 'This meeting cannot be reactivated.' %}"
+            data-trans-alert-cancel="{% trans 'Cancel this meeting?' %}"
+            data-trans-alert-warn="{% trans 'This action cannot be back.' %}"
+            data-trans-yes="{% trans 'Yes' %}"
+            data-trans-no="{% trans 'No' %}"
     ></script>
-    <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
-
     <table id="table_opportunity_meeting_list" class="table nowrap w-100 mb-5"
            data-url="{% url 'OpportunityMeetingListAPI' %}"
+           data-url-opp-list="{% url 'OpportunityListAPI' %}"
            data-url-delete="{% url 'OpportunityMeetingDetailAPI' '0' %}"
            data-url-redirect="{% url 'OpportunityMeetingList' %}"
            data-method="GET">
@@ -39,6 +39,7 @@
                 </i>
             </th>
             <th>{% trans 'Sale Code' %}</th>
+            <th>{% trans 'Employee inherit' %}</th>
             <th>{% trans 'Date' %}</th>
         </tr>
         </thead>
@@ -63,72 +64,72 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/activities/meeting/meeting_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/activities/meeting/meeting_list.js' %}"></script>
-    <script>
-        $(document).ready(function(){
-            const modal$ = $("#create-meeting");
-            const create_open = $x.fn.getUrlParameter('create_open', '') === 'true';
-            let processData = [];
-            let processStageApp = [];
-            if (create_open === true){
-                modal$.modal('show');
-                const {
-                    process_id,
-                    process_title,
-                    process_stage_app_id,
-                    process_stage_app_title,
-                } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title']);
-                if (process_id){
-                    processData.push({
-                        'id': process_id,
-                        'title': process_title,
-                        'selected': true,
-                    })
-                }
-                if (process_stage_app_id){
-                    processStageApp.push({
-                        'id': process_stage_app_id,
-                        'title': process_stage_app_title,
-                        'selected': true,
-                    })
-                }
-            }
-
-            const inpProcess$ = modal$.find(':input[name=process]');
-            const inpStageApp$ = modal$.find(':input[name=process_stage_app]');
-
-            function reinitProcessStageApp(data=[], process_id=null){
-                inpStageApp$.destroySelect2();
-                let dataParams = {"application_id": inpStageApp$.data('app-id')};
-                if (process_id && $x.fn.checkUUID4(process_id)) dataParams['process_id'] = process_id;
-                inpStageApp$.initSelect2({
-                    allowClear: true,
-                    dataParams: dataParams,
-                    data: data
-                })
-            }
-
-            function reinitProcess(data=[], opp_id=null){
-                inpProcess$.destroySelect2();
-                let dataParams = {};
-                if (opp_id && $x.fn.checkUUID4(opp_id)) dataParams['opp_id'] = opp_id;
-                inpProcess$.initSelect2({
-                    allowClear: true,
-                    dataParams: dataParams,
-                    data: data
-                }).on('change', function(){
-                    const selectedVal = $(this).val();
-                    reinitProcessStageApp([], selectedVal ? selectedVal : null);
-                })
-            }
-
-            modal$.find('#meeting-sale-code-select-box').on('change', function(){
-                const selectedVal = $(this).val();
-                reinitProcess([], selectedVal ? selectedVal : null);
-                inpProcess$.trigger('change');
-            })
-
-            reinitProcess(processData);
-            reinitProcessStageApp(processStageApp);
-        })
-    </script>
+{#    <script>#}
+{#        $(document).ready(function(){#}
+{#            const modal$ = $("#create-meeting");#}
+{#            const create_open = $x.fn.getUrlParameter('create_open', '') === 'true';#}
+{#            let processData = [];#}
+{#            let processStageApp = [];#}
+{#            if (create_open === true){#}
+{#                modal$.modal('show');#}
+{#                const {#}
+{#                    process_id,#}
+{#                    process_title,#}
+{#                    process_stage_app_id,#}
+{#                    process_stage_app_title,#}
+{#                } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title']);#}
+{#                if (process_id){#}
+{#                    processData.push({#}
+{#                        'id': process_id,#}
+{#                        'title': process_title,#}
+{#                        'selected': true,#}
+{#                    })#}
+{#                }#}
+{#                if (process_stage_app_id){#}
+{#                    processStageApp.push({#}
+{#                        'id': process_stage_app_id,#}
+{#                        'title': process_stage_app_title,#}
+{#                        'selected': true,#}
+{#                    })#}
+{#                }#}
+{#            }#}
+{##}
+{#            const inpProcess$ = modal$.find(':input[name=process]');#}
+{#            const inpStageApp$ = modal$.find(':input[name=process_stage_app]');#}
+{##}
+{#            function reinitProcessStageApp(data=[], process_id=null){#}
+{#                inpStageApp$.destroySelect2();#}
+{#                let dataParams = {"application_id": inpStageApp$.data('app-id')};#}
+{#                if (process_id && $x.fn.checkUUID4(process_id)) dataParams['process_id'] = process_id;#}
+{#                inpStageApp$.initSelect2({#}
+{#                    allowClear: true,#}
+{#                    dataParams: dataParams,#}
+{#                    data: data#}
+{#                })#}
+{#            }#}
+{##}
+{#            function reinitProcess(data=[], opp_id=null){#}
+{#                inpProcess$.destroySelect2();#}
+{#                let dataParams = {};#}
+{#                if (opp_id && $x.fn.checkUUID4(opp_id)) dataParams['opp_id'] = opp_id;#}
+{#                inpProcess$.initSelect2({#}
+{#                    allowClear: true,#}
+{#                    dataParams: dataParams,#}
+{#                    data: data#}
+{#                }).on('change', function(){#}
+{#                    const selectedVal = $(this).val();#}
+{#                    reinitProcessStageApp([], selectedVal ? selectedVal : null);#}
+{#                })#}
+{#            }#}
+{##}
+{#            modal$.find('#meeting-sale-code-select-box').on('change', function(){#}
+{#                const selectedVal = $(this).val();#}
+{#                reinitProcess([], selectedVal ? selectedVal : null);#}
+{#                inpProcess$.trigger('change');#}
+{#            })#}
+{##}
+{#            reinitProcess(processData);#}
+{#            reinitProcessStageApp(processStageApp);#}
+{#        })#}
+{#    </script>#}
 {% endblock %}

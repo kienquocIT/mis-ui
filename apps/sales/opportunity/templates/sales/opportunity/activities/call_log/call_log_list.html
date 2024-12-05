@@ -5,8 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
-    <button id="create-new-call-log-button" class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
-            data-bs-target="#create-new-call-log">
+    <button id="offcanvas-call-log-button-detail" class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-call-log">
         <span>
             <span>{% trans 'Add' %}</span>
             <span class="icon">
@@ -15,16 +14,17 @@
         </span>
     </button>
 {% endblock %}
-
 {% block pageContent %}
     <script id="trans-script"
             data-trans-activity-cancelled="{% trans 'Cancelled' %}"
-            data-trans-alert-cancel="{% trans 'Cancel this call log ?' %}"
-            data-trans-alert-warn="{% trans 'This call log cannot be reactivated.' %}"
+            data-trans-alert-cancel="{% trans 'Cancel this call log?' %}"
+            data-trans-alert-warn="{% trans 'This action cannot be back.' %}"
+            data-trans-yes="{% trans 'Yes' %}"
+            data-trans-no="{% trans 'No' %}"
     ></script>
-    <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
     <table id="table_opportunity_call_log_list" class="table nowrap w-100 mb-5"
            data-url-contact-detail="{% url 'ContactDetail' '0' %}"
+           data-url-opp-list="{% url 'OpportunityListAPI' %}"
            data-url-delete="{% url 'OpportunityCallLogDetailAPI' '0' %}"
            data-url-redirect="{% url 'OpportunityCallLogList' %}"
            data-url="{% url 'OpportunityCallLogListAPI' %}" data-method="GET">
@@ -46,87 +46,85 @@
                 </i>
             </th>
             <th>{% trans 'Sale Code' %}</th>
+            <th>{% trans 'Employee inherit' %}</th>
             <th>{% trans 'Date' %}</th>
         </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
-{% endblock %}
-{% block modalData %}
     {% include 'sales/opportunity/activities/extends/call_log_modals.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/activities/call_log/call_log_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/activities/call_log/call_log_list.js' %}"></script>
-    <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>
-    <script>
-        $(document).ready(function(){
-            const modal$ = $("#create-new-call-log");
-            const create_open = $x.fn.getUrlParameter('create_open', '') === 'true';
-            let processData = [];
-            let processStageApp = [];
-            if (create_open === true){
-                modal$.modal('show');
-                const {
-                    process_id,
-                    process_title,
-                    process_stage_app_id,
-                    process_stage_app_title,
-                } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title']);
-                if (process_id){
-                    processData.push({
-                        'id': process_id,
-                        'title': process_title,
-                        'selected': true,
-                    })
-                }
-                if (process_stage_app_id){
-                    processStageApp.push({
-                        'id': process_stage_app_id,
-                        'title': process_stage_app_title,
-                        'selected': true,
-                    })
-                }
-            }
-
-            const inpProcess$ = modal$.find(':input[name=process]');
-            const inpStageApp$ = modal$.find(':input[name=process_stage_app]');
-
-            function reinitProcessStageApp(data=[], process_id=null){
-                inpStageApp$.destroySelect2();
-                let dataParams = {"application_id": inpStageApp$.data('app-id')};
-                if (process_id && $x.fn.checkUUID4(process_id)) dataParams['process_id'] = process_id;
-                inpStageApp$.initSelect2({
-                    allowClear: true,
-                    dataParams: dataParams,
-                    data: data
-                })
-            }
-
-            function reinitProcess(data=[], opp_id=null){
-                inpProcess$.destroySelect2();
-                let dataParams = {};
-                if (opp_id && $x.fn.checkUUID4(opp_id)) dataParams['opp_id'] = opp_id;
-                inpProcess$.initSelect2({
-                    allowClear: true,
-                    dataParams: dataParams,
-                    data: data
-                }).on('change', function(){
-                    const selectedVal = $(this).val();
-                    reinitProcessStageApp([], selectedVal ? selectedVal : null);
-                })
-            }
-
-            modal$.find('#sale-code-select-box').on('change', function(){
-                const selectedVal = $(this).val();
-                reinitProcess([], selectedVal ? selectedVal : null);
-                inpProcess$.trigger('change');
-            })
-
-            reinitProcess(processData);
-            reinitProcessStageApp(processStageApp);
-        })
-    </script>
+{#    <script>#}
+{#        $(document).ready(function(){#}
+{#            const modal$ = $("#offcanvas-call-log");#}
+{#            const create_open = $x.fn.getUrlParameter('create_open', '') === 'true';#}
+{#            let processData = [];#}
+{#            let processStageApp = [];#}
+{#            if (create_open === true){#}
+{#                modal$.modal('show');#}
+{#                const {#}
+{#                    process_id,#}
+{#                    process_title,#}
+{#                    process_stage_app_id,#}
+{#                    process_stage_app_title,#}
+{#                } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title']);#}
+{#                if (process_id){#}
+{#                    processData.push({#}
+{#                        'id': process_id,#}
+{#                        'title': process_title,#}
+{#                        'selected': true,#}
+{#                    })#}
+{#                }#}
+{#                if (process_stage_app_id){#}
+{#                    processStageApp.push({#}
+{#                        'id': process_stage_app_id,#}
+{#                        'title': process_stage_app_title,#}
+{#                        'selected': true,#}
+{#                    })#}
+{#                }#}
+{#            }#}
+{##}
+{#            const inpProcess$ = modal$.find(':input[name=process]');#}
+{#            const inpStageApp$ = modal$.find(':input[name=process_stage_app]');#}
+{##}
+{#            function reinitProcessStageApp(data=[], process_id=null){#}
+{#                inpStageApp$.destroySelect2();#}
+{#                let dataParams = {"application_id": inpStageApp$.data('app-id')};#}
+{#                if (process_id && $x.fn.checkUUID4(process_id)) dataParams['process_id'] = process_id;#}
+{#                inpStageApp$.initSelect2({#}
+{#                    allowClear: true,#}
+{#                    dataParams: dataParams,#}
+{#                    data: data#}
+{#                })#}
+{#            }#}
+{##}
+{#            function reinitProcess(data=[], opp_id=null){#}
+{#                inpProcess$.destroySelect2();#}
+{#                let dataParams = {};#}
+{#                if (opp_id && $x.fn.checkUUID4(opp_id)) dataParams['opp_id'] = opp_id;#}
+{#                inpProcess$.initSelect2({#}
+{#                    allowClear: true,#}
+{#                    dataParams: dataParams,#}
+{#                    data: data#}
+{#                }).on('change', function(){#}
+{#                    const selectedVal = $(this).val();#}
+{#                    reinitProcessStageApp([], selectedVal ? selectedVal : null);#}
+{#                })#}
+{#            }#}
+{##}
+{#            modal$.find('#sale-code-select-box').on('change', function(){#}
+{#                const selectedVal = $(this).val();#}
+{#                reinitProcess([], selectedVal ? selectedVal : null);#}
+{#                inpProcess$.trigger('change');#}
+{#            })#}
+{##}
+{#            reinitProcess(processData);#}
+{#            reinitProcessStageApp(processStageApp);#}
+{#        })#}
+{#    </script>#}
 {% endblock %}

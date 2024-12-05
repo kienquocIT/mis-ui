@@ -141,3 +141,11 @@ class XView(View):
         <select class="form-select" name="inheritorX" id="inp-inherit-x"></select>
     </div>
     ```
+
+--- 
+
+### Thêm ViewName của trang `create` cho tính năng mới thêm vào Process
+
+- Tìm code ứng dụng trong `PLAN_APP_MAP_VIEW`
+- Thêm `create_view_name` vào ứng `ReverseUrlCommon` của ứng dụng đó ứng với `ViewName` của ứng dụng để Process có thể chuyển hướng đến trang tạo.
+

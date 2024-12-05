@@ -32,11 +32,27 @@ $(document).ready(function () {
             const oppData = processDetail?.['opp'];
             const opp$ = frm$.find(':input[name=opp]');
             const oppLink$ = opp$.siblings('.form-text');
+            const btnSync$ = $('#btn-sync-member');
             if (oppData) {
                 opp$.val(oppData?.['title'] || '');
-                oppLink$.attr('href', oppLink$.attr('href').replaceAll('__pk__', oppData?.['id']))
+                oppLink$.attr('href', oppLink$.attr('href').replaceAll('__pk__', oppData?.['id']));
+
+                btnSync$.on('click', function (){
+                    $.fn.callAjax2({
+                        url: $(this).data('url'),
+                        method: 'PUT',
+                        data: {},
+                        isLoading: true,
+                    }).then(
+                        resp => {
+                            const data = $.fn.switcherResp(resp);
+                            if (data) $.fn.notifyB({'description': $.fn.gettext('Successful')}, 'success');
+                        }
+                    )
+                }).show(0)
             } else {
                 oppLink$.hide(0);
+                btnSync$.remove();
             }
 
             const clsProcess = new ProcessStages(target$, processDetail, {
@@ -129,7 +145,14 @@ $(document).ready(function () {
             membersGroup$.append(ele$);
 
             const employee_id = item?.['employee']?.['id'] || null;
-            if (employee_id === employee_created_id) {
+            if (employee_id === employee_created_id || item?.['is_system'] === true) {
+                ele$.find('.text-person').prepend(`
+                    <i 
+                        class="fa-solid fa-lock mr-2 text-danger"
+                        data-bs-toggle="tooltip"
+                        title="${$.fn.gettext('Members are controlled only by the system')}"
+                    ></i>
+                `);
                 ele$.find('button.btn-remove-member').remove();
             } else ele$.find('button.btn-remove-member').on('click', function () {
                 Swal.fire({
@@ -144,6 +167,7 @@ $(document).ready(function () {
                     }
                 });
             })
+            ele$.find('[data-bs-toggle="tooltip"]').tooltip();
         })
 
     }

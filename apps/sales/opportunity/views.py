@@ -319,14 +319,8 @@ class OpportunityCallLogList(View):
         breadcrumb='CALL_LOG_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
         result = {
-            'employee_current_id': request.user.employee_current_data.get('id', None),
-            'account_list': resp1.result,
-            'contact_list': resp2.result,
-            'opportunity_list': resp3.result,
+            'list_from_app': 'opportunity.opportunitycall.create',
             'app_id': '14dbc606-1453-4023-a2cf-35b1cd9e3efd',
         }
         return result, status.HTTP_200_OK
@@ -435,16 +429,9 @@ class OpportunityMeetingList(View):
         breadcrumb='MEETING_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
-        resp4 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
         result = {
-            'employee_current_id': request.user.employee_current_data.get('id', None),
-            'account_list': resp1.result,
-            'contact_list': resp2.result,
-            'opportunity_list': resp3.result,
-            'employee_list': resp4.result,
+            'list_from_app': 'opportunity.meetingwithcustomer.create',
+            'app_id': '2fe959e3-9628-4f47-96a1-a2ef03e867e3',
         }
         return result, status.HTTP_200_OK
 

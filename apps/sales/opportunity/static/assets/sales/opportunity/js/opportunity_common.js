@@ -1039,7 +1039,6 @@ class OpportunityActivity {
         let pk = $.fn.getPkDetail();
         let urlFactory = $('#url-factory');
         let transEle = $('#trans-factory');
-        let trans_script = $('#trans-script');
         $table.DataTable().clear().destroy()
         $table.DataTableDefault({
             rowIdx: true,
@@ -1115,7 +1114,7 @@ class OpportunityActivity {
                         } else {
                             let status = '';
                             if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
-                                status = `<span class="badge badge-sm badge-icon-xs badge-soft-danger">${$('#trans-script').attr('data-trans-activity-cancelled')}</i>`
+                                status = `<span class="badge badge-sm badge-icon-xs badge-soft-danger">${transEle.attr('data-trans-activity-cancelled')}</i>`
                             }
                             return `<span class="badge badge-sm badge-outline badge-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                         }
@@ -1155,13 +1154,13 @@ class OpportunityActivity {
                             return `<a href="#" class="show-task-detail" data-task-id="${row?.['task']['id']}"><p>${title}</p></a>`;
                         } else if (row?.['log_type'] === 2) {
                             title = row?.['call_log']?.['subject'];
-                            return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-call-log" class="detail-call-log-button text-primary" data-id="${row?.['call_log']['id']}"><p>${title}</p></a>`;
+                            return `<a href="#" data-bs-toggle="modal" data-bs-target="#offcanvas-call-log-detail" class="offcanvas-call-log-button-detail text-primary" data-id="${row?.['call_log']['id']}"><p>${title}</p></a>`;
                         } else if (row?.['log_type'] === 3) {
                             title = row?.['email']?.['subject'];
                             return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-send-email" class="detail-email-button text-primary" data-id="${row?.['email']['id']}"><p>${title}</p></a>`;
                         } else if (row?.['log_type'] === 4) {
                             title = row?.['meeting']?.['subject'];
-                            return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-meeting" class="detail-meeting-button text-primary" data-id="${row?.['meeting']['id']}"><p>${title}</p></a>`;
+                            return `<a href="#" data-bs-toggle="modal" data-bs-target="#detail-meeting" class="offcanvas-meeting-button text-primary" data-id="${row?.['meeting']['id']}"><p>${title}</p></a>`;
                         }
                     }
                 },

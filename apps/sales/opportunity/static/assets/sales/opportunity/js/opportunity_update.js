@@ -92,6 +92,33 @@ $(document).ready(function () {
             const opportunity_detail_data = results[0];
 
             if (opportunity_detail_data) {
+                const target$ = $('#process-runtime-detail');
+                $('#btn-collapse-process-show').on('click', function (){
+                    if ($(this).attr('data-loaded') !== '1'){
+                        $(this).attr('data-loaded', '1');
+                        $.fn.callAjax2({
+                            url: target$.data('url').replaceAll('__pk__', opportunity_detail_data?.['process']?.['id']),
+                            method: 'GET',
+                            isLoading: true,
+                        }).then(resp => {
+                            const detailData = $.fn.switcherResp(resp);
+                            if (detailData) {
+                                const processDetail = detailData?.['process_runtime_detail'] || {};
+                                const clsProcess = new ProcessStages(target$, processDetail, {
+                                    'debug': true,
+                                    'enableAppInfoShow': true,
+                                    'enableAppControl': true,
+                                    'enableStagesInfoShow': true,
+                                    'showCopyConfigData': false,
+                                },);
+                                clsProcess.init();
+                            }
+                        });
+                    }
+                    $(this).toggleClass('collapsed-active');
+                    target$.slideToggle('slow');
+                });
+
                 $('.page-content').prop('hidden', false)
 
                 if (opportunity_detail_data?.['is_deal_close'] === true) {
@@ -134,10 +161,6 @@ $(document).ready(function () {
                         $('#check-lost-reason').prop('checked', false);
 
                     $('#input-budget').attr('value', opportunity_detail.budget_value);
-                    if (opportunity_detail?.['process']?.['id']) {
-                        $('#process-space').prop('hidden', false)
-                        $('#process-title').val(opportunity_detail?.['process']?.['title']);
-                    }
 
                     OpportunityLoadDropdown.loadCustomer(opportunity_detail.customer, config_is_AM_create, opportunity_detail?.['sale_person'].id);
                     OpportunityLoadDropdown.loadProductCategory(opportunity_detail.product_category);

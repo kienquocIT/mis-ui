@@ -1476,6 +1476,7 @@ class PaymentHandle {
                 }] : [],
                 inheritFlagData: {"disabled": false, "readonly": false},
             }).init();
+            $('#opportunity_id').trigger('change')
         }
 
         if (opportunity) {

@@ -3,11 +3,11 @@ class QuotationLoadDataHandle {
     static $form = $('#frm_quotation_create');
     static opportunitySelectEle = $('#opportunity_id');
     static processSelectEle$ = $('#process_id');
-    static customerSelectEle = $('#select-box-quotation-create-customer');
-    static contactSelectEle = $('#select-box-quotation-create-contact');
-    static paymentSelectEle = $('#select-box-quotation-create-payment-term');
+    static customerSelectEle = $('#customer_id');
+    static contactSelectEle = $('#contact_id');
+    static paymentSelectEle = $('#payment_term_id');
     static salePersonSelectEle = $('#employee_inherit_id');
-    static quotationSelectEle = $('#select-box-quotation');
+    static quotationSelectEle = $('#quotation_id');
     static $btnSaveSelectProduct = $('#btn-save-select-product');
     static $eleStoreDetail = $('#quotation-detail-data');
     static transEle = $('#app-trans-factory');
@@ -324,14 +324,13 @@ class QuotationLoadDataHandle {
         });
     };
 
-    static loadBoxQuotationPaymentTerm(dataPayment = {}) {
+    static loadBoxQuotationPaymentTerm() {
         QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle);
         if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
                 if (dataSelected?.['payment_term_customer_mapped']) {
-                    dataPayment = dataSelected?.['payment_term_customer_mapped'];
-                    QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [dataPayment]);
+                    QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [dataSelected?.['payment_term_customer_mapped']]);
                 }
             }
         }
@@ -600,51 +599,6 @@ class QuotationLoadDataHandle {
                                                     <br>`)
                 }
             }
-        }
-    };
-
-    static loadBoxSaleOrderQuotation(quotation_id, valueToSelect = null, opp_id = null, sale_person_id = null) {
-        let jqueryId = '#' + quotation_id;
-        let ele = $(jqueryId);
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        if (sale_person_id) {
-            let data_filter = {'employee_inherit': sale_person_id};
-            if (opp_id) {
-                data_filter = {
-                    'employee_inherit': sale_person_id,
-                    'opportunity': opp_id
-                }
-            }
-            $.fn.callAjax(url, method, data_filter).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        ele.empty();
-                        if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
-                            ele.append(`<option value=""></option>`);
-                            data.quotation_list.map(function (item) {
-                                let dataStr = JSON.stringify({
-                                    'id': item.id,
-                                    'title': item.title,
-                                    'code': item.code,
-                                }).replace(/"/g, "&quot;");
-                                let option = `<option value="${item.id}">
-                                            <span class="quotation-title">${item.title}</span>
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
-                                if (valueToSelect && valueToSelect === item.id) {
-                                    option = `<option value="${item.id}" selected>
-                                            <span class="quotation-title">${item.title}</span>
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
-                                }
-                                ele.append(option)
-                            });
-                        }
-                    }
-                }
-            )
         }
     };
 
@@ -2181,7 +2135,7 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationContact(data?.['contact_data']);
         }
         if (data?.['payment_term_data']) {
-            QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term_data'])
+            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']]);
         }
         if (data?.['quotation'] && data?.['sale_person']) {
             if (data?.['quotation']?.['title']) {

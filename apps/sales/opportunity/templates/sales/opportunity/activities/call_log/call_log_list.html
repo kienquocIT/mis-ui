@@ -17,8 +17,10 @@
 {% block pageContent %}
     <script id="trans-script"
             data-trans-activity-cancelled="{% trans 'Cancelled' %}"
-            data-trans-alert-cancel="{% trans 'Cancel this call log ?' %}"
-            data-trans-alert-warn="{% trans 'This call log cannot be reactivated.' %}"
+            data-trans-alert-cancel="{% trans 'Cancel this call log?' %}"
+            data-trans-alert-warn="{% trans 'This action cannot be back.' %}"
+            data-trans-yes="{% trans 'Yes' %}"
+            data-trans-no="{% trans 'No' %}"
     ></script>
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
     <table id="table_opportunity_call_log_list" class="table nowrap w-100 mb-5"

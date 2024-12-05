@@ -9799,3 +9799,11 @@ msgstr "Giá thầu"
 #
 msgid "To Contact"
 msgstr "Tới liên hệ"
+
+#
+msgid "Cancel this call log?"
+msgstr "Huỷ cuộc gọi này?"
+
+#
+msgid "This action cannot be back."
+msgstr "Hành động này không thể hoàn tác."

@@ -134,7 +134,7 @@ $(document).on('click', '#table_opportunity_call_log_list .offcanvas-call-log-bu
 $(document).on('click', '#cancel-activity', function () {
     Swal.fire({
         html:
-            `<div class="mb-3"><i class="bi bi-x-square text-danger"></i></div>
+            `<div class="mb-3"><i class="bi bi-x-square text-danger" style="font-size: 50px"></i></div>
              <h5 class="text-danger">${call_log_trans_script.attr('data-trans-alert-cancel')}</h5>
              <p>${call_log_trans_script.attr('data-trans-alert-warn')}</p>`,
         customClass: {
@@ -145,8 +145,8 @@ $(document).on('click', '#cancel-activity', function () {
         },
         showCancelButton: true,
         buttonsStyling: false,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
+        confirmButtonText: call_log_trans_script.attr('data-trans-yes'),
+        cancelButtonText: call_log_trans_script.attr('data-trans-no'),
         reverseButtons: true
     }).then((result) => {
         if (result.value) {

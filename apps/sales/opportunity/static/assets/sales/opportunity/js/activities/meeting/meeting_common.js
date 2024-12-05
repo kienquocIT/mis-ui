@@ -1,4 +1,5 @@
 const meeting_trans_script = $('#trans-script')
+const cancel_activity_btn = $('#cancel-activity')
 const table_opportunity_meeting_list = $('#table_opportunity_meeting_list')
 const meeting_customer_member_slb = $('#meeting-customer-member-select-box');
 const meeting_address_slb = $('#meeting-address-select-box');
@@ -40,7 +41,7 @@ function loadOpportunityMeetingList() {
                         if (row?.['is_cancelled']) {
                             status = `<span class="badge badge-sm badge-soft-danger">${meeting_trans_script.attr('data-trans-activity-cancelled')}</i>`
                         }
-                        return `<a class="text-primary link-primary underline_hover detail-meeting-button" href="" data-bs-toggle="modal" data-id="${row?.['id']}" data-bs-target="#detail-meeting">
+                        return `<a class="text-primary link-primary underline_hover offcanvas-meeting-button" href="" data-bs-toggle="offcanvas" data-id="${row?.['id']}" data-bs-target="#offcanvas-meeting-detail">
                                     <span class="mr-1">${row?.['subject']}</span>${status}
                                 </a>`
                     }
@@ -152,61 +153,37 @@ $('#opportunity_id').on('change', function () {
     loadCustomerMember(obj_selected?.['customer']?.['contact_mapped'] ? obj_selected?.['customer']?.['contact_mapped'] : [])
 })
 
-$(document).on('click', '#table_opportunity_meeting_list .detail-meeting-button', function () {
+$(document).on('click', '#table_opportunity_meeting_list .offcanvas-meeting-button', function () {
     let meeting_id = $(this).attr('data-id');
     let meeting_obj = MEETING_LIST.filter(function (item) {
-        return item.id === meeting_id;
+        return item?.['id'] === meeting_id;
     })[0]
-    $('#detail-meeting-subject-input').val(meeting_obj.subject);
+    cancel_activity_btn.attr('data-id', meeting_obj.id)
 
-    $('#detail-meeting-sale-code-select-box option').remove();
-    $('#detail-meeting-sale-code-select-box').append(`<option selected>(${meeting_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${meeting_obj.opportunity.title}</option>`);
+    $('#detail-opp').val(meeting_obj?.['opportunity']?.['code'] + ' - ' + meeting_obj?.['opportunity']?.['title']);
+    $('#detail-process').val(meeting_obj?.['process']?.['title'] ? meeting_obj?.['process']?.['title'] : '--');
+    $('#detail-stage').val(meeting_obj?.['process_stage_app']?.['title'] ? meeting_obj?.['process_stage_app']?.['title'] : '--');
+    $('#detail-inheritor').val(meeting_obj?.['employee_inherit']?.['full_name']);
 
-    $('#detail-meeting-address-select-box option').remove();
-    $('#detail-meeting-address-select-box').append(`<option selected>${meeting_obj.meeting_address}</option>`);
-
-    if (meeting_obj.process){
-        const process$ = $('#detail-inp-process');
-        process$.find('option').remove();
-        process$.append(`<option selected>${meeting_obj.process.title}</option>`);
-        const link$ = process$.siblings('.link-to-process');
-        link$.attr('href', link$.data('href').replaceAll('__pk__', meeting_obj.process.id))
-    }
-
-    $('#detail-meeting-room-location-input').val(meeting_obj.room_location);
-
-    let detail_meeting_employee_attended_slb = $('#detail-meeting-employee-attended-select-box');
-    $('#detail-meeting-employee-attended-select-box option').remove();
+    $('#detail-subject-input').text(meeting_obj?.['subject']);
+    $('#is-cancelled').prop('hidden', !meeting_obj?.['is_cancelled'])
+    moment.locale('en')
+    $('#detail-date-input').text(moment(meeting_obj.meeting_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'));
+    $('#detail-from').text(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'));
+    $('#detail-to').text(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'));
+    $('#detail-meeting-address').text(meeting_obj.meeting_address);
+    $('#detail-meeting-room').text(meeting_obj.room_location);
     for (let i = 0; i < meeting_obj.employee_attended_list.length; i++) {
         let employee_attended_item = meeting_obj.employee_attended_list[i];
-        detail_meeting_employee_attended_slb.append(`<option selected>${employee_attended_item.fullname}</option>`);
+        $('#detail-emp-attended').append(`<span class="badge badge-outline badge-soft-success mr-1">${employee_attended_item.fullname}</span>`);
     }
-    detail_meeting_employee_attended_slb.prop('disabled', true);
-
-    let detail_meeting_customer_member_slb = $('#detail-meeting-customer-member-select-box');
-    $('#detail-meeting-customer-member-select-box option').remove();
     for (let i = 0; i < meeting_obj.customer_member_list.length; i++) {
         let customer_member_item = meeting_obj.customer_member_list[i];
-        detail_meeting_customer_member_slb.append(`<option selected>${customer_member_item.fullname}</option>`);
+        $('#detail-customer-member').append(`<span class="badge badge-outline badge-soft-orange mr-1">${customer_member_item.fullname}</span>`);
     }
-    detail_meeting_customer_member_slb.prop('disabled', true);
-
-    $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
-    moment.locale('en')
-    $('#meeting-from-time').val(moment.utc(meeting_obj['meeting_from_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'))
-    $('#meeting-to-time').val(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'))
-
+    $('#detail-result').text(meeting_obj.input_result);
     $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
-
-    $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
-    $('#cancel-activity').prop('hidden', meeting_obj.is_cancelled)
-    if (meeting_obj.is_cancelled) {
-        $('#is-cancelled').text(meeting_trans_script.attr('data-trans-activity-cancelled'))
-    }
-    else {
-        $('#is-cancelled').text('')
-    }
-    $('#detail-meeting .modal-body').attr('data-id', meeting_obj.id)
+    cancel_activity_btn.prop('hidden', meeting_obj.is_cancelled)
 })
 
 $('#meeting-address-input-btn').on('click', function () {
@@ -222,7 +199,7 @@ $('#meeting-address-select-btn').on('click', function () {
 $(document).on('click', '#cancel-activity', function () {
     Swal.fire({
 		html:
-		`<div class="mb-3"><i class="bi bi-x-square text-danger"></i></div>
+		`<div class="mb-3"><i class="bi bi-x-square text-danger" style="font-size: 50px"></i></div>
              <h5 class="text-danger">${meeting_trans_script.attr('data-trans-alert-cancel')}</h5>
              <p>${meeting_trans_script.attr('data-trans-alert-warn')}</p>`,
 		customClass: {
@@ -233,15 +210,15 @@ $(document).on('click', '#cancel-activity', function () {
 		},
 		showCancelButton: true,
 		buttonsStyling: false,
-		confirmButtonText: 'Yes',
-		cancelButtonText: 'No',
+        confirmButtonText: meeting_trans_script.attr('data-trans-yes'),
+        cancelButtonText: meeting_trans_script.attr('data-trans-no'),
 		reverseButtons: true
 	}).then((result) => {
 		if (result.value) {
-		    let meeting_id = $('#detail-meeting .modal-body').attr('data-id')
+		    let meeting_id = cancel_activity_btn.attr('data-id')
             let dtb = table_opportunity_meeting_list;
             let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(dtb.attr('data-url-delete').replace(0, meeting_id), 'PUT', {'is_cancelled': !$('#cancel-activity').prop('disabled')}, csr)
+            $.fn.callAjax(dtb.attr('data-url-delete').replace(0, meeting_id), 'PUT', {'is_cancelled': !cancel_activity_btn.prop('disabled')}, csr)
                 .then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -355,8 +332,7 @@ class MeetingHandle {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['subject'] = $('#meeting-subject-input').val();
-        frm.dataForm['opportunity'] = $('#meeting-sale-code-select-box option:selected').val();
-        frm.dataForm['meeting_date'] = meeting_date_input.val();
+        frm.dataForm['meeting_date'] = moment(meeting_date_input.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
         if ($('#meeting-address-select-div').is(':hidden')) {
             frm.dataForm['meeting_address'] = $('#meeting-address-input').val();
         } else {
@@ -396,7 +372,6 @@ class MeetingHandle {
             $.fn.notifyB({'description': $('#trans-factory').attr('data-time-valid')}, 'failure')
             return false
         }
-
 
         return {
             url: frm.dataUrl,

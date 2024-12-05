@@ -110,73 +110,6 @@
 		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 	</div>
 	<div class="offcanvas-body">
-        <div class="row">
-            {% trans 'Select Sale Person' as inherit_title %}
-            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="detail-meeting-subject-input" class="form-label required">{% trans 'Subject' %}</label>
-                    <input disabled readonly id="detail-meeting-subject-input" class="form-control form-control-line">
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="detail-meeting-date-input" class="form-label required">{% trans 'Date' %}</label>
-                    <input disabled readonly id="detail-meeting-date-input" class="form-control form-control-line">
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label for="meeting-from-time" class="form-label required">{% trans 'From time' %}</label>
-                    <input disabled readonly id="meeting-from-time" placeholder="{% trans 'From time' %}" class="form-control form-control-line">
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label required" for="meeting-to-time">{% trans 'To time' %}</label>
-                    <input disabled readonly id="meeting-to-time" placeholder="{% trans 'To time' %}" class="form-control form-control-line">
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="detail-meeting-address-select-box" class="form-label required">{% trans 'Meeting address' %}</label>
-                    <select disabled readonly id="detail-meeting-address-select-box" class="select2 form-select"></select>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="detail-meeting-room-location-input" class="form-label required">{% trans 'Room location' %}</label>
-                    <input disabled id="detail-meeting-room-location-input" class="form-control form-control-line">
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="detail-meeting-employee-attended-select-box" class="form-label required">{% trans 'Employee attended' %}</label>
-                    <select disabled readonly id="detail-meeting-employee-attended-select-box" multiple class="select2 select-multiple"></select>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="detail-meeting-customer-member-select-box" class="form-label">{% trans 'Customer member' %}</label>
-                    <select disabled id="detail-meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="detail-meeting-result-text-area" class="form-label required">{% trans 'Input Result' %}</label>
-                    <textarea disabled readonly id="detail-meeting-result-text-area" class="form-control"></textarea>
-                </div>
-            </div>
-            <div class="col-12" hidden>
-                <div class="form-check">
-                    <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity">
-                    <label for="detail-repeat-activity">{% trans 'Need to repeat activity' %}</label>
-                </div>
-            </div>
-            <div class="col-12 mb-3">
-                <button type="button" id="cancel-activity" class="btn btn-danger">{% trans 'Cancel' %}</button>
-            </div>
-        </div>
 		<form data-url="{% url 'OpportunityCallLogListAPI' %}"
               data-url-redirect="{% url 'OpportunityCallLogList' %}"
               data-method="POST"
@@ -216,15 +149,31 @@
                     <span id="detail-date-input" class="ml-2 text-muted small"></span>
                 </div>
                 <div class="col-12 mt-3">
-                    <span class="text-muted text-decoration-underline">{% trans 'Contact' %} - {% trans 'Customer' %}</span>
+                    <span class="text-muted text-decoration-underline">{% trans 'Time range' %}</span>
                     <br>
-                    <span id="detail-contact-select-box" class="text-primary"></span>
+                    <span id="detail-from" class="text-primary"></span>
                     <span> - </span>
-                    <span id="detail-account-select-box" class="text-primary"></span>
+                    <span id="detail-to" class="text-primary"></span>
                 </div>
                 <div class="col-12 mt-3">
-                    <span class="text-muted text-decoration-underline">{% trans 'Contents' %}</span>
-                    <p id="detail-result-text-area" class="text-primary"></p>
+                    <span class="text-muted text-decoration-underline">{% trans 'Meeting address' %}</span>
+                    <p id="detail-meeting-address" class="text-primary"></p>
+                </div>
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Room location' %}</span>
+                    <p id="detail-meeting-room" class="text-primary"></p>
+                </div>
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Employee attended' %}</span>
+                    <div id="detail-emp-attended"></div>
+                </div>
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Customer member' %}</span>
+                    <div id="detail-customer-member"></div>
+                </div>
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Result' %}</span>
+                    <p id="detail-result" class="text-primary"></p>
                 </div>
                 <div class="col-12" hidden>
                     <div class="form-check">

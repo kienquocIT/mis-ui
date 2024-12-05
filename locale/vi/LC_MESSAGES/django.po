@@ -9550,7 +9550,7 @@ msgstr "Hồ sơ dự thầu"
 
 #
 msgid "Result"
-msgstr "Kết quả thầu"
+msgstr "Kết quả"
 
 #
 msgid "Required Documents"
@@ -9815,3 +9815,11 @@ msgstr "Hành động này không thể hoàn tác."
 #
 msgid "Load by Opportunity"
 msgstr "Tải theo Cơ hội kinh doanh"
+
+#
+msgid "New Meeting With Customer"
+msgstr "Cuộc họp mới với khách hàng"
+
+#
+msgid "Detail Meeting With Customer"
+msgstr "Chi tiết cuộc họp với khách hàng"

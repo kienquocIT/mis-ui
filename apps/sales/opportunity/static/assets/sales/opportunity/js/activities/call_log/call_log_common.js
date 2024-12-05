@@ -118,6 +118,7 @@ $(document).on('click', '#table_opportunity_call_log_list .offcanvas-call-log-bu
     cancel_activity_btn.attr('data-id', call_log_id)
 
     $('#detail-opp').val(call_log_obj?.['opportunity']?.['code'] + ' - ' + call_log_obj?.['opportunity']?.['title']);
+    $('#is-cancelled').prop('hidden', !call_log_obj?.['is_cancelled'])
     $('#detail-process').val(call_log_obj?.['process']?.['title'] ? call_log_obj?.['process']?.['title'] : '--');
     $('#detail-stage').val(call_log_obj?.['process_stage_app']?.['title'] ? call_log_obj?.['process_stage_app']?.['title'] : '--');
     $('#detail-inheritor').val(call_log_obj?.['employee_inherit']?.['full_name']);
@@ -129,7 +130,6 @@ $(document).on('click', '#table_opportunity_call_log_list .offcanvas-call-log-bu
     $('#detail-result-text-area').text(call_log_obj?.['input_result']);
     $('#detail-repeat-activity').prop('checked', call_log_obj?.['repeat']);
     cancel_activity_btn.prop('hidden', call_log_obj?.['is_cancelled'])
-    $('#is-cancelled').prop('hidden', !call_log_obj?.['is_cancelled'])
 })
 
 $(document).on('click', '#cancel-activity', function () {
@@ -266,6 +266,7 @@ class CallLogHandle {
                 has_opp: true,
                 has_inherit: true,
                 has_process: true,
+                has_prj: true,
                 inheritFlagData: {"disabled": false, "readonly": false},
             }).init();
         }

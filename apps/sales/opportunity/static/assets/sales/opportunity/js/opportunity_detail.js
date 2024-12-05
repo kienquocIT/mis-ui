@@ -148,10 +148,6 @@ $(document).ready(function () {
                         $('#check-lost-reason').prop('checked', false);
 
                     $('#input-budget').attr('value', opportunity_detail.budget_value);
-                    if (opportunity_detail?.['process']?.['id']) {
-                        $('#process-space').prop('hidden', false)
-                        $('#process-title').val(opportunity_detail?.['process']?.['title']);
-                    }
 
                     OpportunityLoadDropdown.loadCustomer(opportunity_detail.customer, config_is_AM_create, opportunity_detail?.['sale_person'].id);
                     OpportunityLoadDropdown.loadProductCategory(opportunity_detail.product_category);

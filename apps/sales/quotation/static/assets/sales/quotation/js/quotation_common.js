@@ -2363,7 +2363,6 @@ class QuotationLoadDataHandle {
                 let row = this.node();
                 if (!row.querySelector('.table-row-group')) {
                     let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
-                    $(row.querySelector('.table-row-item')).empty();
                     if (table[0].id === "datable-quotation-create-product") {  // PRODUCT
                         if (row.querySelector('.table-row-item')) {
                             QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
@@ -2384,9 +2383,7 @@ class QuotationLoadDataHandle {
                             $(row.querySelector('.table-row-supplied-by')).val(dataRow?.['supplied_by']).change();
                         }
                     }
-                    $(row.querySelector('.table-row-uom')).empty();
                     QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
-                    $(row.querySelector('.table-row-tax')).empty();
                     QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax_data']]);
                 }
             });
@@ -2395,15 +2392,11 @@ class QuotationLoadDataHandle {
             table.DataTable().rows().every(function () {
                 let row = this.node();
                 let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
-                $(row.querySelector('.table-row-item')).empty();
                 QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['expense_item_data']]);
                 if (row?.querySelector('.table-row-labor-item') && dataRow?.['is_labor'] === true) {
-                    $(row.querySelector('.table-row-labor-item')).empty();
                     QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-labor-item')), [dataRow?.['expense_data']]);
                 }
-                $(row.querySelector('.table-row-uom')).empty();
                 QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
-                $(row.querySelector('.table-row-tax')).empty();
                 QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax_data']]);
             });
         }

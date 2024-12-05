@@ -2391,6 +2391,9 @@ class LeaseOrderLoadDataHandle {
                         if (row.querySelector('.table-row-offset')) {
                             LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-offset')));
                         }
+                        if (row.querySelector('.table-row-uom-time')) {
+                            LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-time')));
+                        }
                     }
                     if (table[0].id === "datable-quotation-create-cost") {  // COST
                         if (row.querySelector('.table-row-item')) {

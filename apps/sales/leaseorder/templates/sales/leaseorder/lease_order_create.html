@@ -137,8 +137,6 @@
                             </div>
                         </div>
                     </div>
-                    {% include 'extends/recurrence/all.html' %}
-
 
                     <div class="row">
                         <div class="row">
@@ -167,7 +165,7 @@
                                         <span class="nav-link-text">{% trans 'Payment' %}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item tab-logistic">
+                                <li class="nav-item tab-logistic" hidden>
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-truck"></i></span>
                                         <span class="nav-link-text">{% trans 'Logistics' %}</span>
@@ -181,17 +179,19 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap min-w-1600p w-100 mb-5"
+                                            class="table nowrap min-w-1680p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr class="bg-light">
                                             <th></th>
                                             <th>{% trans 'Product' %}</th>
-                                            <th>{% trans 'Description' %}</th>
-                                            <th>{% trans 'UoM' %}</th>
+                                            <th>{% trans 'Asset type' %}</th>
+                                            <th>{% trans 'Offset item' %}</th>
+                                            <th>{% trans 'UOM' %}</th>
+                                            <th>{% trans 'Quantity' %}</th>
+                                            <th>{% trans 'Time UOM' %}</th>
                                             <th>{% trans 'Quantity' %}</th>
                                             <th>{% trans 'Unit Price' %}</th>
-                                            <th>{% trans 'Discount' %}</th>
                                             <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Subtotal Price' %}</th>
                                             <th></th>
@@ -201,7 +201,7 @@
                                         </tbody>
                                         <tfoot>
                                         <tr>
-                                            <th colspan="5"></th>
+                                            <th colspan="7"></th>
                                             <th colspan="5">
                                                 <div class="row mb-2">
                                                     <div class="col-6">
@@ -371,8 +371,8 @@
                                         </tbody>
                                         <tfoot>
                                         <tr>
-                                            <th colspan="4"></th>
-                                            <th colspan="4">
+                                            <th colspan="5"></th>
+                                            <th colspan="3">
                                                 <div class="row mb-2">
                                                     <div class="col-6">
                                                         <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
@@ -836,6 +836,9 @@
         data-required-contact="{% trans "Contact is required" %}"
         data-required-payment="{% trans "Payment is required" %}"
         data-required-product="{% trans "Product is required" %}"
+        data-asset-type-1="{% trans "Product" %}"
+        data-asset-type-2="{% trans "Tool" %}"
+        data-asset-type-3="{% trans "Fixed asset" %}"
     >
     <input
         type="text"

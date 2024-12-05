@@ -2,9 +2,10 @@
 class LeaseOrderLoadDataHandle {
     static $form = $('#frm_quotation_create');
     static opportunitySelectEle = $('#opportunity_id');
+    static processSelectEle$ = $('#process_id');
     static customerSelectEle = $('#customer_id');
     static contactSelectEle = $('#contact_id');
-    static paymentSelectEle = $('#payment-term_id');
+    static paymentSelectEle = $('#payment_term_id');
     static salePersonSelectEle = $('#employee_inherit_id');
     static quotationSelectEle = $('#quotation_id');
     static $btnSaveSelectProduct = $('#btn-save-select-product');
@@ -16,7 +17,13 @@ class LeaseOrderLoadDataHandle {
     static $btnSavePrice = $('#btn-save-select-price');
     static $costModal = $('#selectCostModal');
     static $btnSaveCost = $('#btn-save-select-cost');
-    static dataSuppliedBy = [{'id': 0, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-make')}];
+    static dataSuppliedBy = [{'id': 0, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-supplied-make')}];
+    static dataAssetType = [
+        {'id': '', 'title': 'Select...',},
+        {'id': 1, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-1')},
+        {'id': 2, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-2')},
+        {'id': 3, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-3')},
+    ];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
@@ -128,8 +135,8 @@ class LeaseOrderLoadDataHandle {
                     list_from_app = 'saleorder.saleorder.create';
                 }
                 $.fn.callAjax2({
-                        'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
-                        'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
+                        'url': LeaseOrderLoadDataHandle.opportunitySelectEle.attr('data-url'),
+                        'method': LeaseOrderLoadDataHandle.opportunitySelectEle.attr('data-method'),
                         'data': {'list_from_app': list_from_app, 'id': urlParams?.['opp_id']},
                     }
                 ).then(
@@ -138,9 +145,9 @@ class LeaseOrderLoadDataHandle {
                         if (data) {
                             if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                                 if (data.opportunity_list.length > 0) {
-                                    if (!QuotationLoadDataHandle.opportunitySelectEle.prop('disabled')) {
-                                        QuotationLoadDataHandle.opportunitySelectEle.trigger('change');
-                                        QuotationLoadDataHandle.loadDataByOpportunity(data.opportunity_list[0]);
+                                    if (!LeaseOrderLoadDataHandle.opportunitySelectEle.prop('disabled')) {
+                                        LeaseOrderLoadDataHandle.opportunitySelectEle.trigger('change');
+                                        LeaseOrderLoadDataHandle.loadDataByOpportunity(data.opportunity_list[0]);
                                     }
                                     return true;
                                 }
@@ -157,48 +164,48 @@ class LeaseOrderLoadDataHandle {
     static loadInitInherit() {
         let dataStr = $('#employee_current').text();
         if (dataStr) {
-            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.salePersonSelectEle, [JSON.parse(dataStr)]);
+            LeaseOrderLoadDataHandle.loadInitS2(LeaseOrderLoadDataHandle.salePersonSelectEle, [JSON.parse(dataStr)]);
         }
         return true;
     };
 
     static loadDataByOpportunity(oppData) {
         let tableProduct = $('#datable-quotation-create-product');
-        if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) {
-            QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
-            QuotationLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
-            QuotationLoadDataHandle.contactSelectEle[0].setAttribute('readonly', 'true');
+        if ($(LeaseOrderLoadDataHandle.opportunitySelectEle).val()) {
+            LeaseOrderLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
+            LeaseOrderLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
+            LeaseOrderLoadDataHandle.contactSelectEle[0].setAttribute('readonly', 'true');
             // load sale person
-            QuotationLoadDataHandle.salePersonSelectEle.empty();
-            QuotationLoadDataHandle.salePersonSelectEle.initSelect2({
+            LeaseOrderLoadDataHandle.salePersonSelectEle.empty();
+            LeaseOrderLoadDataHandle.salePersonSelectEle.initSelect2({
                 data: oppData?.['sale_person'],
                 'allowClear': true,
             });
             // load customer
-            if (QuotationLoadDataHandle.customerInitEle.val()) {
-                let initCustomer = JSON.parse(QuotationLoadDataHandle.customerInitEle.val());
-                QuotationLoadDataHandle.customerSelectEle.empty();
-                QuotationLoadDataHandle.customerSelectEle.initSelect2({
+            if (LeaseOrderLoadDataHandle.customerInitEle.val()) {
+                let initCustomer = JSON.parse(LeaseOrderLoadDataHandle.customerInitEle.val());
+                LeaseOrderLoadDataHandle.customerSelectEle.empty();
+                LeaseOrderLoadDataHandle.customerSelectEle.initSelect2({
                     data: initCustomer?.[oppData?.['customer']?.['id']],
                 });
-                QuotationLoadDataHandle.customerSelectEle.trigger('change');
+                LeaseOrderLoadDataHandle.customerSelectEle.trigger('change');
             }
         } else {
-            QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
-            QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
-            QuotationLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
+            LeaseOrderLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
+            LeaseOrderLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
+            LeaseOrderLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
         }
         // Delete all promotion rows
         deletePromotionRows(tableProduct, true, false);
         // Delete all shipping rows
         deletePromotionRows(tableProduct, false, true);
         // ReCheck Config when change Opportunity
-        QuotationCheckConfigHandle.checkConfig(0);
+        LeaseOrderCheckConfigHandle.checkConfig(0);
         // check ProductBOM
-        for (let eleProduct of QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-item')) {
+        for (let eleProduct of LeaseOrderDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-item')) {
             let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
             if (dataProduct) {
-                let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(dataProduct);
+                let checkBOM = LeaseOrderLoadDataHandle.loadCheckProductBOM(dataProduct);
                 if (checkBOM?.['is_pass'] === false) {
                     if (eleProduct.closest('tr')) {
                         if (eleProduct.closest('tr').querySelector('.del-row')) {
@@ -212,7 +219,7 @@ class LeaseOrderLoadDataHandle {
 
     static loadInitCustomer() {
         let result = {};
-        let ele = QuotationLoadDataHandle.customerInitEle;
+        let ele = LeaseOrderLoadDataHandle.customerInitEle;
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax2({
@@ -238,46 +245,46 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadBoxQuotationCustomer(dataCustomer = {}) {
-        QuotationLoadDataHandle.customerSelectEle.empty();
+        LeaseOrderLoadDataHandle.customerSelectEle.empty();
         let form = $('#frm_quotation_create');
         let data_filter = {};
         let sale_person_id = null;
         let employee_current_data = JSON.parse($('#employee_current').text());
         sale_person_id = employee_current_data?.['id'];
-        if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
-            sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val();
+        if (LeaseOrderLoadDataHandle.salePersonSelectEle.val()) {
+            sale_person_id = LeaseOrderLoadDataHandle.salePersonSelectEle.val();
         }
         data_filter['employee__id'] = sale_person_id;
         if (sale_person_id) { // Has SalePerson
-            QuotationLoadDataHandle.customerSelectEle.initSelect2({
+            LeaseOrderLoadDataHandle.customerSelectEle.initSelect2({
                 data: dataCustomer,
                 'dataParams': data_filter,
-                disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
+                disabled: !(LeaseOrderLoadDataHandle.customerSelectEle.attr('data-url')),
             });
         } else { // No SalePerson
-            QuotationLoadDataHandle.customerSelectEle.initSelect2({
+            LeaseOrderLoadDataHandle.customerSelectEle.initSelect2({
                 data: dataCustomer,
-                disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
+                disabled: !(LeaseOrderLoadDataHandle.customerSelectEle.attr('data-url')),
             });
         }
         if (form.attr('data-method').toLowerCase() !== 'get') {
             if (!dataCustomer?.['is_copy']) {
-                QuotationLoadDataHandle.loadDataProductAll();
+                LeaseOrderLoadDataHandle.loadDataProductAll();
             }
         }
     };
 
     static loadDataByCustomer() {
         let tableProduct = $('#datable-quotation-create-product');
-        QuotationLoadDataHandle.loadBoxQuotationContact();
-        QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-        QuotationLoadDataHandle.loadChangePaymentTerm();
-        if (QuotationLoadDataHandle.customerSelectEle.val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
+        LeaseOrderLoadDataHandle.loadBoxQuotationContact();
+        LeaseOrderLoadDataHandle.loadBoxQuotationPaymentTerm();
+        LeaseOrderLoadDataHandle.loadChangePaymentTerm();
+        if (LeaseOrderLoadDataHandle.customerSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.customerSelectEle, LeaseOrderLoadDataHandle.customerSelectEle.val());
             if (dataSelected) {
                 // load Shipping & Billing by Customer
-                QuotationLoadDataHandle.loadShippingBillingCustomer();
-                QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
+                LeaseOrderLoadDataHandle.loadShippingBillingCustomer();
+                LeaseOrderLoadDataHandle.loadShippingBillingCustomer(dataSelected);
                 // clear shipping + billing text area
                 $('#quotation-create-shipping-address')[0].value = '';
                 $('#quotation-create-customer-shipping').val('');
@@ -296,13 +303,13 @@ class LeaseOrderLoadDataHandle {
         // Delete all shipping rows
         deletePromotionRows(tableProduct, false, true);
         // load again price of product by customer price list then Re Calculate
-        QuotationLoadDataHandle.loadDataProductAll();
+        LeaseOrderLoadDataHandle.loadDataProductAll();
     };
 
     static loadBoxQuotationContact(dataContact = {}, customerID = null) {
-        QuotationLoadDataHandle.contactSelectEle.empty();
-        if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
+        LeaseOrderLoadDataHandle.contactSelectEle.empty();
+        if ($(LeaseOrderLoadDataHandle.customerSelectEle).val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.customerSelectEle, $(LeaseOrderLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
                 if (dataSelected?.['contact_mapped']) {
                     dataContact = dataSelected?.['contact_mapped'];
@@ -313,24 +320,23 @@ class LeaseOrderLoadDataHandle {
                 customerID = dataSelected?.['id'];
             }
         }
-        QuotationLoadDataHandle.contactSelectEle.initSelect2({
+        LeaseOrderLoadDataHandle.contactSelectEle.initSelect2({
             data: dataContact,
             'dataParams': {'account_name_id': customerID},
-            disabled: !(QuotationLoadDataHandle.contactSelectEle.attr('data-url')),
+            disabled: !(LeaseOrderLoadDataHandle.contactSelectEle.attr('data-url')),
             callbackTextDisplay: function (item) {
                 return item?.['fullname'] || '';
             },
         });
     };
 
-    static loadBoxQuotationPaymentTerm(dataPayment = {}) {
-        QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle);
-        if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
+    static loadBoxQuotationPaymentTerm() {
+        LeaseOrderLoadDataHandle.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle);
+        if ($(LeaseOrderLoadDataHandle.customerSelectEle).val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.customerSelectEle, $(LeaseOrderLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
                 if (dataSelected?.['payment_term_customer_mapped']) {
-                    dataPayment = dataSelected?.['payment_term_customer_mapped'];
-                    QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [dataPayment]);
+                    LeaseOrderLoadDataHandle.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [dataSelected?.['payment_term_customer_mapped']]);
                 }
             }
         }
@@ -338,12 +344,12 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadDataBySalePerson() {
-        if (!QuotationLoadDataHandle.opportunitySelectEle.val()) {
+        if (!LeaseOrderLoadDataHandle.opportunitySelectEle.val()) {
             // load opp
-            if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
-                QuotationLoadDataHandle.opportunitySelectEle.empty();
-                QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
-                    'dataParams': {'employee_inherit': QuotationLoadDataHandle.salePersonSelectEle.val()},
+            if (LeaseOrderLoadDataHandle.salePersonSelectEle.val()) {
+                LeaseOrderLoadDataHandle.opportunitySelectEle.empty();
+                LeaseOrderLoadDataHandle.opportunitySelectEle.initSelect2({
+                    'dataParams': {'employee_inherit': LeaseOrderLoadDataHandle.salePersonSelectEle.val()},
                     'allowClear': true,
                     templateResult: function (state) {
                         let titleHTML = `<span>${state.data?.title ? state.data.title : "_"}</span>`
@@ -352,8 +358,8 @@ class LeaseOrderLoadDataHandle {
                     },
                 });
             } else {
-                QuotationLoadDataHandle.opportunitySelectEle.empty();
-                QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
+                LeaseOrderLoadDataHandle.opportunitySelectEle.empty();
+                LeaseOrderLoadDataHandle.opportunitySelectEle.initSelect2({
                     'allowClear': true,
                     templateResult: function (state) {
                         let titleHTML = `<span>${state.data?.title ? state.data.title : "_"}</span>`
@@ -363,9 +369,9 @@ class LeaseOrderLoadDataHandle {
                 });
             }
             // load customer, contact, payment
-            QuotationLoadDataHandle.loadBoxQuotationCustomer();
-            QuotationLoadDataHandle.loadBoxQuotationContact();
-            QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+            LeaseOrderLoadDataHandle.loadBoxQuotationCustomer();
+            LeaseOrderLoadDataHandle.loadBoxQuotationContact();
+            LeaseOrderLoadDataHandle.loadBoxQuotationPaymentTerm();
         }
     };
 
@@ -410,8 +416,8 @@ class LeaseOrderLoadDataHandle {
         let fnData = [];
         WindowControl.showLoading();
         $.fn.callAjax2({
-                'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
-                'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
+                'url': LeaseOrderDataTableHandle.productInitEle.attr('data-url'),
+                'method': LeaseOrderDataTableHandle.productInitEle.attr('data-method'),
                 'isDropdown': true,
             }
         ).then(
@@ -426,9 +432,9 @@ class LeaseOrderLoadDataHandle {
                                 }
                             }
                         }
-                        QuotationDataTableHandle.$tableSProduct.DataTable().clear().draw();
-                        QuotationDataTableHandle.$tableSProduct.DataTable().rows.add(fnData).draw();
-                        QuotationDataTableHandle.productInitEle.val(JSON.stringify(fnData));
+                        LeaseOrderDataTableHandle.$tableSProduct.DataTable().clear().draw();
+                        LeaseOrderDataTableHandle.$tableSProduct.DataTable().rows.add(fnData).draw();
+                        LeaseOrderDataTableHandle.productInitEle.val(JSON.stringify(fnData));
                         WindowControl.hideLoading();
                     }
                 }
@@ -439,9 +445,9 @@ class LeaseOrderLoadDataHandle {
     static loadCheckProductBOM(data) {
         let check = true;
         let note_type = 'data-product-note-2';
-        if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+        if (LeaseOrderLoadDataHandle.opportunitySelectEle.val()) {
             if (data?.['bom_check_data']?.['is_bom_opp'] === true) {
-                if (data?.['bom_check_data']?.['is_so_finished'] === false && data?.['bom_data']?.['opportunity']?.['id'] !== QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                if (data?.['bom_check_data']?.['is_so_finished'] === false && data?.['bom_data']?.['opportunity']?.['id'] !== LeaseOrderLoadDataHandle.opportunitySelectEle.val()) {
                     check = false;
                 }
                 if (data?.['bom_check_data']?.['is_so_finished'] === true && data?.['bom_check_data']?.['is_so_using'] === true) {
@@ -465,8 +471,8 @@ class LeaseOrderLoadDataHandle {
 
     static loadBoxQuotationProduct($ele, dataProduct = {}) {
         let dataDD = []
-        if (QuotationDataTableHandle.productInitEle.val()) {
-            dataDD = JSON.parse(QuotationDataTableHandle.productInitEle.val());
+        if (LeaseOrderDataTableHandle.productInitEle.val()) {
+            dataDD = JSON.parse(LeaseOrderDataTableHandle.productInitEle.val());
         }
         if (Object.keys(dataProduct).length > 0) {
             dataDD = dataProduct
@@ -475,7 +481,7 @@ class LeaseOrderLoadDataHandle {
             data: dataDD,
         });
         // add css to select2_rendered
-        QuotationLoadDataHandle.loadCssS2($ele, '260px');
+        LeaseOrderLoadDataHandle.loadCssS2($ele, '260px');
     };
 
     static loadBtnAddProductS2(row) {
@@ -495,7 +501,7 @@ class LeaseOrderLoadDataHandle {
                     if (eleResult) {
                         if (!$form[0].classList.contains('sale-order')) {
                             $(eleResult).before(`<button type="button" class="btn btn-link btn-animated" id="${addProductID}" data-bs-toggle="modal" data-bs-target="#addQuickProduct">
-                                                    <span><span class="icon"><i class="far fa-plus-square"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add-new')}</span></span>
+                                                    <span><span class="icon"><i class="far fa-plus-square"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add-new')}</span></span>
                                                 </button>`);
                         }
                     }
@@ -546,14 +552,14 @@ class LeaseOrderLoadDataHandle {
                                         if (data) {
                                             if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
                                                 let dataHasOpp = data.quotation_list.concat(dataInit);
-                                                QuotationDataTableHandle.dataTableCopyQuotation(dataHasOpp);
+                                                LeaseOrderDataTableHandle.dataTableCopyQuotation(dataHasOpp);
                                                 WindowControl.hideLoading();
                                             }
                                         }
                                     }
                                 )
                             } else {
-                                QuotationDataTableHandle.dataTableCopyQuotation(dataInit);
+                                LeaseOrderDataTableHandle.dataTableCopyQuotation(dataInit);
                                 WindowControl.hideLoading();
                             }
                         }
@@ -561,7 +567,7 @@ class LeaseOrderLoadDataHandle {
                 }
             )
         } else {
-            QuotationDataTableHandle.dataTableCopyQuotation();
+            LeaseOrderDataTableHandle.dataTableCopyQuotation();
             WindowControl.hideLoading();
         }
         return true;
@@ -577,7 +583,7 @@ class LeaseOrderLoadDataHandle {
                     $(modalShippingContent).append(`<div class="ml-1 shipping-group">
                                                         <textarea class="form-control show-not-edit shipping-content disabled-custom-show mb-2" rows="3" cols="50" id="${shipping.id}" disabled>${shipping.full_address}</textarea>
                                                         <div class="d-flex justify-content-end">
-                                                            <button type="button" class="btn btn-primary choose-shipping" data-bs-dismiss="modal" id="${shipping.id}" data-address="${shipping.full_address}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
+                                                            <button type="button" class="btn btn-primary choose-shipping" data-bs-dismiss="modal" id="${shipping.id}" data-address="${shipping.full_address}">${LeaseOrderLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                     <br>`)
@@ -593,57 +599,12 @@ class LeaseOrderLoadDataHandle {
                     $(modalBillingContent).append(`<div class="ml-1 billing-group">
                                                         <textarea class="form-control show-not-edit billing-content disabled-custom-show mb-2" rows="3" cols="50" id="${billing.id}" disabled>${billing.full_address}</textarea>
                                                         <div class="d-flex justify-content-end">
-                                                            <button type="button" class="btn btn-primary choose-billing" data-bs-dismiss="modal" id="${billing.id}" data-address="${billing.full_address}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
+                                                            <button type="button" class="btn btn-primary choose-billing" data-bs-dismiss="modal" id="${billing.id}" data-address="${billing.full_address}">${LeaseOrderLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                     <br>`)
                 }
             }
-        }
-    };
-
-    static loadBoxSaleOrderQuotation(quotation_id, valueToSelect = null, opp_id = null, sale_person_id = null) {
-        let jqueryId = '#' + quotation_id;
-        let ele = $(jqueryId);
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        if (sale_person_id) {
-            let data_filter = {'employee_inherit': sale_person_id};
-            if (opp_id) {
-                data_filter = {
-                    'employee_inherit': sale_person_id,
-                    'opportunity': opp_id
-                }
-            }
-            $.fn.callAjax(url, method, data_filter).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        ele.empty();
-                        if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
-                            ele.append(`<option value=""></option>`);
-                            data.quotation_list.map(function (item) {
-                                let dataStr = JSON.stringify({
-                                    'id': item.id,
-                                    'title': item.title,
-                                    'code': item.code,
-                                }).replace(/"/g, "&quot;");
-                                let option = `<option value="${item.id}">
-                                            <span class="quotation-title">${item.title}</span>
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
-                                if (valueToSelect && valueToSelect === item.id) {
-                                    option = `<option value="${item.id}" selected>
-                                            <span class="quotation-title">${item.title}</span>
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
-                                }
-                                ele.append(option)
-                            });
-                        }
-                    }
-                }
-            )
         }
     };
 
@@ -691,7 +652,7 @@ class LeaseOrderLoadDataHandle {
         let dataTarget = ele.getAttribute('data-bs-target');
         let dataTargetNoDot = dataTarget.replace(".", "");
         if (dataTarget) {
-            let upperGroupsClass = QuotationLoadDataHandle.decrementGroupString(dataTargetNoDot);
+            let upperGroupsClass = LeaseOrderLoadDataHandle.decrementGroupString(dataTargetNoDot);
             for (let upperGroupClass of upperGroupsClass) {
                 let upperGroupClassDot = '.' + upperGroupClass;
                 let dataGrOrder = upperGroupClass.replace("group-", "");
@@ -728,13 +689,13 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadNewProduct() {
-        QuotationDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
+        LeaseOrderDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
             let row = this.node();
             if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
                 if (row.querySelector('.table-row-checkbox').getAttribute('data-row')) {
                     let dataRow = JSON.parse(row.querySelector('.table-row-checkbox').getAttribute('data-row'));
-                    if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
-                        QuotationLoadDataHandle.loadAddRowProduct(dataRow);
+                    if (!LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
+                        LeaseOrderLoadDataHandle.loadAddRowProduct(dataRow);
                     }
                 }
             }
@@ -749,7 +710,7 @@ class LeaseOrderLoadDataHandle {
         // Delete all shipping rows
         deletePromotionRows(tableProduct, false, true);
         // ReCalculate Total
-        QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
+        LeaseOrderCalculateCaseHandle.updateTotal(tableProduct[0]);
         let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
         let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
         let order = (TotalOrder - TotalGroup) + 1;
@@ -771,20 +732,27 @@ class LeaseOrderLoadDataHandle {
         // check disable
         tableProduct.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         // check config for new row
-        QuotationCheckConfigHandle.checkConfig(1, newRow);
+        LeaseOrderCheckConfigHandle.checkConfig(1, newRow);
         // load data dropdown
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')), [data]);
-        // $(newRow.querySelector('.table-row-item')).val('').trigger('change');
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+        let eleProduct = newRow.querySelector('.table-row-item');
+        let eleAssetType = newRow.querySelector('.table-row-asset-type');
+        let eleOffset = newRow.querySelector('.table-row-offset');
+        let eleUOM = newRow.querySelector('.table-row-uom');
+        let eleUOMTime = newRow.querySelector('.table-row-uom-time');
+        let eleTax = newRow.querySelector('.table-row-tax');
+        LeaseOrderLoadDataHandle.loadInitS2($(eleProduct), [data]);
+        LeaseOrderLoadDataHandle.loadInitS2($(eleAssetType), LeaseOrderLoadDataHandle.dataAssetType);
+        LeaseOrderLoadDataHandle.loadInitS2($(eleOffset));
+        LeaseOrderLoadDataHandle.loadInitS2($(eleUOM));
+        LeaseOrderLoadDataHandle.loadInitS2($(eleUOMTime));
+        LeaseOrderLoadDataHandle.loadInitS2($(eleTax));
         // add css to select2_rendered
-        QuotationLoadDataHandle.loadCssS2($(newRow.querySelector('.table-row-item')), '260px');
+        LeaseOrderLoadDataHandle.loadCssS2($(eleProduct), '260px');
 
-        $(newRow.querySelector('.table-row-item')).trigger('change');
-        $(newRow.querySelector('.table-row-item')).attr('data-product-id', data?.['id']);
+        $(eleProduct).trigger('change');
+        $(eleProduct).attr('data-product-id', data?.['id']);
         // load again table cost
-        // QuotationLoadDataHandle.loadDataTableCost();
-        QuotationLoadDataHandle.loadSetWFRuntimeZone();
+        LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
         // add classes for collapse
         let eleGroups = tableProduct[0].querySelectorAll('.table-row-group');
         if (eleGroups) {
@@ -815,7 +783,7 @@ class LeaseOrderLoadDataHandle {
                 let description = ele[0].closest('tr').querySelector('.table-row-description');
                 let uom = ele[0].closest('tr').querySelector('.table-row-uom');
                 let price = ele[0].closest('tr').querySelector('.table-row-price');
-                let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
+                let modalBody = LeaseOrderLoadDataHandle.$priceModal[0].querySelector('.modal-body');
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
                 // load Description
                 if (description) {
@@ -824,21 +792,21 @@ class LeaseOrderLoadDataHandle {
                 // load UOM
                 if (uom && data?.['unit_of_measure'] && data?.['uom_group']) {
                     $(uom).empty();
-                    QuotationLoadDataHandle.loadInitS2($(uom), [data?.['unit_of_measure']], {'group': data?.['uom_group']?.['id']});
+                    LeaseOrderLoadDataHandle.loadInitS2($(uom), [data?.['unit_of_measure']], {'group': data?.['uom_group']?.['id']});
                 } else {
-                    QuotationLoadDataHandle.loadInitS2($(uom));
+                    LeaseOrderLoadDataHandle.loadInitS2($(uom));
                 }
                 // load PRICE
                 if (price && modalBody) {
-                    let lastPrice = QuotationLoadDataHandle.loadPriceProduct(ele[0]);
+                    let lastPrice = LeaseOrderLoadDataHandle.loadPriceProduct(ele[0]);
                     $(price).attr('value', String(lastPrice));
                 }
                 // load TAX
                 if (tax && data?.['tax']) {
                     $(tax).empty();
-                    QuotationLoadDataHandle.loadInitS2($(tax), [data?.['tax']]);
+                    LeaseOrderLoadDataHandle.loadInitS2($(tax), [data?.['tax']]);
                 } else {
-                    QuotationLoadDataHandle.loadInitS2($(tax));
+                    LeaseOrderLoadDataHandle.loadInitS2($(tax));
                 }
             }
             $.fn.initMaskMoney2();
@@ -859,11 +827,11 @@ class LeaseOrderLoadDataHandle {
                 let data = productData;
                 let priceGr = row.querySelector('.input-group-price');
                 let price = row.querySelector('.table-row-price');
-                let modalBody= QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
+                let modalBody= LeaseOrderLoadDataHandle.$priceModal[0].querySelector('.modal-body');
                 // load PRICE
                 if (priceGr && price && modalBody) {
                     let account_price_id = null;
-                    let dataAcc = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
+                    let dataAcc = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.customerSelectEle, LeaseOrderLoadDataHandle.customerSelectEle.val());
                     if (dataAcc) {
                         if (dataAcc?.['price_list_mapped']?.['id']) {
                             account_price_id = dataAcc?.['price_list_mapped']?.['id']
@@ -923,7 +891,7 @@ class LeaseOrderLoadDataHandle {
                         deletePromotionRows($(tableProduct), true, false);
                         deletePromotionRows($(tableProduct), false, true);
                     }
-                    QuotationLoadDataHandle.loadEventRadio(QuotationLoadDataHandle.$priceModal);
+                    LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderLoadDataHandle.$priceModal);
                     $.fn.initMaskMoney2();
                     return lastPrice;
                 }
@@ -1076,12 +1044,11 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadReInitDataTableProduct() {
-        let $form = $('#frm_quotation_create');
         let $table = $('#datable-quotation-create-product');
         let tableData = [];
         let dataDetail = {};
         let dataPriceJSON = {};
-        if ($form.attr('data-method').toLowerCase() === 'get') {
+        if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             let eleDetail = $('#quotation-detail-data');
             if (eleDetail && eleDetail.length > 0) {
                 if (eleDetail.val()) {
@@ -1114,8 +1081,8 @@ class LeaseOrderLoadDataHandle {
             })
         }
         $table.DataTable().destroy();
-        QuotationDataTableHandle.dataTableProduct();
-        if (tableData.length === 0 && $form.attr('data-method').toLowerCase() === 'put') {
+        LeaseOrderDataTableHandle.dataTableProduct();
+        if (tableData.length === 0 && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
             let eleDetail = $('#quotation-detail-data');
             if (eleDetail && eleDetail.length > 0) {
                 if (eleDetail.val()) {
@@ -1131,14 +1098,14 @@ class LeaseOrderLoadDataHandle {
         }
         $table.DataTable().rows.add(tableData).draw();
         // load dropdowns
-        QuotationLoadDataHandle.loadDropDowns($table);
+        LeaseOrderLoadDataHandle.loadDropDowns($table);
         // load price
-        if ($form.attr('data-method').toLowerCase() !== 'get') {
-            QuotationLoadDataHandle.loadReInitPrice(dataPriceJSON);
+        if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
+            LeaseOrderLoadDataHandle.loadReInitPrice(dataPriceJSON);
         }
         $table.DataTable().rows().every(function () {
             let row = this.node();
-            QuotationCheckConfigHandle.checkConfig(1, row);
+            LeaseOrderCheckConfigHandle.checkConfig(1, row);
             // load product group
             if (row.querySelector('.table-row-group')) {
                 let eleGroupEdit = row.querySelector('.table-row-group-title-edit');
@@ -1153,8 +1120,8 @@ class LeaseOrderLoadDataHandle {
                 $(row).find('td:eq(1)').attr('colspan', 2);
             }
             if (row.querySelector('.table-row-item')) {
-                QuotationLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '260px');
-                QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
+                LeaseOrderLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '260px');
+                LeaseOrderLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
                     let dataRowRaw = eleOrder.getAttribute('data-row');
@@ -1172,19 +1139,19 @@ class LeaseOrderLoadDataHandle {
                 }
             }
             if (row.querySelector('.table-row-shipping')) {
-                QuotationLoadDataHandle.loadRowDisabled(row);
+                LeaseOrderLoadDataHandle.loadRowDisabled(row);
             }
             if (row.querySelector('.table-row-promotion')) {
-                QuotationLoadDataHandle.loadRowDisabled(row);
+                LeaseOrderLoadDataHandle.loadRowDisabled(row);
             }
         });
         // load disabled if page detail
-        if ($form.attr('data-method').toLowerCase() === 'get') {
-            QuotationLoadDataHandle.loadTableDisabled($table);
+        if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            LeaseOrderLoadDataHandle.loadTableDisabled($table);
         }
         $.fn.initMaskMoney2();
         // set again WF runtime
-        QuotationLoadDataHandle.loadSetWFRuntimeZone();
+        LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
     };
 
     static loadReInitDataTableExpense() {
@@ -1216,7 +1183,7 @@ class LeaseOrderLoadDataHandle {
             })
         }
         $table.DataTable().destroy();
-        QuotationDataTableHandle.dataTableExpense();
+        LeaseOrderDataTableHandle.dataTableExpense();
         if (tableData.length === 0 && $form.attr('data-method').toLowerCase() === 'put') {
             let eleDetail = $('#quotation-detail-data');
             if (eleDetail && eleDetail.length > 0) {
@@ -1233,12 +1200,12 @@ class LeaseOrderLoadDataHandle {
         }
         $table.DataTable().rows.add(tableData).draw();
         if ($form.attr('data-method').toLowerCase() === 'get') {
-            QuotationLoadDataHandle.loadTableDisabled($table);
+            LeaseOrderLoadDataHandle.loadTableDisabled($table);
         }
-        QuotationLoadDataHandle.loadDropDowns($table);
+        LeaseOrderLoadDataHandle.loadDropDowns($table);
         $.fn.initMaskMoney2();
         // set again WF runtime
-        QuotationLoadDataHandle.loadSetWFRuntimeZone();
+        LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
     };
 
     static loadReInitPrice(data) {
@@ -1267,8 +1234,8 @@ class LeaseOrderLoadDataHandle {
     static loadBalanceValPaymentTerm() {
         let totalValue = 0;
         let term = [];
-        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+        if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
             if (dataSelected) {
                 term = dataSelected?.['term'];
                 for (let termDataCheck of term) {
@@ -1286,8 +1253,8 @@ class LeaseOrderLoadDataHandle {
         if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
             let $table = $('#datable-quotation-payment-stage');
             let term = [];
-            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+            if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
                 if (dataSelected) {
                     term = dataSelected?.['term'];
                     let dataDateType = JSON.parse($('#payment_date_type').text());
@@ -1295,7 +1262,7 @@ class LeaseOrderLoadDataHandle {
                         // termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
-                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
+                            termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
                         }
                     }
                 }
@@ -1359,8 +1326,8 @@ class LeaseOrderLoadDataHandle {
             // load init data
             let term = [];
             let isDisabled = true;
-            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+            if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
                 if (dataSelected) {
                     isDisabled = false;
                     term = dataSelected?.['term'];
@@ -1369,7 +1336,7 @@ class LeaseOrderLoadDataHandle {
                         // termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
-                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
+                            termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
                         }
                     }
                 }
@@ -1423,7 +1390,7 @@ class LeaseOrderLoadDataHandle {
                 if (dataSelected?.['value']) {
                     eleRatio.value = parseFloat(dataSelected?.['value']);
                 }
-                QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBT, dataSelected?.['value']);
+                LeaseOrderLoadDataHandle.loadPSValueBeforeTax(eleValueBT, dataSelected?.['value']);
                 eleDueDate.setAttribute('disabled', 'true');
                 let date = $(eleDate).val();
                 if (date && dataSelected?.['no_of_days']) {
@@ -1472,7 +1439,7 @@ class LeaseOrderLoadDataHandle {
             let eleRatio = row.querySelector('.table-row-ratio');
             let eleValueBT = row.querySelector('.table-row-value-before-tax');
             if (eleTerm && eleRatio && eleValueBT) {
-                QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBT, $(eleRatio).val());
+                LeaseOrderLoadDataHandle.loadPSValueBeforeTax(eleValueBT, $(eleRatio).val());
             }
         });
     };
@@ -1520,7 +1487,7 @@ class LeaseOrderLoadDataHandle {
                 }
             }
             if (isHidden === true) {  // product is zone hidden
-                let storeDetail = JSON.parse(QuotationLoadDataHandle.$eleStoreDetail.val());
+                let storeDetail = JSON.parse(LeaseOrderLoadDataHandle.$eleStoreDetail.val());
                 for (let data of storeDetail?.[dataZone]) {
                     let valueQuantity = 0;
                     let valueTaxAmount = 0;
@@ -1547,11 +1514,11 @@ class LeaseOrderLoadDataHandle {
                             "product_subtotal_price": valueSubtotal,
                         }
                         let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                        QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
+                        LeaseOrderLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
                         $(newRow.querySelector('.table-row-item')).attr('data-product-id', dataProduct?.['id']);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
+                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
+                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
+                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), LeaseOrderLoadDataHandle.dataSuppliedBy);
                         $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['supplied_by'] ? dataProduct?.['supplied_by'] : 0).change();
                     }
                     if (data?.['shipping_data']?.['id']) { // SHIPPING
@@ -1580,8 +1547,8 @@ class LeaseOrderLoadDataHandle {
                             "shipping_data": dataShipping,
                         }
                         let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
+                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
+                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
                     }
                 }
             } else {  // product is not zone hidden
@@ -1622,11 +1589,11 @@ class LeaseOrderLoadDataHandle {
                             "product_subtotal_price": valueSubtotal,
                         }
                         let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                        QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
+                        LeaseOrderLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
                         $(newRow.querySelector('.table-row-item')).attr('data-product-id', dataProduct?.['id']);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
+                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
+                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
+                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), LeaseOrderLoadDataHandle.dataSuppliedBy);
                         $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['supplied_by'] ? dataProduct?.['supplied_by'] : 0).change();
                     }
                     if (shipping) { // SHIPPING
@@ -1656,14 +1623,14 @@ class LeaseOrderLoadDataHandle {
                                 "shipping_data": dataShipping,
                             }
                             let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                            QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                            QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
+                            LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
+                            LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
                         }
                     }
                 })
             }
             // Re calculate
-            QuotationCalculateCaseHandle.calculateAllRowsTableCost();
+            LeaseOrderCalculateCaseHandle.calculateAllRowsTableCost();
             // load cost list
             $table.DataTable().rows().every(function () {
                 let row = this.node();
@@ -1678,7 +1645,7 @@ class LeaseOrderLoadDataHandle {
                         if (storeCost.hasOwnProperty(dataProduct?.['id'])) {
                             $(elePrice).attr('value', String(storeCost?.[dataProduct?.['id']]?.['product_cost_price']));
                             $.fn.initMaskMoney2();
-                            QuotationCalculateCaseHandle.commonCalculate($table, row);
+                            LeaseOrderCalculateCaseHandle.commonCalculate($table, row);
                             if (storeCost?.[dataProduct?.['id']]?.['warehouse_data']) {
                                 $(elePrice).attr('data-wh', storeCost?.[dataProduct?.['id']]?.['warehouse_data'])
                             }
@@ -1686,7 +1653,7 @@ class LeaseOrderLoadDataHandle {
                     }
                 }
             });
-            QuotationLoadDataHandle.loadSetWFRuntimeZone();
+            LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
         }
     };
 
@@ -1698,7 +1665,7 @@ class LeaseOrderLoadDataHandle {
                 // call ajax check BOM
                 WindowControl.showLoading();
                 $.fn.callAjax2({
-                        'url': QuotationLoadDataHandle.urlEle.attr('data-md-bom'),
+                        'url': LeaseOrderLoadDataHandle.urlEle.attr('data-md-bom'),
                         'method': 'GET',
                         'data': {
                             'product_id': productData?.['id'],
@@ -1725,14 +1692,14 @@ class LeaseOrderLoadDataHandle {
                                     if (elePrice) {
                                         // elePrice.setAttribute('disabled', 'true');
                                         $(elePrice).attr('value', String(data.bom_order_list[0]?.['sum_price']));
-                                        QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                                        LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
                                         $.fn.initMaskMoney2();
                                         if (btnSCost) {
                                             // btnSCost.setAttribute('disabled', 'true');
                                         }
                                     }
                                 }
-                                QuotationLoadDataHandle.loadCostWHProduct(eleProduct, {'costBom': costBom, 'costStandard': costStandard});
+                                LeaseOrderLoadDataHandle.loadCostWHProduct(eleProduct, {'costBom': costBom, 'costStandard': costStandard});
                             }
                             WindowControl.hideLoading();
                         }
@@ -1752,10 +1719,10 @@ class LeaseOrderLoadDataHandle {
         }
         if (productData && row) {
             let priceGr = row.querySelector('.input-group-price');
-            let modalBody = QuotationLoadDataHandle.$costModal[0].querySelector('.modal-body');
+            let modalBody = LeaseOrderLoadDataHandle.$costModal[0].querySelector('.modal-body');
             // load PRICE
             if (priceGr && modalBody && productData?.['id']) {
-                let urlDetail = QuotationLoadDataHandle.urlEle.attr('data-md-product-detail').format_url_with_uuid(productData?.['id']);
+                let urlDetail = LeaseOrderLoadDataHandle.urlEle.attr('data-md-product-detail').format_url_with_uuid(productData?.['id']);
                 // call ajax get info product detail
                 $.fn.callAjax2({
                     url: urlDetail,
@@ -1791,28 +1758,28 @@ class LeaseOrderLoadDataHandle {
                                                     </div>`;
                                     }
                                 } else {
-                                    htmlCostList += `<p>${QuotationLoadDataHandle.transEle.attr('data-product-no-cost')}</p>`;
+                                    htmlCostList += `<p>${LeaseOrderLoadDataHandle.transEle.attr('data-product-no-cost')}</p>`;
                                 }
                                 htmlCostList += `<hr>`;
                                 htmlCostList += `<div class="d-flex justify-content-between">
                                                     <div class="form-check form-check-lg">
                                                         <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costBom'])}" data-wh="${JSON.stringify({'id': 'bom'}).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checkedBom}>
-                                                        <label class="form-check-label" for="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}">${QuotationLoadDataHandle.transEle.attr('data-cost-bom')}</label>
+                                                        <label class="form-check-label" for="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}">${LeaseOrderLoadDataHandle.transEle.attr('data-cost-bom')}</label>
                                                     </div>
                                                     <span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costBom'])}"></span>
                                                 </div>`;
                                 htmlCostList += `<div class="d-flex justify-content-between">
                                                     <div class="form-check form-check-lg">
                                                         <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costStandard'])}" data-wh="${JSON.stringify({'id': 'standard'}).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checkedStandard}>
-                                                        <label class="form-check-label" for="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}">${QuotationLoadDataHandle.transEle.attr('data-cost-standard')}</label>
+                                                        <label class="form-check-label" for="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}">${LeaseOrderLoadDataHandle.transEle.attr('data-cost-standard')}</label>
                                                     </div>
                                                     <span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costStandard'])}"></span>
                                                 </div>`;
                                 $(modalBody).append(`${htmlCostList}`);
                             }
-                            QuotationLoadDataHandle.loadEventRadio(QuotationLoadDataHandle.$costModal);
+                            LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderLoadDataHandle.$costModal);
                             $.fn.initMaskMoney2();
-                            QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                            LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
                         }
                     }
                 )
@@ -1862,9 +1829,9 @@ class LeaseOrderLoadDataHandle {
         }
         let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
         // load data dropdown
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')));
+        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
         // check disable
         tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
     };
@@ -1910,10 +1877,10 @@ class LeaseOrderLoadDataHandle {
         }
         let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
         // load data dropdown
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-labor-item')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-labor-item')));
+        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')));
+        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
         // check disable
         tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
     };
@@ -1923,12 +1890,12 @@ class LeaseOrderLoadDataHandle {
             let row = ele.closest('tr');
             let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
             if (dataSelected?.['expense_item']?.['id']) {
-                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataSelected?.['expense_item']]);
+                LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataSelected?.['expense_item']]);
             }
             if (dataSelected?.['uom']?.['id'] && dataSelected?.['uom_group']?.['id']) {
-                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataSelected?.['uom']], {'group': dataSelected?.['uom_group']?.['id']});
+                LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataSelected?.['uom']], {'group': dataSelected?.['uom_group']?.['id']});
             }
-            QuotationLoadDataHandle.loadPriceLabor(row, dataSelected, dataSelected?.['uom']?.['id']);
+            LeaseOrderLoadDataHandle.loadPriceLabor(row, dataSelected, dataSelected?.['uom']?.['id']);
         }
         return true;
     };
@@ -1995,7 +1962,7 @@ class LeaseOrderLoadDataHandle {
                 }
                 // BEGIN COPY DATA
                 if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
-                    QuotationLoadDataHandle.loadCopyData(dataCopy);
+                    LeaseOrderLoadDataHandle.loadCopyData(dataCopy);
                 } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                     // create URL and add to href
                     let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -2012,33 +1979,33 @@ class LeaseOrderLoadDataHandle {
         let $form = $('#frm_quotation_create');
         let tableProduct = $('#datable-quotation-create-product');
         document.getElementById('customer-price-list').value = dataCopy?.['customer']?.['customer_price_list'];
-        QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-        QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
-        QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-        QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
+        LeaseOrderLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+        LeaseOrderLoadDataHandle.loadDetailQuotation(dataCopy, true);
+        LeaseOrderLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+        LeaseOrderCalculateCaseHandle.calculateAllRowsTableProduct();
         // Check promotion -> re calculate
-        QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
+        LeaseOrderLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
         // Load indicator
-        indicatorHandle.loadIndicator();
+        LeaseOrderIndicatorHandle.loadIndicator();
         // Set form novalidate
         $form[0].setAttribute('novalidate', 'novalidate');
-        QuotationLoadDataHandle.loadCheckDataCopy();
+        LeaseOrderLoadDataHandle.loadCheckDataCopy();
         // set again WF runtime
-        QuotationLoadDataHandle.loadSetWFRuntimeZone();
+        LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
         return true;
     };
 
     static loadCheckDataCopy() {
         let listProductID = [];
-        for (let ele of QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-item')) {
+        for (let ele of LeaseOrderDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-item')) {
             if (ele.getAttribute('data-product-id')) {
                 listProductID.push(ele.getAttribute('data-product-id'));
             }
         }
         WindowControl.showLoading();
         $.fn.callAjax2({
-                'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
-                'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
+                'url': LeaseOrderDataTableHandle.productInitEle.attr('data-url'),
+                'method': LeaseOrderDataTableHandle.productInitEle.attr('data-method'),
                 'data': {'id__in': listProductID.join(','),},
                 'isDropdown': true,
             }
@@ -2049,12 +2016,12 @@ class LeaseOrderLoadDataHandle {
                     if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
                         let listExclude = [];
                         for (let product of data.product_sale_list) {
-                            let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(product);
+                            let checkBOM = LeaseOrderLoadDataHandle.loadCheckProductBOM(product);
                             if (checkBOM?.['is_pass'] === false) {
                                 listExclude.push(product?.['id']);
                             }
                         }
-                        for (let ele of QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-item')) {
+                        for (let ele of LeaseOrderDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-item')) {
                             if (ele.getAttribute('data-product-id')) {
                                 if (listExclude.includes(ele.getAttribute('data-product-id'))) {
                                     if (ele.closest('tr')) {
@@ -2066,7 +2033,7 @@ class LeaseOrderLoadDataHandle {
                             }
                         }
                         WindowControl.hideLoading();
-                        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
+                        $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-copy-successfully')}, 'success');
                     }
                 }
             }
@@ -2079,16 +2046,16 @@ class LeaseOrderLoadDataHandle {
         if (urlParams?.['recurrence_template_id']) {
             // call ajax get info quotation detail
             $.fn.callAjax2({
-                url: QuotationLoadDataHandle.urlEle.attr('data-so-detail').format_url_with_uuid(urlParams?.['recurrence_template_id']),
+                url: LeaseOrderLoadDataHandle.urlEle.attr('data-so-detail').format_url_with_uuid(urlParams?.['recurrence_template_id']),
                 method: 'GET',
                 isLoading: true,
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        QuotationLoadDataHandle.loadDetailQuotation(data);
-                        QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
-                        indicatorHandle.loadIndicator();
+                        LeaseOrderLoadDataHandle.loadDetailQuotation(data);
+                        LeaseOrderLoadDataHandle.loadDataTablesAndDropDowns(data);
+                        LeaseOrderIndicatorHandle.loadIndicator();
 
                         //
                         const processData = data?.['process'] || {};
@@ -2130,29 +2097,13 @@ class LeaseOrderLoadDataHandle {
         if (data?.['title'] && is_copy === false) {
             document.getElementById('quotation-create-title').value = data?.['title'];
         }
-        if (data?.['opportunity'] && data?.['sale_person']) {
-            QuotationLoadDataHandle.salePersonSelectEle.empty();
-            QuotationLoadDataHandle.opportunitySelectEle.empty();
-            QuotationLoadDataHandle.salePersonSelectEle.initSelect2({
-                data: data?.['sale_person'],
-                'allowClear': true,
-            });
-            // QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
-            //     data: data?.['opportunity'],
-            //     'allowClear': true,
-            // });
-            // QuotationLoadDataHandle.processSelectEle$.initSelect2({
-            //     data: {
-            //         ...data?.['process'],
-            //         'selected': true,
-            //     },
-            //     allowClear: true,
-            // });
+        if (data?.['sale_person']) {
+            LeaseOrderLoadDataHandle.loadInitS2(LeaseOrderLoadDataHandle.salePersonSelectEle, [data?.['sale_person']]);
         }
         if ($(form).attr('data-method').toLowerCase() !== 'get') {
-            QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
-            QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
-            QuotationLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
+            LeaseOrderLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
+            LeaseOrderLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
+            LeaseOrderLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
         }
         if (Object.keys(data?.['opportunity']).length > 0) {
             if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
@@ -2164,40 +2115,39 @@ class LeaseOrderLoadDataHandle {
                 }
             }
             if ($(form).attr('data-method').toLowerCase() !== 'get') {
-                QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
-                QuotationLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
-                QuotationLoadDataHandle.contactSelectEle[0].setAttribute('readonly', 'true');
+                LeaseOrderLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
+                LeaseOrderLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
+                LeaseOrderLoadDataHandle.contactSelectEle[0].setAttribute('readonly', 'true');
             }
         }
-        if (data?.['customer']) {
-            data['customer']['name'] = data['customer']['title'];
+        if (data?.['customer_data']) {
             if (is_copy === true) {
-                data['customer']['is_copy'] = true;
+                data['customer_data']['is_copy'] = true;
             }
-            QuotationLoadDataHandle.loadBoxQuotationCustomer(data?.['customer']);
+            LeaseOrderLoadDataHandle.loadBoxQuotationCustomer(data?.['customer_data']);
         }
         if (data?.['contact_data']) {
-            QuotationLoadDataHandle.loadBoxQuotationContact(data?.['contact_data']);
+            LeaseOrderLoadDataHandle.loadBoxQuotationContact(data?.['contact_data']);
         }
         if (data?.['payment_term_data']) {
-            QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term_data'])
+            LeaseOrderLoadDataHandle.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']]);
         }
-        if (data?.['quotation'] && data?.['sale_person']) {
-            if (data?.['quotation']?.['title']) {
-                QuotationLoadDataHandle.quotationSelectEle.val(data?.['quotation']?.['title']);
+        if (data?.['quotation_data']) {
+            if (data?.['quotation_data']?.['title']) {
+                LeaseOrderLoadDataHandle.quotationSelectEle.val(data?.['quotation_data']?.['title']);
             }
-            QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data?.['quotation']));
+            LeaseOrderLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data?.['quotation_data']));
         }
         if (data?.['date_created']) {
             $('#quotation-create-date-created').val(moment(data?.['date_created']).format('DD/MM/YYYY'));
         }
         if (data?.['is_customer_confirm'] && is_copy === false) {
-            $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
+            $('#is_customer_confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (is_copy === false) {
             // check if finish then remove hidden btnDelivery (SO)
             if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
-                if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                if (LeaseOrderLoadDataHandle.opportunitySelectEle.val()) {
                     if (data?.['opportunity']?.['is_deal_close'] === false) {
                         let btnDelivery = $('#btnDeliverySaleOrder');
                         if (btnDelivery && btnDelivery.length > 0) {
@@ -2220,14 +2170,8 @@ class LeaseOrderLoadDataHandle {
             }
         }
         if (is_copy === true) {
-            let dataQuotationCopy = {
-                'id': data?.['id'],
-                'title': data?.['title'],
-                'code': data?.['code'],
-            }
-            QuotationLoadDataHandle.quotationSelectEle.val(data?.['title']);
-            QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(dataQuotationCopy));
-
+            LeaseOrderLoadDataHandle.quotationSelectEle.val(data?.['title']);
+            LeaseOrderLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data));
         }
         if (data?.['quotation_logistic_data']) {
             document.getElementById('quotation-create-shipping-address').value = data?.['quotation_logistic_data']?.['shipping_address'];
@@ -2239,11 +2183,11 @@ class LeaseOrderLoadDataHandle {
         $('#quotation-create-customer-shipping').val(data?.['customer_shipping_id']);
         $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
         // check config
-        QuotationCheckConfigHandle.checkConfig(0);
+        LeaseOrderCheckConfigHandle.checkConfig(0);
         // load totals
-        QuotationLoadDataHandle.loadTotal(data, true, false, false);
-        QuotationLoadDataHandle.loadTotal(data, false, true, false);
-        QuotationLoadDataHandle.loadTotal(data, false, false, true);
+        LeaseOrderLoadDataHandle.loadTotal(data, true, false, false);
+        LeaseOrderLoadDataHandle.loadTotal(data, false, true, false);
+        LeaseOrderLoadDataHandle.loadTotal(data, false, false, true);
     };
 
     static loadDataProductAll() {
@@ -2252,9 +2196,9 @@ class LeaseOrderLoadDataHandle {
             let row = table.tBodies[0].rows[i];
             let eleItem = row.querySelector('.table-row-item');
             if (eleItem) {
-                QuotationLoadDataHandle.loadPriceProduct(eleItem);
+                LeaseOrderLoadDataHandle.loadPriceProduct(eleItem);
                 // Re Calculate all data of rows & total
-                QuotationCalculateCaseHandle.commonCalculate($(table), row);
+                LeaseOrderCalculateCaseHandle.commonCalculate($(table), row);
             }
         }
     };
@@ -2277,7 +2221,7 @@ class LeaseOrderLoadDataHandle {
                         ele.val(JSON.stringify(data));
                         // check SsLsRole first time
                         if (page_method === "POST" && !$('#data-init-quotation-copy-to').val()) {
-                            QuotationCheckConfigHandle.checkSsLsRole();
+                            LeaseOrderCheckConfigHandle.checkSsLsRole();
                         }
                     }
                 }
@@ -2286,8 +2230,8 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadDataTablesAndDropDowns(data) {
-        QuotationLoadDataHandle.loadDataTables(data);
-        QuotationLoadDataHandle.loadTableDropDowns();
+        LeaseOrderLoadDataHandle.loadDataTables(data);
+        LeaseOrderLoadDataHandle.loadTableDropDowns();
         return true;
     };
 
@@ -2394,11 +2338,11 @@ class LeaseOrderLoadDataHandle {
             tableIndicator.DataTable().clear().draw();
             tableIndicator.DataTable().rows.add(indicators_data).draw();
             // set disabled
-            QuotationLoadDataHandle.loadTableDisabled(tableProduct);
-            QuotationLoadDataHandle.loadTableDisabled(tableCost);
-            QuotationLoadDataHandle.loadTableDisabled(tableExpense);
+            LeaseOrderLoadDataHandle.loadTableDisabled(tableProduct);
+            LeaseOrderLoadDataHandle.loadTableDisabled(tableCost);
+            LeaseOrderLoadDataHandle.loadTableDisabled(tableExpense);
             if (form.classList.contains('sale-order')) {
-                QuotationLoadDataHandle.loadTableDisabled(tablePaymentStage);
+                LeaseOrderLoadDataHandle.loadTableDisabled(tablePaymentStage);
             }
             // mask money
             $.fn.initMaskMoney2();
@@ -2412,16 +2356,16 @@ class LeaseOrderLoadDataHandle {
         let tableExpense = $('#datable-quotation-create-expense');
         let tablePS = $('#datable-quotation-payment-stage');
         if (tableProduct && tableProduct.length > 0) {
-            QuotationLoadDataHandle.loadDropDowns(tableProduct);
+            LeaseOrderLoadDataHandle.loadDropDowns(tableProduct);
         }
         if (tableCost && tableCost.length > 0) {
-            QuotationLoadDataHandle.loadDropDowns(tableCost);
+            LeaseOrderLoadDataHandle.loadDropDowns(tableCost);
         }
         if (tableExpense && tableExpense.length > 0) {
-            QuotationLoadDataHandle.loadDropDowns(tableExpense);
+            LeaseOrderLoadDataHandle.loadDropDowns(tableExpense);
         }
         if (tablePS && tablePS.length > 0) {
-            QuotationLoadDataHandle.loadDropDowns(tablePS);
+            LeaseOrderLoadDataHandle.loadDropDowns(tablePS);
         }
     };
 
@@ -2434,28 +2378,32 @@ class LeaseOrderLoadDataHandle {
                     $(row.querySelector('.table-row-item')).empty();
                     if (table[0].id === "datable-quotation-create-product") {  // PRODUCT
                         if (row.querySelector('.table-row-item')) {
-                            QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
-                            QuotationLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '260px');
-                            QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
+                            LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
+                            LeaseOrderLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '260px');
+                            LeaseOrderLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                             for (let ele of table[0].querySelectorAll('.btn-select-price')) {
                                 ele.removeAttribute('disabled');
                             }
                         }
+                        if (row.querySelector('.table-row-asset-type')) {
+                            LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-asset-type')), LeaseOrderLoadDataHandle.dataAssetType);
+                        }
+                        if (row.querySelector('.table-row-offset')) {
+                            LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-offset')));
+                        }
                     }
                     if (table[0].id === "datable-quotation-create-cost") {  // COST
                         if (row.querySelector('.table-row-item')) {
-                            QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
-                            QuotationLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
+                            LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
+                            LeaseOrderLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
                         }
                         if (row.querySelector('.table-row-supplied-by')) {
-                            QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
+                            LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-supplied-by')), LeaseOrderLoadDataHandle.dataSuppliedBy);
                             $(row.querySelector('.table-row-supplied-by')).val(dataRow?.['supplied_by']).change();
                         }
                     }
-                    $(row.querySelector('.table-row-uom')).empty();
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
-                    $(row.querySelector('.table-row-tax')).empty();
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax_data']]);
+                    LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
+                    LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax_data']]);
                 }
             });
         }
@@ -2463,16 +2411,12 @@ class LeaseOrderLoadDataHandle {
             table.DataTable().rows().every(function () {
                 let row = this.node();
                 let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
-                $(row.querySelector('.table-row-item')).empty();
-                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['expense_item_data']]);
+                LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['expense_item_data']]);
                 if (row?.querySelector('.table-row-labor-item') && dataRow?.['is_labor'] === true) {
-                    $(row.querySelector('.table-row-labor-item')).empty();
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-labor-item')), [dataRow?.['expense_data']]);
+                    LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-labor-item')), [dataRow?.['expense_data']]);
                 }
-                $(row.querySelector('.table-row-uom')).empty();
-                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
-                $(row.querySelector('.table-row-tax')).empty();
-                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax_data']]);
+                LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
+                LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax_data']]);
             });
         }
         if (table[0].id === "datable-quotation-payment-stage") {  // PAYMENT
@@ -2483,8 +2427,8 @@ class LeaseOrderLoadDataHandle {
                 if (eleTerm) {
                     $(eleTerm).empty();
                     let term = [];
-                    if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                        let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+                    if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                        let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
                         if (dataSelected) {
                             term = dataSelected?.['term'];
                             let dataDateType = JSON.parse($('#payment_date_type').text());
@@ -2492,7 +2436,7 @@ class LeaseOrderLoadDataHandle {
                                 // termData['title'] = dataDateType[termData?.['after']][1];
                                 let isNum = parseFloat(termData?.['value']);
                                 if (!isNum) {  // balance
-                                    termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
+                                    termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
                                 }
                             }
                         }
@@ -2572,18 +2516,18 @@ class LeaseOrderLoadDataHandle {
         for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
             ele.setAttribute('readonly', 'true');
         }
-        QuotationLoadDataHandle.$btnSavePrice[0].setAttribute('disabled', 'true');
+        LeaseOrderLoadDataHandle.$btnSavePrice[0].setAttribute('disabled', 'true');
         for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
             ele.setAttribute('disabled', 'true');
         }
     };
 
     static loadReApplyPromotion(data) {
-        if (Object.keys(data?.['customer']).length > 0) {
+        if (Object.keys(data?.['customer_data']).length > 0) {
             let dataProductList = data?.['quotation_products_data'];
             for (let dataProduct of dataProductList) {
                 if (dataProduct?.['promotion_id']) {
-                    let checkData = QuotationPromotionHandle.checkPromotionValid(dataProduct?.['promotion_data'], data?.['customer']?.['id']);
+                    let checkData = QuotationPromotionHandle.checkPromotionValid(dataProduct?.['promotion_data'], data?.['customer_data']?.['id']);
                     let promotionParse = QuotationPromotionHandle.getPromotionResult(checkData);
                     let tableProduct = $('#datable-quotation-create-product');
                     if (promotionParse?.['is_discount'] === true) { // DISCOUNT
@@ -2619,7 +2563,7 @@ class LeaseOrderDataTableHandle {
 
     static dataTableProduct(data) {
         // init dataTable
-        QuotationDataTableHandle.$tableProduct.DataTableDefault({
+        LeaseOrderDataTableHandle.$tableProduct.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
             ordering: false,
@@ -2656,7 +2600,7 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '18%',
+                    width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
@@ -2684,7 +2628,7 @@ class LeaseOrderDataTableHandle {
                                             <select 
                                                 class="form-select table-row-item zone-readonly"
                                                 id="product-${row?.['order']}"
-                                                data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-product')}"
+                                                data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-product')}"
                                                 data-method="GET"
                                                 data-keyResp="product_sale_list"
                                                 data-product-id="${row?.['product_data']?.['id']}"
@@ -2699,49 +2643,45 @@ class LeaseOrderDataTableHandle {
                             if (linkDetail) {
                                 link = linkDetail.format_url_with_uuid(row?.['promotion_id']);
                             }
-                            return `<div class="table-row-promotion" data-promotion="${JSON.stringify(row?.['promotion_data']).replace(/"/g, "&quot;")}" data-id-product="${row?.['promotion_data']?.['product_data']?.['id']}"><i class="fas fa-tags mr-2"></i><span>${QuotationLoadDataHandle.transEle.attr('data-promotion')}</span></div>`;
+                            return `<div class="table-row-promotion" data-promotion="${JSON.stringify(row?.['promotion_data']).replace(/"/g, "&quot;")}" data-id-product="${row?.['promotion_data']?.['product_data']?.['id']}"><i class="fas fa-tags mr-2"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-promotion')}</span></div>`;
                         } else if (itemType === 2) { // SHIPPING
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
                             if (linkDetail) {
                                 link = linkDetail.format_url_with_uuid(row?.['shipping_id']);
                             }
-                            return `<div class="table-row-shipping" data-shipping="${JSON.stringify(row?.['shipping_data']).replace(/"/g, "&quot;")}"><i class="fas fa-shipping-fast mr-2"></i><span>${QuotationLoadDataHandle.transEle.attr('data-shipping')}</span></div>`;
+                            return `<div class="table-row-shipping" data-shipping="${JSON.stringify(row?.['shipping_data']).replace(/"/g, "&quot;")}"><i class="fas fa-shipping-fast mr-2"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-shipping')}</span></div>`;
                         }
                     }
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '10%',
                     render: (data, type, row) => {
-                        if (row?.['is_group'] === true) {
-                            return ``;
-                        }
-
-                        let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_products_data";
-                        }
-                        let itemType = 0  // product
-                        if (row?.['promotion_id']) {
-                            itemType = 1  // promotion
-                        }
-                        if (row?.['shipping_id']) {
-                            itemType = 2  // shipping
-                        }
-                        let des = "--";
-                        if (itemType === 0) {  // PRODUCT
-                            des = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '';
-                        } else if (itemType === 1) {  // PROMOTION
-                            des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '';
-                        }
-                        return `<textarea class="form-control table-row-description zone-readonly" rows="2" data-zone="${dataZone}" readonly>${des}</textarea>`;
+                        return `<select 
+                                    class="form-select table-row-asset-type"
+                                    required
+                                 >
+                                </select>`;
                     }
                 },
                 {
                     targets: 3,
-                    width: '7.8125%',
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<select 
+                                    class="form-select table-row-offset"
+                                    data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
+                                    data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-keyResp="unit_of_measure"
+                                    required
+                                 >
+                                </select>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '8%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2754,8 +2694,8 @@ class LeaseOrderDataTableHandle {
                         }
                         return `<select 
                                     class="form-select table-row-uom"
-                                    data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
+                                    data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
                                     data-zone="${dataZone}"
                                     required
@@ -2764,8 +2704,8 @@ class LeaseOrderDataTableHandle {
                     },
                 },
                 {
-                    targets: 4,
-                    width: '9.11458333333%',
+                    targets: 5,
+                    width: '8%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2780,7 +2720,37 @@ class LeaseOrderDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 6,
+                    width: '8%',
+                    render: (data, type, row) => {
+                        return `<select 
+                                    class="form-select table-row-uom-time"
+                                    data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
+                                    data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-keyResp="unit_of_measure"
+                                    required
+                                 >
+                                </select>`;
+                    }
+                },
+                {
+                    targets: 7,
+                    width: '8%',
+                    render: (data, type, row) => {
+                        if (row?.['is_group'] === true) {
+                            return ``;
+                        }
+
+                        let $form = $('#frm_quotation_create');
+                        let dataZone = "quotation_products_data";
+                        if ($form[0].classList.contains('sale-order')) {
+                            dataZone = "sale_order_products_data";
+                        }
+                        return `<input type="text" class="form-control table-row-quantity-time validated-number" value="${row?.['product_quantity']}" data-zone="${dataZone}" required>`;
+                    }
+                },
+                {
+                    targets: 8,
                     width: '15%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
@@ -2815,43 +2785,8 @@ class LeaseOrderDataTableHandle {
                     }
                 },
                 {
-                    targets: 6,
-                    width: '7.8125%',
-                    render: (data, type, row) => {
-                        if (row?.['is_group'] === true) {
-                            return ``;
-                        }
-
-                        let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_products_data";
-                        }
-                        return `<div class="row">
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <input type="text" class="form-control table-row-discount validated-number zone-readonly" value="${row?.['product_discount_value']}" data-zone="${dataZone}">
-                                            <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
-                                        </div>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        class="form-control mask-money table-row-discount-amount"
-                                        data-return-type="number"
-                                        hidden
-                                    >
-                                    <input
-                                        type="text"
-                                        class="form-control table-row-discount-amount-raw"
-                                        value="0"
-                                        hidden
-                                    >
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 7,
-                    width: '8%',
+                    targets: 9,
+                    width: '5%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2864,8 +2799,8 @@ class LeaseOrderDataTableHandle {
                         }
                         return `<select
                                     class="form-select table-row-tax"
-                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderDataTableHandle.taxInitEle.attr('data-url')}"
+                                    data-method="${LeaseOrderDataTableHandle.taxInitEle.attr('data-method')}"
                                     data-keyResp="tax_list"
                                     data-zone="${dataZone}"
                                  >
@@ -2886,7 +2821,7 @@ class LeaseOrderDataTableHandle {
                     }
                 },
                 {
-                    targets: 8,
+                    targets: 10,
                     width: '12%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
@@ -2910,7 +2845,7 @@ class LeaseOrderDataTableHandle {
                     }
                 },
                 {
-                    targets: 9,
+                    targets: 11,
                     width: '1%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
@@ -2927,7 +2862,7 @@ class LeaseOrderDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
+                LeaseOrderCalculateCaseHandle.calculateAllRowsTableProduct();
             },
         });
     };
@@ -2965,9 +2900,9 @@ class LeaseOrderDataTableHandle {
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select
                                                 class="form-select table-row-item disabled-custom-show zone-readonly"
-                                                data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
-                                                data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                                data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
+                                                data-url="${LeaseOrderDataTableHandle.productInitEle.attr('data-url')}"
+                                                data-link-detail="${LeaseOrderDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                                data-method="${LeaseOrderDataTableHandle.productInitEle.attr('data-method')}"
                                                 data-keyResp="product_sale_list"
                                                 data-product-id="${row?.['product_data']?.['id']}"
                                                 data-zone="${dataZone}"
@@ -2982,7 +2917,7 @@ class LeaseOrderDataTableHandle {
                             if (linkDetail) {
                                 link = linkDetail.format_url_with_uuid(row?.['shipping']?.['id']);
                             }
-                            return `<div class="table-row-shipping" data-shipping="${JSON.stringify(row?.['shipping_data']).replace(/"/g, "&quot;")}"><i class="fas fa-shipping-fast mr-2"></i><span>${QuotationLoadDataHandle.transEle.attr('data-shipping')}</span></div>`;
+                            return `<div class="table-row-shipping" data-shipping="${JSON.stringify(row?.['shipping_data']).replace(/"/g, "&quot;")}"><i class="fas fa-shipping-fast mr-2"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-shipping')}</span></div>`;
                         }
                     }
                 },
@@ -3011,8 +2946,8 @@ class LeaseOrderDataTableHandle {
                         }
                         return `<select 
                                     class="form-select table-row-uom disabled-custom-show zone-readonly"
-                                    data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
+                                    data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
                                     data-zone="${dataZone}"
                                     readonly
@@ -3085,8 +3020,8 @@ class LeaseOrderDataTableHandle {
                         }
                         return `<select 
                                     class="form-select table-row-tax"
-                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderDataTableHandle.taxInitEle.attr('data-url')}"
+                                    data-method="${LeaseOrderDataTableHandle.taxInitEle.attr('data-method')}"
                                     data-keyResp="tax_list"
                                     data-zone="${dataZone}"
                                     ${readonly}
@@ -3165,9 +3100,9 @@ class LeaseOrderDataTableHandle {
                         } else {
                             return `<select 
                                     class="form-select table-row-labor-item" 
-                                    data-url="${QuotationDataTableHandle.expenseInitEle.attr('data-url')}"
-                                    data-link-detail="${QuotationDataTableHandle.expenseInitEle.attr('data-link-detail')}"
-                                    data-method="${QuotationDataTableHandle.expenseInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderDataTableHandle.expenseInitEle.attr('data-url')}"
+                                    data-link-detail="${LeaseOrderDataTableHandle.expenseInitEle.attr('data-link-detail')}"
+                                    data-method="${LeaseOrderDataTableHandle.expenseInitEle.attr('data-method')}"
                                     data-keyResp="expense_list"
                                     data-zone="${dataZone}"
                                     required>
@@ -3187,9 +3122,9 @@ class LeaseOrderDataTableHandle {
                         if (row?.['is_labor'] === false) {
                            return `<select 
                                     class="form-select table-row-item" 
-                                    data-url="${QuotationDataTableHandle.expenseItemInitEle.attr('data-url')}"
-                                    data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
-                                    data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderDataTableHandle.expenseItemInitEle.attr('data-url')}"
+                                    data-link-detail="${LeaseOrderDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
+                                    data-method="${LeaseOrderDataTableHandle.expenseItemInitEle.attr('data-method')}"
                                     data-keyResp="expense_item_list"
                                     data-zone="${dataZone}"
                                     required>
@@ -3197,9 +3132,9 @@ class LeaseOrderDataTableHandle {
                         } else {
                             return `<select 
                                     class="form-select table-row-item" 
-                                    data-url="${QuotationDataTableHandle.expenseItemInitEle.attr('data-url')}"
-                                    data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
-                                    data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderDataTableHandle.expenseItemInitEle.attr('data-url')}"
+                                    data-link-detail="${LeaseOrderDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
+                                    data-method="${LeaseOrderDataTableHandle.expenseItemInitEle.attr('data-method')}"
                                     data-keyResp="expense_item_list"
                                     data-zone="${dataZone}"
                                     disabled>
@@ -3220,8 +3155,8 @@ class LeaseOrderDataTableHandle {
                         if (row?.['is_labor'] === false) {
                            return `<select 
                                         class="form-select table-row-uom"
-                                        data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                        data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                        data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
+                                        data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
                                         data-keyResp="unit_of_measure"
                                         data-zone="${dataZone}"
                                         required
@@ -3230,8 +3165,8 @@ class LeaseOrderDataTableHandle {
                         } else {
                             return `<select 
                                         class="form-select table-row-uom"
-                                        data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                        data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                        data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
+                                        data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
                                         data-keyResp="unit_of_measure"
                                         data-zone="${dataZone}"
                                         required
@@ -3281,8 +3216,8 @@ class LeaseOrderDataTableHandle {
                         }
                         return `<select 
                                     class="form-select table-row-tax"
-                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderDataTableHandle.taxInitEle.attr('data-url')}"
+                                    data-method="${LeaseOrderDataTableHandle.taxInitEle.attr('data-method')}"
                                     data-keyResp="tax_list"
                                     data-zone="${dataZone}"
                                 >
@@ -3367,7 +3302,7 @@ class LeaseOrderDataTableHandle {
                         if (row?.['is_pass'] === false) {
                             disabled = `disabled`;
                         }
-                        return `<button type="button" class="btn btn-primary btn-sm apply-promotion" data-promotion="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-bs-dismiss="modal" ${disabled}>${QuotationLoadDataHandle.transEle.attr('data-apply')}</button>`;
+                        return `<button type="button" class="btn btn-primary btn-sm apply-promotion" data-promotion="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-bs-dismiss="modal" ${disabled}>${LeaseOrderLoadDataHandle.transEle.attr('data-apply')}</button>`;
                     },
                 }
             ],
@@ -3420,7 +3355,7 @@ class LeaseOrderDataTableHandle {
                 }
             ],
             drawCallback: function () {
-                QuotationLoadDataHandle.loadEventRadio($tables);
+                LeaseOrderLoadDataHandle.loadEventRadio($tables);
             },
         });
     };
@@ -3514,7 +3449,7 @@ class LeaseOrderDataTableHandle {
                         if (row?.['is_pass'] === false) {
                             disabled = 'disabled';
                         }
-                        return `<button type="button" class="btn btn-primary btn-sm apply-shipping" data-shipping="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-bs-dismiss="modal" ${disabled}>${QuotationLoadDataHandle.transEle.attr('data-apply')}</button>`;
+                        return `<button type="button" class="btn btn-primary btn-sm apply-shipping" data-shipping="${JSON.stringify(row).replace(/"/g, "&quot;")}" data-bs-dismiss="modal" ${disabled}>${LeaseOrderLoadDataHandle.transEle.attr('data-apply')}</button>`;
                     },
                 }
             ],
@@ -3532,7 +3467,7 @@ class LeaseOrderDataTableHandle {
         let passList = [];
         let failList = [];
         let checkList = [];
-        QuotationDataTableHandle.dataTableShipping();
+        LeaseOrderDataTableHandle.dataTableShipping();
         $.fn.callAjax2({
                 'url': url,
                 'method': method,
@@ -3557,10 +3492,10 @@ class LeaseOrderDataTableHandle {
                                 }
                             })
                             passList = passList.concat(failList);
-                            QuotationDataTableHandle.dataTableShipping(passList);
+                            LeaseOrderDataTableHandle.dataTableShipping(passList);
                         } else {
-                            QuotationDataTableHandle.dataTableShipping(passList);
-                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'info');
+                            LeaseOrderDataTableHandle.dataTableShipping(passList);
+                            $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'info');
                         }
                     }
                 }
@@ -3778,7 +3713,7 @@ class LeaseOrderDataTableHandle {
     };
 
     static dataTableSelectProduct(data) {
-        QuotationDataTableHandle.$tableSProduct.not('.dataTable').DataTableDefault({
+        LeaseOrderDataTableHandle.$tableSProduct.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             pageLength: 5,
             columnDefs: [],
@@ -3796,12 +3731,12 @@ class LeaseOrderDataTableHandle {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         let disabled = '';
                         let checked = '';
-                        if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
+                        if (LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
                             disabled = 'disabled';
                             checked = 'checked';
                             clsZoneReadonly = 'zone-readonly';
                         }
-                        let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(row);
+                        let checkBOM = LeaseOrderLoadDataHandle.loadCheckProductBOM(row);
                         if (checkBOM?.['is_pass'] === false) {
                             disabled = 'disabled';
                             checked = '';
@@ -3834,15 +3769,15 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        let txt = QuotationLoadDataHandle.transEle.attr('data-available');
+                        let txt = LeaseOrderLoadDataHandle.transEle.attr('data-available');
                         let badge = 'success';
-                        if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
-                            txt = QuotationLoadDataHandle.transEle.attr('data-product-note-1');
+                        if (LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
+                            txt = LeaseOrderLoadDataHandle.transEle.attr('data-product-note-1');
                             badge = 'warning';
                         }
-                        let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(row);
+                        let checkBOM = LeaseOrderLoadDataHandle.loadCheckProductBOM(row);
                         if (checkBOM?.['is_pass'] === false) {
-                            txt = QuotationLoadDataHandle.transEle.attr('data-unavailable');
+                            txt = LeaseOrderLoadDataHandle.transEle.attr('data-unavailable');
                             badge = 'danger';
                         }
                         return `<span class="badge badge-${badge} badge-outline table-row-status">${txt}</span>`;
@@ -3852,19 +3787,19 @@ class LeaseOrderDataTableHandle {
                     targets: 4,
                     render: (data, type, row) => {
                         let txt = '';
-                        if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
-                            txt = QuotationLoadDataHandle.transEle.attr('data-product-note-1');
+                        if (LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
+                            txt = LeaseOrderLoadDataHandle.transEle.attr('data-product-note-1');
                         }
-                        let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(row);
+                        let checkBOM = LeaseOrderLoadDataHandle.loadCheckProductBOM(row);
                         if (checkBOM?.['is_pass'] === false) {
-                            txt = QuotationLoadDataHandle.transEle.attr(checkBOM?.['note_type']);
+                            txt = LeaseOrderLoadDataHandle.transEle.attr(checkBOM?.['note_type']);
                         }
                         return `<span class="table-row-note">${txt}</span>`;
                     }
                 },
             ],
             drawCallback: function () {
-                QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSProduct);
+                LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableSProduct);
             },
         });
     };
@@ -4158,9 +4093,9 @@ class LeaseOrderCalculateCaseHandle {
     };
 
     static commonCalculate(table, row) {
-        QuotationCalculateCaseHandle.calculate(row);
+        LeaseOrderCalculateCaseHandle.calculate(row);
         // calculate total
-        QuotationCalculateCaseHandle.updateTotal(table[0]);
+        LeaseOrderCalculateCaseHandle.updateTotal(table[0]);
     };
 
     static calculateAllRowsTableProduct() {
@@ -4168,7 +4103,7 @@ class LeaseOrderCalculateCaseHandle {
         $table.DataTable().rows().every(function () {
             let row = this.node();
             if (row.querySelector('.table-row-item')) {
-                QuotationCalculateCaseHandle.commonCalculate($table, row);
+                LeaseOrderCalculateCaseHandle.commonCalculate($table, row);
             }
         });
     };
@@ -4178,7 +4113,7 @@ class LeaseOrderCalculateCaseHandle {
         $table.DataTable().rows().every(function () {
             let row = this.node();
             if (row.querySelector('.table-row-item')) {
-                QuotationCalculateCaseHandle.commonCalculate($table, row);
+                LeaseOrderCalculateCaseHandle.commonCalculate($table, row);
             }
         });
     };
@@ -4203,13 +4138,13 @@ class LeaseOrderCheckConfigHandle {
             }
             for (let roleID of empCurrent?.['role']) {
                 if (ss_role_id.includes(roleID)) {
-                    QuotationLoadDataHandle.opportunitySelectEle[0].setAttribute('disabled', 'true');
-                    $(QuotationLoadDataHandle.opportunitySelectEle[0].closest('.input-group')).after(`<small class="text-red">${QuotationLoadDataHandle.transEle.attr('data-validate-ss-role')}</small>`);
+                    LeaseOrderLoadDataHandle.opportunitySelectEle[0].setAttribute('disabled', 'true');
+                    $(LeaseOrderLoadDataHandle.opportunitySelectEle[0].closest('.input-group')).after(`<small class="text-red">${LeaseOrderLoadDataHandle.transEle.attr('data-validate-ss-role')}</small>`);
                 }
             }
             for (let roleID of empCurrent?.['role']) {
                 if (ls_role_id.includes(roleID)) {
-                    QuotationLoadDataHandle.opportunitySelectEle[0].setAttribute('required', 'true');
+                    LeaseOrderLoadDataHandle.opportunitySelectEle[0].setAttribute('required', 'true');
                 }
             }
         }
@@ -4221,28 +4156,28 @@ class LeaseOrderCheckConfigHandle {
         if ($form.attr('data-method').toLowerCase() !== 'get') {
             let configRaw = $('#quotation-config-data').val();
             if (configRaw) {
-                let opportunity = QuotationLoadDataHandle.opportunitySelectEle.val();
+                let opportunity = LeaseOrderLoadDataHandle.opportunitySelectEle.val();
                 let config = JSON.parse(configRaw);
                 if (["", null].includes(opportunity)) {
                     opportunity = null;
                 }
                 if (!opportunity) { // short sale
                     if (check_type === 0) {  // check All
-                        QuotationCheckConfigHandle.checkOnTotal(config, 0);
-                        QuotationCheckConfigHandle.checkTableRows(config, 0);
+                        LeaseOrderCheckConfigHandle.checkOnTotal(config, 0);
+                        LeaseOrderCheckConfigHandle.checkTableRows(config, 0);
                     }
                     if (check_type === 1) {  // check Single Row
-                        QuotationCheckConfigHandle.checkTableRow(config, 0, row);
+                        LeaseOrderCheckConfigHandle.checkTableRow(config, 0, row);
                     }
                     $.fn.initMaskMoney2();
                     return true;
                 } else { // long sale
                     if (check_type === 0) {  // check All
-                        QuotationCheckConfigHandle.checkOnTotal(config, 1);
-                        QuotationCheckConfigHandle.checkTableRows(config, 1);
+                        LeaseOrderCheckConfigHandle.checkOnTotal(config, 1);
+                        LeaseOrderCheckConfigHandle.checkTableRows(config, 1);
                     }
                     if (check_type === 1) {  // check Single Row
-                        QuotationCheckConfigHandle.checkTableRow(config, 1, row);
+                        LeaseOrderCheckConfigHandle.checkTableRow(config, 1, row);
                     }
                     $.fn.initMaskMoney2();
                     return true;
@@ -4292,7 +4227,7 @@ class LeaseOrderCheckConfigHandle {
         let $table = $('#datable-quotation-create-product');
         $table.DataTable().rows().every(function () {
             let row = this.node();
-            QuotationCheckConfigHandle.checkTableRow(config, check_type, row);
+            LeaseOrderCheckConfigHandle.checkTableRow(config, check_type, row);
         });
         return true;
     };
@@ -4317,7 +4252,7 @@ class LeaseOrderCheckConfigHandle {
                     if (elePrice) {
                         elePrice.setAttribute('disabled', 'true');
                         elePrice.classList.add('disabled-custom-show');
-                        QuotationLoadDataHandle.loadPriceProduct(eleProduct);
+                        LeaseOrderLoadDataHandle.loadPriceProduct(eleProduct);
                     }
                 } else {
                     if (elePrice) {
@@ -4354,7 +4289,7 @@ class LeaseOrderCheckConfigHandle {
                     if (elePrice) {
                         elePrice.setAttribute('disabled', 'true');
                         elePrice.classList.add('disabled-custom-show');
-                        QuotationLoadDataHandle.loadPriceProduct(eleProduct);
+                        LeaseOrderLoadDataHandle.loadPriceProduct(eleProduct);
                     }
                 }
                 if (eleDiscount) {
@@ -4376,7 +4311,7 @@ class LeaseOrderCheckConfigHandle {
 }
 
 // Indicator
-class indicatorHandle {
+class LeaseOrderIndicatorHandle {
     static loadIndicator() {
         let $ele = $('#quotation-indicator-data');
         if (!$ele.val()) {
@@ -4393,14 +4328,14 @@ class indicatorHandle {
                     if (data) {
                         if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
                             $ele.val(JSON.stringify(data.quotation_indicator_list));
-                            indicatorHandle.calculateIndicator(data.quotation_indicator_list);
+                            LeaseOrderIndicatorHandle.calculateIndicator(data.quotation_indicator_list);
                         }
                     }
                 }
             )
         } else {
             let data_list = JSON.parse($ele.val());
-            indicatorHandle.calculateIndicator(data_list);
+            LeaseOrderIndicatorHandle.calculateIndicator(data_list);
         }
     };
 
@@ -4414,7 +4349,7 @@ class indicatorHandle {
         if (formSubmit[0].classList.contains('sale-order')) {
             is_sale_order = true;
         }
-        QuotationSubmitHandle.setupDataSubmit(_form, 1);
+        LeaseOrderSubmitHandle.setupDataSubmit(_form, 1);
         let data_form = _form.dataForm;
         let dataDetailCopy = {};
         let eleDetailCopy = $('#data-copy-quotation-detail');
@@ -4436,10 +4371,10 @@ class indicatorHandle {
             if (keyHidden.length > 0) {
                 // special case: tab cost depend on tab detail
                 if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
-                    QuotationLoadDataHandle.loadDataTableCost();
-                    QuotationSubmitHandle.setupDataSubmit(_form, 1);
+                    LeaseOrderLoadDataHandle.loadDataTableCost();
+                    LeaseOrderSubmitHandle.setupDataSubmit(_form, 1);
                     data_form = _form.dataForm;
-                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                    LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
                 }
                 // set data detail to zones hidden
                 if (data_form && dataDetail) {
@@ -4452,7 +4387,7 @@ class indicatorHandle {
             }
         }
         // Check special case
-        indicatorHandle.checkSpecialCaseIndicator(data_form);
+        LeaseOrderIndicatorHandle.checkSpecialCaseIndicator(data_form);
         for (let indicator of indicator_list) {
             let rateValue = 0;
             let parse_formula = "";
@@ -4472,10 +4407,10 @@ class indicatorHandle {
                     } else if (item.hasOwnProperty('param_type')) {
                         if (item.param_type === 2) { // FUNCTION
                             if (item.code === 'max' || item.code === 'min') {
-                                let functionData = indicatorHandle.functionMaxMin(item, data_form, result_json);
+                                let functionData = LeaseOrderIndicatorHandle.functionMaxMin(item, data_form, result_json);
                                 parse_formula += functionData;
                             } else if (item.code === 'sumItemIf') {
-                                let functionData = indicatorHandle.functionSumItemIf(item, data_form, is_sale_order);
+                                let functionData = LeaseOrderIndicatorHandle.functionSumItemIf(item, data_form, is_sale_order);
                                 parse_formula += functionData;
                             }
                         }
@@ -4486,9 +4421,9 @@ class indicatorHandle {
             }
             // begin calculate
             // format
-            parse_formula = indicatorHandle.formatExpression(parse_formula);
+            parse_formula = LeaseOrderIndicatorHandle.formatExpression(parse_formula);
             // value
-            let value = indicatorHandle.evaluateFormula(parse_formula);
+            let value = LeaseOrderIndicatorHandle.evaluateFormula(parse_formula);
             // rate value
             if (indicator?.['code'] === "IN0001") {
                 revenueValue = value
@@ -4514,8 +4449,8 @@ class indicatorHandle {
                         }
                     }
                 } else {
-                    if (dataDetail?.['quotation']?.['quotation_indicators_data']) {
-                        for (let quotation_indicator of dataDetail?.['quotation']?.['quotation_indicators_data']) {
+                    if (dataDetail?.['quotation_data']?.['quotation_indicators_data']) {
+                        for (let quotation_indicator of dataDetail?.['quotation_data']?.['quotation_indicators_data']) {
                             if (indicator?.['title'] === quotation_indicator?.['indicator']?.['title']) {
                                 quotationValue = quotation_indicator?.['indicator_value'];
                                 differenceValue = (value - quotation_indicator?.['indicator_value']);
@@ -4555,9 +4490,9 @@ class indicatorHandle {
         // $table.DataTable().rows.add(result_list).draw();
 
         if (!formSubmit.hasClass('sale-order')) {
-            QuotationDataTableHandle.dataTableQuotationIndicator(result_list);
+            LeaseOrderDataTableHandle.dataTableQuotationIndicator(result_list);
         } else {
-            QuotationDataTableHandle.dataTableSaleOrderIndicator(result_list);
+            LeaseOrderDataTableHandle.dataTableSaleOrderIndicator(result_list);
         }
     };
 
@@ -4619,11 +4554,11 @@ class indicatorHandle {
         // Tab Expense
         if (is_sale_order === false) {
             if (data_form?.['quotation_expenses_data']) {
-                functionBody = indicatorHandle.extractDataToSum(data_form?.['quotation_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
+                functionBody = LeaseOrderIndicatorHandle.extractDataToSum(data_form?.['quotation_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
             }
         } else {
             if (data_form?.['sale_order_expenses_data']) {
-                functionBody = indicatorHandle.extractDataToSum(data_form?.['sale_order_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
+                functionBody = LeaseOrderIndicatorHandle.extractDataToSum(data_form?.['sale_order_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
             }
         }
         if (functionBody[functionBody.length - 1] === ",") {
@@ -4641,7 +4576,7 @@ class indicatorHandle {
                     if (typeof data[leftValueJSON.code] === 'string') {
                         let leftValue = data[leftValueJSON.code].replace(/\s/g, "").toLowerCase();
                         let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
-                        let check = indicatorHandle.evaluateFormula(checkExpression);
+                        let check = LeaseOrderIndicatorHandle.evaluateFormula(checkExpression);
                         if (check === true) {
                             functionBody += String(data[lastElement.code]);
                             functionBody += ",";
@@ -4688,7 +4623,7 @@ class indicatorHandle {
 class LeaseOrderPromotionHandle {
     static callPromotion(type_check) {
         let $ele = $('#data-init-quotation-create-promotion');
-        let customer_id = QuotationLoadDataHandle.customerSelectEle.val();
+        let customer_id = LeaseOrderLoadDataHandle.customerSelectEle.val();
         let currentDate = getCurrentDate();
         $.fn.callAjax2({  // promotion for all
                 'url': $ele.attr('data-url'),
@@ -4756,7 +4691,7 @@ class LeaseOrderPromotionHandle {
             }
         })
         passList = passList.concat(failList);
-        QuotationDataTableHandle.dataTablePromotion(passList);
+        LeaseOrderDataTableHandle.dataTablePromotion(passList);
         return true;
     };
 
@@ -5208,7 +5143,7 @@ class LeaseOrderPromotionHandle {
             let is_before_tax = true;
             let remark = '';
             if (condition?.['is_on_product'] === true) { // on product
-                remark = QuotationLoadDataHandle.transEle.attr('data-discount-product');
+                remark = LeaseOrderLoadDataHandle.transEle.attr('data-discount-product');
                 let row = tableProd.DataTable().row(condition?.['row_apply_index']).node();
                 let taxSelected = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex];
                 taxID = taxSelected.value;
@@ -5231,7 +5166,7 @@ class LeaseOrderPromotionHandle {
             } else if (condition?.['is_on_order'] === true) { // on whole order
                 if (condition?.['is_on_percent'] === true) {
                     if (condition.is_before_tax === true) {
-                        remark = QuotationLoadDataHandle.transEle.attr('data-discount-bt');
+                        remark = LeaseOrderLoadDataHandle.transEle.attr('data-discount-bt');
                         if (tableProductWrapper) {
                             let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                             let elePreTaxRaw = tableProductFt?.querySelector('.quotation-create-product-pretax-amount-raw');
@@ -5254,7 +5189,7 @@ class LeaseOrderPromotionHandle {
                             }
                         }
                     } else if (condition.is_after_tax === true) {
-                        remark = QuotationLoadDataHandle.transEle.attr('data-discount-at');
+                        remark = LeaseOrderLoadDataHandle.transEle.attr('data-discount-at');
                         if (tableProductWrapper) {
                             let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
                             let eleTotal = tableProductFt?.querySelector('.quotation-create-product-total-raw');
@@ -5277,7 +5212,7 @@ class LeaseOrderPromotionHandle {
                     }
                 } else if (condition?.['is_fix_amount'] === true) { // discount by fix amount
                     if (condition.is_before_tax === true) {
-                        remark = QuotationLoadDataHandle.transEle.attr('data-discount-bt');
+                        remark = LeaseOrderLoadDataHandle.transEle.attr('data-discount-bt');
                         DiscountAmount = condition.fix_value;
                         if (tableProductWrapper) {
                             let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
@@ -5296,7 +5231,7 @@ class LeaseOrderPromotionHandle {
                             }
                         }
                     } else if (condition.is_after_tax === true) {
-                        remark = QuotationLoadDataHandle.transEle.attr('data-discount-at');
+                        remark = LeaseOrderLoadDataHandle.transEle.attr('data-discount-at');
                         DiscountAmount = condition.fix_value;
                         if (tableProductWrapper) {
                             let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
@@ -5330,7 +5265,7 @@ class LeaseOrderPromotionHandle {
             promotionData['is_gift'] = true;
             promotionData['row_apply_index'] = condition?.['row_apply_index'];
             promotionData['product_data'] = condition?.['product_data'];
-            promotionData['product_data']['description'] = QuotationLoadDataHandle.transEle.attr('data-gift');
+            promotionData['product_data']['description'] = LeaseOrderLoadDataHandle.transEle.attr('data-gift');
             promotionData['product_quantity'] = condition?.['product_quantity'];
             promotionData['product_price'] = 0;
             return promotionData;
@@ -5500,129 +5435,6 @@ class LeaseOrderPromotionHandle {
         }
     };
 
-}
-
-// Shipping
-class shippingHandle {
-    static checkShippingValid(data_shipping, shippingAddress) {
-        let final_shipping_price = 0;
-        let margin_shipping_price = 0;
-        let formula_condition = data_shipping?.['formula_condition'];
-        let margin = parseFloat(data_shipping?.['margin']);
-        data_shipping['is_pass'] = false;
-        if (data_shipping?.['cost_method'] === 0) {  // fixed price for all
-            data_shipping['is_pass'] = true;
-            data_shipping['title'] = data_shipping?.['fixed_price'];
-            data_shipping['shipping_price'] = data_shipping?.['fixed_price'];
-            data_shipping['shipping_margin'] = data_shipping?.['margin'];
-            return data_shipping;
-        }
-        if (data_shipping?.['cost_method'] === 1) {  // check price by formula
-            for (let condition of formula_condition) {
-                let location_condition = condition?.['location_condition'];
-                for (let location of location_condition) {
-                    if (shippingAddress.includes(location?.['title'])) { // check location
-                        let $table = $('#datable-quotation-create-product');
-                        let formula_list = condition?.['formula'];
-                        for (let formula of formula_list) {
-                            let unit = formula?.['unit'];
-                            let amount_condition = parseFloat(formula?.['threshold']);
-                            let operator = formula?.['comparison_operators'];
-                            let extra_amount = parseFloat(formula?.['extra_amount']);
-                            let shipping_price = parseFloat(formula?.['amount_condition']);
-                            let result_to_check = 0;
-                            $table.DataTable().rows().every(function () {
-                                let row = this.node();
-                                if (row.querySelector('.table-row-item')) {
-                                    let quantity = row.querySelector('.table-row-quantity');
-                                    let elePrice = row.querySelector('.table-row-price');
-                                    if (unit?.['title'] === "price") { // if condition is price
-                                        if (quantity && elePrice) {
-                                            result_to_check += (parseFloat(quantity.value) * $(elePrice).valCurrency());
-                                        }
-                                    } else if (unit?.['title'] === "quantity") { // if condition is quantity
-                                        if (quantity) {
-                                            result_to_check += parseFloat(quantity.value);
-                                        }
-                                    } else if (unit?.['title'] === "volume") { // if condition is volume
-                                        data_shipping['is_pass'] = true;
-                                        data_shipping['title'] = final_shipping_price;
-                                        data_shipping['shipping_price'] = final_shipping_price;
-                                        return data_shipping;
-                                    } else if (unit?.['title'] === "weight") { // if condition is weight
-                                        data_shipping['is_pass'] = true;
-                                        data_shipping['title'] = final_shipping_price;
-                                        data_shipping['shipping_price'] = final_shipping_price;
-                                        return data_shipping;
-                                    }
-                                }
-                            });
-                            if (operator === 1) {
-                                if (result_to_check < amount_condition) {
-                                    data_shipping['is_pass'] = true;
-                                }
-                            } else if (operator === 2) {
-                                if (result_to_check > amount_condition) {
-                                    data_shipping['is_pass'] = true;
-                                }
-                            } else if (operator === 3) {
-                                if (result_to_check <= amount_condition) {
-                                    data_shipping['is_pass'] = true;
-                                }
-                            } else if (operator === 4) {
-                                if (result_to_check >= amount_condition) {
-                                    data_shipping['is_pass'] = true;
-                                }
-                            }
-                            if (data_shipping['is_pass'] === true) {
-                                if (data_shipping?.['cost_method'] === 0) {
-                                    final_shipping_price = parseFloat(data_shipping?.['fixed_price']);
-                                } else if (data_shipping?.['cost_method'] === 1) {
-                                    final_shipping_price = (shipping_price + (extra_amount * result_to_check));
-                                }
-                                if (margin > 0) {
-                                    margin_shipping_price = ((final_shipping_price * margin) / 100);
-                                    final_shipping_price = (final_shipping_price + margin_shipping_price)
-                                }
-                                data_shipping['title'] = final_shipping_price;
-                                data_shipping['shipping_price'] = final_shipping_price;
-                                data_shipping['shipping_margin'] = margin_shipping_price;
-                                return data_shipping;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return data_shipping;
-    };
-
-    static calculateShipping(shipping_price) {
-        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
-        if (tableProductWrapper) {
-            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-            if (tableProductFt) {
-                let elePretaxAmount = tableProductFt?.querySelector('.quotation-create-product-pretax-amount');
-                let eleTotalAmount = tableProductFt?.querySelector('.quotation-create-product-total');
-                let elePretaxAmountRaw = tableProductFt?.querySelector('.quotation-create-product-pretax-amount-raw');
-                let eleDiscountAmountRaw = tableProductFt?.querySelector('.quotation-create-product-discount-amount-raw');
-                let eleTaxAmountRaw = tableProductFt?.querySelector('.quotation-create-product-taxes-raw');
-                let eleTotalAmountRaw = tableProductFt?.querySelector('.quotation-create-product-total-raw');
-                let eleRevenueBT = tableProductFt?.querySelector('.quotation-final-revenue-before-tax');
-                // Re calculate pretax, discount, total
-                let pretaxNew = parseFloat(elePretaxAmountRaw.value) + parseFloat(shipping_price);
-                let totalNew = (pretaxNew - parseFloat(eleDiscountAmountRaw.value) + parseFloat(eleTaxAmountRaw.value));
-                eleRevenueBT.value = (pretaxNew - parseFloat(eleDiscountAmountRaw.value));
-                // Apply new pretax, total
-                $(elePretaxAmount).attr('data-init-money', String(pretaxNew));
-                elePretaxAmountRaw.value = pretaxNew;
-                $(eleTotalAmount).attr('data-init-money', String(totalNew));
-                eleTotalAmountRaw.value = totalNew;
-                $.fn.initMaskMoney2();
-            }
-        }
-        return true;
-    };
 }
 
 // Store data
@@ -5979,7 +5791,7 @@ class LeaseOrderSubmitHandle {
                 let eleQuantity = row.querySelector('.table-row-quantity');
                 if (eleQuantity) {
                     rowData['product_quantity'] = parseFloat(eleQuantity.value);
-                    if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                    if (LeaseOrderLoadDataHandle.$form[0].classList.contains('sale-order')) {
                         rowData['remain_for_purchase_request'] = parseFloat(eleQuantity.value);
                         rowData['remain_for_purchase_order'] = parseFloat(eleQuantity.value);
                         rowData['quantity_wo_remain'] = parseFloat(eleQuantity.value);
@@ -6445,7 +6257,7 @@ class LeaseOrderSubmitHandle {
 
     static setupDataSubmit(_form, type = 0) {
         let is_sale_order = false;
-        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+        if (LeaseOrderLoadDataHandle.$form[0].classList.contains('sale-order')) {
             is_sale_order = true;
         }
         let quotation_products_data = 'quotation_products_data';
@@ -6460,48 +6272,48 @@ class LeaseOrderSubmitHandle {
             quotation_logistic_data = 'sale_order_logistic_data';
             quotation_indicators_data = 'sale_order_indicators_data';
 
-            if (QuotationLoadDataHandle.quotationSelectEle && QuotationLoadDataHandle.quotationSelectEle.length > 0) {
-                if (QuotationLoadDataHandle.quotationSelectEle.attr('data-detail')) {
-                    let dataQuotation = JSON.parse(QuotationLoadDataHandle.quotationSelectEle.attr('data-detail'));
-                    _form.dataForm['quotation'] = dataQuotation?.['id'];
+            if (LeaseOrderLoadDataHandle.quotationSelectEle && LeaseOrderLoadDataHandle.quotationSelectEle.length > 0) {
+                if (LeaseOrderLoadDataHandle.quotationSelectEle.attr('data-detail')) {
+                    let quotationData = JSON.parse(LeaseOrderLoadDataHandle.quotationSelectEle.attr('data-detail'));
+                    _form.dataForm['quotation_id'] = quotationData?.['id'];
+                    _form.dataForm['quotation_data'] = quotationData;
                 }
 
             }
         }
-        if (QuotationLoadDataHandle.customerSelectEle.val()) {
-            let data = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
+        if (LeaseOrderLoadDataHandle.customerSelectEle.val()) {
+            let data = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.customerSelectEle, LeaseOrderLoadDataHandle.customerSelectEle.val());
             if (data) {
-                _form.dataForm['customer'] = data?.['id'];
                 _form.dataForm['customer_data'] = data;
             }
         }
-        if (QuotationLoadDataHandle.contactSelectEle.val()) {
-            let data = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.contactSelectEle, QuotationLoadDataHandle.contactSelectEle.val());
+        if (LeaseOrderLoadDataHandle.contactSelectEle.val()) {
+            let data = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.contactSelectEle, LeaseOrderLoadDataHandle.contactSelectEle.val());
             if (data) {
-                _form.dataForm['contact'] = data?.['id'];
                 _form.dataForm['contact_data'] = data;
             }
         }
+        if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
+            if (dataSelected) {
+                _form.dataForm['payment_term_data'] = dataSelected;
+            }
+        }
         if (type === 0) {
-            if (!QuotationLoadDataHandle.customerSelectEle.val()) {
-                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-customer')}, 'failure');
+            if (!LeaseOrderLoadDataHandle.customerSelectEle.val()) {
+                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-required-customer')}, 'failure');
                 return false;
             }
-            if (!QuotationLoadDataHandle.contactSelectEle.val()) {
-                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-contact')}, 'failure');
+            if (!LeaseOrderLoadDataHandle.contactSelectEle.val()) {
+                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-required-contact')}, 'failure');
                 return false;
             }
-            if (!QuotationLoadDataHandle.paymentSelectEle.val()) {
-                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-payment')}, 'failure');
+            if (!LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-required-payment')}, 'failure');
                 return false;
             }
         }
-
-        if (is_sale_order === false) {
-            _form.dataForm['is_customer_confirm'] = $('#quotation-customer-confirm')[0].checked;
-        }
-
-        let quotation_products_data_setup = QuotationSubmitHandle.setupDataProduct();
+        let quotation_products_data_setup = LeaseOrderSubmitHandle.setupDataProduct();
         if (quotation_products_data_setup.length > 0) {
             _form.dataForm[quotation_products_data] = quotation_products_data_setup;
             // total product
@@ -6538,12 +6350,12 @@ class LeaseOrderSubmitHandle {
         }
         if (type === 0) {
             if (quotation_products_data_setup.length <= 0) {
-                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-product')}, 'failure');
+                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-required-product')}, 'failure');
                 return false;
             }
         }
         // COST
-        let quotation_costs_data_setup = QuotationSubmitHandle.setupDataCost();
+        let quotation_costs_data_setup = LeaseOrderSubmitHandle.setupDataCost();
         if (quotation_costs_data_setup.length > 0) {
             _form.dataForm[quotation_costs_data] = quotation_costs_data_setup;
             // total cost
@@ -6562,7 +6374,7 @@ class LeaseOrderSubmitHandle {
             }
         }
         // EXPENSE
-        let quotation_expenses_data_setup = QuotationSubmitHandle.setupDataExpense();
+        let quotation_expenses_data_setup = LeaseOrderSubmitHandle.setupDataExpense();
         if (quotation_expenses_data_setup.length > 0) {
             _form.dataForm[quotation_expenses_data] = quotation_expenses_data_setup;
             // total expense
@@ -6584,7 +6396,7 @@ class LeaseOrderSubmitHandle {
             }
         }
 
-        _form.dataForm[quotation_logistic_data] = QuotationSubmitHandle.setupDataLogistic();
+        _form.dataForm[quotation_logistic_data] = LeaseOrderSubmitHandle.setupDataLogistic();
 
         let customer_shipping = $('#quotation-create-customer-shipping');
         if (customer_shipping.val()) {
@@ -6621,7 +6433,7 @@ class LeaseOrderSubmitHandle {
             }
         }
         // indicator
-        let quotation_indicators_data_setup = QuotationSubmitHandle.setupDataIndicator();
+        let quotation_indicators_data_setup = LeaseOrderSubmitHandle.setupDataIndicator();
         if (quotation_indicators_data_setup.length > 0) {
             _form.dataForm[quotation_indicators_data] = quotation_indicators_data_setup;
             let keyInd = "indicator_data";
@@ -6642,17 +6454,9 @@ class LeaseOrderSubmitHandle {
         }
         // payment stage
         if (is_sale_order === true) {
-            let dataPaymentStage = QuotationSubmitHandle.setupDataPaymentStage();
+            let dataPaymentStage = LeaseOrderSubmitHandle.setupDataPaymentStage();
             if (dataPaymentStage.length > 0) {
                 _form.dataForm['sale_order_payment_stage'] = dataPaymentStage;
-            }
-        }
-
-        // payment term data
-        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-            if (dataSelected) {
-                _form.dataForm['payment_term_data'] = dataSelected;
             }
         }
 
@@ -6829,7 +6633,7 @@ function validatePSValue(ele) {
             if (totalBT > valueSO) {
                 $(ele).attr('value', String(0));
                 eleRatio.value = 0;
-                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
                 return false;
             }
         }

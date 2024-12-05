@@ -23,26 +23,26 @@ $(function () {
 
 
         // Load inits
-        QuotationLoadDataHandle.loadCustomCss();
-        QuotationLoadDataHandle.loadInitInherit();
-        QuotationLoadDataHandle.loadInitCustomer();
-        QuotationLoadDataHandle.loadBoxQuotationCustomer();
-        QuotationLoadDataHandle.loadBoxQuotationContact();
-        QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-        QuotationLoadDataHandle.loadInitDate();
+        LeaseOrderLoadDataHandle.loadCustomCss();
+        LeaseOrderLoadDataHandle.loadInitInherit();
+        LeaseOrderLoadDataHandle.loadInitCustomer();
+        LeaseOrderLoadDataHandle.loadBoxQuotationCustomer();
+        LeaseOrderLoadDataHandle.loadBoxQuotationContact();
+        LeaseOrderLoadDataHandle.loadBoxQuotationPaymentTerm();
+        LeaseOrderLoadDataHandle.loadInitDate();
         // init dataTable
-        QuotationDataTableHandle.dataTableSelectProduct();
-        QuotationDataTableHandle.dataTableProduct();
-        QuotationDataTableHandle.dataTableCost();
-        QuotationDataTableHandle.dataTableExpense();
+        LeaseOrderDataTableHandle.dataTableSelectProduct();
+        LeaseOrderDataTableHandle.dataTableProduct();
+        LeaseOrderDataTableHandle.dataTableCost();
+        LeaseOrderDataTableHandle.dataTableExpense();
         if (!formSubmit[0].classList.contains('sale-order')) {  // quotation
-            QuotationDataTableHandle.dataTableQuotationIndicator();
+            LeaseOrderDataTableHandle.dataTableQuotationIndicator();
         } else {  // sale order
-            QuotationDataTableHandle.dataTableSaleOrderIndicator();
-            QuotationDataTableHandle.dataTablePaymentStage();
+            LeaseOrderDataTableHandle.dataTableSaleOrderIndicator();
+            LeaseOrderDataTableHandle.dataTablePaymentStage();
         }
         // init config
-        QuotationLoadDataHandle.loadInitQuotationConfig(formSubmit.attr('data-method'));
+        LeaseOrderLoadDataHandle.loadInitQuotationConfig(formSubmit.attr('data-method'));
         $('input[name="date_created"]').daterangepicker({
             singleDatePicker: true,
             timePicker: true,
@@ -61,55 +61,55 @@ $(function () {
         }
         WFRTControl.setWFInitialData(appCode);
 
-        QuotationLoadDataHandle.opportunitySelectEle.on('change', function () {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, QuotationLoadDataHandle.opportunitySelectEle.val());
+        LeaseOrderLoadDataHandle.opportunitySelectEle.on('change', function () {
+            let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.opportunitySelectEle, LeaseOrderLoadDataHandle.opportunitySelectEle.val());
             if (dataSelected) {
-                QuotationLoadDataHandle.loadDataByOpportunity(dataSelected);
+                LeaseOrderLoadDataHandle.loadDataByOpportunity(dataSelected);
             }
         });
 
-        QuotationLoadDataHandle.customerSelectEle.on('change', function () {
-            QuotationLoadDataHandle.loadDataByCustomer();
+        LeaseOrderLoadDataHandle.customerSelectEle.on('change', function () {
+            LeaseOrderLoadDataHandle.loadDataByCustomer();
         });
 
-        QuotationLoadDataHandle.salePersonSelectEle.on('change', function () {
-            QuotationLoadDataHandle.loadDataBySalePerson();
+        LeaseOrderLoadDataHandle.salePersonSelectEle.on('change', function () {
+            LeaseOrderLoadDataHandle.loadDataBySalePerson();
         });
 
         tabPrice.on('click', function() {
             if (!boxPriceList[0].innerHTML) {
-                QuotationLoadDataHandle.loadBoxQuotationPrice();
+                LeaseOrderLoadDataHandle.loadBoxQuotationPrice();
             }
         });
 
-        QuotationLoadDataHandle.paymentSelectEle.on('click', function () {
-            QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+        LeaseOrderLoadDataHandle.paymentSelectEle.on('click', function () {
+            LeaseOrderLoadDataHandle.loadBoxQuotationPaymentTerm();
         });
 
-        QuotationLoadDataHandle.paymentSelectEle.on('change', function () {
-            QuotationLoadDataHandle.loadChangePaymentTerm();
+        LeaseOrderLoadDataHandle.paymentSelectEle.on('change', function () {
+            LeaseOrderLoadDataHandle.loadChangePaymentTerm();
         });
 
 // PRODUCT
         $quotationTabs.on('click', '.tab-detail', function () {
-            QuotationLoadDataHandle.loadReInitDataTableProduct();
+            LeaseOrderLoadDataHandle.loadReInitDataTableProduct();
         });
 
         btnAddProductGr.on('click', function () {
-            QuotationLoadDataHandle.loadAddRowProductGr();
+            LeaseOrderLoadDataHandle.loadAddRowProductGr();
         });
 
         btnAddProduct.on('click', function (e) {
-            QuotationLoadDataHandle.loadModalSProduct();
-            indicatorHandle.loadIndicator();
+            LeaseOrderLoadDataHandle.loadModalSProduct();
+            LeaseOrderIndicatorHandle.loadIndicator();
         });
 
-        QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
-            QuotationLoadDataHandle.loadNewProduct();
+        LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
+            LeaseOrderLoadDataHandle.loadNewProduct();
         });
 
         tableProduct.on('click', '.table-row-item-area', function () {
-           QuotationLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
+           LeaseOrderLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
         });
 
         // QUICK PRODUCT
@@ -126,18 +126,18 @@ $(function () {
                 {'id': 2, 'title': 'Serial number'},
             ];
             let $modal = $(this);
-            QuotationLoadDataHandle.loadInitS2($boxPType, [], {'is_default': true}, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPCategory, [], {}, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPUomGr, [], {}, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPUom, [], {}, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPTax, [], {}, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPMethod, dataMethod, {}, $modal);
+            LeaseOrderLoadDataHandle.loadInitS2($boxPType, [], {'is_default': true}, $modal);
+            LeaseOrderLoadDataHandle.loadInitS2($boxPCategory, [], {}, $modal);
+            LeaseOrderLoadDataHandle.loadInitS2($boxPUomGr, [], {}, $modal);
+            LeaseOrderLoadDataHandle.loadInitS2($boxPUom, [], {}, $modal);
+            LeaseOrderLoadDataHandle.loadInitS2($boxPTax, [], {}, $modal);
+            LeaseOrderLoadDataHandle.loadInitS2($boxPMethod, dataMethod, {}, $modal);
         });
 
         $('#add-product-uom-group').on('change', function () {
             let $boxPUom = $('#add-product-uom');
             let $modal = $('#addQuickProduct');
-            QuotationLoadDataHandle.loadInitS2($boxPUom, [], {'group': $(this).val()}, $modal);
+            LeaseOrderLoadDataHandle.loadInitS2($boxPUom, [], {'group': $(this).val()}, $modal);
         });
 
         $('#btn-save-product').on('click', function () {
@@ -158,7 +158,7 @@ $(function () {
             WindowControl.showLoading();
             $.fn.callAjax2(
                 {
-                    'url': QuotationLoadDataHandle.urlEle.attr('data-url-quick-product'),
+                    'url': LeaseOrderLoadDataHandle.urlEle.attr('data-url-quick-product'),
                     'method': 'POST',
                     'data': dataSubmit,
                 }
@@ -167,7 +167,7 @@ $(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data && (data['status'] === 201 || data['status'] === 200)) {
                         $.fn.notifyB({description: data.message}, 'success');
-                        QuotationLoadDataHandle.loadModalSProduct();
+                        LeaseOrderLoadDataHandle.loadModalSProduct();
                         $('#selectProductModal').modal('show');
                         setTimeout(() => {
                             WindowControl.hideLoading();
@@ -193,21 +193,21 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // ReCalculate Total
-            QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
+            LeaseOrderCalculateCaseHandle.updateTotal(tableProduct[0]);
             // load again table cost
-            QuotationLoadDataHandle.loadSetWFRuntimeZone();
+            LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
         });
 
         tableProduct.on('click', '.btn-select-price', function () {
             if (this.closest('tr')) {
                 if (this.closest('tr').querySelector('.table-row-item')) {
-                    QuotationLoadDataHandle.loadPriceProduct(this.closest('tr').querySelector('.table-row-item'));
+                    LeaseOrderLoadDataHandle.loadPriceProduct(this.closest('tr').querySelector('.table-row-item'));
                 }
             }
          });
 
-        QuotationLoadDataHandle.$btnSavePrice.on('click', function () {
-            let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
+        LeaseOrderLoadDataHandle.$btnSavePrice.on('click', function () {
+            let modalBody = LeaseOrderLoadDataHandle.$priceModal[0].querySelector('.modal-body');
             if (modalBody) {
                 let productTarget = modalBody.querySelector('.product-target');
                 let priceChecked = modalBody.querySelector('.table-row-price-option:checked');
@@ -220,14 +220,14 @@ $(function () {
                             let eleUOM = row.querySelector('.table-row-uom');
                             let dataPrice = JSON.parse(priceChecked.getAttribute('data-price'));
                             if (dataPrice?.['uom']?.['id'] !== $(eleUOM).val()) {
-                                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-valid-price-uom')}, 'failure');
+                                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-valid-price-uom')}, 'failure');
                                 return false;
                             }
                             let elePrice = row.querySelector('.table-row-price');
                             if (elePrice) {
                                 $(elePrice).attr('value', String(priceVal));
                                 $.fn.initMaskMoney2();
-                                QuotationCalculateCaseHandle.commonCalculate(tableProduct, row);
+                                LeaseOrderCalculateCaseHandle.commonCalculate(tableProduct, row);
                                 let inputGrPrice = elePrice.closest('.input-group-price');
                                 if (inputGrPrice) {
                                     inputGrPrice.setAttribute('data-price-id', dataPrice?.['id']);
@@ -235,7 +235,7 @@ $(function () {
                             }
                         }
                         // store data
-                        QuotationStoreDataHandle.storeProduct(row);
+                        LeaseOrderStoreDataHandle.storeProduct(row);
                     }
                 }
             }
@@ -245,7 +245,7 @@ $(function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
                 if ($(this).hasClass('table-row-item')) {
-                    QuotationLoadDataHandle.loadDataProductSelect($(this));
+                    LeaseOrderLoadDataHandle.loadDataProductSelect($(this));
                 }
                 if ($(this).hasClass('validated-number')) {
                     validateNumber(this);
@@ -256,9 +256,9 @@ $(function () {
                 if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-uom') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
                     // load again table cost
                     // QuotationLoadDataHandle.loadDataTableCost();
-                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                    LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
                     if ($(this).hasClass('table-row-uom')) {
-                        let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
+                        let modalBody = LeaseOrderLoadDataHandle.$priceModal[0].querySelector('.modal-body');
                         if (modalBody) {
                             let priceChecked = modalBody.querySelector('.table-row-price-option:checked');
                             if (priceChecked.getAttribute('data-price')) {
@@ -268,7 +268,7 @@ $(function () {
                                     if (elePrice) {
                                         $(elePrice).attr('value', String(0));
                                     }
-                                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-valid-price-uom')}, 'failure');
+                                    $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-valid-price-uom')}, 'failure');
                                 }
                             }
                         }
@@ -279,11 +279,11 @@ $(function () {
                 // Delete all shipping rows
                 deletePromotionRows(tableProduct, false, true);
                 // Re Calculate all data of rows & total
-                QuotationCalculateCaseHandle.commonCalculate(tableProduct, row);
+                LeaseOrderCalculateCaseHandle.commonCalculate(tableProduct, row);
                 // change value before tax table payment
-                QuotationLoadDataHandle.loadChangePSValueBTAll();
+                LeaseOrderLoadDataHandle.loadChangePSValueBTAll();
                 // store data
-                QuotationStoreDataHandle.storeProduct(row);
+                LeaseOrderStoreDataHandle.storeProduct(row);
             }
         });
 
@@ -291,21 +291,21 @@ $(function () {
             let row = this.closest('tr');
             $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
             // store data
-            QuotationStoreDataHandle.storeProduct(row);
+            LeaseOrderStoreDataHandle.storeProduct(row);
         });
 
         tableProduct.on('blur', '.table-row-group-title-edit', function () {
             let row = this.closest('tr');
-            QuotationLoadDataHandle.loadOnBlurGroupTitleEdit(this);
+            LeaseOrderLoadDataHandle.loadOnBlurGroupTitleEdit(this);
             // store data
-            QuotationStoreDataHandle.storeProduct(row);
+            LeaseOrderStoreDataHandle.storeProduct(row);
         });
 
         tableProduct.on('click', '.btn-edit-group', function () {
             let row = this.closest('tr');
-            QuotationLoadDataHandle.loadOnClickBtnEditGroup(this);
+            LeaseOrderLoadDataHandle.loadOnClickBtnEditGroup(this);
             // store data
-            QuotationStoreDataHandle.storeProduct(row);
+            LeaseOrderStoreDataHandle.storeProduct(row);
         });
 
         tableProduct.on('click', '.btn-del-group', function () {
@@ -318,10 +318,10 @@ $(function () {
                 }
                 deleteRow(this.closest('tr'), tableProduct);
                 // load products to another group after del group
-                QuotationLoadDataHandle.loadProductAfterDelGroup(row.querySelector('.table-row-group'));
+                LeaseOrderLoadDataHandle.loadProductAfterDelGroup(row.querySelector('.table-row-group'));
             }
             // store data
-            QuotationStoreDataHandle.storeProduct(row);
+            LeaseOrderStoreDataHandle.storeProduct(row);
         });
 
         $('input[type=text].quotation-create-product-discount').on('change', function () {
@@ -333,22 +333,22 @@ $(function () {
             // Calculate with discount on Total
             tableProduct.DataTable().rows().every(function () {
                 let row = this.node();
-                QuotationCalculateCaseHandle.calculate(row);
+                LeaseOrderCalculateCaseHandle.calculate(row);
             });
-            QuotationCalculateCaseHandle.updateTotal(tableProduct[0])
+            LeaseOrderCalculateCaseHandle.updateTotal(tableProduct[0])
         });
 
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {
-            QuotationLoadDataHandle.loadReInitDataTableExpense();
+            LeaseOrderLoadDataHandle.loadReInitDataTableExpense();
         });
 
         $('#btn-add-expense-quotation-create').on('click', function (e) {
-            QuotationLoadDataHandle.loadAddRowExpense();
+            LeaseOrderLoadDataHandle.loadAddRowExpense();
         });
 
         $('#btn-add-labor-quotation-create').on('click', function (e) {
-            QuotationLoadDataHandle.loadAddRowLabor();
+            LeaseOrderLoadDataHandle.loadAddRowLabor();
         });
 
         tableExpense.on('click', '.del-row', function (e) {
@@ -357,7 +357,7 @@ $(function () {
             deleteRow(this.closest('tr'), tableExpense);
             // Re order
             reOrderSTT(tableExpense);
-            QuotationCalculateCaseHandle.updateTotal(tableExpense[0]);
+            LeaseOrderCalculateCaseHandle.updateTotal(tableExpense[0]);
         });
 
         tableExpense.on('click', '.table-row-price-option', function () {
@@ -368,7 +368,7 @@ $(function () {
                 if (elePrice) {
                     $(elePrice).attr('value', String(priceValRaw));
                     $.fn.initMaskMoney2();
-                    QuotationCalculateCaseHandle.commonCalculate(tableExpense, row);
+                    LeaseOrderCalculateCaseHandle.commonCalculate(tableExpense, row);
                 }
             }
         });
@@ -376,14 +376,14 @@ $(function () {
         tableExpense.on('change', '.table-row-item, .table-row-labor-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
             if (this.classList.contains('table-row-labor-item')) {
-                QuotationLoadDataHandle.loadChangeLabor(this);
+                LeaseOrderLoadDataHandle.loadChangeLabor(this);
             }
             if (this.classList.contains('table-row-uom')) {
                 if (row.querySelector('.table-row-labor-item')) {
                     let dataLabor = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-labor-item')), $(row.querySelector('.table-row-labor-item')).val());
                     let dataUOM = SelectDDControl.get_data_from_idx($(row.querySelector('.table-row-uom')), $(row.querySelector('.table-row-uom')).val());
                     if (dataLabor && dataUOM) {
-                        QuotationLoadDataHandle.loadPriceLabor(row, dataLabor, dataUOM?.['id']);
+                        LeaseOrderLoadDataHandle.loadPriceLabor(row, dataLabor, dataUOM?.['id']);
                     }
                 }
             }
@@ -391,35 +391,35 @@ $(function () {
             if ($(this).hasClass('table-row-quantity') && $(this).hasClass('validated-number')) {
                 validateNumber(this);
             }
-            QuotationCalculateCaseHandle.commonCalculate(tableExpense, row);
+            LeaseOrderCalculateCaseHandle.commonCalculate(tableExpense, row);
             // store data
-            QuotationStoreDataHandle.storeExpense(row);
+            LeaseOrderStoreDataHandle.storeExpense(row);
         });
 
 // COST
         $quotationTabs.on('click', '.tab-cost', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                QuotationLoadDataHandle.loadDataTableCost();
+                LeaseOrderLoadDataHandle.loadDataTableCost();
             }
         });
 
         tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
-                QuotationCalculateCaseHandle.commonCalculate(tableCost, row);
+                LeaseOrderCalculateCaseHandle.commonCalculate(tableCost, row);
             }
         });
 
         tableCost.on('click', '.btn-select-cost', function () {
             if (this.closest('tr')) {
                 if (this.closest('tr').querySelector('.table-row-item')) {
-                    QuotationLoadDataHandle.loadCostProduct(this.closest('tr').querySelector('.table-row-item'));
+                    LeaseOrderLoadDataHandle.loadCostProduct(this.closest('tr').querySelector('.table-row-item'));
                 }
             }
          });
 
-        QuotationLoadDataHandle.$btnSaveCost.on('click', function () {
-            let modalBody = QuotationLoadDataHandle.$costModal[0].querySelector('.modal-body');
+        LeaseOrderLoadDataHandle.$btnSaveCost.on('click', function () {
+            let modalBody = LeaseOrderLoadDataHandle.$costModal[0].querySelector('.modal-body');
             if (modalBody) {
                 let productTarget = modalBody.querySelector('.product-target');
                 let priceChecked = modalBody.querySelector('.table-row-price-option:checked');
@@ -441,7 +441,7 @@ $(function () {
                                     }
                                 }
                                 $.fn.initMaskMoney2();
-                                QuotationCalculateCaseHandle.commonCalculate(tableCost, row);
+                                LeaseOrderCalculateCaseHandle.commonCalculate(tableCost, row);
                             }
                         }
                     }
@@ -467,7 +467,7 @@ $(function () {
                 // Delete all shipping rows
                 deletePromotionRows(tableProduct, false, true);
                 // ReCalculate Total
-                QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
+                LeaseOrderCalculateCaseHandle.updateTotal(tableProduct[0]);
             }
         });
 
@@ -495,27 +495,27 @@ $(function () {
                 // load table quotation list for copy
                 let opp_id = null;
                 let sale_person_id = null;
-                if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                    opp_id = QuotationLoadDataHandle.opportunitySelectEle.val()
+                if (LeaseOrderLoadDataHandle.opportunitySelectEle.val()) {
+                    opp_id = LeaseOrderLoadDataHandle.opportunitySelectEle.val()
                 }
-                if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
-                    sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val()
+                if (LeaseOrderLoadDataHandle.salePersonSelectEle.val()) {
+                    sale_person_id = LeaseOrderLoadDataHandle.salePersonSelectEle.val()
                 }
-                QuotationLoadDataHandle.loadTableCopyQuotation(opp_id, sale_person_id);
+                LeaseOrderLoadDataHandle.loadTableCopyQuotation(opp_id, sale_person_id);
             } else if (type === 'copy-to') {
                 // load data product for table datable-copy-quotation-product
                 let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
                 tableCopyQuotationProduct.DataTable().destroy();
                 // Filter all data is not Promotion from quotation_products_data
                 let finalList = filterDataProductNotPromotion(dataCopy.quotation_products_data);
-                QuotationDataTableHandle.dataTableCopyQuotationProduct(finalList);
+                LeaseOrderDataTableHandle.dataTableCopyQuotationProduct(finalList);
             }
         });
 
         tableCopyQuotation.on('click', '.table-row-check', function () {
             tableCopyQuotation.find('.table-row-check').prop('checked', false);
             $(this).prop('checked', true);
-            QuotationLoadDataHandle.loadAPIDetailQuotation($(this)[0].getAttribute('data-id'));
+            LeaseOrderLoadDataHandle.loadAPIDetailQuotation($(this)[0].getAttribute('data-id'));
         });
 
         $('#btn-select-quotation-copy').on('click', function() {
@@ -529,7 +529,7 @@ $(function () {
             tableCopyQuotationProduct.DataTable().destroy();
             // Filter all data is not Promotion from quotation_products_data
             let finalList = filterDataProductNotPromotion(dataCopy.quotation_products_data);
-            QuotationDataTableHandle.dataTableCopyQuotationProduct(finalList);
+            LeaseOrderDataTableHandle.dataTableCopyQuotationProduct(finalList);
 
             $('#btn-select-quotation-copy')[0].setAttribute('hidden', true);
             $('#btn-quotation-copy-confirm')[0].removeAttribute('hidden')
@@ -544,7 +544,7 @@ $(function () {
         });
 
         $('#btn-quotation-copy-confirm').on('click', function () {
-            QuotationLoadDataHandle.loadSetupCopy(this);
+            LeaseOrderLoadDataHandle.loadSetupCopy(this);
         });
 
         function prepareDataCopyTo() {
@@ -552,7 +552,7 @@ $(function () {
             if (eleDataCopy) {
                 if (eleDataCopy.val()) {
                     let dataRaw = JSON.parse(eleDataCopy.val());
-                    QuotationLoadDataHandle.loadAPIDetailQuotation(dataRaw?.['id']);
+                    LeaseOrderLoadDataHandle.loadAPIDetailQuotation(dataRaw?.['id']);
                     checkElementValuesBeforeLoadDataCopy();
                 }
             }
@@ -585,7 +585,7 @@ $(function () {
                         dataCopy['quotation_products_data'] = result;
                         dataCopy['quotation_costs_data'] = [];
                     }
-                    QuotationLoadDataHandle.loadCopyData(dataCopy);
+                    LeaseOrderLoadDataHandle.loadCopyData(dataCopy);
                 }
             }
         }
@@ -599,23 +599,23 @@ $(function () {
             }
         }
 
-        QuotationLoadDataHandle.loadInitOpportunity();
-        QuotationLoadDataHandle.loadRecurrenceData();
+        LeaseOrderLoadDataHandle.loadInitOpportunity();
+        LeaseOrderLoadDataHandle.loadRecurrenceData();
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
         $('#btn-check-promotion').on('click', function () {
-            QuotationPromotionHandle.callPromotion(0);
+            LeaseOrderPromotionHandle.callPromotion(0);
         });
 
         tablePromotion.on('click', '.apply-promotion', function () {
             $(this).prop('disabled', true);
             deletePromotionRows(tableProduct, true, false);
             // ReCalculate Total
-            QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
+            LeaseOrderCalculateCaseHandle.updateTotal(tableProduct[0]);
             // get promotion condition to apply
             let promotionData = JSON.parse($(this)[0].getAttribute('data-promotion'));
-            let promotionParse = QuotationPromotionHandle.getPromotionResult(promotionData);
+            let promotionParse = LeaseOrderPromotionHandle.getPromotionResult(promotionData);
             let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
             let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
             let order = (TotalOrder - TotalGroup) + 1;
@@ -646,43 +646,43 @@ $(function () {
             if (promotionParse?.['is_discount'] === true) { // DISCOUNT
                 if (promotionParse?.['row_apply_index'] !== null) { // on product
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                    LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                    LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     let afterRow = tableProduct.DataTable().row(promotionParse?.['row_apply_index']).node();
                     $(newRow).detach().insertAfter(afterRow);
-                    QuotationCalculateCaseHandle.commonCalculate(tableProduct, newRow);
-                    QuotationLoadDataHandle.loadRowDisabled(newRow);
-                    QuotationStoreDataHandle.storeProduct(newRow);
+                    LeaseOrderCalculateCaseHandle.commonCalculate(tableProduct, newRow);
+                    LeaseOrderLoadDataHandle.loadRowDisabled(newRow);
+                    LeaseOrderStoreDataHandle.storeProduct(newRow);
                 } else { // on whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-                    QuotationCalculateCaseHandle.commonCalculate(tableProduct, newRow);
+                    LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                    LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                    LeaseOrderCalculateCaseHandle.commonCalculate(tableProduct, newRow);
                     if (promotionParse.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionParse.discount_rate_on_order !== null) {
                             if (promotionParse.is_before_tax === true) {
-                                QuotationPromotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price']);
+                                LeaseOrderPromotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price']);
                             } else {
-                                QuotationPromotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price'], false)
+                                LeaseOrderPromotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price'], false)
                             }
                         }
                     }
-                    QuotationLoadDataHandle.loadRowDisabled(newRow);
-                    QuotationStoreDataHandle.storeProduct(newRow);
+                    LeaseOrderLoadDataHandle.loadRowDisabled(newRow);
+                    LeaseOrderStoreDataHandle.storeProduct(newRow);
                 }
             } else if (promotionParse?.['is_gift'] === true) { // GIFT
                 if (promotionParse?.['row_apply_index'] !== null) { // on product
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
                     let afterRow = tableProduct.DataTable().row(promotionParse?.['row_apply_index']).node();
                     $(newRow).detach().insertAfter(afterRow);
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-                    QuotationLoadDataHandle.loadRowDisabled(newRow);
-                    QuotationStoreDataHandle.storeProduct(newRow);
+                    LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                    LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                    LeaseOrderLoadDataHandle.loadRowDisabled(newRow);
+                    LeaseOrderStoreDataHandle.storeProduct(newRow);
                 } else { // on whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    QuotationLoadDataHandle.loadRowDisabled(newRow);
-                    QuotationStoreDataHandle.storeProduct(newRow);
+                    LeaseOrderLoadDataHandle.loadRowDisabled(newRow);
+                    LeaseOrderStoreDataHandle.storeProduct(newRow);
                 }
             }
             reOrderSTT(tableProduct);
@@ -691,7 +691,7 @@ $(function () {
 // SHIPPING
 // Action on click button Add Shipping Fee (show list shipping)
         $('#btn-add-shipping').on('click', function() {
-            QuotationDataTableHandle.loadTableQuotationShipping();
+            LeaseOrderDataTableHandle.loadTableQuotationShipping();
         });
 
         tableShipping.on('click', '.apply-shipping', function () {
@@ -701,7 +701,7 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // ReCalculate Total
-            QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
+            LeaseOrderCalculateCaseHandle.updateTotal(tableProduct[0]);
             if (this.getAttribute('data-shipping')) {
                 let dataShipping = JSON.parse(this.getAttribute('data-shipping'));
                 let shippingPrice = parseFloat(dataShipping?.['shipping_price']);
@@ -727,27 +727,27 @@ $(function () {
                     "shipping_data": dataShipping,
                 };
                 let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-                QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-                QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
                 // Re Calculate after add shipping (pretax, discount, total)
                 shippingHandle.calculateShipping(shippingPrice);
                 // Load disabled
-                QuotationLoadDataHandle.loadRowDisabled(newRow);
+                LeaseOrderLoadDataHandle.loadRowDisabled(newRow);
                 // ReOrder STT
                 reOrderSTT(tableProduct);
                 // load again table cost
                 // QuotationLoadDataHandle.loadDataTableCost();
-                QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
                 // store data
-                QuotationStoreDataHandle.storeProduct(newRow);
+                LeaseOrderStoreDataHandle.storeProduct(newRow);
             }
         });
 
 // INDICATORS
         $('#tab-indicator').on('click', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                indicatorHandle.loadIndicator();
-                QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                LeaseOrderIndicatorHandle.loadIndicator();
+                LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
             }
         });
 
@@ -755,13 +755,13 @@ $(function () {
         $('#btn-refresh-quotation-indicator').on('click', function () {
             let transEle = $('#app-trans-factory');
             document.getElementById('quotation-indicator-data').value = "";
-            indicatorHandle.loadIndicator();
+            LeaseOrderIndicatorHandle.loadIndicator();
             $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
         });
 
 // PAYMENT STAGE
         $('#btn-add-payment-stage').on('click', function () {
-            QuotationLoadDataHandle.loadAddPaymentStage();
+            LeaseOrderLoadDataHandle.loadAddPaymentStage();
         });
 
         tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
@@ -777,20 +777,20 @@ $(function () {
                         }
                     }
                     if (isCheck === true) {
-                        QuotationLoadDataHandle.loadChangePSDate(this);
+                        LeaseOrderLoadDataHandle.loadChangePSDate(this);
                     } else {
                         $(this).val(null);
-                        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
+                        $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
                         return false;
                     }
                 }
                 if ($(this).hasClass('table-row-term')) {
-                    QuotationLoadDataHandle.loadChangePSTerm(this);
+                    LeaseOrderLoadDataHandle.loadChangePSTerm(this);
                 }
                 if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
                     validateNumber(this);
                     let eleValueBeforeTax = row.querySelector('.table-row-value-before-tax');
-                    QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBeforeTax, $(this).val());
+                    LeaseOrderLoadDataHandle.loadPSValueBeforeTax(eleValueBeforeTax, $(this).val());
                     validatePSValue(eleValueBeforeTax);
                 }
                 if ($(this).hasClass('table-row-due-date')) {
@@ -802,7 +802,7 @@ $(function () {
                             let isCheck = validateStartEndDate($(eleDate).val(), $(this).val());
                             if (isCheck === false) {
                                 $(this).val(null);
-                                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
+                                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
                                 return false;
                             }
                         }
@@ -833,8 +833,8 @@ $(function () {
                 if (listProdID.length > 0) {
                     WindowControl.showLoading();
                     $.fn.callAjax2({
-                            'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
-                            'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
+                            'url': LeaseOrderDataTableHandle.productInitEle.attr('data-url'),
+                            'method': LeaseOrderDataTableHandle.productInitEle.attr('data-method'),
                             'data': {'id__in': listProdID.join(',')},
                             'isDropdown': true,
                         }
@@ -861,7 +861,7 @@ $(function () {
                                     tableProduct.DataTable().clear().draw();
                                     // load table product
                                     tableProduct.DataTable().rows.add(result).draw();
-                                    QuotationLoadDataHandle.loadReInitDataTableProduct();
+                                    LeaseOrderLoadDataHandle.loadReInitDataTableProduct();
                                     $('#modal-load-datatable-from-excel').modal('hide');
                                     WindowControl.hideLoading();
                                 }
@@ -892,7 +892,7 @@ $(function () {
 
         function submitHandlerFunc() {
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method').toLowerCase() === "post") { // HAS PROMOTION => Check condition again
-                QuotationPromotionHandle.callPromotion(1);
+                LeaseOrderPromotionHandle.callPromotion(1);
                 // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal
@@ -917,13 +917,13 @@ $(function () {
 
          function submitForm(formSubmit) {
              let is_sale_order = false;
-             if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+             if (LeaseOrderLoadDataHandle.$form[0].classList.contains('sale-order')) {
                  is_sale_order = true;
              }
              let _form = new SetupFormSubmit(formSubmit);
             // Load again indicator when Submit
-            indicatorHandle.loadIndicator();
-            let result = QuotationSubmitHandle.setupDataSubmit(_form);
+            LeaseOrderIndicatorHandle.loadIndicator();
+            let result = LeaseOrderSubmitHandle.setupDataSubmit(_form);
             if (result === false) {
                 return false;
             }
@@ -932,13 +932,13 @@ $(function () {
                 if (keyHidden.length > 0) {
                     // special case: loadCost if products is not in hidden zones
                     if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
-                        QuotationLoadDataHandle.loadDataTableCost();
-                        QuotationSubmitHandle.setupDataSubmit(_form);
-                        QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                        LeaseOrderLoadDataHandle.loadDataTableCost();
+                        LeaseOrderSubmitHandle.setupDataSubmit(_form);
+                        LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
                     }
                 } else {
-                    QuotationLoadDataHandle.loadDataTableCost();
-                    QuotationSubmitHandle.setupDataSubmit(_form);
+                    LeaseOrderLoadDataHandle.loadDataTableCost();
+                    LeaseOrderSubmitHandle.setupDataSubmit(_form);
                 }
             }
             let submitFields = [
@@ -1078,14 +1078,14 @@ $(function () {
 
         // events on btn action WF zone (depend on business rule)
         $('#btn-active-edit-zone-wf').on('click', function () {
-            QuotationCheckConfigHandle.checkConfig(0);
+            LeaseOrderCheckConfigHandle.checkConfig(0);
         });
 
         $('#btn-remove-promotion').on('click', function() {
             $('#quotation-check-promotion').val("");
             // Delete Promotion Row & ReCalculate Total
             deletePromotionRows(tableProduct, true, false);
-            QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
+            LeaseOrderCalculateCaseHandle.updateTotal(tableProduct[0]);
         });
 
         $('#btn-check-another-promotion').on('click', function() {

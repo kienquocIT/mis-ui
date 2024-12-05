@@ -58,21 +58,6 @@ $(function () {
     }
 
     function callDataTaskList(kanban, list, params = {}, isReturn=false) {
-        function callBackModalChange(mutations, observer) {
-            // function kiểm tra nếu form create/edit đang mở thì chỉnh sửa datalist của table show/hide icon
-            // testcase: click view item 1 sau đó click view item 2
-            const checkHasClass = mutations[0].target.classList.contains('open');
-            if (!checkHasClass) {
-                const _tableDataList = list.getTaskList
-                for (let item of _tableDataList) {
-                    if (item.edited) {
-                        item.edited = false
-                        break;
-                    }
-                }
-                $('#table_task_list').DataTable().clear().rows.add(_tableDataList).draw()
-            }
-        }
         let callData = $.fn.callAjax2({'url': $urlFact.attr('data-task-list'), 'method': 'GET', 'data': params})
         if (isReturn) return callData
         $x.fn.showLoadingPage();
@@ -85,9 +70,6 @@ $(function () {
                     list.init(list, taskList)
                     // Function to wait form create on submit
                     $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
-                    let observer = new MutationObserver(callBackModalChange);
-                    // const DOMCheck = document.getElementById('drawer_task_create')
-                    // observer.observe(DOMCheck, {attributeFilter: ['class']});
                     let temp = $.extend(true, {}, data)
                     delete temp['task_list']
                     $('.btn-task-bar').data('task_info', temp)
@@ -123,8 +105,8 @@ $(function () {
                         data: 'employee_created',
                         targets: 0,
                         width: "35%",
-                        render: (data, type, row) => {
-                            let avatar = ''
+                        render: (data) => {
+                            let avatar
                             const full_name = data.last_name + ' ' + data.first_name
                             if (data?.['avatar'])
                                 avatar = `<img src="${data?.['avatar']}" alt="user" class="avatar-img">`
@@ -151,7 +133,7 @@ $(function () {
                         data: 'time_spent',
                         targets: 2,
                         width: "20%",
-                        render: (data, type, row) => {
+                        render: (data) => {
                             return data;
                         }
                     },
@@ -159,7 +141,7 @@ $(function () {
                         data: 'id',
                         targets: 3,
                         width: "10%",
-                        render: (data, type, row) => {
+                        render: (data) => {
                             return `<btn type="button" class="btn action act-edit" data-row-id="${data}"><i class="fa-solid fa-pencil"></i></btn>`;
                         }
                     }
@@ -174,7 +156,7 @@ $(function () {
             $wrap.html('')
             if (subTaskList.length) {
                 for (let [key, item] of subTaskList.entries()) {
-                    const template = $(`<div class="d-flex justify-content-start align-items-center subtask_item">
+                    const template = $(`<div class="d-flex justify-content-start align-items-center subtask_item" data-index="${key}">
                                     <p class="sub-tit" title="${item.title}">${item.title}</p>
                                     <p class="sub-employee" title="${item.employee_inherit}"><span class="chip chip-primary chip-pill"><span class="chip-text">${item.employee_inherit}</span></span></p>
                                     <button class="btn btn-flush-primary btn-icon btn-rounded ml-auto flush-soft-hover">
@@ -373,8 +355,9 @@ $(function () {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
                             resetFormTask()
-                            if (!$('#drawer_task_create').hasClass('open'))
-                                $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                            const drawTaskElm = $('#drawer_task_create')
+                            if (!drawTaskElm.hasClass('open'))
+                                drawTaskElm.trigger('drawer.show');
                             const titCreate = $('.title-create'), titEdit = $('.title-detail');
                             titCreate.off().addClass("hidden")
                             titEdit.off().removeClass("hidden")
@@ -479,7 +462,7 @@ $(function () {
         }
 
         // delete a task
-        deleteTask(newTaskElm = null, subTaskID = null) {
+        deleteTask(newTaskElm = null) {
             let elm = $('.del-task-act')
             const _this = this
             if (newTaskElm) elm = newTaskElm.find('.del-task-act')
@@ -515,9 +498,8 @@ $(function () {
         addNewTask(newData, isReturn = false) {
             if (Object.keys(newData).length > 0) {
                 let childHTML = $($('.card-child_template').html());
-                let taskStatus = ''
                 // loop in newTask object
-                taskStatus = newData.task_status
+                let taskStatus = newData.task_status;
                 childHTML.find('.card-code').text(newData.code)
                 childHTML.find('.card-ticket span').text(newData['percent_completed'])
                 childHTML.find('.card-title').text(newData.title).attr('data-task-id', newData.id).attr('title',
@@ -529,7 +511,7 @@ $(function () {
                 childHTML.find('.card-priority').html(priorityHTML)
                 let date = moment(newData.end_date, 'YYYY-MM-DD hh:mm:ss').format('YYYY/MM/DD')
                 childHTML.find('.task-deadline').text(date)
-                const assign_to = newData.employee_inherit || newData.assign_to
+                const assign_to = newData.employee_inherit || newData?.['assign_to']
                 if (Object.keys(assign_to).length > 0) {
                     if (assign_to?.['avatar']) childHTML.find('img').attr('src', assign_to?.['avatar'])
                     else {
@@ -539,10 +521,7 @@ $(function () {
                     }
                 } else childHTML.find('.avatar').addClass('visible-hidden')
                 if (newData.checklist) {
-                    let done = newData.checklist.reduce((acc, obj) => {
-                        if (obj.done) return acc += 1
-                        else return acc
-                    }, 0)
+                    let done = newData.checklist.reduce((acc, obj) => acc + (obj.done ? 1 : 0), 0);
                     const total = newData.checklist.length
                     childHTML.find('.checklist_progress').text(`${done}/${total}`)
                 }
@@ -635,8 +614,8 @@ $(function () {
             $elm.find('.badge-icon').removeClass('text-success text-warning text-danger')
             $elm.find('.badge-icon').addClass(`text-${priority_list[data.priority]}`)
             $elm.find('.card-title').text(data.title).attr('title', data.title)
-            if (data.assign_to) {
-                const assign_to = data.assign_to
+            if (data?.['assign_to']) {
+                const assign_to = data['assign_to']
                 if (assign_to?.['avatar']) $elm.find('img').attr('src', assign_to?.['avatar'])
                 else {
                     $elm.find('img').remove()
@@ -647,10 +626,7 @@ $(function () {
                 }
             }
             if (data.checklist) {
-                let done = data.checklist.reduce((acc, obj) => {
-                    if (obj.done) return acc += 1
-                    else return acc
-                }, 0)
+                let done = data.checklist.reduce((acc, obj) => acc + (obj.done ? 1 : 0), 0);
                 const total = data.checklist.length
                 $elm.find('.checklist_progress').text(`${done}/${total}`)
             }
@@ -989,7 +965,7 @@ $(function () {
                         {
                             "data": 'priority',
                             "class": 'w-5',
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 let $badge = $($('.priority-badges').html());
                                 $badge.find('.badge-icon-wrap').text(
                                     row === 0 ? '!' : row === 1 ? '!!' : '!!!'
@@ -1001,7 +977,7 @@ $(function () {
                         {
                             "data": "task_status",
                             "class": "w-15",
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 const config = cls.getConfig
                                 let html = $('<span class="badge text-dark font-2">')
                                 for (let cf of config.list_status) {
@@ -1036,7 +1012,7 @@ $(function () {
                         {
                             "data": "date_created",
                             "class": "col-1",
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 if (!row) row = new Date()
                                 return `<span>${$x.fn.parseDate(row)}<span>`
                             }
@@ -1044,7 +1020,7 @@ $(function () {
                         {
                             "data": "opportunity",
                             "class": "col-1",
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 let html = '--';
                                 if (row?.code) html = `<span>${row.code}</span>`
                                 return html
@@ -1211,40 +1187,39 @@ $(function () {
         }
 
         static loadTaskInfo(dataID){
-            const $form = $('#formOpportunityTask'), $oppElm = $('#opportunity_id');
             if (!$('.hk-wrapper').hasClass('open'))
                     $('[data-drawer-target="#drawer_task_create"]').trigger('click')
             $.fn.callAjax2({
-                url: $('#url-factory').attr('data-task-detail').format_url_with_uuid(dataID),
+                url: $urlFact.attr('data-task-detail').format_url_with_uuid(dataID),
                 method: "get"
             })
                 .then((resp) => {
                     let data = resp.data
                     $('.title-create').addClass("hidden")
                     $('.title-detail').removeClass("hidden")
-                    $('#inputTextTitle', $form).val(data.title)
-                    $('#inputTextCode', $form).val(data.code)
-                    listViewTask.selfInitSelect2($('#selectStatus', $form), data.task_status)
-                    $form.find('input[name="id"]').remove()
+                    $('#inputTextTitle', $formElm).val(data.title)
+                    $('#inputTextCode', $formElm).val(data.code)
+                    listViewTask.selfInitSelect2($('#selectStatus', $formElm), data.task_status)
+                    $formElm.find('input[name="id"]').remove()
                     const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                     $formElm.append(taskIDElm).addClass('task_edit')
-                    $('#inputTextStartDate', $form).val(
+                    $('#inputTextStartDate', $formElm).val(
                         moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                     )
-                    $('#inputTextEndDate', $form).val(
+                    $('#inputTextEndDate', $formElm).val(
                         moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                     )
-                    $('#inputTextEstimate', $form).val(data.estimate)
+                    $('#inputTextEstimate', $formElm).val(data.estimate)
 
-                    $('#selectPriority', $form).val(data.priority).trigger('change')
+                    $('#selectPriority', $formElm).val(data.priority).trigger('change')
                     $('#rangeValue').text(data['percent_completed'])
                     $('#percent_completed').val(data['percent_completed'])
-                    $('#inputAssigner', $form).val(data.employee_created.full_name)
+                    $('#inputAssigner', $formElm).val(data.employee_created.full_name)
                         .attr('data-value-id', data.employee_created.id)
                         .attr('value', data.employee_created.id)
                     if (data?.['opportunity'])
-                        listViewTask.selfInitSelect2($($oppElm, $form), data['opportunity'])
-                    listViewTask.selfInitSelect2($('#employee_inherit_id', $form), data.employee_inherit, 'full_name')
+                        listViewTask.selfInitSelect2($($oppElm, $formElm), data['opportunity'])
+                    listViewTask.selfInitSelect2($('#employee_inherit_id', $formElm), data.employee_inherit, 'full_name')
                     if (data.label) window.formLabel.renderLabel(data.label)
                     if (data.remark) window.editor.setData(data.remark)
                     if (data.checklist){
@@ -1477,7 +1452,7 @@ $(function () {
                     }
             })
             if (!$('.gantt').length) $('.gantt_table').append('<div class="gantt"></div>');
-            $('.tab-gantt[data-bs-toggle="tab"]').on('show.bs.tab', function (e) {
+            $('.tab-gantt[data-bs-toggle="tab"]').on('show.bs.tab', function () {
                 $('#gantt_reload').data('data', GanttViewTask.taskList).trigger('click')
             });
         }

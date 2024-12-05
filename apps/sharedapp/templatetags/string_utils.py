@@ -273,3 +273,10 @@ def split_list(data, order):
 @register.filter
 def get_range(value, from_num=1):
     return range(from_num, value + from_num)
+
+
+@register.simple_tag(name='get_or_default')
+def get_or_default(value, default_value):
+    if value:
+        return value
+    return default_value

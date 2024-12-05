@@ -33,10 +33,23 @@ const {
 ])
 
 new $x.cls.bastionField({
-    has_opp: true,
-    has_inherit: true,
-    has_process: true,
-    has_prj: true,
+    // has_opp: true,  // deprecated
+    // has_inherit: true,  // deprecated
+    // has_process: true,  // deprecated
+    // has_prj: true,  // deprecated
+    // has_* sẽ tự động check theo sự có mặt của thẻ select trong DOM HTML.
+    
+    // Dữ liệu ứng dụng cần thiết để bastionField hoạt động, thay thế `{{ ... }}` khi gọi trong JS vì `{{...}}` là templateTag của Django HTML.
+    list_from_app: "{{ data.list_from_app }}",  // [*] set mã list_from_app cho bastionField hoạt động
+    app_id: "{{ data.app_id }}",  // [*] set app_id cho bastionField hoạt động
+    
+    // Ghi đè hoặc khai báo các element | không khai báo sẽ có giá trị mặc định từ `extends/the-documents/bastion.html`
+    mainDiv: group$,  // [jQuery] Element bao bọc tất cả các thẻ select
+    oppEle: group$.find(':input[name=opportunity_id]'),  // Tìm trong mainDiv thẻ `:input` khớp với Opp 
+    prjEle: group$.find(':input[name=project_id]'),  // Tìm trong mainDiv thẻ `:input` khớp với Project 
+    empInheritEle: group$.find(':input[name=employee_inherit_id]'),   // Tìm trong mainDiv thẻ `:input` khớp với Inheritor
+    processEle: group$.find(':input[name=processX]'),  // Tìm trong mainDiv thẻ `:input` khớp với Process
+    processStageAppEle$: group$.find(':input[name=processStageAppX]'),   // Tìm trong mainDiv thẻ `:input` khớp với Process Stage App
     
     // Thêm dành cho việc load dữ liệu chọn sẵn 
     // Dữ liệu có thể lấy từ paramter hoặc doc detail. (Ví dụ là lấy từ paramter)
@@ -72,13 +85,17 @@ new $x.cls.bastionField({
     // -- Thêm dành cho việc load dữ liệu chọn sẵn
     
     // Thêm dành chi chi tiết muốn vô hiệu hoá các trường dữ liệu
-    "oppFlagData": {"disabled": true},
-    "prjFlagData": {"disabled": true},
-    "inheritFlagData": {"disabled": true},
-    "processFlagData": {"disabled": true},
-    "processStageAppFlagData": {"disabled": true},
+    // Sử dụng `disabled` khi muốn loại bỏ dữ liệu khỏi Form
+    // Sử dụng readonly khi muốn không cho thay đổi dữ liệu sau khi init
+    "oppFlagData": {"disabled": true, "readonly": true},
+    "prjFlagData": {"disabled": true, "readonly": true},
+    "inheritFlagData": {"disabled": true, "readonly": true},
+    "processFlagData": {"disabled": true, "readonly": true},
+    "processStageAppFlagData": {"disabled": true, "readonly": true},
     // -- Thêm dành chi chi tiết muốn vô hiệu hoá các trường dữ liệu
     
+    
+    // nếu `data` có trong `*FlagData` thì nó sẽ override dữ liệu từ `data_*`
 }).init();
 ```
 
@@ -106,6 +123,29 @@ class XView(View):
     def get(self, request, *args, **kwargs):
         ctx = {}
         ...
+        ctx['list_from_app'] = 'base.application.create'   # sử dụng khi có sử dụng Opp
         ctx['app_id'] = '{APP_ID_IN_TABLE_BASE_APPLICATION}' 
         return ctx, status.HTTP_200_OK
 ```
+
+---
+
+## Tuỳ chỉnh trường select tuỳ chọn
+
+1. Chỉ cần tạo `select` rỗng không cần điền các dữ liệu ajax `<select class="form-control" name="inheritorX"></select>`
+2. Sau đó sử dụng jQuery Object `$('[name=inheritorX]')` truyền vào khi init để chỉ định element sử dụng bởi các trường `oppEle` `prjEle` `empInheritEle` `processEle` `processStageAppEle$`
+3. Nên tuân thủ nguyên tắc `form-group` cho từng `select` để thư viện hoạt động tốt!
+    ```html
+    <div class="form-group">
+        <label class="form-label" for="inp-inherit-x">Inherit</label>
+        <select class="form-select" name="inheritorX" id="inp-inherit-x"></select>
+    </div>
+    ```
+
+--- 
+
+### Thêm ViewName của trang `create` cho tính năng mới thêm vào Process
+
+- Tìm code ứng dụng trong `PLAN_APP_MAP_VIEW`
+- Thêm `create_view_name` vào ứng `ReverseUrlCommon` của ứng dụng đó ứng với `ViewName` của ứng dụng để Process có thể chuyển hướng đến trang tạo.
+

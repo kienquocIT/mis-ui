@@ -1218,7 +1218,7 @@ class OpportunityActivity {
         });
     };
 
-    static loadOpenRelateApp(ele, $tableTimeLine, oppParamStr) {
+    static loadOpenRelateApp(ele, $tableTimeLine) {
         // check permission before redirect
         let $dataDetail = $('#data-detail');
         let transEle = $('#trans-factory');
@@ -1229,26 +1229,26 @@ class OpportunityActivity {
                 'quotation.quotation': 'quotation.quotation.create',
                 'saleorder.saleorder': 'saleorder.saleorder.create',
             };
-            let tableData = $tableTimeLine.DataTable().rows().data().toArray();
-            $.fn.callAjax2({
-                    'url': $('#script-url').attr('data-url-opp-list'),
-                    'method': 'GET',
-                    'data': {'list_from_app': appMapPerm[label]},
-                    isLoading: true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                            for (let opp of data.opportunity_list) {  // check employee has opp permission on quotation/ sale order
-                                if (opp?.['id'] === detail?.['id']) {
+            if (appMapPerm?.[label] && detail?.['id']) {
+                let tableData = $tableTimeLine.DataTable().rows().data().toArray();
+                $.fn.callAjax2({
+                        'url': $('#url-factory').attr('data-url-opp-list'),
+                        'method': 'GET',
+                        'data': {'list_from_app': appMapPerm[label], 'id': detail?.['id']},
+                        isLoading: true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                if (data.opportunity_list.length === 1) {
                                     // check opp already has quotation/ sale order
                                     for (let tData of tableData) {
                                         if (label === 'quotation.quotation') {
                                             if (tData?.['app_code'] === 'saleorder.saleorder' && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
                                                 $.fn.notifyB({description: transEle.attr('data-cancel-quo-so')}, 'failure');
-                                                return false
+                                                return false;
                                             }
                                         }
                                         if (tData?.['app_code'] === label && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
@@ -1260,15 +1260,23 @@ class OpportunityActivity {
                                             return false;
                                         }
                                     }
+                                    const paramData = $.param({
+                                        'create_open': true,
+                                        'opp_id': detail?.['id'],
+                                        'opp_title': detail?.['title'],
+                                        'opp_code': detail?.['code'],
+                                    });
+                                    let url = $(ele).data('url') + '?' + paramData;
+                                    window.open(url, '_blank');
                                     return true;
                                 }
+                                $.fn.notifyB({description: transEle.attr('data-forbidden')}, 'failure');
+                                return false;
                             }
-                            $.fn.notifyB({description: transEle.attr('data-forbidden')}, 'failure');
-                            return false;
                         }
                     }
-                }
-            )
+                )
+            }
         }
         return true;
     }
@@ -2337,6 +2345,7 @@ class OpportunityLoadPage {
                         'opp_id': results_perm_app[0]?.['id']
                     })
                     create_quotation_sc.attr('href', param_url)
+                    create_quotation_sc.removeAttr('href');  // need check other rules before redirect
                 }
                 if (results_perm_app[1]) {
                     let create_so_sc = $('#create-sale-order-shortcut')
@@ -2345,6 +2354,7 @@ class OpportunityLoadPage {
                         'opp_id': results_perm_app[1]?.['id']
                     })
                     create_so_sc.attr('href', param_url)
+                    create_so_sc.removeAttr('href');  // need check other rules before redirect
                 }
                 if (results_perm_app[2]) {
                     let create_ap_sc = $('#create-advance-payment-shortcut')

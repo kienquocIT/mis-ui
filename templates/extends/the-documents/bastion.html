@@ -9,9 +9,11 @@
 
     {% override_list_form_app data.list_from_app new_list_from_app as resolve_list_from_app %}
 
+    {% get_or_default idx "bastionFieldTheDocument" as idx %}
+
     <div
             class="accordion accordion-card accordion-soft accordion-icon my-3"
-            id="bastionFieldTheDocument"
+            id="{{idx}}"
 
             data-current-feature="{{ data.list_from_app }}"
             data-current-app-id="{{ data.app_id }}"

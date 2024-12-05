@@ -138,6 +138,6 @@ class XView(View):
     ```html
     <div class="form-group">
         <label class="form-label" for="inp-inherit-x">Inherit</label>
-        <select class="form-control" name="inheritorX" id="inp-inherit-x"></select>
+        <select class="form-select" name="inheritorX" id="inp-inherit-x"></select>
     </div>
     ```

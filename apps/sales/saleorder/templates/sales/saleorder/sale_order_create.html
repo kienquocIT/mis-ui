@@ -85,7 +85,7 @@
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label" for="quotation_id">{% trans 'Quotation' %}</label>
-                                <input type="text" class="form-control form-control-line mt-1" id="quotation_id" data-detail="" readonly>
+                                <input type="text" class="form-control form-control-line mt-1" id="quotation_id" name="quotation_id" data-detail="" readonly>
                             </div>
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                                         data-url="{% url "AccountForSaleListAPI" %}"
                                         data-method="GET"
                                         data-link-detail="{% url "AccountDetail" 1 %}"
-                                        name="customer"
+                                        name="customer_id"
                                         data-keyResp="account_sale_list"
                                         data-keyText="name"
                                         required
@@ -115,7 +115,7 @@
                                     data-url="{% url "ContactListAPI" %}"
                                     data-method="GET"
                                     data-link-detail="{% url 'ContactDetail' 1 %}"
-                                    name="contact"
+                                    name="contact_id"
                                     data-keyResp="contact_list"
                                     required
                                 ></select>
@@ -130,7 +130,7 @@
                                         data-url="{% url "PaymentsTermsListAPI" %}"
                                         data-link-detail=""
                                         data-method="GET"
-                                        name="payment_term"
+                                        name="payment_term_id"
                                         data-keyResp="payment_terms_list"
                                         required
                                 ></select>
@@ -518,7 +518,7 @@
                                     <div class="row">
                                         <div class="col-12 col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label class="form-label text-primary">{% trans 'Shipping Address' %}
+                                                <label class="form-label">{% trans 'Shipping Address' %}
                                                     <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-sm" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                                 </label>
                                                 <textarea class="form-control text-black" rows="3" cols="50" name="" id="quotation-create-shipping-address" data-zone="sale_order_logistic_data_readonly" disabled></textarea>
@@ -548,7 +548,7 @@
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label class="form-label text-primary">{% trans 'Billing Address' %}
+                                                <label class="form-label">{% trans 'Billing Address' %}
                                                     <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-sm" data-bs-toggle="modal" data-bs-target="#billingModalCenter" data-zone="sale_order_logistic_data"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                                 </label>
                                                 <textarea class="form-control text-black" rows="3" cols="50" name="" id="quotation-create-billing-address" data-zone="sale_order_logistic_data_readonly" disabled></textarea>

@@ -92,7 +92,7 @@
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label" for="quotation_id">{% trans 'Quotation' %}</label>
-                                <input type="text" class="form-control form-control-line mt-1" id="quotation_id" data-detail="" readonly>
+                                <input type="text" class="form-control form-control-line mt-1" id="quotation_id" name="quotation_id" data-detail="" readonly>
                             </div>
                         </div>
                     </div>
@@ -106,7 +106,7 @@
                                         data-url="{% url "AccountForSaleListAPI" %}"
                                         data-method="GET"
                                         data-link-detail="{% url "AccountDetail" 1 %}"
-                                        name="customer"
+                                        name="customer_id"
                                         data-keyResp="account_sale_list"
                                         data-keyText="name"
                                         readonly
@@ -122,7 +122,7 @@
                                     data-url="{% url "ContactListAPI" %}"
                                     data-method="GET"
                                     data-link-detail="{% url 'ContactDetail' 1 %}"
-                                    name="contact"
+                                    name="contact_id"
                                     data-keyResp="contact_list"
                                     readonly
                                 ></select>
@@ -137,7 +137,7 @@
                                         data-url="{% url "PaymentsTermsListAPI" %}"
                                         data-link-detail=""
                                         data-method="GET"
-                                        name="payment_term"
+                                        name="payment_term_id"
                                         data-keyResp="payment_terms_list"
                                         readonly
                                 ></select>
@@ -415,7 +415,7 @@
                                     <div class="row">
                                         <div class="col-12 col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label class="form-label text-primary">{% trans 'Shipping Address' %}
+                                                <label class="form-label">{% trans 'Shipping Address' %}
                                                 </label>
                                                 <textarea
                                                         class="form-control disabled-custom-show text-black" rows="3" cols="50" name=""
@@ -452,7 +452,7 @@
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label class="form-label text-primary">{% trans 'Billing Address' %}
+                                                <label class="form-label">{% trans 'Billing Address' %}
                                                 </label>
                                                 <textarea
                                                         class="form-control disabled-custom-show text-black" rows="3" cols="50" name=""

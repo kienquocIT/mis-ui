@@ -948,12 +948,12 @@ $(function () {
                 //
                 'title',
                 'opportunity_id',
-                'customer',
+                'customer_id',
                 'customer_data',
-                'contact',
+                'contact_id',
                 'contact_data',
                 'employee_inherit_id',
-                'payment_term',
+                'payment_term_id',
                 'payment_term_data',
                 // total amount of products
                 'total_product_pretax_amount',
@@ -1000,14 +1000,15 @@ $(function () {
                     //
                     'title',
                     'opportunity_id',
-                    'customer',
+                    'customer_id',
                     'customer_data',
-                    'contact',
+                    'contact_id',
                     'contact_data',
                     'employee_inherit_id',
-                    'payment_term',
+                    'payment_term_id',
                     'payment_term_data',
-                    'quotation',
+                    'quotation_id',
+                    'quotation_data',
                     // total amount of products
                     'total_product_pretax_amount',
                     'total_product_discount_rate',
@@ -1052,23 +1053,6 @@ $(function () {
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]
-                }
-            }
-            // validate none & blank
-            let check_blank_list = ['', "", "undefined"];
-            let check_field_list = [
-                'opportunity_id',
-                'customer',
-                'contact',
-                'employee_inherit_id',
-                'payment_term',
-                'quotation'
-            ]
-            for (let field of check_field_list) {
-                if (_form.dataForm.hasOwnProperty(field)) {
-                    if (check_blank_list.includes(_form.dataForm[field])) {
-                        _form.dataForm[field] = null;
-                    }
                 }
             }
             WFRTControl.callWFSubmitForm(_form);

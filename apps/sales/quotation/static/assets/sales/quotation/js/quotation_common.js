@@ -2085,24 +2085,8 @@ class QuotationLoadDataHandle {
         if (data?.['title'] && is_copy === false) {
             document.getElementById('quotation-create-title').value = data?.['title'];
         }
-        if (data?.['opportunity'] && data?.['sale_person']) {
-            QuotationLoadDataHandle.salePersonSelectEle.empty();
-            QuotationLoadDataHandle.opportunitySelectEle.empty();
-            QuotationLoadDataHandle.salePersonSelectEle.initSelect2({
-                data: data?.['sale_person'],
-                'allowClear': true,
-            });
-            // QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
-            //     data: data?.['opportunity'],
-            //     'allowClear': true,
-            // });
-            // QuotationLoadDataHandle.processSelectEle$.initSelect2({
-            //     data: {
-            //         ...data?.['process'],
-            //         'selected': true,
-            //     },
-            //     allowClear: true,
-            // });
+        if (data?.['sale_person']) {
+            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.salePersonSelectEle, [data?.['sale_person']]);
         }
         if ($(form).attr('data-method').toLowerCase() !== 'get') {
             QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
@@ -2124,12 +2108,11 @@ class QuotationLoadDataHandle {
                 QuotationLoadDataHandle.contactSelectEle[0].setAttribute('readonly', 'true');
             }
         }
-        if (data?.['customer']) {
-            data['customer']['name'] = data['customer']['title'];
+        if (data?.['customer_data']) {
             if (is_copy === true) {
-                data['customer']['is_copy'] = true;
+                data['customer_data']['is_copy'] = true;
             }
-            QuotationLoadDataHandle.loadBoxQuotationCustomer(data?.['customer']);
+            QuotationLoadDataHandle.loadBoxQuotationCustomer(data?.['customer_data']);
         }
         if (data?.['contact_data']) {
             QuotationLoadDataHandle.loadBoxQuotationContact(data?.['contact_data']);
@@ -2137,17 +2120,17 @@ class QuotationLoadDataHandle {
         if (data?.['payment_term_data']) {
             QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']]);
         }
-        if (data?.['quotation'] && data?.['sale_person']) {
-            if (data?.['quotation']?.['title']) {
-                QuotationLoadDataHandle.quotationSelectEle.val(data?.['quotation']?.['title']);
+        if (data?.['quotation_data']) {
+            if (data?.['quotation_data']?.['title']) {
+                QuotationLoadDataHandle.quotationSelectEle.val(data?.['quotation_data']?.['title']);
             }
-            QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data?.['quotation']));
+            QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data?.['quotation_data']));
         }
         if (data?.['date_created']) {
             $('#quotation-create-date-created').val(moment(data?.['date_created']).format('DD/MM/YYYY'));
         }
         if (data?.['is_customer_confirm'] && is_copy === false) {
-            $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
+            $('#is_customer_confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (is_copy === false) {
             // check if finish then remove hidden btnDelivery (SO)
@@ -2175,14 +2158,8 @@ class QuotationLoadDataHandle {
             }
         }
         if (is_copy === true) {
-            let dataQuotationCopy = {
-                'id': data?.['id'],
-                'title': data?.['title'],
-                'code': data?.['code'],
-            }
             QuotationLoadDataHandle.quotationSelectEle.val(data?.['title']);
-            QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(dataQuotationCopy));
-
+            QuotationLoadDataHandle.quotationSelectEle.attr('data-detail', JSON.stringify(data));
         }
         if (data?.['quotation_logistic_data']) {
             document.getElementById('quotation-create-shipping-address').value = data?.['quotation_logistic_data']?.['shipping_address'];
@@ -2534,11 +2511,11 @@ class QuotationLoadDataHandle {
     };
 
     static loadReApplyPromotion(data) {
-        if (Object.keys(data?.['customer']).length > 0) {
+        if (Object.keys(data?.['customer_data']).length > 0) {
             let dataProductList = data?.['quotation_products_data'];
             for (let dataProduct of dataProductList) {
                 if (dataProduct?.['promotion_id']) {
-                    let checkData = QuotationPromotionHandle.checkPromotionValid(dataProduct?.['promotion_data'], data?.['customer']?.['id']);
+                    let checkData = QuotationPromotionHandle.checkPromotionValid(dataProduct?.['promotion_data'], data?.['customer_data']?.['id']);
                     let promotionParse = QuotationPromotionHandle.getPromotionResult(checkData);
                     let tableProduct = $('#datable-quotation-create-product');
                     if (promotionParse?.['is_discount'] === true) { // DISCOUNT
@@ -4469,8 +4446,8 @@ class indicatorHandle {
                         }
                     }
                 } else {
-                    if (dataDetail?.['quotation']?.['quotation_indicators_data']) {
-                        for (let quotation_indicator of dataDetail?.['quotation']?.['quotation_indicators_data']) {
+                    if (dataDetail?.['quotation_data']?.['quotation_indicators_data']) {
+                        for (let quotation_indicator of dataDetail?.['quotation_data']?.['quotation_indicators_data']) {
                             if (indicator?.['title'] === quotation_indicator?.['indicator']?.['title']) {
                                 quotationValue = quotation_indicator?.['indicator_value'];
                                 differenceValue = (value - quotation_indicator?.['indicator_value']);
@@ -6417,8 +6394,9 @@ class QuotationSubmitHandle {
 
             if (QuotationLoadDataHandle.quotationSelectEle && QuotationLoadDataHandle.quotationSelectEle.length > 0) {
                 if (QuotationLoadDataHandle.quotationSelectEle.attr('data-detail')) {
-                    let dataQuotation = JSON.parse(QuotationLoadDataHandle.quotationSelectEle.attr('data-detail'));
-                    _form.dataForm['quotation'] = dataQuotation?.['id'];
+                    let quotationData = JSON.parse(QuotationLoadDataHandle.quotationSelectEle.attr('data-detail'));
+                    _form.dataForm['quotation_id'] = quotationData?.['id'];
+                    _form.dataForm['quotation_data'] = quotationData;
                 }
 
             }
@@ -6426,15 +6404,19 @@ class QuotationSubmitHandle {
         if (QuotationLoadDataHandle.customerSelectEle.val()) {
             let data = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
             if (data) {
-                _form.dataForm['customer'] = data?.['id'];
                 _form.dataForm['customer_data'] = data;
             }
         }
         if (QuotationLoadDataHandle.contactSelectEle.val()) {
             let data = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.contactSelectEle, QuotationLoadDataHandle.contactSelectEle.val());
             if (data) {
-                _form.dataForm['contact'] = data?.['id'];
                 _form.dataForm['contact_data'] = data;
+            }
+        }
+        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+            if (dataSelected) {
+                _form.dataForm['payment_term_data'] = dataSelected;
             }
         }
         if (type === 0) {
@@ -6451,11 +6433,6 @@ class QuotationSubmitHandle {
                 return false;
             }
         }
-
-        if (is_sale_order === false) {
-            _form.dataForm['is_customer_confirm'] = $('#quotation-customer-confirm')[0].checked;
-        }
-
         let quotation_products_data_setup = QuotationSubmitHandle.setupDataProduct();
         if (quotation_products_data_setup.length > 0) {
             _form.dataForm[quotation_products_data] = quotation_products_data_setup;
@@ -6600,14 +6577,6 @@ class QuotationSubmitHandle {
             let dataPaymentStage = QuotationSubmitHandle.setupDataPaymentStage();
             if (dataPaymentStage.length > 0) {
                 _form.dataForm['sale_order_payment_stage'] = dataPaymentStage;
-            }
-        }
-
-        // payment term data
-        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-            if (dataSelected) {
-                _form.dataForm['payment_term_data'] = dataSelected;
             }
         }
 

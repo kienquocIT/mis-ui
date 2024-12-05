@@ -1,5 +1,5 @@
 // Load data
-class QuotationLoadDataHandle {
+class LeaseOrderLoadDataHandle {
     static $form = $('#frm_quotation_create');
     static opportunitySelectEle = $('#opportunity_id');
     static customerSelectEle = $('#customer_id');
@@ -2607,7 +2607,7 @@ class QuotationLoadDataHandle {
 }
 
 // DataTable
-class QuotationDataTableHandle {
+class LeaseOrderDataTableHandle {
     static productInitEle = $('#data-init-quotation-create-tables-product');
     static expenseItemInitEle = $('#data-init-quotation-create-tables-expense-item');
     static expenseInitEle = $('#data-init-quotation-create-tables-expense');
@@ -3871,7 +3871,7 @@ class QuotationDataTableHandle {
 }
 
 // Calculate
-class QuotationCalculateCaseHandle {
+class LeaseOrderCalculateCaseHandle {
 
     static updateTotal(table) {
         // *** quotation & sale order have different rules ***
@@ -4186,7 +4186,7 @@ class QuotationCalculateCaseHandle {
 }
 
 // Config
-class QuotationCheckConfigHandle {
+class LeaseOrderCheckConfigHandle {
     static checkSsLsRole() {
         let configRaw = $('#quotation-config-data').val();
         if (configRaw) {
@@ -4685,7 +4685,7 @@ class indicatorHandle {
 }
 
 // Promotion
-class QuotationPromotionHandle {
+class LeaseOrderPromotionHandle {
     static callPromotion(type_check) {
         let $ele = $('#data-init-quotation-create-promotion');
         let customer_id = QuotationLoadDataHandle.customerSelectEle.val();
@@ -5626,7 +5626,7 @@ class shippingHandle {
 }
 
 // Store data
-class QuotationStoreDataHandle {
+class LeaseOrderStoreDataHandle {
 
     static storeProduct(row) {
         let rowData = {};
@@ -5910,7 +5910,7 @@ class QuotationStoreDataHandle {
 }
 
 // Submit Form
-class QuotationSubmitHandle {
+class LeaseOrderSubmitHandle {
     static setupDataProduct() {
         let result = [];
         let table = document.getElementById('datable-quotation-create-product');

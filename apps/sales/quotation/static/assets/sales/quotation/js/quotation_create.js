@@ -5,7 +5,6 @@ $(function () {
         // Elements
         let formSubmit = $('#frm_quotation_create');
         let boxPriceList = $('#select-box-quotation-create-price-list');
-        let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
         let btnAddProductGr = $('#btn-add-product-group-quotation');
         let btnAddProduct = $('#btn-add-product-quotation-create');
@@ -89,20 +88,6 @@ $(function () {
 
         QuotationLoadDataHandle.paymentSelectEle.on('change', function () {
             QuotationLoadDataHandle.loadChangePaymentTerm();
-        });
-
-        boxQuotation.on('click', function() {
-            if (!$(this)[0].innerHTML) {
-                let opp_id = null;
-                let sale_person_id = null;
-                if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                    opp_id = QuotationLoadDataHandle.opportunitySelectEle.val()
-                }
-                if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
-                    sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val()
-                }
-                QuotationLoadDataHandle.loadBoxSaleOrderQuotation('select-box-quotation', null, opp_id, sale_person_id);
-            }
         });
 
 // PRODUCT

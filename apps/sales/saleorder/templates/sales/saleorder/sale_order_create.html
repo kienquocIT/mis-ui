@@ -84,18 +84,18 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label class="form-label" for="select-box-quotation">{% trans 'Quotation' %}</label>
-                                <input type="text" class="form-control form-control-line mt-1" id="select-box-quotation" data-detail="" readonly>
+                                <label class="form-label" for="quotation_id">{% trans 'Quotation' %}</label>
+                                <input type="text" class="form-control form-control-line mt-1" id="quotation_id" data-detail="" readonly>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Customer' %}</label>
+                                <label class="form-label required" for="customer_id">{% trans 'Customer' %}</label>
                                 <select
                                         class="form-select"
-                                        id="select-box-quotation-create-customer"
+                                        id="customer_id"
                                         data-url="{% url "AccountForSaleListAPI" %}"
                                         data-method="GET"
                                         data-link-detail="{% url "AccountDetail" 1 %}"
@@ -108,10 +108,10 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Contact' %}</label>
+                                <label class="form-label required" for="contact_id">{% trans 'Contact' %}</label>
                                 <select
                                     class="form-select"
-                                    id="select-box-quotation-create-contact"
+                                    id="contact_id"
                                     data-url="{% url "ContactListAPI" %}"
                                     data-method="GET"
                                     data-link-detail="{% url 'ContactDetail' 1 %}"
@@ -123,10 +123,10 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
+                                <label class="form-label required" for="payment_term_id">{% trans 'Select Payment Terms' %}</label>
                                 <select
                                         class="form-select"
-                                        id="select-box-quotation-create-payment-term"
+                                        id="payment_term_id"
                                         data-url="{% url "PaymentsTermsListAPI" %}"
                                         data-link-detail=""
                                         data-method="GET"

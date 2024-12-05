@@ -86,9 +86,9 @@
         </form>
     </div>
 
-    {% include 'sales/opportunity/activities/extends/call_log_modals.html' %}
-    {% include 'sales/opportunity/activities/extends/meeting_modals.html' %}
-    {% include 'sales/opportunity/activities/extends/email_modals.html' %}
+{#    {% include 'sales/opportunity/activities/extends/call_log_modals.html' %}#}
+{#    {% include 'sales/opportunity/activities/extends/meeting_modals.html' %}#}
+{#    {% include 'sales/opportunity/activities/extends/email_modals.html' %}#}
     {% include 'sales/task/extend/task-form.html' with has_prj=False%}
 
     {{ data.type_customer|json_script:'data_type_customer' }}
@@ -186,6 +186,7 @@
             data-cancel-so="{% trans "Please cancel current sale order" %}"
             data-cancel-quo-so="{% trans "Please cancel current quotation, sale order" %}"
             data-trans-bidding="{% trans "Bidding" %}"
+            data-trans-activity-cancelled="{% trans 'Cancelled' %}"
             data-trans-notify-update-permission="{% trans 'Please save Update Opportunity page to apply all the permissions!' %}"
     ></script>
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
@@ -220,10 +221,10 @@
     </script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_update.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/activities/call_log/call_log_common.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/activities/email/email_common.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/activities/meeting/meeting_common.js' %}"></script>
+{#    <script src="{% static 'assets/sales/opportunity/js/activities/call_log/call_log_common.js' %}"></script>#}
+{#    <script src="{% static 'assets/sales/opportunity/js/activities/email/email_common.js' %}"></script>#}
+{#    <script src="{% static 'assets/sales/opportunity/js/activities/meeting/meeting_common.js' %}"></script>#}
     <script src="{% static 'assets/sales/opportunity/js/activities/task/task_in_opps.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/activities/activities_load_page.js' %}"></script>
+{#    <script src="{% static 'assets/sales/opportunity/js/activities/activities_load_page.js' %}"></script>#}
     <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
 {% endblock %}

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     CallLogHandle.load();
 
-    SetupFormSubmit.validate($('#form-create-new-call-log'), {
+    SetupFormSubmit.validate($('#form-call-log'), {
         submitHandler: function (form, event) {
             event.preventDefault();
             let combinesData = CallLogHandle.combinesData($(form));

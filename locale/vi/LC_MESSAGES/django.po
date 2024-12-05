@@ -9745,6 +9745,10 @@ msgid "Detail Call Log"
 msgstr "Chi tiết cuộc gọi"
 
 #
+msgid "New Call Log"
+msgstr "Cuộc gọi mới"
+
+#
 msgid "Bidding"
 msgstr "Thầu"
 

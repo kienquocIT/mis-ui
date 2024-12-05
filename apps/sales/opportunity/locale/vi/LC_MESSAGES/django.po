@@ -18,8 +18,8 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
-msgid "Create New Call Log"
-msgstr "Tạo mới nhật ký cuộc gọi"
+msgid "Call Log"
+msgstr "Cuộc gọi ghi lại"
 
 #
 msgid "Contents"

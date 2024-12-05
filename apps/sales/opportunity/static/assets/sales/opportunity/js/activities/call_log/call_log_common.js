@@ -1,14 +1,15 @@
-let call_log_employee_current_id = $('#employee_current_id').val();
-let call_log_Opp_slb = $('#sale-code-select-box');
-let date_input = $('#date-input');
-let customer_slb = $('#account-select-box');
-let contact_slb = $('#contact-select-box');
-let CALL_LOG_LIST = [];
-let call_log_trans_script = $('#trans-script')
+const call_log_trans_script = $('#trans-script')
+const table_opportunity_call_log_list = $('#table_opportunity_call_log_list')
+const call_log_Opp_slb = $('#sale-code-select-box')
+const date_input = $('#date-input')
+const customer_slb = $('#account-select-box')
+const contact_slb = $('#contact-select-box')
+const cancel_activity_btn = $('#cancel-activity')
+let CALL_LOG_LIST = []
 
 function loadOpportunityCallLogList() {
     if (!$.fn.DataTable.isDataTable('#table_opportunity_call_log_list')) {
-        let dtb = $('#table_opportunity_call_log_list');
+        let dtb = table_opportunity_call_log_list;
         let frm = new SetupFormSubmit(dtb);
         dtb.DataTableDefault({
             rowIdx: true,
@@ -37,7 +38,7 @@ function loadOpportunityCallLogList() {
                     data: 'contact',
                     className: 'wrap-text w-25',
                     render: (data, type, row) => {
-                        return `<a target="_blank" href="${$('#table_opportunity_call_log_list').attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="link-secondary underline_hover"><b>${row?.['contact']?.['fullname']}</b></span></a>`
+                        return `<a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="link-secondary underline_hover"><b>${row?.['contact']?.['fullname']}</b></span></a>`
                     }
                 },
                 {
@@ -48,7 +49,7 @@ function loadOpportunityCallLogList() {
                         if (row?.['is_cancelled']) {
                             status = `<span class="badge badge-sm badge-soft-danger">${call_log_trans_script.attr('data-trans-activity-cancelled')}</i>`
                         }
-                        return `<a class="text-primary link-primary underline_hover detail-call-log-button" href="" data-bs-toggle="modal" data-id="${row?.['id']}" data-bs-target="#detail-call-log">
+                        return `<a class="text-primary link-primary underline_hover offcanvas-call-log-button" href="" data-bs-toggle="offcanvas" data-id="${row?.['id']}" data-bs-target="#offcanvas-call-log-detail">
                                     <span class="mr-1">${row?.['subject']}</span>${status}
                                 </a>`
                     }
@@ -74,93 +75,9 @@ function loadOpportunityCallLogList() {
     }
 }
 
-function loadSaleCodeList(data) {
-    function callbackDataResp(resp, keyResp) {
-        let result = [];
-        for (let i = 0; i < resp.data[keyResp].length; i++) {
-            let added = false;
-            let item = resp.data[keyResp][i];
-            if (item?.['sale_person']['id'] === call_log_employee_current_id) {
-                result.push(item);
-                added = true;
-            }
-            if (item.opportunity_sale_team_datas.length > 0 && added === false) {
-                $.each(item.opportunity_sale_team_datas, function (index, member_obj) {
-                    if (member_obj.member.id === call_log_employee_current_id) {
-                        result.push(item);
-                    }
-                });
-            }
-        }
-        return result;
-    }
-
-    function renderSelected(obj_selected) {
-        if (obj_selected?.['is_close']) {
-            $.fn.notifyB({description: `Opportunity ${obj_selected?.['code']} has been closed. Can not select.`}, 'failure');
-            call_log_Opp_slb.find('option').remove();
-        } else {
-            loadCustomerList(obj_selected?.['customer'])
-            loadContactList(obj_selected?.['customer']?.['contact_mapped'])
-        }
-    }
-
-    const {
-        opp_id,
-        opp_title,
-        opp_code
-    } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'opp_id', 'opp_title', 'opp_code']);
-    call_log_Opp_slb.initSelect2({
-        ajax: {
-            url: call_log_Opp_slb.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: callbackDataResp,
-        templateResult: function (data) {
-            let ele = $('<div class="row col-12"></div>');
-            ele.append('<div class="col-4"><span class="badge badge-soft-primary badge-outline">' + data.data?.['code'] + '</span></div>');
-            ele.append('<div class="col-8">' + data.data?.['title'] + '</div>');
-            return ele;
-        },
-        data: opp_id ? [
-            {
-                'id': opp_id,
-                'title': opp_title,
-                'code': opp_code,
-                'selected': true,
-            }
-        ] : data ? data : [],
-        keyResp: 'opportunity_list',
-        keyId: 'id',
-        keyText: 'title',
-    }).on('change', function () {
-        let obj_selected = SelectDDControl.get_data_from_idx(call_log_Opp_slb, call_log_Opp_slb.val())
-        if (obj_selected) {
-            if (obj_selected.hasOwnProperty('is_close') && obj_selected.hasOwnProperty('customer')) {
-                renderSelected(obj_selected);
-            } else {
-                $.fn.callAjax2({
-                    url: call_log_Opp_slb.attr('data-url') + '?' + $.param({
-                        'id__in': obj_selected['id'],
-                    }),
-                    method: 'GET',
-                    isLoading: true,
-                }).then(
-                    resp => {
-                        const result = callbackDataResp(resp, 'opportunity_list');
-                        if (result && Array.isArray(result) && result.length === 1) {
-                            renderSelected(result[0]);
-                        }
-                    },
-                )
-            }
-        }
-    }).trigger('change');
-}
-
-function loadCustomerList(customer_obj) {
+function loadCustomerList(data) {
     $('#account-select-box option').remove();
-    customer_slb.append(`<option selected value="${customer_obj.id}">${customer_obj.title}</option>`);
+    customer_slb.append(`<option selected value="${data?.['id']}">${data?.['title']}</option>`);
 }
 
 function loadContactList(contact_list) {
@@ -175,53 +92,37 @@ function loadContactList(contact_list) {
 
 date_input.daterangepicker({
     singleDatePicker: true,
-    timePicker: true,
+    timePicker: false,
     showDropdowns: true,
-    drops: 'up',
-    minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
+    autoApply: true,
+    minYear: parseInt(moment().format('YYYY')),
     locale: {
-        format: 'YYYY-MM-DD'
+        format: 'DD/MM/YYYY'
     },
     "cancelClass": "btn-secondary",
-    maxYear: parseInt(moment().format('YYYY'), 10) + 100
-}).val('');
+    maxYear: parseInt(moment().format('YYYY')) + 100,
+}).val('')
 
-$(document).on('click', '#table_opportunity_call_log_list .detail-call-log-button', function () {
-    let call_log_id = $(this).attr('data-id');
+$(document).on('click', '#table_opportunity_call_log_list .offcanvas-call-log-button', function () {
+    let call_log_id = $(this).attr('data-id')
     let call_log_obj = CALL_LOG_LIST.filter(function (item) {
-        return item.id === call_log_id;
+        return item?.['id'] === call_log_id;
     })[0]
-    $('#detail-subject-input').val(call_log_obj.subject);
+    cancel_activity_btn.attr('data-id', call_log_id)
 
-    $('#detail-sale-code-select-box option').remove();
-    $('#detail-sale-code-select-box').append(`<option selected>(${call_log_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${call_log_obj.opportunity.title}</option>`);
+    $('#detail-opp').val(call_log_obj?.['opportunity']?.['code'] + ' - ' + call_log_obj?.['opportunity']?.['title']);
+    $('#detail-process').val(call_log_obj?.['process']?.['title'] ? call_log_obj?.['process']?.['title'] : '--');
+    $('#detail-stage').val(call_log_obj?.['process_stage_app']?.['title'] ? call_log_obj?.['process_stage_app']?.['title'] : '--');
+    $('#detail-inheritor').val(call_log_obj?.['employee_inherit']?.['full_name']);
 
-    $('#detail-account-select-box option').remove();
-    $('#detail-account-select-box').append(`<option selected>${call_log_obj.opportunity.customer.title}</option>`);
-
-    const process$ = $('#detail-inp-process');
-    process$.find('option').remove();
-    if (call_log_obj?.process){
-        process$.append(`<option selected>${call_log_obj.process.title}</option>`).initSelect2({
-            disabled: true,
-        });
-        const link$ = process$.siblings('.link-process-detail');
-        link$.attr('href', link$.data('href').replaceAll('__pk__', call_log_obj.process.id));
-    }
-
-    $('#detail-contact-select-box option').remove();
-    $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);
-
-    $('#detail-date-input').val(call_log_obj.call_date.split(' ')[0]);
-    $('#detail-repeat-activity').prop('checked', call_log_obj.repeat);
-    $('#detail-result-text-area').val(call_log_obj.input_result);
-    $('#cancel-activity').prop('hidden', call_log_obj.is_cancelled)
-    if (call_log_obj.is_cancelled) {
-        $('#is-cancelled').text(call_log_trans_script.attr('data-trans-activity-cancelled'))
-    } else {
-        $('#is-cancelled').text('')
-    }
-    $('#detail-call-log .modal-body').attr('data-id', call_log_obj.id)
+    $('#detail-subject-input').text(call_log_obj?.['subject']);
+    $('#detail-date-input').text(moment(call_log_obj?.['call_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'));
+    $('#detail-account-select-box').text(call_log_obj?.['opportunity']?.['customer']?.['title']);
+    $('#detail-contact-select-box').text(call_log_obj?.['contact']?.['fullname']);
+    $('#detail-result-text-area').text(call_log_obj?.['input_result']);
+    $('#detail-repeat-activity').prop('checked', call_log_obj?.['repeat']);
+    cancel_activity_btn.prop('hidden', call_log_obj?.['is_cancelled'])
+    $('#is-cancelled').prop('hidden', !call_log_obj?.['is_cancelled'])
 })
 
 $(document).on('click', '#cancel-activity', function () {
@@ -243,15 +144,15 @@ $(document).on('click', '#cancel-activity', function () {
         reverseButtons: true
     }).then((result) => {
         if (result.value) {
-            let call_log_id = $('#detail-call-log .modal-body').attr('data-id')
-            let frm = $('#table_opportunity_call_log_list');
+            let call_log_id = cancel_activity_btn.attr('data-id')
+            let dtb = table_opportunity_call_log_list;
             let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(frm.attr('data-url-delete').replace(0, call_log_id), 'PUT', {'is_cancelled': !$('#cancel-activity').prop('disabled')}, csr)
+            $.fn.callAjax(dtb.attr('data-url-delete').replace(0, call_log_id), 'PUT', {'is_cancelled': !cancel_activity_btn.prop('disabled')}, csr)
                 .then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.attr('data-url-redirect'), 1000);
+                        $.fn.redirectUrl(dtb.attr('data-url-redirect'), 1000);
                     }
                 }, (errs) => {
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
@@ -260,10 +161,106 @@ $(document).on('click', '#cancel-activity', function () {
     })
 })
 
+$('#opportunity_id').on('change', function () {
+    let obj_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+    if (obj_selected) {
+        loadCustomerList(obj_selected?.['customer'])
+        loadContactList(obj_selected?.['customer']?.['contact_mapped'])
+    }
+})
+
 class CallLogHandle {
     static load() {
         loadOpportunityCallLogList();
-        loadSaleCodeList()
+        const {
+            create_open,
+            opp_id,
+            opp_title,
+            opp_code,
+            process_id,
+            process_title,
+            process_stage_app_id,
+            process_stage_app_title,
+            inherit_id,
+            inherit_title,
+        } = $x.fn.getManyUrlParameters([
+            'create_open',
+            'opp_id', 'opp_title', 'opp_code',
+            'process_id', 'process_title',
+            'process_stage_app_id', 'process_stage_app_title',
+            'inherit_id', 'inherit_title',
+        ])
+        if (create_open) {
+            const data_inherit = [{
+                "id": inherit_id || '',
+                "full_name": inherit_title || '',
+                "selected": true,
+            }];
+            const data_opp = [{
+                "id": opp_id || '',
+                "title": opp_title || '',
+                "code": opp_code || '',
+                "selected": true,
+            }];
+            const data_process = [{
+                "id": process_id || '',
+                "title": process_title || '',
+                "selected": true,
+            }];
+            const data_process_stage_app = [{
+                "id": process_stage_app_id || '',
+                "title": process_stage_app_title || '',
+                'selected': true,
+            }];
+            new $x.cls.bastionField({
+                has_opp: true,
+                has_inherit: true,
+                has_process: true,
+                data_opp: data_opp,
+                data_inherit: data_inherit,
+                data_process: data_process,
+                data_process_stage_app: data_process_stage_app,
+                oppFlagData: {"disabled": true},
+                inheritFlagData: {"disabled": true},
+                processFlagData: {"disabled": true},
+                processStageAppFlagData: {"disabled": true},
+            }).init();
+
+            let dataParam = {'id': opp_id}
+            let opportunity_ajax = $.fn.callAjax2({
+                url: table_opportunity_call_log_list.attr('data-url-opp-list'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
+                        return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([opportunity_ajax]).then(
+                (results) => {
+                    let opportunity_data = results[0];
+                    if (opportunity_data) {
+                        loadCustomerList(opportunity_data?.['customer'])
+                        loadContactList(opportunity_data?.['customer']?.['contact_mapped'])
+                    }
+                })
+        }
+        else {
+            new $x.cls.bastionField({
+                has_opp: true,
+                has_inherit: true,
+                has_process: true,
+                inheritFlagData: {"disabled": false, "readonly": false},
+            }).init();
+        }
     }
 
     static combinesData(frmEle) {
@@ -273,7 +270,7 @@ class CallLogHandle {
         frm.dataForm['opportunity'] = call_log_Opp_slb.val();
         frm.dataForm['customer'] = customer_slb.val();
         frm.dataForm['contact'] = contact_slb.val();
-        frm.dataForm['call_date'] = date_input.val();
+        frm.dataForm['call_date'] = moment(date_input.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
         frm.dataForm['input_result'] = $('#result-text-area').val();
         if ($('#repeat-activity').is(':checked')) {
             frm.dataForm['repeat'] = 1;

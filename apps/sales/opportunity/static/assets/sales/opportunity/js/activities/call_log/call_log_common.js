@@ -115,6 +115,7 @@ $(document).on('click', '#table_opportunity_call_log_list .offcanvas-call-log-bu
     let call_log_obj = CALL_LOG_LIST.filter(function (item) {
         return item?.['id'] === call_log_id;
     })[0]
+    cancel_activity_btn.attr('data-id', call_log_id)
 
     $('#detail-opp').val(call_log_obj?.['opportunity']?.['code'] + ' - ' + call_log_obj?.['opportunity']?.['title']);
     $('#detail-process').val(call_log_obj?.['process']?.['title'] ? call_log_obj?.['process']?.['title'] : '--');

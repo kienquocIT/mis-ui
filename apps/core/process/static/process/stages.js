@@ -503,7 +503,9 @@ class ProcessStages {
             'urlAppData': '/process/runtime/app/__pk__/api',
             'redirectMaskUrl': '/gateway/reverse-url/create/__plan__/__app__',
             'applicationList': null,
-            'urlLog': '/process/runtime/log/__pk__', ...config,
+            'urlLog': '/process/runtime/log/__pk__',
+            'showCopyConfigData': true,
+            ...config,
         }
         this.debug = !!this.config.debug;
         this.enableEdit = !!this.config['enableEdit'];
@@ -1302,6 +1304,8 @@ class ProcessStages {
         const copyConfig$ = clsThis.stagesAllTools$.find('.all-tools-item[data-code=copy-config]');
         const pasteConfig$ = clsThis.stagesAllTools$.find('.all-tools-item[data-code=paste-config]');
 
+        if (this.config['showCopyConfigData'] !== true) copyConfig$.remove();
+
         if (clsThis.enableEdit === false) {
             log$.on('click', function () {
                 clsThis.htmlModalShowLog$.modal('show');
@@ -1685,6 +1689,7 @@ class ProcessStages {
         clsThis.stagesAllTools$.find('.all-tools-item-divide + .all-tools-item-divide').each(function () {
             $(this).remove();
         });
+        clsThis.stagesAllTools$.find('.all-tools-item-divide:last-child:last-of-type').remove();
     }
 
     on_crossStagesApps(amountCurrentApp = null) {

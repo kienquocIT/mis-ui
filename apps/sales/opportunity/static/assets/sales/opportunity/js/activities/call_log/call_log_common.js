@@ -36,20 +36,20 @@ function loadOpportunityCallLogList() {
                 },
                 {
                     data: 'contact',
-                    className: 'wrap-text w-25',
+                    className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="link-secondary underline_hover"><b>${row?.['contact']?.['fullname']}</b></span></a>`
+                        return `<a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="link-secondary underline_hover">${row?.['contact']?.['fullname']}</span></a>`
                     }
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text w-35',
+                    className: 'wrap-text w-30',
                     render: (data, type, row) => {
                         let status = ''
                         if (row?.['is_cancelled']) {
                             status = `<span class="badge badge-sm badge-soft-danger">${call_log_trans_script.attr('data-trans-activity-cancelled')}</i>`
                         }
-                        return `<a class="text-primary link-primary underline_hover offcanvas-call-log-button" href="" data-bs-toggle="offcanvas" data-id="${row?.['id']}" data-bs-target="#offcanvas-call-log-detail">
+                        return `<a class="text-primary fw-bold offcanvas-call-log-button" href="" data-bs-toggle="offcanvas" data-id="${row?.['id']}" data-bs-target="#offcanvas-call-log-detail">
                                     <span class="mr-1">${row?.['subject']}</span>${status}
                                 </a>`
                     }
@@ -59,6 +59,13 @@ function loadOpportunityCallLogList() {
                     className: 'wrap-text text-center w-20',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-blue badge-outline">${row?.['opportunity']?.['code']}</span>`
+                    }
+                },
+                {
+                    data: 'employee_inherit',
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<span class="text-primary">${row?.['employee_inherit']?.['full_name']}</span>`
                     }
                 },
                 {
@@ -108,7 +115,6 @@ $(document).on('click', '#table_opportunity_call_log_list .offcanvas-call-log-bu
     let call_log_obj = CALL_LOG_LIST.filter(function (item) {
         return item?.['id'] === call_log_id;
     })[0]
-    cancel_activity_btn.attr('data-id', call_log_id)
 
     $('#detail-opp').val(call_log_obj?.['opportunity']?.['code'] + ' - ' + call_log_obj?.['opportunity']?.['title']);
     $('#detail-process').val(call_log_obj?.['process']?.['title'] ? call_log_obj?.['process']?.['title'] : '--');

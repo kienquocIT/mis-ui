@@ -9795,3 +9795,7 @@ msgstr "Cấu hình cập nhật kết quả thầu"
 #
 msgid "Bid Value"
 msgstr "Giá thầu"
+
+#
+msgid "To Contact"
+msgstr "Tới liên hệ"

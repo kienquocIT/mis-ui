@@ -9,6 +9,20 @@
 {% endblock %}
 
 {% block pageAction %}
+    <button
+            class="btn btn-outline-primary" type="button"
+            id="btn-sync-member"
+            data-url="{% url 'ProcessMembersSyncAPI' pk=pk %}"
+            style="display: none;"
+    >
+        <span>
+            <span class="no-transform">{% trans 'Sync member from Opportunity' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+
     <a href="{% url 'ProcessDetail' pk='__pk__' %}" id="link-process-config" style="display:none;">
         <button class="btn btn-outline-primary">
             <span>
@@ -137,7 +151,7 @@
             btnCollapse$.on('click', function () {
                 btnCollapse$.toggleClass('collapsed');
                 frm$.slideToggle('slow');
-            })
+            });
         })
     </script>
 {% endblock %}

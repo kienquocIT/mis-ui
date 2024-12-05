@@ -6,7 +6,7 @@ from apps.core.process.views import (
     ProcessRuntimeOfMeAPI, ProcessRuntimeAPI,
     ProcessRuntimeDetailView, ProcessRuntimeListView, ProcessRuntimeListMeRedirect, ProcessRuntimeDetailAPI,
     ProcessRuntimeStageAppDetailAPI, ProcessStagesAppOfMeAPI, ProcessRuntimeDataMatchAPI, ProcessRuntimeMembersAPI,
-    ProcessRuntimeMemberDetailAPI, ProcessRuntimeLogAPI,
+    ProcessRuntimeMemberDetailAPI, ProcessRuntimeLogAPI, ProcessMembersSyncAPI,
 )
 
 urlpatterns = [
@@ -27,6 +27,7 @@ urlpatterns = [
     path('runtime/data-match/api', ProcessRuntimeDataMatchAPI.as_view(), name='ProcessRuntimeDataMatchAPI'),
     path('runtime/detail/<str:pk>', ProcessRuntimeDetailView.as_view(), name='ProcessRuntimeDetailView'),
     path('runtime/detail/<str:pk>/members/api', ProcessRuntimeMembersAPI.as_view(), name='ProcessRuntimeMembersAPI'),
+    path('runtime/detail/<str:pk>/members/sync/api', ProcessMembersSyncAPI.as_view(), name='ProcessMembersSyncAPI'),
     path('runtime/detail/<str:pk>/api', ProcessRuntimeDetailAPI.as_view(), name='ProcessRuntimeDetailAPI'),
     path('runtime/app/<str:pk>/api', ProcessRuntimeStageAppDetailAPI.as_view(), name='ProcessRuntimeStageAppDetailAPI'),
     path('runtime/member/<str:pk>', ProcessRuntimeMemberDetailAPI.as_view(), name='ProcessRuntimeMemberDetailAPI'),

@@ -116,3 +116,7 @@ msgstr "Thêm thành viên"
 #
 msgid "Choose employee"
 msgstr "Chọn nhân viên"
+
+#
+msgid "Sync member from Opportunity"
+msgstr "Đồng bộ thành viên từ Cơ hội kinh doanh"

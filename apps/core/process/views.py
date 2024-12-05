@@ -206,6 +206,16 @@ class ProcessRuntimeMembersAPI(APIView):
         return RespData.resp_404()
 
 
+class ProcessMembersSyncAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def put(self, request, *args, pk, **kwargs):
+        if pk and TypeCheck.check_uuid(pk):
+            url = ApiURL.PROCESS_RUNTIME_MEMBERS_SYNC.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).put(data={})
+            return resp.auto_return(key_success='process_runtime_members_sync')
+        return RespData.resp_404()
+
+
 class ProcessRuntimeStageAppDetailAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, pk, **kwargs):

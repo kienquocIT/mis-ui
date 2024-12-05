@@ -257,6 +257,7 @@ class CallLogHandle {
                     if (opportunity_data) {
                         loadCustomerList(opportunity_data?.['customer'])
                         loadContactList(opportunity_data?.['customer']?.['contact_mapped'])
+                        $('#offcanvas-call-log').offcanvas('show')
                     }
                 })
         }

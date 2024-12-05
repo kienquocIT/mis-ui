@@ -364,3 +364,7 @@ msgstr "Đang tải thành viên của tiến trình"
 #
 msgid "Documents"
 msgstr "Tài liệu"
+
+#
+msgid "Members are controlled only by the system"
+msgstr "Thành viên chỉ chịu sự kiểm soát của hệ thống"

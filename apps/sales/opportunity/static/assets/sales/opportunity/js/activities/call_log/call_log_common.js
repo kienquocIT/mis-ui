@@ -227,10 +227,10 @@ class CallLogHandle {
                 data_inherit: data_inherit,
                 data_process: data_process,
                 data_process_stage_app: data_process_stage_app,
-                oppFlagData: {"disabled": true},
-                inheritFlagData: {"disabled": true},
-                processFlagData: {"disabled": true},
-                processStageAppFlagData: {"disabled": true},
+                oppFlagData: {"disabled": true, "readonly": true},
+                processFlagData: {"disabled": true, "readonly": true},
+                processStageAppFlagData: {"disabled": true, "readonly": true},
+                inheritFlagData: {"disabled": true, "readonly": true},
             }).init();
 
             let dataParam = {'id': opp_id}

@@ -9805,5 +9805,13 @@ msgid "Cancel this call log?"
 msgstr "Huỷ cuộc gọi này?"
 
 #
+msgid "Cancel this meeting?"
+msgstr "Huỷ cuộc họp này?"
+
+#
 msgid "This action cannot be back."
 msgstr "Hành động này không thể hoàn tác."
+
+#
+msgid "Load by Opportunity"
+msgstr "Tải theo Cơ hội kinh doanh"

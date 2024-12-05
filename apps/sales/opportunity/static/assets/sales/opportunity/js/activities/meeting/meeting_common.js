@@ -1,15 +1,14 @@
-let meeting_employee_current_id = $('#employee_current_id').val();
-let meeting_Opp_slb = $('#meeting-sale-code-select-box');
-let meeting_customer_member_slb = $('#meeting-customer-member-select-box');
-let meeting_address_slb = $('#meeting-address-select-box');
-let meeting_employee_attended_slb = $('#meeting-employee-attended-select-box');
-let meeting_date_input = $('#meeting-date-input');
+const meeting_trans_script = $('#trans-script')
+const table_opportunity_meeting_list = $('#table_opportunity_meeting_list')
+const meeting_customer_member_slb = $('#meeting-customer-member-select-box');
+const meeting_address_slb = $('#meeting-address-select-box');
+const meeting_employee_attended_slb = $('#meeting-employee-attended-select-box');
+const meeting_date_input = $('#meeting-date-input');
 let MEETING_LIST = []
-let meeting_trans_script = $('#trans-script')
 
 function loadOpportunityMeetingList() {
     if (!$.fn.DataTable.isDataTable('#table_opportunity_meeting_list')) {
-        let dtb = $('#table_opportunity_meeting_list');
+        let dtb = table_opportunity_meeting_list;
         let frm = new SetupFormSubmit(dtb);
         dtb.DataTableDefault({
             rowIdx: true,
@@ -28,14 +27,14 @@ function loadOpportunityMeetingList() {
             },
             columns: [
                 {
-                    className: 'wrap-text w-10',
+                    className: 'wrap-text w-5',
                     render: () => {
                         return ``;
                     }
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text w-55',
+                    className: 'wrap-text w-50',
                     render: (data, type, row) => {
                         let status = ''
                         if (row?.['is_cancelled']) {
@@ -48,9 +47,16 @@ function loadOpportunityMeetingList() {
                 },
                 {
                     data: 'opportunity',
-                    className: 'wrap-text text-center w-20',
+                    className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-blue badge-outline">${row?.['opportunity']?.['code']}</span>`
+                    }
+                },
+                {
+                    data: 'employee_inherit',
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<span class="text-primary">${row?.['employee_inherit']?.['full_name']}</span>`
                     }
                 },
                 {
@@ -65,89 +71,6 @@ function loadOpportunityMeetingList() {
             ],
         });
     }
-}
-
-function loadMeetingSaleCodeList(data) {
-    function loadOppSelected(obj_selected){
-        if (obj_selected?.['is_close']) {
-            $.fn.notifyB({description: `Opportunity ${obj_selected?.['code']} has been closed. Can not select.`}, 'failure');
-            meeting_Opp_slb.find('option').remove();
-        }
-        else {
-            loadMeetingAddress(obj_selected?.['customer']?.['shipping_address'] ? obj_selected?.['customer']?.['shipping_address'] : [])
-            loadCustomerMember(obj_selected?.['customer']?.['contact_mapped'] ? obj_selected?.['customer']?.['contact_mapped'] : [])
-        }
-    }
-
-    const {
-        opp_id,
-        opp_title,
-        opp_code
-    } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'opp_id', 'opp_title', 'opp_code']);
-    meeting_Opp_slb.initSelect2({
-        ajax: {
-            url: meeting_Opp_slb.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            let result = [];
-            for (let i = 0; i < resp.data[keyResp].length; i++) {
-                let added = false;
-                let item = resp.data[keyResp][i];
-                if (item?.['sale_person']['id'] === meeting_employee_current_id) {
-                    result.push(item);
-                    added = true;
-                }
-                if (item.opportunity_sale_team_datas.length > 0 && added === false) {
-                    $.each(item.opportunity_sale_team_datas, function (index, member_obj) {
-                        if (member_obj.member.id === meeting_employee_current_id) {
-                            result.push(item);
-                        }
-                    });
-                }
-            }
-            return result;
-        },
-        templateResult: function (data) {
-            let ele = $('<div class="row col-12"></div>');
-            ele.append('<div class="col-4"><span class="badge badge-soft-primary badge-outline">' + data.data?.['code'] + '</span></div>');
-            ele.append('<div class="col-8">' + data.data?.['title'] + '</div>');
-            return ele;
-        },
-        data: opp_id ? [
-            {
-                'id': opp_id,
-                'title': opp_title,
-                'code': opp_code,
-                'selected': true,
-            }
-        ] : data ? data : [],
-        keyResp: 'opportunity_list',
-        keyId: 'id',
-        keyText: 'title',
-    })
-    .on('change', function () {
-        let obj_selected = SelectDDControl.get_data_from_idx(meeting_Opp_slb, meeting_Opp_slb.val());
-        if (obj_selected) {
-            if (obj_selected.hasOwnProperty('is_close')){
-                loadOppSelected(obj_selected);
-            } else {
-                $.fn.callAjax2({
-                    url: meeting_Opp_slb.attr('data-url') + `?id__in=${obj_selected['id']}`,
-                    method: 'GET',
-                    isLoading: true,
-                }).then(
-                    resp => {
-                        const data = $.fn.switcherResp(resp);
-                        if (data && data.hasOwnProperty('opportunity_list') && Array.isArray(data['opportunity_list']) && data['opportunity_list'].length > 0){
-                            loadOppSelected(data['opportunity_list'][0]);
-                        }
-                    },
-                )
-            }
-        }
-    });
-    if (opp_id) meeting_Opp_slb.trigger('change');
 }
 
 function loadCustomerMember(contact_list) {
@@ -212,16 +135,22 @@ function convert12hto24h(date){
 
 meeting_date_input.daterangepicker({
     singleDatePicker: true,
-    timePicker: true,
+    timePicker: false,
     showDropdowns: true,
-    drops: 'down',
-    minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
+    autoApply: true,
+    minYear: parseInt(moment().format('YYYY')),
     locale: {
-        format: 'YYYY-MM-DD'
+        format: 'DD/MM/YYYY'
     },
     "cancelClass": "btn-secondary",
-    maxYear: parseInt(moment().format('YYYY'), 10) + 100
-}).val('');
+    maxYear: parseInt(moment().format('YYYY')) + 100,
+}).val('')
+
+$('#opportunity_id').on('change', function () {
+    let obj_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+    loadMeetingAddress(obj_selected?.['customer']?.['shipping_address'] ? obj_selected?.['customer']?.['shipping_address'] : [])
+    loadCustomerMember(obj_selected?.['customer']?.['contact_mapped'] ? obj_selected?.['customer']?.['contact_mapped'] : [])
+})
 
 $(document).on('click', '#table_opportunity_meeting_list .detail-meeting-button', function () {
     let meeting_id = $(this).attr('data-id');
@@ -310,14 +239,14 @@ $(document).on('click', '#cancel-activity', function () {
 	}).then((result) => {
 		if (result.value) {
 		    let meeting_id = $('#detail-meeting .modal-body').attr('data-id')
-            let frm = $('#table_opportunity_meeting_list');
+            let dtb = table_opportunity_meeting_list;
             let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(frm.attr('data-url-delete').replace(0, meeting_id), 'PUT', {'is_cancelled': !$('#cancel-activity').prop('disabled')}, csr)
+            $.fn.callAjax(dtb.attr('data-url-delete').replace(0, meeting_id), 'PUT', {'is_cancelled': !$('#cancel-activity').prop('disabled')}, csr)
                 .then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.attr('data-url-redirect'), 1000);
+                        $.fn.redirectUrl(dtb.attr('data-url-redirect'), 1000);
                     }
                 }, (errs) => {
             $.fn.notifyB({description: errs.data.errors}, 'failure');
@@ -329,8 +258,97 @@ $(document).on('click', '#cancel-activity', function () {
 class MeetingHandle {
     static load() {
         loadOpportunityMeetingList();
-        loadMeetingSaleCodeList();
         loadEmployeeAttended();
+        const {
+            create_open,
+            opp_id,
+            opp_title,
+            opp_code,
+            process_id,
+            process_title,
+            process_stage_app_id,
+            process_stage_app_title,
+            inherit_id,
+            inherit_title,
+        } = $x.fn.getManyUrlParameters([
+            'create_open',
+            'opp_id', 'opp_title', 'opp_code',
+            'process_id', 'process_title',
+            'process_stage_app_id', 'process_stage_app_title',
+            'inherit_id', 'inherit_title',
+        ])
+        if (create_open) {
+            const data_inherit = [{
+                "id": inherit_id || '',
+                "full_name": inherit_title || '',
+                "selected": true,
+            }];
+            const data_opp = [{
+                "id": opp_id || '',
+                "title": opp_title || '',
+                "code": opp_code || '',
+                "selected": true,
+            }];
+            const data_process = [{
+                "id": process_id || '',
+                "title": process_title || '',
+                "selected": true,
+            }];
+            const data_process_stage_app = [{
+                "id": process_stage_app_id || '',
+                "title": process_stage_app_title || '',
+                'selected': true,
+            }];
+            new $x.cls.bastionField({
+                has_opp: true,
+                has_inherit: true,
+                has_process: true,
+                data_opp: data_opp,
+                data_inherit: data_inherit,
+                data_process: data_process,
+                data_process_stage_app: data_process_stage_app,
+                oppFlagData: {"disabled": true, "readonly": true},
+                processFlagData: {"disabled": true, "readonly": true},
+                processStageAppFlagData: {"disabled": true, "readonly": true},
+                inheritFlagData: {"disabled": true, "readonly": true},
+            }).init();
+
+            let dataParam = {'id': opp_id}
+            let opportunity_ajax = $.fn.callAjax2({
+                url: table_opportunity_meeting_list.attr('data-url-opp-list'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
+                        return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([opportunity_ajax]).then(
+                (results) => {
+                    let opportunity_data = results[0];
+                    if (opportunity_data) {
+                        loadMeetingAddress(opportunity_data?.['customer']?.['shipping_address'] ? opportunity_data?.['customer']?.['shipping_address'] : [])
+                        loadCustomerMember(opportunity_data?.['customer']?.['contact_mapped'] ? opportunity_data?.['customer']?.['contact_mapped'] : [])
+                        $('#offcanvas-meeting').offcanvas('show')
+                    }
+                })
+        }
+        else {
+            new $x.cls.bastionField({
+                has_opp: true,
+                has_inherit: true,
+                has_process: true,
+                inheritFlagData: {"disabled": false, "readonly": false},
+            }).init();
+        }
     }
 
     static combinesData(frmEle) {

@@ -2586,8 +2586,11 @@ class WFRTControl {
                     let $dataRTNotFound = $('#idxDataRuntimeNotFound');
                     if (data['runtime_detail']?.['state'] === 3) $dataRTNotFound.removeClass('hidden');
                     $dataRTNotFound.empty().append(WFRTControl.setupHTMLNonWF(false));
+
                     let eleStatus = $('#systemStatus');
-                    if (eleStatus.attr('data-status') === '4') {  // if canceled after finish with workflow non-apply
+                    let docData = WFRTControl.getRuntimeDocData();
+
+                    if (docData?.['system_status'] === 4) {  // if canceled after finish with workflow non-apply
                         $dataRTNotFound.empty().append(WFRTControl.setupHTMLNonWF(true));
                     }
                     let actionMySelf = data['runtime_detail']['action_myself'];
@@ -2621,7 +2624,7 @@ class WFRTControl {
                             // active btn save change and back if current employee is owner, status is finished
                             let isCR = false;
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            if (eleStatus.attr('data-status-cr') === '5' && eleStatus.attr('data-inherit') === currentEmployee) {
+                            if (eleStatus.attr('data-status-cr') === '5' && docData?.['employee_inherit']?.['id'] === currentEmployee) {
                                 WFRTControl.setBtnWFAfterFinishUpdate();
                                 isCR = true;
                             }
@@ -2638,7 +2641,7 @@ class WFRTControl {
                             WFRTControl.activeSetZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             // active btn change and cancel if current employee is owner, status is finished
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
+                            if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === currentEmployee) {
                                 WFRTControl.setBtnWFAfterFinishDetail();
                                 // show print button
                                 let $btnPrint = $('#print-document');
@@ -8545,8 +8548,6 @@ let $x = {
         buttonLinkBlank: DocumentControl.buttonLinkBlank,
         closeCard: DocumentControl.closeCard,
         openCard: DocumentControl.openCard,
-
-        getFeatureCode: BastionFieldControl.getFeatureCode,
 
         parseDateTime: UtilControl.parseDateTime,
         parseDate: UtilControl.parseDate,

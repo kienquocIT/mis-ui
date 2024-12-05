@@ -88,8 +88,8 @@ class handle_tasks_cls {
                         if (txtSearch.length > 0)
                             params['search'] = txtSearch
                         params['project_id'] = $('#filter_project_id').val() || ''
-                        params['task_status'] = $('#filter_task_status').val() || ''
-                        params['employee_inherit'] = $('#filter_employee_id').val() || ''
+                        params['task__task_status_id'] = $('#filter_task_status').val() || ''
+                        params['member_id'] = $('#filter_employee_id').val() || ''
                         params['is_ajax'] = true;
                         return params
                     },
@@ -345,7 +345,7 @@ class handle_tasks_cls {
             edit_elm.removeClass('fa-eye').addClass('fa-eye-slash')
         } else {
             if (!$('.hk-wrapper').hasClass('open'))
-                $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                $("#drawer_task_create").trigger('drawer.show');
             else{
                 // case click task khác mà chưa đóng task cũ
                 tbl.find('.btn_task-list-action i').removeClass('fa-eye').addClass('fa-eye-slash')

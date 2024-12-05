@@ -381,11 +381,11 @@ div.dataTables_wrapper .dataTables_scrollBody table {
     border-bottom-right-radius: 4px;
 }
 
-#bastionFieldTheDocument .input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+#bastionFieldTheDocument .input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
     margin-left: 1px !important;
 }
 
-#bastionFieldTheDocument .input-group > * ,
+#bastionFieldTheDocument .input-group > *,
 #bastionFieldTheDocument .input-group > .select2-container .select2-selection {
     border-radius: 4px !important;
 }
@@ -606,6 +606,12 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
 }
 
 /* Select2  */
+
+/* Select */
+select[readonly] {
+    pointer-events: none;
+}
+/* -- Select */
 
 /* Group input has button info */
 
@@ -1054,8 +1060,9 @@ ul.dm-uploader-result-list li:hover .btn-destroy-file {
     width: 38px;
     height: 38px;
 }
-ul.dm-uploader-result-list li:hover .btn-download-file{
-    margin-right:4px;
+
+ul.dm-uploader-result-list li:hover .btn-download-file {
+    margin-right: 4px;
 }
 
 @keyframes shakeZoom {

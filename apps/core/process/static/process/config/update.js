@@ -57,7 +57,7 @@ $(document).ready(function () {
                                     method: 'PUT',
                                     data: {
                                         ...frm.dataForm,
-                                        'apply_start': frm.dataForm?.['appy_start'] ? frm.dataForm['appy_start'] : null,
+                                        'apply_start': frm.dataForm?.['apply_start'] ? frm.dataForm['apply_start'] : null,
                                         'apply_finish': frm.dataForm?.['apply_finish'] ? frm.dataForm['apply_finish'] : null,
                                         ...config,
                                     }

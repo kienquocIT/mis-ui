@@ -9745,6 +9745,10 @@ msgid "Detail Call Log"
 msgstr "Chi tiết cuộc gọi"
 
 #
+msgid "New Call Log"
+msgstr "Cuộc gọi mới"
+
+#
 msgid "Bidding"
 msgstr "Thầu"
 
@@ -9791,3 +9795,15 @@ msgstr "Cấu hình cập nhật kết quả thầu"
 #
 msgid "Bid Value"
 msgstr "Giá thầu"
+
+#
+msgid "To Contact"
+msgstr "Tới liên hệ"
+
+#
+msgid "Cancel this call log?"
+msgstr "Huỷ cuộc gọi này?"
+
+#
+msgid "This action cannot be back."
+msgstr "Hành động này không thể hoàn tác."

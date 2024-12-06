@@ -972,7 +972,6 @@ $(function () {
                 'total_expense',
                 // quotation tabs
                 'quotation_products_data',
-                'quotation_term_data',
                 'quotation_logistic_data',
                 'customer_shipping',
                 'customer_billing',

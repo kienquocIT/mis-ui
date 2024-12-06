@@ -241,7 +241,7 @@ $(function () {
             }
         });
 
-        tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
+        tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-uom-time, .table-row-quantity-time, .table-row-price, .table-row-tax, .table-row-discount', function () {
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
                 if ($(this).hasClass('table-row-item')) {
@@ -255,7 +255,6 @@ $(function () {
                 }
                 if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-uom') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
                     // load again table cost
-                    // QuotationLoadDataHandle.loadDataTableCost();
                     LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
                     if ($(this).hasClass('table-row-uom')) {
                         let modalBody = LeaseOrderLoadDataHandle.$priceModal[0].querySelector('.modal-body');
@@ -571,8 +570,8 @@ $(function () {
                         for (let idx = 0; idx < products.length; idx++) {
                             let checkedID = products[idx]?.['id'];
                             let checkedQuantity = products[idx]?.['quantity'];
-                            for (let i = 0; i < dataCopy?.['quotation_products_data'].length; i++) {
-                                let data = dataCopy?.['quotation_products_data'][i];
+                            for (let i = 0; i < dataCopy?.['lease_products_data'].length; i++) {
+                                let data = dataCopy?.['lease_products_data'][i];
                                 if (data?.['product']?.['id'] === checkedID) {
                                     data['product_quantity'] = parseFloat(checkedQuantity);
                                     order++
@@ -582,8 +581,8 @@ $(function () {
                                 }
                             }
                         }
-                        dataCopy['quotation_products_data'] = result;
-                        dataCopy['quotation_costs_data'] = [];
+                        dataCopy['lease_products_data'] = result;
+                        dataCopy['lease_costs_data'] = [];
                     }
                     LeaseOrderLoadDataHandle.loadCopyData(dataCopy);
                 }
@@ -931,7 +930,7 @@ $(function () {
             if (keyHidden) {
                 if (keyHidden.length > 0) {
                     // special case: loadCost if products is not in hidden zones
-                    if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
+                    if (!keyHidden.includes('lease_products_data') && !keyHidden.includes('sale_order_products_data')) {
                         LeaseOrderLoadDataHandle.loadDataTableCost();
                         LeaseOrderSubmitHandle.setupDataSubmit(_form);
                         LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
@@ -971,16 +970,13 @@ $(function () {
                 'total_expense_tax',
                 'total_expense',
                 // quotation tabs
-                'quotation_products_data',
-                'quotation_term_data',
-                'quotation_logistic_data',
+                'lease_products_data',
                 'customer_shipping',
                 'customer_billing',
-                'quotation_costs_data',
-                'quotation_expenses_data',
-                'is_customer_confirm',
+                'lease_costs_data',
+                'lease_expenses_data',
                 // indicator tab
-                'quotation_indicators_data',
+                'lease_indicators_data',
                 // indicators
                 'indicator_revenue',
                 'indicator_gross_profit',

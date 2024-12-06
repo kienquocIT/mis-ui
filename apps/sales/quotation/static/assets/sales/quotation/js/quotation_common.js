@@ -1484,11 +1484,10 @@ class QuotationLoadDataHandle {
                     let dataUOM = {};
                     let dataTax = {};
                     if (data?.['product_data']?.['id']) { // PRODUCT
-                        dataProduct = data?.['product_data'];
-                        dataUOM = data?.['uom_data'];
-                        dataTax = data?.['tax_data'];
-                        valueQuantity = 0;
-                        valueQuantity = data?.['product_quantity'];
+                        dataProduct = data?.['product_data'] ? data?.['product_data'] : {};
+                        dataUOM = data?.['uom_data'] ? data?.['uom_data'] : {};
+                        valueQuantity = data?.['product_quantity'] ? data?.['product_quantity'] : 0;
+                        dataTax = data?.['tax_data'] ? data?.['tax_data'] : {};
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,

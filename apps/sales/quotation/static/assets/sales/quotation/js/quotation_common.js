@@ -2666,7 +2666,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '7.8125%',
+                    width: '8%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2690,7 +2690,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '9.11458333333%',
+                    width: '8%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2706,7 +2706,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '15%',
+                    width: '16%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2741,7 +2741,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '7.8125%',
+                    width: '8%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;

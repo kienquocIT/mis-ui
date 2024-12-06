@@ -5,41 +5,52 @@ const send_email_modal = $("#offcanvas-send-email")
 let EMAIL_LIST = [];
 
 function loadEmailToList(contact_list) {
-    email_to_slb.attr('disabled', false);
-    email_to_slb.html(``);
-    for (let i = 0; i < contact_list.length; i++) {
-        let item = contact_list[i];
-        if (item.email) {
-            email_to_slb.append(`<option selected value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+    if (contact_list) {
+        email_to_slb.attr('disabled', false);
+        email_to_slb.html(``);
+        for (let i = 0; i < contact_list.length; i++) {
+            let item = contact_list[i];
+            if (item.email) {
+                email_to_slb.append(`<option selected value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+            } else {
+                email_to_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
+            }
         }
-        else {
-            email_to_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
-        }
+        email_to_slb.select2({
+            dropdownParent: send_email_modal,
+            tags: true,
+            tokenSeparators: [',', ' ']
+        });
     }
-    email_to_slb.select2({
-        dropdownParent: send_email_modal,
-        tags: true,
-        tokenSeparators: [',', ' ']
-    });
 }
 
 function loadEmailCcList(contact_list) {
-    email_cc_slb.attr('disabled', false);
-    email_cc_slb.html(``);
-    for (let i = 0; i < contact_list.length; i++) {
-        let item = contact_list[i];
-        if (item.email) {
-            email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+    if (contact_list) {
+        email_cc_slb.attr('disabled', false);
+        email_cc_slb.html(``);
+        for (let i = 0; i < contact_list.length; i++) {
+            let item = contact_list[i];
+            if (item.email) {
+                email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - ${item.email}</option>`);
+            } else {
+                email_cc_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
+            }
         }
-        else {
-            email_cc_slb.append(`<option disabled value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.fullname} - (no email)</option>`);
-        }
+        email_cc_slb.select2({
+            dropdownParent: send_email_modal,
+            tags: true,
+            tokenSeparators: [',', ' ']
+        });
     }
-    email_cc_slb.select2({
-        dropdownParent: send_email_modal,
-        tags: true,
-        tokenSeparators: [',', ' ']
-    });
+}
+
+function extractTextWithSpaces(htmlString) {
+    const tempContainer = document.createElement("div");
+    tempContainer.innerHTML = htmlString.replace(/<br\s*\/?>/g, "\n");
+    const textNodes = Array.from(tempContainer.childNodes)
+        .map(node => node.textContent.trim())
+        .filter(text => text);
+    return textNodes.join(" ").substring(0, 60) + '...';
 }
 
 function loadOpportunityEmailList() {
@@ -75,7 +86,10 @@ function loadOpportunityEmailList() {
                     render: (data, type, row) => {
                         return `<a class="text-primary fw-bold detail-email-button" href="" data-bs-toggle="offcanvas" data-id="${row?.['id']}"
                                     data-bs-target="#offcanvas-detail-send-email"><span>${row?.['subject']}</span>
-                                </a>`
+                                </a>` + `<div class="fst-italic">
+                                    ${extractTextWithSpaces(row?.['content'])}
+                                </div>`
+
                     }
                 },
                 {
@@ -119,11 +133,13 @@ $(document).on('click', '#table_opportunity_email_list .detail-email-button', fu
 
     $('#detail-email-subject-input').text(email_obj.subject);
     $('#detail-date-input').text(moment(email_obj.date_created.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'));
+    $('#btn-email-to').text($('#trans-script').attr('data-trans-to') + ' (' + email_obj.email_to_list.length.toString() + ')')
+    $('#btn-email-cc').text($('#trans-script').attr('data-trans-cc') + ' (' + email_obj.email_cc_list.length.toString() + ')')
     let detail_email_to_list = []
     for (let i = 0; i < email_obj.email_to_list.length; i++) {
         detail_email_to_list.push(`<a class="dropdown-item" href="#">${email_obj.email_to_list[i]}</a>`);
     }
-    $('#detail-email-to').html(detail_email_to_list.join(', '));
+    $('#detail-email-to').html(detail_email_to_list);
     let detail_email_cc_list = []
     for (let i = 0; i < email_obj.email_cc_list.length; i++) {
         detail_email_cc_list.push(`<a class="dropdown-item" href="#">${email_obj.email_cc_list[i]}</a>`);
@@ -134,8 +150,11 @@ $(document).on('click', '#table_opportunity_email_list .detail-email-button', fu
 
 $('#opportunity_id').on('change', function () {
     let obj_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-    loadEmailToList(obj_selected?.['customer']?.['contact_mapped'])
-    loadEmailCcList(obj_selected?.['customer']?.['contact_mapped'])
+    if (obj_selected) {
+        let contact_mapped = obj_selected?.['customer']?.['contact_mapped']
+        loadEmailToList(contact_mapped ? contact_mapped : [])
+        loadEmailCcList(contact_mapped ? contact_mapped : [])
+    }
 })
 
 ClassicEditor
@@ -145,10 +164,39 @@ ClassicEditor
     })
 
 class EmailHandle {
+    static LoadPageActionWithParams(opp_id) {
+        let dataParam = {'id': opp_id}
+        let opportunity_ajax = $.fn.callAjax2({
+            url: table_opportunity_email_list.attr('data-url-opp-list'),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
+                    return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([opportunity_ajax]).then(
+            (results) => {
+                if (results[0]) {
+                    $('#opportunity_id').trigger('change')
+                    loadEmailToList(results[0]?.['customer']?.['contact_mapped'])
+                    loadEmailCcList(results[0]?.['customer']?.['contact_mapped'])
+                    $('#offcanvas-send-email').offcanvas('show')
+                }
+            })
+    }
     static load() {
         loadOpportunityEmailList();
         const {
-            create_open,
+            create_open, from_opp,
             opp_id,
             opp_title,
             opp_code,
@@ -159,7 +207,7 @@ class EmailHandle {
             inherit_id,
             inherit_title,
         } = $x.fn.getManyUrlParameters([
-            'create_open',
+            'create_open', 'from_opp',
             'opp_id', 'opp_title', 'opp_code',
             'process_id', 'process_title',
             'process_stage_app_id', 'process_stage_app_title',
@@ -201,33 +249,24 @@ class EmailHandle {
                 inheritFlagData: {"disabled": true, "readonly": true},
             }).init();
 
-            let dataParam = {'id': opp_id}
-            let opportunity_ajax = $.fn.callAjax2({
-                url: table_opportunity_email_list.attr('data-url-opp-list'),
-                data: dataParam,
-                method: 'GET'
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
-                        return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
-                    }
-                    return {};
-                },
-                (errs) => {
-                    console.log(errs);
-                }
-            )
+            EmailHandle.LoadPageActionWithParams(opp_id)
+        }
+        else if (from_opp) {
+            const data_opp = [{
+                "id": opp_id || '',
+                "title": opp_title || '',
+                "code": opp_code || '',
+                "selected": true,
+            }];
+            new $x.cls.bastionField({
+                has_opp: true,
+                has_inherit: true,
+                has_process: true,
+                data_opp: data_opp,
+                inheritFlagData: {"disabled": false, "readonly": false},
+            }).init();
 
-            Promise.all([opportunity_ajax]).then(
-                (results) => {
-                    let opportunity_data = results[0];
-                    if (opportunity_data) {
-                        loadMeetingAddress(opportunity_data?.['customer']?.['shipping_address'] ? opportunity_data?.['customer']?.['shipping_address'] : [])
-                        loadCustomerMember(opportunity_data?.['customer']?.['contact_mapped'] ? opportunity_data?.['customer']?.['contact_mapped'] : [])
-                        $('#offcanvas-meeting').offcanvas('show')
-                    }
-                })
+            EmailHandle.LoadPageActionWithParams(opp_id)
         }
         else {
             new $x.cls.bastionField({

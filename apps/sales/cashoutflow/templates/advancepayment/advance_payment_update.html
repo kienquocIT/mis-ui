@@ -37,6 +37,7 @@
     {% include 'printer/print.html' %}
     <script id="script-url"
             data-trans-unplanned="{% trans 'Unplanned expenses' %}"
+            data-url-opp-list="{% url "OpportunityListAPI" %}"
             data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
             data-url-ap-mapped="{% url "AdvancePaymentListAPI" %}"
             data-url-expense-quotation="{% url 'QuotationExpenseListAPI' %}"

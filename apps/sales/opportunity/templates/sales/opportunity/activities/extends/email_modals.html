@@ -51,29 +51,36 @@
 		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 	</div>
 	<div class="offcanvas-body">
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="detail-opp" class="form-label required">{% trans 'Opportunity' %}</label>
-                    <input disabled readonly id="detail-opp" class="form-control">
-                </div>
-            </div>
-            <div class="col-12 col-lg-6 col-md-6">
-                <div class="form-group">
-                    <label for="detail-process" class="form-label">{% trans 'Process' %}</label>
-                    <input disabled readonly id="detail-process" class="form-control">
-                </div>
-            </div>
-            <div class="col-12 col-lg-6 col-md-6">
-                <div class="form-group">
-                    <label for="detail-stage" class="form-label">{% trans 'Stage' %}</label>
-                    <input disabled readonly id="detail-stage" class="form-control">
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="detail-inheritor" class="form-label required">{% trans 'Inheritor' %}</label>
-                    <input disabled readonly id="detail-inheritor" class="form-control">
+        <button class="btn btn-light btn-sm w-100" type="button" data-bs-toggle="collapse" data-bs-target="#detail-opp-process-inherit">
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="collapse multi-collapse" id="detail-opp-process-inherit">
+            <div class="card card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="detail-opp" class="form-label required">{% trans 'Opportunity' %}</label>
+                            <input disabled readonly id="detail-opp" class="form-control text-primary fw-bold form-control-line">
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 col-md-6">
+                        <div class="form-group">
+                            <label for="detail-process" class="form-label">{% trans 'Process' %}</label>
+                            <input disabled readonly id="detail-process" class="form-control text-primary fw-bold form-control-line">
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 col-md-6">
+                        <div class="form-group">
+                            <label for="detail-stage" class="form-label">{% trans 'Stage' %}</label>
+                            <input disabled readonly id="detail-stage" class="form-control text-primary fw-bold form-control-line">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="detail-inheritor" class="form-label required">{% trans 'Inheritor' %}</label>
+                            <input disabled readonly id="detail-inheritor" class="form-control text-primary fw-bold form-control-line">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -84,23 +91,16 @@
             </div>
             <div class="col-12 d-flex mt-3">
                 <div class="btn-group dropdown">
-                    <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans 'To' %}
-                    </button>
+                    <button id="btn-email-to" type="button" class="btn btn-soft-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                     <div class="dropdown-menu" id="detail-email-to"></div>
                 </div>
                 <div class="ml-3 btn-group dropdown">
-                    <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans 'Cc' %}
-                    </button>
+                    <button id="btn-email-cc" type="button" class="btn btn-soft-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                     <div class="dropdown-menu" id="detail-email-cc"></div>
                 </div>
             </div>
             <div class="col-12 mt-3">
-                <div class="form-group">
-                    <span class="text-muted text-decoration-underline">{% trans 'Content' %}</span>
-                    <div id="detail-email-content-area" class="border rounded p-2"></div>
-                </div>
+                <div id="detail-email-content-area" class="border rounded p-2"></div>
             </div>
         </div>
 	</div>

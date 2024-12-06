@@ -22,9 +22,9 @@
                     </button>
                     <div class="dropdown-menu" style="min-width: max-content" id="dropdown-menu-relate-app">
                         <h6 class="dropdown-header">{% trans 'Sale Activities' %}</h6>
-                        <a data-bs-toggle="modal" data-bs-target="#offcanvas-call-log" class="dropdown-item" id="offcanvas-call-log-button-detail" href="#">{% trans 'Log a call' %}</a>
-                        <a data-bs-toggle="modal" data-bs-target="#send-email" class="dropdown-item" id="send-email-button" href="#">{% trans 'Send email' %}</a>
-                        <a data-bs-toggle="modal" data-bs-target="#create-meeting" class="dropdown-item" id="new-meeting-button" href="#">{% trans 'Meeting' %}</a>
+                        <a class="dropdown-item" id="goto-call-log" data-url="{% url 'OpportunityCallLogList' %}" href="#" target="_blank">{% trans 'Log a call' %}</a>
+                        <a class="dropdown-item" id="goto-email" data-url="{% url 'OpportunityEmailList' %}" href="#" target="_blank">{% trans 'Send email' %}</a>
+                        <a class="dropdown-item" id="goto-meeting" data-url="{% url 'OpportunityMeetingList' %}" href="#" target="_blank">{% trans 'Meeting' %}</a>
                         <a data-drawer-target="#drawer_task_create" data-drawer-active="false" class="dropdown-item ntt-drawer-toggle-link current-create-task" href="#">{% trans 'Task' %}</a>
                         <div class="dropdown-divider"></div>
                         <h6 class="dropdown-header">{% trans 'Related features' %}</h6>
@@ -83,7 +83,7 @@
                                 <i class="fas fa-info-circle icon-info"
                                    data-bs-toggle="tooltip"
                                    data-bs-placement="bottom"
-                                   title="{% trans 'Press row here to see detail.' %}">
+                                    title="{% trans 'Press row here to see detail.' %}">
                                 </i>
                             </th>
                             <th class="w-15" style="min-width: 100px">{% trans "Code" %}</th>

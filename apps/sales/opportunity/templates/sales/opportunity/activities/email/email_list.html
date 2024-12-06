@@ -23,7 +23,10 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
+    <script id="trans-script"
+            data-trans-to="{% trans 'To' %}"
+            data-trans-cc="{% trans 'Cc' %}"
+    ></script>
     <table id="table_opportunity_email_list" class="table nowrap w-100 mb-5"
            data-url="{% url 'OpportunityEmailListAPI' %}"
            data-url-opp-list="{% url 'OpportunityListAPI' %}"

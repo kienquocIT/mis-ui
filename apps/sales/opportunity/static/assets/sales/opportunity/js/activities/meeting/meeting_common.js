@@ -75,11 +75,13 @@ function loadOpportunityMeetingList() {
 }
 
 function loadCustomerMember(contact_list) {
-    meeting_customer_member_slb.attr('disabled', false);
-    $('#meeting-customer-member-select-box option').remove();
-    meeting_customer_member_slb.initSelect2();
-    for (let i = 0; i < contact_list.length; i++) {
-        meeting_customer_member_slb.append(`<option value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+    if (contact_list) {
+        meeting_customer_member_slb.attr('disabled', false);
+        $('#meeting-customer-member-select-box option').remove();
+        meeting_customer_member_slb.initSelect2();
+        for (let i = 0; i < contact_list.length; i++) {
+            meeting_customer_member_slb.append(`<option value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+        }
     }
 }
 
@@ -106,14 +108,16 @@ function loadEmployeeAttended(data) {
 }
 
 function loadMeetingAddress(shipping_address_list) {
-    meeting_address_slb.attr('disabled', false);
-    $('#meeting-address-select-box option').remove();
-    meeting_address_slb.initSelect2();
-    for (let i = 0; i < shipping_address_list.length; i++) {
-        if (shipping_address_list[i].is_default) {
-            meeting_address_slb.append(`<option selected>${shipping_address_list[i].full_address}</option>`);
-        } else {
-            meeting_address_slb.append(`<option>${shipping_address_list[i].full_address}</option>`);
+    if (shipping_address_list) {
+        meeting_address_slb.attr('disabled', false);
+        $('#meeting-address-select-box option').remove();
+        meeting_address_slb.initSelect2();
+        for (let i = 0; i < shipping_address_list.length; i++) {
+            if (shipping_address_list[i].is_default) {
+                meeting_address_slb.append(`<option selected>${shipping_address_list[i].full_address}</option>`);
+            } else {
+                meeting_address_slb.append(`<option>${shipping_address_list[i].full_address}</option>`);
+            }
         }
     }
 }
@@ -149,8 +153,12 @@ meeting_date_input.daterangepicker({
 
 $('#opportunity_id').on('change', function () {
     let obj_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-    loadMeetingAddress(obj_selected?.['customer']?.['shipping_address'] ? obj_selected?.['customer']?.['shipping_address'] : [])
-    loadCustomerMember(obj_selected?.['customer']?.['contact_mapped'] ? obj_selected?.['customer']?.['contact_mapped'] : [])
+    if (obj_selected) {
+        let shipping_address = obj_selected?.['customer']?.['shipping_address']
+        let contact_mapped = obj_selected?.['customer']?.['contact_mapped']
+        loadMeetingAddress(shipping_address ? shipping_address : [])
+        loadCustomerMember(contact_mapped ? contact_mapped : [])
+    }
 })
 
 $(document).on('click', '#table_opportunity_meeting_list .offcanvas-meeting-button', function () {
@@ -238,11 +246,40 @@ $(document).on('click', '#cancel-activity', function () {
 })
 
 class MeetingHandle {
+    static LoadPageActionWithParams(opp_id) {
+        let dataParam = {'id': opp_id}
+        let opportunity_ajax = $.fn.callAjax2({
+            url: table_opportunity_meeting_list.attr('data-url-opp-list'),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
+                    return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([opportunity_ajax]).then(
+            (results) => {
+                if (results[0]) {
+                    $('#opportunity_id').trigger('change')
+                    loadMeetingAddress(results[0]?.['customer']?.['shipping_address'])
+                    loadCustomerMember(results[0]?.['customer']?.['contact_mapped'])
+                    $('#offcanvas-meeting').offcanvas('show')
+                }
+            })
+    }
     static load() {
         loadOpportunityMeetingList();
         loadEmployeeAttended();
         const {
-            create_open,
+            create_open,from_opp,
             opp_id,
             opp_title,
             opp_code,
@@ -253,7 +290,7 @@ class MeetingHandle {
             inherit_id,
             inherit_title,
         } = $x.fn.getManyUrlParameters([
-            'create_open',
+            'create_open', 'from_opp',
             'opp_id', 'opp_title', 'opp_code',
             'process_id', 'process_title',
             'process_stage_app_id', 'process_stage_app_title',
@@ -295,33 +332,24 @@ class MeetingHandle {
                 inheritFlagData: {"disabled": true, "readonly": true},
             }).init();
 
-            let dataParam = {'id': opp_id}
-            let opportunity_ajax = $.fn.callAjax2({
-                url: table_opportunity_meeting_list.attr('data-url-opp-list'),
-                data: dataParam,
-                method: 'GET'
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
-                        return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
-                    }
-                    return {};
-                },
-                (errs) => {
-                    console.log(errs);
-                }
-            )
+            MeetingHandle.LoadPageActionWithParams(opp_id)
+        }
+        else if (from_opp) {
+            const data_opp = [{
+                "id": opp_id || '',
+                "title": opp_title || '',
+                "code": opp_code || '',
+                "selected": true,
+            }];
+            new $x.cls.bastionField({
+                has_opp: true,
+                has_inherit: true,
+                has_process: true,
+                data_opp: data_opp,
+                inheritFlagData: {"disabled": false, "readonly": false},
+            }).init();
 
-            Promise.all([opportunity_ajax]).then(
-                (results) => {
-                    let opportunity_data = results[0];
-                    if (opportunity_data) {
-                        loadMeetingAddress(opportunity_data?.['customer']?.['shipping_address'] ? opportunity_data?.['customer']?.['shipping_address'] : [])
-                        loadCustomerMember(opportunity_data?.['customer']?.['contact_mapped'] ? opportunity_data?.['customer']?.['contact_mapped'] : [])
-                        $('#offcanvas-meeting').offcanvas('show')
-                    }
-                })
+            MeetingHandle.LoadPageActionWithParams(opp_id)
         }
         else {
             new $x.cls.bastionField({
@@ -332,7 +360,6 @@ class MeetingHandle {
             }).init();
         }
     }
-
     static combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 

@@ -9827,3 +9827,8 @@ msgstr "Chi tiết cuộc họp với khách hàng"
 #
 msgid "Detail Email"
 msgstr "Chi tiết Email"
+
+
+#
+msgid "See detail process here"
+msgstr "Xem chi tiết Tiến trình tại đây"

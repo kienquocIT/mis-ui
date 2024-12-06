@@ -47,12 +47,17 @@
     </div>
     <button
             id="btn-collapse-process-show"
-            class="btn btn-icon w-100 btn-xs my-2 btn-flush-light collapsed-active"
+            class="btn w-100 btn-xs my-2 btn-outline-light collapsed-active"
             data-bs-toggle="tooltip"
             title="{% trans 'Process' %}"
     >
         <span>
-            <span class="icon"><i class="fa-solid fa-angles-up"></i></span>
+            <span>{% trans 'See detail process here' %}</span>
+            <span class="icon">
+                <span class="feather-icon">
+                    <i class="fas fa-chevron-up"></i>
+                </span>
+            </span>
         </span>
     </button>
     <div class="page-content" hidden>

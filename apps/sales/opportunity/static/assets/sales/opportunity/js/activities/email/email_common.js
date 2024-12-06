@@ -1,25 +1,8 @@
-let email_employee_current_id = $('#employee_current_id').val()
-let email_Opp_slb = $('#email-sale-code-select-box')
-let email_to_slb = $('#email-to-select-box')
-let email_cc_slb = $('#email-cc-select-box')
-let detail_email_Opp_slb = $('#detail-email-sale-code-select-box')
-let detail_email_to_slb = $('#detail-email-to-select-box')
-let detail_email_cc_slb = $('#detail-email-cc-select-box')
-let send_email_modal = $("#send-email")
-let detail_send_email_modal = $("#detail-send-email")
+const table_opportunity_email_list = $('#table_opportunity_email_list')
+const email_to_slb = $('#email-to-select-box')
+const email_cc_slb = $('#email-cc-select-box')
+const send_email_modal = $("#offcanvas-send-email")
 let EMAIL_LIST = [];
-
-detail_email_to_slb.select2({
-    dropdownParent: detail_send_email_modal,
-    tags: true,
-    tokenSeparators: [',', ' ']
-});
-
-detail_email_cc_slb.select2({
-    dropdownParent: detail_send_email_modal,
-    tags: true,
-    tokenSeparators: [',', ' '],
-});
 
 function loadEmailToList(contact_list) {
     email_to_slb.attr('disabled', false);
@@ -59,91 +42,9 @@ function loadEmailCcList(contact_list) {
     });
 }
 
-function loadEmailSaleCodeList(data) {
-    function loadOppSelected(obj_selected){
-        console.log('obj_selected:', obj_selected);
-        if (obj_selected?.['is_close']) {
-            $.fn.notifyB({description: `Opportunity ${obj_selected?.['code']} has been closed. Can not select.`}, 'failure');
-            email_Opp_slb.find('option').remove();
-        }
-        else {
-            loadEmailToList(obj_selected?.['customer']?.['contact_mapped'])
-            loadEmailCcList(obj_selected?.['customer']?.['contact_mapped'])
-        }
-    }
-
-    const {
-        opp_id,
-        opp_title,
-        opp_code
-    } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'opp_id', 'opp_title', 'opp_code']);
-    email_Opp_slb.initSelect2({
-        ajax: {
-            url: email_Opp_slb.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            let result = [];
-            for (let i = 0; i < resp.data[keyResp].length; i++) {
-                let added = false;
-                let item = resp.data[keyResp][i];
-                if (item?.['sale_person']['id'] === email_employee_current_id) {
-                    result.push(item);
-                    added = true;
-                }
-                if (item.opportunity_sale_team_datas.length > 0 && added === false) {
-                    $.each(item.opportunity_sale_team_datas, function(index, member_obj) {
-                        if (member_obj.member.id === email_employee_current_id) {
-                            result.push(item);
-                        }
-                    });
-                }
-            }
-            return result;
-        },
-        templateResult: function(data) {
-            let ele = $('<div class="row col-12"></div>');
-            ele.append('<div class="col-4"><span class="badge badge-soft-primary badge-outline">' + data.data?.['code'] + '</span></div>');
-            ele.append('<div class="col-8">' + data.data?.['title'] + '</div>');
-            return ele;
-        },
-        data: opp_id ? [
-            {
-                'id': opp_id,
-                'title': opp_title,
-                'code': opp_code,
-                'selected': true,
-            }
-        ] : data ? data : [],
-        keyResp: 'opportunity_list',
-        keyId: 'id',
-        keyText: 'title',
-    }).on('change', function () {
-        let obj_selected = SelectDDControl.get_data_from_idx(email_Opp_slb, email_Opp_slb.val())
-        if (obj_selected) {
-            if (obj_selected.hasOwnProperty('is_close')){
-                loadOppSelected(obj_selected);
-            } else {
-                $.fn.callAjax2({
-                    url: email_Opp_slb.attr('data-url') + `?id__in=${obj_selected['id']}`,
-                    method: 'GET',
-                }).then(
-                    resp => {
-                        const data = $.fn.switcherResp(resp);
-                        if (data && data.hasOwnProperty('opportunity_list') && Array.isArray(data['opportunity_list']) && data['opportunity_list'].length > 0){
-                            loadOppSelected(data['opportunity_list'][0]);
-                        }
-                    }
-                )
-            }
-        }
-    });
-    if (opp_id) email_Opp_slb.trigger('change');
-}
-
 function loadOpportunityEmailList() {
     if (!$.fn.DataTable.isDataTable('#table_opportunity_email_list')) {
-        let dtb = $('#table_opportunity_email_list');
+        let dtb = table_opportunity_email_list;
         let frm = new SetupFormSubmit(dtb);
         dtb.DataTableDefault({
             rowIdx: true,
@@ -163,25 +64,32 @@ function loadOpportunityEmailList() {
             },
             columns: [
                 {
-                    className: 'wrap-text w-10',
+                    className: 'wrap-text w-5',
                     'render': () => {
                         return ``;
                     }
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text w-55',
+                    className: 'wrap-text w-50',
                     render: (data, type, row) => {
-                        return `<a class="text-primary link-primary underline_hover detail-email-button" href="" data-bs-toggle="modal" data-id="${row?.['id']}"
-                                    data-bs-target="#detail-send-email"><span>${row?.['subject']}</span>
+                        return `<a class="text-primary fw-bold detail-email-button" href="" data-bs-toggle="offcanvas" data-id="${row?.['id']}"
+                                    data-bs-target="#offcanvas-detail-send-email"><span>${row?.['subject']}</span>
                                 </a>`
                     }
                 },
                 {
                     data: 'opportunity',
-                    className: 'wrap-text text-center w-20',
+                    className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-blue badge-outline">${row?.['opportunity']?.['code']}</span>`
+                    }
+                },
+                {
+                    data: 'employee_inherit',
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<span class="text-primary">${row?.['employee_inherit']?.['full_name']}</span>`
                     }
                 },
                 {
@@ -203,30 +111,31 @@ $(document).on('click', '#table_opportunity_email_list .detail-email-button', fu
     let email_obj = EMAIL_LIST.filter(function(item) {
         return item.id === email_id;
     })[0]
-    $('#detail-email-subject-input').val(email_obj.subject);
 
-    if (email_obj.process){
-        const process$ = $('#detail-inp-process');
-        process$.find('option').remove();
-        process$.append(`<option selected>${email_obj.process.title}</option>`);
-        const link$ = process$.siblings('.link-to-process');
-        link$.attr('href', link$.data('href').replaceAll('__pk__', email_obj.process.id))
-    }
+    $('#detail-opp').val(email_obj?.['opportunity']?.['code'] + ' - ' + email_obj?.['opportunity']?.['title']);
+    $('#detail-process').val(email_obj?.['process']?.['title'] ? email_obj?.['process']?.['title'] : '--');
+    $('#detail-stage').val(email_obj?.['process_stage_app']?.['title'] ? email_obj?.['process_stage_app']?.['title'] : '--');
+    $('#detail-inheritor').val(email_obj?.['employee_inherit']?.['full_name']);
 
-    detail_email_Opp_slb.html('');
-    detail_email_Opp_slb.append(`<option selected>(${email_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${email_obj.opportunity.title}</option>`);
-
-    detail_email_to_slb.html('');
+    $('#detail-email-subject-input').text(email_obj.subject);
+    $('#detail-date-input').text(moment(email_obj.date_created.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'));
+    let detail_email_to_list = []
     for (let i = 0; i < email_obj.email_to_list.length; i++) {
-        detail_email_to_slb.append(`<option selected>${email_obj.email_to_list[i]}</option>`);
+        detail_email_to_list.push(`<a class="dropdown-item" href="#">${email_obj.email_to_list[i]}</a>`);
     }
-
-    detail_email_cc_slb.html('');
+    $('#detail-email-to').html(detail_email_to_list.join(', '));
+    let detail_email_cc_list = []
     for (let i = 0; i < email_obj.email_cc_list.length; i++) {
-        detail_email_cc_slb.append(`<option selected>${email_obj.email_cc_list[i]}</option>`);
+        detail_email_cc_list.push(`<a class="dropdown-item" href="#">${email_obj.email_cc_list[i]}</a>`);
     }
-
+    $('#detail-email-cc').html(detail_email_cc_list);
     $('#detail-email-content-area').html(email_obj.content)
+})
+
+$('#opportunity_id').on('change', function () {
+    let obj_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+    loadEmailToList(obj_selected?.['customer']?.['contact_mapped'])
+    loadEmailCcList(obj_selected?.['customer']?.['contact_mapped'])
 })
 
 ClassicEditor
@@ -238,7 +147,96 @@ ClassicEditor
 class EmailHandle {
     static load() {
         loadOpportunityEmailList();
-        loadEmailSaleCodeList();
+        const {
+            create_open,
+            opp_id,
+            opp_title,
+            opp_code,
+            process_id,
+            process_title,
+            process_stage_app_id,
+            process_stage_app_title,
+            inherit_id,
+            inherit_title,
+        } = $x.fn.getManyUrlParameters([
+            'create_open',
+            'opp_id', 'opp_title', 'opp_code',
+            'process_id', 'process_title',
+            'process_stage_app_id', 'process_stage_app_title',
+            'inherit_id', 'inherit_title',
+        ])
+        if (create_open) {
+            const data_inherit = [{
+                "id": inherit_id || '',
+                "full_name": inherit_title || '',
+                "selected": true,
+            }];
+            const data_opp = [{
+                "id": opp_id || '',
+                "title": opp_title || '',
+                "code": opp_code || '',
+                "selected": true,
+            }];
+            const data_process = [{
+                "id": process_id || '',
+                "title": process_title || '',
+                "selected": true,
+            }];
+            const data_process_stage_app = [{
+                "id": process_stage_app_id || '',
+                "title": process_stage_app_title || '',
+                'selected': true,
+            }];
+            new $x.cls.bastionField({
+                has_opp: true,
+                has_inherit: true,
+                has_process: true,
+                data_opp: data_opp,
+                data_inherit: data_inherit,
+                data_process: data_process,
+                data_process_stage_app: data_process_stage_app,
+                oppFlagData: {"disabled": true, "readonly": true},
+                processFlagData: {"disabled": true, "readonly": true},
+                processStageAppFlagData: {"disabled": true, "readonly": true},
+                inheritFlagData: {"disabled": true, "readonly": true},
+            }).init();
+
+            let dataParam = {'id': opp_id}
+            let opportunity_ajax = $.fn.callAjax2({
+                url: table_opportunity_email_list.attr('data-url-opp-list'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
+                        return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([opportunity_ajax]).then(
+                (results) => {
+                    let opportunity_data = results[0];
+                    if (opportunity_data) {
+                        loadMeetingAddress(opportunity_data?.['customer']?.['shipping_address'] ? opportunity_data?.['customer']?.['shipping_address'] : [])
+                        loadCustomerMember(opportunity_data?.['customer']?.['contact_mapped'] ? opportunity_data?.['customer']?.['contact_mapped'] : [])
+                        $('#offcanvas-meeting').offcanvas('show')
+                    }
+                })
+        }
+        else {
+            new $x.cls.bastionField({
+                has_opp: true,
+                has_inherit: true,
+                has_process: true,
+                inheritFlagData: {"disabled": false, "readonly": false},
+            }).init();
+        }
     }
     static combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));

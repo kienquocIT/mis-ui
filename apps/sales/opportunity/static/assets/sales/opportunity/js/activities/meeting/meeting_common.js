@@ -41,7 +41,7 @@ function loadOpportunityMeetingList() {
                         if (row?.['is_cancelled']) {
                             status = `<span class="badge badge-sm badge-soft-danger">${meeting_trans_script.attr('data-trans-activity-cancelled')}</i>`
                         }
-                        return `<a class="text-primary link-primary underline_hover offcanvas-meeting-button" href="" data-bs-toggle="offcanvas" data-id="${row?.['id']}" data-bs-target="#offcanvas-meeting-detail">
+                        return `<a class="text-primary fw-bold offcanvas-meeting-button" href="" data-bs-toggle="offcanvas" data-id="${row?.['id']}" data-bs-target="#offcanvas-meeting-detail">
                                     <span class="mr-1">${row?.['subject']}</span>${status}
                                 </a>`
                     }
@@ -173,13 +173,18 @@ $(document).on('click', '#table_opportunity_meeting_list .offcanvas-meeting-butt
     $('#detail-to').text(moment.utc(meeting_obj['meeting_to_time'], 'hh:mm:ss.SSS SSS').format('hh:mm A'));
     $('#detail-meeting-address').text(meeting_obj.meeting_address);
     $('#detail-meeting-room').text(meeting_obj.room_location);
+
+    const detail_emp_attended = $('#detail-emp-attended')
+    detail_emp_attended.html('')
     for (let i = 0; i < meeting_obj.employee_attended_list.length; i++) {
         let employee_attended_item = meeting_obj.employee_attended_list[i];
-        $('#detail-emp-attended').append(`<span class="badge badge-outline badge-soft-success mr-1">${employee_attended_item.fullname}</span>`);
+        detail_emp_attended.append(`<span class="badge badge-outline badge-soft-success mr-1">${employee_attended_item.fullname}</span>`);
     }
+    const detail_customer_mem = $('#detail-customer-member')
+    detail_customer_mem.html('')
     for (let i = 0; i < meeting_obj.customer_member_list.length; i++) {
         let customer_member_item = meeting_obj.customer_member_list[i];
-        $('#detail-customer-member').append(`<span class="badge badge-outline badge-soft-orange mr-1">${customer_member_item.fullname}</span>`);
+        detail_customer_mem.append(`<span class="badge badge-outline badge-soft-orange mr-1">${customer_member_item.fullname}</span>`);
     }
     $('#detail-result').text(meeting_obj.input_result);
     $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);

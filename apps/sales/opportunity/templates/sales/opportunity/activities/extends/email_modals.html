@@ -1,96 +1,108 @@
 {% load i18n %}
 
-<div class="modal fade" id="send-email" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{% trans 'Send Email' %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="modal-body" style="overflow: auto; height: 75vh">
-                <form data-url="{% url 'OpportunityEmailListAPI' %}"
-                      data-url-redirect="{% url 'OpportunityEmailList' %}"
-                      data-method="POST"
-                      id="form-new-email"
-                      method="post">
-                    {% csrf_token %}
-                    <div class="row">
-                        {% trans 'Select Sale Person' as inherit_title %}
-                        {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="email-to-select-box" class="form-label required">{% trans 'To' %}</label>
-                                <select disabled id="email-to-select-box" class="form-select" multiple="multiple"></select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="email-cc-select-box" class="form-label">{% trans 'Cc' %}</label>
-                                <select disabled id="email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="email-subject-input" class="form-label required">{% trans 'Subject' %}</label>
-                                <input id="email-subject-input" class="form-control required">
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="email-content-area" class="form-label">{% trans 'Content' %}</label>
-                                <textarea id="email-content-area"></textarea>
-                            </div>
-                        </div>
+<div class="offcanvas offcanvas-end" style="min-width: 75%" tabindex="-1" id="offcanvas-send-email" aria-labelledby="offcanvasTopLabel">
+	<div class="offcanvas-header">
+		<h5 id="offcanvasRightLabel">{% trans 'Send Email' %}</h5>
+		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+		<form data-url="{% url 'OpportunityEmailListAPI' %}"
+              data-url-redirect="{% url 'OpportunityEmailList' %}"
+              data-method="POST"
+              id="form-new-email"
+              method="post">
+            {% csrf_token %}
+            <div class="row">
+                {% trans 'Select Sale Person' as inherit_title %}
+                {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="email-to-select-box" class="form-label required">{% trans 'To' %}</label>
+                        <select disabled id="email-to-select-box" class="form-select" multiple="multiple"></select>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" form="form-new-email" id="btn-send-email">{% trans 'Send' %}</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="detail-send-email" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{% trans 'Detail Email' %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="modal-body" style="overflow: auto; height: 75vh">
-                <div class="row">
-                    {% trans 'Select Sale Person' as inherit_title %}
-                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="detail-email-to-select-box" class="form-label required">{% trans 'To' %}</label>
-                            <select disabled id="detail-email-to-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                        </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="email-cc-select-box" class="form-label">{% trans 'Cc' %}</label>
+                        <select disabled id="email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                     </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="detail-email-cc-select-box" class="form-label">{% trans 'Cc' %}</label>
-                            <select disabled id="detail-email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                        </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="email-subject-input" class="form-label required">{% trans 'Subject' %}</label>
+                        <input id="email-subject-input" class="form-control required">
                     </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="detail-email-subject-input" class="form-label required">{% trans 'Subject' %}</label>
-                            <input readonly id="detail-email-subject-input" class="form-control required">
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label class="form-label">{% trans 'Content' %}</label>
-                            <div id="detail-email-content-area"></div>
-                        </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="email-content-area" class="form-label">{% trans 'Content' %}</label>
+                        <textarea id="email-content-area"></textarea>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </form>
+        <button type="submit" class="btn btn-primary mt-3" form="form-new-email" id="btn-offcanvas-send-email">{% trans 'Send' %}</button>
+	</div>
 </div>
+
+<div class="offcanvas offcanvas-end" style="min-width: 40%" tabindex="-1" id="offcanvas-detail-send-email" aria-labelledby="offcanvasTopLabel">
+	<div class="offcanvas-header">
+		<h5 id="offcanvasRightLabel">{% trans 'Detail Email' %}</h5>
+		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="detail-opp" class="form-label required">{% trans 'Opportunity' %}</label>
+                    <input disabled readonly id="detail-opp" class="form-control">
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                    <label for="detail-process" class="form-label">{% trans 'Process' %}</label>
+                    <input disabled readonly id="detail-process" class="form-control">
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                    <label for="detail-stage" class="form-label">{% trans 'Stage' %}</label>
+                    <input disabled readonly id="detail-stage" class="form-control">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="detail-inheritor" class="form-label required">{% trans 'Inheritor' %}</label>
+                    <input disabled readonly id="detail-inheritor" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12">
+                <span id="detail-email-subject-input" class="fs-3 fw-bold text-muted"></span>
+                <span id="detail-date-input" class="ml-2 text-muted small"></span>
+            </div>
+            <div class="col-12 d-flex mt-3">
+                <div class="btn-group dropdown">
+                    <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% trans 'To' %}
+                    </button>
+                    <div class="dropdown-menu" id="detail-email-to"></div>
+                </div>
+                <div class="ml-3 btn-group dropdown">
+                    <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% trans 'Cc' %}
+                    </button>
+                    <div class="dropdown-menu" id="detail-email-cc"></div>
+                </div>
+            </div>
+            <div class="col-12 mt-3">
+                <div class="form-group">
+                    <span class="text-muted text-decoration-underline">{% trans 'Content' %}</span>
+                    <div id="detail-email-content-area" class="border rounded p-2"></div>
+                </div>
+            </div>
+        </div>
+	</div>
+</div>
+

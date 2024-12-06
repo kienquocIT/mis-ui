@@ -418,6 +418,7 @@ class LeaseOrderLoadDataHandle {
         $.fn.callAjax2({
                 'url': LeaseOrderDataTableHandle.productInitEle.attr('data-url'),
                 'method': LeaseOrderDataTableHandle.productInitEle.attr('data-method'),
+                'data': {'general_product_types_mapped__is_service': true},
                 'isDropdown': true,
             }
         ).then(
@@ -481,7 +482,7 @@ class LeaseOrderLoadDataHandle {
             data: dataDD,
         });
         // add css to select2_rendered
-        LeaseOrderLoadDataHandle.loadCssS2($ele, '260px');
+        LeaseOrderLoadDataHandle.loadCssS2($ele, '250px');
     };
 
     static loadBtnAddProductS2(row) {
@@ -716,6 +717,7 @@ class LeaseOrderLoadDataHandle {
         let order = (TotalOrder - TotalGroup) + 1;
         let dataAdd = {
             "order": order,
+            "product_data": data,
             "product_quantity": 0,
             "product_uom_code": "",
             "product_tax_title": "",
@@ -747,7 +749,7 @@ class LeaseOrderLoadDataHandle {
         LeaseOrderLoadDataHandle.loadInitS2($(eleUOMTime));
         LeaseOrderLoadDataHandle.loadInitS2($(eleTax));
         // add css to select2_rendered
-        LeaseOrderLoadDataHandle.loadCssS2($(eleProduct), '260px');
+        LeaseOrderLoadDataHandle.loadCssS2($(eleProduct), '250px');
 
         $(eleProduct).trigger('change');
         $(eleProduct).attr('data-product-id', data?.['id']);
@@ -1120,7 +1122,7 @@ class LeaseOrderLoadDataHandle {
                 $(row).find('td:eq(1)').attr('colspan', 2);
             }
             if (row.querySelector('.table-row-item')) {
-                LeaseOrderLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '260px');
+                LeaseOrderLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '250px');
                 LeaseOrderLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
@@ -1507,6 +1509,7 @@ class LeaseOrderLoadDataHandle {
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
+                            "product_data": dataProduct,
                             "product_quantity": valueQuantity,
                             "product_quantity_time": valueQuantityTime,
                             "product_uom_code": "",
@@ -1594,6 +1597,7 @@ class LeaseOrderLoadDataHandle {
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
+                            "product_data": dataProduct,
                             "product_quantity": valueQuantity,
                             "product_quantity_time": valueQuantityTime,
                             "product_uom_code": "",
@@ -2396,7 +2400,7 @@ class LeaseOrderLoadDataHandle {
                     if (table[0].id === "datable-quotation-create-product") {  // PRODUCT
                         if (row.querySelector('.table-row-item')) {
                             LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
-                            LeaseOrderLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '260px');
+                            LeaseOrderLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '250px');
                             LeaseOrderLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
                             for (let ele of table[0].querySelectorAll('.btn-select-price')) {
                                 ele.removeAttribute('disabled');
@@ -2643,7 +2647,8 @@ class LeaseOrderDataTableHandle {
                             itemType = 2  // shipping
                         }
                         if (itemType === 0) { // PRODUCT
-                            return `<div class="row table-row-item-area">
+                            return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${row?.['product_data']?.['title']}</textarea>
+                                    <div class="row table-row-item-area hidden">
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select 
                                                 class="form-select table-row-item zone-readonly"
@@ -2916,7 +2921,8 @@ class LeaseOrderDataTableHandle {
                             itemType = 1  // shipping
                         }
                         if (itemType === 0) {  // product
-                            return `<div class="row table-row-item-area">
+                            return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${row?.['product_data']?.['title']}</textarea>
+                                    <div class="row table-row-item-area hidden">
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select
                                                 class="form-select table-row-item disabled-custom-show zone-readonly"

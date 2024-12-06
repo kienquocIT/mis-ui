@@ -710,6 +710,7 @@ class QuotationLoadDataHandle {
         let order = (TotalOrder - TotalGroup) + 1;
         let dataAdd = {
             "order": order,
+            "product_data": data,
             "product_quantity": 0,
             "product_uom_code": "",
             "product_tax_title": "",
@@ -1491,6 +1492,7 @@ class QuotationLoadDataHandle {
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
+                            "product_data": dataProduct,
                             "product_quantity": valueQuantity,
                             "product_uom_code": "",
                             "product_tax_title": "",
@@ -1566,6 +1568,7 @@ class QuotationLoadDataHandle {
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
+                            "product_data": dataProduct,
                             "product_quantity": valueQuantity,
                             "product_uom_code": "",
                             "product_tax_title": "",
@@ -2603,7 +2606,8 @@ class QuotationDataTableHandle {
                             itemType = 2  // shipping
                         }
                         if (itemType === 0) { // PRODUCT
-                            return `<div class="row table-row-item-area">
+                            return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${row?.['product_data']?.['title']}</textarea>
+                                    <div class="row table-row-item-area hidden">
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select 
                                                 class="form-select table-row-item zone-readonly"
@@ -2885,7 +2889,8 @@ class QuotationDataTableHandle {
                             itemType = 1  // shipping
                         }
                         if (itemType === 0) {  // product
-                            return `<div class="row table-row-item-area">
+                            return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${row?.['product_data']?.['title']}</textarea>
+                                    <div class="row table-row-item-area hidden">
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select
                                                 class="form-select table-row-item disabled-custom-show zone-readonly"

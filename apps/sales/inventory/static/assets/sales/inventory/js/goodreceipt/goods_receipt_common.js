@@ -1902,20 +1902,21 @@ class GRDataTableHandle {
                     targets: 1,
                     width: '18%',
                     render: (data, type, row) => {
-                        return `<div class="row table-row-item-area">
-                                        <div class="col-12 col-md-12 col-lg-12">
-                                            <select
-                                                class="form-select table-row-item"
-                                                data-product-id="${row?.['product_data']?.['id']}"
-                                                data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
-                                                data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                                data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
-                                                data-keyResp="product_sale_list"
-                                                readonly
-                                            >
-                                            </select>
-                                        </div>
-                                    </div>`;
+                        return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" readonly>${row?.['product_data']?.['title']}</textarea>
+                                <div class="row table-row-item-area hidden">
+                                    <div class="col-12 col-md-12 col-lg-12">
+                                        <select
+                                            class="form-select table-row-item"
+                                            data-product-id="${row?.['product_data']?.['id']}"
+                                            data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
+                                            data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                            data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
+                                            data-keyResp="product_sale_list"
+                                            readonly
+                                        >
+                                        </select>
+                                    </div>
+                                </div>`;
                     },
                 },
                 {

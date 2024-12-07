@@ -186,13 +186,13 @@ $(document).on('click', '#table_opportunity_meeting_list .offcanvas-meeting-butt
     detail_emp_attended.html('')
     for (let i = 0; i < meeting_obj.employee_attended_list.length; i++) {
         let employee_attended_item = meeting_obj.employee_attended_list[i];
-        detail_emp_attended.append(`<span class="badge badge-outline badge-soft-success mr-1">${employee_attended_item.fullname}</span>`);
+        detail_emp_attended.append(`<span class="badge badge-outline badge-soft-success mr-1">${employee_attended_item.fullname} ${employee_attended_item?.['group']?.['title'] ? '- '  + employee_attended_item?.['group']?.['title'] : ''}</span>`);
     }
     const detail_customer_mem = $('#detail-customer-member')
     detail_customer_mem.html('')
     for (let i = 0; i < meeting_obj.customer_member_list.length; i++) {
         let customer_member_item = meeting_obj.customer_member_list[i];
-        detail_customer_mem.append(`<span class="badge badge-outline badge-soft-orange mr-1">${customer_member_item.fullname}</span>`);
+        detail_customer_mem.append(`<span class="badge badge-outline badge-soft-orange mr-1">${customer_member_item.fullname} ${customer_member_item?.['job_title'] ? '- ' + customer_member_item?.['job_title'] : ''}</span>`);
     }
     $('#detail-result').text(meeting_obj.input_result);
     $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);

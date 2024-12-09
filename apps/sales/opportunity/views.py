@@ -371,14 +371,8 @@ class OpportunityEmailList(View):
         breadcrumb='EMAIL_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
         result = {
-            'employee_current_id': request.user.employee_current_data.get('id', None),
-            'account_list': resp1.result,
-            'contact_list': resp2.result,
-            'opportunity_list': resp3.result,
+            'list_from_app': 'opportunity.opportunityemail.create',
             'app_id': 'dec012bf-b931-48ba-a746-38b7fd7ca73b',
         }
         return result, status.HTTP_200_OK

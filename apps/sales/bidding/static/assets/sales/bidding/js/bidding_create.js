@@ -50,10 +50,6 @@ $(document).ready(function () {
             let customer_json= urlParams.get('customer')
             let customer = customer_json ? JSON.parse(decodeURIComponent(customer_json)) : null
             new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
-                has_prj: true,
                 data_opp: $x.fn.checkUUID4(opp_id) ? [
                     {
                         "id": opp_id,
@@ -84,6 +80,7 @@ $(document).ready(function () {
                         "selected": true,
                     }
                 ] : [],
+                "inheritFlagData": {"disabled": false, "readonly": false},
             }).init();
             resolve()
         }).then(()=>{

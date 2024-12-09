@@ -275,7 +275,7 @@ class GetQRCodeSerialInfoAPI(APIView):
         return {'qr_path_sn': [{'path': path.replace('apps/sales/report', '')}]}, status.HTTP_200_OK
 
 
-class ReportInventoryChatBotAPI(APIView):
+class ReportInventoryAskAPI(APIView):
 
     @mask_view(
         auth_require=True,

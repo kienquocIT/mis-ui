@@ -1580,7 +1580,7 @@ $(document).ready(function () {
             dataParam['contexts'] = contexts
             dataParam['question'] = message
             let chatbot_response_ajax = $.fn.callAjax2({
-                url: $('#url-script').attr('data-url-chatbot'),
+                url: $('#url-script').attr('data-url-ask'),
                 data: dataParam,
                 method: 'GET'
             }).then(

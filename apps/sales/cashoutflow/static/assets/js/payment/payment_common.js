@@ -1532,6 +1532,7 @@ class PaymentHandle {
                 'process_stage_app_id', 'process_stage_app_title',
                 'inherit_id', 'inherit_title',
             ])
+            const group$ = $('#bastion-space')
             if (create_open) {
                 const data_inherit = [{
                     "id": inherit_id || '',
@@ -1555,17 +1556,18 @@ class PaymentHandle {
                     'selected': true,
                 }];
                 new $x.cls.bastionField({
-                    has_opp: true,
-                    has_inherit: true,
-                    has_process: true,
+                    list_from_app: "cashoutflow.payment.create",
+                    app_id: "1010563f-7c94-42f9-ba99-63d5d26a1aca",
+                    mainDiv: group$,
+                    oppEle: group$.find('select[name=opportunity_id]'),
+                    prjEle: group$.find('select[name=project_id]'),
+                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                    processEle: group$.find('select[name=process]'),
+                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
                     data_opp: data_opp,
                     data_inherit: data_inherit,
                     data_process: data_process,
                     data_process_stage_app: data_process_stage_app,
-                    oppFlagData: {"disabled": true, "readonly": true},
-                    processFlagData: {"disabled": true, "readonly": true},
-                    processStageAppFlagData: {"disabled": true, "readonly": true},
-                    inheritFlagData: {"disabled": true, "readonly": true},
                 }).init();
 
                 PaymentHandle.LoadPageActionWithParams(opp_id)
@@ -1578,21 +1580,29 @@ class PaymentHandle {
                     "selected": true,
                 }];
                 new $x.cls.bastionField({
-                    has_opp: true,
-                    has_inherit: true,
-                    has_process: true,
+                    list_from_app: "cashoutflow.payment.create",
+                    app_id: "1010563f-7c94-42f9-ba99-63d5d26a1aca",
+                    mainDiv: group$,
+                    oppEle: group$.find('select[name=opportunity_id]'),
+                    prjEle: group$.find('select[name=project_id]'),
+                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                    processEle: group$.find('select[name=process]'),
+                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
                     data_opp: data_opp,
-                    inheritFlagData: {"disabled": false, "readonly": false},
                 }).init();
 
                 PaymentHandle.LoadPageActionWithParams(opp_id)
             }
             else {
                 new $x.cls.bastionField({
-                    has_opp: true,
-                    has_inherit: true,
-                    has_process: true,
-                    inheritFlagData: {"disabled": false, "readonly": false},
+                    list_from_app: "cashoutflow.payment.create",
+                    app_id: "1010563f-7c94-42f9-ba99-63d5d26a1aca",
+                    mainDiv: group$,
+                    oppEle: group$.find('select[name=opportunity_id]'),
+                    prjEle: group$.find('select[name=project_id]'),
+                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                    processEle: group$.find('select[name=process]'),
+                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
                 }).init();
             }
         }

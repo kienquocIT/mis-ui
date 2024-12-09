@@ -71,14 +71,11 @@ $(document).ready(function () {
 
     let list_stage_condition = []
     let config_is_input_rate = null;
-    $x.fn.showLoadingPage()
     Promise.all([prm_detail, prm_config, prm_lead]).then(
         (results) => {
-            $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
 
             if (opportunity_detail_data) {
-
                 const target$ = $('#process-runtime-detail');
                 $('#btn-collapse-process-show').on('click', function (){
                     if ($(this).attr('data-loaded') !== '1'){
@@ -124,6 +121,7 @@ $(document).ready(function () {
                 $('#estimated-gross-profit-value').attr('value', opportunity_detail_data?.['estimated_gross_profit_value'])
 
                 async function loadDetail(opportunity_detail) {
+                    $x.fn.showLoadingPage()
                     $x.fn.renderCodeBreadcrumb(opportunity_detail);
 
                     let stage_obj = await OpportunityLoadDetail.loadDetailCommon(opportunity_detail);
@@ -243,6 +241,7 @@ $(document).ready(function () {
                     $('.tab-content select').prop('disabled', true)
                     $('#check-lost-reason').prop('disabled', true)
                     $('.btn-go-to-stage').addClass('disabled')
+                    $x.fn.hideLoadingPage();
                 });
 
                 // even in timeline table

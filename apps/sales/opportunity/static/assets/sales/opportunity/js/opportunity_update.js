@@ -85,7 +85,6 @@ $(document).ready(function () {
 
     let list_stage_condition = []
     let config_is_input_rate = null;
-    $x.fn.showLoadingPage()
     Promise.all([prm_detail, prm_config, prm_lead]).then(
         (results) => {
             $x.fn.hideLoadingPage();
@@ -137,6 +136,7 @@ $(document).ready(function () {
                 $('#estimated-gross-profit-value').attr('value', opportunity_detail_data?.['estimated_gross_profit_value'])
 
                 async function loadDetail(opportunity_detail) {
+                    $x.fn.showLoadingPage()
                     $x.fn.renderCodeBreadcrumb(opportunity_detail);
 
                     let stage_obj = await OpportunityLoadDetail.loadDetailCommon(opportunity_detail);
@@ -214,6 +214,7 @@ $(document).ready(function () {
                     // store data detail
                     $('#data-detail').text(JSON.stringify(opportunity_detail));
                     $.fn.initMaskMoney2();
+                    $x.fn.hideLoadingPage()
                 }
 
                 loadDetail(opportunity_detail_data).then(function () {

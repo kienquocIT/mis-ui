@@ -9843,3 +9843,7 @@ msgstr "Danh sách lối tắt"
 #
 msgid "Opportunity members"
 msgstr "Thành viên CHKD"
+
+#
+msgid "Opportunity detail"
+msgstr "Chi tiết CHKD"

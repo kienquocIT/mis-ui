@@ -168,7 +168,8 @@ class OpportunityLoadDetail {
     static input_prd_total_Ele= $('#input-product-total');
     static estimated_gross_profit_percent_Ele = $('#estimated-gross-profit-percent')
 
-    static loadDetailTableProduct(table, data) {
+    static loadDetailTableProduct(data, is_detail=false) {
+        const table = OpportunityLoadDetail.productTableEle;
         data.opportunity_product_datas.map(function (item) {
             table.DataTable().row.add(item).draw();
             let tr_current_ele = table.find('tbody tr').last();
@@ -182,6 +183,11 @@ class OpportunityLoadDetail {
             OpportunityLoadDropdown.loadUoM(tr_current_ele.find('.box-select-uom'), item.uom);
             OpportunityLoadDropdown.loadTax(tr_current_ele.find('.box-select-tax'), item.tax)
         })
+        table.find('tbody input').prop('disabled', is_detail).prop('readonly', is_detail)
+        table.find('tbody select').prop('disabled', is_detail)
+        table.find('tbody button').prop('disabled', is_detail)
+        table.find('tbody a').prop('disabled', is_detail)
+        $('#estimated-gross-profit-percent').prop('disabled', is_detail).prop('readonly', is_detail)
     }
 
     static addRowSelectProduct() {
@@ -239,12 +245,17 @@ class OpportunityLoadDetail {
         $.fn.initMaskMoney2();
     }
 
-    static loadDetailTableCompetitor(table, data) {
+    static loadDetailTableCompetitor(data, is_detail=false) {
+        const table = OpportunityLoadDetail.competitorTableEle;
         data.opportunity_competitors_datas.map(function (item) {
             table.DataTable().row.add(item).draw();
             let tr_current_ele = table.find('tbody tr').last();
             OpportunityLoadDropdown.loadCompetitor(tr_current_ele.find('.box-select-competitor'), item.competitor, OpportunityLoadDropdown.customerSelectEle.val());
         })
+        table.find('tbody input').prop('disabled', is_detail).prop('readonly', is_detail)
+        table.find('tbody select').prop('disabled', is_detail)
+        table.find('tbody button').prop('disabled', is_detail)
+        table.find('tbody a').prop('disabled', is_detail)
     }
 
     static addRowCompetitor() {
@@ -260,7 +271,8 @@ class OpportunityLoadDetail {
         OpportunityLoadDropdown.loadCompetitor(tr_current_ele.find('.box-select-competitor'), {}, OpportunityLoadDropdown.customerSelectEle.val());
     }
 
-    static loadDetailTableContactRole(table, data) {
+    static loadDetailTableContactRole(data, is_detail=false) {
+        const table = OpportunityLoadDetail.contactRoleTableEle;
         data.opportunity_contact_role_datas.map(function (item) {
             table.DataTable().row.add(item).draw();
             let tr_current_ele = table.find('tbody tr').last();
@@ -268,6 +280,10 @@ class OpportunityLoadDetail {
             OpportunityLoadDetail.appendTypeCustomer(item.type_customer, tr_current_ele.find('.box-select-type-customer'));
             OpportunityLoadDetail.appendRole(item.role, tr_current_ele.find('.box-select-role'));
         })
+        table.find('tbody input').prop('disabled', is_detail).prop('readonly', is_detail)
+        table.find('tbody select').prop('disabled', is_detail)
+        table.find('tbody button').prop('disabled', is_detail)
+        table.find('tbody a').prop('disabled', is_detail)
     }
 
     static addRowContactRole() {
@@ -1044,7 +1060,7 @@ class OpportunityActivity {
         $table.DataTableDefault({
             rowIdx: true,
             scrollX: '100vh',
-            scrollY: '50vh',
+            scrollY: '40vh',
             scrollCollapse: true,
             ajax: {
                 url: $table.attr('data-url-logs_list'),
@@ -1206,6 +1222,7 @@ class OpportunityActivity {
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(row?.['date_created'], {
                             'outputFormat': 'DD/MM/YYYY',
+                            'in_row': true
                         })
                     }
                 }
@@ -1489,7 +1506,7 @@ function loadDtbProduct(data) {
     if (!$.fn.DataTable.isDataTable('#table-products')) {
         let dtb = OpportunityLoadDetail.productTableEle;
         dtb.DataTableDefault({
-            styleDom: 'hide-foot',
+            dom: 't',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
@@ -1574,12 +1591,12 @@ function loadDtbCompetitor(data) {
     if (!$.fn.DataTable.isDataTable('#table-competitors')) {
         let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
-            styleDom: 'hide-foot',
+            dom: 't',
             rowIdx: true,
             data: data,
             paging: false,
             scrollX: '100vh',
-            scrollY: '25vh',
+            scrollY: '40vh',
             scrollCollapse: true,
             columns: [
                 {
@@ -1638,7 +1655,7 @@ function loadDtbContactRole(data) {
     if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
         let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
-            styleDom: 'hide-foot',
+            dom: 't',
             rowIdx: true,
             data: data,
             paging: false,
@@ -2150,16 +2167,28 @@ OpportunityLoadDetail.estimated_gross_profit_percent_Ele.on('input', function ()
 })
 
 /////////////////////////// haind
+
 class OpportunityLoadPage {
-    static loadLeadList(datasource) {
+    static loadLeadList() {
         if (!$.fn.DataTable.isDataTable('#lead-list-table')) {
             let dtb = $('#lead-list-table');
             dtb.DataTableDefault({
-                styleDom: 'hide-foot',
+                useDataServer: true,
                 rowIdx: true,
                 scrollX: '100vh',
-                scrollY: '25vh',
-                data: datasource,
+                scrollY: '40vh',
+                scrollCollapse: true,
+                ajax: {
+                    url: dtb.attr('data-url') + `?opp_id=${$.fn.getPkDetail()}`,
+                    type: 'GET',
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('lead_list')) {
+                            return resp.data['lead_list'] ? resp.data['lead_list'] : [];
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
                 columns: [
                     {
                         'render': () => {

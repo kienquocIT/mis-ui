@@ -9,7 +9,7 @@
 </ul>
 <div class="tab-content">
     <div class="tab-pane fade show active" id="tab_general">
-        <div class="row" style="overflow-y: auto; max-height: 63vh">
+        <div class="row" style="overflow-y: auto; max-height: 59vh">
             <div class="col-12">
                 <div class="form-group">
                     <label for="rangeInput">{% trans "Win Rate" %}</label>
@@ -107,6 +107,12 @@
                 <div class="form-group">
                     <label for="input-decision-maker" class="form-label">{% trans "Decision Maker" %}</label>
                     <input class="form-control" type="text" id="input-decision-maker" readonly data-id="">
+                </div>
+            </div>
+            <div class="col-12 mt-3">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input is-invalid" id="check-lost-reason">
+                    <label class="form-check-label text-danger fw-bold" for="check-lost-reason">{% trans "Lost by other reason" %}</label>
                 </div>
             </div>
         </div>

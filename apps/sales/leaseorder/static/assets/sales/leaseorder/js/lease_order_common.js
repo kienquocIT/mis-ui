@@ -2847,7 +2847,7 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '12%',
+                    width: '11%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3614,11 +3614,6 @@ class LeaseOrderDataTableHandle {
             paging: false,
             info: false,
             columnDefs: [],
-            drawCallback: function () {
-                $.fn.initMaskMoney2();
-            },
-            rowCallback: function (row, data) {
-            },
             columns: [
                 {
                     targets: 0,
@@ -3664,6 +3659,10 @@ class LeaseOrderDataTableHandle {
                     }
                 }
             ],
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                LeaseOrderDataTableHandle.dtbIndicatorHDCustom();
+            },
         });
         if ($tables.hasClass('dataTable')) {
             $tables.DataTable().clear().draw();
@@ -3859,6 +3858,39 @@ class LeaseOrderDataTableHandle {
             },
         });
     };
+
+    // Custom dtb
+    static dtbIndicatorHDCustom() {
+        let $table = $('#datable-quotation-create-indicator');
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-refresh-indicator').length) {
+                let html1 = `<button type="button" class="btn btn-outline-secondary btn-square" id="btn-refresh-indicator" data-zone="sale_order_indicators_data"><i class="fas fa-redo-alt"></i></button>`;
+                let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Refresh">
+                                    ${html1}
+                                </span>
+                            </div>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-refresh-indicator').on('click', function () {
+                    document.getElementById('quotation-indicator-data').value = "";
+                    LeaseOrderIndicatorHandle.loadIndicator();
+                    $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-refreshed')}, 'success');
+                });
+            }
+        }
+    };
+
+
 }
 
 // Calculate
@@ -4550,15 +4582,7 @@ class LeaseOrderIndicatorHandle {
                 'indicator_rate': rateValue
             }
         }
-        // let $table = $('#datable-quotation-create-indicator');
-        // $table.DataTable().clear().draw();
-        // $table.DataTable().rows.add(result_list).draw();
-
-        if (!formSubmit.hasClass('sale-order')) {
-            LeaseOrderDataTableHandle.dataTableQuotationIndicator(result_list);
-        } else {
-            LeaseOrderDataTableHandle.dataTableSaleOrderIndicator(result_list);
-        }
+        LeaseOrderDataTableHandle.dataTableSaleOrderIndicator(result_list);
     };
 
     static evaluateFormula(formulaText) {

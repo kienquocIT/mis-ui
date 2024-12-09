@@ -189,11 +189,11 @@ class ContractLoadDataHandle {
                     }
                     if (mediaBody.querySelector('.custom-file-data')) {
                         $(mediaBody.querySelector('.custom-file-data')).empty();
-                        $(mediaBody.querySelector('.custom-file-data')).append(`<div class="mt-2"><span class="file-date-created mr-1">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="badge badge-soft-${badge} file-is-current">${txt}</span></div>
+                        $(mediaBody.querySelector('.custom-file-data')).append(`<div class="mt-2"><span class="file-date-created mr-2">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="text-${badge} file-is-current">${txt}</span></div>
                                                                         ${btn}`);
                     } else {
                         $(mediaBody).append(`<div class="d-flex custom-file-data">
-                                        <div class="mt-2"><span class="file-date-created mr-1">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="badge badge-soft-${badge} file-is-current">${txt}</span></div>
+                                        <div class="mt-2"><span class="file-date-created mr-2">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="text-${badge} file-is-current">${txt}</span></div>
                                         ${btn}
                                     </div>`);
                     }

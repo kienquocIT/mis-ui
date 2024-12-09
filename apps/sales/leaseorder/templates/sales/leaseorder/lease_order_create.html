@@ -7,7 +7,7 @@
 {% endblock %}
 {% block pageAction %}
 {#    {% include 'extends/systems/page_actions.html' with is_save=True is_save_draft=True save_frm='frm_quotation_create' %}#}
-    <button class="btn btn-outline-primary hidden" type="submit" form="frm_quotation_create">
+    <button class="btn btn-outline-primary" type="submit" form="frm_quotation_create">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -76,9 +76,31 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
-                            <div class="form-group">
-                                <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
-                                <input type="text" class="form-control form-control-line mt-1" id="quotation-create-date-created" readonly>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="lease_from">{% trans 'Lease from' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" name="lease_from" id="lease_from"
+                                                   class="form-control date-picker" autocomplete="off" required>
+                                            <div class="input-suffix">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="lease_to">{% trans 'Lease to' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" name="lease_to" id="lease_to"
+                                                   class="form-control date-picker" autocomplete="off" required>
+                                            <div class="input-suffix">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
@@ -611,19 +633,6 @@
             </div>
             <div class="tab-pane fade" id="tab_block_2">
                 <div class="row">
-                    <div class="row">
-                        <div class="col-2">
-                            <button
-                                    type="button"
-                                    class="btn btn-outline-primary"
-                                    id="btn-refresh-quotation-indicator"
-                                    data-zone="sale_order_indicators_data"
-                            >
-                            <span><span class="icon"><span class="feather-icon"><i class="fas fa-redo-alt"></i></span></span><span>{% trans 'Refresh' %}</span></span>
-                            </button>
-                        </div>
-                        <div class="col-10"></div>
-                    </div>
                     <table
                             id="datable-quotation-create-indicator"
                             class="table nowrap w-100 mb-5 sale-order"

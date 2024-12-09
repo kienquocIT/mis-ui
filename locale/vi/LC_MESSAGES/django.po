@@ -9835,3 +9835,7 @@ msgstr "Xem chi tiết Tiến trình tại đây"
 #
 msgid "Please click on the button to select"
 msgstr "Click vào nút ở cuối để chọn"
+
+#
+msgid "Shortcut menu"
+msgstr "Danh sách lối tắt"

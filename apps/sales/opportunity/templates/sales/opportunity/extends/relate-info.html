@@ -17,15 +17,17 @@
         <div class="row">
             <div class="col-12">
                 <div class="dropdown">
-                    <button type="button" id="btn-create-related-feature" class="btn btn-light dropdown-toggle btn-xs w-40 w-lg-20 w-md-20" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
-                        {% trans 'Related features' %}
+                    <button type="button" id="btn-create-related-feature" class="btn btn-outline-light dropdown-toggle btn-xs w-40 w-lg-20 w-md-20" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
+                        {% trans 'Shortcut menu' %}
                     </button>
                     <div class="dropdown-menu" style="min-width: max-content" id="dropdown-menu-relate-app">
                         <h6 class="dropdown-header">{% trans 'Sale Activities' %}</h6>
-                        <a class="dropdown-item" id="goto-call-log" data-url="{% url 'OpportunityCallLogList' %}" href="#" target="_blank"><i class="fas fa-phone-volume"></i>  {% trans 'Log a call' %}</a>
-                        <a class="dropdown-item" id="goto-email" data-url="{% url 'OpportunityEmailList' %}" href="#" target="_blank"><i class="bi bi-envelope-fill"></i>  {% trans 'Send email' %}</a>
-                        <a class="dropdown-item" id="goto-meeting" data-url="{% url 'OpportunityMeetingList' %}" href="#" target="_blank"><i class="bi bi-person-workspace"></i>  {% trans 'Meeting' %}</a>
-                        <a data-drawer-target="#drawer_task_create" data-drawer-active="false" class="dropdown-item ntt-drawer-toggle-link current-create-task" href="#"><i class="fa-solid fa-list-check"></i>  {% trans 'Task' %}</a>
+                        <div class="d-flex">
+                            <a class="dropdown-item text-primary" id="goto-call-log" data-url="{% url 'OpportunityCallLogList' %}" href="#" target="_blank"><i class="fas fa-phone-volume"></i>  <span class="small">{% trans 'Log a call' %}</span></a>
+                            <a class="dropdown-item text-primary" id="goto-email" data-url="{% url 'OpportunityEmailList' %}" href="#" target="_blank"><i class="bi bi-envelope-fill"></i>  <span class="small">{% trans 'Send email' %}</span></a>
+                            <a class="dropdown-item text-primary" id="goto-meeting" data-url="{% url 'OpportunityMeetingList' %}" href="#" target="_blank"><i class="bi bi-person-workspace"></i>  <span class="small">{% trans 'Meeting' %}</span></a>
+                            <a data-drawer-target="#drawer_task_create" data-drawer-active="false" class="dropdown-item text-primary ntt-drawer-toggle-link current-create-task" href="#"><i class="fa-solid fa-list-check"></i>  <span class="small">{% trans 'Task' %}</span></a>
+                        </div>
                         <div class="dropdown-divider"></div>
                         <h6 class="dropdown-header">{% trans 'Related features' %}</h6>
                         <div class="row">

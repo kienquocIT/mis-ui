@@ -3409,11 +3409,11 @@ msgstr "Xóa tất cả thông báo đã xem"
 
 #
 msgid "Win Rate"
-msgstr "Tỷ lệ thắng"
+msgstr "Xác suất thắng"
 
 #
 msgid "Manually input rate"
-msgstr "Tự nhập tỷ lệ"
+msgstr "Tự nhập xác suất"
 
 #
 msgid "agency role"
@@ -5489,8 +5489,8 @@ msgid "Meeting"
 msgstr "Cuộc họp"
 
 #
-msgid "Activity logs"
-msgstr "Hoạt động ghi lại"
+msgid "Sale activities logged"
+msgstr "Nhật ký hoạt động bán hàng"
 
 #
 msgid "Current action"

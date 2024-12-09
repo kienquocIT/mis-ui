@@ -1,4 +1,5 @@
 let [urlEle, transEle] = [$("#url-factory"), $("#trans-factory")];
+let $dataDetail = $('#data-detail');
 
 class OpportunityLoadDropdown {
     static productCategorySelectEle = $('#select-box-product-category');
@@ -1220,7 +1221,6 @@ class OpportunityActivity {
 
     static loadOpenRelateApp(ele, $tableTimeLine) {
         // check permission before redirect
-        let $dataDetail = $('#data-detail');
         let transEle = $('#trans-factory');
         if ($(ele).attr('data-label') && $dataDetail.text()) {
             let detail = JSON.parse($dataDetail.text());
@@ -2341,25 +2341,16 @@ class OpportunityLoadPage {
                 if (results_perm_app[0]) {
                     let create_quotation_sc = $('#create-quotation-shortcut')
                     create_quotation_sc.removeClass('disabled');
-                    let param_url = this.push_param_to_url(create_quotation_sc.attr('data-url'), {
-                        'opp_id': results_perm_app[0]?.['id']
-                    })
-                    create_quotation_sc.attr('href', param_url)
-                    create_quotation_sc.removeAttr('href');  // need check other rules before redirect
                 }
                 if (results_perm_app[1]) {
                     let create_so_sc = $('#create-sale-order-shortcut')
                     create_so_sc.removeClass('disabled');
-                    let param_url = this.push_param_to_url(create_so_sc.attr('data-url'), {
-                        'opp_id': results_perm_app[1]?.['id']
-                    })
-                    create_so_sc.attr('href', param_url)
-                    create_so_sc.removeAttr('href');  // need check other rules before redirect
                 }
                 if (results_perm_app[2]) {
                     let create_ap_sc = $('#create-advance-payment-shortcut')
                     create_ap_sc.removeClass('disabled');
                     let param_url = this.push_param_to_url(create_ap_sc.attr('data-url'), {
+                        'from_opp': true,
                         'opp_id': results_perm_app[2]?.['id'],
                         'opp_code': results_perm_app[2]?.['code'],
                         'opp_title': results_perm_app[2]?.['title'],
@@ -2372,6 +2363,7 @@ class OpportunityLoadPage {
                     let create_payment_sc = $('#create-payment-shortcut')
                     create_payment_sc.removeClass('disabled');
                     let param_url = this.push_param_to_url(create_payment_sc.attr('data-url'), {
+                        'from_opp': true,
                         'opp_id': results_perm_app[3]?.['id'],
                         'opp_code': results_perm_app[3]?.['code'],
                         'opp_title': results_perm_app[3]?.['title'],
@@ -2384,6 +2376,7 @@ class OpportunityLoadPage {
                     let create_bom_sc = $('#create-project-bom-shortcut')
                     create_bom_sc.removeClass('disabled');
                     let param_url = this.push_param_to_url(create_bom_sc.attr('data-url'), {
+                        'from_opp': true,
                         'opp_id': results_perm_app[4]?.['id'],
                         'opp_code': results_perm_app[4]?.['code'],
                         'opp_title': results_perm_app[4]?.['title'],
@@ -2406,6 +2399,40 @@ class OpportunityLoadPage {
                 }
                 $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
             })
+
+        let data_opp_detail = $dataDetail.text() ? JSON.parse($dataDetail.text()) : null
+        if (data_opp_detail) {
+            let goto_call_log = $('#goto-call-log')
+            let call_log_param_url = this.push_param_to_url(goto_call_log.attr('data-url'), {
+                'from_opp': true,
+                'opp_id': data_opp_detail?.['id'],
+                'opp_title': data_opp_detail?.['title'],
+                'opp_code': data_opp_detail?.['code'],
+                'inherit_id': data_opp_detail?.['sale_person']?.['id'],
+                'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
+            })
+            goto_call_log.attr('href', call_log_param_url)
+            let goto_email = $('#goto-email')
+            let email_param_url = this.push_param_to_url(goto_email.attr('data-url'), {
+                'from_opp': true,
+                'opp_id': data_opp_detail?.['id'],
+                'opp_title': data_opp_detail?.['title'],
+                'opp_code': data_opp_detail?.['code'],
+                'inherit_id': data_opp_detail?.['sale_person']?.['id'],
+                'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
+            })
+            goto_email.attr('href', email_param_url)
+            let goto_meeting = $('#goto-meeting')
+            let meeting_param_url = this.push_param_to_url(goto_meeting.attr('data-url'), {
+                'from_opp': true,
+                'opp_id': data_opp_detail?.['id'],
+                'opp_title': data_opp_detail?.['title'],
+                'opp_code': data_opp_detail?.['code'],
+                'inherit_id': data_opp_detail?.['sale_person']?.['id'],
+                'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
+            })
+            goto_meeting.attr('href', meeting_param_url)
+        }
     }
 
     static getDataMemberAddNew() {

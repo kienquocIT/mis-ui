@@ -19,7 +19,7 @@ msgstr ""
 
 #
 msgid "Call Log"
-msgstr "Cuộc gọi ghi lại"
+msgstr "Ghi nhận cuộc gọi"
 
 #
 msgid "Contents"

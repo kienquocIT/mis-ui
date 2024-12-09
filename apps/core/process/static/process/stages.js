@@ -973,8 +973,8 @@ class ProcessStages {
                     'inherit_id': $x.fn.getEmployeeCurrent('id'),
                     'inherit_title': $x.fn.getEmployeeCurrent('full_name'),
                 } : {}),
-                'stages_app_id': appData?.['id'] || '',
-                'stages_app_title': appData?.['title'] || '',
+                // 'stages_app_id': appData?.['id'] || '',
+                // 'stages_app_title': appData?.['title'] || '',
             });
             return urlResolved + '?' + paramData;
         }

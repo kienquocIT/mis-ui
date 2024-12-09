@@ -88,12 +88,14 @@ function loadCustomerList(data) {
 }
 
 function loadContactList(contact_list) {
-    $('#contact-select-box option').remove();
-    contact_slb.attr('disabled', false);
-    contact_slb.initSelect2();
-    contact_slb.append(`<option></option>`)
-    for (let i = 0; i < contact_list.length; i++) {
-        contact_slb.append(`<option value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+    if (contact_list) {
+        $('#contact-select-box option').remove();
+        contact_slb.attr('disabled', false);
+        contact_slb.initSelect2();
+        contact_slb.append(`<option></option>`)
+        for (let i = 0; i < contact_list.length; i++) {
+            contact_slb.append(`<option value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+        }
     }
 }
 
@@ -171,16 +173,46 @@ $(document).on('click', '#cancel-activity', function () {
 $('#opportunity_id').on('change', function () {
     let obj_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
     if (obj_selected) {
-        loadCustomerList(obj_selected?.['customer'])
-        loadContactList(obj_selected?.['customer']?.['contact_mapped'])
+        let customer_list = obj_selected?.['customer']
+        loadCustomerList(customer_list ? customer_list : [])
+        loadContactList(customer_list?.['contact_mapped'] ? customer_list?.['contact_mapped'] : [])
     }
 })
 
 class CallLogHandle {
+    static LoadPageActionWithParams(opp_id) {
+        let dataParam = {'id': opp_id}
+        let opportunity_ajax = $.fn.callAjax2({
+            url: table_opportunity_call_log_list.attr('data-url-opp-list'),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
+                    return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([opportunity_ajax]).then(
+            (results) => {
+                if (results[0]) {
+                    $('#opportunity_id').trigger('change')
+                    loadCustomerList(results[0]?.['customer'])
+                    loadContactList(results[0]?.['customer']?.['contact_mapped'])
+                    $('#offcanvas-call-log').offcanvas('show')
+                }
+            })
+    }
     static load() {
         loadOpportunityCallLogList();
         const {
-            create_open,
+            create_open, from_opp,
             opp_id,
             opp_title,
             opp_code,
@@ -191,7 +223,7 @@ class CallLogHandle {
             inherit_id,
             inherit_title,
         } = $x.fn.getManyUrlParameters([
-            'create_open',
+            'create_open', 'from_opp',
             'opp_id', 'opp_title', 'opp_code',
             'process_id', 'process_title',
             'process_stage_app_id', 'process_stage_app_title',
@@ -233,33 +265,24 @@ class CallLogHandle {
                 inheritFlagData: {"disabled": true, "readonly": true},
             }).init();
 
-            let dataParam = {'id': opp_id}
-            let opportunity_ajax = $.fn.callAjax2({
-                url: table_opportunity_call_log_list.attr('data-url-opp-list'),
-                data: dataParam,
-                method: 'GET'
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
-                        return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
-                    }
-                    return {};
-                },
-                (errs) => {
-                    console.log(errs);
-                }
-            )
+            CallLogHandle.LoadPageActionWithParams(opp_id)
+        }
+        else if (from_opp) {
+            const data_opp = [{
+                "id": opp_id || '',
+                "title": opp_title || '',
+                "code": opp_code || '',
+                "selected": true,
+            }];
+            new $x.cls.bastionField({
+                has_opp: true,
+                has_inherit: true,
+                has_process: true,
+                data_opp: data_opp,
+                inheritFlagData: {"disabled": false, "readonly": false},
+            }).init();
 
-            Promise.all([opportunity_ajax]).then(
-                (results) => {
-                    let opportunity_data = results[0];
-                    if (opportunity_data) {
-                        loadCustomerList(opportunity_data?.['customer'])
-                        loadContactList(opportunity_data?.['customer']?.['contact_mapped'])
-                        $('#offcanvas-call-log').offcanvas('show')
-                    }
-                })
+            CallLogHandle.LoadPageActionWithParams(opp_id)
         }
         else {
             new $x.cls.bastionField({
@@ -271,7 +294,6 @@ class CallLogHandle {
             }).init();
         }
     }
-
     static combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 

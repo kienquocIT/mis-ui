@@ -35,13 +35,6 @@ function loadOpportunityCallLogList() {
                     }
                 },
                 {
-                    data: 'contact',
-                    className: 'wrap-text w-15',
-                    render: (data, type, row) => {
-                        return `<a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="link-secondary underline_hover">${row?.['contact']?.['fullname']}</span></a>`
-                    }
-                },
-                {
                     data: 'subject',
                     className: 'wrap-text w-30',
                     render: (data, type, row) => {
@@ -63,9 +56,9 @@ function loadOpportunityCallLogList() {
                 },
                 {
                     data: 'employee_inherit',
-                    className: 'wrap-text w-15',
+                    className: 'wrap-text w-30',
                     render: (data, type, row) => {
-                        return `<span class="text-primary">${row?.['employee_inherit']?.['full_name']}</span>`
+                        return `<span class="text-primary">${row?.['employee_inherit']?.['full_name']}</span><span class="text-primary"> --- <i class="fas fa-phone-volume"></i> --- </span><a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="text-primary underline_hover">${row?.['contact']?.['fullname']}</span></a>`
                     }
                 },
                 {

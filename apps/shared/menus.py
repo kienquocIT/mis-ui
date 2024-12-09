@@ -433,7 +433,7 @@ class MenusCRM:
         child=[
             MenuCommon(
                 name='Log a call', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
-                icon='<i class="bi bi-telephone-fill"></i>',
+                icon='<i class="fas fa-phone-volume"></i>',
             ),
             MenuCommon(
                 name='Send email', code='id_menu_email', view_name='OpportunityEmailList',

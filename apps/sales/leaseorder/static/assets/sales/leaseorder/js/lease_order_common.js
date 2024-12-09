@@ -3873,7 +3873,7 @@ class LeaseOrderDataTableHandle {
             if (!$('#btn-refresh-indicator').length) {
                 let html1 = `<button type="button" class="btn btn-outline-secondary btn-square" id="btn-refresh-indicator" data-zone="sale_order_indicators_data"><i class="fas fa-redo-alt"></i></button>`;
                 let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Refresh">
+                                <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${LeaseOrderLoadDataHandle.transEle.attr('data-refresh')}">
                                     ${html1}
                                 </span>
                             </div>`);

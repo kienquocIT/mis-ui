@@ -3504,9 +3504,6 @@ class QuotationDataTableHandle {
             paging: false,
             info: false,
             columnDefs: [],
-            drawCallback: function () {
-                $.fn.initMaskMoney2();
-            },
             columns: [
                 {
                     targets: 0,
@@ -3538,6 +3535,10 @@ class QuotationDataTableHandle {
                     }
                 }
             ],
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                QuotationDataTableHandle.dtbIndicatorHDCustom($tables);
+            },
         });
         if ($tables.hasClass('dataTable')) {
             $tables.DataTable().clear().draw();
@@ -3552,11 +3553,6 @@ class QuotationDataTableHandle {
             paging: false,
             info: false,
             columnDefs: [],
-            drawCallback: function () {
-                $.fn.initMaskMoney2();
-            },
-            rowCallback: function (row, data) {
-            },
             columns: [
                 {
                     targets: 0,
@@ -3602,6 +3598,10 @@ class QuotationDataTableHandle {
                     }
                 }
             ],
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                QuotationDataTableHandle.dtbIndicatorHDCustom($tables);
+            },
         });
         if ($tables.hasClass('dataTable')) {
             $tables.DataTable().clear().draw();
@@ -3796,6 +3796,36 @@ class QuotationDataTableHandle {
                 QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSProduct);
             },
         });
+    };
+
+    // Custom dtb
+    static dtbIndicatorHDCustom($table) {
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-refresh-indicator').length) {
+                let html1 = `<button type="button" class="btn btn-outline-secondary btn-square" id="btn-refresh-indicator"><i class="fas fa-redo-alt"></i></button>`;
+                let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${QuotationLoadDataHandle.transEle.attr('data-refresh')}">
+                                    ${html1}
+                                </span>
+                            </div>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-refresh-indicator').on('click', function () {
+                    document.getElementById('quotation-indicator-data').value = "";
+                    indicatorHandle.loadIndicator();
+                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-refreshed')}, 'success');
+                });
+            }
+        }
     };
 }
 

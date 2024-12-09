@@ -751,14 +751,6 @@ $(function () {
             }
         });
 
-        // Clear data indicator store then call API to get new
-        $('#btn-refresh-quotation-indicator').on('click', function () {
-            let transEle = $('#app-trans-factory');
-            document.getElementById('quotation-indicator-data').value = "";
-            indicatorHandle.loadIndicator();
-            $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
-        });
-
 // PAYMENT STAGE
         $('#btn-add-payment-stage').on('click', function () {
             QuotationLoadDataHandle.loadAddPaymentStage();

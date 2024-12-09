@@ -9,7 +9,7 @@ from apps.sales.report.views import (
     PurchaseOrderReportList, PurchaseOrderReportListAPI, ReportInventoryProductWarehouseViewAPI, BudgetReportList,
     BudgetReportCompanyListAPI, PaymentListForBudgetReportAPI, BudgetReportGroupListAPI, GetQRCodeSerialInfoAPI,
     GetQRCodeLotInfoAPI,
-    # ReportInventoryChatBotAPI
+    ReportInventoryChatBotAPI
 )
 
 urlpatterns = [
@@ -35,7 +35,7 @@ urlpatterns = [
     path('api/product-warehouse-view', ReportInventoryProductWarehouseViewAPI.as_view(), name='ReportInventoryProductWarehouseViewAPI'),
     path('get-qr-code-sn-info', GetQRCodeSerialInfoAPI.as_view(), name='GetQRCodeSerialInfoAPI'),
     path('get-qr-code-lot-info', GetQRCodeLotInfoAPI.as_view(), name='GetQRCodeLotInfoAPI'),
-    # path('report-inventory-chatbot', ReportInventoryChatBotAPI.as_view(), name='ReportInventoryChatBotAPI'),
+    path('report-inventory-chatbot', ReportInventoryChatBotAPI.as_view(), name='ReportInventoryChatBotAPI'),
 
     # report purchasing
     path('po-report', PurchaseOrderReportList.as_view(), name='PurchaseOrderReportList'),

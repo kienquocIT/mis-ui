@@ -9839,3 +9839,7 @@ msgstr "Click vào nút ở cuối để chọn"
 #
 msgid "Shortcut menu"
 msgstr "Danh sách lối tắt"
+
+#
+msgid "Opportunity members"
+msgstr "Thành viên CHKD"

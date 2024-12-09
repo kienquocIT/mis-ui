@@ -343,7 +343,7 @@ $(document).ready(function () {
                 $('#tab_contact_role_btn').on('click', function () {
                     if ($(this).attr('data-is-loaded') !== 'true') {
                         OpportunityLoadDetail.loadDetailTableContactRole(opportunity_detail_data, true);
-                        OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail_data.customer_decision_factor);
+                        OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail_data.customer_decision_factor, true);
                         $(this).attr('data-is-loaded', 'true')
                     }
                 })

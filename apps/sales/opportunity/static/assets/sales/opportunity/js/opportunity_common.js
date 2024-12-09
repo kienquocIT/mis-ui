@@ -134,10 +134,11 @@ class OpportunityLoadDropdown {
         })
     }
 
-    static loadFactor(ele, data) {
+    static loadFactor(ele, data, is_detail=false) {
         ele.initSelect2({
             data: data,
         })
+        ele.prop('disabled', is_detail)
     }
 
     static loadContact(ele, data, customer) {

@@ -2543,6 +2543,8 @@ class QuotationDataTableHandle {
 
     static $tableSProduct = $('#table-select-product');
     static $tableProduct = $('#datable-quotation-create-product');
+    static $tableExpense = $('#datable-quotation-create-expense');
+    static $tablePayment = $('#datable-quotation-payment-stage');
 
     static dataTableProduct(data) {
         // init dataTable
@@ -2856,6 +2858,7 @@ class QuotationDataTableHandle {
             ],
             drawCallback: function () {
                 QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
+                QuotationDataTableHandle.dtbProductHDCustom();
             },
         });
     };
@@ -3061,8 +3064,7 @@ class QuotationDataTableHandle {
 
     static dataTableExpense(data) {
         // init dataTable
-        let $tables = $('#datable-quotation-create-expense');
-        $tables.DataTableDefault({
+        QuotationDataTableHandle.$tableExpense.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
             ordering: false,
@@ -3264,6 +3266,10 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                QuotationDataTableHandle.dtbExpenseHDCustom();
+            },
         });
     };
 
@@ -3611,8 +3617,7 @@ class QuotationDataTableHandle {
 
     static dataTablePaymentStage(data) {
         // init dataTable
-        let $tables = $('#datable-quotation-payment-stage');
-        $tables.DataTableDefault({
+        QuotationDataTableHandle.$tablePayment.DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -3703,6 +3708,10 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                QuotationDataTableHandle.dtbPaymentHDCustom();
+            },
         });
     };
 
@@ -3799,6 +3808,115 @@ class QuotationDataTableHandle {
     };
 
     // Custom dtb
+    static dtbProductHDCustom() {
+        let $table = QuotationDataTableHandle.$tableProduct;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-product-quotation-create').length && !$('#btn-add-product-group-quotation').length && !$('#btn-check-promotion').length && !$('#btn-add-shipping').length) {
+                let $form = $('#frm_quotation_create');
+                let dataZone = "quotation_products_data";
+                if ($form[0].classList.contains('sale-order')) {
+                    dataZone = "sale_order_products_data";
+                }
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                                </button>
+                                <div class="dropdown-menu w-210p">
+                                    <a class="dropdown-item" href="#" id="btn-add-product-quotation-create" data-bs-toggle="modal" data-bs-target="#selectProductModal"><i class="dropdown-icon fas fa-cube"></i><span class="mt-2">${QuotationLoadDataHandle.transEle.attr('data-add-product')}</span></a>
+                                    <a class="dropdown-item" href="#" id="btn-add-product-group-quotation"><i class="dropdown-icon fas fa-layer-group"></i><span>${QuotationLoadDataHandle.transEle.attr('data-add-group')}</span></a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" id="btn-add-shipping" data-bs-toggle="modal" data-bs-target="#shippingFeeModalCenter"><i class="dropdown-icon fas fa-shipping-fast"></i><span class="mt-2">${QuotationLoadDataHandle.transEle.attr('data-shipping')}</span></a>
+                                    <a class="dropdown-item" href="#" id="btn-check-promotion" data-bs-toggle="modal" data-bs-target="#promotionModalCenter"><i class="dropdown-icon fas fa-tags"></i><span>${QuotationLoadDataHandle.transEle.attr('data-promotion')}</span></a>
+                                </div>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-product-quotation-create').on('click', function () {
+                    QuotationLoadDataHandle.loadModalSProduct();
+                    indicatorHandle.loadIndicator();
+                });
+                $('#btn-add-product-group-quotation').on('click', function () {
+                    QuotationLoadDataHandle.loadAddRowProductGr();
+                });
+                $('#btn-add-shipping').on('click', function () {
+                    QuotationDataTableHandle.loadTableQuotationShipping();
+                });
+                $('#btn-check-promotion').on('click', function () {
+                    QuotationPromotionHandle.callPromotion(0);
+                });
+            }
+        }
+    };
+
+    static dtbExpenseHDCustom() {
+        let $table = QuotationDataTableHandle.$tableExpense;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-expense-quotation-create').length && !$('#btn-add-labor-quotation-create').length) {
+                let $form = $('#frm_quotation_create');
+                let dataZone = "quotation_expenses_data";
+                if ($form[0].classList.contains('sale-order')) {
+                    dataZone = "sale_order_expenses_data";
+                }
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                                </button>
+                                <div class="dropdown-menu w-210p">
+                                    <a class="dropdown-item" href="#" id="btn-add-expense-quotation-create"><i class="dropdown-icon fas fa-hand-holding-usd"></i><span class="mt-2">${QuotationLoadDataHandle.transEle.attr('data-add-expense')}</span></a>
+                                    <a class="dropdown-item" href="#" id="btn-add-labor-quotation-create"><i class="dropdown-icon fas fa-people-carry"></i><span>${QuotationLoadDataHandle.transEle.attr('data-add-labor')}</span></a>
+                                </div>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-expense-quotation-create').on('click', function () {
+                    QuotationLoadDataHandle.loadAddRowExpense();
+                });
+                $('#btn-add-labor-quotation-create').on('click', function () {
+                    QuotationLoadDataHandle.loadAddRowLabor();
+                });
+            }
+        }
+    };
+
+    static dtbPaymentHDCustom() {
+        let $table = QuotationDataTableHandle.$tablePayment;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-payment-stage').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-add-payment-stage" data-zone="sale_order_payment_stage">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-payment-stage').on('click', function () {
+                    QuotationLoadDataHandle.loadAddPaymentStage();
+                });
+            }
+        }
+    };
+
     static dtbIndicatorHDCustom($table) {
         let wrapper$ = $table.closest('.dataTables_wrapper');
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
@@ -3809,11 +3927,9 @@ class QuotationDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-refresh-indicator').length) {
-                let html1 = `<button type="button" class="btn btn-outline-secondary btn-square" id="btn-refresh-indicator"><i class="fas fa-redo-alt"></i></button>`;
+                let html1 = `<button type="button" class="btn btn-outline-secondary" id="btn-refresh-indicator">${QuotationLoadDataHandle.transEle.attr('data-refresh')}</button>`;
                 let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${QuotationLoadDataHandle.transEle.attr('data-refresh')}">
-                                    ${html1}
-                                </span>
+                                ${html1}
                             </div>`);
                 textFilter$.append(
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)

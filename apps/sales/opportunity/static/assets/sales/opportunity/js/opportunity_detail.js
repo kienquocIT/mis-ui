@@ -136,9 +136,9 @@ $(document).ready(function () {
                     OpportunityLoadDropdown.loadEndCustomer(opportunity_detail.end_customer, opportunity_detail.customer.id);
 
                     // init table
-                    loadDtbProduct([]);
-                    loadDtbCompetitor([]);
-                    loadDtbContactRole([]);
+                    InitDataTables.loadDtbProduct();
+                    InitDataTables.loadDtbCompetitor();
+                    InitDataTables.loadDtbContactRole();
 
                     if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
                         let so_id = opportunity_detail.sale_order.id;
@@ -167,7 +167,7 @@ $(document).ready(function () {
                 }
 
                 loadDetail(opportunity_detail_data).then(function () {
-                    let _, is_lost = autoLoadStage(
+                    let is_lost = LoadConfigAndLoadStage.autoLoadStage(
                         true,
                         false,
                         list_stage_condition,
@@ -270,6 +270,19 @@ $(document).ready(function () {
                         );
                     })
                 });
+                OpportunityLoadDetail.estimated_gross_profit_percent_Ele.on('input', function () {
+                    if ($(this).val()) {
+                        $(this).val(parseFloat($(this).val()))
+                        let value = parseFloat($('#input-product-pretax-amount').attr('value')) * parseFloat(OpportunityLoadDetail.estimated_gross_profit_percent_Ele.val()) / 100
+                        $('#estimated-gross-profit-value').attr('value', value)
+                        $.fn.initMaskMoney2()
+                    }
+                    else {
+                        $(this).val(0)
+                        $('#estimated-gross-profit-value').attr('value', 0)
+                        $.fn.initMaskMoney2()
+                    }
+                })
                 $(document).on('change', '.select-box-product', function () {
                     let ele_tr = $(this).closest('tr');
                     let product = SelectDDControl.get_data_from_idx($(this), $(this).val());
@@ -459,8 +472,8 @@ $(document).ready(function () {
                 })
 
                 // tab add member for sale
-                $('#btn-show-modal-add-member').on('click', function () {
-                    OpportunityLoadDetail.loadMemberForDtb().then();
+                $('#btn-show-modal-add-member').on('click', async function () {
+                    await OpportunityLoadDetail.loadMemberForDtb().then();
                 })
                 $('.mask-money').on('change', function () {
                     if ($(this).valCurrency() < 0) {

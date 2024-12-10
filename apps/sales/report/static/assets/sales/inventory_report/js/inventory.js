@@ -1437,18 +1437,18 @@ $(document).ready(function () {
         static get_warehouse_row_info(row) {
             let row_info = ''
             let warehouse = row.find('td:eq(0) .warehouse_row').text()
-            row_info += `${warehouse} tồn đầu ${row.find('td:eq(2) .wh-opening-quantity-span').text()}, với giá trị ${parseInt(row.find('td:eq(2) .wh-opening-value-span').attr('data-init-money'))} VND.`
-            row_info += `${warehouse} đã nhập ${row.find('td:eq(3) .wh-in-quantity-span').text()}, với giá trị ${parseInt(row.find('td:eq(3) .wh-in-value-span').attr('data-init-money'))} VND.`
-            row_info += `${warehouse} đã xuất ${row.find('td:eq(4) .wh-out-quantity-span').text()}, với giá trị ${parseInt(row.find('td:eq(4) .wh-out-value-span').attr('data-init-money'))} VND.`
-            row_info += `${warehouse} còn tồn kho ${row.find('td:eq(5) .wh-ending-quantity-span').text()}, với giá trị ${parseInt(row.find('td:eq(5) .wh-ending-value-span').attr('data-init-money'))} VND.`
+            row_info += `${warehouse} tồn đầu ${parseInt(row.find('td:eq(2) .wh-opening-value-span').attr('data-init-money'))} VND.`
+            row_info += `${warehouse} đã nhập ${parseInt(row.find('td:eq(3) .wh-in-value-span').attr('data-init-money'))} VND.`
+            row_info += `${warehouse} đã xuất ${parseInt(row.find('td:eq(4) .wh-out-value-span').attr('data-init-money'))} VND.`
+            row_info += `${warehouse} còn tồn kho ${parseInt(row.find('td:eq(5) .wh-ending-value-span').attr('data-init-money'))} VND.`
             return row_info
         }
         static get_overall_info() {
             let row_info = ''
-            row_info += `Tổng cộng đầu kỳ ${$('tfoot .opening-total-quantity:eq(0)').text()}, với giá trị ${parseInt($('tfoot .opening-total-value:eq(0)').attr('data-init-money'))} VND.`
-            row_info += `Tổng cộng đã nhập ${$('tfoot .in-total-quantity:eq(0)').text()}, với giá trị ${parseInt($('tfoot .in-total-value:eq(0)').attr('data-init-money'))} VND.`
-            row_info += `Tổng cộng đã xuất ${$('tfoot .out-total-quantity:eq(0)').text()}, với giá trị ${parseInt($('tfoot .out-total-value:eq(0)').attr('data-init-money'))} VND.`
-            row_info += `Tổng cộng cuối kỳ ${$('tfoot .ending-total-quantity:eq(0)').text()}, với giá trị ${parseInt($('tfoot .ending-total-value:eq(0)').attr('data-init-money'))} VND.`
+            row_info += `Tổng cộng đầu kỳ ${parseInt($('tfoot .opening-total-value:eq(0)').attr('data-init-money'))} VND.`
+            row_info += `Tổng cộng đã nhập ${parseInt($('tfoot .in-total-value:eq(0)').attr('data-init-money'))} VND.`
+            row_info += `Tổng cộng đã xuất ${parseInt($('tfoot .out-total-value:eq(0)').attr('data-init-money'))} VND.`
+            row_info += `Tổng cộng cuối kỳ ${parseInt($('tfoot .ending-total-value:eq(0)').attr('data-init-money'))} VND.`
             return row_info
         }
         static get_products_opening_quantity_gte(threshold) {

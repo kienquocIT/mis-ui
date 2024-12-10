@@ -1,5 +1,6 @@
 // LoadData
 class POLoadDataHandle {
+    static $form = $('#frm_purchase_order_create');
     static supplierSelectEle = $('#box-purchase-order-supplier');
     static contactSelectEle = $('#box-purchase-order-contact');
     static PRDataEle = $('#purchase_requests_data');
@@ -8,8 +9,6 @@ class POLoadDataHandle {
     static eleDivTablePOProductAdd = $('#table-purchase-order-product-add-area');
     static eleDivTablePRProduct = $('#table-purchase-request-product-area');
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
-    static $btnAddProduct = $('#btn-add-product-purchase-order');
-    static $btnAddShipping = $('#btn-add-shipping-purchase-order');
     static $priceModal = $('#viewPriceModal');
     static $elePQ = $('#purchase-order-purchase-quotation');
     static transEle = $('#app-trans-factory');
@@ -1281,6 +1280,7 @@ class PODataTableHandle {
     static taxInitEle = $('#data-init-tax');
     static $tablePOByRequest = $('#datable-purchase-order-product-request');
     static $tablePOByAdd = $('#datable-purchase-order-product-add');
+    static $tablePayment = $('#datable-po-payment-stage');
 
     static dataTablePurchaseRequest() {
         let $table = $('#datable-purchase-request');
@@ -1902,14 +1902,16 @@ class PODataTableHandle {
             drawCallback: function () {
                 // add css to dataTables_scrollBody
                 POLoadDataHandle.loadCssToDTScrollBody();
+                if (['post', 'put'].includes(POLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    PODataTableHandle.dtbProductHDCustom();
+                }
             },
         });
     };
 
     static dataTablePaymentStage(data) {
         // init dataTable
-        let $tables = $('#datable-po-payment-stage');
-        $tables.DataTableDefault({
+        PODataTableHandle.$tablePayment.DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -1985,7 +1987,75 @@ class PODataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                if (['post', 'put'].includes(POLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    PODataTableHandle.dtbPaymentHDCustom();
+                }
+            },
         });
+    };
+
+    // Custom dtb
+    static dtbProductHDCustom() {
+        let $table = PODataTableHandle.$tablePOByAdd;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-product-purchase-order').length && !$('#btn-add-shipping-purchase-order').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" aria-expanded="false" data-bs-toggle="dropdown">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                                </button>
+                                <div class="dropdown-menu w-210p">
+                                    <a class="dropdown-item" href="#" id="btn-add-product-purchase-order"><i class="dropdown-icon fas fa-cube"></i><span class="mt-2">${POLoadDataHandle.transEle.attr('data-add-product')}</span></a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" id="btn-add-shipping-purchase-order"><i class="dropdown-icon fas fa-shipping-fast"></i><span class="mt-2">${POLoadDataHandle.transEle.attr('data-shipping')}</span></a>
+                                </div>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-product-purchase-order').on('click', function () {
+                    if (POLoadDataHandle.PRDataEle.val()) {
+                        $('#btn-warning-add-product').click();
+                    } else {
+                        POLoadDataHandle.loadAddRowTableProductAdd();
+                    }
+                });
+                $('#btn-add-shipping-purchase-order').on('click', function () {
+                    POLoadDataHandle.loadAddRowTableProductAdd(1);
+                });
+            }
+        }
+    };
+
+    static dtbPaymentHDCustom() {
+        let $table = PODataTableHandle.$tablePayment;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-po-payment-stage').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-add-po-payment-stage">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-po-payment-stage').on('click', function () {
+                    POLoadDataHandle.loadAddPaymentStage();
+                });
+            }
+        }
     };
 
 }

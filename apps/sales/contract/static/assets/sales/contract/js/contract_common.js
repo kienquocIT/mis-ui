@@ -3,7 +3,6 @@ class ContractLoadDataHandle {
     static $form = $('#frm_contract_create');
     static $boxOpp = $('#opportunity_id');
     static $boxEmp = $('#employee_inherit_id');
-    static $btnAddDoc = $('#btn-add-doc');
     static $btnOpenAttach = $('#btn-open-attachment');
     static $drawer = $('#drawer_contract_data');
     static $fileArea = $('#file-area');
@@ -405,10 +404,37 @@ class ContractDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                // add css to Dtb
-                ContractLoadDataHandle.loadCssToDtb(ContractDataTableHandle.$tableDocument[0].id);
+                if (['post', 'put'].includes(ContractLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    ContractDataTableHandle.dtbDocumentHDCustom();
+                }
             },
         });
+    };
+
+    // Custom dtb
+    static dtbDocumentHDCustom() {
+        let $table = ContractDataTableHandle.$tableDocument;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-doc').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-add-doc">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${ContractLoadDataHandle.$trans.attr('data-add')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-doc').on('click', function () {
+                    ContractLoadDataHandle.loadAddDoc();
+                });
+            }
+        }
     };
 
 }

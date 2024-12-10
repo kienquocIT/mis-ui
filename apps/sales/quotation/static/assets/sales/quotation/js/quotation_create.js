@@ -95,15 +95,6 @@ $(function () {
             QuotationLoadDataHandle.loadReInitDataTableProduct();
         });
 
-        btnAddProductGr.on('click', function () {
-            QuotationLoadDataHandle.loadAddRowProductGr();
-        });
-
-        btnAddProduct.on('click', function (e) {
-            QuotationLoadDataHandle.loadModalSProduct();
-            indicatorHandle.loadIndicator();
-        });
-
         QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             QuotationLoadDataHandle.loadNewProduct();
         });
@@ -604,10 +595,6 @@ $(function () {
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
-        $('#btn-check-promotion').on('click', function () {
-            QuotationPromotionHandle.callPromotion(0);
-        });
-
         tablePromotion.on('click', '.apply-promotion', function () {
             $(this).prop('disabled', true);
             deletePromotionRows(tableProduct, true, false);
@@ -690,10 +677,6 @@ $(function () {
 
 // SHIPPING
 // Action on click button Add Shipping Fee (show list shipping)
-        $('#btn-add-shipping').on('click', function() {
-            QuotationDataTableHandle.loadTableQuotationShipping();
-        });
-
         tableShipping.on('click', '.apply-shipping', function () {
             $(this).prop('disabled', true);
             // Delete all promotion rows

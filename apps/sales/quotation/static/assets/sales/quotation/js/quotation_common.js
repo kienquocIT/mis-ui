@@ -120,12 +120,11 @@ class QuotationLoadDataHandle {
     };
 
     static loadInitOpportunity() {
-        let form = $('#frm_quotation_create');
         let urlParams = $x.fn.getManyUrlParameters(['opp_id', 'opp_title', 'opp_code']);
         if (urlParams?.['opp_id'] && urlParams?.['opp_title'] && urlParams?.['opp_code']) {
-            if (form.attr('data-method').toLowerCase() === 'post') {
+            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
                 let list_from_app = 'quotation.quotation.create';
-                if (form[0].classList.contains('sale-order')) {
+                if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                     list_from_app = 'saleorder.saleorder.create';
                 }
                 $.fn.callAjax2({
@@ -893,6 +892,7 @@ class QuotationLoadDataHandle {
         let ele = $('#data-init-copy-quotation');
         let url = ele.attr('data-url-detail').format_url_with_uuid(select_id);
         let method = ele.attr('data-method');
+        WindowControl.showLoading();
         $.fn.callAjax2(
             {
                 'url': url,
@@ -903,7 +903,8 @@ class QuotationLoadDataHandle {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $('#data-copy-quotation-detail').val(JSON.stringify(data))
+                    $('#data-copy-quotation-detail').val(JSON.stringify(data));
+                    WindowControl.hideLoading();
                 }
             }
         )
@@ -1966,7 +1967,6 @@ class QuotationLoadDataHandle {
     };
 
     static loadCopyData(dataCopy) {
-        let $form = $('#frm_quotation_create');
         let tableProduct = $('#datable-quotation-create-product');
         document.getElementById('customer-price-list').value = dataCopy?.['customer']?.['customer_price_list'];
         QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
@@ -1978,7 +1978,7 @@ class QuotationLoadDataHandle {
         // Load indicator
         indicatorHandle.loadIndicator();
         // Set form novalidate
-        $form[0].setAttribute('novalidate', 'novalidate');
+        QuotationLoadDataHandle.$form[0].setAttribute('novalidate', 'novalidate');
         QuotationLoadDataHandle.loadCheckDataCopy();
         // set again WF runtime
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
@@ -2087,6 +2087,43 @@ class QuotationLoadDataHandle {
         if (data?.['title'] && is_copy === false) {
             document.getElementById('quotation-create-title').value = data?.['title'];
         }
+        //
+        const processData = data?.['process'] || {};
+        const processStageAppData = data?.['process_stage_app'] || {};
+        const oppData = data?.['opportunity'] || {};
+        const inheritData = data?.['employee_inherit'] || {};
+        new $x.cls.bastionField({
+            has_opp: true,
+            has_inherit: true,
+            has_process: true,
+            data_process: processData && Object.keys(processData).length > 0 ? [
+                {
+                    ...processData,
+                    'selected': true,
+                }
+            ] : [],
+            data_process_stage_app: processStageAppData && Object.keys(processStageAppData).length > 0 ? [
+                {
+                    ...processStageAppData,
+                    'selected': true,
+                }
+            ] : [],
+            processStageAppFlagData: {
+                'disable': true,
+            },
+            data_opp: oppData && Object.keys(oppData).length > 0 ? [
+                {
+                    ...oppData,
+                    'selected': true,
+                }
+            ] : [],
+            data_inherit: inheritData && Object.keys(inheritData).length > 0 ? [
+                {
+                    ...inheritData,
+                    'selected': true,
+                }
+            ] : [],
+        }).init();
         if (data?.['sale_person']) {
             QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.salePersonSelectEle, [data?.['sale_person']]);
         }
@@ -2172,12 +2209,14 @@ class QuotationLoadDataHandle {
         }
         $('#quotation-create-customer-shipping').val(data?.['customer_shipping_id']);
         $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
-        // check config
-        QuotationCheckConfigHandle.checkConfig(0);
         // load totals
         QuotationLoadDataHandle.loadTotal(data, true, false, false);
         QuotationLoadDataHandle.loadTotal(data, false, true, false);
         QuotationLoadDataHandle.loadTotal(data, false, false, true);
+        // check config (page update)
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+            QuotationCheckConfigHandle.checkConfig(0, null, data?.['opportunity']?.['id']);
+        }
     };
 
     static loadDataProductAll() {
@@ -2858,7 +2897,9 @@ class QuotationDataTableHandle {
             ],
             drawCallback: function () {
                 QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
-                QuotationDataTableHandle.dtbProductHDCustom();
+                if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    QuotationDataTableHandle.dtbProductHDCustom();
+                }
             },
         });
     };
@@ -3004,12 +3045,6 @@ class QuotationDataTableHandle {
                         let dataZone = "quotation_costs_data";
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
-                        }
-                        let itemType = 0  // product
-                        if (row.hasOwnProperty('product') && row.hasOwnProperty('shipping')) {
-                            if (Object.keys(row['shipping']).length > 0) {
-                                itemType = 1  // shipping
-                            }
                         }
                         let readonly = ''  // product
                         if (row?.['shipping_id']) {
@@ -3268,7 +3303,9 @@ class QuotationDataTableHandle {
             ],
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                QuotationDataTableHandle.dtbExpenseHDCustom();
+                if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    QuotationDataTableHandle.dtbExpenseHDCustom();
+                }
             },
         });
     };
@@ -3710,7 +3747,9 @@ class QuotationDataTableHandle {
             ],
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                QuotationDataTableHandle.dtbPaymentHDCustom();
+                if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    QuotationDataTableHandle.dtbPaymentHDCustom();
+                }
             },
         });
     };
@@ -3819,9 +3858,8 @@ class QuotationDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-product-quotation-create').length && !$('#btn-add-product-group-quotation').length && !$('#btn-check-promotion').length && !$('#btn-add-shipping').length) {
-                let $form = $('#frm_quotation_create');
                 let dataZone = "quotation_products_data";
-                if ($form[0].classList.contains('sale-order')) {
+                if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                     dataZone = "sale_order_products_data";
                 }
                 let $group = $(`<button type="button" class="btn btn-outline-secondary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
@@ -3866,9 +3904,8 @@ class QuotationDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-expense-quotation-create').length && !$('#btn-add-labor-quotation-create').length) {
-                let $form = $('#frm_quotation_create');
                 let dataZone = "quotation_expenses_data";
-                if ($form[0].classList.contains('sale-order')) {
+                if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                     dataZone = "sale_order_expenses_data";
                 }
                 let $group = $(`<button type="button" class="btn btn-outline-secondary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
@@ -4291,17 +4328,17 @@ class QuotationCheckConfigHandle {
         return true;
     };
 
-    static checkConfig(check_type, row = null) {
+    static checkConfig(check_type, row = null, oppID = null) {
+        // check_type 0: check all | 1: check single row
         let $form = $('#frm_quotation_create');
         if ($form.attr('data-method').toLowerCase() !== 'get') {
             let configRaw = $('#quotation-config-data').val();
             if (configRaw) {
-                let opportunity = QuotationLoadDataHandle.opportunitySelectEle.val();
-                let config = JSON.parse(configRaw);
-                if (["", null].includes(opportunity)) {
-                    opportunity = null;
+                if (!oppID) {
+                    oppID = QuotationLoadDataHandle.opportunitySelectEle.val();
                 }
-                if (!opportunity) { // short sale
+                let config = JSON.parse(configRaw);
+                if (!oppID) { // short sale
                     if (check_type === 0) {  // check All
                         QuotationCheckConfigHandle.checkOnTotal(config, 0);
                         QuotationCheckConfigHandle.checkTableRows(config, 0);

@@ -1,10 +1,10 @@
 $(document).ready(function () {
-    loadConfigPromise().then(
+    LoadConfigAndLoadStage.loadConfigPromise().then(
         config => {
             let employee_current = $('#employee_current_id').val();
             const customerSelectEle = $('#select-box-customer');
 
-            loadDtbOpportunityList();
+            InitDataTables.loadDtbOpportunityList();
 
             new SetupFormSubmit($('#form-create_opportunity')).validate({
                 rules: {

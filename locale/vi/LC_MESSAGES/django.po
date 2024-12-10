@@ -5477,8 +5477,8 @@ msgid "Sale Activities"
 msgstr "Hoạt động bán hàng"
 
 #
-msgid "Log a call"
-msgstr "Ghi cuộc gọi"
+msgid "Call log"
+msgstr "Nhật ký cuộc gọi"
 
 #
 msgid "Send email"

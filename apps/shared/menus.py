@@ -432,7 +432,7 @@ class MenusCRM:
         icon='<i class="bi bi-ui-checks-grid"></i>',
         child=[
             MenuCommon(
-                name='Log a call', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
+                name='Call log', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
                 icon='<i class="fas fa-phone-volume"></i>',
             ),
             MenuCommon(

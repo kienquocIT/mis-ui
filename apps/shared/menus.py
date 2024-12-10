@@ -93,7 +93,7 @@ class MenusCompanySystem:
                 icon='<i class="fas fa-shapes"></i>'
             ),
             MenuCommon(
-                name='Business Process', code='menu_process', view_name='ProcessList',
+                name='Config Process', code='menu_process', view_name='ProcessList',
                 icon='<i class="fa-solid fa-microchip"></i>',
             ),
             MenuCommon(
@@ -106,7 +106,7 @@ class MenusCompanySystem:
         expanded=True,
         child=[
             MenuCommon(
-                name='Business Process', code='menu_process', view_name='ProcessList',
+                name='Config Process', code='menu_process', view_name='ProcessList',
                 icon='<i class="fa-solid fa-microchip"></i>',
             ),
             MenuCommon(

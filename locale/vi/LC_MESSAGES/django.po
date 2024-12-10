@@ -3140,8 +3140,8 @@ msgid "Workflow"
 msgstr "Quy trình làm việc"
 
 #
-msgid "Business Process"
-msgstr "Quy trình kinh doanh"
+msgid "Config Process"
+msgstr "Cấu hình Tiến trình"
 
 #
 msgid "Automation"

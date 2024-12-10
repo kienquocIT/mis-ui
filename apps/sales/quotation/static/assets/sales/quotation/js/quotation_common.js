@@ -2634,9 +2634,8 @@ class QuotationDataTableHandle {
                                         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-del-group"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                     </div>`;
                         }
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
                         let itemType = 0  // product
@@ -2687,9 +2686,8 @@ class QuotationDataTableHandle {
                             return ``;
                         }
 
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
                         let itemType = 0  // product
@@ -2716,9 +2714,8 @@ class QuotationDataTableHandle {
                             return ``;
                         }
 
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
                         return `<select 
@@ -2740,9 +2737,8 @@ class QuotationDataTableHandle {
                             return ``;
                         }
 
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
                         return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" data-zone="${dataZone}" required>`;
@@ -2756,9 +2752,8 @@ class QuotationDataTableHandle {
                             return ``;
                         }
 
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
                         return `<div class="row">
@@ -2791,9 +2786,8 @@ class QuotationDataTableHandle {
                             return ``;
                         }
 
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
                         return `<div class="row">
@@ -2826,9 +2820,8 @@ class QuotationDataTableHandle {
                             return ``;
                         }
 
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
                         return `<select
@@ -2862,9 +2855,8 @@ class QuotationDataTableHandle {
                             return ``;
                         }
 
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
                         return `<div class="row subtotal-area">
@@ -2886,9 +2878,8 @@ class QuotationDataTableHandle {
                             return ``;
                         }
 
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
                         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
@@ -2923,9 +2914,8 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
                         let itemType = 0  // product
@@ -2962,9 +2952,8 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
                         let readonly = ''  // product
@@ -2977,9 +2966,8 @@ class QuotationDataTableHandle {
                 {
                     targets: 3,
                     render: () => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
                         return `<select 
@@ -2996,9 +2984,8 @@ class QuotationDataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
                         return `<input type="text" class="form-control table-row-quantity disabled-custom-show zone-readonly" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
@@ -3007,9 +2994,8 @@ class QuotationDataTableHandle {
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
                         let disabled = ''  // product
@@ -3041,9 +3027,8 @@ class QuotationDataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
                         let readonly = ''  // product
@@ -3077,9 +3062,8 @@ class QuotationDataTableHandle {
                 {
                     targets: 7,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_costs_data";
                         }
                         return `<div class="row subtotal-area">
@@ -3121,9 +3105,8 @@ class QuotationDataTableHandle {
                     targets: 1,
                     width: '20%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
                         if (row?.['is_labor'] === false) {
@@ -3145,9 +3128,8 @@ class QuotationDataTableHandle {
                     targets: 2,
                     width: '20%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
                         if (row?.['is_labor'] === false) {
@@ -3178,9 +3160,8 @@ class QuotationDataTableHandle {
                     targets: 3,
                     width: '6.66%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
                         if (row?.['is_labor'] === false) {
@@ -3210,9 +3191,8 @@ class QuotationDataTableHandle {
                     targets: 4,
                     width: '10%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
                         return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['expense_quantity']}" data-zone="${dataZone}" required>`;
@@ -3222,9 +3202,8 @@ class QuotationDataTableHandle {
                     targets: 5,
                     width: '16.66%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
                         return `<input 
@@ -3240,9 +3219,8 @@ class QuotationDataTableHandle {
                     targets: 6,
                     width: '6.66%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
                         return `<select 
@@ -3272,9 +3250,8 @@ class QuotationDataTableHandle {
                     targets: 7,
                     width: '13.33%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
                         return `<div class="row subtotal-area">
@@ -3292,9 +3269,8 @@ class QuotationDataTableHandle {
                     targets: 8,
                     width: '3.33%',
                     render: () => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "quotation_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
+                        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
                         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`

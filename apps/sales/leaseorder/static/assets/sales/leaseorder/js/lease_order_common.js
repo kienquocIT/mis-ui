@@ -1734,7 +1734,7 @@ class LeaseOrderLoadDataHandle {
         let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
         let row = eleProduct.closest('tr');
         let $form = $('#frm_quotation_create');
-        let dataZone = "quotation_costs_data";
+        let dataZone = "lease_costs_data";
         if ($form[0].classList.contains('sale-order')) {
             dataZone = "sale_order_costs_data";
         }
@@ -2636,11 +2636,7 @@ class LeaseOrderDataTableHandle {
                                         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-del-group"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                                     </div>`;
                         }
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_products_data";
-                        }
                         let itemType = 0  // product
                         if (row?.['promotion_id']) {
                             itemType = 1  // promotion
@@ -2696,14 +2692,22 @@ class LeaseOrderDataTableHandle {
                     targets: 3,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<select 
-                                    class="form-select table-row-offset"
-                                    data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
-                                    data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
-                                    data-keyResp="unit_of_measure"
-                                    required
-                                 >
-                                </select>`;
+                        let dataZone = "lease_products_data";
+                        return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${row?.['product_data']?.['title']}</textarea>
+                                    <div class="row table-row-item-area hidden">
+                                        <div class="col-12 col-md-12 col-lg-12">
+                                            <select 
+                                                class="form-select table-row-item zone-readonly"
+                                                id="product-${row?.['order']}"
+                                                data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-product')}"
+                                                data-method="GET"
+                                                data-keyResp="product_sale_list"
+                                                data-product-id="${row?.['product_data']?.['id']}"
+                                                data-zone="${dataZone}"
+                                                readonly>
+                                            </select>
+                                        </div>
+                                    </div>`;
                     }
                 },
                 {
@@ -2713,12 +2717,7 @@ class LeaseOrderDataTableHandle {
                         if (row?.['is_group'] === true) {
                             return ``;
                         }
-
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_products_data";
-                        }
                         return `<select 
                                     class="form-select table-row-uom"
                                     data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
@@ -2737,12 +2736,7 @@ class LeaseOrderDataTableHandle {
                         if (row?.['is_group'] === true) {
                             return ``;
                         }
-
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_products_data";
-                        }
                         return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" data-zone="${dataZone}" required>`;
                     }
                 },
@@ -2767,12 +2761,7 @@ class LeaseOrderDataTableHandle {
                         if (row?.['is_group'] === true) {
                             return ``;
                         }
-
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_products_data";
-                        }
                         return `<input type="text" class="form-control table-row-quantity-time validated-number" value="${row?.['product_quantity']}" data-zone="${dataZone}" required>`;
                     }
                 },
@@ -2783,12 +2772,7 @@ class LeaseOrderDataTableHandle {
                         if (row?.['is_group'] === true) {
                             return ``;
                         }
-
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_products_data";
-                        }
                         return `<div class="row">
                                     <div class="input-group input-group-price">
                                         <input 
@@ -2818,12 +2802,7 @@ class LeaseOrderDataTableHandle {
                         if (row?.['is_group'] === true) {
                             return ``;
                         }
-
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_products_data";
-                        }
                         return `<select
                                     class="form-select table-row-tax"
                                     data-url="${LeaseOrderDataTableHandle.taxInitEle.attr('data-url')}"
@@ -2855,11 +2834,7 @@ class LeaseOrderDataTableHandle {
                             return ``;
                         }
 
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_products_data";
-                        }
                         return `<div class="row subtotal-area">
                                 <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}" data-zone="${dataZone}"></span></p>
                                 <input
@@ -2878,12 +2853,7 @@ class LeaseOrderDataTableHandle {
                         if (row?.['is_group'] === true) {
                             return ``;
                         }
-
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_products_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_products_data";
-                        }
                         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
@@ -2914,11 +2884,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
-                        }
+                        let dataZone = "lease_costs_data";
                         let itemType = 0  // product
                         if (row?.['shipping_id']) {
                             itemType = 1  // shipping
@@ -2953,11 +2919,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
-                        }
+                        let dataZone = "lease_costs_data";
                         let readonly = ''  // product
                         if (row?.['shipping_id']) {
                             readonly = 'readonly'  // shipping
@@ -2968,11 +2930,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 3,
                     render: () => {
-                        let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
-                        }
+                        let dataZone = "lease_costs_data";
                         return `<select 
                                     class="form-select table-row-uom disabled-custom-show zone-readonly"
                                     data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
@@ -2987,22 +2945,14 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
-                        }
+                        let dataZone = "lease_costs_data";
                         return `<input type="text" class="form-control table-row-quantity disabled-custom-show zone-readonly" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
                     }
                 },
                 {
                     targets: 5,
                     render: () => {
-                        let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
-                        }
+                        let dataZone = "lease_costs_data";
                         return `<select 
                                     class="form-select table-row-uom-time disabled-custom-show zone-readonly"
                                     data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
@@ -3017,22 +2967,14 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
-                        }
+                        let dataZone = "lease_costs_data";
                         return `<input type="text" class="form-control table-row-quantity-time disabled-custom-show zone-readonly" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
                     }
                 },
                 {
                     targets: 7,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
-                        }
+                        let dataZone = "lease_costs_data";
                         let disabled = ''  // product
                         if (row?.['shipping_id']) {
                             disabled = 'disabled'  // shipping
@@ -3062,11 +3004,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 8,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
-                        }
+                        let dataZone = "lease_costs_data";
                         let itemType = 0  // product
                         if (row.hasOwnProperty('product') && row.hasOwnProperty('shipping')) {
                             if (Object.keys(row['shipping']).length > 0) {
@@ -3104,11 +3042,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 9,
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
-                        let dataZone = "quotation_costs_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_costs_data";
-                        }
+                        let dataZone = "lease_costs_data";
                         return `<div class="row subtotal-area">
                                 <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}" data-zone="${dataZone}"></span></p>
                                 <input
@@ -3149,11 +3083,7 @@ class LeaseOrderDataTableHandle {
                     targets: 1,
                     width: '20%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_expenses_data";
-                        }
                         if (row?.['is_labor'] === false) {
                             return `<input type="text" class="form-control table-row-expense-title" value="${row?.['expense_title']}" data-zone="${dataZone}" required>`;
                         } else {
@@ -3173,11 +3103,7 @@ class LeaseOrderDataTableHandle {
                     targets: 2,
                     width: '20%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_expenses_data";
-                        }
                         if (row?.['is_labor'] === false) {
                            return `<select 
                                     class="form-select table-row-item" 
@@ -3206,11 +3132,7 @@ class LeaseOrderDataTableHandle {
                     targets: 3,
                     width: '6.66%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_expenses_data";
-                        }
                         if (row?.['is_labor'] === false) {
                            return `<select 
                                         class="form-select table-row-uom"
@@ -3238,11 +3160,7 @@ class LeaseOrderDataTableHandle {
                     targets: 4,
                     width: '10%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_expenses_data";
-                        }
                         return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['expense_quantity']}" data-zone="${dataZone}" required>`;
                     }
                 },
@@ -3250,11 +3168,7 @@ class LeaseOrderDataTableHandle {
                     targets: 5,
                     width: '16.66%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_expenses_data";
-                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-price" 
@@ -3268,11 +3182,7 @@ class LeaseOrderDataTableHandle {
                     targets: 6,
                     width: '6.66%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_expenses_data";
-                        }
                         return `<select 
                                     class="form-select table-row-tax"
                                     data-url="${LeaseOrderDataTableHandle.taxInitEle.attr('data-url')}"
@@ -3300,11 +3210,7 @@ class LeaseOrderDataTableHandle {
                     targets: 7,
                     width: '13.33%',
                     render: (data, type, row) => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_expenses_data";
-                        }
                         return `<div class="row subtotal-area">
                                 <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['expense_subtotal_price'] ? row?.['expense_subtotal_price'] : '0')}" data-zone="${dataZone}"></span></p>
                                 <input
@@ -3320,11 +3226,7 @@ class LeaseOrderDataTableHandle {
                     targets: 8,
                     width: '3.33%',
                     render: () => {
-                        let $form = $('#frm_quotation_create');
                         let dataZone = "lease_expenses_data";
-                        if ($form[0].classList.contains('sale-order')) {
-                            dataZone = "sale_order_expenses_data";
-                        }
                         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="${dataZone}"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`
                     }
                 },

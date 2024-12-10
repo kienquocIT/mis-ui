@@ -4,7 +4,6 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'assets/online_sign/css/online_signature.css' %}" rel="stylesheet" type="text/css"/>
 
     <link rel="stylesheet" href="{% static 'assets/hrm/css/common.css' %}">
 {% endblock %}
@@ -312,7 +311,7 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab-contract">
-                {% include 'hrm/contract/create.html' %}
+                {% include 'hrm/contract/create.html' with show_icon=False %}
             </div>
         </div>
     </form>
@@ -328,11 +327,9 @@
     {% if base.language == 'vi' %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
-    <script src="{% static 'vendors/fabric/index.min.js' %}"></script>
 
     <script src="{% static 'assets/hrm/js/extend/contract_editor.js' %}"></script>
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
-    <script src="{% static 'assets/online_sign/js/online_signature_common.js' %}"></script>
 
     <script src="{% static 'assets/hrm/js/create.js' %}"></script>
 {% endblock %}

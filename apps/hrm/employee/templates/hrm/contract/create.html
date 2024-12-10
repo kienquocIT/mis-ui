@@ -64,10 +64,12 @@
                     <label class="form-check-label mr-4" for="file_type2">
                         {% trans 'Online template' %}
                     </label>
-                    <button class="btn btn-outline-primary btn-sm ntt-drawer-toggle-link" type="button"
-                            data-drawer-target="#drawer_signature"
-                            data-drawer-active="false">
-                        {% trans 'Get signature' %}</button>
+                    {% if show_icon %}
+                        <button class="btn btn-outline-primary btn-sm ntt-drawer-toggle-link" type="button"
+                                data-drawer-target="#drawer_signature"
+                                data-drawer-active="false">
+                            {% trans 'Get signature' %}</button>
+                    {% endif %}
                 </div>
             </div>
             {% if edit %}

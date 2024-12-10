@@ -129,9 +129,9 @@ class contract_data {
             $('.contract-list').addClass('hidden');
             $('.contract-edit').removeClass('hidden');
             // handle reset attachment file
-            $('.dm-uploader-no-files').show();
-            $('.dm-uploader-result-list').html('');
-            $('#attachment').find('.dm-uploader').dmUploader("reset");
+            $('#attachment .dm-uploader-no-files').show();
+            $('#attachment .dm-uploader-result-list').html('');
+            $('#attachment .dm-uploader').dmUploader("reset");
             $('#effected_date')[0]._flatpickr.clear()
             $('#expired_date')[0]._flatpickr.clear()
             $('#company_representative').val('').trigger('change')

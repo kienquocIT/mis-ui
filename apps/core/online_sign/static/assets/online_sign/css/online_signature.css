@@ -3,3 +3,14 @@ canvas{
     width: 100%;
     aspect-ratio: 16 / 9;
 }
+.copied{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: rgb(254 99 71);
+    font-weight: 600;
+    font-size: 16px;
+    text-shadow: -2px 1px 0px #fcfcfc, -3px 3px 0px rgb(172, 216, 231);
+    letter-spacing: 1px;
+    transform: translate(-50%, -50%);
+}

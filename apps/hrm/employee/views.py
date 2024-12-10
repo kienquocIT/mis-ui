@@ -138,6 +138,7 @@ class HRMEmployeeUpdate(View):
         template='hrm/employee/update.html',
         breadcrumb='HRM_EMPLOYEE_UPDATE_PAGE',
         menu_active='menu_employee_data_list',
+        jsi18n='hrm',
     )
     def get(self, request, *args, pk, **kwargs):
         language = getattr(request.user, 'language', settings.LANGUAGE_CODE)
@@ -188,4 +189,28 @@ class HRMEmployeeContractDetailAPI(APIView):
     )
     def get(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.HRM_EMPLOYEE_CONTRACT_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return()
+
+
+# ############## SIGNATURE ATTACHMENT ##############
+class HRMEmployeeSignatureAttachmentListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.HRM_EMPLOYEE_SIGNATURE_LIST).get(request.query_params.dict())
+        return resp.auto_return(key_success='attachment_list')
+
+
+class HRMSignatureAttachmentUpdateAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.HRM_EMPLOYEE_SIGNATURE_UPDATE.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = f'{HRMMsg.HRM_EMPLOYEE_INFO} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
+            return resp.result, status.HTTP_200_OK
         return resp.auto_return()

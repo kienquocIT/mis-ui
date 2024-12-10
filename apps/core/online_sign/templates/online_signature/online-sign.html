@@ -20,16 +20,8 @@
                 <div class="row">
                     <div class="col-12 text-warning mb-3">
                         <p>
-                            <small>
-                            {% blocktrans %}
-                                Step 1: Sign to blue rectangle and then click upload button
-                            {% endblocktrans %}
-                            </small><br>
-                            <small>
-                            {% blocktrans %}
-                                Step 2: click button view file and copy image URL to insert signature
-                            {% endblocktrans %}
-                            </small>
+                            <small><i>{% trans 'How to get signature file' %} </i></small>
+                            <a href="#" class="start-tour font-2">{% trans 'START TOUR' %}</a>
                         </p>
                     </div>
                     <div class="col-12">
@@ -47,8 +39,12 @@
                     </div>
                     <div class="clearfix mt-4"></div>
                     <div class="col-12">
-                        <label for="#attach_sign" class="mb-2">{% trans 'Manager signature file' %}</label>
-                        <div id="attach_sign">
+                        <label for="attach_sign" class="mb-2">{% trans 'Manager signature file' %}</label>
+                        <div id="attach_sign" data-list="{% url 'HRMEmpSignAttListAPI' %}"
+                             {% if is_edit %}
+                                data-update="{% url 'HRMEmpSignAttUpdateAPI' data.pk %}"
+                             {% endif %}
+                        >
                             {% include 'extends/files/all.html' %}
                         </div>
                     </div>

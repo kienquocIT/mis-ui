@@ -477,32 +477,6 @@ class QuotationLoadDataHandle {
         QuotationLoadDataHandle.loadCssS2($ele, '260px');
     };
 
-    static loadBtnAddProductS2(row) {
-        let $form = $('#frm_quotation_create');
-        let $tables = $('#datable-quotation-create-product');
-        let rowIndex = $tables.DataTable().row(row).index();
-        let $row = $tables.DataTable().row(rowIndex);
-        let rowData = $row.data();
-        if (rowData?.['order']) {
-            let addProductID = `btn-add-product-${rowData?.['order']}`;
-            let $addProduct = $(`#${addProductID}`);
-            if ($addProduct.length <= 0) {
-                let s2ResultID = `select2-product-${rowData?.['order']}-results`;
-                let $s2Result = $(`#${s2ResultID}`);
-                if ($s2Result && $s2Result.length > 0) {
-                    let eleResult = $s2Result[0].closest('.select2-results');
-                    if (eleResult) {
-                        if (!$form[0].classList.contains('sale-order')) {
-                            $(eleResult).before(`<button type="button" class="btn btn-link btn-animated" id="${addProductID}" data-bs-toggle="modal" data-bs-target="#addQuickProduct">
-                                                    <span><span class="icon"><i class="far fa-plus-square"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add-new')}</span></span>
-                                                </button>`);
-                        }
-                    }
-                }
-            }
-        }
-    };
-
     static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
         let ele = $('#data-init-copy-quotation');
         let formSubmit = $('#frm_quotation_create');
@@ -2767,7 +2741,7 @@ class QuotationDataTableHandle {
                                         >
                                         <button
                                             type="button"
-                                            class="btn btn-icon btn-light btn-select-price"
+                                            class="btn btn-icon btn-outline-light btn-select-price"
                                             data-bs-toggle="modal"
                                             data-bs-target="#selectPriceModal"
                                             data-zone="${dataZone}"
@@ -3013,7 +2987,7 @@ class QuotationDataTableHandle {
                                             >
                                             <button
                                                 type="button"
-                                                class="btn btn-icon btn-light btn-select-cost"
+                                                class="btn btn-icon btn-outline-light btn-select-cost"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#selectCostModal"
                                                 data-zone="${dataZone}"

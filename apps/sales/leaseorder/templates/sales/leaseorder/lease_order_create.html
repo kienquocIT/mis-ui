@@ -733,6 +733,43 @@
             </div>
 
             <div
+                    class="modal fade" id="selectOffsetModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectOffsetModal"
+                    aria-hidden="true"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select offset item' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table
+                                    id="table-select-offset"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th class="w-30">{% trans 'Offset item' %}</th>
+                                    <th class="w-30">{% trans 'Description' %}</th>
+                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                    <th class="w-10">{% trans 'Status' %}</th>
+                                    <th class="w-20">{% trans 'Note' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-offset" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
                     class="modal fade" id="selectPriceModal" tabindex="-1"
                     role="dialog" aria-labelledby="selectPriceModal"
             >

@@ -99,10 +99,6 @@ $(function () {
             QuotationLoadDataHandle.loadNewProduct();
         });
 
-        tableProduct.on('click', '.table-row-item-area', function () {
-           QuotationLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
-        });
-
         // QUICK PRODUCT
         $('#addQuickProduct').on('shown.bs.modal', function () {
             let $boxPType = $('#add-product-type');

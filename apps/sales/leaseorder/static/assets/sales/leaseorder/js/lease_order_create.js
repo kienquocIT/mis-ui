@@ -32,6 +32,7 @@ $(function () {
         LeaseOrderLoadDataHandle.loadInitDate();
         // init dataTable
         LeaseOrderDataTableHandle.dataTableSelectProduct();
+        LeaseOrderDataTableHandle.dataTableSelectOffset();
         LeaseOrderDataTableHandle.dataTableProduct();
         LeaseOrderDataTableHandle.dataTableCost();
         LeaseOrderDataTableHandle.dataTableExpense();
@@ -99,21 +100,8 @@ $(function () {
             LeaseOrderLoadDataHandle.loadReInitDataTableProduct();
         });
 
-        btnAddProductGr.on('click', function () {
-            LeaseOrderLoadDataHandle.loadAddRowProductGr();
-        });
-
-        btnAddProduct.on('click', function (e) {
-            LeaseOrderLoadDataHandle.loadModalSProduct();
-            LeaseOrderIndicatorHandle.loadIndicator();
-        });
-
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             LeaseOrderLoadDataHandle.loadNewProduct();
-        });
-
-        tableProduct.on('click', '.table-row-item-area', function () {
-           LeaseOrderLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
         });
 
         // QUICK PRODUCT

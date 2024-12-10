@@ -24,10 +24,6 @@ $(function () {
                     if (!$form.hasClass('sale-order')) { // QUOTATION PAGES
                         $('#data-copy-quotation-detail').val(JSON.stringify(data));
                     }
-                    if ($form.attr('data-method').toLowerCase() === 'put') {
-                        // Check config when begin edit
-                        QuotationCheckConfigHandle.checkConfig(0);
-                    }
 
                     // init workflow
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
@@ -55,44 +51,6 @@ $(function () {
                             new PrintTinymceControl().render('b9650500-aba7-44e3-b6e0-2542622702a3', data, false);
                         }
                     }
-
-                    //
-                    const processData = data?.['process'] || {};
-                    const processStageAppData = data?.['process_stage_app'] || {};
-                    const oppData = data?.['opportunity'] || {};
-                    const inheritData = data?.['employee_inherit'] || {};
-                    new $x.cls.bastionField({
-                        has_opp: true,
-                        has_inherit: true,
-                        has_process: true,
-                        data_process: processData && Object.keys(processData).length > 0 ? [
-                            {
-                               ...processData,
-                               'selected': true,
-                            }
-                        ] : [],
-                        data_process_stage_app: processStageAppData && Object.keys(processStageAppData).length > 0 ? [
-                            {
-                                ...processStageAppData,
-                                'selected': true,
-                            }
-                        ] : [],
-                        processStageAppFlagData: {
-                            'disable': true,
-                        },
-                        data_opp: oppData && Object.keys(oppData).length > 0 ? [
-                            {
-                                ...oppData,
-                                'selected': true,
-                            }
-                        ] : [],
-                        data_inherit: inheritData && Object.keys(inheritData).length > 0 ? [
-                            {
-                                ...inheritData,
-                                'selected': true,
-                            }
-                        ] : [],
-                    }).init();
                 }
             }
         )

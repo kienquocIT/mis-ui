@@ -2551,17 +2551,17 @@ class LeaseOrderLoadDataHandle {
             let dataProductList = data?.['lease_products_data'];
             for (let dataProduct of dataProductList) {
                 if (dataProduct?.['promotion_id']) {
-                    let checkData = QuotationPromotionHandle.checkPromotionValid(dataProduct?.['promotion_data'], data?.['customer_data']?.['id']);
-                    let promotionParse = QuotationPromotionHandle.getPromotionResult(checkData);
+                    let checkData = LeaseOrderPromotionHandle.checkPromotionValid(dataProduct?.['promotion_data'], data?.['customer_data']?.['id']);
+                    let promotionParse = LeaseOrderPromotionHandle.getPromotionResult(checkData);
                     let tableProduct = $('#datable-quotation-create-product');
                     if (promotionParse?.['is_discount'] === true) { // DISCOUNT
                         if (promotionParse?.['row_apply_index'] === null) { // on Specific product
                             if (promotionParse.hasOwnProperty('discount_rate_on_order')) {
                                 if (promotionParse.discount_rate_on_order !== null) {
                                     if (promotionParse.is_before_tax === true) {
-                                        QuotationPromotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price']);
+                                        LeaseOrderPromotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price']);
                                     } else {
-                                        QuotationPromotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price'], false)
+                                        LeaseOrderPromotionHandle.calculatePromotion(tableProduct, promotionParse?.['discount_rate_on_order'], promotionParse?.['product_price'], false)
                                     }
                                 }
                             }
@@ -2584,6 +2584,8 @@ class LeaseOrderDataTableHandle {
 
     static $tableSProduct = $('#table-select-product');
     static $tableProduct = $('#datable-quotation-create-product');
+    static $tableExpense = $('#datable-quotation-create-expense');
+    static $tablePayment = $('#datable-quotation-payment-stage');
 
     static dataTableProduct(data) {
         // init dataTable
@@ -2847,7 +2849,7 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '12%',
+                    width: '11%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -2888,6 +2890,7 @@ class LeaseOrderDataTableHandle {
             ],
             drawCallback: function () {
                 LeaseOrderCalculateCaseHandle.calculateAllRowsTableProduct();
+                LeaseOrderDataTableHandle.dtbProductHDCustom();
             },
         });
     };
@@ -3326,6 +3329,10 @@ class LeaseOrderDataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                LeaseOrderDataTableHandle.dtbExpenseHDCustom();
+            },
         });
     };
 
@@ -3614,11 +3621,6 @@ class LeaseOrderDataTableHandle {
             paging: false,
             info: false,
             columnDefs: [],
-            drawCallback: function () {
-                $.fn.initMaskMoney2();
-            },
-            rowCallback: function (row, data) {
-            },
             columns: [
                 {
                     targets: 0,
@@ -3664,6 +3666,10 @@ class LeaseOrderDataTableHandle {
                     }
                 }
             ],
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                LeaseOrderDataTableHandle.dtbIndicatorHDCustom();
+            },
         });
         if ($tables.hasClass('dataTable')) {
             $tables.DataTable().clear().draw();
@@ -3765,6 +3771,10 @@ class LeaseOrderDataTableHandle {
                     }
                 },
             ],
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                LeaseOrderDataTableHandle.dtbPaymentHDCustom();
+            },
         });
     };
 
@@ -3859,6 +3869,136 @@ class LeaseOrderDataTableHandle {
             },
         });
     };
+
+    // Custom dtb
+    static dtbProductHDCustom() {
+        let $table = LeaseOrderDataTableHandle.$tableProduct;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-product-quotation-create').length && !$('#btn-add-product-group-quotation').length && !$('#btn-check-promotion').length && !$('#btn-add-shipping').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_products_data">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                                </button>
+                                <div class="dropdown-menu w-210p">
+                                    <a class="dropdown-item" href="#" id="btn-add-product-quotation-create" data-bs-toggle="modal" data-bs-target="#selectProductModal"><i class="dropdown-icon fas fa-cube"></i><span class="mt-2">${LeaseOrderLoadDataHandle.transEle.attr('data-add-product')}</span></a>
+                                    <a class="dropdown-item" href="#" id="btn-add-product-group-quotation"><i class="dropdown-icon fas fa-layer-group"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add-group')}</span></a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" id="btn-add-shipping" data-bs-toggle="modal" data-bs-target="#shippingFeeModalCenter"><i class="dropdown-icon fas fa-shipping-fast"></i><span class="mt-2">${LeaseOrderLoadDataHandle.transEle.attr('data-shipping')}</span></a>
+                                    <a class="dropdown-item" href="#" id="btn-check-promotion" data-bs-toggle="modal" data-bs-target="#promotionModalCenter"><i class="dropdown-icon fas fa-tags"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-promotion')}</span></a>
+                                </div>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-product-quotation-create').on('click', function () {
+                    LeaseOrderLoadDataHandle.loadModalSProduct();
+                    LeaseOrderIndicatorHandle.loadIndicator();
+                });
+                $('#btn-add-product-group-quotation').on('click', function () {
+                    LeaseOrderLoadDataHandle.loadAddRowProductGr();
+                });
+                $('#btn-add-shipping').on('click', function () {
+                    LeaseOrderDataTableHandle.loadTableQuotationShipping();
+                });
+                $('#btn-check-promotion').on('click', function () {
+                    LeaseOrderPromotionHandle.callPromotion(0);
+                });
+            }
+        }
+    };
+
+    static dtbExpenseHDCustom() {
+        let $table = LeaseOrderDataTableHandle.$tableExpense;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-expense-quotation-create').length && !$('#btn-add-labor-quotation-create').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                                </button>
+                                <div class="dropdown-menu w-210p">
+                                    <a class="dropdown-item" href="#" id="btn-add-expense-quotation-create"><i class="dropdown-icon fas fa-hand-holding-usd"></i><span class="mt-2">${LeaseOrderLoadDataHandle.transEle.attr('data-add-expense')}</span></a>
+                                    <a class="dropdown-item" href="#" id="btn-add-labor-quotation-create"><i class="dropdown-icon fas fa-people-carry"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add-labor')}</span></a>
+                                </div>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-expense-quotation-create').on('click', function () {
+                    LeaseOrderLoadDataHandle.loadAddRowExpense();
+                });
+                $('#btn-add-labor-quotation-create').on('click', function () {
+                    LeaseOrderLoadDataHandle.loadAddRowLabor();
+                });
+            }
+        }
+    };
+
+    static dtbPaymentHDCustom() {
+        let $table = LeaseOrderDataTableHandle.$tablePayment;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-payment-stage').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-add-payment-stage" data-zone="lease_payment_stage">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-payment-stage').on('click', function () {
+                    LeaseOrderLoadDataHandle.loadAddPaymentStage();
+                });
+            }
+        }
+    };
+
+    static dtbIndicatorHDCustom() {
+        let $table = $('#datable-quotation-create-indicator');
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-refresh-indicator').length) {
+                let html1 = `<button type="button" class="btn btn-outline-secondary" id="btn-refresh-indicator">${LeaseOrderLoadDataHandle.transEle.attr('data-refresh')}</button>`;
+                let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                ${html1}
+                            </div>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-refresh-indicator').on('click', function () {
+                    document.getElementById('quotation-indicator-data').value = "";
+                    LeaseOrderIndicatorHandle.loadIndicator();
+                    $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-refreshed')}, 'success');
+                });
+            }
+        }
+    };
+
+
 }
 
 // Calculate
@@ -4550,15 +4690,7 @@ class LeaseOrderIndicatorHandle {
                 'indicator_rate': rateValue
             }
         }
-        // let $table = $('#datable-quotation-create-indicator');
-        // $table.DataTable().clear().draw();
-        // $table.DataTable().rows.add(result_list).draw();
-
-        if (!formSubmit.hasClass('sale-order')) {
-            LeaseOrderDataTableHandle.dataTableQuotationIndicator(result_list);
-        } else {
-            LeaseOrderDataTableHandle.dataTableSaleOrderIndicator(result_list);
-        }
+        LeaseOrderDataTableHandle.dataTableSaleOrderIndicator(result_list);
     };
 
     static evaluateFormula(formulaText) {
@@ -4716,10 +4848,10 @@ class LeaseOrderPromotionHandle {
                                         if (data2.hasOwnProperty('promotion_check_list') && Array.isArray(data2.promotion_check_list)) {
                                             let dataFinal = dataAllCus.concat(data2.promotion_check_list);
                                             if (type_check === 0) {
-                                                QuotationPromotionHandle.checkOnWorking(dataFinal, customer_id);
+                                                LeaseOrderPromotionHandle.checkOnWorking(dataFinal, customer_id);
                                             }
                                             if (type_check === 1) {
-                                                QuotationPromotionHandle.checkOnSubmit(dataFinal, customer_id);
+                                                LeaseOrderPromotionHandle.checkOnSubmit(dataFinal, customer_id);
                                             }
                                         }
                                     }
@@ -4728,10 +4860,10 @@ class LeaseOrderPromotionHandle {
                         } else {
                             let dataFinal = dataAllCus;
                             if (type_check === 0) {
-                                QuotationPromotionHandle.checkOnWorking(dataFinal, customer_id);
+                                LeaseOrderPromotionHandle.checkOnWorking(dataFinal, customer_id);
                             }
                             if (type_check === 1) {
-                                QuotationPromotionHandle.checkOnSubmit(dataFinal, customer_id);
+                                LeaseOrderPromotionHandle.checkOnSubmit(dataFinal, customer_id);
                             }
                         }
                     }
@@ -4745,7 +4877,7 @@ class LeaseOrderPromotionHandle {
         let passList = [];
         let failList = [];
         dataPromotion.map(function (item) {
-            let checkData = QuotationPromotionHandle.checkPromotionValid(item, customer_id);
+            let checkData = LeaseOrderPromotionHandle.checkPromotionValid(item, customer_id);
             if (checkData?.['is_pass'] === true) {
                 item['is_pass'] = true;
                 item['condition'] = checkData?.['condition'];
@@ -4764,7 +4896,7 @@ class LeaseOrderPromotionHandle {
         let check_length = 0;
         let eleCheck = $('#quotation-check-promotion');
         dataPromotion.map(function (item) {
-            let check = QuotationPromotionHandle.checkPromotionValid(item, customer_id);
+            let check = LeaseOrderPromotionHandle.checkPromotionValid(item, customer_id);
             if (check?.['is_pass'] === false) {
                 let tableProduct = document.getElementById('datable-quotation-create-product');
                 let rowPromotion = tableProduct.querySelector('.table-row-promotion');
@@ -4808,7 +4940,7 @@ class LeaseOrderPromotionHandle {
                 let fixDiscountAmount = 0;
                 let conditionCheck = data_promotion?.['discount_method'];
                 // check limit used on Sale Order
-                let check_limit = QuotationPromotionHandle.checkLimit(data_promotion, customer_id);
+                let check_limit = LeaseOrderPromotionHandle.checkLimit(data_promotion, customer_id);
                 if (check_limit === false) {
                     return data_promotion;
                 }
@@ -5036,7 +5168,7 @@ class LeaseOrderPromotionHandle {
             } else if (data_promotion?.['is_gift'] === true) { // GIFT
                 let conditionCheck = data_promotion?.['gift_method'];
                 // check limit used on Sale Order
-                let check_limit = QuotationPromotionHandle.checkLimit(data_promotion, customer_id);
+                let check_limit = LeaseOrderPromotionHandle.checkLimit(data_promotion, customer_id);
                 if (check_limit === false) {
                     return data_promotion;
                 }
@@ -5156,8 +5288,8 @@ class LeaseOrderPromotionHandle {
                     } else if (times_condition === 2) { // IN CURRENT WEEK
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM'));
                         let dateCurrent = new Date(moment($('#quotation-create-date-created').val()).format('YYYY-MM'));
-                        const weekNumber1 = QuotationPromotionHandle.getWeekNumber(dateToCheck);
-                        const weekNumber2 = QuotationPromotionHandle.getWeekNumber(dateCurrent);
+                        const weekNumber1 = LeaseOrderPromotionHandle.getWeekNumber(dateToCheck);
+                        const weekNumber2 = LeaseOrderPromotionHandle.getWeekNumber(dateCurrent);
                         if (weekNumber1 === weekNumber2) {
                             check_use_count++
                         }

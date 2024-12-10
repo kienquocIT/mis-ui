@@ -2013,6 +2013,7 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                GRDataTableHandle.dtbProductHDCustom();
             },
         });
     };
@@ -2055,6 +2056,28 @@ class GRDataTableHandle {
                 GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tableProductionReport);
             },
         });
+    };
+
+    // Custom dtb
+    static dtbProductHDCustom() {
+        let $table = GRDataTableHandle.tableLineDetailPO;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-edit-product-good-receipt').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-edit-product-good-receipt" data-bs-toggle="modal" data-bs-target="#productModalCenter">
+                                    <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>${GRLoadDataHandle.transEle.attr('data-edit')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+            }
+        }
     };
 
 }

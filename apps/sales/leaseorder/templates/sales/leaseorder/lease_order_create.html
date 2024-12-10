@@ -7,7 +7,7 @@
 {% endblock %}
 {% block pageAction %}
 {#    {% include 'extends/systems/page_actions.html' with is_save=True is_save_draft=True save_frm='frm_quotation_create' %}#}
-    <button class="btn btn-outline-primary hidden" type="submit" form="frm_quotation_create">
+    <button class="btn btn-outline-primary" type="submit" form="frm_quotation_create">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -29,10 +29,10 @@
             <ul class="nav nav-line nav-tabs nav-light justify-content-start quotation-tabs">
                 <li class="nav-item quotation-tab-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
-                        <span class="nav-link-text">{% trans 'Sale Order' %}</span>
+                        <span class="nav-link-text">{% trans 'Lease Order' %}</span>
                     </a>
                 </li>
-                <li class="nav-item quotation-tab-item" id="tab-indicator" data-zone="sale_order_indicators_data">
+                <li class="nav-item quotation-tab-item" id="tab-indicator" data-zone="lease_indicators_data">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
                         <span class="nav-link-text">{% trans 'Indicator' %}</span>
                     </a>
@@ -76,9 +76,31 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
-                            <div class="form-group">
-                                <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
-                                <input type="text" class="form-control form-control-line mt-1" id="quotation-create-date-created" readonly>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="lease_from">{% trans 'Lease from' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" name="lease_from" id="lease_from"
+                                                   class="form-control date-picker" autocomplete="off" required>
+                                            <div class="input-suffix">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="lease_to">{% trans 'Lease to' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" name="lease_to" id="lease_to"
+                                                   class="form-control date-picker" autocomplete="off" required>
+                                            <div class="input-suffix">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
@@ -257,18 +279,6 @@
                                     </table>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12 col-md-6 col-lg-6">
-                                        <button type="button" class="btn btn-outline-primary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_products_data">
-                                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'Add' %}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
-                                        </button>
-                                        <div class="dropdown-menu w-210p">
-                                            <a class="dropdown-item" href="#" id="btn-add-product-quotation-create" data-bs-toggle="modal" data-bs-target="#selectProductModal"><i class="dropdown-icon fas fa-cube"></i><span class="mt-2">{% trans 'Add Product' %}</span></a>
-                                            <a class="dropdown-item" href="#" id="btn-add-product-group-quotation"><i class="dropdown-icon fas fa-layer-group"></i><span>{% trans 'Add group' %}</span></a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#" id="btn-add-shipping" data-bs-toggle="modal" data-bs-target="#shippingFeeModalCenter"><i class="dropdown-icon fas fa-shipping-fast"></i><span class="mt-2">{% trans 'Shipping fee' %}</span></a>
-                                            <a class="dropdown-item" href="#" id="btn-check-promotion" data-bs-toggle="modal" data-bs-target="#promotionModalCenter"><i class="dropdown-icon fas fa-tags"></i><span>{% trans 'Promotion' %}</span></a>
-                                        </div>
-                                    </div>
                                     <div class="col-12 col-md-6 col-lg-6">
                                         <div
                                                 class="modal fade" id="shippingFeeModalCenter" tabindex="-1"
@@ -472,17 +482,6 @@
                                         </tfoot>
                                     </table>
                                 </div>
-                                <div class="row">
-                                    <div class="col-12 col-md-6 col-lg-6">
-                                        <button type="button" class="btn btn-outline-primary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data">
-                                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
-                                        </button>
-                                        <div class="dropdown-menu w-210p">
-                                            <a class="dropdown-item" href="#" id="btn-add-expense-quotation-create"><i class="dropdown-icon fas fa-hand-holding-usd"></i><span class="mt-2">{% trans 'Add Expense' %}</span></a>
-                                            <a class="dropdown-item" href="#" id="btn-add-labor-quotation-create"><i class="dropdown-icon fas fa-people-carry"></i><span>{% trans 'Add Labor' %}</span></a>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                             <div class="tab-pane fade" id="tab_payment">
                                 <div class="row">
@@ -505,13 +504,6 @@
                                         <tbody>
                                         </tbody>
                                     </table>
-                                </div>
-                                <div class="row mb-5">
-                                    <div class="col-12 col-md-6 col-lg-6">
-                                        <button type="button" class="btn btn-outline-primary" id="btn-add-payment-stage" data-zone="sale_order_logistic_data_readonly">
-                                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="tab_logistic">
@@ -611,19 +603,6 @@
             </div>
             <div class="tab-pane fade" id="tab_block_2">
                 <div class="row">
-                    <div class="row">
-                        <div class="col-2">
-                            <button
-                                    type="button"
-                                    class="btn btn-outline-primary"
-                                    id="btn-refresh-quotation-indicator"
-                                    data-zone="sale_order_indicators_data"
-                            >
-                            <span><span class="icon"><span class="feather-icon"><i class="fas fa-redo-alt"></i></span></span><span>{% trans 'Refresh' %}</span></span>
-                            </button>
-                        </div>
-                        <div class="col-10"></div>
-                    </div>
                     <table
                             id="datable-quotation-create-indicator"
                             class="table nowrap w-100 mb-5 sale-order"
@@ -840,6 +819,12 @@
         data-asset-type-1="{% trans "Product" %}"
         data-asset-type-2="{% trans "Tool" %}"
         data-asset-type-3="{% trans "Fixed asset" %}"
+        data-refresh="{% trans "Refresh" %}"
+        data-add="{% trans "Add" %}"
+        data-add-product="{% trans "Add Product" %}"
+        data-add-group="{% trans "Add group" %}"
+        data-add-expense="{% trans "Add Expense" %}"
+        data-add-labor="{% trans "Add Labor" %}"
     >
     <input
         type="text"

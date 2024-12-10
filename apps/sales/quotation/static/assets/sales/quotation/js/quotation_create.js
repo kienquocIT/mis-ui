@@ -95,15 +95,6 @@ $(function () {
             QuotationLoadDataHandle.loadReInitDataTableProduct();
         });
 
-        btnAddProductGr.on('click', function () {
-            QuotationLoadDataHandle.loadAddRowProductGr();
-        });
-
-        btnAddProduct.on('click', function (e) {
-            QuotationLoadDataHandle.loadModalSProduct();
-            indicatorHandle.loadIndicator();
-        });
-
         QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             QuotationLoadDataHandle.loadNewProduct();
         });
@@ -604,10 +595,6 @@ $(function () {
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
-        $('#btn-check-promotion').on('click', function () {
-            QuotationPromotionHandle.callPromotion(0);
-        });
-
         tablePromotion.on('click', '.apply-promotion', function () {
             $(this).prop('disabled', true);
             deletePromotionRows(tableProduct, true, false);
@@ -690,10 +677,6 @@ $(function () {
 
 // SHIPPING
 // Action on click button Add Shipping Fee (show list shipping)
-        $('#btn-add-shipping').on('click', function() {
-            QuotationDataTableHandle.loadTableQuotationShipping();
-        });
-
         tableShipping.on('click', '.apply-shipping', function () {
             $(this).prop('disabled', true);
             // Delete all promotion rows
@@ -749,14 +732,6 @@ $(function () {
                 indicatorHandle.loadIndicator();
                 QuotationLoadDataHandle.loadSetWFRuntimeZone();
             }
-        });
-
-        // Clear data indicator store then call API to get new
-        $('#btn-refresh-quotation-indicator').on('click', function () {
-            let transEle = $('#app-trans-factory');
-            document.getElementById('quotation-indicator-data').value = "";
-            indicatorHandle.loadIndicator();
-            $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
         });
 
 // PAYMENT STAGE
@@ -883,6 +858,15 @@ $(function () {
                     maxlength: 100,
                 },
                 employee_inherit_id: {
+                    required: true,
+                },
+                customer_id: {
+                    required: true,
+                },
+                contact_id: {
+                    required: true,
+                },
+                payment_term_id: {
                     required: true,
                 },
             },

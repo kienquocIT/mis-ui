@@ -95,15 +95,6 @@ $(function () {
             QuotationLoadDataHandle.loadReInitDataTableProduct();
         });
 
-        btnAddProductGr.on('click', function () {
-            QuotationLoadDataHandle.loadAddRowProductGr();
-        });
-
-        btnAddProduct.on('click', function (e) {
-            QuotationLoadDataHandle.loadModalSProduct();
-            indicatorHandle.loadIndicator();
-        });
-
         QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             QuotationLoadDataHandle.loadNewProduct();
         });
@@ -604,10 +595,6 @@ $(function () {
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
-        $('#btn-check-promotion').on('click', function () {
-            QuotationPromotionHandle.callPromotion(0);
-        });
-
         tablePromotion.on('click', '.apply-promotion', function () {
             $(this).prop('disabled', true);
             deletePromotionRows(tableProduct, true, false);
@@ -690,10 +677,6 @@ $(function () {
 
 // SHIPPING
 // Action on click button Add Shipping Fee (show list shipping)
-        $('#btn-add-shipping').on('click', function() {
-            QuotationDataTableHandle.loadTableQuotationShipping();
-        });
-
         tableShipping.on('click', '.apply-shipping', function () {
             $(this).prop('disabled', true);
             // Delete all promotion rows
@@ -749,14 +732,6 @@ $(function () {
                 indicatorHandle.loadIndicator();
                 QuotationLoadDataHandle.loadSetWFRuntimeZone();
             }
-        });
-
-        // Clear data indicator store then call API to get new
-        $('#btn-refresh-quotation-indicator').on('click', function () {
-            let transEle = $('#app-trans-factory');
-            document.getElementById('quotation-indicator-data').value = "";
-            indicatorHandle.loadIndicator();
-            $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
         });
 
 // PAYMENT STAGE
@@ -885,6 +860,15 @@ $(function () {
                 employee_inherit_id: {
                     required: true,
                 },
+                customer_id: {
+                    required: true,
+                },
+                contact_id: {
+                    required: true,
+                },
+                payment_term_id: {
+                    required: true,
+                },
             },
             errorClass: 'is-invalid cl-red',
             submitHandler: submitHandlerFunc
@@ -948,12 +932,12 @@ $(function () {
                 //
                 'title',
                 'opportunity_id',
-                'customer',
+                'customer_id',
                 'customer_data',
-                'contact',
+                'contact_id',
                 'contact_data',
                 'employee_inherit_id',
-                'payment_term',
+                'payment_term_id',
                 'payment_term_data',
                 // total amount of products
                 'total_product_pretax_amount',
@@ -972,7 +956,6 @@ $(function () {
                 'total_expense',
                 // quotation tabs
                 'quotation_products_data',
-                'quotation_term_data',
                 'quotation_logistic_data',
                 'customer_shipping',
                 'customer_billing',
@@ -1000,14 +983,15 @@ $(function () {
                     //
                     'title',
                     'opportunity_id',
-                    'customer',
+                    'customer_id',
                     'customer_data',
-                    'contact',
+                    'contact_id',
                     'contact_data',
                     'employee_inherit_id',
-                    'payment_term',
+                    'payment_term_id',
                     'payment_term_data',
-                    'quotation',
+                    'quotation_id',
+                    'quotation_data',
                     // total amount of products
                     'total_product_pretax_amount',
                     'total_product_discount_rate',
@@ -1052,23 +1036,6 @@ $(function () {
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]
-                }
-            }
-            // validate none & blank
-            let check_blank_list = ['', "", "undefined"];
-            let check_field_list = [
-                'opportunity_id',
-                'customer',
-                'contact',
-                'employee_inherit_id',
-                'payment_term',
-                'quotation'
-            ]
-            for (let field of check_field_list) {
-                if (_form.dataForm.hasOwnProperty(field)) {
-                    if (check_blank_list.includes(_form.dataForm[field])) {
-                        _form.dataForm[field] = null;
-                    }
                 }
             }
             WFRTControl.callWFSubmitForm(_form);

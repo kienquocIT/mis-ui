@@ -1,26 +1,8 @@
 $(document).ready(function () {
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
-    // get params
-    const {opp_id, opp_title, opp_code} = $x.fn.getManyUrlParameters(['opp_id', 'opp_title', 'opp_code'])
-    let opportunity = opp_id ? {
-        'id': opp_id,
-        'title': opp_title,
-        'code': opp_code
-    } : null
-
-    const urlParams = new URLSearchParams(window.location.search)
-    let quotation_json= urlParams.get('quotation_object')
-    let quotation = quotation_json ? JSON.parse(decodeURIComponent(quotation_json)) : null
-    let sale_order_json= urlParams.get('sale_order_object')
-    let sale_order = sale_order_json ? JSON.parse(decodeURIComponent(sale_order_json)) : null
-    if (opportunity) {
-        opportunity['quotation'] = quotation
-        opportunity['sale_order'] = sale_order
-    }
-
     // call load page
-    PaymentHandle.LoadPage(opportunity, 'create')
+    PaymentHandle.LoadPage('create')
     WFRTControl.setWFInitialData('payment', 'POST')
 
     let form_validator = $('#form-create-payment').validate({

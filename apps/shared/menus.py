@@ -345,6 +345,10 @@ class MenusCRM:
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
         icon='<i class="fas fa-file-invoice"></i>',
     )
+    LEASE_ORDER = MenuCommon(
+        name='Lease order', code='menu_lease_order_list', view_name='LeaseOrderCreate',
+        icon='<i class="fas fa-hand-holding"></i>',
+    )
     RECURRENCE = MenuCommon(
         name='Recurrence transaction', code='menu_recurrence', view_name='',
         icon='<i class="fas fa-sync-alt"></i>',
@@ -428,8 +432,8 @@ class MenusCRM:
         icon='<i class="bi bi-ui-checks-grid"></i>',
         child=[
             MenuCommon(
-                name='Log a call', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
-                icon='<i class="bi bi-telephone-fill"></i>',
+                name='Call log', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
+                icon='<i class="fas fa-phone-volume"></i>',
             ),
             MenuCommon(
                 name='Send email', code='id_menu_email', view_name='OpportunityEmailList',
@@ -828,6 +832,7 @@ class SpaceItem:
                 MenusCRM.BIDDING,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,
+                MenusCRM.LEASE_ORDER,
                 MenusCRM.RECURRENCE,
                 MenusCRM.WORK_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,

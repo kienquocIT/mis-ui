@@ -208,6 +208,12 @@ PLAN_APP_OF_SALE = {
             list_view_name='WorkOrderList', detail_view_name='WorkOrderDetail'
         ).data,
     },
+    'bidding': {
+        'bidding': ReverseUrlCommon(
+            list_view_name='BiddingList',
+            detail_view_name='BiddingDetail',
+            create_view_name='BiddingCreate').data,
+    },
 }
 
 PLAN_APP_OF_E_OFFICE = {

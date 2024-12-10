@@ -55,12 +55,17 @@
     </div>
     <button
             id="btn-collapse-process-show"
-            class="btn btn-icon w-100 btn-xs my-2 btn-flush-light collapsed-active"
+            class="btn w-100 btn-xs my-2 btn-outline-light collapsed-active"
             data-bs-toggle="tooltip"
             title="{% trans 'Process' %}"
     >
         <span>
-            <span class="icon"><i class="fa-solid fa-angles-up"></i></span>
+            <span>{% trans 'See detail process here' %}</span>
+            <span class="icon">
+                <span class="feather-icon">
+                    <i class="fas fa-chevron-up"></i>
+                </span>
+            </span>
         </span>
     </button>
 
@@ -99,20 +104,17 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div class="table-responsive" style="max-height: 400px">
-                                <table class="table nowrap w-100" id="dtbMember" data-method="GET"
-                                       data-url="{% url 'EmployeeListAPI' %}">
-                                    <thead>
-                                    <tr>
-                                        <th class="w-10"></th>
-                                        <th class="w-20">{% trans "Employee Code" %}</th>
-                                        <th class="w-30">{% trans "Employee Name" %}</th>
-                                        <th class="w-30">{% trans "Group" %}</th>
-                                        <th class="w-10"></th>
-                                    </tr>
-                                    </thead>
-                                </table>
-                            </div>
+                            <table class="table nowrap w-100" id="dtbMember" data-method="GET"
+                                   data-url="{% url 'EmployeeListAPI' %}">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>{% trans "Employee" %}</th>
+                                    <th>{% trans "Group" %}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                            </table>
                         </div>
                         <div class="modal-footer">
                             <button
@@ -220,9 +222,9 @@
             data-trans-return="{% trans "Return Advance" %}"
             data-trans-task="{% trans "Task" %}"
             data-trans-bom="{% trans 'BOM' %}"
-            data-trans-call="{% trans "Call customer" %}"
-            data-trans-email="{% trans "Email to customer" %}"
-            data-trans-meeting="{% trans "Meeting with customer" %}"
+            data-trans-call="{% trans "Call" %}"
+            data-trans-email="{% trans "Email" %}"
+            data-trans-meeting="{% trans "Meeting" %}"
             data-trans-valid="{% trans "Valid" %}"
             data-trans-invalid="{% trans "invalid" %}"
             data-forbidden="{% trans "Forbidden" %}"

@@ -283,19 +283,6 @@
                                     </tfoot>
                                 </table>
                             </div>
-                            <div class="row">
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline-primary"
-                                        id="btn-edit-product-good-receipt"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#productModalCenter"
-                                    >
-                                        <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %}</span></span>
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                         <div class="row custom-line-detail" id="custom-line-detail-3" hidden>
                             <div class="row">
@@ -606,6 +593,7 @@
             data-purchase-request="{% trans 'Purchase request' %}"
             data-production-report="{% trans 'Production report' %}"
             data-required-product="{% trans "Product is required" %}"
+            data-edit="{% trans "Edit" %}"
     >
     <input
             type="text"

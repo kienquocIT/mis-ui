@@ -1150,38 +1150,156 @@ class APAction {
 }
 
 class APHandle {
-    static LoadPage(opportunity=null, option='create') {
+    static LoadPageActionWithParams(opp_id) {
+        let dataParam = {'id': opp_id}
+        let opportunity_ajax = $.fn.callAjax2({
+            url: script_url.attr('data-url-opp-list'),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
+                    return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([opportunity_ajax]).then(
+            (results) => {
+                let opportunity_data = results[0];
+                if (opportunity_data) {
+                    $('#opportunity_id').trigger('change')
+                    quotation_mapped_select.empty()
+                    sale_order_mapped_select.empty()
+                    if (opportunity_data?.['id']) {
+                        if (opportunity_data?.['is_close']) {
+                            $.fn.notifyB({description: `Opportunity ${opportunity_data?.['code']} has been closed. Can not select.`}, 'failure');
+                            opp_mapped_select.empty()
+                            ap_for = null
+                        } else {
+                            sale_order_mapped_select.prop('disabled', true)
+                            quotation_mapped_select.prop('disabled', true)
+                            let quo_mapped = opportunity_data?.['quotation'];
+                            let so_mapped = opportunity_data?.['sale_order'];
+                            APLoadPage.LoadQuotation(quo_mapped)
+                            APLoadTab.LoadPlanQuotation(opportunity_data?.['id'], quo_mapped?.['id'])
+                            APLoadPage.LoadSaleOrder(so_mapped);
+                            ap_for = 'opportunity'
+                        }
+                    } else {
+                        quotation_mapped_select.prop('disabled', false)
+                        sale_order_mapped_select.prop('disabled', false)
+                        ap_for = null
+                        APLoadTab.DrawTablePlan()
+                    }
+                }
+            })
+    }
+    static LoadPage(option='create') {
         APLoadPage.LoadCreatedDate()
         APLoadPage.LoadCreator(initEmployee)
 
         if (option === "create") {
-            new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
-                has_prj: true,
-                data_opp: $x.fn.checkUUID4(opportunity?.['id']) ? [{
-                    "id": opportunity?.['id'],
-                    "title": $x.fn.decodeURI(opportunity?.['title']),
-                    "code": $x.fn.decodeURI(opportunity?.['code']),
+            const {
+                create_open, from_opp,
+                opp_id,
+                opp_title,
+                opp_code,
+                process_id,
+                process_title,
+                process_stage_app_id,
+                process_stage_app_title,
+                inherit_id,
+                inherit_title
+            } = $x.fn.getManyUrlParameters([
+                'create_open', 'from_opp',
+                'opp_id', 'opp_title', 'opp_code',
+                'process_id', 'process_title',
+                'process_stage_app_id', 'process_stage_app_title',
+                'inherit_id', 'inherit_title',
+            ])
+            const group$ = $('#bastion-space')
+            if (create_open) {
+                const data_inherit = [{
+                    "id": inherit_id || '',
+                    "full_name": inherit_title || '',
                     "selected": true,
-                }] : [],
-                inheritFlagData: {"disabled": false, "readonly": false},
-            }).init();
-            $('#opportunity_id').trigger('change')
+                }];
+                const data_opp = [{
+                    "id": opp_id || '',
+                    "title": opp_title || '',
+                    "code": opp_code || '',
+                    "selected": true,
+                }];
+                const data_process = [{
+                    "id": process_id || '',
+                    "title": process_title || '',
+                    "selected": true,
+                }];
+                const data_process_stage_app = [{
+                    "id": process_stage_app_id || '',
+                    "title": process_stage_app_title || '',
+                    'selected': true,
+                }];
+                new $x.cls.bastionField({
+                    list_from_app: "cashoutflow.advancepayment.create",
+                    app_id: "57725469-8b04-428a-a4b0-578091d0e4f5",
+                    mainDiv: group$,
+                    oppEle: group$.find('select[name=opportunity_id]'),
+                    prjEle: group$.find('select[name=project_id]'),
+                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                    processEle: group$.find('select[name=process]'),
+                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
+                    data_opp: data_opp,
+                    data_inherit: data_inherit,
+                    data_process: data_process,
+                    data_process_stage_app: data_process_stage_app,
+                }).init();
+
+                APHandle.LoadPageActionWithParams(opp_id)
+            }
+            else if (from_opp) {
+                const data_opp = [{
+                    "id": opp_id || '',
+                    "title": opp_title || '',
+                    "code": opp_code || '',
+                    "selected": true,
+                }];
+                new $x.cls.bastionField({
+                    list_from_app: "cashoutflow.advancepayment.create",
+                    app_id: "57725469-8b04-428a-a4b0-578091d0e4f5",
+                    mainDiv: group$,
+                    oppEle: group$.find('select[name=opportunity_id]'),
+                    prjEle: group$.find('select[name=project_id]'),
+                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                    processEle: group$.find('select[name=process]'),
+                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
+                    data_opp: data_opp,
+                }).init();
+
+                APHandle.LoadPageActionWithParams(opp_id)
+            }
+            else {
+                new $x.cls.bastionField({
+                    list_from_app: "cashoutflow.advancepayment.create",
+                    app_id: "57725469-8b04-428a-a4b0-578091d0e4f5",
+                    mainDiv: group$,
+                    oppEle: group$.find('select[name=opportunity_id]'),
+                    prjEle: group$.find('select[name=project_id]'),
+                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                    processEle: group$.find('select[name=process]'),
+                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
+                }).init();
+            }
         }
 
-        if (opportunity) {
-            sale_order_mapped_select.prop('disabled', true)
-            quotation_mapped_select.prop('disabled', true)
-            ap_for = 'opportunity'
-        }
-
-        let quo_mapped = opportunity?.['quotation'];
-        let so_mapped = opportunity?.['sale_order'];
-        APLoadPage.LoadQuotation(quo_mapped)
-        APLoadTab.LoadPlanQuotation(opportunity?.['id'], quo_mapped?.['id'])
-        APLoadPage.LoadSaleOrder(so_mapped);
+        APLoadPage.LoadQuotation()
+        APLoadPage.LoadSaleOrder();
         APLoadPage.LoadSupplier()
         APLoadPage.LoadReturnDate()
         APLoadTab.LoadLineDetailTable()

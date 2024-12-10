@@ -28,10 +28,6 @@ $(function () {
             ContractLoadDataHandle.loadDataByOpp();
         });
 
-        ContractLoadDataHandle.$btnAddDoc.on('click', function () {
-            ContractLoadDataHandle.loadAddDoc();
-        });
-
         ContractDataTableHandle.$tableDocument.on('click', '.open-attach', function () {
             ContractStoreHandle.storeAttachment();
             ContractLoadDataHandle.loadOpenAttach(this);

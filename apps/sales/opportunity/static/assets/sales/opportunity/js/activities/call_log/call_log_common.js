@@ -35,13 +35,6 @@ function loadOpportunityCallLogList() {
                     }
                 },
                 {
-                    data: 'contact',
-                    className: 'wrap-text w-15',
-                    render: (data, type, row) => {
-                        return `<a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="link-secondary underline_hover">${row?.['contact']?.['fullname']}</span></a>`
-                    }
-                },
-                {
                     data: 'subject',
                     className: 'wrap-text w-30',
                     render: (data, type, row) => {
@@ -63,9 +56,9 @@ function loadOpportunityCallLogList() {
                 },
                 {
                     data: 'employee_inherit',
-                    className: 'wrap-text w-15',
+                    className: 'wrap-text w-30',
                     render: (data, type, row) => {
-                        return `<span class="text-primary">${row?.['employee_inherit']?.['full_name']}</span>`
+                        return `<span class="text-primary">${row?.['employee_inherit']?.['full_name']}</span><span class="text-primary"> --- <i class="fas fa-phone-volume"></i> --- </span><a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="text-primary underline_hover">${row?.['contact']?.['fullname']}</span></a>`
                     }
                 },
                 {
@@ -88,12 +81,14 @@ function loadCustomerList(data) {
 }
 
 function loadContactList(contact_list) {
-    $('#contact-select-box option').remove();
-    contact_slb.attr('disabled', false);
-    contact_slb.initSelect2();
-    contact_slb.append(`<option></option>`)
-    for (let i = 0; i < contact_list.length; i++) {
-        contact_slb.append(`<option value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+    if (contact_list) {
+        $('#contact-select-box option').remove();
+        contact_slb.attr('disabled', false);
+        contact_slb.initSelect2();
+        contact_slb.append(`<option></option>`)
+        for (let i = 0; i < contact_list.length; i++) {
+            contact_slb.append(`<option value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+        }
     }
 }
 
@@ -171,16 +166,46 @@ $(document).on('click', '#cancel-activity', function () {
 $('#opportunity_id').on('change', function () {
     let obj_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
     if (obj_selected) {
-        loadCustomerList(obj_selected?.['customer'])
-        loadContactList(obj_selected?.['customer']?.['contact_mapped'])
+        let customer_list = obj_selected?.['customer']
+        loadCustomerList(customer_list ? customer_list : [])
+        loadContactList(customer_list?.['contact_mapped'] ? customer_list?.['contact_mapped'] : [])
     }
 })
 
 class CallLogHandle {
+    static LoadPageActionWithParams(opp_id) {
+        let dataParam = {'id': opp_id}
+        let opportunity_ajax = $.fn.callAjax2({
+            url: table_opportunity_call_log_list.attr('data-url-opp-list'),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
+                    return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([opportunity_ajax]).then(
+            (results) => {
+                if (results[0]) {
+                    $('#opportunity_id').trigger('change')
+                    loadCustomerList(results[0]?.['customer'])
+                    loadContactList(results[0]?.['customer']?.['contact_mapped'])
+                    $('#offcanvas-call-log').offcanvas('show')
+                }
+            })
+    }
     static load() {
         loadOpportunityCallLogList();
         const {
-            create_open,
+            create_open, from_opp,
             opp_id,
             opp_title,
             opp_code,
@@ -191,12 +216,13 @@ class CallLogHandle {
             inherit_id,
             inherit_title,
         } = $x.fn.getManyUrlParameters([
-            'create_open',
+            'create_open', 'from_opp',
             'opp_id', 'opp_title', 'opp_code',
             'process_id', 'process_title',
             'process_stage_app_id', 'process_stage_app_title',
             'inherit_id', 'inherit_title',
         ])
+        const group$ = $('#offcanvas-call-log')
         if (create_open) {
             const data_inherit = [{
                 "id": inherit_id || '',
@@ -220,58 +246,56 @@ class CallLogHandle {
                 'selected': true,
             }];
             new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
+                list_from_app: "opportunity.opportunitycall.create",
+                app_id: "14dbc606-1453-4023-a2cf-35b1cd9e3efd",
+                mainDiv: group$,
+                oppEle: group$.find('select[name=opportunity_id]'),
+                prjEle: group$.find('select[name=project_id]'),
+                empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                processEle: group$.find('select[name=process]'),
+                processStageAppEle$: group$.find('select[name=process_stage_app]'),
                 data_opp: data_opp,
                 data_inherit: data_inherit,
                 data_process: data_process,
                 data_process_stage_app: data_process_stage_app,
-                oppFlagData: {"disabled": true, "readonly": true},
-                processFlagData: {"disabled": true, "readonly": true},
-                processStageAppFlagData: {"disabled": true, "readonly": true},
-                inheritFlagData: {"disabled": true, "readonly": true},
             }).init();
 
-            let dataParam = {'id': opp_id}
-            let opportunity_ajax = $.fn.callAjax2({
-                url: table_opportunity_call_log_list.attr('data-url-opp-list'),
-                data: dataParam,
-                method: 'GET'
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
-                        return data?.['opportunity_list'].length > 0 ? data?.['opportunity_list'][0] : null;
-                    }
-                    return {};
-                },
-                (errs) => {
-                    console.log(errs);
-                }
-            )
+            CallLogHandle.LoadPageActionWithParams(opp_id)
+        }
+        else if (from_opp) {
+            const data_opp = [{
+                "id": opp_id || '',
+                "title": opp_title || '',
+                "code": opp_code || '',
+                "selected": true,
+            }];
+            new $x.cls.bastionField({
+                list_from_app: "opportunity.opportunitycall.create",
+                app_id: "14dbc606-1453-4023-a2cf-35b1cd9e3efd",
+                mainDiv: group$,
+                oppEle: group$.find('select[name=opportunity_id]'),
+                prjEle: group$.find('select[name=project_id]'),
+                empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                processEle: group$.find('select[name=process]'),
+                processStageAppEle$: group$.find('select[name=process_stage_app]'),
+                data_opp: data_opp,
+            }).init();
 
-            Promise.all([opportunity_ajax]).then(
-                (results) => {
-                    let opportunity_data = results[0];
-                    if (opportunity_data) {
-                        loadCustomerList(opportunity_data?.['customer'])
-                        loadContactList(opportunity_data?.['customer']?.['contact_mapped'])
-                        $('#offcanvas-call-log').offcanvas('show')
-                    }
-                })
+            CallLogHandle.LoadPageActionWithParams(opp_id)
         }
         else {
             new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
-                has_prj: true,
-                inheritFlagData: {"disabled": false, "readonly": false},
+                list_from_app: "opportunity.opportunitycall.create",
+                app_id: "14dbc606-1453-4023-a2cf-35b1cd9e3efd",
+                mainDiv: group$,
+                oppEle: group$.find('select[name=opportunity_id]'),
+                prjEle: group$.find('select[name=project_id]'),
+                empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                processEle: group$.find('select[name=process]'),
+                processStageAppEle$: group$.find('select[name=process_stage_app]'),
             }).init();
         }
     }
-
     static combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 

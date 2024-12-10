@@ -2764,15 +2764,19 @@ class WFRTControl {
         let zonesData = WFRTControl.getZoneData();
         let zonesHiddenData = WFRTControl.getZoneHiddenData();
         let isEditAllZone = WFRTControl.getIsEditAllZone();
+        let docData = WFRTControl.getRuntimeDocData();
         // Case user is allowed to edit all page
         if (isEditAllZone === 'true') {
             if (window.location.href.includes('/update/')) {
                 let idFormID = globeFormMappedZone;
                 if (idFormID && globeWFRuntimeID) {
-                    DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
-                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
-                        DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
-                    });
+                    DocumentControl.getElePageAction().find('[form=' + idFormID + ']').not('.btn-wf-after-finish').addClass('hidden');
+                    if (docData?.['system_status'] === 1) {
+                        $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
+                            DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                        });
+                    }
+
                     let actionList = WFRTControl.getActionsList();
                     let actionBubble = null;
                     if (actionList.includes(1)) {
@@ -2935,10 +2939,12 @@ class WFRTControl {
                 if (window.location.href.includes('/update/')) {
                     let idFormID = globeFormMappedZone;
                     if (idFormID && globeWFRuntimeID) {
-                        DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
-                        $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
-                            DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
-                        });
+                        DocumentControl.getElePageAction().find('[form=' + idFormID + ']').not('.btn-wf-after-finish').addClass('hidden');
+                        if (docData?.['system_status'] === 1) {
+                            $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
+                                DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                            });
+                        }
 
                         let actionList = WFRTControl.getActionsList();
                         let actionBubble = null;
@@ -4045,7 +4051,7 @@ class UtilControl {
             let format = opts?.['format'] || "YYYY-MM-DD HH:mm:ss";
             let outputFormat = opts?.['outputFormat'] || "DD-MM-YYYY HH:mm:ss";
             let callback = opts?.['callback'] || function (data) {
-                return `<p>${data.relate}</p><small>${data.output}</small>`;
+                return opts?.['in_row'] === true ? `<small>${data.relate}</small> (<small>${data.output}</small>)` : `<p>${data.relate}</p><small>${data.output}</small>`;
             }
             const objDT = moment(dataStr, format);
             let relateTimeStr = objDT.fromNow();

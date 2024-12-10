@@ -928,6 +928,10 @@ select[readonly] {
     min-width: 1366px;
 }
 
+.min-w-1440p {
+    min-width: 1440px;
+}
+
 .min-w-1500p {
     min-width: 1500px;
 }

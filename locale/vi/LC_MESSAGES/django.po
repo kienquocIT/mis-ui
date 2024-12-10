@@ -3409,11 +3409,11 @@ msgstr "Xóa tất cả thông báo đã xem"
 
 #
 msgid "Win Rate"
-msgstr "Tỷ lệ thắng"
+msgstr "Xác suất thắng"
 
 #
 msgid "Manually input rate"
-msgstr "Tự nhập tỷ lệ"
+msgstr "Tự nhập xác suất"
 
 #
 msgid "agency role"
@@ -5477,8 +5477,8 @@ msgid "Sale Activities"
 msgstr "Hoạt động bán hàng"
 
 #
-msgid "Log a call"
-msgstr "Ghi cuộc gọi"
+msgid "Call log"
+msgstr "Nhật ký cuộc gọi"
 
 #
 msgid "Send email"
@@ -5489,8 +5489,8 @@ msgid "Meeting"
 msgstr "Cuộc họp"
 
 #
-msgid "Activity logs"
-msgstr "Hoạt động ghi lại"
+msgid "Sale activities logged"
+msgstr "Nhật ký hoạt động bán hàng"
 
 #
 msgid "Current action"
@@ -9823,3 +9823,27 @@ msgstr "Cuộc họp mới với khách hàng"
 #
 msgid "Detail Meeting With Customer"
 msgstr "Chi tiết cuộc họp với khách hàng"
+
+#
+msgid "Detail Email"
+msgstr "Chi tiết Email"
+
+#
+msgid "See detail process here"
+msgstr "Xem chi tiết Tiến trình tại đây"
+
+#
+msgid "Please click on the button to select"
+msgstr "Click vào nút ở cuối để chọn"
+
+#
+msgid "Shortcut menu"
+msgstr "Danh sách lối tắt"
+
+#
+msgid "Opportunity members"
+msgstr "Thành viên CHKD"
+
+#
+msgid "Opportunity detail"
+msgstr "Chi tiết CHKD"

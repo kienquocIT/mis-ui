@@ -1095,15 +1095,11 @@ class OpportunityActivity {
                             'production.bom': transEle.attr('data-trans-bom'),
                             'bidding.bidding': transEle.attr('data-trans-bidding'),
                         }
-                        let appMapBadge = {
-                            'quotation.quotation': "badge-primary badge-outline",
-                            'saleorder.saleorder': "badge-success badge-outline",
-                            'cashoutflow.advancepayment': "badge-pink badge-outline",
-                            'cashoutflow.payment': "badge-violet badge-outline",
-                            'cashoutflow.returnadvance': "badge-purple badge-outline",
-                            'task.opportunitytask': "badge-secondary badge-outline",
-                            'production.bom': "badge-orange badge-outline",
-                            'bidding.bidding': "badge-info badge-outline",
+                        let typeMapActivityIcon = {
+                            1: 'fa-solid fa-list-check',
+                            2: 'fas fa-phone-volume',
+                            3: 'bi bi-envelope-fill',
+                            4: 'bi bi-person-workspace',
                         }
                         let typeMapActivity = {
                             1: transEle.attr('data-trans-task'),
@@ -1114,32 +1110,35 @@ class OpportunityActivity {
                         let typeMapIcon = {
                             0: "fas fa-file-alt",
                             1: "fas fa-tasks",
-                            2: "fas fa-phone-alt",
-                            3: "far fa-envelope",
-                            4: "fas fa-users",
                         }
 
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code']) {
-                                return `<span class="badge badge-sm ${appMapBadge[row?.['app_code']]}">
-                                            <span>
-                                                <span class="icon"><span class="feather-icon"><small><i class="${typeMapIcon[row?.['log_type']]}"></i></small></span></span>
-                                                ${appMapTrans[row?.['app_code']]}
-                                            </span>
-                                        </span>`;
+                                return `<i class="text-primary ${typeMapIcon[row?.['log_type']]}"></i>  <span class="text-primary small">${appMapTrans[row?.['app_code']]}</span>`;
                             }
                         } else {
                             let status = '';
                             if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
                                 status = `<span class="badge badge-sm badge-icon-xs badge-soft-danger">${transEle.attr('data-trans-activity-cancelled')}</i>`
                             }
-                            return `<span class="badge badge-sm badge-outline badge-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
+                            return `<i class="text-primary ${typeMapActivityIcon[row?.['log_type']]}"></i>  <span class="text-primary small">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                         }
                         return `<p></p>`;
                     }
                 },
                 {
                     targets: 2,
+                    render: (data, type, row) => {
+                        if ([0, 1].includes(row?.['log_type'])) {
+                            if (row?.['app_code'] && row?.['doc_data']?.['code']) {
+                                return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
+                            }
+                        }
+                        return `<p></p>`;
+                    }
+                },
+                {
+                    targets: 3,
                     render: (data, type, row) => {
                         let urlMapApp = {
                             'quotation.quotation': urlFactory.attr('data-url-quotation-detail'),
@@ -1182,20 +1181,7 @@ class OpportunityActivity {
                     }
                 },
                 {
-                    targets: 3,
-                    className: 'text-center',
-                    render: (data, type, row) => {
-                        if ([0, 1].includes(row?.['log_type'])) {
-                            if (row?.['app_code'] && row?.['doc_data']?.['code']) {
-                                return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
-                            }
-                        }
-                        return `<p>--</p>`;
-                    }
-                },
-                {
                     targets: 4,
-                    className: 'text-center',
                     render: (data, type, row) => {
                         if (row?.['app_code'] && [0, 1].includes(row?.['log_type'])) {
                             if (row?.['log_type'] === 0 && row?.['doc_data']?.['system_status']) {
@@ -1213,12 +1199,12 @@ class OpportunityActivity {
                                 return `<span class="badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span>`;
                             }
                         }
-                        return `<p>--</p>`;
+                        return `<p></p>`;
                     }
                 },
                 {
                     targets: 5,
-                    className: 'text-center',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(row?.['date_created'], {
                             'outputFormat': 'DD/MM/YYYY',

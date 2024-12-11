@@ -5,7 +5,6 @@ $(function () {
         let formSubmit = $('#frm_purchase_order_create');
         // Elements
         let elePurchaseRequest = $('#purchase-order-purchase-request');
-        let btnAddPayment = $('#btn-add-po-payment-stage');
         let eleTabArea = $('#tab-content-quotation-product');
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
@@ -172,19 +171,6 @@ $(function () {
             }
         });
 
-        // Action on click button add product
-        POLoadDataHandle.$btnAddProduct.on('click', function() {
-            if (POLoadDataHandle.PRDataEle.val()) {
-                $('#btn-warning-add-product').click();
-            } else {
-                POLoadDataHandle.loadAddRowTableProductAdd();
-            }
-        });
-
-        POLoadDataHandle.$btnAddShipping.on('click', function () {
-            POLoadDataHandle.loadAddRowTableProductAdd(1);
-        });
-
         // Action on click btn continue to add product
         $('#btn-continue-add-product').on('click', function() {
             POLoadDataHandle.loadDataWhenClearPR(true);
@@ -256,11 +242,6 @@ $(function () {
 
         tablePurchaseOrderProductRequest.on('click', '.btn-view-price', function () {
             POLoadDataHandle.loadPriceListPQ(this);
-        });
-
-        // PAYMENT STAGE
-        btnAddPayment.on('click', function () {
-            POLoadDataHandle.loadAddPaymentStage();
         });
 
         tablePaymentStage.on('change', '.table-row-ratio, .table-row-value-before-tax, .table-row-tax', function () {

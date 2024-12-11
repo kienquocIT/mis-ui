@@ -32,28 +32,33 @@ $(function () {
         LeaseOrderLoadDataHandle.loadInitDate();
         // init dataTable
         LeaseOrderDataTableHandle.dataTableSelectProduct();
+        LeaseOrderDataTableHandle.dataTableSelectOffset();
         LeaseOrderDataTableHandle.dataTableProduct();
         LeaseOrderDataTableHandle.dataTableCost();
         LeaseOrderDataTableHandle.dataTableExpense();
-        if (!formSubmit[0].classList.contains('sale-order')) {  // quotation
-            LeaseOrderDataTableHandle.dataTableQuotationIndicator();
-        } else {  // sale order
-            LeaseOrderDataTableHandle.dataTableSaleOrderIndicator();
-            LeaseOrderDataTableHandle.dataTablePaymentStage();
-        }
+        LeaseOrderDataTableHandle.dataTableSaleOrderIndicator();
+        LeaseOrderDataTableHandle.dataTablePaymentStage();
         // init config
         LeaseOrderLoadDataHandle.loadInitQuotationConfig(formSubmit.attr('data-method'));
-        $('input[name="date_created"]').daterangepicker({
-            singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: false,
-            minYear: 1901,
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-        });
-        $('.daterangepicker').remove();
+        // date picker
+        $('.date-picker').each(function () {
+            $(this).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                autoApply: true,
+                autoUpdateInput: false,
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+            });
+            $(this).val('').trigger('change');
+        })
+
         // get WF initial zones
         let appCode = 'quotation';
         if (formSubmit[0].classList.contains('sale-order')) {
@@ -95,21 +100,8 @@ $(function () {
             LeaseOrderLoadDataHandle.loadReInitDataTableProduct();
         });
 
-        btnAddProductGr.on('click', function () {
-            LeaseOrderLoadDataHandle.loadAddRowProductGr();
-        });
-
-        btnAddProduct.on('click', function (e) {
-            LeaseOrderLoadDataHandle.loadModalSProduct();
-            LeaseOrderIndicatorHandle.loadIndicator();
-        });
-
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             LeaseOrderLoadDataHandle.loadNewProduct();
-        });
-
-        tableProduct.on('click', '.table-row-item-area', function () {
-           LeaseOrderLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
         });
 
         // QUICK PRODUCT
@@ -750,14 +742,6 @@ $(function () {
             }
         });
 
-        // Clear data indicator store then call API to get new
-        $('#btn-refresh-quotation-indicator').on('click', function () {
-            let transEle = $('#app-trans-factory');
-            document.getElementById('quotation-indicator-data').value = "";
-            LeaseOrderIndicatorHandle.loadIndicator();
-            $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
-        });
-
 // PAYMENT STAGE
         $('#btn-add-payment-stage').on('click', function () {
             LeaseOrderLoadDataHandle.loadAddPaymentStage();
@@ -882,6 +866,15 @@ $(function () {
                     maxlength: 100,
                 },
                 employee_inherit_id: {
+                    required: true,
+                },
+                customer_id: {
+                    required: true,
+                },
+                contact_id: {
+                    required: true,
+                },
+                payment_term_id: {
                     required: true,
                 },
             },

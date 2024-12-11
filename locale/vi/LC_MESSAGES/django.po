@@ -559,7 +559,7 @@ msgid "Department of the employee"
 msgstr "Phòng ban của nhân viên"
 
 #
-msgid "Date of Birthday"
+msgid "Date of birth"
 msgstr "Ngày Sinh"
 
 #
@@ -3140,8 +3140,8 @@ msgid "Workflow"
 msgstr "Quy trình làm việc"
 
 #
-msgid "Business Process"
-msgstr "Quy trình kinh doanh"
+msgid "Config Process"
+msgstr "Cấu hình Tiến trình"
 
 #
 msgid "Automation"

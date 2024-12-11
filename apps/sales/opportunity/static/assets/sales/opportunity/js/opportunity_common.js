@@ -2331,10 +2331,12 @@ class OpportunityLoadPage {
                 if (results_perm_app[0]) {
                     let create_quotation_sc = $('#create-quotation-shortcut')
                     create_quotation_sc.removeClass('disabled');
+                    create_quotation_sc.removeAttr('href');
                 }
                 if (results_perm_app[1]) {
                     let create_so_sc = $('#create-sale-order-shortcut')
                     create_so_sc.removeClass('disabled');
+                    create_so_sc.removeAttr('href');
                 }
                 if (results_perm_app[2]) {
                     let create_ap_sc = $('#create-advance-payment-shortcut')

@@ -736,7 +736,7 @@ $(function () {
         });
 
         tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
-            if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 if ($(this).hasClass('table-row-date')) {
                     let isCheck = true;

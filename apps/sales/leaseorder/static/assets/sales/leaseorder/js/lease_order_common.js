@@ -3889,7 +3889,7 @@ class LeaseOrderDataTableHandle {
                                 </button>
                                 <div class="dropdown-menu w-210p">
                                     <a class="dropdown-item" href="#" id="btn-add-product-quotation-create" data-bs-toggle="modal" data-bs-target="#selectProductModal"><i class="dropdown-icon fas fa-cube"></i><span class="mt-2">${LeaseOrderLoadDataHandle.transEle.attr('data-add-product')}</span></a>
-                                    <a class="dropdown-item" href="#" id="btn-add-product-group-quotation"><i class="dropdown-icon fas fa-layer-group"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add-group')}</span></a>
+                                    <a class="dropdown-item hidden" href="#" id="btn-add-product-group-quotation"><i class="dropdown-icon fas fa-layer-group"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add-group')}</span></a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="#" id="btn-add-shipping" data-bs-toggle="modal" data-bs-target="#shippingFeeModalCenter"><i class="dropdown-icon fas fa-shipping-fast"></i><span class="mt-2">${LeaseOrderLoadDataHandle.transEle.attr('data-shipping')}</span></a>
                                     <a class="dropdown-item" href="#" id="btn-check-promotion" data-bs-toggle="modal" data-bs-target="#promotionModalCenter"><i class="dropdown-icon fas fa-tags"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-promotion')}</span></a>
@@ -4187,7 +4187,6 @@ class LeaseOrderCalculateCaseHandle {
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         let price = 0;
         let quantity = 0;
-        let quantityTime = 0;
         let elePrice = row.querySelector('.table-row-price');
         if (elePrice) {
             price = $(elePrice).valCurrency();
@@ -4200,17 +4199,19 @@ class LeaseOrderCalculateCaseHandle {
                 quantity = 0;
             }
         }
+        let tax = 0;
+        let discount = 0;
+        let subtotal = (price * quantity);
         let eleQuantityTime = row.querySelector('.table-row-quantity-time');
         if (eleQuantityTime) {
+            let quantityTime = 0;
             if (eleQuantityTime.value) {
                 quantityTime = parseFloat(eleQuantityTime.value)
             } else if (!eleQuantityTime.value || eleQuantityTime.value === "0") {
                 quantityTime = 0;
             }
+            subtotal = (price * quantity * quantityTime);
         }
-        let tax = 0;
-        let discount = 0;
-        let subtotal = (price * quantity * quantityTime);
         let subtotalPlus = 0;
         let eleTax = row.querySelector('.table-row-tax');
         if (eleTax) {

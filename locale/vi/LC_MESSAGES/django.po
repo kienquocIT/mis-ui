@@ -9844,3 +9844,7 @@ msgstr "Loại tài sản"
 #
 msgid "Please select asset type"
 msgstr "Vui lòng chọn loại tài sản"
+
+#
+msgid "Fixed asset"
+msgstr "TSCĐ"

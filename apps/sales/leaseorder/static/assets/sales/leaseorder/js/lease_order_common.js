@@ -945,6 +945,7 @@ class LeaseOrderLoadDataHandle {
         let ele = $('#data-init-copy-quotation');
         let url = ele.attr('data-url-detail').format_url_with_uuid(select_id);
         let method = ele.attr('data-method');
+        WindowControl.showLoading();
         $.fn.callAjax2(
             {
                 'url': url,
@@ -955,7 +956,8 @@ class LeaseOrderLoadDataHandle {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $('#data-copy-quotation-detail').val(JSON.stringify(data))
+                    $('#data-copy-quotation-detail').val(JSON.stringify(data));
+                    WindowControl.hideLoading();
                 }
             }
         )
@@ -2322,11 +2324,11 @@ class LeaseOrderLoadDataHandle {
         let costs_data = data?.['lease_costs_data'];
         let expenses_data = data?.['lease_expenses_data'];
         let indicators_data = data?.['lease_indicators_data'];
-        if (data.hasOwnProperty('sale_order_products_data') && data.hasOwnProperty('sale_order_costs_data') && data.hasOwnProperty('sale_order_expenses_data') && data.hasOwnProperty('sale_order_indicators_data')) {
-            products_data = data?.['sale_order_products_data'];
-            costs_data = data?.['sale_order_costs_data'];
-            expenses_data = data?.['sale_order_expenses_data'];
-            indicators_data = data?.['sale_order_indicators_data'];
+        if (data.hasOwnProperty('quotation_products_data') && data.hasOwnProperty('quotation_costs_data') && data.hasOwnProperty('quotation_expenses_data') && data.hasOwnProperty('quotation_indicators_data')) {
+            products_data = data?.['quotation_products_data'];
+            costs_data = data?.['quotation_costs_data'];
+            expenses_data = data?.['quotation_expenses_data'];
+            indicators_data = data?.['quotation_indicators_data'];
         }
         tableProduct.DataTable().clear().draw();
         tableCost.DataTable().clear().draw();
@@ -2603,6 +2605,9 @@ class LeaseOrderLoadDataHandle {
     static loadReApplyPromotion(data) {
         if (Object.keys(data?.['customer_data']).length > 0) {
             let dataProductList = data?.['lease_products_data'];
+            if (data.hasOwnProperty('quotation_products_data')) {
+                dataProductList = data?.['quotation_products_data'];
+            }
             for (let dataProduct of dataProductList) {
                 if (dataProduct?.['promotion_id']) {
                     let checkData = LeaseOrderPromotionHandle.checkPromotionValid(dataProduct?.['promotion_data'], data?.['customer_data']?.['id']);
@@ -2828,7 +2833,7 @@ class LeaseOrderDataTableHandle {
                             return ``;
                         }
                         let dataZone = "lease_products_data";
-                        return `<input type="text" class="form-control table-row-quantity-time validated-number" value="${row?.['product_quantity_time']}" data-zone="${dataZone}" required>`;
+                        return `<input type="text" class="form-control table-row-quantity-time validated-number" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" data-zone="${dataZone}" required>`;
                     }
                 },
                 {

@@ -5775,6 +5775,15 @@ class QuotationSubmitHandle {
                         rowData['uom_data'] = dataUOM;
                     }
                 }
+                let eleQuantity = row.querySelector('.table-row-quantity');
+                if (eleQuantity) {
+                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
+                    if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                        rowData['remain_for_purchase_request'] = parseFloat(eleQuantity.value);
+                        rowData['remain_for_purchase_order'] = parseFloat(eleQuantity.value);
+                        rowData['quantity_wo_remain'] = parseFloat(eleQuantity.value);
+                    }
+                }
                 let eleTax = row.querySelector('.table-row-tax');
                 if ($(eleTax).val()) {
                     let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
@@ -5794,15 +5803,6 @@ class QuotationSubmitHandle {
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
                     rowData['product_description'] = eleDescription.innerHTML;
-                }
-                let eleQuantity = row.querySelector('.table-row-quantity');
-                if (eleQuantity) {
-                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
-                    if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
-                        rowData['remain_for_purchase_request'] = parseFloat(eleQuantity.value);
-                        rowData['remain_for_purchase_order'] = parseFloat(eleQuantity.value);
-                        rowData['quantity_wo_remain'] = parseFloat(eleQuantity.value);
-                    }
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {

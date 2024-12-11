@@ -441,40 +441,42 @@ class LeaseOrderLoadDataHandle {
         if (row) {
             let eleType = row.querySelector('.table-row-asset-type');
             if (eleType) {
-                if ($(eleType).val()) {
-                    let params = {};
-                    if ($(eleType).val() === "1") {
-                        params = {'general_product_types_mapped__is_goods': true};
+                if (!$(eleType).val()) {
+                    $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-required-asset-type')}, 'info');
+                    return false;
+                }
+                let params = {};
+                if ($(eleType).val() === "1") {
+                    params = {'general_product_types_mapped__is_goods': true};
+                }
+                if ($(eleType).val() === "2") {
+                    params = {'general_product_types_mapped__is_asset_tool': true};
+                }
+                WindowControl.showLoading();
+                $.fn.callAjax2({
+                        'url': LeaseOrderDataTableHandle.productInitEle.attr('data-url'),
+                        'method': LeaseOrderDataTableHandle.productInitEle.attr('data-method'),
+                        'data': params,
+                        'isDropdown': true,
                     }
-                    if ($(eleType).val() === "2") {
-                        params = {'general_product_types_mapped__is_asset_tool': true};
-                    }
-                    WindowControl.showLoading();
-                    $.fn.callAjax2({
-                            'url': LeaseOrderDataTableHandle.productInitEle.attr('data-url'),
-                            'method': LeaseOrderDataTableHandle.productInitEle.attr('data-method'),
-                            'data': params,
-                            'isDropdown': true,
-                        }
-                    ).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                                    for (let product of data.product_sale_list) {
-                                        if (product.hasOwnProperty('product_choice') && Array.isArray(product.product_choice)) {
-                                            if (product['product_choice'].includes(0)) {
-                                                fnData.push(product);
-                                            }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                                for (let product of data.product_sale_list) {
+                                    if (product.hasOwnProperty('product_choice') && Array.isArray(product.product_choice)) {
+                                        if (product['product_choice'].includes(0)) {
+                                            fnData.push(product);
                                         }
                                     }
-                                    LeaseOrderDataTableHandle.$tableSOffset.DataTable().rows.add(fnData).draw();
-                                    WindowControl.hideLoading();
                                 }
+                                LeaseOrderDataTableHandle.$tableSOffset.DataTable().rows.add(fnData).draw();
+                                WindowControl.hideLoading();
                             }
                         }
-                    )
-                }
+                    }
+                )
             }
         }
         return true;
@@ -728,6 +730,7 @@ class LeaseOrderLoadDataHandle {
             "order": order,
             "product_data": data,
             "product_quantity": 0,
+            "product_quantity_time": 0,
             "product_uom_code": "",
             "product_tax_title": "",
             "product_tax_value": 0,
@@ -3031,7 +3034,7 @@ class LeaseOrderDataTableHandle {
                     targets: 6,
                     render: (data, type, row) => {
                         let dataZone = "lease_costs_data";
-                        return `<input type="text" class="form-control table-row-quantity-time disabled-custom-show zone-readonly" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
+                        return `<input type="text" class="form-control table-row-quantity-time disabled-custom-show zone-readonly" value="${row?.['product_quantity_time']}" data-zone="${dataZone}" disabled>`;
                     }
                 },
                 {
@@ -5731,6 +5734,27 @@ class LeaseOrderSubmitHandle {
                         rowData['uom_data'] = dataUOM;
                     }
                 }
+                let eleQuantity = row.querySelector('.table-row-quantity');
+                if (eleQuantity) {
+                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
+                    if (LeaseOrderLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                        rowData['remain_for_purchase_request'] = parseFloat(eleQuantity.value);
+                        rowData['remain_for_purchase_order'] = parseFloat(eleQuantity.value);
+                        rowData['quantity_wo_remain'] = parseFloat(eleQuantity.value);
+                    }
+                }
+                let eleUOMTime = row.querySelector('.table-row-uom-time');
+                if ($(eleUOMTime).val()) {
+                    let dataUOMTime = SelectDDControl.get_data_from_idx($(eleUOMTime), $(eleUOMTime).val());
+                    if (dataUOMTime) {
+                        rowData['uom_time_id'] = dataUOMTime?.['id'];
+                        rowData['uom_time_data'] = dataUOMTime;
+                    }
+                }
+                let eleQuantityTime = row.querySelector('.table-row-quantity-time');
+                if (eleQuantityTime) {
+                    rowData['product_quantity_time'] = parseFloat(eleQuantityTime.value);
+                }
                 let eleTax = row.querySelector('.table-row-tax');
                 if ($(eleTax).val()) {
                     let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
@@ -5750,15 +5774,6 @@ class LeaseOrderSubmitHandle {
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
                     rowData['product_description'] = eleDescription.innerHTML;
-                }
-                let eleQuantity = row.querySelector('.table-row-quantity');
-                if (eleQuantity) {
-                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
-                    if (LeaseOrderLoadDataHandle.$form[0].classList.contains('sale-order')) {
-                        rowData['remain_for_purchase_request'] = parseFloat(eleQuantity.value);
-                        rowData['remain_for_purchase_order'] = parseFloat(eleQuantity.value);
-                        rowData['quantity_wo_remain'] = parseFloat(eleQuantity.value);
-                    }
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {

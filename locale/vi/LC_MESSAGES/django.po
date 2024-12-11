@@ -9832,3 +9832,15 @@ msgstr "Chi tiết Email"
 #
 msgid "See detail process here"
 msgstr "Xem chi tiết Tiến trình tại đây"
+
+#
+msgid "Lease order"
+msgstr "Đơn cho thuê"
+
+#
+msgid "Asset type"
+msgstr "Loại tài sản"
+
+#
+msgid "Please select asset type"
+msgstr "Vui lòng chọn loại tài sản"

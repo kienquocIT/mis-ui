@@ -442,6 +442,7 @@ class GISLoadTab {
             ],
             initComplete: function () {
                 $('.sn-checkbox').trigger('change')
+                $('#get-all').prop('hidden', false)
             }
         })
     }
@@ -1087,4 +1088,17 @@ btn_accept_select_powo.on('click', function () {
             }
         }
     })
+})
+
+$('#get-all').on('click', function () {
+    if ($(this).attr('data-get') === '') {
+        $('.sn-checkbox').prop('checked', true)
+        $(this).attr('data-get', '1')
+        $('#amount-selected-sn').text($('.sn-checkbox').length)
+    }
+    else {
+        $('.sn-checkbox').prop('checked', false)
+        $(this).attr('data-get', '')
+        $('#amount-selected-sn').text(0)
+    }
 })

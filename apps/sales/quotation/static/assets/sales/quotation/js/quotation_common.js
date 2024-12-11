@@ -1069,28 +1069,34 @@ class QuotationLoadDataHandle {
         }
         $table.DataTable().rows().every(function () {
             let row = this.node();
+            let eleOrder = row.querySelector('.table-row-order');
+            let eleGroup = row.querySelector('.table-row-group');
+            let eleProduct = row.querySelector('.table-row-item');
+            let eleShipping = row.querySelector('.table-row-shipping');
+            let elePromotion = row.querySelector('.table-row-promotion');
+
             QuotationCheckConfigHandle.checkConfig(1, row);
-            // load product group
-            if (row.querySelector('.table-row-group')) {
-                let eleGroupEdit = row.querySelector('.table-row-group-title-edit');
-                let areaGroupShow = row.querySelector('.area-group-show');
-                if (eleGroupEdit && areaGroupShow) {
-                    let groupShow = areaGroupShow.querySelector('.table-row-group-title-show');
-                    if (groupShow) {
-                        areaGroupShow.classList.remove('hidden');
-                        eleGroupEdit.setAttribute('hidden', 'true');
+
+            if (eleOrder) {
+                let dataRowRaw = eleOrder.getAttribute('data-row');
+                if (dataRowRaw) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    // load product group
+                    if (eleGroup) {
+                        let eleGroupEdit = row.querySelector('.table-row-group-title-edit');
+                        let areaGroupShow = row.querySelector('.area-group-show');
+                        if (eleGroupEdit && areaGroupShow) {
+                            let groupShow = areaGroupShow.querySelector('.table-row-group-title-show');
+                            if (groupShow) {
+                                areaGroupShow.classList.remove('hidden');
+                                eleGroupEdit.setAttribute('hidden', 'true');
+                            }
+                        }
+                        $(row).find('td:eq(1)').attr('colspan', 2);
                     }
-                }
-                $(row).find('td:eq(1)').attr('colspan', 2);
-            }
-            if (row.querySelector('.table-row-item')) {
-                QuotationLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '260px');
-                QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
-                let eleOrder = row.querySelector('.table-row-order');
-                if (eleOrder) {
-                    let dataRowRaw = eleOrder.getAttribute('data-row');
-                    if (dataRowRaw) {
-                        let dataRow = JSON.parse(dataRowRaw);
+                    if (eleProduct) {
+                        QuotationLoadDataHandle.loadCssS2($(eleProduct), '260px');
+                        QuotationLoadDataHandle.loadPriceProduct(eleProduct);
                         let dataGroup = dataRow?.['group_order'];
                         if (dataGroup) {
                             let classGroup = 'group-' + dataGroup;
@@ -1100,13 +1106,13 @@ class QuotationLoadDataHandle {
                             row.setAttribute('data-group', dataGroup);
                         }
                     }
+                    if (eleShipping) {
+                        QuotationLoadDataHandle.loadRowDisabled(row);
+                    }
+                    if (elePromotion) {
+                        QuotationLoadDataHandle.loadRowDisabled(row);
+                    }
                 }
-            }
-            if (row.querySelector('.table-row-shipping')) {
-                QuotationLoadDataHandle.loadRowDisabled(row);
-            }
-            if (row.querySelector('.table-row-promotion')) {
-                QuotationLoadDataHandle.loadRowDisabled(row);
             }
         });
         // load disabled if page detail
@@ -5690,284 +5696,35 @@ class shippingHandle {
 // Store data
 class QuotationStoreDataHandle {
 
-    static storeProduct(row) {
-        let rowData = {};
-        let eleOrder = row.querySelector('.table-row-order');
-        let eleProductGr = row.querySelector('.table-row-group');
-        let eleProduct = row.querySelector('.table-row-item');
-        let elePromotion = row.querySelector('.table-row-promotion');
-        let eleShipping = row.querySelector('.table-row-shipping');
-        if (eleProductGr) {  // PRODUCT GROUP
-            rowData['is_group'] = true;
-            if (eleProductGr.getAttribute('data-group-order')) {
-                rowData['group_order'] = parseInt(eleProductGr.getAttribute('data-group-order'));
-            }
-            let eleGroupTitle = row.querySelector('.table-row-group-title-edit');
-            if (eleGroupTitle) {
-                rowData['group_title'] = eleGroupTitle.value;
-            }
-        } else if (eleProduct) { // PRODUCT
-            if ($(eleProduct).val()) {
-                let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-                if (dataProduct) {
-                    rowData['product_id'] = dataProduct?.['id'];
-                    rowData['product_title'] = dataProduct?.['title'];
-                    rowData['product_code'] = dataProduct?.['code'];
-                    rowData['product_data'] = dataProduct;
-                }
-            }
-            let eleUOM = row.querySelector('.table-row-uom');
-            if ($(eleUOM).val()) {
-                let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
-                if (dataUOM) {
-                    rowData['unit_of_measure_id'] = dataUOM?.['id'];
-                    rowData['product_uom_title'] = dataUOM?.['title'];
-                    rowData['product_uom_code'] = dataUOM?.['code'];
-                    rowData['uom_data'] = dataUOM;
-                }
-            }
-            let eleTax = row.querySelector('.table-row-tax');
-            if ($(eleTax).val()) {
-                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
-                if (dataTax) {
-                    rowData['tax_id'] = dataTax?.['id'];
-                    rowData['product_tax_title'] = dataTax?.['title'];
-                    rowData['product_tax_value'] = dataTax?.['rate'];
-                    rowData['tax_data'] = dataTax;
-                } else {
-                    rowData['product_tax_value'] = 0;
-                }
-            }
-            let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-            if (eleTaxAmount) {
-                rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
-            }
-            let eleDescription = row.querySelector('.table-row-description');
-            if (eleDescription) {
-                rowData['product_description'] = eleDescription.innerHTML;
-            }
-            let eleQuantity = row.querySelector('.table-row-quantity');
-            if (eleQuantity) {
-                rowData['product_quantity'] = parseFloat(eleQuantity.value);
-            }
-            let elePrice = row.querySelector('.table-row-price');
-            if (elePrice) {
-                rowData['product_unit_price'] = $(elePrice).valCurrency();
-            }
-            let eleDiscount = row.querySelector('.table-row-discount');
-            if (eleDiscount) {
-                if (eleDiscount.value || eleDiscount.value === "0") {
-                    rowData['product_discount_value'] = parseFloat(eleDiscount.value);
-                } else {
-                    rowData['product_discount_value'] = 0;
-                }
-            }
-            let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
-            if (eleDiscountAmount) {
-                rowData['product_discount_amount'] = $(eleDiscountAmount).valCurrency();
-            }
-            let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-            if (eleSubtotal) {
-                rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
-            }
-            if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
-                rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount']
-            }
-            if (eleOrder) {
-                rowData['order'] = parseInt(eleOrder.innerHTML);
-            }
-            rowData['is_group'] = false;
-            let dataGroupRaw = row.getAttribute('data-group');
-            if (dataGroupRaw) {
-                rowData['group_order'] = parseInt(dataGroupRaw);
-            }
-        } else if (elePromotion) { // PROMOTION
-            rowData['is_group'] = false;
-            rowData['is_promotion'] = true;
-            if (elePromotion.getAttribute('data-promotion')) {
-                let dataPm = JSON.parse(elePromotion.getAttribute('data-promotion'));
-                rowData['promotion_id'] = dataPm?.['id'];
-                rowData['promotion_data'] = dataPm;
-            }
-            let uomData = getDataByProductID(elePromotion.getAttribute('data-id-product'));
-            if (uomData && Object.keys(uomData).length > 0) {
-                rowData['unit_of_measure_id'] = uomData?.['id'];
-                rowData['product_uom_title'] = uomData?.['title'];
-                rowData['product_uom_code'] = uomData?.['code'];
-                rowData['uom_data'] = uomData;
-            }
-            let eleTax = row.querySelector('.table-row-tax');
-            if (eleTax) {
-                let optionSelected = eleTax.options[eleTax.selectedIndex];
-                if (optionSelected) {
-                    if (optionSelected.querySelector('.data-info')) {
-                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                        rowData['tax_id'] = dataInfo?.['id'];
-                        rowData['product_tax_title'] = dataInfo?.['title'];
-                        rowData['product_tax_value'] = dataInfo?.['value'];
-                        rowData['tax_data'] = dataInfo;
-                    } else {
-                        rowData['product_tax_value'] = 0;
-                    }
-                }
-            }
-            let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-            if (eleTaxAmount) {
-                rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
-            }
-            let eleDescription = row.querySelector('.table-row-description');
-            if (eleDescription) {
-                rowData['product_description'] = eleDescription.value;
-            }
-            let eleQuantity = row.querySelector('.table-row-quantity');
-            if (eleQuantity) {
-                rowData['product_quantity'] = parseFloat(eleQuantity.value);
-            }
-            let elePrice = row.querySelector('.table-row-price');
-            if (elePrice) {
-                rowData['product_unit_price'] = $(elePrice).valCurrency();
-            }
-            rowData['product_discount_value'] = 0;
-            rowData['product_discount_amount'] = 0;
-            let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-            if (eleSubtotal) {
-                rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
-            }
-            if (eleOrder) {
-                rowData['order'] = parseInt(eleOrder.innerHTML);
-            }
-        } else if (eleShipping) { // SHIPPING
-            rowData['is_group'] = false;
-            rowData['is_shipping'] = true;
-            if (eleShipping.getAttribute('data-shipping')) {
-                let dataShipping = JSON.parse(eleShipping.getAttribute('data-shipping'));
-                rowData['shipping_id'] = dataShipping?.['id'];
-                rowData['shipping_data'] = dataShipping;
-            }
-            let eleTax = row.querySelector('.table-row-tax');
-            if (eleTax) {
-                let optionSelected = eleTax.options[eleTax.selectedIndex];
-                if (optionSelected) {
-                    if (optionSelected.querySelector('.data-info')) {
-                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                        rowData['tax_id'] = dataInfo?.['id'];
-                        rowData['product_tax_title'] = dataInfo?.['title'];
-                        rowData['product_tax_value'] = dataInfo?.['value'];
-                        rowData['tax_data'] = dataInfo;
-                    } else {
-                        rowData['product_tax_value'] = 0;
-                    }
-                }
-            }
-            let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-            if (eleTaxAmount) {
-                rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
-            }
-            let eleDescription = row.querySelector('.table-row-description');
-            if (eleDescription) {
-                rowData['product_description'] = eleDescription.value;
-            }
-            let eleQuantity = row.querySelector('.table-row-quantity');
-            if (eleQuantity) {
-                rowData['product_quantity'] = parseFloat(eleQuantity.value);
-            }
-            let elePrice = row.querySelector('.table-row-price');
-            if (elePrice) {
-                rowData['product_unit_price'] = $(elePrice).valCurrency();
-            }
-            rowData['product_discount_value'] = 0;
-            rowData['product_discount_amount'] = 0;
-            let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-            if (eleSubtotal) {
-                rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
-            }
-            if (eleOrder) {
-                rowData['order'] = parseInt(eleOrder.innerHTML);
-            }
+    static storeDtbData(type) {
+        let dataJSON = {};
+        let datas = [];
+        let $table = null;
+        if (type === 1) {
+            datas = QuotationSubmitHandle.setupDataProduct();
+            $table = QuotationDataTableHandle.$tableProduct;
         }
-        eleOrder.setAttribute('data-row', JSON.stringify(rowData));
+        if (type === 2) {
+            datas = QuotationSubmitHandle.setupDataExpense();
+            $table = QuotationDataTableHandle.$tableExpense;
+        }
+        if (datas.length > 0 && $table) {
+            for (let data of datas) {
+                if (!dataJSON.hasOwnProperty(String(data?.['order']))) {
+                    dataJSON[String(data?.['order'])] = data;
+                }
+            }
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                let eleOrder = row.querySelector('.table-row-order');
+                if (eleOrder) {
+                    let key = eleOrder.innerHTML;
+                    eleOrder.setAttribute('data-row', JSON.stringify(dataJSON?.[key]));
+                }
+            });
+        }
         return true;
     };
-
-    static storeExpense(row) {
-        let eleOrder = row.querySelector('.table-row-order');
-        let rowData = {};
-        let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
-        if (dataRowRaw) {
-            let dataRow = JSON.parse(dataRowRaw);
-            rowData['is_labor'] = dataRow?.['is_labor'];
-        }
-        let eleExpenseItem = row.querySelector('.table-row-item');
-        if ($(eleExpenseItem).val()) {
-            let dataExpenseItem = SelectDDControl.get_data_from_idx($(eleExpenseItem), $(eleExpenseItem).val());
-            if (dataExpenseItem) {
-                rowData['expense_item_id'] = dataExpenseItem?.['id'];
-                rowData['expense_code'] = dataExpenseItem?.['code'];
-                rowData['expense_type_title'] = dataExpenseItem?.['title'];
-                rowData['expense_item_data'] = dataExpenseItem;
-            }
-        }
-        if (row?.querySelector('.table-row-expense-title')) {
-            rowData['expense_title'] = row.querySelector('.table-row-expense-title').value;
-        }
-        let eleLaborItem = row?.querySelector('.table-row-labor-item');
-        if (eleLaborItem) {
-            if ($(eleLaborItem).val()) {
-                let dataLaborItem = SelectDDControl.get_data_from_idx($(eleLaborItem), $(eleLaborItem).val());
-                if (dataLaborItem) {
-                    rowData['expense_id'] = dataLaborItem?.['id'];
-                    rowData['expense_title'] = dataLaborItem?.['title'];
-                    rowData['expense_data'] = dataLaborItem;
-                }
-            }
-        }
-        let eleUOM = row.querySelector('.table-row-uom');
-        if ($(eleUOM).val()) {
-            let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
-            if (dataUOM) {
-                rowData['unit_of_measure_id'] = dataUOM?.['id'];
-                rowData['product_uom_title'] = dataUOM?.['title'];
-                rowData['product_uom_code'] = dataUOM?.['code'];
-                rowData['uom_data'] = dataUOM;
-            }
-        }
-        let eleTax = row.querySelector('.table-row-tax');
-        if ($(eleTax).val()) {
-            let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
-            if (dataTax) {
-                rowData['tax_id'] = dataTax?.['id'];
-                rowData['product_tax_title'] = dataTax?.['title'];
-                rowData['product_tax_value'] = dataTax?.['rate'];
-                rowData['tax_data'] = dataTax;
-            } else {
-                rowData['product_tax_value'] = 0;
-            }
-        }
-        let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-        if (eleTaxAmount) {
-            rowData['expense_tax_amount'] = parseFloat(eleTaxAmount.value)
-        }
-        let eleQuantity = row.querySelector('.table-row-quantity');
-        if (eleQuantity) {
-            rowData['expense_quantity'] = parseFloat(eleQuantity.value);
-        }
-        let elePrice = row.querySelector('.table-row-price');
-        if (elePrice) {
-            rowData['expense_price'] = $(elePrice).valCurrency();
-        }
-        let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-        if (eleSubtotal) {
-            rowData['expense_subtotal_price'] = parseFloat(eleSubtotal.value)
-        }
-        if (rowData.hasOwnProperty('expense_subtotal_price') && rowData.hasOwnProperty('expense_tax_amount')) {
-            rowData['expense_subtotal_price_after_tax'] = rowData['expense_subtotal_price'] + rowData['expense_tax_amount']
-        }
-        if (eleOrder) {
-            rowData['order'] = parseInt(eleOrder.innerHTML);
-        }
-        eleOrder.setAttribute('data-row', JSON.stringify(rowData));
-        return true;
-    }
 
 }
 

@@ -26,7 +26,7 @@ $(document).ready(function () {
                 render: (row, type, data) => {
                     let badge = '--';
                     if (row?.id)
-                        badge = `<span class="badge badge-soft-blue">${data.id}</span>`
+                        badge = `<span class="badge badge-soft-blue">${row.code}</span>`
                     return badge
                 }
             },

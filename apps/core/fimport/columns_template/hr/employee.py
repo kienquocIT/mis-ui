@@ -133,7 +133,7 @@ COLUMNS_HR_EMPLOYEE = ResolveColumnsFImport(
             },
         },
         {
-            'name': _('Date of Birthday'),
+            'name': _('Date of birth'),
             'input_name': 'dob',
             'type': 'string',
             'remarks': [

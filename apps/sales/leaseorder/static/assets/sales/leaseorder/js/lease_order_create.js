@@ -104,6 +104,10 @@ $(function () {
             LeaseOrderLoadDataHandle.loadNewProduct();
         });
 
+        LeaseOrderLoadDataHandle.$btnSaveSelectOffset.on('click', function () {
+            LeaseOrderLoadDataHandle.loadOffset(this);
+        });
+
         // QUICK PRODUCT
         $('#addQuickProduct').on('shown.bs.modal', function () {
             let $boxPType = $('#add-product-type');
@@ -172,10 +176,6 @@ $(function () {
                     $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
                 }
             )
-        });
-
-        LeaseOrderLoadDataHandle.$btnSaveSelectOffset.on('click', function () {
-            LeaseOrderLoadDataHandle.loadOffset(this);
         });
 
         tableProduct.on('click', '.del-row', function (e) {

@@ -52,12 +52,75 @@
         </tbody>
     </table>
     {% include 'sales/opportunity/activities/extends/email_modals.html' %}
+
+{#    <form id="test-send-mail"#}
+{#          data-method="GET"#}
+{#          data-url="{% url 'OpportunityEmailListAPI' %}"#}
+{#          data-url-redirect="{% url 'OpportunityEmailList' %}"#}
+{#          class="mt-5"#}
+{#    >#}
+{#        {% csrf_token %}#}
+{#        <div class="row">#}
+{#            <div class="col-12">#}
+{#                <label>From: </label><span>nguyenduonghai07@gmail.com</span><br>#}
+{#                <label>To: </label><span>19521464@gm.uit.edu.vn</span>#}
+{#            </div>#}
+{#            <div class="col-12">#}
+{#                <button class="btn btn-primary w-10" type="submit" form="test-send-mail">Send</button>#}
+{#            </div>#}
+{#        </div>#}
+{#    </form>#}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/activities/email/email_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/activities/email/email_list.js' %}"></script>
+{#    <script>#}
+{#        function combinesDataTest(frmEle) {#}
+{#            let frm = new SetupFormSubmit($(frmEle));#}
+{##}
+{#            frm.dataForm['test_send_mail'] = true;#}
+{##}
+{#            return {#}
+{#                url: frm.dataUrl,#}
+{#                method: frm.dataMethod,#}
+{#                data: frm.dataForm,#}
+{#                urlRedirect: frm.dataUrlRedirect,#}
+{#            };#}
+{#        }#}
+{##}
+{#        SetupFormSubmit.validate($('#test-send-mail'), {#}
+{#            submitHandler: function (form, event) {#}
+{#                event.preventDefault();#}
+{#                let combinesData = combinesDataTest($(form));#}
+{#                if (combinesData) {#}
+{#                    WindowControl.showLoading();#}
+{#                    $.fn.callAjax2(combinesData)#}
+{#                        .then(#}
+{#                            (resp) => {#}
+{#                                let data = $.fn.switcherResp(resp);#}
+{#                                if (data) {#}
+{#                                    $.fn.notifyB({description: "Successfully"}, 'success')#}
+{#                                    setTimeout(() => {#}
+{#                                        window.location.href = $(form).attr('data-url-redirect');#}
+{#                                    }, 1000);#}
+{#                                }#}
+{#                            },#}
+{#                            (errs) => {#}
+{#                                setTimeout(#}
+{#                                    () => {#}
+{#                                        WindowControl.hideLoading();#}
+{#                                    },#}
+{#                                    1000#}
+{#                                )#}
+{#                                $.fn.notifyB({description: errs.data.errors}, 'failure');#}
+{#                            }#}
+{#                        )#}
+{#                }#}
+{#            },#}
+{#        })#}
+{#    </script>#}
 {#    <script>#}
 {#        $(document).ready(function(){#}
 {#            const modal$ = $("#offcanvas-send-email");#}

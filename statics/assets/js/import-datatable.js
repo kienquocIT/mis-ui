@@ -15,6 +15,26 @@ $(document).ready(function () {
     let APPLY_ALL_CREATE_NEW_LIST = []
     let APPLY_ALL_GET_OLD_LIST = []
 
+    function excelDateToJSDate(excelDate) {
+        if (Number(excelDate)) {
+            const date = new Date((Number(excelDate) - 25569) * 86400000);
+            return date.toISOString().split('T')[0];
+        }
+        else if (moment(excelDate, 'YYYY-MM-DD') !== 'Invalid date') {
+            return excelDate;
+        }
+        else if (moment(excelDate, 'YYYY/MM/DD') !== 'Invalid date') {
+            return moment(excelDate, 'YYYY/MM/DD').format('YYYY-MM-DD');
+        }
+        else if (moment(excelDate, 'DD-MM-YYYY') !== 'Invalid date') {
+            return moment(excelDate, 'DD-MM-YYYY').format('YYYY-MM-DD');
+        }
+        else if (moment(excelDate, 'DD/MM/YYYY') !== 'Invalid date') {
+            return moment(excelDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
+        }
+        return ''
+    }
+
     $btn_group_import_datatable.on('click', function () {
         THIS_IMPORT_SPACE = $(this).closest('.import-db-space')
         let target_table_id = null
@@ -141,13 +161,14 @@ $(document).ready(function () {
 
     function displayExcelData(data, from_index_value, to_index_value, col_type) {
         if (data.length > 1) {
+            const limit_request_per_min = 500
             let from_index = from_index_value ? parseInt(from_index_value) : null
             let to_index = to_index_value ? parseInt(to_index_value) : null
             if (to_index >= data.length) {
                 to_index = data.length - 1
             }
 
-            if (from_index && to_index) {
+            if (from_index && to_index && (to_index - from_index + 1) <= limit_request_per_min) {
                 PREVIEW_TABLE.find('tbody').html('')
 
                 for (let i = from_index; i <= to_index; i++) {
@@ -155,6 +176,8 @@ $(document).ready(function () {
                     for (let j = 0; j < col_type.length; j++) {
                         if (col_type[j] === 'input-text') {
                             tds += `<td style="min-width: 250px"><input class="form-control" value="${data[i][j] ? data[i][j] : ''}"></td>`
+                        } else if (col_type[j] === 'input-date') {
+                            tds += `<td style="min-width: 250px"><input class="form-control date-field" value="${data[i][j] ? excelDateToJSDate(data[i][j]) : ''}" placeholder="YYYY-MM-DD"></td>`
                         } else if (col_type[j] === 'input-money') {
                             tds += `<td style="min-width: 250px"><input class="form-control mask-money text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
                         } else if (col_type[j] === 'input-money(disabled)') {
@@ -199,6 +222,9 @@ $(document).ready(function () {
                     $.fn.initMaskMoney2()
                 }
             }
+            else {
+                $.fn.notifyB({description: `FromX or ToY is missing. Row number is limited at ${limit_request_per_min} (current: ${to_index - from_index + 1})!`}, 'warning')
+            }
         } else {
             $.fn.notifyB({description: "File is empty!"}, 'warning')
         }
@@ -219,6 +245,8 @@ $(document).ready(function () {
             let col_index = parseInt(value_list[i]['col_index'])
             if (col_index >= 0) {
                 if (col_type[col_index] === 'input-text') {
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).val() ? row.find(`td:eq(${col_index + 2}) input`).val() : null
+                } else if (col_type[col_index] === 'input-date') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).val() ? row.find(`td:eq(${col_index + 2}) input`).val() : null
                 } else if (col_type[col_index] === 'input-money') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).attr('value') ? row.find(`td:eq(${col_index + 2}) input`).attr('value') : null
@@ -381,9 +409,11 @@ $(document).ready(function () {
             confirmButtonText: 'OK',
         }).then(async (result) => {
             if (result.isConfirmed) {
+                $('#modal-import-datatable-from-excel .modal-footer button').prop('hidden', true)
                 // Gọi hàm xử lý tất cả các hàng
                 let all_success = await processAllRows($import_db_form, $import_db_form_select_table, 'import').then();
                 if (all_success) {
+                    $('#modal-import-datatable-from-excel .modal-footer button').prop('hidden', false)
                     Swal.fire({
                         html: `<h5 class="text-success">${$trans_db_script.attr('data-trans-done')}</h5>
                                <h6 class="text-muted">${$trans_db_script.attr('data-trans-reload')}</h6>`,

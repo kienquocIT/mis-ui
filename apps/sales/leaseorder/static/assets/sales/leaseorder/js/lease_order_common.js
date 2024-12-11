@@ -9,6 +9,7 @@ class LeaseOrderLoadDataHandle {
     static salePersonSelectEle = $('#employee_inherit_id');
     static quotationSelectEle = $('#quotation_id');
     static $btnSaveSelectProduct = $('#btn-save-select-product');
+    static $btnSaveSelectOffset = $('#btn-save-select-offset');
     static $eleStoreDetail = $('#quotation-detail-data');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#app-url-factory');
@@ -750,6 +751,7 @@ class LeaseOrderLoadDataHandle {
         LeaseOrderLoadDataHandle.loadInitS2($(eleOffset));
         $(btnSOffset).on('click', function () {
             LeaseOrderLoadDataHandle.loadModalSOffset(btnSOffset);
+            LeaseOrderLoadDataHandle.$btnSaveSelectOffset.attr('data-product-id', data?.['id']);
         });
         LeaseOrderLoadDataHandle.loadInitS2($(eleUOM));
         LeaseOrderLoadDataHandle.loadInitS2($(eleUOMTime));
@@ -817,6 +819,29 @@ class LeaseOrderLoadDataHandle {
             }
             $.fn.initMaskMoney2();
         }
+    };
+
+    static loadOffset(ele) {
+        let eleChecked = LeaseOrderDataTableHandle.$tableSOffset[0].querySelector('.table-row-checkbox:checked:not([disabled])');
+        if (eleChecked) {
+            if (eleChecked.getAttribute('data-row')) {
+                let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
+                let target = LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${$(ele).attr('data-product-id')}"]`);
+                if (target) {
+                    let row = target.closest('tr');
+                    if (row) {
+                        let eleOffset = row.querySelector('.table-row-offset');
+                        let eleOffsetShow = row.querySelector('.table-row-offset-show');
+                        if (eleOffset && eleOffsetShow) {
+                            $(eleOffset).attr('data-offset-id', dataRow?.['id']);
+                            LeaseOrderLoadDataHandle.loadInitS2($(eleOffset), [dataRow]);
+                            eleOffsetShow.innerHTML = dataRow?.['title'];
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     };
 
     static loadPriceProduct(eleProduct) {
@@ -2682,7 +2707,7 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '10%',
+                    width: '8%',
                     render: (data, type, row) => {
                         return `<select 
                                     class="form-select table-row-asset-type"
@@ -3835,7 +3860,7 @@ class LeaseOrderDataTableHandle {
                     render: (data, type, row) => {
                         let txt = LeaseOrderLoadDataHandle.transEle.attr('data-available');
                         let badge = 'success';
-                        if (LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
+                        if (LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-offset[data-offset-id="${row?.['id']}"]`)) {
                             txt = LeaseOrderLoadDataHandle.transEle.attr('data-product-note-1');
                             badge = 'warning';
                         }
@@ -3851,7 +3876,7 @@ class LeaseOrderDataTableHandle {
                     targets: 4,
                     render: (data, type, row) => {
                         let txt = '';
-                        if (LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
+                        if (LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-offset[data-offset-id="${row?.['id']}"]`)) {
                             txt = LeaseOrderLoadDataHandle.transEle.attr('data-product-note-1');
                         }
                         let checkBOM = LeaseOrderLoadDataHandle.loadCheckProductBOM(row);

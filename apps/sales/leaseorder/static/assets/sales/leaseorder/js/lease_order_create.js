@@ -174,6 +174,10 @@ $(function () {
             )
         });
 
+        LeaseOrderLoadDataHandle.$btnSaveSelectOffset.on('click', function () {
+            LeaseOrderLoadDataHandle.loadOffset(this);
+        });
+
         tableProduct.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();

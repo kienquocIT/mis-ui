@@ -23,7 +23,7 @@ class editor_handle {
                     items: 'ltr rtl | charmap emoticons | superscript subscript | nonbreaking anchor media | undo redo | '
                 }
             },
-            fontsize_formats: "8px 9px 10px 11px 12px 14px 16px 18px 20px 22px 24px 26px 28px 36px 48px 72px",
+            font_formats: 'Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Cambria=cambria,serif; Helvetica=helvetica; Impact=impact,chicago; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats',
             templates: templateList.map(
                 (item) => {
                     item['url'] = staticStart + item['url'];
@@ -36,8 +36,7 @@ class editor_handle {
             insertdatetime_formats: ['%d-%m-%Y %H:%M:%S', '%d-%m-%Y', '%H:%M:%S', '%I:%M:%S %p'],
             content_css: $txtArea.attr('data-css-url-render'),
             content_style: `
-                body { font-family: Arial, Helvetica, "Times New Roman", Times, serif, sans-serif; font-size: 12px; }
-                table tr { vertical-align: top; }
+                @import url('/static/assets/fonts/cambria/Cambria.ttf');
                 @media print {
                     .mce-visual-caret {
                         display: none;

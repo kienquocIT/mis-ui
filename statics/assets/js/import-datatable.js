@@ -161,7 +161,7 @@ $(document).ready(function () {
 
     function displayExcelData(data, from_index_value, to_index_value, col_type) {
         if (data.length > 1) {
-            const limit_request_per_min = 500
+            const limit_request_per_min = 200
             let from_index = from_index_value ? parseInt(from_index_value) : null
             let to_index = to_index_value ? parseInt(to_index_value) : null
             if (to_index >= data.length) {

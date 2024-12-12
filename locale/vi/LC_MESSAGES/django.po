@@ -9857,5 +9857,35 @@ msgid "To ensure system performance and stability, row number is limited to 500 
 msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 500 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
 
 #
+msgid "Lease order"
+msgstr "Đơn cho thuê"
+
+#
+msgid "Asset type"
+msgstr "Loại tài sản"
+
+#
+msgid "Please select asset type"
+msgstr "Vui lòng chọn loại tài sản"
+
+#
+msgid "Fixed asset"
+msgstr "TSCĐ"
+
+#
+msgid "Declare product quantity"
+msgstr "Khai báo số lượng sản phẩm"
+
+#
+msgid "Quantity of new products:"
+msgstr "Số lượng sản phẩm mới:"
+
+#
+msgid "Quantity of leased products:"
+msgstr "Số lượng sản phẩm đã cho thuê:"
+msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 500 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
+
+#
 msgid "Return to warehouse"
 msgstr "Trả về kho"
+

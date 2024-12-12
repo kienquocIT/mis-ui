@@ -6,8 +6,7 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-{#    {% include 'extends/systems/page_actions.html' with is_save=True is_save_draft=True save_frm='frm_quotation_create' %}#}
-    <button class="btn btn-outline-primary" type="submit" form="frm_quotation_create">
+    <button class="btn btn-outline-primary" type="submit" form="frm_lease_create">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -54,7 +53,7 @@
             data-url="{% url 'SaleOrderListAPI' %}"
             data-url-redirect="{% url 'SaleOrderList' %}"
             data-method="POST"
-            id="frm_quotation_create"
+            id="frm_lease_create"
             method="post"
     >
         {% csrf_token %}
@@ -770,6 +769,61 @@
             </div>
 
             <div
+                    class="modal fade" id="selectQuantityModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectQuantityModal"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Declare product quantity' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-label"><b>{% trans 'Quantity of new products:' %}</b></label>
+                                        <input type="text" class="form-control quantity-new validated-number w-20" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-label"><b>{% trans 'Quantity of leased products:' %}</b></label>
+                                        <input type="text" class="form-control quantity-leased validated-number w-20" value="0" readonly>
+                                    </div>
+                                </div>
+                                <table
+                                        id="table-select-quantity"
+                                        class="table nowrap w-100 mb-5"
+                                >
+                                    <thead>
+                                    <tr class="bg-light">
+                                        <th class="w-15">{% trans 'Lease code' %}</th>
+                                        <th class="w-15">{% trans 'Original code' %}</th>
+                                        <th class="w-10">{% trans 'Warehouse' %}</th>
+                                        <th class="w-15">{% trans 'Original cost' %}</th>
+                                        <th class="w-15">{% trans 'Leased time before' %}</th>
+                                        <th class="w-15">{% trans 'Net book value' %}</th>
+                                        <th class="w-15">{% trans 'Depreciation time' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-quantity" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
                     class="modal fade" id="selectPriceModal" tabindex="-1"
                     role="dialog" aria-labelledby="selectPriceModal"
             >
@@ -862,6 +916,7 @@
         data-add-group="{% trans "Add group" %}"
         data-add-expense="{% trans "Add Expense" %}"
         data-add-labor="{% trans "Add Labor" %}"
+        data-required-asset-type="{% trans 'Please select asset type' %}"
     >
     <input
         type="text"

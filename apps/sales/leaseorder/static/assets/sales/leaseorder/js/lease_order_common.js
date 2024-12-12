@@ -895,11 +895,7 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadPriceProduct(eleProduct) {
-        let $form = $('#frm_lease_create');
         let dataZone = "lease_products_data";
-        if ($form[0].classList.contains('sale-order')) {
-            dataZone = "sale_order_products_data";
-        }
         if ($(eleProduct).val()) {
             let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
             let is_change_price = false;
@@ -1139,9 +1135,6 @@ class LeaseOrderLoadDataHandle {
                     if (dataDetail?.['lease_products_data']) {
                         tableData = dataDetail?.['lease_products_data'];
                     }
-                    if (dataDetail?.['sale_order_products_data']) {
-                        tableData = dataDetail?.['sale_order_products_data'];
-                    }
                 }
             }
         } else {
@@ -1172,9 +1165,6 @@ class LeaseOrderLoadDataHandle {
                     dataDetail = JSON.parse(eleDetail.val());
                     if (dataDetail?.['lease_products_data']) {
                         tableData = dataDetail?.['lease_products_data'];
-                    }
-                    if (dataDetail?.['sale_order_products_data']) {
-                        tableData = dataDetail?.['sale_order_products_data'];
                     }
                 }
             }
@@ -1573,12 +1563,8 @@ class LeaseOrderLoadDataHandle {
         if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
             let valueOrder = 0;
             // check if product is hidden zone (page update)
-            let $form = $('#frm_lease_create');
             let isHidden = false;
             let dataZone = "lease_products_data";
-            if ($form[0].classList.contains('sale-order')) {
-                dataZone = "sale_order_products_data";
-            }
             let zoneHiddenData = WFRTControl.getZoneHiddenData();
             for (let zoneHidden of zoneHiddenData) {
                 if (zoneHidden?.['code'] === dataZone) {
@@ -2444,9 +2430,9 @@ class LeaseOrderLoadDataHandle {
         tableExpense.DataTable().rows.add(expenses_data).draw();
         // payment stage (sale order)
         if (form.classList.contains('sale-order')) {
-            if (data?.['sale_order_payment_stage']) {
+            if (data?.['lease_payment_stage']) {
                 tablePaymentStage.DataTable().clear().draw();
-                tablePaymentStage.DataTable().rows.add(data?.['sale_order_payment_stage']).draw();
+                tablePaymentStage.DataTable().rows.add(data?.['lease_payment_stage']).draw();
                 tablePaymentStage.DataTable().rows().every(function () {
                     let row = this.node();
                     if (row.querySelector('.table-row-date')) {
@@ -4738,7 +4724,7 @@ class LeaseOrderIndicatorHandle {
         if (keyHidden) {
             if (keyHidden.length > 0) {
                 // special case: tab cost depend on tab detail
-                if (!keyHidden.includes('lease_products_data') && !keyHidden.includes('sale_order_products_data')) {
+                if (!keyHidden.includes('lease_products_data')) {
                     LeaseOrderLoadDataHandle.loadDataTableCost();
                     LeaseOrderSubmitHandle.setupDataSubmit(_form, 1);
                     data_form = _form.dataForm;
@@ -6576,7 +6562,7 @@ class LeaseOrderSubmitHandle {
         // payment stage
         let dataPaymentStage = LeaseOrderSubmitHandle.setupDataPaymentStage();
         if (dataPaymentStage.length > 0) {
-            _form.dataForm['sale_order_payment_stage'] = dataPaymentStage;
+            _form.dataForm['lease_payment_stage'] = dataPaymentStage;
         }
 
         // recurrence

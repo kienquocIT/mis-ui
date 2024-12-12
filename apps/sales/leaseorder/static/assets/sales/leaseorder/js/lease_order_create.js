@@ -33,6 +33,7 @@ $(function () {
         // init dataTable
         LeaseOrderDataTableHandle.dataTableSelectProduct();
         LeaseOrderDataTableHandle.dataTableSelectOffset();
+        LeaseOrderDataTableHandle.dataTableSelectQuantity();
         LeaseOrderDataTableHandle.dataTableProduct();
         LeaseOrderDataTableHandle.dataTableCost();
         LeaseOrderDataTableHandle.dataTableExpense();
@@ -107,6 +108,10 @@ $(function () {
 
         LeaseOrderLoadDataHandle.$btnSaveSelectOffset.on('click', function () {
             LeaseOrderLoadDataHandle.loadOffset(this);
+        });
+
+        LeaseOrderLoadDataHandle.$btnSaveSelectQuantity.on('click', function () {
+            LeaseOrderLoadDataHandle.loadQuantity(this);
         });
 
         // QUICK PRODUCT

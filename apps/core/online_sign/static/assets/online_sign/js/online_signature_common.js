@@ -230,15 +230,16 @@ $(document).ready(function () {
                 content: $.fn.gettext("Secondly click to upload file"),
                 onNext: function () {
                     hopscotch.endTour();
-                    $('.simplebar-content-wrapper').animate({ scrollTop: 400 }, 300);
+                    $('#drawer_signature .simplebar-content-wrapper').animate({ scrollTop: 400 }, 300);
                     setTimeout(() => {
                         hopscotch.startTour(tour, 3);
                     }, 400); // Delay 0.6 giây
                 }
             },
             {
-                target: "#attach_sign .dm-uploader-result-list",
+                target: $("#attach_sign .dm-uploader-results")[0],
                 placement: 'top',
+                zindex: 1111,
                 title: $.fn.gettext('File after uploaded'),
                 content: $.fn.gettext("Finally r-click to copy file URL"),
             },

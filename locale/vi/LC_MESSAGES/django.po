@@ -9883,9 +9883,7 @@ msgstr "Số lượng sản phẩm mới:"
 #
 msgid "Quantity of leased products:"
 msgstr "Số lượng sản phẩm đã cho thuê:"
-msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 500 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
 
 #
 msgid "Return to warehouse"
 msgstr "Trả về kho"
-

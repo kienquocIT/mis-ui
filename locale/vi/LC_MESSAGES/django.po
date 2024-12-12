@@ -9870,3 +9870,15 @@ msgstr "Vui lòng chọn loại tài sản"
 #
 msgid "Fixed asset"
 msgstr "TSCĐ"
+
+#
+msgid "Declare product quantity"
+msgstr "Khai báo số lượng sản phẩm"
+
+#
+msgid "Quantity of new products:"
+msgstr "Số lượng sản phẩm mới:"
+
+#
+msgid "Quantity of leased products:"
+msgstr "Số lượng sản phẩm đã cho thuê:"

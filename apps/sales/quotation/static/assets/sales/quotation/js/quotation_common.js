@@ -6264,6 +6264,8 @@ class QuotationSubmitHandle {
     };
 
     static setupDataSubmit(_form, type = 0) {
+        // type 0: submit | 1: indicator
+
         let is_sale_order = false;
         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
             is_sale_order = true;
@@ -6280,13 +6282,15 @@ class QuotationSubmitHandle {
             quotation_logistic_data = 'sale_order_logistic_data';
             quotation_indicators_data = 'sale_order_indicators_data';
 
+            _form.dataForm['quotation_id'] = null;
             if (QuotationLoadDataHandle.quotationSelectEle && QuotationLoadDataHandle.quotationSelectEle.length > 0) {
                 if (QuotationLoadDataHandle.quotationSelectEle.attr('data-detail')) {
                     let quotationData = JSON.parse(QuotationLoadDataHandle.quotationSelectEle.attr('data-detail'));
-                    _form.dataForm['quotation_id'] = quotationData?.['id'];
-                    _form.dataForm['quotation_data'] = quotationData;
+                    if (quotationData?.['id']) {
+                        _form.dataForm['quotation_id'] = quotationData?.['id'];
+                        _form.dataForm['quotation_data'] = quotationData;
+                    }
                 }
-
             }
         }
         if (QuotationLoadDataHandle.customerSelectEle.val()) {

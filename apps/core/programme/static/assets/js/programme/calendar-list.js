@@ -153,14 +153,17 @@ class programmeHandle {
         $.fn.callAjax2({
             'url': $('#url-factory').attr('data-meet') + '?is_cancelled=0',
             'method': 'get',
-            'data': params ? params : {'meeting_date': moment().format('YYYY-MM-DD'), 'self_employee': true}
+            'data': params ? params : {'meeting_date': moment().format('YYYY-MM-DD'), 'self_employee': true},
+            'sweetAlertOpts': {
+                'allowOutsideClick': true,
+                'showCancelButton': true
+            },
         })
             .then(function (req) {
                     let data = $.fn.switcherResp(req)['meeting_list']
                     let nextDay = {}
                     let dataReceived = []
                     for (let item of data) {
-                        console.log(item)
                         item.calendar_type = 1
                         let temp = {
                             backgroundColor: '#FFC400',
@@ -202,7 +205,11 @@ class programmeHandle {
         $.fn.callAjax2({
             'url': $('#url-factory').attr('data-schedule-meeting'),
             'method': 'get',
-            'data': params ? params : {'meeting_start_date': moment().format('YYYY-MM-DD'), 'self_employee': true}
+            'data': params ? params : {'meeting_start_date': moment().format('YYYY-MM-DD'), 'self_employee': true},
+            'sweetAlertOpts': {
+                'allowOutsideClick': true,
+                'showCancelButton': true
+            }
         })
             .then(function (req) {
                     let data = $.fn.switcherResp(req)['meeting_schedule_list']
@@ -244,7 +251,7 @@ class programmeHandle {
                     calendar.render()
                     $('.tit-upcoming-evt').trigger('Upcoming-Event:Trigger')
                 },
-                (errs) => {console.log('calendar-list_123 ', errs)}
+                (errs) => {console.log('calendar schedule meeting', errs)}
             )
     }
 
@@ -252,7 +259,11 @@ class programmeHandle {
         $.fn.callAjax2({
             'url': $('#url-factory').attr('data-business'),
             'method': 'get',
-            'data': params ? params : {'business_date': moment().format('YYYY-MM-DD'), 'self_employee': true}
+            'data': params ? params : {'business_date': moment().format('YYYY-MM-DD'), 'self_employee': true},
+            'sweetAlertOpts': {
+                'allowOutsideClick': true,
+                'showCancelButton': true
+            }
         })
             .then(function (req) {
                     let data = $.fn.switcherResp(req)['business_trip_request']
@@ -300,7 +311,11 @@ class programmeHandle {
         $.fn.callAjax2({
             'url': $('#url-factory').attr('data-leave'),
             'method': 'get',
-            'data': params ? params : {'leave_date': moment().format('YYYY-MM-DD'), 'self_employee': true}
+            'data': params ? params : {'leave_date': moment().format('YYYY-MM-DD'), 'self_employee': true},
+            'sweetAlertOpts': {
+                'allowOutsideClick': true,
+                'showCancelButton': true
+            }
         })
             .then(function (req) {
                     let data = $.fn.switcherResp(req)['leave_request_calendar']
@@ -510,28 +525,28 @@ class programmeHandle {
                     if (emp.length > 0) params.employee_in_list = emp.join(',')
                     else params.self_employee = true
                     if (group) params.employee_inherit__group = group
-                    params.meeting_date = moment().format('YYYY-MM-DD')
+                    params.meeting_date = moment(calendar.getDate()).format('YYYY-MM-DD')
                     programmeHandle.callMeeting(calendar, params);
                     break;
                 case 'schedule-meeting':
                     if (emp.length > 0) params.employee_in_list = emp.join(',')
                     else params.self_employee = true
                     if (group) params.employee_inherit__group = group
-                    params.meeting_start_date = moment().format('YYYY-MM-DD')
+                    params.meeting_start_date = moment(calendar.getDate()).format('YYYY-MM-DD')
                     programmeHandle.callScheduleMeeting(calendar, params);
                     break;
                 case 'business':
                     if (emp.length > 0) params.employee_inherit_list = emp.join(',')
                     else params.self_employee = true
                     if (group) params.employee_inherit__group = group
-                    params.business_date = moment().format('YYYY-MM-DD')
+                    params.business_date = moment(calendar.getDate()).format('YYYY-MM-DD')
                     programmeHandle.callBusiness(calendar, params);
                     break;
                 default:
                     if (emp.length > 0) params.leave_employee_list = emp.join(',')
                     else params.self_employee = true
                     if (group) params.leave__employee_inherit__group = group
-                    params.leave_date = moment().format('YYYY-MM-DD')
+                    params.leave_date = moment(calendar.getDate()).format('YYYY-MM-DD')
                     programmeHandle.callLeave(calendar, params);
             }
         });

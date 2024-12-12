@@ -1,0 +1,28 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="form-group">
+            <label for="title" class="form-label required">{% trans 'Title' %}</label>
+            <input type="text" class="form-control" id="title">
+        </div>
+    </div>
+    <div class="col-12 col-md-5 col-lg-5">
+        <div class="form-group">
+            <label for="sale-order" class="form-label required">{% trans 'Sale order' %}</label>
+            <select data-method="GET" data-url="{% url 'SaleOrderListAPIForGoodsReturn' %}" class="form-select select2" id="sale-order"></select>
+        </div>
+    </div>
+    <div class="col-12 col-md-7 col-lg-7">
+        <div class="form-group">
+            <label for="customer" class="form-label">{% trans 'Customer' %}</label>
+            <input readonly class="form-control form-control-line" id="customer">
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-group">
+            <label for="note" class="form-label">{% trans 'Note' %}</label>
+            <textarea class="form-control" id="note"></textarea>
+        </div>
+    </div>
+</div>

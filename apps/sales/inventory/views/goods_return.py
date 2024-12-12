@@ -22,7 +22,8 @@ class GoodsReturnListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_LIST).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_LIST).get(data)
         return resp.auto_return(key_success='goods_return_list')
 
     @mask_view(

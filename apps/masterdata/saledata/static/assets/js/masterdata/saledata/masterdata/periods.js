@@ -173,10 +173,14 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text text-center',
                         render: (data, type, row) => {
+                            let btn_delete = `<button data-id="${row?.['id']}"
+                                    class="btn btn-icon btn-rounded btn-flush-danger delete-periods" type="button">
+                                <span class="icon"><i class="bi bi-trash"></i></span>
+                            </button>`
                             return `<button data-id="${row?.['id']}" data-title="${row?.['title']}" data-code="${row?.['code']}" data-fiscal-year="${row?.['fiscal_year']}" data-space-month="${row?.['space_month']}" data-start-date="${row?.['start_date']}" data-is-sw-start-using-time="${row?.['software_start_using_time']}"
                                             class="btn btn-icon btn-rounded btn-flush-primary edit-periods" type="button" data-bs-toggle="modal" data-bs-target="#modal-periods-update">
                                         <span class="icon"><i class="bi bi-pencil-square"></i></span>
-                                    </button>`
+                                    </button>${row?.['can_delete'] ? btn_delete : ''}`
                         }
                     }
                 ],
@@ -221,6 +225,53 @@ $(document).ready(function () {
         periods_fiscal_year_update_Ele.val(periods_fiscal_year)
         periods_fiscal_month_start_update_Ele.val(periods_fiscal_month_start)
         $('#periods-start-date-update').val(moment(periods_start_date).format('DD/MM/YYYY'))
+    })
+
+    $(document).on("click", '.delete-periods', function () {
+        Swal.fire({
+            html: `<div class="mb-3">
+                        <i class="fas fa-trash-alt text-danger"></i>
+                   </div>
+                   <h6 class="text-danger">
+                        ${TablePeriodsConfig.attr('data-trans-delete-confirm')}
+                   </h6>`,
+            customClass: {
+                confirmButton: 'btn btn-outline-secondary text-danger',
+                cancelButton: 'btn btn-outline-secondary text-gray',
+                container: 'swal2-has-bg'
+            },
+            showCancelButton: true,
+            buttonsStyling: false,
+            confirmButtonText: TablePeriodsConfig.attr('data-trans-ok'),
+            cancelButtonText: TablePeriodsConfig.attr('data-trans-cancel'),
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.value) {
+                let data_url = TablePeriodsConfig.attr('data-url-detail').replace(0, $(this).attr('data-id'))
+                $.fn.callAjax2({
+                    url: data_url,
+                    method: 'DELETE',
+                    data: {},
+                }).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 1000);
+                    }
+                }, () => {
+                    Swal.fire({
+                        html: `<div><h6 class="text-danger mb-0">${TablePeriodsConfig.attr('data-trans-delete-error')}</h6></div>`,
+                        customClass: {
+                            content: 'text-center',
+                            confirmButton: 'btn btn-primary',
+                        },
+                        buttonsStyling: false,
+                    })
+                })
+            }
+        })
     })
 
     function changeDateFormat(date) {
@@ -272,20 +323,6 @@ $(document).ready(function () {
             frm.dataForm['software_start_using_time'] = $('#software_using_time_select_update option:selected').text().replace('/', '-');
         }
         let pk = frmEle.attr('data-id');
-        return {
-            url: frmEle.attr('data-url').format_url_with_uuid(pk),
-            method: frm.dataMethod,
-            data: frm.dataForm,
-            urlRedirect: frm.dataUrlRedirect,
-        };
-    }
-
-    function combinesDataPeriodsUpdateSub(frmEle, pk, sub_id, state) {
-        let frm = new SetupFormSubmit($(frmEle));
-
-        frm.dataForm['sub_id'] = sub_id;
-        frm.dataForm['state'] = state;
-
         return {
             url: frmEle.attr('data-url').format_url_with_uuid(pk),
             method: frm.dataMethod,

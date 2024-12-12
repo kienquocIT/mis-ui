@@ -9887,3 +9887,27 @@ msgstr "Số lượng sản phẩm đã cho thuê:"
 #
 msgid "Return to warehouse"
 msgstr "Trả về kho"
+
+#
+msgid "Confirm delete this period?"
+msgstr "Xác nhận xóa kỳ kế toán này?"
+
+#
+msgid "Can not delete this period!"
+msgstr "Không thể xóa kỳ kế toán này!"
+
+#
+msgid "Posting periods"
+msgstr "Kỳ kế toán"
+
+#
+msgid "Main period code"
+msgstr "Mã kỳ chính"
+
+#
+msgid "Sub period code"
+msgstr "Mã kỳ con"
+
+#
+msgid "Period name"
+msgstr "Tên kỳ"

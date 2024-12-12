@@ -702,15 +702,23 @@ class QuotationLoadDataHandle {
         // check config for new row
         QuotationCheckConfigHandle.checkConfig(1, newRow);
         // load data dropdown
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-item')), [data]);
-        // $(newRow.querySelector('.table-row-item')).val('').trigger('change');
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
-        // add css to select2_rendered
-        QuotationLoadDataHandle.loadCssS2($(newRow.querySelector('.table-row-item')), '260px');
+        let eleProduct = newRow.querySelector('.table-row-item');
+        let eleUOM = newRow.querySelector('.table-row-uom');
+        let eleTax = newRow.querySelector('.table-row-tax');
 
-        $(newRow.querySelector('.table-row-item')).trigger('change');
-        $(newRow.querySelector('.table-row-item')).attr('data-product-id', data?.['id']);
+        if (eleProduct) {
+            QuotationLoadDataHandle.loadInitS2($(eleProduct), [data]);
+            QuotationLoadDataHandle.loadCssS2($(eleProduct), '260px');
+            $(eleProduct).attr('data-product-id', data?.['id']);
+        }
+        if (eleUOM) {
+            QuotationLoadDataHandle.loadInitS2($(eleUOM));
+        }
+        if (eleTax) {
+            QuotationLoadDataHandle.loadInitS2($(eleTax));
+        }
+
+        $(eleProduct).trigger('change');
         // load again table cost
         // QuotationLoadDataHandle.loadDataTableCost();
         QuotationLoadDataHandle.loadSetWFRuntimeZone();

@@ -10,6 +10,8 @@ class LeaseOrderLoadDataHandle {
     static quotationSelectEle = $('#quotation_id');
     static $btnSaveSelectProduct = $('#btn-save-select-product');
     static $btnSaveSelectOffset = $('#btn-save-select-offset');
+    static $btnSaveSelectQuantity = $('#btn-save-select-quantity');
+    static $quantityModal = $('#selectQuantityModal');
     static $eleStoreDetail = $('#quotation-detail-data');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#app-url-factory');
@@ -753,21 +755,42 @@ class LeaseOrderLoadDataHandle {
         let eleOffset = newRow.querySelector('.table-row-offset');
         let btnSOffset = newRow.querySelector('.btn-select-offset');
         let eleUOM = newRow.querySelector('.table-row-uom');
+        let btnSQuantity = newRow.querySelector('.btn-select-quantity');
         let eleUOMTime = newRow.querySelector('.table-row-uom-time');
         let eleTax = newRow.querySelector('.table-row-tax');
-        LeaseOrderLoadDataHandle.loadInitS2($(eleProduct), [data]);
-        LeaseOrderLoadDataHandle.loadInitS2($(eleAssetType), LeaseOrderLoadDataHandle.dataAssetType);
-        LeaseOrderLoadDataHandle.loadInitS2($(eleOffset));
-        $(btnSOffset).on('click', function () {
-            LeaseOrderLoadDataHandle.$btnSaveSelectOffset.attr('data-product-id', data?.['id']);
-            LeaseOrderLoadDataHandle.loadModalSOffset(btnSOffset);
-        });
-        LeaseOrderLoadDataHandle.loadInitS2($(eleUOM));
-        LeaseOrderLoadDataHandle.loadInitS2($(eleUOMTime));
-        LeaseOrderLoadDataHandle.loadInitS2($(eleTax));
+
+        if (eleProduct) {
+            LeaseOrderLoadDataHandle.loadInitS2($(eleProduct), [data]);
+            $(eleProduct).attr('data-product-id', data?.['id']);
+        }
+        if (eleAssetType) {
+            LeaseOrderLoadDataHandle.loadInitS2($(eleAssetType), LeaseOrderLoadDataHandle.dataAssetType);
+        }
+        if (eleOffset) {
+            LeaseOrderLoadDataHandle.loadInitS2($(eleOffset));
+        }
+        if (btnSOffset) {
+            $(btnSOffset).on('click', function () {
+                LeaseOrderLoadDataHandle.$btnSaveSelectOffset.attr('data-product-id', data?.['id']);
+                LeaseOrderLoadDataHandle.loadModalSOffset(btnSOffset);
+            });
+        }
+        if (eleUOM) {
+            LeaseOrderLoadDataHandle.loadInitS2($(eleUOM));
+        }
+        if (btnSQuantity) {
+            $(btnSQuantity).on('click', function () {
+                LeaseOrderLoadDataHandle.$btnSaveSelectQuantity.attr('data-product-id', data?.['id']);
+            });
+        }
+        if (eleUOMTime) {
+            LeaseOrderLoadDataHandle.loadInitS2($(eleUOMTime));
+        }
+        if (eleTax) {
+            LeaseOrderLoadDataHandle.loadInitS2($(eleTax));
+        }
 
         $(eleProduct).trigger('change');
-        $(eleProduct).attr('data-product-id', data?.['id']);
         // load again table cost
         LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
         // add classes for collapse
@@ -845,6 +868,27 @@ class LeaseOrderLoadDataHandle {
                             $(eleOffset).attr('data-offset-id', dataRow?.['id']);
                             LeaseOrderLoadDataHandle.loadInitS2($(eleOffset), [dataRow]);
                             eleOffsetShow.innerHTML = dataRow?.['title'];
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    };
+
+    static loadQuantity(ele) {
+        let eleNew = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-new');
+        let eleLeased = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-leased');
+        if (eleNew && eleLeased) {
+            if (eleNew.value && eleLeased.value) {
+                let quantity = parseInt(eleNew.value) + parseInt(eleLeased.value);
+                let target = LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${$(ele).attr('data-product-id')}"]`);
+                if (target) {
+                    let row = target.closest('tr');
+                    if (row) {
+                        let eleQuantity = row.querySelector('.table-row-quantity');
+                        if (eleQuantity) {
+                            $(eleQuantity).val(quantity);
                         }
                     }
                 }
@@ -2643,6 +2687,7 @@ class LeaseOrderDataTableHandle {
 
     static $tableSProduct = $('#table-select-product');
     static $tableSOffset = $('#table-select-offset');
+    static $tableSQuantity = $('#table-select-quantity');
     static $tableProduct = $('#datable-quotation-create-product');
     static $tableExpense = $('#datable-quotation-create-expense');
     static $tablePayment = $('#datable-quotation-payment-stage');
@@ -2802,13 +2847,26 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '8%',
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
                         }
                         let dataZone = "lease_products_data";
-                        return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" data-zone="${dataZone}" required>`;
+
+
+
+                        return `<div class="input-group">
+                                    <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" data-zone="${dataZone}" readonly required>
+                                    <button
+                                            type="button"
+                                            class="btn btn-icon btn-outline-light btn-select-quantity"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#selectQuantityModal"
+                                            data-zone="${dataZone}"
+                                        ><i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                </div>`;
                     }
                 },
                 {
@@ -2827,7 +2885,7 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '8%',
+                    width: '6%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3873,6 +3931,72 @@ class LeaseOrderDataTableHandle {
             ],
             drawCallback: function () {
                 LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderDataTableHandle.$tableSOffset);
+            },
+        });
+    };
+
+    static dataTableSelectQuantity(data) {
+        LeaseOrderDataTableHandle.$tableSQuantity.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            pageLength: 5,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let dataZone = "lease_products_data";
+                        let clsZoneReadonly = '';
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        let disabled = '';
+                        let checked = '';
+                        if (row?.['title'] && row?.['code']) {
+                            return `<div class="d-flex align-items-center ml-2">
+                                        <div class="form-check form-check-lg">
+                                            <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" data-row="${dataRow}" ${disabled} ${checked} data-zone="${dataZone}">
+                                            <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
+                                            <label class="form-check-label table-row-title" for="s-product-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                        </div>
+                                    </div>`;
+                        }
+                        return `<span>--</span>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        `<span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}" data-zone="${dataZone}"></span>`
+                        return `<textarea class="form-control table-row-description" rows="2" readonly>${row?.['serial_number'] ? row?.['serial_number'] : ''}</textarea>`
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-uom">${row?.['time_leased_before']}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+
+                        return `<span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+
+                        return `<span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableSQuantity);
             },
         });
     };

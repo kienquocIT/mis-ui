@@ -3,11 +3,9 @@ $(function () {
     $(document).ready(function () {
 
         // Elements
-        let formSubmit = $('#frm_quotation_create');
+        let formSubmit = $('#frm_lease_create');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let tabPrice = $('#tab_terms');
-        let btnAddProductGr = $('#btn-add-product-group-quotation');
-        let btnAddProduct = $('#btn-add-product-quotation-create');
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');

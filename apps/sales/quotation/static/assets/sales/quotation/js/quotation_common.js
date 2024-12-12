@@ -6264,6 +6264,8 @@ class QuotationSubmitHandle {
     };
 
     static setupDataSubmit(_form, type = 0) {
+        // type 0: submit | 1: indicator
+
         let is_sale_order = false;
         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
             is_sale_order = true;
@@ -6286,7 +6288,6 @@ class QuotationSubmitHandle {
                     _form.dataForm['quotation_id'] = quotationData?.['id'];
                     _form.dataForm['quotation_data'] = quotationData;
                 }
-
             }
         }
         if (QuotationLoadDataHandle.customerSelectEle.val()) {

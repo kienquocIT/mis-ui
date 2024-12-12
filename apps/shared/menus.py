@@ -93,7 +93,7 @@ class MenusCompanySystem:
                 icon='<i class="fas fa-shapes"></i>'
             ),
             MenuCommon(
-                name='Business Process', code='menu_process', view_name='ProcessList',
+                name='Config Process', code='menu_process', view_name='ProcessList',
                 icon='<i class="fa-solid fa-microchip"></i>',
             ),
             MenuCommon(
@@ -106,7 +106,7 @@ class MenusCompanySystem:
         expanded=True,
         child=[
             MenuCommon(
-                name='Business Process', code='menu_process', view_name='ProcessList',
+                name='Config Process', code='menu_process', view_name='ProcessList',
                 icon='<i class="fa-solid fa-microchip"></i>',
             ),
             MenuCommon(
@@ -347,7 +347,7 @@ class MenusCRM:
     )
     LEASE_ORDER = MenuCommon(
         name='Lease order', code='menu_lease_order_list', view_name='LeaseOrderCreate',
-        icon='<i class="fas fa-hand-holding"></i>',
+        icon='<i class="fas fa-handshake"></i>',
     )
     RECURRENCE = MenuCommon(
         name='Recurrence transaction', code='menu_recurrence', view_name='',
@@ -432,7 +432,7 @@ class MenusCRM:
         icon='<i class="bi bi-ui-checks-grid"></i>',
         child=[
             MenuCommon(
-                name='Log a call', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
+                name='Call log', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
                 icon='<i class="fas fa-phone-volume"></i>',
             ),
             MenuCommon(

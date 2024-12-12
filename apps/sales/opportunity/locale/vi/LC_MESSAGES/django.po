@@ -19,7 +19,7 @@ msgstr ""
 
 #
 msgid "Call Log"
-msgstr "Ghi nhận cuộc gọi"
+msgstr "Nhật ký cuộc gọi"
 
 #
 msgid "Contents"
@@ -27,7 +27,7 @@ msgstr "Nội dung"
 
 #
 msgid "Call Log list"
-msgstr "Danh sách nhật ký"
+msgstr "Danh sách nhật ký cuộc gọi"
 
 #
 msgid "Process Stage Application"

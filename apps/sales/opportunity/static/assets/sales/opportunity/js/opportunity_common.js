@@ -1,5 +1,6 @@
-let [urlEle, transEle] = [$("#url-factory"), $("#trans-factory")];
-let $dataDetail = $('#data-detail');
+const urlEle = $("#url-factory")
+const transEle = $("#trans-factory")
+const $dataDetail = $('#data-detail')
 
 class OpportunityLoadDropdown {
     static productCategorySelectEle = $('#select-box-product-category');
@@ -188,7 +189,7 @@ class OpportunityLoadDetail {
         table.find('tbody select').prop('disabled', is_detail)
         table.find('tbody button').prop('disabled', is_detail)
         table.find('tbody a').prop('disabled', is_detail)
-        $('#estimated-gross-profit-percent').prop('disabled', is_detail).prop('readonly', is_detail)
+        OpportunityLoadDetail.estimated_gross_profit_percent_Ele.prop('disabled', is_detail).prop('readonly', is_detail)
     }
 
     static addRowSelectProduct() {
@@ -342,7 +343,7 @@ class OpportunityLoadDetail {
     }
 
     static async loadMemberForDtb() {
-        await loadMemberSaleTeam();
+        await LoadConfigAndLoadStage.loadMemberSaleTeam();
         let card_member = $('#card-member .card');
         let table = $('#dtbMember');
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -428,9 +429,9 @@ class OpportunityLoadDetail {
         let html = $('#stage-hidden').html();
         let list_stage = [];
         let dict_stage = {};
-        let data = await callData(url, method);
+        let data = await LoadConfigAndLoadStage.callDataConfig(url, method);
         if (data.hasOwnProperty('opportunity_config_stage')) {
-            list_stage = sortStage(data?.['opportunity_config_stage']);
+            list_stage = LoadConfigAndLoadStage.sortStage(data?.['opportunity_config_stage']);
             dict_stage = list_stage.reduce((obj, item) => {
                 obj[item?.['id']] = item;
                 return obj;
@@ -763,88 +764,86 @@ class OpportunityLoadDetail {
         }
 
         // tab product
-        let list_product_data = []
-        if (this.productTableEle.DataTable().data().length > 0) {
-            ele_tr_products.each(function () {
-                let ele_product = $(this).find('.select-box-product');
-                let product_id = ele_product.val();
-                let product_name = ele_product.find('option:selected').text();
-                if (ele_product.length === 0) {
-                    product_id = null;
-                    product_name = $(this).find('.input-product-name').val();
-                }
-                let data = {
-                    'product': product_id,
-                    'product_category': $(this).find('.box-select-product-category').val(),
-                    'tax': $(this).find('.box-select-tax').val(),
-                    'uom': $(this).find('.box-select-uom').val(),
-                    'product_name': product_name,
-                    'product_quantity': $(this).find('.input-quantity').val(),
-                    'product_unit_price': $(this).find('.input-unit-price').attr('value'),
-                    'product_subtotal_price': $(this).find('.input-subtotal').attr('value'),
-                }
-                if (!$(this).find('.box-select-tax').val()) {
-                    delete data['tax']
-                }
-                list_product_data.push(data);
-            })
-        }
-        data_form['total_product'] = OpportunityLoadDetail.input_prd_total_Ele.valCurrency();
-        data_form['total_product_pretax_amount'] = $('#input-product-pretax-amount').valCurrency();
-        data_form['total_product_tax'] = $('#input-product-taxes').valCurrency();
-        data_form['estimated_gross_profit_percent'] = OpportunityLoadDetail.estimated_gross_profit_percent_Ele.val();
-        data_form['estimated_gross_profit_value'] = $('#estimated-gross-profit-value').valCurrency();
-
         if (OpportunityLoadDetail.productTableEle.hasClass('tag-change')) {
+            let list_product_data = []
+            if (this.productTableEle.DataTable().data().length > 0) {
+                ele_tr_products.each(function () {
+                    let ele_product = $(this).find('.select-box-product');
+                    let product_id = ele_product.val();
+                    let product_name = ele_product.find('option:selected').text();
+                    if (ele_product.length === 0) {
+                        product_id = null;
+                        product_name = $(this).find('.input-product-name').val();
+                    }
+                    let data = {
+                        'product': product_id,
+                        'product_category': $(this).find('.box-select-product-category').val(),
+                        'tax': $(this).find('.box-select-tax').val(),
+                        'uom': $(this).find('.box-select-uom').val(),
+                        'product_name': product_name,
+                        'product_quantity': $(this).find('.input-quantity').val(),
+                        'product_unit_price': $(this).find('.input-unit-price').attr('value'),
+                        'product_subtotal_price': $(this).find('.input-subtotal').attr('value'),
+                    }
+                    if (!$(this).find('.box-select-tax').val()) {
+                        delete data['tax']
+                    }
+                    list_product_data.push(data);
+                })
+            }
+            data_form['total_product'] = OpportunityLoadDetail.input_prd_total_Ele.valCurrency();
+            data_form['total_product_pretax_amount'] = $('#input-product-pretax-amount').valCurrency();
+            data_form['total_product_tax'] = $('#input-product-taxes').valCurrency();
+            data_form['estimated_gross_profit_percent'] = OpportunityLoadDetail.estimated_gross_profit_percent_Ele.val();
+            data_form['estimated_gross_profit_value'] = $('#estimated-gross-profit-value').valCurrency();
             data_form['opportunity_product_datas'] = list_product_data;
         }
 
         // tab competitor
-        let list_competitor_data = []
-        if (this.competitorTableEle.DataTable().data().length > 0) {
-            ele_tr_competitors.each(function () {
-                let win_deal = false;
-                if ($(this).find('.input-win-deal').is(':checked')) {
-                    win_deal = true;
-                    data_form['is_close_lost'] = true;
-                }
-                let data = {
-                    'competitor': $(this).find('.box-select-competitor').val(),
-                    'strength': $(this).find('.input-strength').val(),
-                    'weakness': $(this).find('.input-weakness').val(),
-                    'win_deal': win_deal,
-                }
-                list_competitor_data.push(data);
-            })
-        }
-
         if (OpportunityLoadDetail.competitorTableEle.hasClass('tag-change')) {
+            let list_competitor_data = []
+            if (this.competitorTableEle.DataTable().data().length > 0) {
+                ele_tr_competitors.each(function () {
+                    let win_deal = false;
+                    if ($(this).find('.input-win-deal').is(':checked')) {
+                        win_deal = true;
+                        data_form['is_close_lost'] = true;
+                    }
+                    let data = {
+                        'competitor': $(this).find('.box-select-competitor').val(),
+                        'strength': $(this).find('.input-strength').val(),
+                        'weakness': $(this).find('.input-weakness').val(),
+                        'win_deal': win_deal,
+                    }
+                    list_competitor_data.push(data);
+                })
+            }
             data_form['opportunity_competitors_datas'] = list_competitor_data;
         }
 
         // tab contact role
-        let list_contact_role_data = []
-        if (this.contactRoleTableEle.DataTable().data().length > 0) {
-            ele_tr_contact_role.each(function () {
-                let data = {
-                    'type_customer': $(this).find('.box-select-type-customer').val(),
-                    'contact': $(this).find('.box-select-contact').val(),
-                    'job_title': $(this).find('.input-job-title').val(),
-                    'role': $(this).find('.box-select-role').val(),
-                }
-                list_contact_role_data.push(data);
-            })
-        }
-
         if (OpportunityLoadDetail.contactRoleTableEle.hasClass('tag-change')) {
+            let list_contact_role_data = []
+            if (this.contactRoleTableEle.DataTable().data().length > 0) {
+                ele_tr_contact_role.each(function () {
+                    let data = {
+                        'type_customer': $(this).find('.box-select-type-customer').val(),
+                        'contact': $(this).find('.box-select-contact').val(),
+                        'job_title': $(this).find('.input-job-title').val(),
+                        'role': $(this).find('.box-select-role').val(),
+                    }
+                    list_contact_role_data.push(data);
+                })
+            }
             data_form['opportunity_contact_role_datas'] = list_contact_role_data;
         }
 
-        let list_member = []
-        ele_sale_team_members.each(function () {
-            list_member.push({'member': $(this).data('id')});
-        })
+        // tab member
         if ($('#card-member').hasClass('tag-change')) {
+            let list_member = []
+            ele_sale_team_members.each(function () {
+                list_member.push({'member': $(this).data('id')});
+            })
             data_form['opportunity_sale_team_datas'] = list_member;
         }
 
@@ -862,7 +861,6 @@ class OpportunityLoadDetail {
             'is_current': true,
         })
 
-
         if ($('#input-close-deal').is(':checked')) {
             data_form['is_deal_close'] = true;
         }
@@ -875,6 +873,7 @@ class OpportunityLoadDetail {
             data_form['lost_by_other_reason'] = true;
             data_form['is_close_lost'] = true;
         }
+
         return data_form
     }
 
@@ -1096,15 +1095,11 @@ class OpportunityActivity {
                             'production.bom': transEle.attr('data-trans-bom'),
                             'bidding.bidding': transEle.attr('data-trans-bidding'),
                         }
-                        let appMapBadge = {
-                            'quotation.quotation': "badge-primary badge-outline",
-                            'saleorder.saleorder': "badge-success badge-outline",
-                            'cashoutflow.advancepayment': "badge-pink badge-outline",
-                            'cashoutflow.payment': "badge-violet badge-outline",
-                            'cashoutflow.returnadvance': "badge-purple badge-outline",
-                            'task.opportunitytask': "badge-secondary badge-outline",
-                            'production.bom': "badge-orange badge-outline",
-                            'bidding.bidding': "badge-info badge-outline",
+                        let typeMapActivityIcon = {
+                            1: 'fa-solid fa-list-check',
+                            2: 'fas fa-phone-volume',
+                            3: 'bi bi-envelope-fill',
+                            4: 'bi bi-person-workspace',
                         }
                         let typeMapActivity = {
                             1: transEle.attr('data-trans-task'),
@@ -1115,32 +1110,35 @@ class OpportunityActivity {
                         let typeMapIcon = {
                             0: "fas fa-file-alt",
                             1: "fas fa-tasks",
-                            2: "fas fa-phone-alt",
-                            3: "far fa-envelope",
-                            4: "fas fa-users",
                         }
 
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code']) {
-                                return `<span class="badge badge-sm ${appMapBadge[row?.['app_code']]}">
-                                            <span>
-                                                <span class="icon"><span class="feather-icon"><small><i class="${typeMapIcon[row?.['log_type']]}"></i></small></span></span>
-                                                ${appMapTrans[row?.['app_code']]}
-                                            </span>
-                                        </span>`;
+                                return `<i class="text-primary ${typeMapIcon[row?.['log_type']]}"></i>  <span class="text-primary small">${appMapTrans[row?.['app_code']]}</span>`;
                             }
                         } else {
                             let status = '';
                             if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
                                 status = `<span class="badge badge-sm badge-icon-xs badge-soft-danger">${transEle.attr('data-trans-activity-cancelled')}</i>`
                             }
-                            return `<span class="badge badge-sm badge-outline badge-primary">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
+                            return `<i class="text-primary ${typeMapActivityIcon[row?.['log_type']]}"></i>  <span class="text-primary small">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                         }
                         return `<p></p>`;
                     }
                 },
                 {
                     targets: 2,
+                    render: (data, type, row) => {
+                        if ([0, 1].includes(row?.['log_type'])) {
+                            if (row?.['app_code'] && row?.['doc_data']?.['code']) {
+                                return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
+                            }
+                        }
+                        return `<p></p>`;
+                    }
+                },
+                {
+                    targets: 3,
                     render: (data, type, row) => {
                         let urlMapApp = {
                             'quotation.quotation': urlFactory.attr('data-url-quotation-detail'),
@@ -1183,20 +1181,7 @@ class OpportunityActivity {
                     }
                 },
                 {
-                    targets: 3,
-                    className: 'text-center',
-                    render: (data, type, row) => {
-                        if ([0, 1].includes(row?.['log_type'])) {
-                            if (row?.['app_code'] && row?.['doc_data']?.['code']) {
-                                return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
-                            }
-                        }
-                        return `<p>--</p>`;
-                    }
-                },
-                {
                     targets: 4,
-                    className: 'text-center',
                     render: (data, type, row) => {
                         if (row?.['app_code'] && [0, 1].includes(row?.['log_type'])) {
                             if (row?.['log_type'] === 0 && row?.['doc_data']?.['system_status']) {
@@ -1214,12 +1199,12 @@ class OpportunityActivity {
                                 return `<span class="badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span>`;
                             }
                         }
-                        return `<p>--</p>`;
+                        return `<p></p>`;
                     }
                 },
                 {
                     targets: 5,
-                    className: 'text-center',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(row?.['date_created'], {
                             'outputFormat': 'DD/MM/YYYY',
@@ -1300,874 +1285,849 @@ class OpportunityActivity {
     }
 }
 
-// function in page list
-
-function loadDtbOpportunityList() {
-    if (!$.fn.DataTable.isDataTable('#table_opportunity_list-purchase-request')) {
-        let $table = $('#table_opportunity_list')
-        let frm = new SetupFormSubmit($table);
-        $table.DataTableDefault({
-            useDataServer: true,
-            rowIdx: true,
-            ajax: {
-                url: frm.dataUrl,
-                type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && resp.data.hasOwnProperty('opportunity_list')) {
-                        return resp.data['opportunity_list'] ? resp.data['opportunity_list'] : [];
-                    }
-                    throw Error('Call data raise errors.')
+class LoadConfigAndLoadStage {
+    static async loadMemberSaleTeam() {
+        if (!$.fn.DataTable.isDataTable('#dtbMember')) {
+            let dtb = $('#dtbMember');
+            let frm = new SetupFormSubmit(dtb);
+            dtb.DataTableDefault({
+                rowIdx: true,
+                reloadCurrency: true,
+                paging: false,
+                scrollX: '100vh',
+                scrollY: '50vh',
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('employee_list')) {
+                            return resp.data['employee_list'] ? resp.data['employee_list'] : [];
+                        }
+                        throw Error('Call data raise errors.')
+                    },
                 },
-            },
-            columns: [
-                {
-                    targets: 0,
-                    render: () => {
-                        return ``
-                    }
-                },
-                {
-                    targets: 1,
-                    className: 'wrap-text w-10',
-                    render: (data, type, row) => {
-                        const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                        return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`
-                    }
-                },
-                {
-                    targets: 2,
-                    className: 'wrap-text w-25',
-                    render: (data, type, row) => {
-                        const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                        return `<a href="${link}"><span class="fw-bold text-primary">${row.title}</span></a>`
-                    }
-                },
-                {
-                    targets: 3,
-                    className: 'wrap-text w-20',
-                    render: (data, type, row) => {
-                        return `<span class="text-muted">${row.customer.title}</span>`
-                    }
-                },
-                {
-                    targets: 4,
-                    className: 'wrap-text w-15',
-                    render: (data, type, row) => {
-                        return `<span class="text-blue">${row?.['sale_person'].full_name}</span>`
-                    }
-                },
-                {
-                    targets: 5,
-                    className: 'wrap-text w-10',
-                    data: "open_date",
-                    render: (data, type, row) => {
-                        return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
-                            'outputFormat': 'DD-MM-YYYY',
-                            callback: function (data) {
-                                return `<p>${data.relate}</p><small>${data.output}</small>`;
+                columns: [
+                    {
+                        className: 'wrap-text w-5',
+                        render: (data, type, row) => {
+                            return '';
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-45',
+                        render: (data, type, row) => {
+                            return `<span class="badge badge-soft-primary w-30">${row?.['code']}</span><span class="text-primary ml-2">${row?.['full_name']}</span>`
+                        }
+                    },
+                    {
+                        data: 'group',
+                        className: 'wrap-text w-40',
+                        render: (data) => {
+                            return `<span class="badge badge-outline badge-blue">{0}</span>`.format_by_idx(
+                                data.title
+                            )
+                        }
+                    },
+                    {
+                        data: 'is_checked_new',
+                        className: 'wrap-text w-10',
+                        render: (data, type, row) => {
+                            if ($('.member-item .card[data-id="' + row.id + '"]').length > 0) {
+                                return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`
                             }
-                        }) : "_";
-                    }
-                },
-                {
-                    targets: 6,
-                    className: 'wrap-text w-10',
-                    data: "close_date",
-                    render: (data, type, row) => {
-                        return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
-                            'outputFormat': 'DD-MM-YYYY',
-                            callback: function (data) {
-                                return `<p>${data.relate}</p><small>${data.output}</small>`;
+                            return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" ${data === true ? "checked" : ""}/></span>`
+                        }
+                    },
+                ],
+                rowCallback: function (row, data) {
+                    $(row).find('.input-select-member').on('change', function (){
+                        let is_checked = $(this).prop('checked');
+                        $x.fn.updateDataRow(this, function (clsThat, rowIdx, rowData) {
+                            rowData['is_checked_new'] = is_checked
+                            return {
+                                ...rowData,
+                                is_checked_new: is_checked,
+                                idx: rowIdx + 1,
                             }
-                        }) : "_";
-                    }
+                        }, false);
+                    })
                 },
-                {
-                    targets: 7,
-                    className: 'wrap-text w-10 text-center',
-                    render: (data, type, row) => {
-                        let stage_current;
-                        stage_current = row.stage.find(function (obj) {
-                            return obj.is_current === true;
-                        });
-                        return `<span class="badge badge-light badge-outline w-90">${stage_current.indicator}</span>`
-                    }
-                },
-            ],
-        });
-    }
-}
-
-function callData(url, method) {
-    return $.fn.callAjax2({
-        url: url,
-        method: method,
-    }).then((resp) => {
-            return $.fn.switcherResp(resp);
-        },
-        (errs) => {
-            console.log(errs)
-        });
-}
-
-function loadConfigPromise() {
-    let url = urlEle.data('url-config');
-    let method = 'GET';
-    return callData(url, method).then(
-        result => {
-            return result?.['opportunity_config']
-        },
-    );
-}
-
-// page detail
-async function loadMemberSaleTeam() {
-    if (!$.fn.DataTable.isDataTable('#dtbMember')) {
-        let dtb = $('#dtbMember');
-        let frm = new SetupFormSubmit(dtb);
-        dtb.DataTableDefault({
-            rowIdx: true,
-            paging: false,
-            ajax: {
-                url: frm.dataUrl,
-                type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && resp.data.hasOwnProperty('employee_list')) {
-                        return resp.data['employee_list'] ? resp.data['employee_list'] : [];
-                    }
-                    throw Error('Call data raise errors.')
-                },
-            },
-            columns: [
-                {
-                    render: (data, type, row) => {
-                        return '';
-                    }
-                },
-                {
-                    data: 'code',
-                    className: 'wrap-text w-20',
-                    render: (data) => {
-                        return `<span class="span-emp-code">{0}</span>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    data: 'full_name',
-                    className: 'wrap-text w-30',
-                    render: (data) => {
-                        return `<span class="span-emp-name">{0}</span>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    data: 'group',
-                    className: 'wrap-text w-30',
-                    render: (data) => {
-                        return `<span class="span-emp-email">{0}</span>`.format_by_idx(
-                            data.title
-                        )
-                    }
-                },
-                {
-                    data: 'is_checked_new',
-                    className: 'wrap-text w-10',
-                    render: (data, type, row) => {
-                        if ($('.member-item .card[data-id="' + row.id + '"]').length > 0) {
-                            return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`
-                        }
-                        return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" ${data === true ? "checked" : ""}/></span>`
-                    }
-                },
-            ],
-            rowCallback: function (row, data) {
-                $(row).find('.input-select-member').on('change', function (){
-                    let is_checked = $(this).prop('checked');
-                    $x.fn.updateDataRow(this, function (clsThat, rowIdx, rowData) {
-                        rowData['is_checked_new'] = is_checked
-                        return {
-                            ...rowData,
-                            is_checked_new: is_checked,
-                            idx: rowIdx + 1,
-                        }
-                    }, false);
-                })
-            },
-        });
-    }
-}
-
-// page update
-
-function loadDtbProduct(data) {
-    if (!$.fn.DataTable.isDataTable('#table-products')) {
-        let dtb = OpportunityLoadDetail.productTableEle;
-        dtb.DataTableDefault({
-            dom: 't',
-            rowIdx: true,
-            reloadCurrency: true,
-            paging: false,
-            scrollX: '100vh',
-            scrollY: '25vh',
-            scrollCollapse: true,
-            data: data,
-            columns: [
-                {
-                    render: () => {
-                        return '';
-                    }
-                },
-                {
-                    data: 'product',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        if (data) {
-                            return `<select class="form-select select-box-product" data-method="GET" data-url="${urlEle.data('url-product')}" data-keyResp="product_sale_list" required></select><input class="form-control input-product-name hidden" type="text" value="${data.title}"/>`
-                        } else {
-                            return `<input class="form-control input-product-name" type="text" required/>`
-                        }
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return `<select class="form-select box-select-product-category" data-method="GET" data-url="${urlEle.data('url-product-category')}" data-keyResp="product_category_list" required></select>`
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return `<select class="form-select box-select-uom" data-method="GET" data-url="${urlEle.data('url-uom')}" data-keyResp="unit_of_measure" required></select>`
-                    }
-                },
-                {
-                    data: 'product_quantity',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<input type="number" class="form-control input-quantity" value="{0}" required/>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    data: 'product_unit_price',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<input type="text" class="form-control mask-money input-unit-price" data-return-type="number" value="{0}" required/>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return `<select class="form-select box-select-tax" data-method="GET" data-url="${urlEle.data('url-tax')}" data-keyResp="tax_list" required></select>`
-                    }
-                },
-                {
-                    data: 'product_subtotal_price',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<input class="form-control mask-money input-subtotal" type="text" data-return-type="number" value="{0}" readonly required>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
-                    }
-                },
-            ],
-        });
-    }
-}
-
-function loadDtbCompetitor(data) {
-    if (!$.fn.DataTable.isDataTable('#table-competitors')) {
-        let dtb = OpportunityLoadDetail.competitorTableEle;
-        dtb.DataTableDefault({
-            dom: 't',
-            rowIdx: true,
-            data: data,
-            paging: false,
-            scrollX: '100vh',
-            scrollY: '40vh',
-            scrollCollapse: true,
-            columns: [
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return ``
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${urlEle.data('url-competitor')}" data-keyResp="account_sale_list" data-keyText="name" required></select>`
-                    }
-                },
-                {
-                    data: 'strength',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<input class="form-control input-strength" type="text" value="{0}"/>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    data: 'weakness',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<input type="text" class="form-control input-weakness" value="{0}"/>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    data: 'win_deal',
-                    className: 'wrap-text text-center',
-                    render: (data) => {
-                        if (data) {
-                            return `<div class="form-check"><input checked type="checkbox" class="form-check-input input-win-deal"></div>`
-                        } else {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input input-win-deal"></div>`
-                        }
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
-                    }
-                },
-            ],
-        });
-    }
-}
-
-function loadDtbContactRole(data) {
-    if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
-        let dtb = OpportunityLoadDetail.contactRoleTableEle;
-        dtb.DataTableDefault({
-            dom: 't',
-            rowIdx: true,
-            data: data,
-            paging: false,
-            scrollX: '100vh',
-            scrollY: '25vh',
-            scrollCollapse: true,
-            columns: [
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return ``
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return `<select class="form-select box-select-type-customer" required></select>`
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return `<select class="form-select box-select-contact" data-method="GET" data-url="${urlEle.data('url-contact')}" data-keyResp="contact_list" data-keyText="fullname" required></select>`
-                    }
-                },
-                {
-                    data: 'job_title',
-                    className: 'wrap-text',
-                    render: (data) => {
-                        return `<input type="text" class="form-control input-job-title" value="{0}" readonly/>`.format_by_idx(
-                            data
-                        )
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return `<select class="form-select box-select-role" required></select>`
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: () => {
-                        return `<a class="btn btn-icon btn-del-item">
-                                    <span class="btn-icon-wrap">
-                                        <span class="feather-icon"><i data-feather="trash-2"></i></span>
-                                    </span>
-                                </a>`
-                    }
-                }
-            ],
-        });
-    }
-}
-
-function autoLoadStage(
-    is_load_rate = false,
-    just_check = false,
-    list_stage_condition,
-    list_stage,
-    condition_sale_oder_approved,
-    condition_is_quotation_confirm,
-    condition_sale_oder_delivery_status,
-    config_is_input_rate,
-    dict_stage
-) {
-    if (list_stage_condition.length === 0) {
-        list_stage.map(function (item) {
-            let list_condition = []
-            item.condition_datas.map(function (condition) {
-                list_condition.push({
-                    'property': condition.condition_property.title,
-                    'comparison_operator': condition.comparison_operator,
-                    'compare_data': condition.compare_data,
-                })
-            })
-            list_stage_condition.push({
-                'id': item.id,
-                'logical_operator': item.logical_operator,
-                'condition_datas': list_condition
-            })
-        })
-    }
-    let list_property_config = []
-    let ele_customer = OpportunityLoadDropdown.customerSelectEle;
-    let obj_customer = SelectDDControl.get_data_from_idx(ele_customer, ele_customer.val());
-    if (ele_customer.length > 0) {
-        list_property_config.push({
-            'property': 'Customer',
-            'comparison_operator': '≠',
-            'compare_data': '0',
-        })
-        let compare_data = '0';
-        if (obj_customer.total_employees) {
-            compare_data = obj_customer.total_employees;
+            });
         }
-        list_property_config.push({
-            'property': 'Customer',
-            'comparison_operator': '=',
-            'compare_data': compare_data,
-        })
-    }
-    else {
-        list_property_config.push({
-            'property': 'Customer',
-            'comparison_operator': '=',
-            'compare_data': '0',
-        })
     }
 
-    let ele_product_category = $('#select-box-product-category option:selected');
-    if (ele_product_category.length > 0) {
-        list_property_config.push({
-            'property': 'Product Category',
-            'comparison_operator': '≠',
-            'compare_data': '0',
-        })
-    }
-    else {
-        list_property_config.push({
-            'property': 'Product Category',
-            'comparison_operator': '=',
-            'compare_data': '0',
-        })
+    static callDataConfig(url, method) {
+        return $.fn.callAjax2({
+            url: url,
+            method: method,
+        }).then((resp) => {
+                return $.fn.switcherResp(resp);
+            },
+            (errs) => {
+                console.log(errs)
+            });
     }
 
-    let ele_budget = $('#input-budget');
-    if (ele_budget.valCurrency() === 0) {
-        list_property_config.push({
-            'property': 'Budget',
-            'comparison_operator': '=',
-            'compare_data': '0',
-        })
-    }
-    else {
-        list_property_config.push({
-            'property': 'Budget',
-            'comparison_operator': '≠',
-            'compare_data': '0',
-        })
+    static loadConfigPromise() {
+        let url = urlEle.data('url-config');
+        let method = 'GET';
+        return LoadConfigAndLoadStage.callDataConfig(url, method).then(
+            result => {
+                return result?.['opportunity_config']
+            },
+        );
     }
 
-    let ele_open_date = $('#input-open-date');
-    if (ele_open_date.val() === '') {
-        list_property_config.push({
-            'property': 'Open Date',
-            'comparison_operator': '=',
-            'compare_data': '0',
-        })
-    }
-    else {
-        list_property_config.push({
-            'property': 'Open Date',
-            'comparison_operator': '≠',
-            'compare_data': '0',
-        })
-    }
+    static autoLoadStage(
+        is_load_rate = false,
+        just_check = false,
+        list_stage_condition,
+        list_stage,
+        condition_sale_oder_approved,
+        condition_is_quotation_confirm,
+        condition_sale_oder_delivery_status,
+        config_is_input_rate,
+        dict_stage
+    ) {
+        if (list_stage_condition.length === 0) {
+            list_stage.map(function (item) {
+                let list_condition = []
+                item.condition_datas.map(function (condition) {
+                    list_condition.push({
+                        'property': condition.condition_property.title,
+                        'comparison_operator': condition.comparison_operator,
+                        'compare_data': condition.compare_data,
+                    })
+                })
+                list_stage_condition.push({
+                    'id': item.id,
+                    'logical_operator': item.logical_operator,
+                    'condition_datas': list_condition
+                })
+            })
+        }
+        let list_property_config = []
+        let ele_customer = OpportunityLoadDropdown.customerSelectEle;
+        let obj_customer = SelectDDControl.get_data_from_idx(ele_customer, ele_customer.val());
+        if (ele_customer.length > 0) {
+            list_property_config.push({
+                'property': 'Customer',
+                'comparison_operator': '≠',
+                'compare_data': '0',
+            })
+            let compare_data = '0';
+            if (obj_customer.total_employees) {
+                compare_data = obj_customer.total_employees;
+            }
+            list_property_config.push({
+                'property': 'Customer',
+                'comparison_operator': '=',
+                'compare_data': compare_data,
+            })
+        }
+        else {
+            list_property_config.push({
+                'property': 'Customer',
+                'comparison_operator': '=',
+                'compare_data': '0',
+            })
+        }
 
-    let ele_close_date = $('#input-close-date');
-    if (ele_close_date.val() === '') {
-        list_property_config.push({
-            'property': 'Close Date',
-            'comparison_operator': '=',
-            'compare_data': '0',
-        })
-    }
-    else {
-        list_property_config.push({
-            'property': 'Close Date',
-            'comparison_operator': '≠',
-            'compare_data': '0',
-        })
-    }
+        let ele_product_category = $('#select-box-product-category option:selected');
+        if (ele_product_category.length > 0) {
+            list_property_config.push({
+                'property': 'Product Category',
+                'comparison_operator': '≠',
+                'compare_data': '0',
+            })
+        }
+        else {
+            list_property_config.push({
+                'property': 'Product Category',
+                'comparison_operator': '=',
+                'compare_data': '0',
+            })
+        }
 
-    let ele_decision_maker = $('#input-decision-maker');
-    if (ele_decision_maker.attr('data-id') === '') {
-        list_property_config.push({
-            'property': 'Decision maker',
-            'comparison_operator': '=',
-            'compare_data': '0',
-        })
-    }
-    else {
-        list_property_config.push({
-            'property': 'Decision maker',
-            'comparison_operator': '≠',
-            'compare_data': '0',
-        })
-    }
+        let ele_budget = $('#input-budget');
+        if (ele_budget.valCurrency() === 0) {
+            list_property_config.push({
+                'property': 'Budget',
+                'comparison_operator': '=',
+                'compare_data': '0',
+            })
+        }
+        else {
+            list_property_config.push({
+                'property': 'Budget',
+                'comparison_operator': '≠',
+                'compare_data': '0',
+            })
+        }
 
-    if (OpportunityLoadDetail.productTableEle.DataTable().data().length === 0) {
-        list_property_config.push({
-            'property': 'Product.Line.Detail',
-            'comparison_operator': '=',
-            'compare_data': '0',
-        })
-    }
-    else {
-        list_property_config.push({
-            'property': 'Product.Line.Detail',
-            'comparison_operator': '≠',
-            'compare_data': '0',
-        })
-    }
+        let ele_open_date = $('#input-open-date');
+        if (ele_open_date.val() === '') {
+            list_property_config.push({
+                'property': 'Open Date',
+                'comparison_operator': '=',
+                'compare_data': '0',
+            })
+        }
+        else {
+            list_property_config.push({
+                'property': 'Open Date',
+                'comparison_operator': '≠',
+                'compare_data': '0',
+            })
+        }
 
-    let ele_competitor_win = $('.input-win-deal:checked');
-    if (ele_competitor_win.length === 0) {
-        list_property_config.push({
-            'property': 'Competitor.Win',
-            'comparison_operator': '≠',
-            'compare_data': '0',
-        })
-    }
-    else {
-        list_property_config.push({
-            'property': 'Competitor.Win',
-            'comparison_operator': '=',
-            'compare_data': '0',
-        })
-    }
+        let ele_close_date = $('#input-close-date');
+        if (ele_close_date.val() === '') {
+            list_property_config.push({
+                'property': 'Close Date',
+                'comparison_operator': '=',
+                'compare_data': '0',
+            })
+        }
+        else {
+            list_property_config.push({
+                'property': 'Close Date',
+                'comparison_operator': '≠',
+                'compare_data': '0',
+            })
+        }
 
-    let ele_check_lost = $('#check-lost-reason');
-    if (ele_check_lost.is(':checked')) {
-        list_property_config.push({
-            'property': 'Lost By Other Reason',
-            'comparison_operator': '=',
-            'compare_data': '0',
-        })
-    }
-    else {
-        list_property_config.push({
-            'property': 'Lost By Other Reason',
-            'comparison_operator': '≠',
-            'compare_data': '0',
-        })
-    }
+        let ele_decision_maker = $('#input-decision-maker');
+        if (ele_decision_maker.attr('data-id') === '') {
+            list_property_config.push({
+                'property': 'Decision maker',
+                'comparison_operator': '=',
+                'compare_data': '0',
+            })
+        }
+        else {
+            list_property_config.push({
+                'property': 'Decision maker',
+                'comparison_operator': '≠',
+                'compare_data': '0',
+            })
+        }
 
-    if (condition_is_quotation_confirm) {
-        list_property_config.push({
-            'property': 'Quotation.confirm',
-            'comparison_operator': '=',
-            'compare_data': '0',
-        })
-    }
-    else {
-        list_property_config.push({
-            'property': 'Quotation.confirm',
-            'comparison_operator': '≠',
-            'compare_data': '0',
-        })
-    }
+        if (OpportunityLoadDetail.productTableEle.DataTable().data().length === 0) {
+            list_property_config.push({
+                'property': 'Product.Line.Detail',
+                'comparison_operator': '=',
+                'compare_data': '0',
+            })
+        }
+        else {
+            list_property_config.push({
+                'property': 'Product.Line.Detail',
+                'comparison_operator': '≠',
+                'compare_data': '0',
+            })
+        }
 
-    if (condition_sale_oder_approved) {
-        list_property_config.push({
-            'property': 'SaleOrder.status',
-            'comparison_operator': '=',
-            'compare_data': '0',
-        })
-    }
-    else {
-        list_property_config.push({
-            'property': 'SaleOrder.status',
-            'comparison_operator': '≠',
-            'compare_data': '0',
-        })
-    }
+        let ele_competitor_win = $('.input-win-deal:checked');
+        if (ele_competitor_win.length === 0) {
+            list_property_config.push({
+                'property': 'Competitor.Win',
+                'comparison_operator': '≠',
+                'compare_data': '0',
+            })
+        }
+        else {
+            list_property_config.push({
+                'property': 'Competitor.Win',
+                'comparison_operator': '=',
+                'compare_data': '0',
+            })
+        }
 
-    if (condition_sale_oder_delivery_status) {
-        list_property_config.push({
-            'property': 'SaleOrder.Delivery.Status',
-            'comparison_operator': '≠',
-            'compare_data': '0',
-        })
-    }
-    else {
-        list_property_config.push({
-            'property': 'SaleOrder.Delivery.Status',
-            'comparison_operator': '=',
-            'compare_data': '0',
-        })
-    }
+        let ele_check_lost = $('#check-lost-reason');
+        if (ele_check_lost.is(':checked')) {
+            list_property_config.push({
+                'property': 'Lost By Other Reason',
+                'comparison_operator': '=',
+                'compare_data': '0',
+            })
+        }
+        else {
+            list_property_config.push({
+                'property': 'Lost By Other Reason',
+                'comparison_operator': '≠',
+                'compare_data': '0',
+            })
+        }
 
-    let list_property_config_string = []
-    for (let i = 0; i < list_property_config.length; i++) {
-        let condition_temp = list_property_config[i]
-        list_property_config_string.push(
-            condition_temp.property + condition_temp.comparison_operator + condition_temp.compare_data
-        )
-    }
+        if (condition_is_quotation_confirm) {
+            list_property_config.push({
+                'property': 'Quotation.confirm',
+                'comparison_operator': '=',
+                'compare_data': '0',
+            })
+        }
+        else {
+            list_property_config.push({
+                'property': 'Quotation.confirm',
+                'comparison_operator': '≠',
+                'compare_data': '0',
+            })
+        }
 
-    let id_stage_current = '';
-    let list_stage_condition_string = []
-    for (let i = 0; i < list_stage_condition.length; i++) {
-        let stage_condition_string = []
-        for (let j = 0; j < list_stage_condition[i].condition_datas.length; j++) {
-            let condition_temp = list_stage_condition[i].condition_datas[j]
-            stage_condition_string.push(
+        if (condition_sale_oder_approved) {
+            list_property_config.push({
+                'property': 'SaleOrder.status',
+                'comparison_operator': '=',
+                'compare_data': '0',
+            })
+        }
+        else {
+            list_property_config.push({
+                'property': 'SaleOrder.status',
+                'comparison_operator': '≠',
+                'compare_data': '0',
+            })
+        }
+
+        if (condition_sale_oder_delivery_status) {
+            list_property_config.push({
+                'property': 'SaleOrder.Delivery.Status',
+                'comparison_operator': '≠',
+                'compare_data': '0',
+            })
+        }
+        else {
+            list_property_config.push({
+                'property': 'SaleOrder.Delivery.Status',
+                'comparison_operator': '=',
+                'compare_data': '0',
+            })
+        }
+
+        let list_property_config_string = []
+        for (let i = 0; i < list_property_config.length; i++) {
+            let condition_temp = list_property_config[i]
+            list_property_config_string.push(
                 condition_temp.property + condition_temp.comparison_operator + condition_temp.compare_data
             )
         }
-        list_stage_condition_string.push({
-            'stage_logic': list_stage_condition[i].logical_operator,
-            'stage_id': list_stage_condition[i].id,
-            'stage_condition': stage_condition_string,
-            'stage_win_rate': dict_stage[list_stage_condition[i].id].win_rate
-        })
-    }
 
-    let id_stage_current_list = []
-    for (let i = 0; i < list_stage_condition_string.length; i++) {
-        if (list_stage_condition_string[i]?.['stage_logic'] === 0) {
-            let flag= true
-            for (let j = 0; j < list_stage_condition_string[i]?.['stage_condition'].length; j++) {
-                if (!list_property_config_string.includes(list_stage_condition_string[i]?.['stage_condition'][j])) {
-                    flag = false
-                }
+        let id_stage_current = '';
+        let list_stage_condition_string = []
+        for (let i = 0; i < list_stage_condition.length; i++) {
+            let stage_condition_string = []
+            for (let j = 0; j < list_stage_condition[i].condition_datas.length; j++) {
+                let condition_temp = list_stage_condition[i].condition_datas[j]
+                stage_condition_string.push(
+                    condition_temp.property + condition_temp.comparison_operator + condition_temp.compare_data
+                )
             }
-            if (flag) {
-                id_stage_current_list.push({
-                    'stage_id': list_stage_condition_string[i].stage_id,
-                    'stage_win_rate': list_stage_condition_string[i].stage_win_rate,
-                })
-            }
+            list_stage_condition_string.push({
+                'stage_logic': list_stage_condition[i].logical_operator,
+                'stage_id': list_stage_condition[i].id,
+                'stage_condition': stage_condition_string,
+                'stage_win_rate': dict_stage[list_stage_condition[i].id].win_rate
+            })
         }
-        else {
-            let flag= false
-            for (let j = 0; j < list_stage_condition_string[i]?.['stage_condition'].length; j++) {
-                if (list_property_config_string.includes(list_stage_condition_string[i]?.['stage_condition'][j])) {
-                    flag = true
-                    break
-                }
-            }
-            if (flag) {
-                id_stage_current_list.push({
-                    'stage_id': list_stage_condition_string[i].stage_id,
-                    'stage_win_rate': list_stage_condition_string[i].stage_win_rate,
-                })
-            }
-        }
-    }
-    if (id_stage_current_list.length > 0) {
-        id_stage_current_list = id_stage_current_list.sort((a, b) => b.stage_win_rate - a.stage_win_rate);
-        id_stage_current = id_stage_current_list[0].stage_id
-    }
 
-    let closed_lost_filter = list_stage.filter(function (ele) {
-        return ele?.['indicator'] === "Closed Lost"
-    })
-    let closed_lost_config = closed_lost_filter.length > 0 ? closed_lost_filter[0] : null
-    let closed_lost_condition_list = []
-    let is_lost = false
-    if (closed_lost_config) {
-        for (const item of closed_lost_config?.['condition_datas']) {
-            closed_lost_condition_list.push(item?.['condition_property']?.['title'] + item?.['comparison_operator'] + item?.['compare_data'])
-        }
-        if (closed_lost_config?.['logical_operator']) { // or
-            for (let i = 0; i < closed_lost_condition_list.length; i++) {
-                if (list_property_config_string.includes(closed_lost_condition_list[i])) {
-                    is_lost = true;
-                    break;
-                }
-            }
-        }
-        else { // and
-            let bMap = {};
-            list_property_config_string.forEach(item => {
-                bMap[item] = true;
-            });
-            is_lost = closed_lost_condition_list.every(item => bMap[item]);
-        }
-    }
-
-    if (!just_check) {
-        let stage_selected_ele = $('.stage-selected');
-        let input_rate_ele = $('#check-input-rate');
-        let ele_close_deal = $('#input-close-deal');
-        let ele_stage = $(`.sub-stage`);
-        if (id_stage_current === '') {
-            id_stage_current = $('#div-stage').find('div:first-child').attr('data-id');
-        }
-        let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
-        let index = ele_stage_current.index() - (ele_stage_current.index()/2);
-        if (ele_stage_current.hasClass('stage-lost')) {
-            ele_stage_current.addClass('stage-selected');
-            ele_stage.removeClass('stage-selected');
-            ele_stage.css('background-color', '#e7e7e7')
-            ele_stage.css('color', '#6f6f6f')
-            ele_stage.find('.dropdown span').css('color', '#6f6f6f')
-            ele_stage.next().css('border-left', '16px solid #e7e7e7')
-        }
-        else {
-            for (let i = 0; i <= ele_stage.length; i++) {
-                if (i <= index) {
-                    if (!ele_stage.eq(i).hasClass('stage-lost')) {
-                        ele_stage.eq(i).addClass('stage-selected');
-                        ele_stage.eq(i).css('background-color', '#5a82b7')
-                        ele_stage.eq(i).css('color', 'white')
-                        ele_stage.eq(i).find('.dropdown span').css('color', 'white')
-                        ele_stage.eq(i).next().css('border-left', '16px solid #5a82b7')
+        let id_stage_current_list = []
+        for (let i = 0; i < list_stage_condition_string.length; i++) {
+            if (list_stage_condition_string[i]?.['stage_logic'] === 0) {
+                let flag= true
+                for (let j = 0; j < list_stage_condition_string[i]?.['stage_condition'].length; j++) {
+                    if (!list_property_config_string.includes(list_stage_condition_string[i]?.['stage_condition'][j])) {
+                        flag = false
                     }
-                    else {
+                }
+                if (flag) {
+                    id_stage_current_list.push({
+                        'stage_id': list_stage_condition_string[i].stage_id,
+                        'stage_win_rate': list_stage_condition_string[i].stage_win_rate,
+                    })
+                }
+            }
+            else {
+                let flag= false
+                for (let j = 0; j < list_stage_condition_string[i]?.['stage_condition'].length; j++) {
+                    if (list_property_config_string.includes(list_stage_condition_string[i]?.['stage_condition'][j])) {
+                        flag = true
+                        break
+                    }
+                }
+                if (flag) {
+                    id_stage_current_list.push({
+                        'stage_id': list_stage_condition_string[i].stage_id,
+                        'stage_win_rate': list_stage_condition_string[i].stage_win_rate,
+                    })
+                }
+            }
+        }
+        if (id_stage_current_list.length > 0) {
+            id_stage_current_list = id_stage_current_list.sort((a, b) => b.stage_win_rate - a.stage_win_rate);
+            id_stage_current = id_stage_current_list[0].stage_id
+        }
+
+        let closed_lost_filter = list_stage.filter(function (ele) {
+            return ele?.['indicator'] === "Closed Lost"
+        })
+        let closed_lost_config = closed_lost_filter.length > 0 ? closed_lost_filter[0] : null
+        let closed_lost_condition_list = []
+        let is_lost = false
+        if (closed_lost_config) {
+            for (const item of closed_lost_config?.['condition_datas']) {
+                closed_lost_condition_list.push(item?.['condition_property']?.['title'] + item?.['comparison_operator'] + item?.['compare_data'])
+            }
+            if (closed_lost_config?.['logical_operator']) { // or
+                for (let i = 0; i < closed_lost_condition_list.length; i++) {
+                    if (list_property_config_string.includes(closed_lost_condition_list[i])) {
+                        is_lost = true;
+                        break;
+                    }
+                }
+            }
+            else { // and
+                let bMap = {};
+                list_property_config_string.forEach(item => {
+                    bMap[item] = true;
+                });
+                is_lost = closed_lost_condition_list.every(item => bMap[item]);
+            }
+        }
+
+        if (!just_check) {
+            let stage_selected_ele = $('.stage-selected');
+            let input_rate_ele = $('#check-input-rate');
+            let ele_close_deal = $('#input-close-deal');
+            let ele_stage = $(`.sub-stage`);
+            if (id_stage_current === '') {
+                id_stage_current = $('#div-stage').find('div:first-child').attr('data-id');
+            }
+            let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
+            let index = ele_stage_current.index() - (ele_stage_current.index()/2);
+            if (ele_stage_current.hasClass('stage-lost')) {
+                ele_stage_current.addClass('stage-selected');
+                ele_stage.removeClass('stage-selected');
+                ele_stage.css('background-color', '#e7e7e7')
+                ele_stage.css('color', '#6f6f6f')
+                ele_stage.find('.dropdown span').css('color', '#6f6f6f')
+                ele_stage.next().css('border-left', '16px solid #e7e7e7')
+            }
+            else {
+                for (let i = 0; i <= ele_stage.length; i++) {
+                    if (i <= index) {
+                        if (!ele_stage.eq(i).hasClass('stage-lost')) {
+                            ele_stage.eq(i).addClass('stage-selected');
+                            ele_stage.eq(i).css('background-color', '#5a82b7')
+                            ele_stage.eq(i).css('color', 'white')
+                            ele_stage.eq(i).find('.dropdown span').css('color', 'white')
+                            ele_stage.eq(i).next().css('border-left', '16px solid #5a82b7')
+                        }
+                        else {
+                            ele_stage.eq(i).removeClass('stage-selected');
+                            ele_stage.eq(i).css('background-color', '#e7e7e7')
+                            ele_stage.eq(i).css('color', '#6f6f6f')
+                            ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
+                            ele_stage.eq(i).next().css('border-left', '16px solid #e7e7e7')
+                        }
+                    } else {
                         ele_stage.eq(i).removeClass('stage-selected');
                         ele_stage.eq(i).css('background-color', '#e7e7e7')
                         ele_stage.eq(i).css('color', '#6f6f6f')
                         ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
                         ele_stage.eq(i).next().css('border-left', '16px solid #e7e7e7')
                     }
-                } else {
-                    ele_stage.eq(i).removeClass('stage-selected');
-                    ele_stage.eq(i).css('background-color', '#e7e7e7')
-                    ele_stage.eq(i).css('color', '#6f6f6f')
-                    ele_stage.eq(i).find('.dropdown span').css('color', '#6f6f6f')
-                    ele_stage.eq(i).next().css('border-left', '16px solid #e7e7e7')
                 }
             }
-        }
 
-        if (ele_close_deal.is(':checked')) {
-            ele_stage_current = ele_close_deal.closest('.sub-stage');
-            ele_close_deal.closest('.sub-stage').addClass('stage-selected');
-            ele_close_deal.closest('.sub-stage').css('background-color', '#5a82b7')
-            ele_close_deal.closest('.sub-stage').css('color', 'white')
-            ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', 'white')
-            ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #5a82b7')
-            $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
-            if (!config_is_input_rate) {
-                input_rate_ele.prop('disabled', true);
-                $('#input-rate').prop('disabled', true);
-            }
-        }
-        else {
-            $('.page-content input, .page-content select, .page-content .btn').prop('disabled', false);
-            ele_close_deal.closest('.sub-stage').removeClass('stage-selected');
-            ele_close_deal.closest('.sub-stage').css('background-color', '#e7e7e7')
-            ele_close_deal.closest('.sub-stage').css('color', '#6f6f6f')
-            ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', '#6f6f6f')
-            ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #e7e7e7')
-            if (!config_is_input_rate) {
-                input_rate_ele.prop('disabled', true);
-                $('#input-rate').prop('disabled', true);
-            } else {
-                let ele_check_input_rate = input_rate_ele;
-                ele_check_input_rate.prop('disabled', false);
-                if (ele_check_input_rate.is(':checked')) {
-                    $('#input-rate').prop('disabled', false);
-                } else {
+            if (ele_close_deal.is(':checked')) {
+                ele_stage_current = ele_close_deal.closest('.sub-stage');
+                ele_close_deal.closest('.sub-stage').addClass('stage-selected');
+                ele_close_deal.closest('.sub-stage').css('background-color', '#5a82b7')
+                ele_close_deal.closest('.sub-stage').css('color', 'white')
+                ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', 'white')
+                ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #5a82b7')
+                $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
+                if (!config_is_input_rate) {
+                    input_rate_ele.prop('disabled', true);
                     $('#input-rate').prop('disabled', true);
                 }
             }
-            if (!$('#check-agency-role').is(':checked')) {
-                OpportunityLoadDropdown.endCustomerSelectEle.prop('disabled', true);
+            else {
+                $('.page-content input, .page-content select, .page-content .btn').prop('disabled', false);
+                ele_close_deal.closest('.sub-stage').removeClass('stage-selected');
+                ele_close_deal.closest('.sub-stage').css('background-color', '#e7e7e7')
+                ele_close_deal.closest('.sub-stage').css('color', '#6f6f6f')
+                ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', '#6f6f6f')
+                ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #e7e7e7')
+                if (!config_is_input_rate) {
+                    input_rate_ele.prop('disabled', true);
+                    $('#input-rate').prop('disabled', true);
+                } else {
+                    let ele_check_input_rate = input_rate_ele;
+                    ele_check_input_rate.prop('disabled', false);
+                    if (ele_check_input_rate.is(':checked')) {
+                        $('#input-rate').prop('disabled', false);
+                    } else {
+                        $('#input-rate').prop('disabled', true);
+                    }
+                }
+                if (!$('#check-agency-role').is(':checked')) {
+                    OpportunityLoadDropdown.endCustomerSelectEle.prop('disabled', true);
+                }
+            }
+
+            if (!input_rate_ele.is(':checked') && is_load_rate) {
+                let obj_stage = dict_stage[ele_stage_current.data('id')]
+                if (ele_stage_current.hasClass('stage-close'))
+                    obj_stage = dict_stage[stage_selected_ele.not(ele_stage_current).last().data('id')];
+                $('#input-rate').val(obj_stage?.win_rate);
+                $('#rangeInput').val(obj_stage?.win_rate);
             }
         }
 
-        if (!input_rate_ele.is(':checked') && is_load_rate) {
-            let obj_stage = dict_stage[ele_stage_current.data('id')]
-            if (ele_stage_current.hasClass('stage-close'))
-                obj_stage = dict_stage[stage_selected_ele.not(ele_stage_current).last().data('id')];
-            $('#input-rate').val(obj_stage?.win_rate);
-            $('#rangeInput').val(obj_stage?.win_rate);
-        }
+        return is_lost
     }
-    
-    return id_stage_current, is_lost
+
+    static sortStage(list_stage) {
+        let object_lost = null;
+        let delivery = null;
+        let object_close = null;
+        let list_result = []
+
+        for (let i = 0; i < list_stage.length; i++) {
+            if (list_stage[i]?.['is_closed_lost']) {
+                object_lost = list_stage[i];
+            } else if (list_stage[i]?.['is_delivery']) {
+                delivery = list_stage[i];
+            } else if (list_stage[i]?.['is_deal_closed']) {
+                object_close = list_stage[i];
+            } else {
+                list_result.push(list_stage[i]);
+            }
+        }
+
+        list_result.sort(function (a, b) {
+            return a.win_rate - b.win_rate;
+        });
+        list_result.push(object_lost);
+        if (delivery) {
+            list_result.push(delivery);
+        }
+        list_result.push(object_close);
+
+        return list_result
+    }
 }
 
-function sortStage(list_stage) {
-    let object_lost = null;
-    let delivery = null;
-    let object_close = null;
-    let list_result = []
-
-    for (let i = 0; i < list_stage.length; i++) {
-        if (list_stage[i]?.['is_closed_lost']) {
-            object_lost = list_stage[i];
-        } else if (list_stage[i]?.['is_delivery']) {
-            delivery = list_stage[i];
-        } else if (list_stage[i]?.['is_deal_closed']) {
-            object_close = list_stage[i];
-        } else {
-            list_result.push(list_stage[i]);
+class InitDataTables {
+    static loadDtbOpportunityList() {
+        if (!$.fn.DataTable.isDataTable('#table_opportunity_list-purchase-request')) {
+            let $table = $('#table_opportunity_list')
+            let frm = new SetupFormSubmit($table);
+            $table.DataTableDefault({
+                useDataServer: true,
+                rowIdx: true,
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('opportunity_list')) {
+                            return resp.data['opportunity_list'] ? resp.data['opportunity_list'] : [];
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
+                columns: [
+                    {
+                        targets: 0,
+                        render: () => {
+                            return ``
+                        }
+                    },
+                    {
+                        targets: 1,
+                        className: 'wrap-text w-10',
+                        render: (data, type, row) => {
+                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
+                            return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`
+                        }
+                    },
+                    {
+                        targets: 2,
+                        className: 'wrap-text w-25',
+                        render: (data, type, row) => {
+                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
+                            return `<a href="${link}"><span class="fw-bold text-primary">${row.title}</span></a>`
+                        }
+                    },
+                    {
+                        targets: 3,
+                        className: 'wrap-text w-20',
+                        render: (data, type, row) => {
+                            return `<span class="text-muted">${row.customer.title}</span>`
+                        }
+                    },
+                    {
+                        targets: 4,
+                        className: 'wrap-text w-15',
+                        render: (data, type, row) => {
+                            return `<span class="text-blue">${row?.['sale_person'].full_name}</span>`
+                        }
+                    },
+                    {
+                        targets: 5,
+                        className: 'wrap-text w-10',
+                        data: "open_date",
+                        render: (data, type, row) => {
+                            return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
+                                'outputFormat': 'DD-MM-YYYY',
+                                callback: function (data) {
+                                    return `<p>${data.relate}</p><small>${data.output}</small>`;
+                                }
+                            }) : "_";
+                        }
+                    },
+                    {
+                        targets: 6,
+                        className: 'wrap-text w-10',
+                        data: "close_date",
+                        render: (data, type, row) => {
+                            return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
+                                'outputFormat': 'DD-MM-YYYY',
+                                callback: function (data) {
+                                    return `<p>${data.relate}</p><small>${data.output}</small>`;
+                                }
+                            }) : "_";
+                        }
+                    },
+                    {
+                        targets: 7,
+                        className: 'wrap-text w-10 text-center',
+                        render: (data, type, row) => {
+                            let stage_current;
+                            stage_current = row.stage.find(function (obj) {
+                                return obj.is_current === true;
+                            });
+                            return `<span class="badge badge-light badge-outline w-90">${stage_current.indicator}</span>`
+                        }
+                    },
+                ],
+            });
         }
     }
 
-    list_result.sort(function (a, b) {
-        return a.win_rate - b.win_rate;
-    });
-    list_result.push(object_lost);
-    if (delivery) {
-        list_result.push(delivery);
+    static loadDtbProduct(data=[]) {
+        if (!$.fn.DataTable.isDataTable('#table-products')) {
+            let dtb = OpportunityLoadDetail.productTableEle;
+            dtb.DataTableDefault({
+                dom: 't',
+                rowIdx: true,
+                reloadCurrency: true,
+                paging: false,
+                scrollX: '100vh',
+                scrollY: '25vh',
+                scrollCollapse: true,
+                data: data,
+                columns: [
+                    {
+                        render: () => {
+                            return '';
+                        }
+                    },
+                    {
+                        data: 'product',
+                        className: 'wrap-text',
+                        render: (data) => {
+                            if (data) {
+                                return `<select class="form-select select-box-product" data-method="GET" data-url="${urlEle.data('url-product')}" data-keyResp="product_sale_list" required></select><input class="form-control input-product-name hidden" type="text" value="${data.title}"/>`
+                            } else {
+                                return `<input class="form-control input-product-name" type="text" required/>`
+                            }
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: () => {
+                            return `<select class="form-select box-select-product-category" data-method="GET" data-url="${urlEle.data('url-product-category')}" data-keyResp="product_category_list" required></select>`
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: () => {
+                            return `<select class="form-select box-select-uom" data-method="GET" data-url="${urlEle.data('url-uom')}" data-keyResp="unit_of_measure" required></select>`
+                        }
+                    },
+                    {
+                        data: 'product_quantity',
+                        className: 'wrap-text',
+                        render: (data) => {
+                            return `<input type="number" class="form-control input-quantity" value="{0}" required/>`.format_by_idx(
+                                data
+                            )
+                        }
+                    },
+                    {
+                        data: 'product_unit_price',
+                        className: 'wrap-text',
+                        render: (data) => {
+                            return `<input type="text" class="form-control mask-money input-unit-price" data-return-type="number" value="{0}" required/>`.format_by_idx(
+                                data
+                            )
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: () => {
+                            return `<select class="form-select box-select-tax" data-method="GET" data-url="${urlEle.data('url-tax')}" data-keyResp="tax_list" required></select>`
+                        }
+                    },
+                    {
+                        data: 'product_subtotal_price',
+                        className: 'wrap-text',
+                        render: (data) => {
+                            return `<input class="form-control mask-money input-subtotal" type="text" data-return-type="number" value="{0}" readonly required>`.format_by_idx(
+                                data
+                            )
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: () => {
+                            return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
+                        }
+                    },
+                ],
+            });
+        }
     }
-    list_result.push(object_close);
 
-    return list_result
+    static loadDtbCompetitor(data=[]) {
+        if (!$.fn.DataTable.isDataTable('#table-competitors')) {
+            let dtb = OpportunityLoadDetail.competitorTableEle;
+            dtb.DataTableDefault({
+                dom: 't',
+                rowIdx: true,
+                data: data,
+                paging: false,
+                scrollX: '100vh',
+                scrollY: '40vh',
+                scrollCollapse: true,
+                columns: [
+                    {
+                        className: 'wrap-text',
+                        render: () => {
+                            return ``
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: () => {
+                            return `<select class="form-control box-select-competitor" data-method="GET" data-url="${urlEle.data('url-competitor')}" data-keyResp="account_sale_list" data-keyText="name" required></select>`
+                        }
+                    },
+                    {
+                        data: 'strength',
+                        className: 'wrap-text',
+                        render: (data) => {
+                            return `<input class="form-control input-strength" type="text" value="{0}"/>`.format_by_idx(
+                                data
+                            )
+                        }
+                    },
+                    {
+                        data: 'weakness',
+                        className: 'wrap-text',
+                        render: (data) => {
+                            return `<input type="text" class="form-control input-weakness" value="{0}"/>`.format_by_idx(
+                                data
+                            )
+                        }
+                    },
+                    {
+                        data: 'win_deal',
+                        className: 'wrap-text text-center',
+                        render: (data) => {
+                            if (data) {
+                                return `<div class="form-check"><input checked type="checkbox" class="form-check-input input-win-deal"></div>`
+                            } else {
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input input-win-deal"></div>`
+                            }
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: () => {
+                            return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
+                        }
+                    },
+                ],
+            });
+        }
+    }
+
+    static loadDtbContactRole(data=[]) {
+        if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
+            let dtb = OpportunityLoadDetail.contactRoleTableEle;
+            dtb.DataTableDefault({
+                dom: 't',
+                rowIdx: true,
+                data: data,
+                paging: false,
+                scrollX: '100vh',
+                scrollY: '25vh',
+                scrollCollapse: true,
+                columns: [
+                    {
+                        className: 'wrap-text',
+                        render: () => {
+                            return ``
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: () => {
+                            return `<select class="form-select box-select-type-customer" required></select>`
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: () => {
+                            return `<select class="form-select box-select-contact" data-method="GET" data-url="${urlEle.data('url-contact')}" data-keyResp="contact_list" data-keyText="fullname" required></select>`
+                        }
+                    },
+                    {
+                        data: 'job_title',
+                        className: 'wrap-text',
+                        render: (data) => {
+                            return `<input type="text" class="form-control input-job-title" value="{0}" readonly/>`.format_by_idx(
+                                data
+                            )
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: () => {
+                            return `<select class="form-select box-select-role" required></select>`
+                        }
+                    },
+                    {
+                        className: 'wrap-text',
+                        render: () => {
+                            return `<a class="btn btn-icon btn-del-item">
+                                        <span class="btn-icon-wrap">
+                                            <span class="feather-icon"><i data-feather="trash-2"></i></span>
+                                        </span>
+                                    </a>`
+                        }
+                    }
+                ],
+            });
+        }
+    }
 }
-
-OpportunityLoadDetail.estimated_gross_profit_percent_Ele.on('input', function () {
-    if ($(this).val()) {
-        $(this).val(parseFloat($(this).val()))
-        let value = parseFloat($('#input-product-pretax-amount').attr('value')) * parseFloat(OpportunityLoadDetail.estimated_gross_profit_percent_Ele.val()) / 100
-        $('#estimated-gross-profit-value').attr('value', value)
-        $.fn.initMaskMoney2()
-    }
-    else {
-        $(this).val(0)
-        $('#estimated-gross-profit-value').attr('value', 0)
-        $.fn.initMaskMoney2()
-    }
-})
-
-/////////////////////////// haind
 
 class OpportunityLoadPage {
     static loadLeadList() {

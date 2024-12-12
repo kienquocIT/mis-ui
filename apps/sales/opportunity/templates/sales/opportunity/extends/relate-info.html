@@ -17,40 +17,40 @@
         <div class="row">
             <div class="col-12">
                 <div class="dropdown">
-                    <button type="button" id="btn-create-related-feature" class="btn btn-outline-light dropdown-toggle btn-xs w-40 w-lg-20 w-md-20" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
+                    <button type="button" id="btn-create-related-feature" class="btn btn-flush-light btn-outline-secondary btn-animated dropdown-toggle btn-xs" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
                         {% trans 'Shortcut menu' %}
                     </button>
-                    <div class="dropdown-menu" style="min-width: max-content" id="dropdown-menu-relate-app">
+                    <div class="dropdown-menu dropdown-bordered dropdown-menu-dark" style="min-width: max-content" id="dropdown-menu-relate-app">
                         <h6 class="dropdown-header">{% trans 'Sale Activities' %}</h6>
                         <div class="d-flex">
-                            <a class="dropdown-item text-primary" id="goto-call-log" data-url="{% url 'OpportunityCallLogList' %}" href="#" target="_blank"><i class="fas fa-phone-volume"></i>  <span class="small">{% trans 'Log a call' %}</span></a>
-                            <a class="dropdown-item text-primary" id="goto-email" data-url="{% url 'OpportunityEmailList' %}" href="#" target="_blank"><i class="bi bi-envelope-fill"></i>  <span class="small">{% trans 'Send email' %}</span></a>
-                            <a class="dropdown-item text-primary" id="goto-meeting" data-url="{% url 'OpportunityMeetingList' %}" href="#" target="_blank"><i class="bi bi-person-workspace"></i>  <span class="small">{% trans 'Meeting' %}</span></a>
-                            <a data-drawer-target="#drawer_task_create" data-drawer-active="false" class="dropdown-item text-primary ntt-drawer-toggle-link current-create-task" href="#"><i class="fa-solid fa-list-check"></i>  <span class="small">{% trans 'Task' %}</span></a>
+                            <a class="dropdown-item" id="goto-call-log" data-url="{% url 'OpportunityCallLogList' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-phone-volume"></i><span class="small">{% trans 'Call log' %}</span></a>
+                            <a class="dropdown-item" id="goto-email" data-url="{% url 'OpportunityEmailList' %}" href="#" target="_blank"><i class="dropdown-icon bi bi-envelope-fill"></i><span class="small">{% trans 'Email' %}</span></a>
+                            <a class="dropdown-item" id="goto-meeting" data-url="{% url 'OpportunityMeetingList' %}" href="#" target="_blank"><i class="dropdown-icon bi bi-person-workspace"></i><span class="small">{% trans 'Meeting' %}</span></a>
+                            <a data-drawer-target="#drawer_task_create" data-drawer-active="false" class="dropdown-item ntt-drawer-toggle-link current-create-task" href="#"><i class="dropdown-icon fa-solid fa-list-check"></i><span class="small">{% trans 'Task' %}</span></a>
                         </div>
                         <div class="dropdown-divider"></div>
                         <h6 class="dropdown-header">{% trans 'Related features' %}</h6>
                         <div class="row">
                             <div class="col-6">
-                                <a id="create-quotation-shortcut" data-label="quotation.quotation" class="disabled dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#" target="_blank">{% trans 'Quotation' %}</a>
+                                <a id="create-quotation-shortcut" data-label="quotation.quotation" class="disabled dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-file-alt"></i><span class="small">{% trans 'Quotation' %}</span></a>
                             </div>
                             <div class="col-6">
-                                <a class="dropdown-item item-detail-related-feature text-blue" id="item-related-quotation" href="#" target="_blank">{% trans 'View Quotation' %}</a>
+                                <a class="dropdown-item item-detail-related-feature text-blue small" id="item-related-quotation" href="#" target="_blank">{% trans 'View Quotation' %}</a>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
-                                <a id="create-sale-order-shortcut" data-label="saleorder.saleorder" class="disabled dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#" target="_blank">{% trans 'Sale Order' %}</a>
+                                <a id="create-sale-order-shortcut" data-label="saleorder.saleorder" class="disabled dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-file-invoice"></i><span class="small">{% trans 'Sale Order' %}</span></a>
                             </div>
                             <div class="col-6">
-                                <a class="dropdown-item item-detail-related-feature text-blue" id="item-related-sale-order" href="#" target="_blank">{% trans 'View Sale Order' %}</a>
+                                <a class="dropdown-item item-detail-related-feature text-blue small" id="item-related-sale-order" href="#" target="_blank">{% trans 'View Sale Order' %}</a>
                             </div>
                         </div>
-                        <a id="create-advance-payment-shortcut" class="disabled dropdown-item" data-url="{% url 'AdvancePaymentCreate' %}" href="#" target="_blank">{% trans 'Advance Payment' %}</a>
-                        <a id="create-payment-shortcut" class="disabled dropdown-item" data-url="{% url 'PaymentCreate' %}" href="#" target="_blank">{% trans 'Payment' %}</a>
-                        <a id="create-return-advance-shortcut" class="dropdown-item" data-url="{% url 'ReturnAdvanceCreate' %}" href="#" target="_blank">{% trans 'Return Advance' %}</a>
-                        <a id="create-project-bom-shortcut" class="disabled dropdown-item" data-url="{% url 'OpportunityBOMCreate' %}" href="#" target="_blank">{% trans 'Opportunity BOM' %}</a>
-                        <a id="create-bidding-shortcut" class="disabled dropdown-item" data-url="{% url 'BiddingCreate' %}" href="#" target="_blank">{% trans 'Bidding' %}</a>
+                        <a id="create-advance-payment-shortcut" class="disabled dropdown-item" data-url="{% url 'AdvancePaymentCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-hand-holding-usd"></i><span class="small">{% trans 'Advance Payment' %}</span></a>
+                        <a id="create-payment-shortcut" class="disabled dropdown-item" data-url="{% url 'PaymentCreate' %}" href="#" target="_blank"><i class="dropdown-icon far fa-credit-card"></i><span class="small">{% trans 'Payment' %}</span></a>
+                        <a id="create-return-advance-shortcut" class="dropdown-item" data-url="{% url 'ReturnAdvanceCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-hand-holding-usd fa-flip-horizontal"></i><span class="small">{% trans 'Return Advance' %}</span></a>
+                        <a id="create-project-bom-shortcut" class="disabled dropdown-item" data-url="{% url 'OpportunityBOMCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-dice"></i><span class="small">{% trans 'Opportunity BOM' %}</span></a>
+                        <a id="create-bidding-shortcut" class="disabled dropdown-item" data-url="{% url 'BiddingCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-gavel"></i><span class="small">{% trans 'Bidding' %}</span></a>
                     </div>
                 </div>
             </div>
@@ -80,6 +80,7 @@
                                 </button>
                             </th>
                             <th class="w-15" style="min-width: 150px">{% trans "Activity" %}</th>
+                            <th class="w-15" style="min-width: 100px">{% trans "Code" %}</th>
                             <th class="w-35" style="min-width: 200px">
                                 {% trans 'Subject' %}
                                 <i class="fas fa-info-circle icon-info"
@@ -88,7 +89,6 @@
                                     title="{% trans 'Press row here to see detail.' %}">
                                 </i>
                             </th>
-                            <th class="w-15" style="min-width: 100px">{% trans "Code" %}</th>
                             <th class="w-10" style="min-width: 100px">{% trans "Status" %}</th>
                             <th class="w-20 text-right" style="min-width: 100px">{% trans "Date" %}</th>
                         </tr>

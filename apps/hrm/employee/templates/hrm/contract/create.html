@@ -61,9 +61,15 @@
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="file_type" id="file_type2" value="1">
-                    <label class="form-check-label" for="file_type2">
+                    <label class="form-check-label mr-4" for="file_type2">
                         {% trans 'Online template' %}
                     </label>
+                    {% if show_icon %}
+                        <button class="btn btn-outline-primary btn-sm ntt-drawer-toggle-link" type="button"
+                                data-drawer-target="#drawer_signature"
+                                data-drawer-active="false">
+                            {% trans 'Get signature' %}</button>
+                    {% endif %}
                 </div>
             </div>
             {% if edit %}
@@ -83,6 +89,7 @@
                     </div>
                 </div>
             {% endif %}
+        <div class="clearfix mt-4"></div>
             <div class="col-md-12 col-lg-12">
                 <textarea
                         id="inp-remarks"

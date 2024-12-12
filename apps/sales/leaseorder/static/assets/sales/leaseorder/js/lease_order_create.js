@@ -32,6 +32,8 @@ $(function () {
         LeaseOrderLoadDataHandle.loadInitDate();
         // init dataTable
         LeaseOrderDataTableHandle.dataTableSelectProduct();
+        LeaseOrderDataTableHandle.dataTableSelectOffset();
+        LeaseOrderDataTableHandle.dataTableSelectQuantity();
         LeaseOrderDataTableHandle.dataTableProduct();
         LeaseOrderDataTableHandle.dataTableCost();
         LeaseOrderDataTableHandle.dataTableExpense();
@@ -96,24 +98,20 @@ $(function () {
 
 // PRODUCT
         $quotationTabs.on('click', '.tab-detail', function () {
+            LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderLoadDataHandle.loadReInitDataTableProduct();
-        });
-
-        btnAddProductGr.on('click', function () {
-            LeaseOrderLoadDataHandle.loadAddRowProductGr();
-        });
-
-        btnAddProduct.on('click', function (e) {
-            LeaseOrderLoadDataHandle.loadModalSProduct();
-            LeaseOrderIndicatorHandle.loadIndicator();
         });
 
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             LeaseOrderLoadDataHandle.loadNewProduct();
         });
 
-        tableProduct.on('click', '.table-row-item-area', function () {
-           LeaseOrderLoadDataHandle.loadBtnAddProductS2(this.closest('tr'));
+        LeaseOrderLoadDataHandle.$btnSaveSelectOffset.on('click', function () {
+            LeaseOrderLoadDataHandle.loadOffset(this);
+        });
+
+        LeaseOrderLoadDataHandle.$btnSaveSelectQuantity.on('click', function () {
+            LeaseOrderLoadDataHandle.loadQuantity(this);
         });
 
         // QUICK PRODUCT
@@ -238,8 +236,6 @@ $(function () {
                                 }
                             }
                         }
-                        // store data
-                        LeaseOrderStoreDataHandle.storeProduct(row);
                     }
                 }
             }
@@ -285,30 +281,22 @@ $(function () {
                 LeaseOrderCalculateCaseHandle.commonCalculate(tableProduct, row);
                 // change value before tax table payment
                 LeaseOrderLoadDataHandle.loadChangePSValueBTAll();
-                // store data
-                LeaseOrderStoreDataHandle.storeProduct(row);
             }
         });
 
         tableProduct.on('click', '.table-row-group', function () {
             let row = this.closest('tr');
             $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
-            // store data
-            LeaseOrderStoreDataHandle.storeProduct(row);
         });
 
         tableProduct.on('blur', '.table-row-group-title-edit', function () {
             let row = this.closest('tr');
             LeaseOrderLoadDataHandle.loadOnBlurGroupTitleEdit(this);
-            // store data
-            LeaseOrderStoreDataHandle.storeProduct(row);
         });
 
         tableProduct.on('click', '.btn-edit-group', function () {
             let row = this.closest('tr');
             LeaseOrderLoadDataHandle.loadOnClickBtnEditGroup(this);
-            // store data
-            LeaseOrderStoreDataHandle.storeProduct(row);
         });
 
         tableProduct.on('click', '.btn-del-group', function () {
@@ -323,8 +311,6 @@ $(function () {
                 // load products to another group after del group
                 LeaseOrderLoadDataHandle.loadProductAfterDelGroup(row.querySelector('.table-row-group'));
             }
-            // store data
-            LeaseOrderStoreDataHandle.storeProduct(row);
         });
 
         $('input[type=text].quotation-create-product-discount').on('change', function () {
@@ -343,6 +329,7 @@ $(function () {
 
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {
+            LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderLoadDataHandle.loadReInitDataTableExpense();
         });
 
@@ -395,12 +382,12 @@ $(function () {
                 validateNumber(this);
             }
             LeaseOrderCalculateCaseHandle.commonCalculate(tableExpense, row);
-            // store data
-            LeaseOrderStoreDataHandle.storeExpense(row);
         });
 
 // COST
         $quotationTabs.on('click', '.tab-cost', function () {
+            LeaseOrderStoreDataHandle.storeDtbData(1);
+            LeaseOrderStoreDataHandle.storeDtbData(2);
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 LeaseOrderLoadDataHandle.loadDataTableCost();
             }
@@ -655,7 +642,6 @@ $(function () {
                     $(newRow).detach().insertAfter(afterRow);
                     LeaseOrderCalculateCaseHandle.commonCalculate(tableProduct, newRow);
                     LeaseOrderLoadDataHandle.loadRowDisabled(newRow);
-                    LeaseOrderStoreDataHandle.storeProduct(newRow);
                 } else { // on whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
                     LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
@@ -671,7 +657,6 @@ $(function () {
                         }
                     }
                     LeaseOrderLoadDataHandle.loadRowDisabled(newRow);
-                    LeaseOrderStoreDataHandle.storeProduct(newRow);
                 }
             } else if (promotionParse?.['is_gift'] === true) { // GIFT
                 if (promotionParse?.['row_apply_index'] !== null) { // on product
@@ -681,11 +666,9 @@ $(function () {
                     LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
                     LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     LeaseOrderLoadDataHandle.loadRowDisabled(newRow);
-                    LeaseOrderStoreDataHandle.storeProduct(newRow);
                 } else { // on whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
                     LeaseOrderLoadDataHandle.loadRowDisabled(newRow);
-                    LeaseOrderStoreDataHandle.storeProduct(newRow);
                 }
             }
             reOrderSTT(tableProduct);
@@ -741,8 +724,6 @@ $(function () {
                 // load again table cost
                 // QuotationLoadDataHandle.loadDataTableCost();
                 LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
-                // store data
-                LeaseOrderStoreDataHandle.storeProduct(newRow);
             }
         });
 
@@ -760,7 +741,7 @@ $(function () {
         });
 
         tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
-            if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 if ($(this).hasClass('table-row-date')) {
                     let isCheck = true;

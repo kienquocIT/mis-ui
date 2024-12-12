@@ -1,0 +1,144 @@
+{% load i18n %}
+
+<div class="row pb-10">
+    <div class="col-12 col-lg-8 border-right" id="content-area">
+        <!-- consulting data -->
+        <div>
+            {% trans 'Select Sale Person' as inherit_title %}
+            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label required" for="consulting-name">{% trans 'Consulting Name' %}</label>
+                        <input type="text" class="form-control" name="title" id="consulting-name" required >
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label" for="consulting-customer-select">{% trans 'Customer' %}</label>
+                        <select name="customer" class="form-select select2" id="consulting-customer-select" data-method="GET" data-url="{% url 'ConsultingAccountListAPI' %}"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required" for="consulting-date">{% trans 'Due Date' %}</label>
+                        <div class="input-affix-wrapper">
+                            <input required type="text" name="due_date"
+                                   class="form-control" autocomplete="off" id="consulting-date">
+                            <div class="input-suffix">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required" for="consulting-value">{% trans 'Value' %}</label>
+                        <input required class="form-control mask-money" id="consulting-value" name="value" disabled readonly>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="separator"></div>
+
+        <!-- product categories -->
+        <div>
+            <label class="form-label fs-5" for="datatable-product-categories">{% trans 'Related Product Categories' %}</label>
+            <table
+                    id="datatable-product-categories"
+                    class="table nowrap w-100"
+                    style="min-width: 768px"
+            >
+                <thead>
+                    <tr class="bg-light">
+                        <th class="w-5"></th>
+                        <th class="w-55">{% trans 'Product Category' %}</th>
+                        <th class="w-30">{% trans 'Estimated Value' %}</th>
+                        <th class="w-10">{% trans 'Action' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-primary" id="btn-add-product-category">
+                <span>
+                    <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                    <span>{% trans 'Add' %}</span>
+                </span>
+            </button>
+        </div>
+        <div class="separator"></div>
+
+        <div class="form-group">
+            <label class="form-label fs-5" for="datatable-document">{% trans 'Required Documents' %}</label>
+            <table
+                    id="datatable-document"
+                    class="table nowrap w-100"
+            >
+                <thead>
+                    <tr class="bg-light">
+                        <th class="w-5"></th>
+                        <th class="w-75">{% trans 'Document name' %}</th>
+                        <th class="w-20">{% trans 'Action' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-outline-primary" id="btn-open-document-modal"
+                    data-bs-toggle="modal" data-bs-target="#modal-document">
+                <span>
+                    <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                    <span>{% trans 'Add' %}</span>
+                </span>
+            </button>
+        </div>
+
+         <!-- abstract -->
+        <div class="form-group">
+            <label class="form-label fs-5" for="inp-contents">{% trans 'Abstract' %}</label>
+            <textarea class="form-control" id="inp-contents"></textarea>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-4" id="file-area" style="position: sticky; top: 0; align-self: start">
+        <!-- description -->
+        <div class="form-group">
+            <label class="form-label" for="doc-remark">{% trans 'Description' %}</label>
+            <textarea class="form-control" rows="3" id="doc-remark" name="remark" readonly></textarea>
+        </div>
+        <!-- attachment -->
+        <label class="form-label">{% trans 'Attachment' %}</label>
+        <div id="attachment" hidden>
+            {% include 'extends/files/all.html' %}
+        </div>
+        <div id="attachment-tmp" hidden>
+            {% include 'extends/files/all.html' %}
+        </div>
+        <!-- table file -->
+{#        <table#}
+{#                id="datatable-bidding-file"#}
+{#                class="table nowrap w-100"#}
+{#        >#}
+{#            <thead>#}
+{#                <tr class="bg-light">#}
+{#                    <th>{% trans 'File name' %}</th>#}
+{#                    <th>{% trans 'Date' %}</th>#}
+{#                </tr>#}
+{#            </thead>#}
+{#            <tbody>#}
+{#            </tbody>#}
+{#        </table>#}
+    </div>
+</div>
+
+{% block dataHiddenGroup %}
+    <script id="url-script"
+            data-url-product-category="{% url 'ConsultingProductCategoryListAPI' %}"
+    ></script>
+{% endblock %}

@@ -2276,25 +2276,28 @@ class QuotationLoadDataHandle {
         tableProduct.DataTable().rows.add(products_data).draw();
         tableProduct.DataTable().rows().every(function () {
             let row = this.node();
-            // load collapse Group
-            if (row.querySelector('.table-row-group')) {
-                let eleGroupEdit = row.querySelector('.table-row-group-title-edit');
-                let areaGroupShow = row.querySelector('.area-group-show');
-                if (eleGroupEdit && areaGroupShow) {
-                    let groupShow = areaGroupShow.querySelector('.table-row-group-title-show');
-                    if (groupShow) {
-                        areaGroupShow.classList.remove('hidden');
-                        eleGroupEdit.setAttribute('hidden', 'true');
+            let eleOrder = row.querySelector('.table-row-order');
+            let eleGroup = row.querySelector('.table-row-group');
+            let eleProduct = row.querySelector('.table-row-item');
+
+            if (eleOrder) {
+                let dataRowRaw = eleOrder.getAttribute('data-row');
+                if (dataRowRaw) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    // load collapse Group
+                    if (eleGroup) {
+                        let eleGroupEdit = row.querySelector('.table-row-group-title-edit');
+                        let areaGroupShow = row.querySelector('.area-group-show');
+                        if (eleGroupEdit && areaGroupShow) {
+                            let groupShow = areaGroupShow.querySelector('.table-row-group-title-show');
+                            if (groupShow) {
+                                areaGroupShow.classList.remove('hidden');
+                                eleGroupEdit.setAttribute('hidden', 'true');
+                            }
+                        }
+                        $(row).find('td:eq(1)').attr('colspan', 2);
                     }
-                }
-                $(row).find('td:eq(1)').attr('colspan', 2);
-            }
-            if (row.querySelector('.table-row-item')) {
-                let eleOrder = row.querySelector('.table-row-order');
-                if (eleOrder) {
-                    let dataRowRaw = eleOrder.getAttribute('data-row');
-                    if (dataRowRaw) {
-                        let dataRow = JSON.parse(dataRowRaw);
+                    if (eleProduct) {
                         let dataGroup = dataRow?.['group_order'];
                         if (dataGroup) {
                             let classGroup = 'group-' + dataGroup;
@@ -2570,6 +2573,7 @@ class QuotationDataTableHandle {
 
     static $tableSProduct = $('#table-select-product');
     static $tableProduct = $('#datable-quotation-create-product');
+    static $tableCost = $('#datable-quotation-create-cost');
     static $tableExpense = $('#datable-quotation-create-expense');
     static $tablePayment = $('#datable-quotation-payment-stage');
 
@@ -2885,8 +2889,7 @@ class QuotationDataTableHandle {
 
     static dataTableCost(data) {
         // init dataTable
-        let $tables = $('#datable-quotation-create-cost');
-        $tables.DataTableDefault({
+        QuotationDataTableHandle.$tableCost.DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -5740,15 +5743,12 @@ class QuotationStoreDataHandle {
 class QuotationSubmitHandle {
     static setupDataProduct() {
         let result = [];
-        let table = document.getElementById('datable-quotation-create-product');
-        let tableEmpty = table.querySelector('.dataTables_empty');
-        if (tableEmpty) {
-            return []
+        if (QuotationDataTableHandle.$tableProduct.DataTable().data().count() === 0) {
+            return [];
         }
-        let tableBody = table.tBodies[0];
-        for (let i = 0; i < tableBody.rows.length; i++) {
+        QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let rowData = {};
-            let row = tableBody.rows[i];
+            let row = this.node();
             let eleProductGr = row.querySelector('.table-row-group');
             let eleProduct = row.querySelector('.table-row-item');
             let elePromotion = row.querySelector('.table-row-promotion');
@@ -5951,21 +5951,18 @@ class QuotationSubmitHandle {
                 }
                 result.push(rowData);
             }
-        }
-        return result
+        });
+        return result;
     };
 
     static setupDataCost() {
         let result = [];
-        let table = document.getElementById('datable-quotation-create-cost');
-        let tableEmpty = table.querySelector('.dataTables_empty');
-        if (tableEmpty) {
-            return []
+        if (QuotationDataTableHandle.$tableCost.DataTable().data().count() === 0) {
+            return [];
         }
-        let tableBody = table.tBodies[0];
-        for (let i = 0; i < tableBody.rows.length; i++) {
+        QuotationDataTableHandle.$tableCost.DataTable().rows().every(function () {
             let rowData = {};
-            let row = tableBody.rows[i];
+            let row = this.node();
             let eleProduct = row.querySelector('.table-row-item');
             let eleShipping = row.querySelector('.table-row-shipping');
             if ($(eleProduct).val()) { // PRODUCT
@@ -6078,22 +6075,18 @@ class QuotationSubmitHandle {
 
                 result.push(rowData);
             }
-            // result.push(rowData);
-        }
-        return result
+        });
+        return result;
     };
 
     static setupDataExpense() {
         let result = [];
-        let table = document.getElementById('datable-quotation-create-expense');
-        let tableEmpty = table.querySelector('.dataTables_empty');
-        if (tableEmpty) {
-            return []
+        if (QuotationDataTableHandle.$tableExpense.DataTable().data().count() === 0) {
+            return [];
         }
-        let tableBody = table.tBodies[0];
-        for (let i = 0; i < tableBody.rows.length; i++) {
+        QuotationDataTableHandle.$tableExpense.DataTable().rows().every(function () {
             let rowData = {};
-            let row = tableBody.rows[i];
+            let row = this.node();
             let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
             if (dataRowRaw) {
                 let dataRow = JSON.parse(dataRowRaw);
@@ -6110,7 +6103,7 @@ class QuotationSubmitHandle {
                 }
             }
             if (row?.querySelector('.table-row-expense-title')) {
-              rowData['expense_title'] = row.querySelector('.table-row-expense-title').value;
+                rowData['expense_title'] = row.querySelector('.table-row-expense-title').value;
             }
             let eleLaborItem = row?.querySelector('.table-row-labor-item');
             if (eleLaborItem) {
@@ -6169,8 +6162,8 @@ class QuotationSubmitHandle {
                 rowData['order'] = parseInt(eleOrder.innerHTML);
             }
             result.push(rowData);
-        }
-        return result
+        });
+        return result;
     };
 
     static setupDataLogistic() {

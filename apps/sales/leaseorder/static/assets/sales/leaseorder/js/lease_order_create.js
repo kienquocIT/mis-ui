@@ -112,6 +112,7 @@ $(function () {
 
         LeaseOrderLoadDataHandle.$btnSaveSelectQuantity.on('click', function () {
             LeaseOrderLoadDataHandle.loadQuantity(this);
+            LeaseOrderStoreDataHandle.storeDtbData(1);
         });
 
         // QUICK PRODUCT

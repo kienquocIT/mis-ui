@@ -92,6 +92,7 @@ $(function () {
 
 // PRODUCT
         $quotationTabs.on('click', '.tab-detail', function () {
+            QuotationStoreDataHandle.storeDtbData(2);
             QuotationLoadDataHandle.loadReInitDataTableProduct();
         });
 
@@ -221,8 +222,6 @@ $(function () {
                                 }
                             }
                         }
-                        // store data
-                        QuotationStoreDataHandle.storeProduct(row);
                     }
                 }
             }
@@ -269,30 +268,22 @@ $(function () {
                 QuotationCalculateCaseHandle.commonCalculate(tableProduct, row);
                 // change value before tax table payment
                 QuotationLoadDataHandle.loadChangePSValueBTAll();
-                // store data
-                QuotationStoreDataHandle.storeProduct(row);
             }
         });
 
         tableProduct.on('click', '.table-row-group', function () {
             let row = this.closest('tr');
             $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
-            // store data
-            QuotationStoreDataHandle.storeProduct(row);
         });
 
         tableProduct.on('blur', '.table-row-group-title-edit', function () {
             let row = this.closest('tr');
             QuotationLoadDataHandle.loadOnBlurGroupTitleEdit(this);
-            // store data
-            QuotationStoreDataHandle.storeProduct(row);
         });
 
         tableProduct.on('click', '.btn-edit-group', function () {
             let row = this.closest('tr');
             QuotationLoadDataHandle.loadOnClickBtnEditGroup(this);
-            // store data
-            QuotationStoreDataHandle.storeProduct(row);
         });
 
         tableProduct.on('click', '.btn-del-group', function () {
@@ -307,8 +298,6 @@ $(function () {
                 // load products to another group after del group
                 QuotationLoadDataHandle.loadProductAfterDelGroup(row.querySelector('.table-row-group'));
             }
-            // store data
-            QuotationStoreDataHandle.storeProduct(row);
         });
 
         $('input[type=text].quotation-create-product-discount').on('change', function () {
@@ -327,6 +316,7 @@ $(function () {
 
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {
+            QuotationStoreDataHandle.storeDtbData(1);
             QuotationLoadDataHandle.loadReInitDataTableExpense();
         });
 
@@ -379,12 +369,12 @@ $(function () {
                 validateNumber(this);
             }
             QuotationCalculateCaseHandle.commonCalculate(tableExpense, row);
-            // store data
-            QuotationStoreDataHandle.storeExpense(row);
         });
 
 // COST
         $quotationTabs.on('click', '.tab-cost', function () {
+            QuotationStoreDataHandle.storeDtbData(1);
+            QuotationStoreDataHandle.storeDtbData(2);
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 QuotationLoadDataHandle.loadDataTableCost();
             }
@@ -635,7 +625,6 @@ $(function () {
                     $(newRow).detach().insertAfter(afterRow);
                     QuotationCalculateCaseHandle.commonCalculate(tableProduct, newRow);
                     QuotationLoadDataHandle.loadRowDisabled(newRow);
-                    QuotationStoreDataHandle.storeProduct(newRow);
                 } else { // on whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
@@ -651,7 +640,6 @@ $(function () {
                         }
                     }
                     QuotationLoadDataHandle.loadRowDisabled(newRow);
-                    QuotationStoreDataHandle.storeProduct(newRow);
                 }
             } else if (promotionParse?.['is_gift'] === true) { // GIFT
                 if (promotionParse?.['row_apply_index'] !== null) { // on product
@@ -661,11 +649,9 @@ $(function () {
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
                     QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     QuotationLoadDataHandle.loadRowDisabled(newRow);
-                    QuotationStoreDataHandle.storeProduct(newRow);
                 } else { // on whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
                     QuotationLoadDataHandle.loadRowDisabled(newRow);
-                    QuotationStoreDataHandle.storeProduct(newRow);
                 }
             }
             reOrderSTT(tableProduct);
@@ -717,8 +703,6 @@ $(function () {
                 // load again table cost
                 // QuotationLoadDataHandle.loadDataTableCost();
                 QuotationLoadDataHandle.loadSetWFRuntimeZone();
-                // store data
-                QuotationStoreDataHandle.storeProduct(newRow);
             }
         });
 

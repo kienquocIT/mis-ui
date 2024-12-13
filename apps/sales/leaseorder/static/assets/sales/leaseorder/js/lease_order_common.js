@@ -886,6 +886,7 @@ class LeaseOrderLoadDataHandle {
                             $(eleQuantity).val(quantity);
                             $(eleQuantityNew).val(quantityNew);
                             $(eleQuantityLeased).val(quantityLeased);
+                            $(eleQuantity).trigger('change');
                         }
                     }
                 }
@@ -1183,6 +1184,7 @@ class LeaseOrderLoadDataHandle {
             let eleProduct = row.querySelector('.table-row-item');
             let eleAssetType = row.querySelector('.table-row-asset-type');
             let btnSOffset = row.querySelector('.btn-select-offset');
+            let btnSQuantity = row.querySelector('.btn-select-quantity');
             let eleShipping = row.querySelector('.table-row-shipping');
             let elePromotion = row.querySelector('.table-row-promotion');
 
@@ -1224,6 +1226,12 @@ class LeaseOrderLoadDataHandle {
                         $(btnSOffset).on('click', function () {
                             LeaseOrderLoadDataHandle.$btnSaveSelectOffset.attr('data-product-id', dataRow?.['product_data']?.['id']);
                             LeaseOrderLoadDataHandle.loadModalSOffset(btnSOffset);
+                        });
+                    }
+                    if (btnSQuantity) {
+                        $(btnSQuantity).on('click', function () {
+                            LeaseOrderLoadDataHandle.$btnSaveSelectQuantity.attr('data-product-id', dataRow?.['product_data']?.['id']);
+                            LeaseOrderLoadDataHandle.loadModalSQuantity(btnSQuantity);
                         });
                     }
                     if (eleShipping) {
@@ -6099,6 +6107,22 @@ class LeaseOrderSubmitHandle {
                         rowData['uom_data'] = dataUOM;
                     }
                 }
+                let eleQuantity = row.querySelector('.table-row-quantity');
+                if (eleQuantity) {
+                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
+                }
+                let eleUOMTime = row.querySelector('.table-row-uom-time');
+                if ($(eleUOMTime).val()) {
+                    let dataUOMTime = SelectDDControl.get_data_from_idx($(eleUOMTime), $(eleUOMTime).val());
+                    if (dataUOMTime) {
+                        rowData['uom_time_id'] = dataUOMTime?.['id'];
+                        rowData['uom_time_data'] = dataUOMTime;
+                    }
+                }
+                let eleQuantityTime = row.querySelector('.table-row-quantity-time');
+                if (eleQuantityTime) {
+                    rowData['product_quantity_time'] = parseFloat(eleQuantityTime.value);
+                }
                 let eleTax = row.querySelector('.table-row-tax');
                 if ($(eleTax).val()) {
                     let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
@@ -6114,10 +6138,6 @@ class LeaseOrderSubmitHandle {
                 let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
                 if (eleTaxAmount) {
                     rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value)
-                }
-                let eleQuantity = row.querySelector('.table-row-quantity');
-                if (eleQuantity) {
-                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
@@ -6389,12 +6409,12 @@ class LeaseOrderSubmitHandle {
         let dateLFVal = $('#lease_from').val();
         if (dateLFVal) {
             _form.dataForm['lease_from'] = moment(dateLFVal,
-                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                'DD/MM/YYYY').format('YYYY-MM-DD')
         }
         let dateLTVal = $('#lease_to').val();
         if (dateLTVal) {
             _form.dataForm['lease_to'] = moment(dateLTVal,
-                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                'DD/MM/YYYY').format('YYYY-MM-DD')
         }
         if (LeaseOrderLoadDataHandle.customerSelectEle.val()) {
             let data = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.customerSelectEle, LeaseOrderLoadDataHandle.customerSelectEle.val());

@@ -96,6 +96,7 @@ $(function () {
 
 // PRODUCT
         $quotationTabs.on('click', '.tab-detail', function () {
+            LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderLoadDataHandle.loadReInitDataTableProduct();
         });
@@ -329,6 +330,7 @@ $(function () {
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
+            LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderLoadDataHandle.loadReInitDataTableExpense();
         });
 
@@ -937,6 +939,8 @@ $(function () {
                 'payment_term_data',
                 'quotation_id',
                 'quotation_data',
+                'lease_from',
+                'lease_to',
                 // total amount of products
                 'total_product_pretax_amount',
                 'total_product_discount_rate',

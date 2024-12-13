@@ -18,10 +18,10 @@
 
 {% block pageContent %}
     <script hidden id="direct-btn-group-url"
-        data-url-list-api="{% url 'SaleOrderListAPI' %}"
-        data-url-create="{% url 'SaleOrderCreate' %}"
-        data-url-detail="{% url 'SaleOrderDetail' '0' %}"
-        data-key-return="sale_order_list"
+        data-url-list-api="{% url 'LeaseOrderListAPI' %}"
+        data-url-create="{% url 'LeaseOrderCreate' %}"
+        data-url-detail="{% url 'LeaseOrderDetail' '0' %}"
+        data-key-return="lease_order_list"
     ></script>
     <div class="row">
         <div class="col-12 col-md-6 col-lg-6">
@@ -50,8 +50,8 @@
     </div>
 
     <form
-            data-url="{% url 'SaleOrderListAPI' %}"
-            data-url-redirect="{% url 'SaleOrderList' %}"
+            data-url="{% url 'LeaseOrderListAPI' %}"
+            data-url-redirect="{% url 'LeaseOrderList' %}"
             data-method="POST"
             id="frm_lease_create"
             method="post"

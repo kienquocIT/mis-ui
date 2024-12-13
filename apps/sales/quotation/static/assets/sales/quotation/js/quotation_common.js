@@ -5986,6 +5986,10 @@ class QuotationSubmitHandle {
                         rowData['uom_data'] = dataUOM;
                     }
                 }
+                let eleQuantity = row.querySelector('.table-row-quantity');
+                if (eleQuantity) {
+                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
+                }
                 let eleTax = row.querySelector('.table-row-tax');
                 if ($(eleTax).val()) {
                     let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
@@ -6001,10 +6005,6 @@ class QuotationSubmitHandle {
                 let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
                 if (eleTaxAmount) {
                     rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value)
-                }
-                let eleQuantity = row.querySelector('.table-row-quantity');
-                if (eleQuantity) {
-                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {

@@ -103,6 +103,7 @@ $(document).ready(function () {
     function loadPeriodsList() {
         TablePeriodsConfig.DataTable().clear().destroy()
         let frm = new SetupFormSubmit(TablePeriodsConfig);
+        let current_year = new Date().getFullYear();
         TablePeriodsConfig.DataTableDefault(
             {
                 useDataServer: true,
@@ -113,7 +114,6 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('periods_list')) {
-                            console.log(resp.data['periods_list'])
                             return resp.data['periods_list'] ? resp.data['periods_list'] : []
                         }
                         throw Error('Call data raise errors.')
@@ -148,7 +148,7 @@ $(document).ready(function () {
                         className: 'wrap-text',
                         render: (data, type, row) => {
                             let html = ''
-                            if (row?.['state'] === 0) {
+                            if (row?.['fiscal_year'] === current_year) {
                                 html = `<span class="badge badge-success badge-indicator"></span>`
                             }
                             return `<span class="badge-status">
@@ -177,10 +177,11 @@ $(document).ready(function () {
                                     class="btn btn-icon btn-rounded btn-flush-danger delete-periods" type="button">
                                 <span class="icon"><i class="bi bi-trash"></i></span>
                             </button>`
-                            return `<button data-id="${row?.['id']}" data-title="${row?.['title']}" data-code="${row?.['code']}" data-fiscal-year="${row?.['fiscal_year']}" data-space-month="${row?.['space_month']}" data-start-date="${row?.['start_date']}" data-is-sw-start-using-time="${row?.['software_start_using_time']}"
-                                            class="btn btn-icon btn-rounded btn-flush-primary edit-periods" type="button" data-bs-toggle="modal" data-bs-target="#modal-periods-update">
-                                        <span class="icon"><i class="bi bi-pencil-square"></i></span>
-                                    </button>${row?.['can_delete'] ? btn_delete : ''}`
+                            let btn_edit = `<button data-id="${row?.['id']}" data-title="${row?.['title']}" data-code="${row?.['code']}" data-fiscal-year="${row?.['fiscal_year']}" data-space-month="${row?.['space_month']}" data-start-date="${row?.['start_date']}" data-is-sw-start-using-time="${row?.['software_start_using_time']}"
+                                    class="btn btn-icon btn-rounded btn-flush-primary edit-periods" type="button" data-bs-toggle="modal" data-bs-target="#modal-periods-update">
+                                <span class="icon"><i class="bi bi-pencil-square"></i></span>
+                            </button>`
+                            return `${row?.['fiscal_year'] > current_year ? btn_delete : btn_edit}`
                         }
                     }
                 ],

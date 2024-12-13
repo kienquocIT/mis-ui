@@ -26,8 +26,8 @@ msgid "Contents"
 msgstr "Nội dung"
 
 #
-msgid "Call Log list"
-msgstr "Danh sách nhật ký cuộc gọi"
+msgid "Call to customer"
+msgstr "Cuộc gọi với khách hàng"
 
 #
 msgid "Process Stage Application"

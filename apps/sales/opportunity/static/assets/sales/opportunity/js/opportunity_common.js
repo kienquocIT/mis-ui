@@ -2341,7 +2341,7 @@ class OpportunityLoadPage {
                 if (results_perm_app[2]) {
                     let create_ap_sc = $('#create-advance-payment-shortcut')
                     create_ap_sc.removeClass('disabled');
-                    let param_url = this.push_param_to_url(create_ap_sc.attr('data-url'), {
+                    let param_url = OpportunityLoadPage.push_param_to_url(create_ap_sc.attr('data-url'), {
                         'from_opp': true,
                         'opp_id': results_perm_app[2]?.['id'],
                         'opp_code': results_perm_app[2]?.['code'],
@@ -2354,7 +2354,7 @@ class OpportunityLoadPage {
                 if (results_perm_app[3]) {
                     let create_payment_sc = $('#create-payment-shortcut')
                     create_payment_sc.removeClass('disabled');
-                    let param_url = this.push_param_to_url(create_payment_sc.attr('data-url'), {
+                    let param_url = OpportunityLoadPage.push_param_to_url(create_payment_sc.attr('data-url'), {
                         'from_opp': true,
                         'opp_id': results_perm_app[3]?.['id'],
                         'opp_code': results_perm_app[3]?.['code'],
@@ -2367,7 +2367,7 @@ class OpportunityLoadPage {
                 if (results_perm_app[4]) {
                     let create_bom_sc = $('#create-project-bom-shortcut')
                     create_bom_sc.removeClass('disabled');
-                    let param_url = this.push_param_to_url(create_bom_sc.attr('data-url'), {
+                    let param_url = OpportunityLoadPage.push_param_to_url(create_bom_sc.attr('data-url'), {
                         'from_opp': true,
                         'opp_id': results_perm_app[4]?.['id'],
                         'opp_code': results_perm_app[4]?.['code'],
@@ -2379,7 +2379,7 @@ class OpportunityLoadPage {
                 if (results_perm_app[5]) {
                     let create_bidding_sc = $('#create-bidding-shortcut')
                     create_bidding_sc.removeClass('disabled');
-                    let param_url = this.push_param_to_url(create_bidding_sc.attr('data-url'), {
+                    let param_url = OpportunityLoadPage.push_param_to_url(create_bidding_sc.attr('data-url'), {
                         'opp_id': results_perm_app[5]?.['id'],
                         'opp_code': results_perm_app[5]?.['code'],
                         'opp_title': results_perm_app[5]?.['title'],
@@ -2391,40 +2391,6 @@ class OpportunityLoadPage {
                 }
                 $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
             })
-
-        let data_opp_detail = $dataDetail.text() ? JSON.parse($dataDetail.text()) : null
-        if (data_opp_detail) {
-            let goto_call_log = $('#goto-call-log')
-            let call_log_param_url = this.push_param_to_url(goto_call_log.attr('data-url'), {
-                'from_opp': true,
-                'opp_id': data_opp_detail?.['id'],
-                'opp_title': data_opp_detail?.['title'],
-                'opp_code': data_opp_detail?.['code'],
-                'inherit_id': data_opp_detail?.['sale_person']?.['id'],
-                'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
-            })
-            goto_call_log.attr('href', call_log_param_url)
-            let goto_email = $('#goto-email')
-            let email_param_url = this.push_param_to_url(goto_email.attr('data-url'), {
-                'from_opp': true,
-                'opp_id': data_opp_detail?.['id'],
-                'opp_title': data_opp_detail?.['title'],
-                'opp_code': data_opp_detail?.['code'],
-                'inherit_id': data_opp_detail?.['sale_person']?.['id'],
-                'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
-            })
-            goto_email.attr('href', email_param_url)
-            let goto_meeting = $('#goto-meeting')
-            let meeting_param_url = this.push_param_to_url(goto_meeting.attr('data-url'), {
-                'from_opp': true,
-                'opp_id': data_opp_detail?.['id'],
-                'opp_title': data_opp_detail?.['title'],
-                'opp_code': data_opp_detail?.['code'],
-                'inherit_id': data_opp_detail?.['sale_person']?.['id'],
-                'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
-            })
-            goto_meeting.attr('href', meeting_param_url)
-        }
     }
 
     static getDataMemberAddNew() {

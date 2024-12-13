@@ -4059,15 +4059,11 @@ msgid "Add Document"
 msgstr "Thêm tài liệu"
 
 #
-msgid "Document For Customers"
-msgstr "Tài liệu"
-
-#
-msgid "Product introduction document for customers"
+msgid "Product introduction document for customer"
 msgstr "Tài liệu giới thiệu sản phẩm cho khách hàng"
 
 #
-msgid "Document For Customer"
+msgid "Document for customer"
 msgstr "Tài liệu cho khách hàng"
 
 #
@@ -7519,10 +7515,6 @@ msgstr "Hoàn ứng"
 #
 msgid "Sale activities"
 msgstr "Hoạt động bán hàng"
-
-#
-msgid "Document for customer"
-msgstr "Tài liệu"
 
 #
 msgid "AR invoice"

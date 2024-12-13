@@ -6,14 +6,16 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_lease_create">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
+    <a href="{% url 'LeaseOrderUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 
 {% block pageContent %}
@@ -50,9 +52,9 @@
     </div>
 
     <form
-            data-url="{% url 'LeaseOrderListAPI' %}"
+            data-url="{% url 'LeaseOrderDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'LeaseOrderList' %}"
-            data-method="POST"
+            data-method="GET"
             id="frm_lease_create"
             method="post"
     >
@@ -70,7 +72,7 @@
                                         type="text" class="form-control"
                                         name="title"
                                         id="title"
-                                        required
+                                        readonly
                                 >
                             </div>
                         </div>
@@ -81,7 +83,7 @@
                                         <label class="form-label required" for="lease_from">{% trans 'Lease from' %}</label>
                                         <div class="input-affix-wrapper">
                                             <input type="text" name="lease_from" id="lease_from"
-                                                   class="form-control date-picker" autocomplete="off" required>
+                                                   class="form-control date-picker" autocomplete="off" disabled>
                                             <div class="input-suffix">
                                                 <i class="fas fa-calendar-alt"></i>
                                             </div>
@@ -93,7 +95,7 @@
                                         <label class="form-label required" for="lease_to">{% trans 'Lease to' %}</label>
                                         <div class="input-affix-wrapper">
                                             <input type="text" name="lease_to" id="lease_to"
-                                                   class="form-control date-picker" autocomplete="off" required>
+                                                   class="form-control date-picker" autocomplete="off" disabled>
                                             <div class="input-suffix">
                                                 <i class="fas fa-calendar-alt"></i>
                                             </div>
@@ -122,7 +124,7 @@
                                         name="customer_id"
                                         data-keyResp="account_sale_list"
                                         data-keyText="name"
-                                        required
+                                        readonly
                                 ></select>
                             </div>
                         </div>
@@ -137,7 +139,7 @@
                                     data-link-detail="{% url 'ContactDetail' 1 %}"
                                     name="contact_id"
                                     data-keyResp="contact_list"
-                                    required
+                                    readonly
                                 ></select>
                             </div>
                         </div>
@@ -152,7 +154,7 @@
                                         data-method="GET"
                                         name="payment_term_id"
                                         data-keyResp="payment_terms_list"
-                                        required
+                                        readonly
                                 ></select>
                             </div>
                         </div>
@@ -1043,6 +1045,7 @@
 
     <script src="{% static 'assets/sales/leaseorder/js/lease_order_common.js' %}"></script>
     <script src="{% static 'assets/sales/leaseorder/js/lease_order_create.js' %}"></script>
+    <script src="{% static 'assets/sales/leaseorder/js/lease_order_detail.js' %}"></script>
 
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
     <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>

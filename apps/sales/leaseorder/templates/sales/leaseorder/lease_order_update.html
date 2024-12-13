@@ -50,9 +50,9 @@
     </div>
 
     <form
-            data-url="{% url 'LeaseOrderListAPI' %}"
+            data-url="{% url 'LeaseOrderDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'LeaseOrderList' %}"
-            data-method="POST"
+            data-method="PUT"
             id="frm_lease_create"
             method="post"
     >
@@ -1043,6 +1043,7 @@
 
     <script src="{% static 'assets/sales/leaseorder/js/lease_order_common.js' %}"></script>
     <script src="{% static 'assets/sales/leaseorder/js/lease_order_create.js' %}"></script>
+    <script src="{% static 'assets/sales/leaseorder/js/lease_order_detail.js' %}"></script>
 
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
     <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>

@@ -3027,7 +3027,7 @@ class LeaseOrderDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                LeaseOrderCalculateCaseHandle.calculateAllRowsTableProduct();
+                // LeaseOrderCalculateCaseHandle.calculateAllRowsTableProduct();
                 if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     LeaseOrderDataTableHandle.dtbProductHDCustom();
                 }

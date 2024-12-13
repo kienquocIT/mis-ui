@@ -2886,7 +2886,7 @@ class QuotationDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
+                // QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     QuotationDataTableHandle.dtbProductHDCustom();
                 }

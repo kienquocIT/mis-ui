@@ -35,13 +35,6 @@ function loadOpportunityCallLogList() {
                     }
                 },
                 {
-                    data: 'contact',
-                    className: 'wrap-text w-15',
-                    render: (data, type, row) => {
-                        return `<a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="link-secondary underline_hover">${row?.['contact']?.['fullname']}</span></a>`
-                    }
-                },
-                {
                     data: 'subject',
                     className: 'wrap-text w-30',
                     render: (data, type, row) => {
@@ -63,9 +56,9 @@ function loadOpportunityCallLogList() {
                 },
                 {
                     data: 'employee_inherit',
-                    className: 'wrap-text w-15',
+                    className: 'wrap-text w-30',
                     render: (data, type, row) => {
-                        return `<span class="text-primary">${row?.['employee_inherit']?.['full_name']}</span>`
+                        return `<span class="text-primary">${row?.['employee_inherit']?.['full_name']}</span><span class="text-primary"> --- <i class="fas fa-phone-volume"></i> --- </span><a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="text-primary underline_hover">${row?.['contact']?.['fullname']}</span></a>`
                     }
                 },
                 {
@@ -229,6 +222,7 @@ class CallLogHandle {
             'process_stage_app_id', 'process_stage_app_title',
             'inherit_id', 'inherit_title',
         ])
+        const group$ = $('#offcanvas-call-log')
         if (create_open) {
             const data_inherit = [{
                 "id": inherit_id || '',
@@ -252,17 +246,18 @@ class CallLogHandle {
                 'selected': true,
             }];
             new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
+                list_from_app: "opportunity.opportunitycall.create",
+                app_id: "14dbc606-1453-4023-a2cf-35b1cd9e3efd",
+                mainDiv: group$,
+                oppEle: group$.find('select[name=opportunity_id]'),
+                prjEle: group$.find('select[name=project_id]'),
+                empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                processEle: group$.find('select[name=process]'),
+                processStageAppEle$: group$.find('select[name=process_stage_app]'),
                 data_opp: data_opp,
                 data_inherit: data_inherit,
                 data_process: data_process,
                 data_process_stage_app: data_process_stage_app,
-                oppFlagData: {"disabled": true, "readonly": true},
-                processFlagData: {"disabled": true, "readonly": true},
-                processStageAppFlagData: {"disabled": true, "readonly": true},
-                inheritFlagData: {"disabled": true, "readonly": true},
             }).init();
 
             CallLogHandle.LoadPageActionWithParams(opp_id)
@@ -275,22 +270,29 @@ class CallLogHandle {
                 "selected": true,
             }];
             new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
+                list_from_app: "opportunity.opportunitycall.create",
+                app_id: "14dbc606-1453-4023-a2cf-35b1cd9e3efd",
+                mainDiv: group$,
+                oppEle: group$.find('select[name=opportunity_id]'),
+                prjEle: group$.find('select[name=project_id]'),
+                empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                processEle: group$.find('select[name=process]'),
+                processStageAppEle$: group$.find('select[name=process_stage_app]'),
                 data_opp: data_opp,
-                inheritFlagData: {"disabled": false, "readonly": false},
             }).init();
 
             CallLogHandle.LoadPageActionWithParams(opp_id)
         }
         else {
             new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
-                has_prj: true,
-                inheritFlagData: {"disabled": false, "readonly": false},
+                list_from_app: "opportunity.opportunitycall.create",
+                app_id: "14dbc606-1453-4023-a2cf-35b1cd9e3efd",
+                mainDiv: group$,
+                oppEle: group$.find('select[name=opportunity_id]'),
+                prjEle: group$.find('select[name=project_id]'),
+                empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                processEle: group$.find('select[name=process]'),
+                processStageAppEle$: group$.find('select[name=process_stage_app]'),
             }).init();
         }
     }

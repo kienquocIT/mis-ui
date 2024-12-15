@@ -213,6 +213,7 @@ class EmailHandle {
             'process_stage_app_id', 'process_stage_app_title',
             'inherit_id', 'inherit_title',
         ])
+        const group$ = $('#offcanvas-send-email')
         if (create_open) {
             const data_inherit = [{
                 "id": inherit_id || '',
@@ -236,17 +237,18 @@ class EmailHandle {
                 'selected': true,
             }];
             new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
+                list_from_app: "opportunity.opportunityemail.create",
+                app_id: "dec012bf-b931-48ba-a746-38b7fd7ca73b",
+                mainDiv: group$,
+                oppEle: group$.find('select[name=opportunity_id]'),
+                prjEle: group$.find('select[name=project_id]'),
+                empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                processEle: group$.find('select[name=process]'),
+                processStageAppEle$: group$.find('select[name=process_stage_app]'),
                 data_opp: data_opp,
                 data_inherit: data_inherit,
                 data_process: data_process,
                 data_process_stage_app: data_process_stage_app,
-                oppFlagData: {"disabled": true, "readonly": true},
-                processFlagData: {"disabled": true, "readonly": true},
-                processStageAppFlagData: {"disabled": true, "readonly": true},
-                inheritFlagData: {"disabled": true, "readonly": true},
             }).init();
 
             EmailHandle.LoadPageActionWithParams(opp_id)
@@ -259,21 +261,29 @@ class EmailHandle {
                 "selected": true,
             }];
             new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
+                list_from_app: "opportunity.opportunityemail.create",
+                app_id: "dec012bf-b931-48ba-a746-38b7fd7ca73b",
+                mainDiv: group$,
+                oppEle: group$.find('select[name=opportunity_id]'),
+                prjEle: group$.find('select[name=project_id]'),
+                empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                processEle: group$.find('select[name=process]'),
+                processStageAppEle$: group$.find('select[name=process_stage_app]'),
                 data_opp: data_opp,
-                inheritFlagData: {"disabled": false, "readonly": false},
             }).init();
 
             EmailHandle.LoadPageActionWithParams(opp_id)
         }
         else {
             new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
-                inheritFlagData: {"disabled": false, "readonly": false},
+                list_from_app: "opportunity.opportunityemail.create",
+                app_id: "dec012bf-b931-48ba-a746-38b7fd7ca73b",
+                mainDiv: group$,
+                oppEle: group$.find('select[name=opportunity_id]'),
+                prjEle: group$.find('select[name=project_id]'),
+                empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                processEle: group$.find('select[name=process]'),
+                processStageAppEle$: group$.find('select[name=process_stage_app]'),
             }).init();
         }
     }

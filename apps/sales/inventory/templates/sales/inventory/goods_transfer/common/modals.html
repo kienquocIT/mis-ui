@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="modal fade" id="modal-serial" tabindex="-1" role="dialog" aria-labelledby="modal-serial" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="min-width: 1700px" role="document">
+    <div class="modal-dialog modal-lg" style="min-width: 85%" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Serial information' %}</h5>
@@ -12,25 +12,21 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
-                        <div class="custom-scroll">
-                            <div class="table-wrap" style="max-height: 60vh">
-                                <table class="table nowrap w-100 fixed_header" id="table-serial">
-                                    <thead class="row-fixed bg-secondary-light-4">
-                                    <tr>
-                                        <th class="w-5"></th>
-                                        <th class="w-10">{% trans 'Vendor serial No.' %}</th>
-                                        <th class="w-15">{% trans 'Serial No.' %}</th>
-                                        <th class="w-15">{% trans 'Expired date' %}</th>
-                                        <th class="w-15">{% trans 'Mfr date' %}</th>
-                                        <th class="w-15">{% trans 'Warranty start' %}</th>
-                                        <th class="w-15">{% trans 'Warranty end' %}</th>
-                                        <th class="w-10">{% trans 'Get' %}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <table class="table nowrap w-100" id="table-serial">
+                            <thead>
+                            <tr>
+                                <th style="min-width: 30px"></th>
+                                <th style="min-width: 180px">{% trans 'Vendor serial No.' %}</th>
+                                <th style="min-width: 180px">{% trans 'Serial No.' %}</th>
+                                <th style="min-width: 120px">{% trans 'Expired date' %}</th>
+                                <th style="min-width: 120px">{% trans 'Mfr date' %}</th>
+                                <th style="min-width: 120px">{% trans 'Warranty start' %}</th>
+                                <th style="min-width: 120px">{% trans 'Warranty end' %}</th>
+                                <th style="min-width: 120px"><button type="button" hidden id="get-all" data-get="" class="btn btn-xs btn-soft-primary">{% trans 'Get all' %}</button></th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>

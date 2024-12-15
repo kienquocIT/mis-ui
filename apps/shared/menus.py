@@ -93,7 +93,7 @@ class MenusCompanySystem:
                 icon='<i class="fas fa-shapes"></i>'
             ),
             MenuCommon(
-                name='Business Process', code='menu_process', view_name='ProcessList',
+                name='Config Process', code='menu_process', view_name='ProcessList',
                 icon='<i class="fa-solid fa-microchip"></i>',
             ),
             MenuCommon(
@@ -106,7 +106,7 @@ class MenusCompanySystem:
         expanded=True,
         child=[
             MenuCommon(
-                name='Business Process', code='menu_process', view_name='ProcessList',
+                name='Config Process', code='menu_process', view_name='ProcessList',
                 icon='<i class="fa-solid fa-microchip"></i>',
             ),
             MenuCommon(
@@ -432,15 +432,15 @@ class MenusCRM:
         icon='<i class="bi bi-ui-checks-grid"></i>',
         child=[
             MenuCommon(
-                name='Log a call', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
-                icon='<i class="bi bi-telephone-fill"></i>',
+                name='Call to customer', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
+                icon='<i class="fas fa-phone-volume"></i>',
             ),
             MenuCommon(
-                name='Send email', code='id_menu_email', view_name='OpportunityEmailList',
+                name='Email to customer', code='id_menu_email', view_name='OpportunityEmailList',
                 icon='<i class="bi bi-envelope-fill"></i>',
             ),
             MenuCommon(
-                name='Meeting', code='id_menu_meeting', view_name='OpportunityMeetingList',
+                name='Meeting with customer', code='id_menu_meeting', view_name='OpportunityMeetingList',
                 icon='<i class="bi bi-person-workspace"></i>',
             ),
             MenuCommon(

@@ -559,7 +559,7 @@ msgid "Department of the employee"
 msgstr "Phòng ban của nhân viên"
 
 #
-msgid "Date of Birthday"
+msgid "Date of birth"
 msgstr "Ngày Sinh"
 
 #
@@ -3140,8 +3140,8 @@ msgid "Workflow"
 msgstr "Quy trình làm việc"
 
 #
-msgid "Business Process"
-msgstr "Quy trình kinh doanh"
+msgid "Config Process"
+msgstr "Cấu hình Tiến trình"
 
 #
 msgid "Automation"
@@ -3409,11 +3409,11 @@ msgstr "Xóa tất cả thông báo đã xem"
 
 #
 msgid "Win Rate"
-msgstr "Tỷ lệ thắng"
+msgstr "Xác suất thắng"
 
 #
 msgid "Manually input rate"
-msgstr "Tự nhập tỷ lệ"
+msgstr "Tự nhập xác suất"
 
 #
 msgid "agency role"
@@ -4059,15 +4059,11 @@ msgid "Add Document"
 msgstr "Thêm tài liệu"
 
 #
-msgid "Document For Customers"
-msgstr "Tài liệu"
-
-#
-msgid "Product introduction document for customers"
+msgid "Product introduction document for customer"
 msgstr "Tài liệu giới thiệu sản phẩm cho khách hàng"
 
 #
-msgid "Document For Customer"
+msgid "Document for customer"
 msgstr "Tài liệu cho khách hàng"
 
 #
@@ -5477,8 +5473,8 @@ msgid "Sale Activities"
 msgstr "Hoạt động bán hàng"
 
 #
-msgid "Log a call"
-msgstr "Ghi cuộc gọi"
+msgid "Call log"
+msgstr "Nhật ký cuộc gọi"
 
 #
 msgid "Send email"
@@ -5489,8 +5485,8 @@ msgid "Meeting"
 msgstr "Cuộc họp"
 
 #
-msgid "Activity logs"
-msgstr "Hoạt động ghi lại"
+msgid "Sale activities logged"
+msgstr "Nhật ký hoạt động bán hàng"
 
 #
 msgid "Current action"
@@ -7519,10 +7515,6 @@ msgstr "Hoàn ứng"
 #
 msgid "Sale activities"
 msgstr "Hoạt động bán hàng"
-
-#
-msgid "Document for customer"
-msgstr "Tài liệu"
 
 #
 msgid "AR invoice"
@@ -9828,10 +9820,33 @@ msgstr "Chi tiết cuộc họp với khách hàng"
 msgid "Detail Email"
 msgstr "Chi tiết Email"
 
-
 #
 msgid "See detail process here"
 msgstr "Xem chi tiết Tiến trình tại đây"
+
+#
+msgid "Please click on the button to select"
+msgstr "Click vào nút ở cuối để chọn"
+
+#
+msgid "Shortcut menu"
+msgstr "Danh sách lối tắt"
+
+#
+msgid "Opportunity members"
+msgstr "Thành viên CHKD"
+
+#
+msgid "Opportunity detail"
+msgstr "Chi tiết CHKD"
+
+#
+msgid "Data Import Limit"
+msgstr "Giới hạn nhập dữ liệu"
+
+#
+msgid "To ensure system performance and stability, row number is limited to 500 rows. If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
+msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 500 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
 
 #
 msgid "Lease order"
@@ -9860,6 +9875,34 @@ msgstr "Số lượng sản phẩm mới:"
 #
 msgid "Quantity of leased products:"
 msgstr "Số lượng sản phẩm đã cho thuê:"
+
+#
+msgid "Return to warehouse"
+msgstr "Trả về kho"
+
+#
+msgid "Confirm delete this period?"
+msgstr "Xác nhận xóa kỳ kế toán này?"
+
+#
+msgid "Can not delete this period!"
+msgstr "Không thể xóa kỳ kế toán này!"
+
+#
+msgid "Posting periods"
+msgstr "Kỳ kế toán"
+
+#
+msgid "Main period code"
+msgstr "Mã kỳ chính"
+
+#
+msgid "Sub period code"
+msgstr "Mã kỳ con"
+
+#
+msgid "Period name"
+msgstr "Tên kỳ"
 
 #
 msgid "Lease from"

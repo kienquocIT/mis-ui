@@ -2,7 +2,8 @@ from django.urls import path
 
 from apps.hrm.employee.views import HRMEmployeeList, HRMEmployeeCreate, HRMEmployeeNotMapHRM, HRMEmployeeCreateAPI, \
     HRMEmployeeListAPI, HRMEmployeeDetail, HRMEmployeeDetailAPI, HRMEmployeeUpdate, HRMEmployeeUpdateAPI, \
-    HRMEmployeeContractDetailAPI, HRMEmployeeContractList
+    HRMEmployeeContractDetailAPI, HRMEmployeeContractList, HRMEmployeeSignatureAttachmentListAPI, \
+    HRMSignatureAttachmentUpdateAPI
 
 urlpatterns = [
     # employee HRM page
@@ -22,5 +23,14 @@ urlpatterns = [
     path(
         'employee-data/contract/detail-api/<str:pk>', HRMEmployeeContractDetailAPI.as_view(),
         name='HRMEmployeeContractDetailAPI'
+    ),
+    # employee info attachment signature file
+    path(
+        'employee-data/signature/list', HRMEmployeeSignatureAttachmentListAPI.as_view(),
+        name='HRMEmpSignAttListAPI'
+    ),
+    path(
+        'employee-data/signature/update/<str:pk>', HRMSignatureAttachmentUpdateAPI.as_view(),
+        name='HRMEmpSignAttUpdateAPI'
     ),
 ]

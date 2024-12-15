@@ -25,20 +25,6 @@ $(document).ready(function () {
 
     OpportunityLoadDetail.configDateTimeEle()
 
-    let prm_config = $.fn.callAjax2({
-        url: urlFactory.data('url-config'),
-        method: 'GET'
-    }).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_config')) {
-                return data['opportunity_config'];
-            }
-            return {};
-        },
-        (errs) => {}
-    )
-
     let prm_detail = $.fn.callAjax2({
         url: frmDetail.data('url'),
         method: 'GET'
@@ -54,15 +40,14 @@ $(document).ready(function () {
         (errs) => {}
     )
 
-    let prm_lead = $.fn.callAjax2({
-        url: $('#lead-list-table').attr('data-url') + `?opp_id=${pk}`,
+    let prm_config = $.fn.callAjax2({
+        url: urlFactory.data('url-config'),
         method: 'GET'
     }).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
-            if (data && typeof data === 'object' && data.hasOwnProperty('lead_list')) {
-                // console.log(data?.['lead_list'])
-                return data?.['lead_list'];
+            if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_config')) {
+                return data['opportunity_config'];
             }
             return {};
         },
@@ -71,14 +56,11 @@ $(document).ready(function () {
 
     let list_stage_condition = []
     let config_is_input_rate = null;
-    $x.fn.showLoadingPage()
-    Promise.all([prm_detail, prm_config, prm_lead]).then(
+    Promise.all([prm_detail, prm_config]).then(
         (results) => {
-            $x.fn.hideLoadingPage();
             const opportunity_detail_data = results[0];
 
             if (opportunity_detail_data) {
-
                 const target$ = $('#process-runtime-detail');
                 $('#btn-collapse-process-show').on('click', function (){
                     if ($(this).attr('data-loaded') !== '1'){
@@ -120,11 +102,11 @@ $(document).ready(function () {
                     $('#btn-auto-update-stage').hide();
                 }
 
-                $('#estimated-gross-profit-percent').val(opportunity_detail_data?.['estimated_gross_profit_percent'])
-                $('#estimated-gross-profit-value').attr('value', opportunity_detail_data?.['estimated_gross_profit_value'])
-
                 async function loadDetail(opportunity_detail) {
+                    $x.fn.showLoadingPage()
                     $x.fn.renderCodeBreadcrumb(opportunity_detail);
+
+                    $('#btn-collapse-process-show').prop('hidden', opportunity_detail?.['process']?.['id'] === undefined)
 
                     let stage_obj = await OpportunityLoadDetail.loadDetailCommon(opportunity_detail);
                     list_stage = stage_obj.list;
@@ -155,28 +137,10 @@ $(document).ready(function () {
                     OpportunityLoadDropdown.loadSalePersonPageDetail(opportunity_detail?.['sale_person']);
                     OpportunityLoadDropdown.loadEndCustomer(opportunity_detail.end_customer, opportunity_detail.customer.id);
 
-                    // load table product
-                    loadDtbProduct([]);
-                    let table_product = OpportunityLoadDetail.productTableEle;
-                    OpportunityLoadDetail.loadDetailTableProduct(table_product, opportunity_detail);
-
-                    $('#input-product-pretax-amount').attr('value', opportunity_detail.total_product_pretax_amount);
-                    $('#input-product-taxes').attr('value', opportunity_detail.total_product_tax);
-                    $('#input-product-total').attr('value', opportunity_detail.total_product);
-
-                    // load competitor
-                    loadDtbCompetitor([]);
-                    let table_competitor = OpportunityLoadDetail.competitorTableEle;
-                    OpportunityLoadDetail.loadDetailTableCompetitor(table_competitor, opportunity_detail)
-
-                    // load table contact role
-                    loadDtbContactRole([]);
-                    let table_contact_role = OpportunityLoadDetail.contactRoleTableEle;
-                    OpportunityLoadDetail.loadDetailTableContactRole(table_contact_role, opportunity_detail);
-                    OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
-
-                    // load sale team
-                    OpportunityLoadDetail.loadSaleTeam(opportunity_detail.members, true, opportunity_detail?.['sale_person'] || {});
+                    // init table
+                    InitDataTables.loadDtbProduct();
+                    InitDataTables.loadDtbCompetitor();
+                    InitDataTables.loadDtbContactRole();
 
                     if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
                         let so_id = opportunity_detail.sale_order.id;
@@ -198,13 +162,14 @@ $(document).ready(function () {
                             condition_is_quotation_confirm = true;
                         }
                     }
+
                     // store data detail
                     $('#data-detail').text(JSON.stringify(opportunity_detail));
                     $.fn.initMaskMoney2();
                 }
 
                 loadDetail(opportunity_detail_data).then(function () {
-                    let _, is_lost = autoLoadStage(
+                    let is_lost = LoadConfigAndLoadStage.autoLoadStage(
                         true,
                         false,
                         list_stage_condition,
@@ -228,6 +193,40 @@ $(document).ready(function () {
                         $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
                     }
 
+                    let data_opp_detail = $dataDetail.text() ? JSON.parse($dataDetail.text()) : null
+                    if (data_opp_detail) {
+                        let goto_call_log = $('#goto-call-log')
+                        let call_log_param_url = OpportunityLoadPage.push_param_to_url(goto_call_log.attr('data-url'), {
+                            'from_opp': true,
+                            'opp_id': data_opp_detail?.['id'],
+                            'opp_title': data_opp_detail?.['title'],
+                            'opp_code': data_opp_detail?.['code'],
+                            'inherit_id': data_opp_detail?.['sale_person']?.['id'],
+                            'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
+                        })
+                        goto_call_log.attr('href', call_log_param_url)
+                        let goto_email = $('#goto-email')
+                        let email_param_url = OpportunityLoadPage.push_param_to_url(goto_email.attr('data-url'), {
+                            'from_opp': true,
+                            'opp_id': data_opp_detail?.['id'],
+                            'opp_title': data_opp_detail?.['title'],
+                            'opp_code': data_opp_detail?.['code'],
+                            'inherit_id': data_opp_detail?.['sale_person']?.['id'],
+                            'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
+                        })
+                        goto_email.attr('href', email_param_url)
+                        let goto_meeting = $('#goto-meeting')
+                        let meeting_param_url = OpportunityLoadPage.push_param_to_url(goto_meeting.attr('data-url'), {
+                            'from_opp': true,
+                            'opp_id': data_opp_detail?.['id'],
+                            'opp_title': data_opp_detail?.['title'],
+                            'opp_code': data_opp_detail?.['code'],
+                            'inherit_id': data_opp_detail?.['sale_person']?.['id'],
+                            'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
+                        })
+                        goto_meeting.attr('href', meeting_param_url)
+                    }
+
                     // Disable all select elements
                     $('#btn-auto-update-stage').prop('hidden', true)
                     $('#btn-add-row-line-detail').prop('hidden', true)
@@ -238,11 +237,9 @@ $(document).ready(function () {
                     $('.card-action-edit').prop('hidden', true)
                     $('#group-general-info-opp input').prop('disabled', true).prop('readonly', true)
                     $('#group-general-info-opp select').prop('disabled', true)
-
-                    $('.tab-content input').prop('disabled', true).prop('readonly', true)
-                    $('.tab-content select').prop('disabled', true)
                     $('#check-lost-reason').prop('disabled', true)
                     $('.btn-go-to-stage').addClass('disabled')
+                    $x.fn.hideLoadingPage();
                 });
 
                 // even in timeline table
@@ -257,6 +254,17 @@ $(document).ready(function () {
                 OpportunityActivity.loadDblActivityLogs();
 
                 // even in tab product
+                $('#tab_details_btn').on('click', function () {
+                    if ($(this).attr('data-is-loaded') !== 'true') {
+                        OpportunityLoadDetail.loadDetailTableProduct(opportunity_detail_data, true);
+                        $('#input-product-pretax-amount').attr('value', opportunity_detail_data.total_product_pretax_amount);
+                        $('#input-product-taxes').attr('value', opportunity_detail_data.total_product_tax);
+                        $('#input-product-total').attr('value', opportunity_detail_data.total_product);
+                        $('#estimated-gross-profit-percent').val(opportunity_detail_data?.['estimated_gross_profit_percent'])
+                        $('#estimated-gross-profit-value').attr('value', opportunity_detail_data?.['estimated_gross_profit_value'])
+                        $(this).attr('data-is-loaded', 'true')
+                    }
+                })
                 $('#btn-add-select-product').on('click', function () {
                     OpportunityLoadDetail.addRowSelectProduct();
                 })
@@ -298,6 +306,19 @@ $(document).ready(function () {
                         );
                     })
                 });
+                OpportunityLoadDetail.estimated_gross_profit_percent_Ele.on('input', function () {
+                    if ($(this).val()) {
+                        $(this).val(parseFloat($(this).val()))
+                        let value = parseFloat($('#input-product-pretax-amount').attr('value')) * parseFloat(OpportunityLoadDetail.estimated_gross_profit_percent_Ele.val()) / 100
+                        $('#estimated-gross-profit-value').attr('value', value)
+                        $.fn.initMaskMoney2()
+                    }
+                    else {
+                        $(this).val(0)
+                        $('#estimated-gross-profit-value').attr('value', 0)
+                        $.fn.initMaskMoney2()
+                    }
+                })
                 $(document).on('change', '.select-box-product', function () {
                     let ele_tr = $(this).closest('tr');
                     let product = SelectDDControl.get_data_from_idx($(this), $(this).val());
@@ -357,11 +378,24 @@ $(document).ready(function () {
                 })
 
                 // event in tab competitor
+                $('#tab_competitor_btn').on('click', function () {
+                    if ($(this).attr('data-is-loaded') !== 'true') {
+                        OpportunityLoadDetail.loadDetailTableCompetitor(opportunity_detail_data, true)
+                        $(this).attr('data-is-loaded', 'true')
+                    }
+                })
                 $('#btn-add-competitor').on('click', function () {
                     OpportunityLoadDetail.addRowCompetitor()
                 })
 
                 // event in tab contact role
+                $('#tab_contact_role_btn').on('click', function () {
+                    if ($(this).attr('data-is-loaded') !== 'true') {
+                        OpportunityLoadDetail.loadDetailTableContactRole(opportunity_detail_data, true);
+                        OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail_data.customer_decision_factor, true);
+                        $(this).attr('data-is-loaded', 'true')
+                    }
+                })
                 $('#btn-add-contact').on('click', function () {
                     OpportunityLoadDetail.addRowContactRole();
                 })
@@ -404,8 +438,16 @@ $(document).ready(function () {
                     OpportunityLoadDetail.onChangeContactRole($(this));
                 })
 
+                // even in tab Lead sale team
+                OpportunityLoadDetail.loadSaleTeam(opportunity_detail_data.members, true, opportunity_detail_data?.['sale_person'] || {});
+
                 // even in tab Lead
-                OpportunityLoadPage.loadLeadList();
+                $('#tab_lead_btn').on('click', function () {
+                    if ($(this).attr('data-is-loaded') !== 'true') {
+                        OpportunityLoadPage.loadLeadList();
+                        $(this).attr('data-is-loaded', 'true')
+                    }
+                })
 
                 // event general
                 $(document).on('change', 'select, input', function () {
@@ -466,8 +508,8 @@ $(document).ready(function () {
                 })
 
                 // tab add member for sale
-                $('#btn-show-modal-add-member').on('click', function () {
-                    OpportunityLoadDetail.loadMemberForDtb().then();
+                $('#btn-show-modal-add-member').on('click', async function () {
+                    await OpportunityLoadDetail.loadMemberForDtb().then();
                 })
                 $('.mask-money').on('change', function () {
                     if ($(this).valCurrency() < 0) {

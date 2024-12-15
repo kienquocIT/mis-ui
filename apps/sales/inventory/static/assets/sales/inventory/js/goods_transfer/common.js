@@ -322,9 +322,11 @@ $(document).on("change", '.unit-price', function () {
 function loadSerialTable(data, serial_selected=[]) {
     $table_serial.DataTable().clear().destroy()
     $table_serial.DataTableDefault({
-        dom: '',
         rowIdx: true,
         paging: false,
+        scrollY: '40vh',
+        scrollX: '100vh',
+        scrollCollapse: true,
         data: data,
         columns: IS_DETAIL_PAGE ? [
             {
@@ -513,9 +515,23 @@ function loadSerialTable(data, serial_selected=[]) {
             if (DOC_DONE) {
                 $table_serial.find('input').prop('disabled', true).prop('readonly', true)
             }
+            else {
+                $('#get-all').prop('hidden', false)
+            }
         }
     });
 }
+
+$('#get-all').on('click', function () {
+    if ($(this).attr('data-get') === '') {
+        $('.select-this-serial').prop('checked', true)
+        $(this).attr('data-get', '1')
+    }
+    else {
+        $('.select-this-serial').prop('checked', false)
+        $(this).attr('data-get', '')
+    }
+})
 
 function loadLotTable(data, lot_selected=[]) {
     $table_lot.DataTable().clear().destroy()

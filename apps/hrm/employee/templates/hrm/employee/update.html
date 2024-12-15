@@ -4,6 +4,9 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/contextMenu/jquery.contextMenu.min.css' %}" rel="stylesheet" type="text/css"/>
+
+    <link href="{% static 'assets/online_sign/css/online_signature.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{% static 'assets/hrm/css/common.css' %}">
 {% endblock %}
 {% block pageAction %}
@@ -182,7 +185,7 @@
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label" for="employee-dob">{% trans 'Date of Birthday' %}</label>
+                                <label class="form-label" for="employee-dob">{% trans 'Date of birth' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input class="form-control pl-2" id="employee-dob" type="text" name="dob"/>
                                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
@@ -323,28 +326,39 @@
                             <span class="icon">
                                 <i class="fa-regular fa-square-plus"></i>
                             </span>
-                            <span>{% trans 'add' %}</span>
+                            <span>{% trans 'Add' %}</span>
                         </span>
                     </button>
                     {% include 'hrm/contract/list.html' %}
                 </div>
                 <div class="contract-edit hidden">
-                    {% include 'hrm/contract/create.html' with edit=True %}
+                    {% include 'hrm/contract/create.html' with edit=True show_icon=True %}
                 </div>
             </div>
         </div>
     </form>
 {% endblock %}
+{% block modalData %}
+    {% include 'online_signature/online-sign.html' with navigation=True is_edit=True %}
+{% endblock %}
 {% block dataHiddenGroup %}
     {{ data.template_list|json_script:'template_list' }}
+
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
     {% if base.language == 'vi' %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
+    <script src="{% static 'vendors/fabric/index.min.js' %}"></script>
+    <script src="{% static 'vendors/contextMenu/jquery.contextMenu.min.js' %}"></script>
+    <script src="{% static 'vendors/contextMenu/jquery.ui.position.min.js' %}"></script>
+    <script src="{% static 'vendors/hopscotch/dist/js/hopscotch.min.js' %}"></script>
+
+
     <script src="{% static 'assets/hrm/js/extend/contract_editor.js' %}"></script>
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
+    <script src="{% static 'assets/online_sign/js/online_signature_common.js' %}"></script>
 
     <script src="{% static 'assets/hrm/js/update.js' %}"></script>
 {% endblock %}

@@ -296,6 +296,7 @@ class MeetingHandle {
             'process_stage_app_id', 'process_stage_app_title',
             'inherit_id', 'inherit_title',
         ])
+        const group$ = $('#offcanvas-meeting')
         if (create_open) {
             const data_inherit = [{
                 "id": inherit_id || '',
@@ -319,17 +320,18 @@ class MeetingHandle {
                 'selected': true,
             }];
             new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
+                list_from_app: "opportunity.meetingwithcustomer.create",
+                app_id: "2fe959e3-9628-4f47-96a1-a2ef03e867e3",
+                mainDiv: group$,
+                oppEle: group$.find('select[name=opportunity_id]'),
+                prjEle: group$.find('select[name=project_id]'),
+                empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                processEle: group$.find('select[name=process]'),
+                processStageAppEle$: group$.find('select[name=process_stage_app]'),
                 data_opp: data_opp,
                 data_inherit: data_inherit,
                 data_process: data_process,
                 data_process_stage_app: data_process_stage_app,
-                oppFlagData: {"disabled": true, "readonly": true},
-                processFlagData: {"disabled": true, "readonly": true},
-                processStageAppFlagData: {"disabled": true, "readonly": true},
-                inheritFlagData: {"disabled": true, "readonly": true},
             }).init();
 
             MeetingHandle.LoadPageActionWithParams(opp_id)
@@ -342,21 +344,29 @@ class MeetingHandle {
                 "selected": true,
             }];
             new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
+                list_from_app: "opportunity.meetingwithcustomer.create",
+                app_id: "2fe959e3-9628-4f47-96a1-a2ef03e867e3",
+                mainDiv: group$,
+                oppEle: group$.find('select[name=opportunity_id]'),
+                prjEle: group$.find('select[name=project_id]'),
+                empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                processEle: group$.find('select[name=process]'),
+                processStageAppEle$: group$.find('select[name=process_stage_app]'),
                 data_opp: data_opp,
-                inheritFlagData: {"disabled": false, "readonly": false},
             }).init();
 
             MeetingHandle.LoadPageActionWithParams(opp_id)
         }
         else {
             new $x.cls.bastionField({
-                has_opp: true,
-                has_inherit: true,
-                has_process: true,
-                inheritFlagData: {"disabled": false, "readonly": false},
+                list_from_app: "opportunity.meetingwithcustomer.create",
+                app_id: "2fe959e3-9628-4f47-96a1-a2ef03e867e3",
+                mainDiv: group$,
+                oppEle: group$.find('select[name=opportunity_id]'),
+                prjEle: group$.find('select[name=project_id]'),
+                empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                processEle: group$.find('select[name=process]'),
+                processStageAppEle$: group$.find('select[name=process_stage_app]'),
             }).init();
         }
     }

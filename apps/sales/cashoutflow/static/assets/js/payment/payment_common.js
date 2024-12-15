@@ -1006,6 +1006,220 @@ class PaymentLoadTab {
                 })
         }
     }
+    static LoadPlanSaleOrder(opportunity_id, sale_order_id, workflow_runtime_id) {
+        if (opportunity_id && sale_order_id) {
+            let dataParam1 = {'sale_order_id': sale_order_id}
+            let expense_sale_order = $.fn.callAjax2({
+                url: script_url.attr('data-url-expense-sale-order'),
+                data: dataParam1,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('sale_order_expense_list')) {
+                        return data?.['sale_order_expense_list'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            let dataParam2 = {'opportunity_id': opportunity_id}
+            let ap_mapped_item = $.fn.callAjax2({
+                url: script_url.attr('data-url-ap-cost-list'),
+                data: dataParam2,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('advance_payment_cost_list')) {
+                        return data?.['advance_payment_cost_list'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            let dataParam3 = {'opportunity_id': opportunity_id}
+            let payment_mapped_item = $.fn.callAjax2({
+                url: script_url.attr('data-url-payment-cost-list'),
+                data: dataParam3,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('payment_cost_list')) {
+                        return data?.['payment_cost_list'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([expense_sale_order, ap_mapped_item, payment_mapped_item]).then(
+                (results) => {
+                    let data_expense = results[0]
+                    let data_ap_mapped_item = results[1]
+                    let data_payment_mapped_item = results[2]
+                    $('#notify-none-sale-code').prop('hidden', true)
+
+                    let data_expense_merge = {};
+                    data_expense.forEach(function (item) {
+                        let expenseItemId = item?.['expense_item']?.['id'];
+                        if (data_expense_merge[expenseItemId] === undefined) {
+                            data_expense_merge[expenseItemId] = {
+                                id: item?.['id'],
+                                expense_title: item?.['expense_title'],
+                                expense_item: item?.['expense_item'],
+                                tax: item?.['tax'],
+                                plan_after_tax: item?.['plan_after_tax']
+                            };
+                        } else {
+                            data_expense_merge[expenseItemId].plan_after_tax += item?.['plan_after_tax'];
+                            data_expense_merge[expenseItemId].expense_title += ' (merge) ' + item?.['expense_title'];
+                        }
+                    });
+                    data_expense = Object.values(data_expense_merge);
+
+                    let data_table_planned = []
+
+                    let planned_ap_id = [];
+                    let planned_payment_id = [];
+                    for (let i = 0; i < data_expense.length; i++) {
+                        let ap_approved_value = 0;
+                        let sum_return_value = 0;
+                        let sum_converted_value = 0;
+                        let sum_real_value = 0;
+                        for (let j = 0; j < data_ap_mapped_item.length; j++) {
+                            if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
+                                ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
+                                sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
+                                planned_ap_id.push(data_ap_mapped_item[j]?.['expense_type']?.['id'])
+                            }
+                        }
+                        for (let j = 0; j < data_payment_mapped_item.length; j++) {
+                            if (data_payment_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
+                                sum_real_value += data_payment_mapped_item[j]?.['real_value'];
+                                sum_converted_value += data_payment_mapped_item[j]?.['converted_value'];
+                                planned_payment_id.push(data_payment_mapped_item[j]?.['expense_type']?.['id'])
+                            }
+                        }
+                        let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
+                        if (sum_available < 0) {
+                            sum_available = 0;
+                        }
+
+                        data_table_planned.push({
+                            'type': 'planned',
+                            'expense_item': data_expense[i]?.['expense_item'],
+                            'plan_after_tax': data_expense[i]?.['plan_after_tax'],
+                            'ap_approved_value': ap_approved_value,
+                            'sum_return_value': sum_return_value,
+                            'sum_converted_value': sum_converted_value,
+                            'sum_real_value': sum_real_value,
+                            'sum_available': sum_available
+                        })
+                    }
+
+                    let unplanned_ap = [];
+                    let unplanned_payment = [];
+                    for (let j = 0; j < data_ap_mapped_item.length; j++) {
+                        if (!planned_ap_id.includes(data_ap_mapped_item[j]?.['expense_type']?.['id'])) {
+                            unplanned_ap.push(data_ap_mapped_item[j])
+                        }
+                    }
+                    for (let j = 0; j < data_payment_mapped_item.length; j++) {
+                        if (!planned_payment_id.includes(data_payment_mapped_item[j]?.['expense_type']?.['id'])) {
+                            unplanned_payment.push(data_payment_mapped_item[j])
+                        }
+                    }
+
+                    let unplanned_ap_merged = {};
+                    $.each(unplanned_ap, function(index, element) {
+                        const typeId = element.expense_type.id;
+                        if (!unplanned_ap_merged[typeId]) {
+                            unplanned_ap_merged[typeId] = $.extend(true, {}, element);
+                        } else {
+                            unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
+                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
+                            unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
+                            unplanned_ap_merged[typeId].expense_tax = null;
+                            unplanned_ap_merged[typeId].expense_tax_price += element.expense_tax_price;
+                            unplanned_ap_merged[typeId].expense_unit_price = null;
+                            unplanned_ap_merged[typeId].expense_uom_name = null;
+                            unplanned_ap_merged[typeId].sum_converted_value += element.sum_converted_value;
+                            unplanned_ap_merged[typeId].sum_return_value += element.sum_return_value;
+                        }
+                    });
+                    unplanned_ap_merged = $.map(unplanned_ap_merged, function(value) {
+                        return value;
+                    });
+
+                    let unplanned_payment_merged = {};
+                    $.each(unplanned_payment, function(index, element) {
+                        const typeId = element.expense_type.id;
+                        if (!unplanned_payment_merged[typeId]) {
+                            unplanned_payment_merged[typeId] = $.extend(true, {}, element);
+                        } else {
+                            unplanned_payment_merged[typeId].converted_value += element.converted_value;
+                            unplanned_payment_merged[typeId].real_value += element.real_value;
+                        }
+                    });
+                    unplanned_payment_merged = $.map(unplanned_payment_merged, function(value) {
+                        return value;
+                    });
+
+                    if (unplanned_ap_merged.length !== 0 || unplanned_payment_merged.length !== 0) {
+                        let unplanned_payment_merged_has_ap = [];
+                        for (let i = 0; i < unplanned_ap_merged.length; i++) {
+                            let unplanned_sum_converted_value = 0;
+                            let unplanned_sum_real_value = 0;
+                            for (let j = 0; j < unplanned_payment_merged.length; j++) {
+                                if (unplanned_payment_merged[j]?.['expense_type']?.['id'] === unplanned_ap_merged[i]?.['expense_type']?.['id']) {
+                                    unplanned_sum_converted_value += unplanned_payment_merged[j]?.['converted_value']
+                                    unplanned_sum_real_value += unplanned_payment_merged[j]?.['real_value']
+                                    unplanned_payment_merged_has_ap.push(unplanned_payment_merged[j]?.['expense_type']?.['id'])
+                                }
+                            }
+                            data_table_planned.push({
+                                'type': 'unplanned',
+                                'expense_item': unplanned_ap_merged[i]?.['expense_type'],
+                                'plan_after_tax': '--',
+                                'ap_approved_value': unplanned_ap_merged[i]?.['expense_after_tax_price'],
+                                'sum_return_value': unplanned_ap_merged[i]?.['sum_return_value'],
+                                'sum_converted_value': unplanned_sum_converted_value,
+                                'sum_real_value': unplanned_sum_real_value,
+                                'sum_available': '--'
+                            })
+                        }
+                        for (let i = 0; i < unplanned_payment_merged.length; i++) {
+                            if (!unplanned_payment_merged_has_ap.includes(unplanned_payment_merged[i]?.['expense_type']?.['id'])) {
+                                data_table_planned.push({
+                                    'type': 'unplanned',
+                                    'expense_item': unplanned_payment_merged[i]?.['expense_type'],
+                                    'plan_after_tax': '--',
+                                    'ap_approved_value': 0,
+                                    'sum_return_value': 0,
+                                    'sum_converted_value': unplanned_payment_merged[i]?.['converted_value'],
+                                    'sum_real_value': unplanned_payment_merged[i]?.['real_value'],
+                                    'sum_available': '--'
+                                })
+                            }
+                        }
+                    }
+
+                    PaymentLoadTab.DrawTablePlan(data_table_planned)
+                    WFRTControl.setWFRuntimeID(workflow_runtime_id);
+                })
+        }
+    }
     static LoadPlanQuotationOnly(quotation_id, workflow_runtime_id) {
         if (quotation_id) {
             let dataParam1 = {'quotation_id': quotation_id}
@@ -1496,8 +1710,13 @@ class PaymentHandle {
                             let quo_mapped = opportunity_data?.['quotation'];
                             let so_mapped = opportunity_data?.['sale_order'];
                             PaymentLoadPage.LoadQuotation(quo_mapped)
-                            PaymentLoadTab.LoadPlanQuotation(opportunity_data?.['id'], quo_mapped?.['id'])
                             PaymentLoadPage.LoadSaleOrder(so_mapped);
+                            if (so_mapped?.['id']) {
+                                PaymentLoadTab.LoadPlanSaleOrder(opportunity_data?.['id'], so_mapped?.['id'])
+                            }
+                            else {
+                                PaymentLoadTab.LoadPlanQuotation(opportunity_data?.['id'], quo_mapped?.['id'])
+                            }
                             payment_for = 'opportunity'
                         }
                     } else {
@@ -1532,6 +1751,7 @@ class PaymentHandle {
                 'process_stage_app_id', 'process_stage_app_title',
                 'inherit_id', 'inherit_title',
             ])
+            const group$ = $('#bastion-space')
             if (create_open) {
                 const data_inherit = [{
                     "id": inherit_id || '',
@@ -1555,17 +1775,18 @@ class PaymentHandle {
                     'selected': true,
                 }];
                 new $x.cls.bastionField({
-                    has_opp: true,
-                    has_inherit: true,
-                    has_process: true,
+                    list_from_app: "cashoutflow.payment.create",
+                    app_id: "1010563f-7c94-42f9-ba99-63d5d26a1aca",
+                    mainDiv: group$,
+                    oppEle: group$.find('select[name=opportunity_id]'),
+                    prjEle: group$.find('select[name=project_id]'),
+                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                    processEle: group$.find('select[name=process]'),
+                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
                     data_opp: data_opp,
                     data_inherit: data_inherit,
                     data_process: data_process,
                     data_process_stage_app: data_process_stage_app,
-                    oppFlagData: {"disabled": true, "readonly": true},
-                    processFlagData: {"disabled": true, "readonly": true},
-                    processStageAppFlagData: {"disabled": true, "readonly": true},
-                    inheritFlagData: {"disabled": true, "readonly": true},
                 }).init();
 
                 PaymentHandle.LoadPageActionWithParams(opp_id)
@@ -1578,21 +1799,29 @@ class PaymentHandle {
                     "selected": true,
                 }];
                 new $x.cls.bastionField({
-                    has_opp: true,
-                    has_inherit: true,
-                    has_process: true,
+                    list_from_app: "cashoutflow.payment.create",
+                    app_id: "1010563f-7c94-42f9-ba99-63d5d26a1aca",
+                    mainDiv: group$,
+                    oppEle: group$.find('select[name=opportunity_id]'),
+                    prjEle: group$.find('select[name=project_id]'),
+                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                    processEle: group$.find('select[name=process]'),
+                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
                     data_opp: data_opp,
-                    inheritFlagData: {"disabled": false, "readonly": false},
                 }).init();
 
                 PaymentHandle.LoadPageActionWithParams(opp_id)
             }
             else {
                 new $x.cls.bastionField({
-                    has_opp: true,
-                    has_inherit: true,
-                    has_process: true,
-                    inheritFlagData: {"disabled": false, "readonly": false},
+                    list_from_app: "cashoutflow.payment.create",
+                    app_id: "1010563f-7c94-42f9-ba99-63d5d26a1aca",
+                    mainDiv: group$,
+                    oppEle: group$.find('select[name=opportunity_id]'),
+                    prjEle: group$.find('select[name=project_id]'),
+                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
+                    processEle: group$.find('select[name=process]'),
+                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
                 }).init();
             }
         }
@@ -1771,12 +2000,21 @@ class PaymentHandle {
 
                     if (Object.keys(data?.['opportunity']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
                         PaymentLoadPage.LoadQuotation(data?.['opportunity']?.['quotation_mapped'])
-                        PaymentLoadTab.LoadPlanQuotation(
-                            opp_mapped_select.val(),
-                            data?.['opportunity']?.['quotation_mapped']?.['id'],
-                            data?.['workflow_runtime_id']
-                        )
                         PaymentLoadPage.LoadSaleOrder(data?.['opportunity']?.['sale_order_mapped']);
+                        if (data?.['opportunity']?.['sale_order_mapped']?.['id']) {
+                            PaymentLoadTab.LoadPlanSaleOrder(
+                                opp_mapped_select.val(),
+                                data?.['opportunity']?.['sale_order_mapped']?.['id'],
+                                data?.['workflow_runtime_id']
+                            )
+                        }
+                        else {
+                            PaymentLoadTab.LoadPlanQuotation(
+                                opp_mapped_select.val(),
+                                data?.['opportunity']?.['quotation_mapped']?.['id'],
+                                data?.['workflow_runtime_id']
+                            )
+                        }
                         payment_for = 'opportunity'
                     }
                     else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
@@ -1900,8 +2138,13 @@ opp_mapped_select.on('change', function () {
             let quo_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
             let so_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
             PaymentLoadPage.LoadQuotation(quo_mapped)
-            PaymentLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
             PaymentLoadPage.LoadSaleOrder(so_mapped);
+            if (so_mapped?.['id']) {
+                PaymentLoadTab.LoadPlanSaleOrder(opp_mapped_select.val(), so_mapped?.['id'])
+            }
+            else {
+                PaymentLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
+            }
             payment_for = 'opportunity'
         }
     }

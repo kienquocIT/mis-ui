@@ -692,7 +692,7 @@ $(document).ready(function () {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-new-uom').modal('hide');
                         $('#modal-new-uom form')[0].reset()
-                        location.reload()
+                        loadUnitOfMeasure()
                     }
                 },
                 (errs) => {
@@ -727,7 +727,7 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-uom').modal('hide');
-                        location.reload()
+                        loadUnitOfMeasure()
                     }
                 },
                 (errs) => {

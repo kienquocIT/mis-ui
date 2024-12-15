@@ -4,7 +4,11 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
+
     <link rel="stylesheet" href="{% static 'assets/hrm/css/common.css' %}">
+    <style>
+        @import url('{% static 'assets/fonts/cambria/Cambria.ttf' %}');
+    </style>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="frm_employee_hrm">
@@ -30,22 +34,19 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link disabled" data-bs-toggle="tab" href="#tab-app">
+            <a class="nav-link disabled" data-bs-toggle="tab" href="#aa">
                 <span class="nav-link-text">{% trans 'Education' %}</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link disabled" data-bs-toggle="tab" href="#tab-app">
+            <a class="nav-link disabled" data-bs-toggle="tab" href="#bb">
                 <span class="nav-link-text">{% trans 'Insurance' %}</span>
             </a>
         </li>
     </ul>
 
-    <form id="frm_employee_hrm" class="needs-validation"
-          data-url="{% url 'HRMEmployeeCreateAPI' %}"
-          data-method="POST"
-          data-url-redirect="{% url 'HRMEmployeeList' %}"
-    >
+    <form id="frm_employee_hrm" class="needs-validation" data-url="{% url 'HRMEmployeeCreateAPI' %}"
+          data-method="POST" data-url-redirect="{% url 'HRMEmployeeList' %}">
         {% csrf_token %}
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab-info">
@@ -178,7 +179,7 @@
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label" for="employee-dob">{% trans 'Date of Birthday' %}</label>
+                                <label class="form-label" for="employee-dob">{% trans 'Date of birth' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input class="form-control pl-2" id="employee-dob" type="text" name="dob"/>
                                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
@@ -227,7 +228,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="employee-gender">{% trans 'Gender' %}</label>
                                 <select class="form-select" name="gender" id="employee-gender">
-                                    <option value="" selected disabled>{% trans 'Choice gender' %}...</option>
+                                    <option value="" selected disabled>{% trans 'Choose gender' %}...</option>
                                     {% for key, value in data.gender %}
                                         <option value="{{ key }}">{{ value }}</option>
                                     {% endfor %}
@@ -238,7 +239,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="employee-mstt">{% trans 'Marital status' %}</label>
                                 <select class="form-select" name="marital_status" id="employee-mstt">
-                                    <option value="" selected disabled>{% trans 'Choice Marital status' %}...</option>
+                                    <option value="" selected disabled>{% trans 'Choose Marital status' %}...</option>
                                     {% for key, value in data.marital %}
                                         <option value="{{ key }}">{{ value }}</option>
                                     {% endfor %}
@@ -313,10 +314,13 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab-contract">
-                {% include 'hrm/contract/create.html' %}
+                {% include 'hrm/contract/create.html' with show_icon=False %}
             </div>
         </div>
     </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'online_signature/online-sign.html' with navigation=True %}
 {% endblock %}
 {% block dataHiddenGroup %}
     {{ data.template_list|json_script:'template_list' }}

@@ -35,17 +35,26 @@
 {% block pageContent %}
     <div class="row">
         <div class="col-12">
-            <table class="table nowrap w-100" id="table-periods-config"
-                   data-method="GET" data-url="{% url 'PeriodsConfigListAPI' %}">
+            <table class="table nowrap w-100"
+                   id="table-periods-config"
+                   data-method="GET"
+                   data-url="{% url 'PeriodsConfigListAPI' %}"
+                   data-url-detail="{% url 'PeriodsConfigDetailAPI' '0' %}"
+                   data-url-redirect="{% url 'PeriodsConfigList' %}"
+                   data-trans-ok="{% trans 'OK' %}"
+                   data-trans-cancel="{% trans 'Cancel' %}"
+                   data-trans-delete-confirm="{% trans 'Confirm delete this period?' %}"
+                   data-trans-delete-error="{% trans 'Can not delete this period!' %}"
+            >
                 <thead>
                     <tr>
                         <td class="w-5"></td>
                         <td class="w-15">{% trans 'Main period code' %}</td>
-                        <td class="w-20">{% trans 'Sub period code' %}</td>
+                        <td class="w-15">{% trans 'Sub period code' %}</td>
                         <td class="w-25">{% trans 'Period name' %}</td>
                         <td class="w-15">{% trans 'From' %}</td>
                         <td class="w-15">{% trans 'To' %}</td>
-                        <td class="w-5">{% trans 'Action' %}</td>
+                        <td class="w-10">{% trans 'Action' %}</td>
                     </tr>
                 </thead>
             </table>

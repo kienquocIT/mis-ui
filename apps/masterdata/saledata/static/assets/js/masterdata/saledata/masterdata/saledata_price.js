@@ -269,6 +269,10 @@ $(document).ready(function () {
             ],
         });
     }
+    function loadSelectBoxTaxCategory(ele, data) {
+        ele.empty()
+        ele.initSelect2({data: data})
+    }
 
     loadBaseCurrency()
     loadCurrency()
@@ -445,9 +449,7 @@ $(document).ready(function () {
                         $('#tax-title').val(data?.['tax']?.['title']);
                         $('#tax-code').val(data?.['tax']?.['code']);
                         $('#tax-rate').val(data?.['tax']?.['rate']);
-                        $('#select-box-category-update').initSelect2({
-                            'data': data?.['tax']?.['category']
-                        })
+                        loadSelectBoxTaxCategory($('#select-box-category-update'), data?.['tax']?.['category'])
                         let typeEle = $('#tax-type');
                         typeEle.empty()
                         typeEle.initSelect2({

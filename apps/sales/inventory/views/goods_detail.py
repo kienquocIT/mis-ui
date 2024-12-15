@@ -28,10 +28,10 @@ class GoodsDetail(View):
                             "col_type": [
                                 'input-text',
                                 'input-text',
-                                'input-text',
-                                'input-text',
-                                'input-text',
-                                'input-text',
+                                'input-date',
+                                'input-date',
+                                'input-date',
+                                'input-date',
                             ],
                             "data_format": {
                                 "key": "data",

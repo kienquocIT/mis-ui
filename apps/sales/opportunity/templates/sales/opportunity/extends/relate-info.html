@@ -1,55 +1,54 @@
 {% load i18n %}
 
 <ul class="nav nav-pills nav-icon nav-pills-soft nav-light nav-segmented-tabs">
-    <li class="nav-item w-50">
-        <a class="nav-link active m-0" data-bs-toggle="tab" href="#tab_logs">
-            <span class="nav-link-text fw-bold">{% trans "Activity logs" %}</span>
+    <li class="nav-item w-50" id="tab_logs_btn">
+        <a class="nav-link active" data-bs-toggle="tab" href="#tab_logs">
+            <span class="nav-link-text fw-bold">{% trans "Sale activities logged" %}</span>
         </a>
     </li>
-    <li class="nav-item w-50">
+    <li class="nav-item w-50" id="tab_details_btn">
         <a class="nav-link" data-bs-toggle="tab" href="#tab_details">
-            <span class="nav-link-text fw-bold">{% trans "Details" %}</span>
+            <span class="nav-link-text fw-bold">{% trans "Opportunity detail" %}</span>
         </a>
     </li>
 </ul>
 <div class="tab-content">
     <div class="tab-pane fade show active" id="tab_logs">
         <div class="row">
-            <div class="col-12">
-                <div class="dropdown">
-                    <button type="button" id="btn-create-related-feature" class="btn btn-light dropdown-toggle btn-xs w-40 w-lg-20 w-md-20" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
+            <div class="col-12 d-flex">
+                <div class="dropdown mr-3">
+                    <button type="button" id="btn-create-related-feature" class="btn btn-light dropdown-toggle btn-xs" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
                         {% trans 'Related features' %}
                     </button>
-                    <div class="dropdown-menu" style="min-width: max-content" id="dropdown-menu-relate-app">
-                        <h6 class="dropdown-header">{% trans 'Sale Activities' %}</h6>
-                        <a class="dropdown-item" id="goto-call-log" data-url="{% url 'OpportunityCallLogList' %}" href="#" target="_blank">{% trans 'Log a call' %}</a>
-                        <a class="dropdown-item" id="goto-email" data-url="{% url 'OpportunityEmailList' %}" href="#" target="_blank">{% trans 'Send email' %}</a>
-                        <a class="dropdown-item" id="goto-meeting" data-url="{% url 'OpportunityMeetingList' %}" href="#" target="_blank">{% trans 'Meeting' %}</a>
-                        <a data-drawer-target="#drawer_task_create" data-drawer-active="false" class="dropdown-item ntt-drawer-toggle-link current-create-task" href="#">{% trans 'Task' %}</a>
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">{% trans 'Related features' %}</h6>
+                    <div class="dropdown-menu dropdown-bordered dropdown-menu-dark" style="min-width: max-content" id="dropdown-menu-relate-app">
                         <div class="row">
                             <div class="col-6">
-                                <a id="create-quotation-shortcut" data-label="quotation.quotation" class="disabled dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#" target="_blank">{% trans 'Quotation' %}</a>
+                                <a id="create-quotation-shortcut" data-label="quotation.quotation" class="disabled dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-file-alt"></i><span class="small">{% trans 'Quotation' %}</span></a>
                             </div>
                             <div class="col-6">
-                                <a class="dropdown-item item-detail-related-feature text-blue" id="item-related-quotation" href="#" target="_blank">{% trans 'View Quotation' %}</a>
+                                <a class="dropdown-item item-detail-related-feature text-blue small" id="item-related-quotation" href="#" target="_blank">{% trans 'View Quotation' %}</a>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
-                                <a id="create-sale-order-shortcut" data-label="saleorder.saleorder" class="disabled dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#" target="_blank">{% trans 'Sale Order' %}</a>
+                                <a id="create-sale-order-shortcut" data-label="saleorder.saleorder" class="disabled dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-file-invoice"></i><span class="small">{% trans 'Sale Order' %}</span></a>
                             </div>
                             <div class="col-6">
-                                <a class="dropdown-item item-detail-related-feature text-blue" id="item-related-sale-order" href="#" target="_blank">{% trans 'View Sale Order' %}</a>
+                                <a class="dropdown-item item-detail-related-feature text-blue small" id="item-related-sale-order" href="#" target="_blank">{% trans 'View Sale Order' %}</a>
                             </div>
                         </div>
-                        <a id="create-advance-payment-shortcut" class="disabled dropdown-item" data-url="{% url 'AdvancePaymentCreate' %}" href="#" target="_blank">{% trans 'Advance Payment' %}</a>
-                        <a id="create-payment-shortcut" class="disabled dropdown-item" data-url="{% url 'PaymentCreate' %}" href="#" target="_blank">{% trans 'Payment' %}</a>
-                        <a id="create-return-advance-shortcut" class="dropdown-item" data-url="{% url 'ReturnAdvanceCreate' %}" href="#" target="_blank">{% trans 'Return Advance' %}</a>
-                        <a id="create-project-bom-shortcut" class="disabled dropdown-item" data-url="{% url 'OpportunityBOMCreate' %}" href="#" target="_blank">{% trans 'Opportunity BOM' %}</a>
-                        <a id="create-bidding-shortcut" class="disabled dropdown-item" data-url="{% url 'BiddingCreate' %}" href="#" target="_blank">{% trans 'Bidding' %}</a>
+                        <a id="create-advance-payment-shortcut" class="disabled dropdown-item" data-url="{% url 'AdvancePaymentCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-hand-holding-usd"></i><span class="small">{% trans 'Advance Payment' %}</span></a>
+                        <a id="create-payment-shortcut" class="disabled dropdown-item" data-url="{% url 'PaymentCreate' %}" href="#" target="_blank"><i class="dropdown-icon far fa-credit-card"></i><span class="small">{% trans 'Payment' %}</span></a>
+                        <a id="create-return-advance-shortcut" class="dropdown-item" data-url="{% url 'ReturnAdvanceCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-hand-holding-usd fa-flip-horizontal"></i><span class="small">{% trans 'Return Advance' %}</span></a>
+                        <a id="create-project-bom-shortcut" class="disabled dropdown-item" data-url="{% url 'OpportunityBOMCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-dice"></i><span class="small">{% trans 'Opportunity BOM' %}</span></a>
+                        <a id="create-bidding-shortcut" class="disabled dropdown-item" data-url="{% url 'BiddingCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-gavel"></i><span class="small">{% trans 'Bidding' %}</span></a>
                     </div>
+                </div>
+                <div class="btn-group" role="group">
+                    <a class="ml-1" id="goto-call-log" data-url="{% url 'OpportunityCallLogList' %}" href="#"  data-bs-toggle="tooltip" title="{% trans 'Call to customer' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon fas fa-phone-volume"></i></button></a>
+                    <a class="ml-1" id="goto-email" data-url="{% url 'OpportunityEmailList' %}" href="#" target="_blank" data-bs-toggle="tooltip" title="{% trans 'Email to customer' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon bi bi-envelope-fill"></i></button></a>
+                    <a class="ml-1" id="goto-meeting" data-url="{% url 'OpportunityMeetingList' %}" href="#" target="_blank" data-bs-toggle="tooltip" title="{% trans 'Meeting with customer' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon bi bi-person-workspace"></i></button></a>
+                    <a class="ml-1 ntt-drawer-toggle-link current-create-task" data-drawer-target="#drawer_task_create" data-drawer-active="false" href="#" data-bs-toggle="tooltip" title="{% trans 'Task' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon fa-solid fa-list-check"></i></button></a>
                 </div>
             </div>
             <div class="col-2 col-md-3 col-lg-3 text-right" hidden>
@@ -60,7 +59,7 @@
                 </a>
             </div>
         </div>
-        <div class="row div-activity" style="overflow-y: auto; max-height: 65vh">
+        <div class="row div-activity" style="overflow-y: auto; max-height: 60vh">
             <div class="col-12 div-activity">
                 <table class="table table-hover nowrap w-100" id="table-timeline"
                        data-url-logs_list="{% url 'OpportunityActivityLogListAPI' %}"
@@ -78,6 +77,7 @@
                                 </button>
                             </th>
                             <th class="w-15" style="min-width: 150px">{% trans "Activity" %}</th>
+                            <th class="w-15" style="min-width: 100px">{% trans "Code" %}</th>
                             <th class="w-35" style="min-width: 200px">
                                 {% trans 'Subject' %}
                                 <i class="fas fa-info-circle icon-info"
@@ -86,7 +86,6 @@
                                     title="{% trans 'Press row here to see detail.' %}">
                                 </i>
                             </th>
-                            <th class="w-15" style="min-width: 100px">{% trans "Code" %}</th>
                             <th class="w-10" style="min-width: 100px">{% trans "Status" %}</th>
                             <th class="w-20 text-right" style="min-width: 100px">{% trans "Date" %}</th>
                         </tr>
@@ -97,35 +96,35 @@
         </div>
     </div>
     <div class="tab-pane fade" id="tab_details">
-        <div class="row" style="overflow-y: auto; max-height: 65vh">
+        <div class="row div-details" style="overflow-y: auto; max-height: 60vh">
             <div class="col-12">
-                <ul class="nav nav-light nav-tabs nav-line" id="tab-select">
-                    <li class="nav-item">
+                <ul class="nav nav-light nav-pills" id="tab-select">
+                    <li class="nav-item" id="tab_product_btn">
                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_product">
                             <span class="nav-link-text">{% trans 'Product' %}</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="tab_competitor_btn">
                         <a class="nav-link" data-bs-toggle="tab" href="#tab_competitors">
                             <span class="nav-link-text">{% trans 'Competitors' %}</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="tab_contact_role_btn">
                         <a class="nav-link" data-bs-toggle="tab" href="#tab_contact_role">
                             <span class="nav-link-text">{% trans 'Contact Role' %}</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" data-bs-toggle="tab" href="#tab_account_history">
+                        <a class="nav-link hidden" data-bs-toggle="tab" href="#tab_account_history">
                             <span class="nav-link-text">{% trans 'Account History' %}</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="tab_team_btn">
                         <a class="nav-link" data-bs-toggle="tab" href="#tab_team">
-                            <span class="nav-link-text">{% trans 'Team' %}</span>
+                            <span class="nav-link-text">{% trans 'Opportunity members' %}</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="tab_lead_btn">
                         <a class="nav-link" data-bs-toggle="tab" href="#tab_lead">
                             <span class="nav-link-text">{% trans 'Lead' %}</span>
                         </a>
@@ -138,15 +137,15 @@
                                 <table class="table w-100 nowrap" id="table-products">
                                     <thead>
                                         <tr>
-                                            <th class="w-5" style="min-width: 50px"></th>
-                                            <th class="w-20" style="min-width: 350px">{% trans "Product" %}</th>
-                                            <th class="w-10" style="min-width: 150px">{% trans 'Product Category' %}</th>
-                                            <th class="w-10" style="min-width: 150px">{% trans 'UoM' %}</th>
-                                            <th class="w-10" style="min-width: 150px">{% trans "Quantity" %}</th>
-                                            <th class="w-15" style="min-width: 200px">{% trans "Unit Price" %}</th>
-                                            <th class="w-10" style="min-width: 150px">{% trans "Tax" %}</th>
-                                            <th class="w-15" style="min-width: 200px">{% trans "Subtotal Price" %}</th>
-                                            <th class="w-5" style="min-width: 50px"></th>
+                                            <th style="min-width: 50px"></th>
+                                            <th style="min-width: 250px">{% trans "Product" %}</th>
+                                            <th style="min-width: 150px">{% trans 'Product Category' %}</th>
+                                            <th style="min-width: 150px">{% trans 'UoM' %}</th>
+                                            <th style="min-width: 150px">{% trans "Quantity" %}</th>
+                                            <th style="min-width: 200px">{% trans "Unit Price" %}</th>
+                                            <th style="min-width: 150px">{% trans "Tax" %}</th>
+                                            <th style="min-width: 200px">{% trans "Subtotal Price" %}</th>
+                                            <th style="min-width: 50px"></th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -206,15 +205,15 @@
                                 <table class="table nowrap w-100" id="table-competitors">
                                     <thead>
                                     <tr>
-                                        <th class="w-5" style="min-width: 50px"></th>
-                                        <th class="w-25" style="min-width: 300px">
+                                        <th style="min-width: 30px"></th>
+                                        <th style="min-width: 250px">
                                             {% trans "Competitor" %}
                                             <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Select competitor accounts."></i>
                                         </th>
-                                        <th class="w-25" style="min-width: 150px">{% trans 'Strength' %}</th>
-                                        <th class="w-25" style="min-width: 150px">{% trans 'Weakness' %}</th>
-                                        <th class="w-15" style="min-width: 150px">{% trans "Win deal" %}</th>
-                                        <th class="w-5" style="min-width: 50px"></th>
+                                        <th style="min-width: 150px">{% trans 'Strength' %}</th>
+                                        <th style="min-width: 150px">{% trans 'Weakness' %}</th>
+                                        <th style="min-width: 150px">{% trans "Win deal" %}</th>
+                                        <th style="min-width: 50px"></th>
                                     </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -269,7 +268,7 @@
                         <div class="d-flex overflow-auto"></div>
                     </div>
                     <div class="tab-pane fade" id="tab_team">
-                        <div class="row">
+                        <div class="row" style="overflow: auto; max-height: 50vh">
                             <div class="col-12">
                                 <div class="row" id="member-item-list">
                                     <div class="member-item col-12 col-lg-4 col-md-4 text-center">
@@ -280,9 +279,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12 hidden" id="box-edit-permit" data-url="{% url 'MemberOfOpportunityDetail' pk_opp=pk pk_member='__pk_member__' %}" data-id="">
+                            <div class="col-12 mt-3 hidden" id="box-edit-permit" data-url="{% url 'MemberOfOpportunityDetail' pk_opp=pk pk_member='__pk_member__' %}" data-id="">
                                 <div class="row mb-2">
                                     <div class="col-12 col-md-8 col-lg-8 col-xl-8 mb-1">
                                         <div class="form-group">
@@ -344,14 +341,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-12">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input is-invalid" id="check-lost-reason">
-                    <label class="form-check-label text-danger fw-bold" for="check-lost-reason">{% trans "Lost by other reason" %}</label>
                 </div>
             </div>
         </div>

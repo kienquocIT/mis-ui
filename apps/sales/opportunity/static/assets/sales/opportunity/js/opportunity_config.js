@@ -228,8 +228,7 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
 
                         if (data && resp.data.hasOwnProperty('opportunity_config_stage')) {
-                            sortStage(resp.data['opportunity_config_stage']);
-                            return resp.data['opportunity_config_stage'] ? sortStage(resp.data['opportunity_config_stage']) : [];
+                            return resp.data['opportunity_config_stage'] ? LoadConfigAndLoadStage.sortStage(resp.data['opportunity_config_stage']) : [];
                         }
                         throw Error('Call data raise errors.')
                     },

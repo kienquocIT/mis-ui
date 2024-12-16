@@ -1829,6 +1829,9 @@ class InitDataTables {
             $table.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
+                scrollX: '100vh',
+                scrollY: '70vh',
+                scrollCollapse: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -1843,6 +1846,7 @@ class InitDataTables {
                 columns: [
                     {
                         targets: 0,
+                        className: 'wrap-text w-5',
                         render: () => {
                             return ``
                         }
@@ -1851,30 +1855,30 @@ class InitDataTables {
                         targets: 1,
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                            return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`
+                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
                         targets: 2,
-                        className: 'wrap-text w-25',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
-                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                            return `<a href="${link}"><span class="fw-bold text-primary">${row.title}</span></a>`
+                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            return `<a href="${link}"><span class="fw-bold text-primary">${row?.['title']}</span></a>`
                         }
                     },
                     {
                         targets: 3,
                         className: 'wrap-text w-20',
                         render: (data, type, row) => {
-                            return `<span class="text-muted">${row.customer.title}</span>`
+                            return `<span class="text-muted">${row?.['customer']?.['title']}</span>`
                         }
                     },
                     {
                         targets: 4,
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<span class="text-blue">${row?.['sale_person'].full_name}</span>`
+                            return `<span class="text-blue">${row?.['sale_person']?.['full_name']}</span>`
                         }
                     },
                     {
@@ -1885,7 +1889,7 @@ class InitDataTables {
                             return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
                                 'outputFormat': 'DD-MM-YYYY',
                                 callback: function (data) {
-                                    return `<p>${data.relate}</p><small>${data.output}</small>`;
+                                    return `<p>${data?.['relate']}</p><small>${data?.['output']}</small>`;
                                 }
                             }) : "_";
                         }
@@ -1898,20 +1902,20 @@ class InitDataTables {
                             return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
                                 'outputFormat': 'DD-MM-YYYY',
                                 callback: function (data) {
-                                    return `<p>${data.relate}</p><small>${data.output}</small>`;
+                                    return `<p>${data?.['relate']}</p><small>${data?.['output']}</small>`;
                                 }
                             }) : "_";
                         }
                     },
                     {
                         targets: 7,
-                        className: 'wrap-text w-10 text-center',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let stage_current;
-                            stage_current = row.stage.find(function (obj) {
-                                return obj.is_current === true;
+                            stage_current = row?.['stage'].find(function (obj) {
+                                return obj?.['is_current'] === true;
                             });
-                            return `<span class="badge badge-light badge-outline w-90">${stage_current.indicator}</span>`
+                            return `<span class="${stage_current?.['win_rate'] === 100 ? 'text-gold' : 'text-secondary'}">${stage_current?.['indicator']} (${stage_current?.['win_rate']}%)</span>${stage_current?.['win_rate'] === 100 ? '&nbsp;<i class="bi bi-trophy-fill text-gold"></i>' : ''}`
                         }
                     },
                 ],

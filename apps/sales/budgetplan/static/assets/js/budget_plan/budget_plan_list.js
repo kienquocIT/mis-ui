@@ -69,6 +69,9 @@ $(document).ready(function () {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
+                scrollX: '100vh',
+                scrollY: '70vh',
+                scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
                     url: frm.dataUrl,
@@ -84,7 +87,8 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        'render': () => {
+                        className: 'wrap-text w-5',
+                        render: () => {
                             return ``;
                         }
                     },
@@ -92,46 +96,44 @@ $(document).ready(function () {
                         data: 'code',
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}"><span class="badge badge-primary w-70">${row?.['code']}</span></a>`;
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text w-45',
+                        className: 'wrap-text w-40',
                         render: (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="text-primary" data-id="${row.id}" data-title="${row.title}" data-code="${row.code}"><b>${row.title}</b></span></a>`
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}"><span class="text-primary" data-id="${row?.['id']}" data-title="${row?.['title']}" data-code="${row?.['code']}"><b>${row?.['title']}</b></span></a>`
                         }
                     },
                     {
                         data: 'period',
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<span>${row.period_mapped.title}</span>`
+                            return `<span>${row?.['period_mapped']?.['title']}</span>`
                         }
                     },
-                                        {
+                    {
                         data: 'employee_created',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<span class="text-blue">${row.employee_created.full_name}</span>`
+                            return `<span class="text-blue">${row?.['employee_created']?.['full_name']}</span>`
                         }
                     },
                     {
                         data: 'date_created',
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            let parsedDate = new Date(row.date_created.split(' ')[0]);
-                            let formattedDate = `${parsedDate.getDate().toString().padStart(2, '0')}-${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}-${parsedDate.getFullYear()}`;
-                            return `<span>${formattedDate}</span>`
+                            return `<span>${moment(row?.['date_created'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
                         }
                     },
                     {
                         data: 'is_lock',
-                        className: 'wrap-text text-center w-10',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<span class="w-100 badge badge-soft-${row?.['is_lock'] ? 'danger' : 'success'}">${row?.['is_lock'] ? 'Lock' : 'Open'}</span>`
+                            return `<span class="${row?.['is_lock'] ? 'text-danger' : 'text-primary'}">${row?.['is_lock'] ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-lock-open"></i>'}</span>`
                         }
                     }
                 ],

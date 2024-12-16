@@ -8458,7 +8458,7 @@ msgstr "Tất cả (Hoàn thành)"
 
 #
 msgid "System status"
-msgstr "Trạng thái"
+msgstr "Trạng thái hệ thống"
 
 #
 msgid "Goods stock plan"

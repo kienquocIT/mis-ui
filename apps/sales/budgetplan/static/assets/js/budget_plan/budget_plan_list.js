@@ -133,7 +133,7 @@ $(document).ready(function () {
                         data: 'is_lock',
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<span class="${row?.['is_lock'] ? 'text-danger' : 'text-primary'}">${row?.['is_lock'] ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-lock-open"></i>'}</span>`
+                            return `<span class="${row?.['is_lock'] ? 'text-danger' : 'text-success'}">${row?.['is_lock'] ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-lock-open"></i>'}</span>`
                         }
                     }
                 ],

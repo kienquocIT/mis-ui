@@ -66,7 +66,7 @@ $(document).ready(function () {
                 },
             },
         ],
-        columns: [  // 30,300,240,120,120,120,240,120,240,390 (1920p)
+        columns: [
             {
                 className: 'wrap-text w-5',
                 'render': () => {

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Sale order list' %}{% endblock %}
+{% block title %}{% trans 'Lease order list' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 
@@ -15,7 +15,7 @@
         data-url-list-api="{% url 'LeaseOrderListAPI' %}"
         data-url-create="{% url 'LeaseOrderCreate' %}"
         data-url-detail="{% url 'LeaseOrderDetail' pk=1 %}"
-        data-key-return="sale_order_list"
+        data-key-return="lease_order_list"
     ></script>
     {% csrf_token %}
     <table
@@ -57,7 +57,7 @@
     <input type="hidden" id="app-url-factory"
            data-link-update="{% url 'LeaseOrderDetail' 1 %}"
            data-link-list="{% url 'LeaseOrderList' %}"
-           data-create-delivery="{% url 'SaleOrderDetailDeliveryAPI' 1 %}"
+           data-create-delivery="{% url 'LeaseOrderDetailDeliveryAPI' 1 %}"
            data-delivery="{% url 'OrderDeliveryList' %}" data-picking="{% url 'OrderPickingList' %}"
     >
     {{ data.stt_sys|json_script:'stt_sys' }}

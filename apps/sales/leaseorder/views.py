@@ -193,3 +193,13 @@ class LeaseOrderDetailAPI(APIView):
             pk=pk,
             msg=SaleMsg.LEASE_ORDER_UPDATE
         )
+
+
+class LeaseOrderDetailDeliveryAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LEASEORDER_CALL.fill_key(pk=pk)).post(data=request.data)
+        return resp.auto_return()

@@ -811,7 +811,7 @@ class LeaseOrderLoadDataHandle {
                 data['uom_group'] = data?.['general_information']?.['uom_group'];
                 data['tax'] = data?.['sale_information']?.['tax_code'];
                 let description = ele[0].closest('tr').querySelector('.table-row-description');
-                let uom = ele[0].closest('tr').querySelector('.table-row-uom');
+                let uom = ele[0].closest('tr').querySelector('.table-row-uom-time');
                 let price = ele[0].closest('tr').querySelector('.table-row-price');
                 let modalBody = LeaseOrderLoadDataHandle.$priceModal[0].querySelector('.modal-body');
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
@@ -843,6 +843,47 @@ class LeaseOrderLoadDataHandle {
         }
     };
 
+    static loadDataOffsetSelect(ele) {
+        if (ele.val()) {
+            let productData = SelectDDControl.get_data_from_idx(ele, ele.val());
+            if (productData) {
+                let data = productData;
+                data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
+                data['uom_group'] = data?.['general_information']?.['uom_group'];
+                data['tax'] = data?.['sale_information']?.['tax_code'];
+                let description = ele[0].closest('tr').querySelector('.table-row-description');
+                let uom = ele[0].closest('tr').querySelector('.table-row-uom');
+                let price = ele[0].closest('tr').querySelector('.table-row-price');
+                let modalBody = LeaseOrderLoadDataHandle.$priceModal[0].querySelector('.modal-body');
+                let tax = ele[0].closest('tr').querySelector('.table-row-tax');
+                // load Description
+                // if (description) {
+                //     description.innerHTML = data?.['description'] ? data?.['description'] : '';
+                // }
+                // load UOM
+                if (uom && data?.['unit_of_measure'] && data?.['uom_group']) {
+                    $(uom).empty();
+                    LeaseOrderLoadDataHandle.loadInitS2($(uom), [data?.['unit_of_measure']], {'group': data?.['uom_group']?.['id']});
+                } else {
+                    LeaseOrderLoadDataHandle.loadInitS2($(uom));
+                }
+                // load PRICE
+                // if (price && modalBody) {
+                //     let lastPrice = LeaseOrderLoadDataHandle.loadPriceProduct(ele[0]);
+                //     $(price).attr('value', String(lastPrice));
+                // }
+                // load TAX
+                // if (tax && data?.['tax']) {
+                //     $(tax).empty();
+                //     LeaseOrderLoadDataHandle.loadInitS2($(tax), [data?.['tax']]);
+                // } else {
+                //     LeaseOrderLoadDataHandle.loadInitS2($(tax));
+                // }
+            }
+            $.fn.initMaskMoney2();
+        }
+    };
+
     static loadOffset(ele) {
         let eleChecked = LeaseOrderDataTableHandle.$tableSOffset[0].querySelector('.table-row-checkbox:checked:not([disabled])');
         if (eleChecked) {
@@ -858,6 +899,7 @@ class LeaseOrderLoadDataHandle {
                             $(eleOffset).attr('data-offset-id', dataRow?.['id']);
                             LeaseOrderLoadDataHandle.loadInitS2($(eleOffset), [dataRow]);
                             eleOffsetShow.innerHTML = dataRow?.['title'];
+                            LeaseOrderLoadDataHandle.loadDataOffsetSelect($(eleOffset));
                         }
                     }
                 }
@@ -2918,6 +2960,7 @@ class LeaseOrderDataTableHandle {
                                     data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
                                     required
+                                    readonly
                                  >
                                 </select>`;
                     }

@@ -346,7 +346,7 @@ class MenusCRM:
         icon='<i class="fas fa-file-invoice"></i>',
     )
     LEASE_ORDER = MenuCommon(
-        name='Lease order', code='menu_lease_order_list', view_name='LeaseOrderCreate',
+        name='Lease order', code='menu_lease_order_list', view_name='LeaseOrderList',
         icon='<i class="fas fa-handshake"></i>',
     )
     RECURRENCE = MenuCommon(

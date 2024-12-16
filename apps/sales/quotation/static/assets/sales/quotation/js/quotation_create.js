@@ -92,6 +92,7 @@ $(function () {
 
 // PRODUCT
         $quotationTabs.on('click', '.tab-detail', function () {
+            QuotationStoreDataHandle.storeDtbData(1);
             QuotationStoreDataHandle.storeDtbData(2);
             QuotationLoadDataHandle.loadReInitDataTableProduct();
         });
@@ -317,6 +318,7 @@ $(function () {
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {
             QuotationStoreDataHandle.storeDtbData(1);
+            QuotationStoreDataHandle.storeDtbData(2);
             QuotationLoadDataHandle.loadReInitDataTableExpense();
         });
 

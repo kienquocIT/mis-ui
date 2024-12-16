@@ -9903,3 +9903,11 @@ msgstr "Mã kỳ con"
 #
 msgid "Period name"
 msgstr "Tên kỳ"
+
+#
+msgid "Lease from"
+msgstr "Thuê từ"
+
+#
+msgid "Lease to"
+msgstr "Thuê đến"

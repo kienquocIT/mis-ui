@@ -83,3 +83,5 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     PROJECT_COMMENT = _('Project comment')
     BIDDING_CREATE = _('Bidding create successfully')
     BIDDING_UPDATE = _('Bidding update successfully')
+    LEASE_ORDER_CREATE = _('Lease order create successfully')
+    LEASE_ORDER_UPDATE = _('Lease order update successfully')

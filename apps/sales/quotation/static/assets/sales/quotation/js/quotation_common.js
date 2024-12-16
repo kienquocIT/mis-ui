@@ -2071,9 +2071,9 @@ class QuotationLoadDataHandle {
 
     // LOAD DATA DETAIL
     static loadDetailQuotation(data, is_copy = false) {
-        let form = document.getElementById('frm_quotation_create');
+        let form = QuotationLoadDataHandle.$form[0];
         if (data?.['title'] && is_copy === false) {
-            document.getElementById('quotation-create-title').value = data?.['title'];
+            $('#title').val(data?.['title']);
         }
         //
         const processData = data?.['process'] || {};
@@ -2410,13 +2410,20 @@ class QuotationLoadDataHandle {
                             QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
                             QuotationLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
                         }
-                        if (row.querySelector('.table-row-supplied-by')) {
-                            QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
-                            $(row.querySelector('.table-row-supplied-by')).val(dataRow?.['supplied_by']).change();
+                        let eleSuppliedBy = row.querySelector('.table-row-supplied-by');
+                        if (eleSuppliedBy) {
+                            QuotationLoadDataHandle.loadInitS2($(eleSuppliedBy), QuotationLoadDataHandle.dataSuppliedBy);
+                            $(eleSuppliedBy).val(dataRow?.['supplied_by']).change();
                         }
                     }
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax_data']]);
+                    let eleUOM = row.querySelector('.table-row-uom');
+                    if (eleUOM) {
+                        QuotationLoadDataHandle.loadInitS2($(eleUOM), [dataRow?.['uom_data']]);
+                    }
+                    let eleTax = row.querySelector('.table-row-tax');
+                    if (eleTax) {
+                        QuotationLoadDataHandle.loadInitS2($(eleTax), [dataRow?.['tax_data']]);
+                    }
                 }
             });
         }
@@ -2879,7 +2886,7 @@ class QuotationDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
+                // QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     QuotationDataTableHandle.dtbProductHDCustom();
                 }
@@ -5986,6 +5993,10 @@ class QuotationSubmitHandle {
                         rowData['uom_data'] = dataUOM;
                     }
                 }
+                let eleQuantity = row.querySelector('.table-row-quantity');
+                if (eleQuantity) {
+                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
+                }
                 let eleTax = row.querySelector('.table-row-tax');
                 if ($(eleTax).val()) {
                     let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
@@ -6001,10 +6012,6 @@ class QuotationSubmitHandle {
                 let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
                 if (eleTaxAmount) {
                     rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value)
-                }
-                let eleQuantity = row.querySelector('.table-row-quantity');
-                if (eleQuantity) {
-                    rowData['product_quantity'] = parseFloat(eleQuantity.value);
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {

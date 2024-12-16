@@ -18,6 +18,7 @@ from .eoffice_business_trip import BUSINESS_TRIP_DATA_MAP
 from .eoffice_asset_tools import *
 from .distribution_plan_distributionplan import DISTRIBUTION_PLAN_DATA_MAP
 from .contract_contract_approval import CONTRACT_APPROVAL_DATA_MAP
+from .leaseorder_lease_order import LEASE_ORDER_DATA_MAP
 
 __all__ = [
     'InputMappingProperties',
@@ -47,3 +48,4 @@ class InputMappingProperties:
     DISTRIBUTION_PLAN_DB = DISTRIBUTION_PLAN_DATA_MAP
     CONTRACT_APPROVAL_DATA_MAP = CONTRACT_APPROVAL_DATA_MAP
     BIDDING_DATA_MAP = BIDDING_DATA_MAP
+    LEASE_ORDER_LEASE_ORDER = LEASE_ORDER_DATA_MAP

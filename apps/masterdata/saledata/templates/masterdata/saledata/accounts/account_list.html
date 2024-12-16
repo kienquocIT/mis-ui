@@ -18,6 +18,17 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script type="hidden"
+        id="account-update-page"
+        data-url="{% url 'AccountDetail' 1 %}"
+        data-msg-by-group="{% trans 'By Group' %}"
+        data-msg-of-me="{% trans 'Of Me' %}"
+        data-msg-of-group="{% trans 'Of Same Group' %}"
+        data-msg-of-staff="{% trans 'Of My Staff' %}"
+        data-msg-of-all="{% trans 'All' %}"
+        data-msg-filter-manager="{% trans 'Account Manager' %}"
+    ></script>
+
     <div class="row">
         <div class="col-12">
             <table id="datatable_account_list" class="table nowrap w-100"
@@ -42,18 +53,6 @@
             </table>
         </div>
     </div>
-
-    <br
-            type="hidden"
-            id="account-update-page"
-            data-url="{% url 'AccountDetail' 1 %}"
-            data-msg-by-group="{% trans 'By Group' %}"
-            data-msg-of-me="{% trans 'Of Me' %}"
-            data-msg-of-group="{% trans 'Of Same Group' %}"
-            data-msg-of-staff="{% trans 'Of My Staff' %}"
-            data-msg-of-all="{% trans 'All' %}"
-            data-msg-filter-manager="{% trans 'Account Manager' %}"
-    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/accounts/account_list.js' %}"></script>

@@ -4,7 +4,7 @@ $(document).ready(function () {
     let urlEmployeeList = tbl.attr('data-url-employee')
     tbl.DataTableDefault({
         rowIdx: true,
-        scrollX: '100vh',
+        scrollX: '100vw',
         scrollY: '70vh',
         scrollCollapse: true,
         useDataServer: true,

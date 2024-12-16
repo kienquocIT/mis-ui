@@ -174,7 +174,7 @@ class BOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -346,7 +346,7 @@ class BOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollCollapse: true,
             data: [],
             columns: [
@@ -411,7 +411,7 @@ class BOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -526,7 +526,7 @@ class BOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollY: '65vh',
             scrollCollapse: true,
             ajax: {
@@ -643,7 +643,7 @@ class BOMLoadTab {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '50vh',
                 scrollCollapse: true,
                 ajax: {
@@ -741,7 +741,7 @@ class BOMLoadTab {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '50vh',
                 scrollCollapse: true,
                 data: [],
@@ -807,7 +807,7 @@ class BOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollCollapse: true,
             data: [],
             columns: [
@@ -879,7 +879,7 @@ class BOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollY: '65vh',
             scrollCollapse: true,
             ajax: {

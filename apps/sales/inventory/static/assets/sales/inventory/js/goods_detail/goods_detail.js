@@ -220,7 +220,7 @@ $(document).ready(function () {
             // paging: false,
             // useDataServer: true,
             scrollY: '50vh',
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollCollapse: true,
             ajax: {
                 url: $table_serial.attr('data-url'),

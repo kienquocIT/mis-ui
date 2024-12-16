@@ -1059,7 +1059,7 @@ class OpportunityActivity {
         $table.DataTable().clear().destroy()
         $table.DataTableDefault({
             rowIdx: true,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollY: '40vh',
             scrollCollapse: true,
             ajax: {
@@ -1294,7 +1294,7 @@ class LoadConfigAndLoadStage {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '50vh',
                 ajax: {
                     url: frm.dataUrl,
@@ -1829,7 +1829,7 @@ class InitDataTables {
             $table.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '70vh',
                 scrollCollapse: true,
                 ajax: {
@@ -1931,7 +1931,7 @@ class InitDataTables {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '25vh',
                 scrollCollapse: true,
                 data: data,
@@ -2016,7 +2016,7 @@ class InitDataTables {
                 rowIdx: true,
                 data: data,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '40vh',
                 scrollCollapse: true,
                 columns: [
@@ -2080,7 +2080,7 @@ class InitDataTables {
                 rowIdx: true,
                 data: data,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '25vh',
                 scrollCollapse: true,
                 columns: [
@@ -2140,7 +2140,7 @@ class OpportunityLoadPage {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '40vh',
                 scrollCollapse: true,
                 ajax: {

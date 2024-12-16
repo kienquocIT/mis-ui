@@ -5,7 +5,7 @@ function InitAdvancePaymentTable(data_param={}) {
         useDataServer: true,
         rowIdx: true,
         reloadCurrency: true,
-        scrollX: '100vh',
+        scrollX: '100vw',
         scrollCollapse: true,
         ajax: {
             data: data_param,

@@ -39,14 +39,18 @@ $(async function () {
             const _this = this
             let table = $('#productStockDetail');
             let url = $url.attr('data-product-warehouse')
+            let targetItemData = prod_data?.['product_data'];
+            if (prod_data?.['offset_data']?.['id']) {
+                targetItemData = prod_data?.['offset_data'];
+            }
             let titleMdl = $('#warehouseStockModal')[0].querySelector('.title-mdl');
             if (titleMdl) {
                 $(titleMdl).empty();
-                $(titleMdl).append(`${$trans.attr('data-title-mdl')} (${prod_data?.['product_data']?.['title']})`);
+                $(titleMdl).append(`${$trans.attr('data-title-mdl')} (${targetItemData?.['title']})`);
             }
             let $eleUndelivered = $('#undelivered');
             $eleUndelivered.empty().html(`${prod_data?.['remaining_quantity']}`);
-            let dataParam = {'product_id': prod_data?.['product_data']?.['id']};
+            let dataParam = {'product_id': targetItemData?.['id']};
             let keyResp = 'warehouse_products_list';
 
             let dataRegisConfig = prodTable.getRegisConfig();
@@ -56,7 +60,7 @@ $(async function () {
                 url = $url.attr('data-product-regis');
                 dataParam = {
                     'so_item__sale_order_id': dataSO?.['id'],
-                    'product_id': prod_data?.['product_data']?.['id'],
+                    'product_id': targetItemData?.['id'],
                 };
                 keyResp = 'regis_borrow_list';
             }
@@ -65,7 +69,7 @@ $(async function () {
                 'method': 'get',
                 'data': dataParam,
             }).then((req) => {
-                const isKey = `${prod_data?.['product_data']?.['id']}.${prod_data?.['uom_data']?.['id']}`
+                const isKey = `${targetItemData?.['id']}.${prod_data?.['uom_data']?.['id']}`
                 let temp = _this.getWarehouseList
                 const res = $.fn.switcherResp(req);
                 let ResData = res?.[keyResp];
@@ -100,13 +104,13 @@ $(async function () {
                 let scrollSerial = $('#scroll-table-serial');
                 scrollLot[0].setAttribute('hidden', 'true');
                 scrollSerial[0].setAttribute('hidden', 'true');
-                if ([1, 2].includes(prod_data?.['product_data']?.['general_traceability_method'])) {
+                if ([1, 2].includes(targetItemData?.['general_traceability_method'])) {
                     if (scrollLot && scrollSerial && scrollLot.length > 0 && scrollSerial.length > 0) {
-                        if (prod_data?.['product_data']?.['general_traceability_method'] === 1) {
+                        if (targetItemData?.['general_traceability_method'] === 1) {
                             scrollLot[0].removeAttribute('hidden');
                             prodTable.dataTableTableLot();
                         }
-                        if (prod_data?.['product_data']?.['general_traceability_method'] === 2) {
+                        if (targetItemData?.['general_traceability_method'] === 2) {
                             scrollSerial[0].removeAttribute('hidden');
                             prodTable.dataTableTableSerial();
                         }
@@ -1326,9 +1330,24 @@ $(async function () {
                 $x.fn.renderCodeBreadcrumb(res);
                 $.fn.compareStatusShowPageAction(res);
                 // new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
-                const $saleOrder = $('#inputSaleOrder');
-                $saleOrder.html(res.sale_order_data.code)
-                $saleOrder.attr('data-so', JSON.stringify(res?.['sale_order_data']));
+                let formGroup = $eleSO[0].closest('.form-group');
+                if (formGroup) {
+                    if (res?.['sale_order_data']?.['code']) {
+                        $eleSO.val(res?.['sale_order_data']?.['code']);
+                        $eleSO.attr('data-so', JSON.stringify(res?.['sale_order_data']));
+                    }
+                    if (res?.['lease_order_data']?.['code']) {
+                        for (let label of formGroup.querySelectorAll('.deli-for')) {
+                            label.setAttribute('hidden', 'true');
+                            if (label.classList.contains('lease-order')) {
+                                label.removeAttribute('hidden');
+                            }
+                        }
+                        $eleSO.val(res?.['lease_order_data']?.['code']);
+                        $eleSO.attr('data-so', JSON.stringify(res?.['lease_order_data']));
+                    }
+                }
+
 
                 if (res.estimated_delivery_date) {
                     const deliveryDate = moment(res.estimated_delivery_date, 'YYYY-MM-DD hh:mm:ss').format(

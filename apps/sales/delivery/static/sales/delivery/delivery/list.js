@@ -29,17 +29,20 @@ $(document).ready(function () {
                     return html
                 },
             }, {
-                data: 'sale_order_data',
                 width: '15%',
                 render: (data, type, row) => {
-                    if (data && data.hasOwnProperty('id') && data.hasOwnProperty('code')) {
+                    let target = row?.['sale_order_data'];
+                    if (row?.['lease_order_data']?.['id']) {
+                        target = row?.['lease_order_data'];
+                    }
+                    if (target && target.hasOwnProperty('id') && target.hasOwnProperty('code')) {
                         return `<a href="{0}" class="link-primary underline_hover"><span class="badge badge-soft-success">{2}</span><span>{1}</span></a>`.format_by_idx(
                             SetupFormSubmit.getUrlDetailWithID(
                                 tbl.attr('data-url-sale-order-detail'),
-                                data['id']
+                                target['id']
                             ),
-                            UtilControl.getValueOrEmpty(data, 'title'),
-                            UtilControl.getValueOrEmpty(data, 'code'),
+                            UtilControl.getValueOrEmpty(target, 'title'),
+                            UtilControl.getValueOrEmpty(target, 'code'),
                         );
                     }
                     return '';

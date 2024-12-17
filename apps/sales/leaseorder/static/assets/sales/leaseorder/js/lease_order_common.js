@@ -2589,6 +2589,10 @@ class LeaseOrderLoadDataHandle {
                     }
                     let eleUOM = row.querySelector('.table-row-uom');
                     if (eleUOM) {
+                        let uomGrID = null;
+                        if (dataRow?.['product_data']?.['general_information']?.['uom_group']?.['id']) {
+                            uomGrID = dataRow?.['product_data']?.['general_information']?.['uom_group']?.['id'];
+                        }
                         LeaseOrderLoadDataHandle.loadInitS2($(eleUOM), [dataRow?.['uom_data']]);
                     }
                     let eleTax = row.querySelector('.table-row-tax');

@@ -9884,6 +9884,10 @@ msgid "Consulting list"
 msgstr "Danh sách tư vấn"
 
 #
+msgid "Consulting create"
+msgstr "Tạo tư vấn"
+
+#
 msgid "Related Product Categories"
 msgstr "Danh sách loại sản phẩm liên quan"
 
@@ -9918,3 +9922,11 @@ msgstr "Loại tài liệu tư vấn"
 #
 msgid "This product category has already been selected."
 msgstr "Loại sản phẩm này đã được chọn"
+
+#
+msgid "Masterdata Documents"
+msgstr "Tài liệu dùng chung"
+
+#
+msgid "Manual Documents"
+msgstr "Tài liệu nhập tay"

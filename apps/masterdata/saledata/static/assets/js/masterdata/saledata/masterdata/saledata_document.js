@@ -57,14 +57,14 @@ $(document).ready(function () {
         setupColumnDocType(btnUpdateDocType, modalUpdateDocType){
             return [
                 {
-                    className: 'wrap-text w-10',
+                    className: 'wrap-text w-5',
                     render: (data, type, row, meta) => {
                         return '';
                     }
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-30',
+                    className: 'wrap-text w-10',
                     render: (data, type, row) => {
                         if (row.is_default) {
                             return `<span class="badge badge-secondary">${row.code}</span>`
@@ -75,7 +75,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-45',
+                    className: 'wrap-text w-75',
                     render: (data, type, row, meta) => {
                         if (!row?.['is_default']) {
                             return `<span class="text-primary"><b>${data}</b></span>`

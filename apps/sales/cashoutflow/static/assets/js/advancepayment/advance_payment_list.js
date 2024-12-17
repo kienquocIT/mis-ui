@@ -2,10 +2,10 @@ function InitAdvancePaymentTable(data_param={}) {
     let dtb = $('#datatable_advance_list')
     let frm = new SetupFormSubmit(dtb);
     dtb.DataTableDefault({
-        useDataServer: false,
+        useDataServer: true,
         rowIdx: true,
         reloadCurrency: true,
-        scrollX: '100vh',
+        scrollX: '100vw',
         scrollCollapse: true,
         ajax: {
             data: data_param,

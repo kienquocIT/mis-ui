@@ -209,11 +209,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     BIDDING_RESULT_CONFIG_PAGE = BreadcrumbChildren(_('Bidding'), 'BiddingResultConfigList')
 
     # Sale Activities
-    CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call Log'), 'OpportunityCallLogList')
+    CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call to customer'), 'OpportunityCallLogList')
     EMAIL_LIST_PAGE = BreadcrumbChildren(_('Send email'), 'OpportunityEmailList')
-    MEETING_LIST_PAGE = BreadcrumbChildren(_('Meeting'), 'OpportunityMeetingList')
+    MEETING_LIST_PAGE = BreadcrumbChildren(_('Meeting with customer'), 'OpportunityMeetingList')
 
-    OPPORTUNITY_DOCUMENT_LIST_PAGE = BreadcrumbChildren(_('Document'), 'OpportunityDocumentList')
+    OPPORTUNITY_DOCUMENT_LIST_PAGE = BreadcrumbChildren(_('Document for customer'), 'OpportunityDocumentList')
 
     # Purchase
     # PURCHASE_REQUEST_LIST_PAGE = BreadcrumbChildren(_('Purchase Request List'), 'PurchaseRequestList'),

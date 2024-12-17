@@ -82,7 +82,7 @@ msgid "File after uploaded"
 msgstr "Tệp sau khi tải lên"
 
 #
-msgid "Finally r-click to Copy image URL"
+msgid "Finally r-click to copy file URL"
 msgstr "Sau cùng nhấp phải chuột vào Sao chép URL hình ảnh"
 
 #

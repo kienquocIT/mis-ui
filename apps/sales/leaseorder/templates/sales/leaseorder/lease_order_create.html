@@ -6,8 +6,7 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-{#    {% include 'extends/systems/page_actions.html' with is_save=True is_save_draft=True save_frm='frm_quotation_create' %}#}
-    <button class="btn btn-outline-primary hidden" type="submit" form="frm_quotation_create">
+    <button class="btn btn-outline-primary" type="submit" form="frm_lease_create">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -19,10 +18,10 @@
 
 {% block pageContent %}
     <script hidden id="direct-btn-group-url"
-        data-url-list-api="{% url 'SaleOrderListAPI' %}"
-        data-url-create="{% url 'SaleOrderCreate' %}"
-        data-url-detail="{% url 'SaleOrderDetail' '0' %}"
-        data-key-return="sale_order_list"
+        data-url-list-api="{% url 'LeaseOrderListAPI' %}"
+        data-url-create="{% url 'LeaseOrderCreate' %}"
+        data-url-detail="{% url 'LeaseOrderDetail' '0' %}"
+        data-key-return="lease_order_list"
     ></script>
     <div class="row">
         <div class="col-12 col-md-6 col-lg-6">
@@ -51,10 +50,10 @@
     </div>
 
     <form
-            data-url="{% url 'SaleOrderListAPI' %}"
-            data-url-redirect="{% url 'SaleOrderList' %}"
+            data-url="{% url 'LeaseOrderListAPI' %}"
+            data-url-redirect="{% url 'LeaseOrderList' %}"
             data-method="POST"
-            id="frm_quotation_create"
+            id="frm_lease_create"
             method="post"
     >
         {% csrf_token %}
@@ -66,11 +65,11 @@
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label required" for="quotation-create-title">{% trans 'Title' %}</label>
+                                <label class="form-label required" for="title">{% trans 'Title' %}</label>
                                 <input
                                         type="text" class="form-control"
                                         name="title"
-                                        id="quotation-create-title"
+                                        id="title"
                                         required
                                 >
                             </div>
@@ -106,7 +105,7 @@
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label" for="select-box-quotation">{% trans 'Quotation' %}</label>
-                                <input type="text" class="form-control form-control-line mt-1" id="select-box-quotation" data-detail="" readonly>
+                                <input type="text" class="form-control form-control-line mt-1" id="quotation_id" data-detail="" readonly>
                             </div>
                         </div>
                     </div>
@@ -776,7 +775,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title"><b>{% trans 'Quantity detail' %}</b></h5>
+                            <h5 class="modal-title"><b>{% trans 'Declare product quantity' %}</b></h5>
                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
                         <div class="modal-body">
@@ -784,7 +783,7 @@
                                 <div class="col-12 col-md-4 col-lg-4">
                                     <div class="form-group">
                                         <label class="form-label"><b>{% trans 'Quantity of new products:' %}</b></label>
-                                        <input type="text" class="form-control quantity-new validated-number w-40" value="0">
+                                        <input type="text" class="form-control quantity-new validated-number w-20" value="0">
                                     </div>
                                 </div>
                             </div>
@@ -792,7 +791,7 @@
                                 <div class="col-12 col-md-4 col-lg-4">
                                     <div class="form-group">
                                         <label class="form-label"><b>{% trans 'Quantity of leased products:' %}</b></label>
-                                        <input type="text" class="form-control quantity-leased validated-number w-40" value="0" readonly>
+                                        <input type="text" class="form-control quantity-leased validated-number w-20" value="0" readonly>
                                     </div>
                                 </div>
                                 <table
@@ -801,12 +800,13 @@
                                 >
                                     <thead>
                                     <tr class="bg-light">
-                                        <th class="w-20">{% trans 'Lease number' %}</th>
-                                        <th class="w-20">{% trans 'Serial' %}</th>
-                                        <th class="w-15">{% trans 'Orginal cost' %}</th>
+                                        <th class="w-15">{% trans 'Lease code' %}</th>
+                                        <th class="w-15">{% trans 'Original code' %}</th>
+                                        <th class="w-10">{% trans 'Warehouse' %}</th>
+                                        <th class="w-15">{% trans 'Original cost' %}</th>
                                         <th class="w-15">{% trans 'Leased time before' %}</th>
                                         <th class="w-15">{% trans 'Net book value' %}</th>
-                                        <th class="w-15">{% trans 'Preciation time' %}</th>
+                                        <th class="w-15">{% trans 'Depreciation time' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>

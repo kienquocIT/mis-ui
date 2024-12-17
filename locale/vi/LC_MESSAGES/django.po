@@ -4059,15 +4059,11 @@ msgid "Add Document"
 msgstr "Thêm tài liệu"
 
 #
-msgid "Document For Customers"
-msgstr "Tài liệu"
-
-#
-msgid "Product introduction document for customers"
+msgid "Product introduction document for customer"
 msgstr "Tài liệu giới thiệu sản phẩm cho khách hàng"
 
 #
-msgid "Document For Customer"
+msgid "Document for customer"
 msgstr "Tài liệu cho khách hàng"
 
 #
@@ -7521,10 +7517,6 @@ msgid "Sale activities"
 msgstr "Hoạt động bán hàng"
 
 #
-msgid "Document for customer"
-msgstr "Tài liệu"
-
-#
 msgid "AR invoice"
 msgstr "Hoá đơn bán hàng"
 
@@ -8466,7 +8458,7 @@ msgstr "Tất cả (Hoàn thành)"
 
 #
 msgid "System status"
-msgstr "Trạng thái"
+msgstr "Trạng thái hệ thống"
 
 #
 msgid "Goods stock plan"
@@ -9554,7 +9546,7 @@ msgstr "Kết quả"
 
 #
 msgid "Required Documents"
-msgstr "Tài liệu cần thiết"
+msgstr "Tài liệu dự thầu"
 
 #
 msgid "Document Name"
@@ -9855,6 +9847,7 @@ msgstr "Giới hạn nhập dữ liệu"
 #
 msgid "To ensure system performance and stability, row number is limited to 500 rows. If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
 msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 500 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
+
 #
 msgid "Lease order"
 msgstr "Đơn cho thuê"
@@ -9870,6 +9863,54 @@ msgstr "Vui lòng chọn loại tài sản"
 #
 msgid "Fixed asset"
 msgstr "TSCĐ"
+
+#
+msgid "Declare product quantity"
+msgstr "Khai báo số lượng sản phẩm"
+
+#
+msgid "Quantity of new products:"
+msgstr "Số lượng sản phẩm mới:"
+
+#
+msgid "Quantity of leased products:"
+msgstr "Số lượng sản phẩm đã cho thuê:"
+
+#
+msgid "Return to warehouse"
+msgstr "Trả về kho"
+
+#
+msgid "Confirm delete this period?"
+msgstr "Xác nhận xóa kỳ kế toán này?"
+
+#
+msgid "Can not delete this period!"
+msgstr "Không thể xóa kỳ kế toán này!"
+
+#
+msgid "Posting periods"
+msgstr "Kỳ kế toán"
+
+#
+msgid "Main period code"
+msgstr "Mã kỳ chính"
+
+#
+msgid "Sub period code"
+msgstr "Mã kỳ con"
+
+#
+msgid "Period name"
+msgstr "Tên kỳ"
+
+#
+msgid "Lease from"
+msgstr "Thuê từ"
+
+#
+msgid "Lease to"
+msgstr "Thuê đến"
 
 #
 msgid "Consulting"

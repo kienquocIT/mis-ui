@@ -106,6 +106,8 @@ $(document).ready(function () {
                     $x.fn.showLoadingPage()
                     $x.fn.renderCodeBreadcrumb(opportunity_detail);
 
+                    $('#btn-collapse-process-show').prop('hidden', opportunity_detail?.['process']?.['id'] === undefined)
+
                     let stage_obj = await OpportunityLoadDetail.loadDetailCommon(opportunity_detail);
                     list_stage = stage_obj.list;
                     dict_stage = stage_obj.dict;
@@ -189,6 +191,40 @@ $(document).ready(function () {
                         $('.stage-lost').css('background-color', '#e7e7e7')
                         $('.stage-lost').css('color', '#6f6f6f')
                         $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
+                    }
+
+                    let data_opp_detail = $dataDetail.text() ? JSON.parse($dataDetail.text()) : null
+                    if (data_opp_detail) {
+                        let goto_call_log = $('#goto-call-log')
+                        let call_log_param_url = OpportunityLoadPage.push_param_to_url(goto_call_log.attr('data-url'), {
+                            'from_opp': true,
+                            'opp_id': data_opp_detail?.['id'],
+                            'opp_title': data_opp_detail?.['title'],
+                            'opp_code': data_opp_detail?.['code'],
+                            'inherit_id': data_opp_detail?.['sale_person']?.['id'],
+                            'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
+                        })
+                        goto_call_log.attr('href', call_log_param_url)
+                        let goto_email = $('#goto-email')
+                        let email_param_url = OpportunityLoadPage.push_param_to_url(goto_email.attr('data-url'), {
+                            'from_opp': true,
+                            'opp_id': data_opp_detail?.['id'],
+                            'opp_title': data_opp_detail?.['title'],
+                            'opp_code': data_opp_detail?.['code'],
+                            'inherit_id': data_opp_detail?.['sale_person']?.['id'],
+                            'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
+                        })
+                        goto_email.attr('href', email_param_url)
+                        let goto_meeting = $('#goto-meeting')
+                        let meeting_param_url = OpportunityLoadPage.push_param_to_url(goto_meeting.attr('data-url'), {
+                            'from_opp': true,
+                            'opp_id': data_opp_detail?.['id'],
+                            'opp_title': data_opp_detail?.['title'],
+                            'opp_code': data_opp_detail?.['code'],
+                            'inherit_id': data_opp_detail?.['sale_person']?.['id'],
+                            'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
+                        })
+                        goto_meeting.attr('href', meeting_param_url)
                     }
 
                     // Disable all select elements

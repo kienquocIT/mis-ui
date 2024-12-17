@@ -3,6 +3,9 @@ $(document).ready(function () {
     let baseUrlDetail = tbl.attr('data-url-detail');
     tbl.DataTableDefault({
         rowIdx: true,
+        scrollX: '100vw',
+        scrollY: '70vh',
+        scrollCollapse: true,
         useDataServer: true,
         ajax: {
             url: tbl.attr('data-url'),
@@ -15,6 +18,7 @@ $(document).ready(function () {
         },
         columns: [
             {
+                className: 'wrap-text w-5',
                 'render': () => {
                     return ``;
                 }
@@ -23,8 +27,8 @@ $(document).ready(function () {
                 className: 'wrap-text w-10',
                 'data': 'code',
                 render: (data, type, row) => {
-                    const link = baseUrlDetail.replace(0, row.id);
-                    return `<a href="${link}"><span class="badge badge-primary w-70">${row?.['code']}</span></a> ${$x.fn.buttonLinkBlank(link)}`
+                    const link = baseUrlDetail.replace(0, row?.['id']);
+                    return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`
                 },
             },
             {
@@ -38,31 +42,25 @@ $(document).ready(function () {
                 className: 'wrap-text w-15',
                 'data': 'job_title',
                 render: (data, type, row) => {
-                    return `<span class="text-blue">${row?.['job_title']}</span>`
+                    return `<span class="text-muted">${row?.['job_title']}</span>`
                 }
             }, {
                 className: 'wrap-text w-15',
                 'data': 'account_name',
                 'render': (data, type, row) => {
-                    return `<span class="fw-bold">${row?.['account_name']?.['name'] ? row['account_name']['name'] : ''}</span>`
+                    return `<span class="text-muted">${row?.['account_name']?.['name'] ? row['account_name']['name'] : ''}</span>`
                 }
             }, {
-                className: 'wrap-text w-10',
+                className: 'wrap-text w-20',
                 'data': 'mobile',
                 'render': (data, type, row) => {
-                    return `<span>${row?.['mobile'] ? row?.['mobile'] : ''}</span><span>${row?.['phone'] ? ' | ' + row?.['phone'] : ''}</span>`;
-                }
-            }, {
-                className: 'wrap-text w-15',
-                'data': 'email',
-                'render': (data, type, row) => {
-                    return `<span>${row?.['email'] ? row?.['email'] : ''}</span>`;
+                    return `<span>${row?.['mobile'] ? 'Mobile: ' + row?.['mobile'] : ''}</span><br><span>${row?.['phone'] ? 'Phone: ' + row?.['phone'] : ''}</span><br><span>${row?.['email'] ? 'Email: ' + row?.['email'] : ''}</span>`;
                 }
             }, {
                 className: 'wrap-text w-15',
                 'data': 'owner',
                 'render': (data, type, row) => {
-                    return `<span class="badge badge-outline badge-secondary w-100">${row?.['owner']?.['fullname'] ? row?.['owner']?.['fullname'] : ''}</span>`
+                    return `<span class="text-blue">${row?.['owner']?.['fullname'] ? row?.['owner']?.['fullname'] : ''}</span>`
                 }
             }
         ],

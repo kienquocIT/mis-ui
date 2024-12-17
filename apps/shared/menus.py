@@ -346,7 +346,7 @@ class MenusCRM:
         icon='<i class="fas fa-file-invoice"></i>',
     )
     LEASE_ORDER = MenuCommon(
-        name='Lease order', code='menu_lease_order_list', view_name='LeaseOrderCreate',
+        name='Lease order', code='menu_lease_order_list', view_name='LeaseOrderList',
         icon='<i class="fas fa-handshake"></i>',
     )
     RECURRENCE = MenuCommon(
@@ -432,15 +432,15 @@ class MenusCRM:
         icon='<i class="bi bi-ui-checks-grid"></i>',
         child=[
             MenuCommon(
-                name='Call log', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
+                name='Call to customer', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
                 icon='<i class="fas fa-phone-volume"></i>',
             ),
             MenuCommon(
-                name='Send email', code='id_menu_email', view_name='OpportunityEmailList',
+                name='Email to customer', code='id_menu_email', view_name='OpportunityEmailList',
                 icon='<i class="bi bi-envelope-fill"></i>',
             ),
             MenuCommon(
-                name='Meeting', code='id_menu_meeting', view_name='OpportunityMeetingList',
+                name='Meeting with customer', code='id_menu_meeting', view_name='OpportunityMeetingList',
                 icon='<i class="bi bi-person-workspace"></i>',
             ),
             MenuCommon(

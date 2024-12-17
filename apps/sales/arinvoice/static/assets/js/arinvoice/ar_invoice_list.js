@@ -6,6 +6,9 @@ $(document).ready(function () {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
+                scrollX: '100vw',
+                scrollY: '70vh',
+                scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
                     url: frm.dataUrl,
@@ -20,6 +23,7 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
+                        className: 'wrap-text w-5',
                         'render': () => {
                             return ``;
                         }
@@ -27,15 +31,15 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-30',
+                        className: 'wrap-text w-25',
                         render: (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="text-primary" data-id="${row.id}" data-title="${row.title}"><b>${row.title}</b></span></a>`
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}"><span class="text-primary" data-id="${row?.['id']}" data-title="${row?.['title']}"><b>${row?.['title']}</b></span></a>`
                         }
                     },
                     {
@@ -53,7 +57,7 @@ $(document).ready(function () {
                         className: 'wrap-text w-25',
                         render: (data, type, row) => {
                             if (row?.['customer_mapped']?.['id']) {
-                                return `<b>${row?.['customer_mapped']?.['name']}</b>`
+                                return `${row?.['customer_mapped']?.['name']}`
                             }
                             else if (row?.['customer_name']) {
                                 return `${row?.['customer_name']}`

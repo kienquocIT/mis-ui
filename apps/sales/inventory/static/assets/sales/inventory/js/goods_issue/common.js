@@ -221,7 +221,7 @@ class GISLoadTab {
             dom: 't',
             rowIdx: true,
             reloadCurrency: true,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollCollapse: true,
             paging: false,
             data: data_list,

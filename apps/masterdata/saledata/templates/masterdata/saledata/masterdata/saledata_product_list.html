@@ -266,82 +266,41 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modal-new-uom" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal fade" id="modal-update-uom-group" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Unit Of Measure" %}</h5>
+                    <h5 class="modal-title">{% trans "Edit" %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-create-uom" data-method="POST" data-url="{% url "UnitOfMeasureListAPI" %}">
+                    <form id="form-update-uom-group"
+                          data-method="PUT"
+                          data-url-raw="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
+                          data-url="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
+                          >
                         {% csrf_token %}
                         <div class="row">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label for="select-box-uom-group" class="form-label required">{% trans "Select Group" %}</label>
-                                    <select id="select-box-uom-group" class="select2 form-select" data-method="GET"
-                                            data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"
-                                            data-keyResp="unit_of_measure_group"
-                                    ></select>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-check mt-5">
-                                    <input class="form-check-input mt-1" type="checkbox" id="check-referenced-unit" name="is_referenced_unit" disabled>
-                                    <label class="form-check-label" for="check-referenced-unit">
-                                        {% trans "is referenced for ratio from other unit" %}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label for="inp-code-uom" class="form-label required">{% trans "Code" %}</label>
-                                    <input id="inp-code-uom" class="form-control" type="text" name="code" oninput="this.value=this.value.toUpperCase()">
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="row" id="ratio-area">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label for="ratio-unit" class="form-label required">{% trans "Ratio" %}</label>
-                                            <input class="form-control" type="text" name="ratio" readonly id="ratio-unit">
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label mt-6" id="label-referenced-unit" hidden>* {% trans 'Reference Unit' %}</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label for="name-unit" class="form-label required">{% trans "Name" %}</label>
-                                    <input required class="form-control" type="text" name="title" id="name-unit">
-                                </div>
-                            </div>
                             <div class="col-3">
                                 <div class="form-group">
-                                    <label for="inp-rounding" class="form-label required">{% trans "Rounding" %}</label>
-                                    <input class="form-control" type="number" name="rounding" id="inp-rounding" min="0" step="0.001" value="5">
+                                    <label for="inp-edit-code-uom-group" class="form-label required">{% trans "Code" %}</label>
+                                    <input readonly class="form-control form-control-line" type="text" name="code" id="inp-edit-code-uom-group" oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row" id="notify-area" hidden>
-                            <div class="col-12">
-                                <label class="small text-red" id="notify-area-label"></label>
+                            <div class="col-9">
+                                <div class="form-group" id="inp-edit-name-uom-group-div">
+                                    <label for="inp-edit-name-uom-group" class="form-label required">{% trans "Name" %}</label>
+                                    <input required class="form-control" type="text" name="title" id="inp-edit-name-uom-group">
+                                </div>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" form="form-create-uom" class="btn btn-primary">{% trans 'Save' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-update-uom-group">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>
@@ -437,41 +396,82 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modal-update-uom-group" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal fade" id="modal-new-uom" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Edit" %}</h5>
+                    <h5 class="modal-title">{% trans "Unit Of Measure" %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-update-uom-group"
-                          data-method="PUT"
-                          data-url-raw="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
-                          data-url="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
-                          >
+                    <form id="form-create-uom" data-method="POST" data-url="{% url "UnitOfMeasureListAPI" %}">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-6">
                                 <div class="form-group">
-                                    <label for="inp-edit-code-uom-group" class="form-label required">{% trans "Code" %}</label>
-                                    <input readonly class="form-control form-control-line" type="text" name="code" id="inp-edit-code-uom-group" oninput="this.value=this.value.toUpperCase()">
+                                    <label for="select-box-uom-group" class="form-label required">{% trans "Select Group" %}</label>
+                                    <select id="select-box-uom-group" class="select2 form-select" data-method="GET"
+                                            data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"
+                                            data-keyResp="unit_of_measure_group"
+                                    ></select>
                                 </div>
                             </div>
-                            <div class="col-9">
-                                <div class="form-group" id="inp-edit-name-uom-group-div">
-                                    <label for="inp-edit-name-uom-group" class="form-label required">{% trans "Name" %}</label>
-                                    <input required class="form-control" type="text" name="title" id="inp-edit-name-uom-group">
+                            <div class="col-6">
+                                <div class="form-check mt-5">
+                                    <input class="form-check-input mt-1" type="checkbox" id="check-referenced-unit" name="is_referenced_unit" disabled>
+                                    <label class="form-check-label" for="check-referenced-unit">
+                                        {% trans "is referenced for ratio from other unit" %}
+                                    </label>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="inp-code-uom" class="form-label required">{% trans "Code" %}</label>
+                                    <input id="inp-code-uom" class="form-control" type="text" name="code" oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row" id="ratio-area">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="ratio-unit" class="form-label required">{% trans "Ratio" %}</label>
+                                            <input class="form-control" type="text" name="ratio" readonly id="ratio-unit">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label mt-6" id="label-referenced-unit" hidden>* {% trans 'Reference Unit' %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="name-unit" class="form-label required">{% trans "Name" %}</label>
+                                    <input required class="form-control" type="text" name="title" id="name-unit">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="inp-rounding" class="form-label required">{% trans "Rounding" %}</label>
+                                    <input class="form-control" type="number" name="rounding" id="inp-rounding" min="0" step="0.001" value="5">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="notify-area" hidden>
+                            <div class="col-12">
+                                <label class="small text-red" id="notify-area-label"></label>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" class="btn btn-primary" form="form-update-uom-group">{% trans 'Save' %}</button>
+                    <button type="submit" form="form-create-uom" class="btn btn-primary">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>

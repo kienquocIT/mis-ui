@@ -3,11 +3,9 @@ $(function () {
     $(document).ready(function () {
 
         // Elements
-        let formSubmit = $('#frm_quotation_create');
+        let formSubmit = $('#frm_lease_create');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let tabPrice = $('#tab_terms');
-        let btnAddProductGr = $('#btn-add-product-group-quotation');
-        let btnAddProduct = $('#btn-add-product-quotation-create');
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -98,6 +96,7 @@ $(function () {
 
 // PRODUCT
         $quotationTabs.on('click', '.tab-detail', function () {
+            LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderLoadDataHandle.loadReInitDataTableProduct();
         });
@@ -112,6 +111,7 @@ $(function () {
 
         LeaseOrderLoadDataHandle.$btnSaveSelectQuantity.on('click', function () {
             LeaseOrderLoadDataHandle.loadQuantity(this);
+            LeaseOrderStoreDataHandle.storeDtbData(1);
         });
 
         // QUICK PRODUCT
@@ -330,6 +330,7 @@ $(function () {
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
+            LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderLoadDataHandle.loadReInitDataTableExpense();
         });
 
@@ -900,12 +901,8 @@ $(function () {
             }
         }
 
-         function submitForm(formSubmit) {
-             let is_sale_order = false;
-             if (LeaseOrderLoadDataHandle.$form[0].classList.contains('sale-order')) {
-                 is_sale_order = true;
-             }
-             let _form = new SetupFormSubmit(formSubmit);
+        function submitForm(formSubmit) {
+            let _form = new SetupFormSubmit(formSubmit);
             // Load again indicator when Submit
             LeaseOrderIndicatorHandle.loadIndicator();
             let result = LeaseOrderSubmitHandle.setupDataSubmit(_form);
@@ -916,7 +913,7 @@ $(function () {
             if (keyHidden) {
                 if (keyHidden.length > 0) {
                     // special case: loadCost if products is not in hidden zones
-                    if (!keyHidden.includes('lease_products_data') && !keyHidden.includes('sale_order_products_data')) {
+                    if (!keyHidden.includes('lease_products_data')) {
                         LeaseOrderLoadDataHandle.loadDataTableCost();
                         LeaseOrderSubmitHandle.setupDataSubmit(_form);
                         LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
@@ -933,13 +930,17 @@ $(function () {
                 //
                 'title',
                 'opportunity_id',
-                'customer',
+                'customer_id',
                 'customer_data',
-                'contact',
+                'contact_id',
                 'contact_data',
                 'employee_inherit_id',
-                'payment_term',
+                'payment_term_id',
                 'payment_term_data',
+                'quotation_id',
+                'quotation_data',
+                'lease_from',
+                'lease_to',
                 // total amount of products
                 'total_product_pretax_amount',
                 'total_product_discount_rate',
@@ -955,8 +956,9 @@ $(function () {
                 'total_expense_pretax_amount',
                 'total_expense_tax',
                 'total_expense',
-                // quotation tabs
+                // sale order tabs
                 'lease_products_data',
+                'lease_logistic_data',
                 'customer_shipping',
                 'customer_billing',
                 'lease_costs_data',
@@ -967,90 +969,21 @@ $(function () {
                 'indicator_revenue',
                 'indicator_gross_profit',
                 'indicator_net_income',
+                // payment stage tab
+                'lease_payment_stage',
                 // abstract
                 'system_status',
                 'next_node_collab_id',
                 'is_change',
                 'document_root_id',
                 'document_change_order',
+                'is_recurrence_template',
+                'is_recurring',
+                'recurrence_task_id',
             ]
-            if (is_sale_order === true) {
-                submitFields = [
-                    // process
-                    'process',
-                    'process_stage_app',
-                    //
-                    'title',
-                    'opportunity_id',
-                    'customer',
-                    'customer_data',
-                    'contact',
-                    'contact_data',
-                    'employee_inherit_id',
-                    'payment_term',
-                    'payment_term_data',
-                    'quotation',
-                    // total amount of products
-                    'total_product_pretax_amount',
-                    'total_product_discount_rate',
-                    'total_product_discount',
-                    'total_product_tax',
-                    'total_product',
-                    'total_product_revenue_before_tax',
-                    // total amount of costs
-                    'total_cost_pretax_amount',
-                    'total_cost_tax',
-                    'total_cost',
-                    // total amount of expenses
-                    'total_expense_pretax_amount',
-                    'total_expense_tax',
-                    'total_expense',
-                    // sale order tabs
-                    'sale_order_products_data',
-                    'sale_order_logistic_data',
-                    'customer_shipping',
-                    'customer_billing',
-                    'sale_order_costs_data',
-                    'sale_order_expenses_data',
-                    // indicator tab
-                    'sale_order_indicators_data',
-                    // indicators
-                    'indicator_revenue',
-                    'indicator_gross_profit',
-                    'indicator_net_income',
-                    // payment stage tab
-                    'sale_order_payment_stage',
-                    // abstract
-                    'system_status',
-                    'next_node_collab_id',
-                    'is_change',
-                    'document_root_id',
-                    'document_change_order',
-                    'is_recurrence_template',
-                    'is_recurring',
-                    'recurrence_task_id',
-                ]
-            }
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]
-                }
-            }
-            // validate none & blank
-            let check_blank_list = ['', "", "undefined"];
-            let check_field_list = [
-                'opportunity_id',
-                'customer',
-                'contact',
-                'employee_inherit_id',
-                'payment_term',
-                'quotation'
-            ]
-            for (let field of check_field_list) {
-                if (_form.dataForm.hasOwnProperty(field)) {
-                    if (check_blank_list.includes(_form.dataForm[field])) {
-                        _form.dataForm[field] = null;
-                    }
                 }
             }
             WFRTControl.callWFSubmitForm(_form);

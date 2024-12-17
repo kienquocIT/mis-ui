@@ -1059,7 +1059,7 @@ class OpportunityActivity {
         $table.DataTable().clear().destroy()
         $table.DataTableDefault({
             rowIdx: true,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollY: '40vh',
             scrollCollapse: true,
             ajax: {
@@ -1296,7 +1296,7 @@ class LoadConfigAndLoadStage {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '50vh',
                 ajax: {
                     url: frm.dataUrl,
@@ -1831,6 +1831,9 @@ class InitDataTables {
             $table.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
+                scrollX: '100vw',
+                scrollY: '70vh',
+                scrollCollapse: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -1845,6 +1848,7 @@ class InitDataTables {
                 columns: [
                     {
                         targets: 0,
+                        className: 'wrap-text w-5',
                         render: () => {
                             return ``
                         }
@@ -1853,30 +1857,30 @@ class InitDataTables {
                         targets: 1,
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                            return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`
+                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
                         targets: 2,
-                        className: 'wrap-text w-25',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
-                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                            return `<a href="${link}"><span class="fw-bold text-primary">${row.title}</span></a>`
+                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            return `<a href="${link}"><span class="fw-bold text-primary">${row?.['title']}</span></a>`
                         }
                     },
                     {
                         targets: 3,
                         className: 'wrap-text w-20',
                         render: (data, type, row) => {
-                            return `<span class="text-muted">${row.customer.title}</span>`
+                            return `<span class="text-muted">${row?.['customer']?.['title']}</span>`
                         }
                     },
                     {
                         targets: 4,
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<span class="text-blue">${row?.['sale_person'].full_name}</span>`
+                            return `<span class="text-blue">${row?.['sale_person']?.['full_name']}</span>`
                         }
                     },
                     {
@@ -1887,7 +1891,7 @@ class InitDataTables {
                             return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
                                 'outputFormat': 'DD-MM-YYYY',
                                 callback: function (data) {
-                                    return `<p>${data.relate}</p><small>${data.output}</small>`;
+                                    return `<p>${data?.['relate']}</p><small>${data?.['output']}</small>`;
                                 }
                             }) : "_";
                         }
@@ -1900,20 +1904,20 @@ class InitDataTables {
                             return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
                                 'outputFormat': 'DD-MM-YYYY',
                                 callback: function (data) {
-                                    return `<p>${data.relate}</p><small>${data.output}</small>`;
+                                    return `<p>${data?.['relate']}</p><small>${data?.['output']}</small>`;
                                 }
                             }) : "_";
                         }
                     },
                     {
                         targets: 7,
-                        className: 'wrap-text w-10 text-center',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let stage_current;
-                            stage_current = row.stage.find(function (obj) {
-                                return obj.is_current === true;
+                            stage_current = row?.['stage'].find(function (obj) {
+                                return obj?.['is_current'] === true;
                             });
-                            return `<span class="badge badge-light badge-outline w-90">${stage_current.indicator}</span>`
+                            return `<span class="${stage_current?.['win_rate'] === 100 ? 'text-gold' : 'text-secondary'}">${stage_current?.['indicator']} (${stage_current?.['win_rate']}%)</span>${stage_current?.['win_rate'] === 100 ? '&nbsp;<i class="bi bi-trophy-fill text-gold"></i>' : ''}`
                         }
                     },
                 ],
@@ -1929,7 +1933,7 @@ class InitDataTables {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '25vh',
                 scrollCollapse: true,
                 data: data,
@@ -2014,7 +2018,7 @@ class InitDataTables {
                 rowIdx: true,
                 data: data,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '40vh',
                 scrollCollapse: true,
                 columns: [
@@ -2078,7 +2082,7 @@ class InitDataTables {
                 rowIdx: true,
                 data: data,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '25vh',
                 scrollCollapse: true,
                 columns: [
@@ -2138,7 +2142,7 @@ class OpportunityLoadPage {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '40vh',
                 scrollCollapse: true,
                 ajax: {
@@ -2362,7 +2366,7 @@ class OpportunityLoadPage {
                 if (results_perm_app[2]) {
                     let create_ap_sc = $('#create-advance-payment-shortcut')
                     create_ap_sc.removeClass('disabled');
-                    let param_url = this.push_param_to_url(create_ap_sc.attr('data-url'), {
+                    let param_url = OpportunityLoadPage.push_param_to_url(create_ap_sc.attr('data-url'), {
                         'from_opp': true,
                         'opp_id': results_perm_app[2]?.['id'],
                         'opp_code': results_perm_app[2]?.['code'],
@@ -2375,7 +2379,7 @@ class OpportunityLoadPage {
                 if (results_perm_app[3]) {
                     let create_payment_sc = $('#create-payment-shortcut')
                     create_payment_sc.removeClass('disabled');
-                    let param_url = this.push_param_to_url(create_payment_sc.attr('data-url'), {
+                    let param_url = OpportunityLoadPage.push_param_to_url(create_payment_sc.attr('data-url'), {
                         'from_opp': true,
                         'opp_id': results_perm_app[3]?.['id'],
                         'opp_code': results_perm_app[3]?.['code'],
@@ -2388,7 +2392,7 @@ class OpportunityLoadPage {
                 if (results_perm_app[4]) {
                     let create_bom_sc = $('#create-project-bom-shortcut')
                     create_bom_sc.removeClass('disabled');
-                    let param_url = this.push_param_to_url(create_bom_sc.attr('data-url'), {
+                    let param_url = OpportunityLoadPage.push_param_to_url(create_bom_sc.attr('data-url'), {
                         'from_opp': true,
                         'opp_id': results_perm_app[4]?.['id'],
                         'opp_code': results_perm_app[4]?.['code'],
@@ -2400,7 +2404,7 @@ class OpportunityLoadPage {
                 if (results_perm_app[5]) {
                     let create_bidding_sc = $('#create-bidding-shortcut')
                     create_bidding_sc.removeClass('disabled');
-                    let param_url = this.push_param_to_url(create_bidding_sc.attr('data-url'), {
+                    let param_url = OpportunityLoadPage.push_param_to_url(create_bidding_sc.attr('data-url'), {
                         'opp_id': results_perm_app[5]?.['id'],
                         'opp_code': results_perm_app[5]?.['code'],
                         'opp_title': results_perm_app[5]?.['title'],
@@ -2425,40 +2429,6 @@ class OpportunityLoadPage {
                 }
                 $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
             })
-
-        let data_opp_detail = $dataDetail.text() ? JSON.parse($dataDetail.text()) : null
-        if (data_opp_detail) {
-            let goto_call_log = $('#goto-call-log')
-            let call_log_param_url = this.push_param_to_url(goto_call_log.attr('data-url'), {
-                'from_opp': true,
-                'opp_id': data_opp_detail?.['id'],
-                'opp_title': data_opp_detail?.['title'],
-                'opp_code': data_opp_detail?.['code'],
-                'inherit_id': data_opp_detail?.['sale_person']?.['id'],
-                'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
-            })
-            goto_call_log.attr('href', call_log_param_url)
-            let goto_email = $('#goto-email')
-            let email_param_url = this.push_param_to_url(goto_email.attr('data-url'), {
-                'from_opp': true,
-                'opp_id': data_opp_detail?.['id'],
-                'opp_title': data_opp_detail?.['title'],
-                'opp_code': data_opp_detail?.['code'],
-                'inherit_id': data_opp_detail?.['sale_person']?.['id'],
-                'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
-            })
-            goto_email.attr('href', email_param_url)
-            let goto_meeting = $('#goto-meeting')
-            let meeting_param_url = this.push_param_to_url(goto_meeting.attr('data-url'), {
-                'from_opp': true,
-                'opp_id': data_opp_detail?.['id'],
-                'opp_title': data_opp_detail?.['title'],
-                'opp_code': data_opp_detail?.['code'],
-                'inherit_id': data_opp_detail?.['sale_person']?.['id'],
-                'inherit_title': data_opp_detail?.['sale_person']?.['full_name'],
-            })
-            goto_meeting.attr('href', meeting_param_url)
-        }
     }
 
     static getDataMemberAddNew() {

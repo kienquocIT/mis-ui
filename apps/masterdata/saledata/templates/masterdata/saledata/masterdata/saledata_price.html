@@ -325,7 +325,7 @@
                                            oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-8">
                                 <div class="form-group">
                                     <label for="new-tax-cate-name"
                                            class="form-label required">{% trans "Name" %}</label>
@@ -444,7 +444,7 @@
                                 <div class="form-group">
                                     <label for="select-box-category-create"
                                            class="form-label required">{% trans "Category" %}</label>
-                                    <select class="form-select" id="select-box-category-create" name="category"
+                                    <select class="select2 form-select" id="select-box-category-create" name="category"
                                             data-method="GET"
                                             data-url="{% url 'TaxCategoryListAPI' %}"
                                             data-keyResp="tax_category_list">

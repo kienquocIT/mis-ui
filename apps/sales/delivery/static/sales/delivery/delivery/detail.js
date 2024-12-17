@@ -368,19 +368,29 @@ $(async function () {
             $area.on('click', '.table-row-checkbox-all', function () {
                 let checked = this.checked;
                 let stopLoop = false;
-                $area.DataTable().rows().every(function () {
-                    if (stopLoop) return;
-
-                    let row = this.node();
-                    let checkbox = row.querySelector('.table-row-checkbox');
+                for (let checkbox of $area[0].querySelectorAll('.table-row-checkbox')) {
                     if (checkbox) {
                         checkbox.checked = checked;
                         let state = prodTable.loadQuantityDeliveryBySerial(checkbox);
                         if (state === false) {
-                            stopLoop = true;
+                            break;
                         }
                     }
-                });
+                }
+
+                // $area.DataTable().rows().every(function () {
+                //     if (stopLoop) return;
+                //
+                //     let row = this.node();
+                //     let checkbox = row.querySelector('.table-row-checkbox');
+                //     if (checkbox) {
+                //         checkbox.checked = checked;
+                //         let state = prodTable.loadQuantityDeliveryBySerial(checkbox);
+                //         if (state === false) {
+                //             stopLoop = true;
+                //         }
+                //     }
+                // });
             });
             return true;
         };
@@ -1045,6 +1055,10 @@ $(async function () {
 
         dataTableTableSerial(data) {
             let $table = $('#datable-delivery-wh-serial');
+            let checkAll = $table[0].querySelector('.table-row-checkbox-all');
+            if (checkAll) {
+                checkAll.checked = false;
+            }
             $table.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
                 columns: [
@@ -1137,11 +1151,21 @@ $(async function () {
                 ],
                 rowCallback(row, data, index) {
                     $(`input.form-check-input`, row).on('click', function () {
+                        if (this.checked === false) {
+                            let checkAll = $table[0].querySelector('.table-row-checkbox-all');
+                            if (checkAll) {
+                                checkAll.checked = false;
+                            }
+                        }
                         prodTable.loadQuantityDeliveryBySerial(this);
                     });
                 },
                 drawCallback: function () {
                     prodTable.loadEventCheckboxAll($table);
+                    let checkAll = $table[0].querySelector('.table-row-checkbox-all');
+                    if (checkAll) {
+                        checkAll.checked = false;
+                    }
                 },
             });
             if ($table.hasClass('dataTable')) {
@@ -1152,6 +1176,7 @@ $(async function () {
 
         loadQuantityDeliveryBySerial(ele) {
             let tableWH = $('#productStockDetail');
+            let $tblSerial = $('#datable-delivery-wh-serial');
             let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
             if (rowChecked) {
                 let newQuantity = 0;
@@ -1159,7 +1184,7 @@ $(async function () {
                 let eleWHInput = rowChecked?.querySelector('.table-row-picked');
                 let serialData = [];
                 if (eleWHInput) {
-                    $('#datable-delivery-wh-serial').DataTable().rows().every(function () {
+                    $tblSerial.DataTable().rows().every(function () {
                         let row = this.node();
                         let rowSerialData = this.data();
                         let eleCheck = row?.querySelector('.table-row-checkbox');
@@ -1219,12 +1244,6 @@ $(async function () {
                 }
             }
             return {valStock: valStock, valAvb: valAvb};
-        };
-
-        loadUnCheckWH() {
-            for (let eleCheck of $('#productStockDetail')[0].querySelectorAll('.table-row-checkbox')) {
-                eleCheck.checked = false;
-            }
         };
 
         formatNum(ele) {

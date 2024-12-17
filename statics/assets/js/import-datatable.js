@@ -394,6 +394,7 @@ $(document).ready(function () {
                 )
                 let status = await processRow(row, frm, data_combined, type, i);   // Đợi AJAX hoàn thành cho từng hàng
                 if (status === false) {
+                    $('#modal-import-datatable-from-excel .modal-footer button').prop('hidden', false)
                     return false
                 }
             }

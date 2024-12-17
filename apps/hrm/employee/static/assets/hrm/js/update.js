@@ -42,8 +42,9 @@ $(document).ready(function () {
                 let contract = _clsContract.valid_data()
                 if (contract) employeeData.contract = contract
                 employeeData.last_name = `${serializerArray.last_name} ${serializerArray['middle_name']}`
-                const attachLst = $('input[name="attach_sign"]').val().split(',') || []
-                if(attachLst)
+                const AttVal = $('input[name="attach_sign"]').val()
+                const attachLst = AttVal.indexOf(',') !== -1 ? AttVal.split(',') : []
+                if(attachLst && attachLst.length)
                     employeeData.attachment = attachLst
                 $.fn.callAjax2({
                     url: form.attr('data-hrm-update'),

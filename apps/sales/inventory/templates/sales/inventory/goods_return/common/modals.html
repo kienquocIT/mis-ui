@@ -1,0 +1,92 @@
+{% load i18n %}
+
+<div class="offcanvas offcanvas-end w-90" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel"></h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row">
+            <div class="col-7 border rounded p-2">
+                <label class="fw-bold bg-primary-light-5 text-center text-primary w-100">1. {% trans 'Select delivery' %}</label>
+                <table class="table w-100 nowrap" id="table-select-delivery">
+                    <thead>
+                    <tr>
+                        <th style="max-width: 30px"></th>
+                        <th style="min-width: 150px">{% trans 'Delivery' %}</th>
+                        <th style="min-width: 100px">{% trans 'Date' %}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                </table>
+                <label class="fw-bold bg-primary-light-5 text-center text-primary w-100 mt-5">2. {% trans 'Select product' %}</label>
+                <table class="table w-100 nowrap" id="table-product-detail">
+                    <thead>
+                    <tr>
+                        <th style="max-width: 30px"></th>
+                        <th style="min-width: 150px">{% trans 'Product' %}</th>
+                        <th style="min-width: 150px">{% trans 'Detail' %}</th>
+                        <th style="min-width: 100px">{% trans 'Return' %}</th>
+                        <th style="min-width: 100px">{% trans 'Redelivery' %}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="col-5 border rounded p-2">
+                <div id="table-product-lot-wrap" hidden>
+                    <label class="fw-bold bg-primary-light-5 text-center text-primary w-100">3. {% trans 'Select LOT No.' %}</label>
+                    <table class="table w-100 nowrap" id="table-product-lot">
+                        <thead>
+                        <tr>
+                            <th style="min-width: 30px"></th>
+                            <th style="min-width: 100px">{% trans 'LOT number' %}</th>
+                            <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                            <th style="min-width: 100px">{% trans 'Return' %}</th>
+                            <th style="min-width: 100px">{% trans 'Redelivery' %}</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div id="table-product-sn-wrap" hidden>
+                    <label class="fw-bold bg-primary-light-5 text-center text-primary w-100">3. {% trans 'Select serial No.' %}</label>
+                    <table class="table w-100 nowrap" id="table-product-sn">
+                        <thead>
+                        <tr>
+                            <th style="min-width: 30px"></th>
+                            <th style="min-width: 100px">{% trans 'Vendor serial No.' %}</th>
+                            <th style="min-width: 100px">{% trans 'Serial No.' %}</th>
+                            <th style="min-width: 50px">{% trans 'Return' %}<button type="button" id="return-all" data-get="" class="btn btn-xs btn-soft-primary">{% trans 'All' %}</button></th>
+                            <th style="min-width: 50px">{% trans 'Redelivery' %}<button type="button" id="redelivery-all" data-get="" class="btn btn-xs btn-soft-primary">{% trans 'All' %}</button></th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="text-right mt-5">
+            <button type="button" id="add-product-btn" class="btn btn-custom btn-gradient-primary btn-wth-icon">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-select-return-warehouse" tabindex="-1" role="dialog" aria-labelledby="modal-select-return-warehouse" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Select return warehouse' %}</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" id="select-wh-return-div"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="modal-OK-btn">{% trans 'OK' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>

@@ -1,0 +1,14 @@
+{% load i18n %}
+
+<script id="script-url"
+        data-url-delivery="{% url 'DeliveryListForGoodsReturnAPI' %}"
+        data-url-warehouse="{% url 'WareHouseListAPI' %}"
+>
+</script>
+<script id="script-trans"
+        data-trans-has-returned="{% trans 'Returned' %}"
+        data-trans-total="{% trans 'Total' %}"
+        data-trans-delivered="{% trans 'Delivered' %}"
+        data-trans-uom="{% trans 'UOM' %}"
+>
+</script>

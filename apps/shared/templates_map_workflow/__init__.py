@@ -2,6 +2,7 @@ from .bidding_bidding import BIDDING_DATA_MAP
 from .cashoutflow_advance import ADVANCE_DATA_MAP
 from .cashoutfow_payment import PAYMENT_DATA_MAP
 from .cashoutflow_return_advance import RETURN_ADVANCE_DATA_MAP
+from .consulting_consulting import CONSULTING_DATA_MAP
 from .delivery_order_delivery import DELIVERY_DATA_MAP
 from .inventory_goods_receipt import GOODS_RECEIPT_DATA_MAP
 from .inventory_goods_issue import GOODS_ISSUE_DATA_MAP
@@ -47,3 +48,5 @@ class InputMappingProperties:
     DISTRIBUTION_PLAN_DB = DISTRIBUTION_PLAN_DATA_MAP
     CONTRACT_APPROVAL_DATA_MAP = CONTRACT_APPROVAL_DATA_MAP
     BIDDING_DATA_MAP = BIDDING_DATA_MAP
+    CONSULTING_DATA_MAP = CONSULTING_DATA_MAP
+

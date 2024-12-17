@@ -7,6 +7,9 @@ $(document).ready(function () {
                 useDataServer: true,
                 reloadCurrency: true,
                 rowIdx: true,
+                scrollX: '100vw',
+                scrollY: '75vh',
+                scrollCollapse: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -21,7 +24,7 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        targets: 0,
+                        className: 'wrap-text w-5',
                         render: () => {
                             return ``
                         }
@@ -31,7 +34,7 @@ $(document).ready(function () {
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}" class="badge badge-primary w-70">${row?.['code']}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}" class="badge badge-primary">${row?.['code']}</a>`;
                         }
                     },
                     {
@@ -45,24 +48,13 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<a class="badge badge-light w-70" target="_blank" href="${dtb.attr('data-url-detail-ap').replace('0', row?.['advance_payment']?.['id'])}">${row?.['advance_payment']?.['code']}</a>`
+                            return `<a class="badge badge-light" target="_blank" href="${dtb.attr('data-url-detail-ap').replace('0', row?.['advance_payment']?.['id'])}">${row?.['advance_payment']?.['code']}</a>`
                         }
                     },
                     {
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            if (row?.['advance_payment']?.['opportunity']?.['id']) {
-                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['advance_payment']?.['opportunity']?.['id'])}"><b>${row?.['advance_payment']?.['opportunity']?.['code']}</b></a></span>`
-                            }
-                            else if (row?.['advance_payment']?.['quotation_mapped']?.['id']) {
-                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row?.['advance_payment']?.['quotation_mapped']?.['id'])}"><b>${row?.['advance_payment']?.['quotation_mapped']?.['code']}</b></a></span>`
-                            }
-                            else if (row?.['advance_payment']?.['sale_order_mapped']?.['id']) {
-                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-so-detail').replace('0', row?.['advance_payment']?.['sale_order_mapped']?.['id'])}"><b>${row?.['advance_payment']?.['sale_order_mapped']?.['code']}</b></a></span>`
-                            }
-                            else {
-                                return ''
-                            }
+                            return `${row?.['advance_payment']?.['sale_code']}`
                         }
                     },
                     {
@@ -74,7 +66,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'return_total',
-                        className: 'wrap-text w-15',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             return `<span class="mask-money text-primary" data-init-money="${row?.['return_total']}"></span>`
                         }

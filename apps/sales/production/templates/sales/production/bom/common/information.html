@@ -56,10 +56,10 @@
 </div>
 
 <div class="row mt-3">
-    <div class="col-10 mb-2">
+    <div class="col-8 mb-2">
         <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'General Information' %}</h5>
     </div>
-    <div class="col-2 text-right">
+    <div class="col-4 text-right">
         <button type="button" id="btn-copy-bom" class="btn btn-outline-blue btn-xs" data-bs-toggle="modal" data-bs-target="#modal-select-BOM"><i class="fas fa-copy"></i> {% trans 'Copy BOM' %}</button>
     </div>
     <div class="col-12 col-md-12 col-lg-6">
@@ -329,11 +329,11 @@
                             <table class="table table-hover nowrap w-100" id="table-select-bom-copy" data-url="{% url 'BOMListAPI' %}">
                                 <thead>
                                 <tr>
-                                    <th></th>
-                                    <th>{% trans 'BOM' %}</th>
-                                    <th>{% trans 'Product' %}</th>
-                                    <th>{% trans 'Opportunity' %}</th>
-                                    <th></th>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 10px"></th>
+                                    <th style="min-width: 100px">{% trans 'BOM' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Product' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Opportunity' %}</th>
                                 </tr>
                                 </thead>
                             </table>

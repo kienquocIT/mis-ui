@@ -126,7 +126,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PAYMENT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Price
-    PRICE_LIST_PAGE = BreadcrumbChildren(_('Price'), 'PriceList')
+    PRICE_LIST_PAGE = BreadcrumbChildren(_('Price List'), 'PriceList')
     PRICE_LIST_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Expense

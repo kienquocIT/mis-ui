@@ -16,7 +16,7 @@ $(document).ready(function () {
     consultingInstance.initAbstractField('')
     consultingInstance.handleDeleteProductCategory(consultingInstance.tableProductCategories, consultingInstance.consultingValue)
     consultingInstance.initTableMasterDataDoc(consultingInstance.tableMasterDoc)
-    consultingInstance.handleAddNewRowManualDoc(consultingInstance.btnAddManualDoc, this.tableManualDoc)
+    consultingInstance.handleAddNewRowManualDoc(consultingInstance.btnAddManualDoc, consultingInstance.tableManualDoc)
     consultingInstance.initTableManualDataDoc(consultingInstance.tableManualDoc)
     consultingInstance.handleAddDoc(consultingInstance.btnAddDoc)
     consultingInstance.initTableDoc(consultingInstance.tableDoc, [], false)

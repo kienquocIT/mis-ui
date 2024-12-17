@@ -1094,6 +1094,7 @@ class OpportunityActivity {
                             'task.opportunitytask': transEle.attr('data-trans-task'),
                             'production.bom': transEle.attr('data-trans-bom'),
                             'bidding.bidding': transEle.attr('data-trans-bidding'),
+                            'consulting.consulting': transEle.attr('data-trans-consulting'),
                         }
                         let typeMapActivityIcon = {
                             1: 'fa-solid fa-list-check',
@@ -1148,6 +1149,7 @@ class OpportunityActivity {
                             'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
                             'production.bom': urlFactory.attr('data-url-bom-detail'),
                             'bidding.bidding': urlFactory.attr('data-url-bidding-detail'),
+                            'consulting.consulting': urlFactory.attr('data-url-consulting-detail'),
                         }
                         let link = '';
                         let title = '';
@@ -2322,11 +2324,30 @@ class OpportunityLoadPage {
                 console.log(errs);
             }
         )
-
+        const consulting_check_perm = $.fn.callAjax2({
+            url: urlFactory.attr('data-url-opp-list'),
+            data: {
+                'list_from_app': 'consulting.consulting.create', 'id': $.fn.getPkDetail()
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                        return data?.['opportunity_list'][0];
+                    }
+                    return null
+                }
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
         let create_return_sc = $('#create-return-advance-shortcut')
         create_return_sc.attr('href', create_return_sc.attr('data-url'))
 
-        Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm]).then(
+        Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm, consulting_check_perm]).then(
             (results_perm_app) => {
                 if (results_perm_app[0]) {
                     let create_quotation_sc = $('#create-quotation-shortcut')
@@ -2388,6 +2409,19 @@ class OpportunityLoadPage {
                         'customer': encodeURIComponent(JSON.stringify(results_perm_app[5]?.['customer'])),
                     })
                     create_bidding_sc.attr('href', param_url)
+                }
+                if (results_perm_app[6]) {
+                    let create_consulting_sc = $('#create-consulting-shortcut')
+                    create_consulting_sc.removeClass('disabled');
+                    let param_url = this.push_param_to_url(create_consulting_sc.attr('data-url'), {
+                        'opp_id': results_perm_app[5]?.['id'],
+                        'opp_code': results_perm_app[5]?.['code'],
+                        'opp_title': results_perm_app[5]?.['title'],
+                        'inherit_id': results_perm_app[5]?.['sale_person']?.['id'],
+                        'inherit_title': results_perm_app[5]?.['sale_person']?.['full_name'],
+                        'customer': encodeURIComponent(JSON.stringify(results_perm_app[5]?.['customer'])),
+                    })
+                    create_consulting_sc.attr('href', param_url)
                 }
                 $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
             })

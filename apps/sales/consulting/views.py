@@ -5,6 +5,9 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from apps.shared.msg import BaseMsg
+
+
 def create(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
     if resp.state:
@@ -100,7 +103,7 @@ class ConsultingListAPI(APIView):
         return create(
             request=request,
             url=ApiURL.CONSULTING_LIST,
-            msg='Create consulting document successfully'
+            msg=SaleMsg.CONSULTING_CREATE
         )
 
 class ConsultingDetailAPI(APIView):
@@ -121,7 +124,7 @@ class ConsultingDetailAPI(APIView):
             request=request,
             url=ApiURL.CONSULTING_DETAIL,
             pk=pk,
-            msg='Update consulting document successfully'
+            msg=SaleMsg.CONSULTING_UPDATE
         )
 
 class ConsultingAccountListAPI(APIView):

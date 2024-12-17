@@ -1,5 +1,7 @@
 // naming convention:  [...] + selector = $(...)
 
+let transScript = $('#trans-script')
+
 class ConsultingHandler{
     constructor(){
         this.consultingName = $('#consulting-name')
@@ -372,7 +374,7 @@ class ConsultingHandler{
 
                     // Prevent duplicate selection
                     if (duplicate) {
-                        $.fn.notifyB({description: "This product category has already been selected."}, 'failure');
+                        $.fn.notifyB({description: transScript.data('product-already-selected')}, 'failure');
                         $(e.currentTarget).empty() // Reset the current selection
                     }
                 });
@@ -489,7 +491,8 @@ class ConsultingHandler{
             if (!title || title.trim() === "") {
                 errorOccurred = true;
                 titleField.addClass('is-invalid');
-                titleField.after('<small class="text-danger error-message">Title cannot be empty.</small>'); // Add error message
+                let errMsg = transScript.data('field-required')
+                titleField.after(`<small class="text-danger error-message">${errMsg}</small>`); // Add error message
                 return {
                     data: [],
                     isErrorValidate: errorOccurred
@@ -1013,7 +1016,9 @@ class ConsultingHandler{
                     'value',
                     'abstract_content',
                     'customer',
-                    'product_categories'
+                    'product_categories',
+                    'process',
+                    'process_stage_app'
                 ]
                 if (_form.dataForm) {
                     this.filterFieldList(submitFields, _form.dataForm);
@@ -1026,7 +1031,13 @@ class ConsultingHandler{
     }
 
     setupDataSubmit(_form){
-        this.storeCurrentAttachments()
+        let dataStoreFields = {
+                fileArea: this.fileArea,
+                remark: this.remark,
+                attachment: this.attachment,
+                attachmentTmp: this.attachmentTmp
+            }
+        this.storeCurrentAttachments(this.tableDoc, dataStoreFields)
         let dataDocParse = this.getDataDoc(this.tableDoc)
         _form.dataForm['document_data'] = dataDocParse?.['document_data'];
         _form.dataForm['attachment'] = dataDocParse?.['attachment'];

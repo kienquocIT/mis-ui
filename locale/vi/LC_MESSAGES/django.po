@@ -9554,7 +9554,7 @@ msgstr "Kết quả"
 
 #
 msgid "Required Documents"
-msgstr "Tài liệu dự thầu"
+msgstr "Tài liệu cần thiết"
 
 #
 msgid "Document Name"
@@ -9870,3 +9870,51 @@ msgstr "Vui lòng chọn loại tài sản"
 #
 msgid "Fixed asset"
 msgstr "TSCĐ"
+
+#
+msgid "Consulting"
+msgstr "Tư vấn"
+
+#
+msgid "Due Date"
+msgstr "Thời hạn"
+
+#
+msgid "Consulting list"
+msgstr "Danh sách tư vấn"
+
+#
+msgid "Related Product Categories"
+msgstr "Danh sách loại sản phẩm liên quan"
+
+#
+msgid "Consulting name"
+msgstr "Tên tư vấn"
+
+#
+msgid "Bidding create successfully"
+msgstr "Tạo thầu thành công"
+
+#
+msgid "Bidding update successfully"
+msgstr "Sửa thầu thành công"
+
+#
+msgid "Consulting create successfully"
+msgstr "Tạo tư vấn thành công"
+
+#
+msgid "Consulting update successfully"
+msgstr "Sửa tư vấn thành công"
+
+#
+msgid "Bidding Document Type"
+msgstr "Loại tài liệu thầu"
+
+#
+msgid "Consulting Document Type"
+msgstr "Loại tài liệu tư vấn"
+
+#
+msgid "This product category has already been selected."
+msgstr "Loại sản phẩm này đã được chọn"

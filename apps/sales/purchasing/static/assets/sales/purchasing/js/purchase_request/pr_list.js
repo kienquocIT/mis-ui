@@ -8,7 +8,7 @@ $(document).ready(function () {
             let $table = $('#datatable-purchase-request')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollCollapse: true,
                 useDataServer: true,
                 rowIdx: true,
@@ -49,27 +49,22 @@ $(document).ready(function () {
                     {
                         data: 'request_for_string',
                         className: 'wrap-text',
-                        render: (data) => {
-                            return `<span class="fst-italic">${data}</span>`
-                        }
-                    },
-                    {
-                        className: 'wrap-text',
                         render: (data, type, row) => {
+                            let doc_code = ''
                             if (row?.['request_for'] === 0) {
-                                return `<span class="badge badge-soft-blue">${row?.['sale_order']?.['code']}</span>&nbsp;<span class="text-blue">${row?.['sale_order']?.['title']}</span>`;
+                                doc_code = `<span data-bs-toggle="tooltip" title="${row?.['sale_order']?.['title']}" class="badge badge-outline badge-soft-secondary w-80">${row?.['sale_order']?.['code']}</span>`;
                             }
                             else if (row?.['request_for'] === 3) {
-                                return `<span class="badge badge-soft-blue">${row?.['distribution_plan']?.['code']}</span>&nbsp;<span class="text-blue">${row?.['distribution_plan']?.['title']}</span>`;
+                                doc_code = `<span data-bs-toggle="tooltip" title="${row?.['distribution_plan']?.['title']}" class="badge badge-outline badge-soft-secondary w-80">${row?.['distribution_plan']?.['code']}</span>`;
                             }
-                            return ''
+                            return `<span class="fst-italic small">${data}</span>&nbsp;${doc_code}`
                         }
                     },
                     {
                         data: 'supplier',
                         className: 'wrap-text',
                         render: (data) => {
-                            return `<p class="text-muted fw-bold">${data.title}</p>`
+                            return `<p class="text-muted">${data.title}</p>`
                         }
                     },
                     {
@@ -145,7 +140,7 @@ $(document).ready(function () {
         changeHrefCreate(url_create, paramString);
     })
 
-    $(document).on('click', '#btn-create-for-other', function () {
+    $(document).on('click', '#btn-create-for-fixed-asset', function () {
         let paramString = $.param({
             'type': '2',
         })
@@ -157,5 +152,11 @@ $(document).ready(function () {
             'type': '3',
         })
         changeHrefCreate(url_create, paramString);
+    })
+
+    $('.select-pr-type').on('mouseenter', function () {
+        $(this).addClass('bg-secondary-light-5')
+    }).on('mouseleave', function () {
+        $(this).removeClass('bg-secondary-light-5')
     })
 })

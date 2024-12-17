@@ -68,63 +68,81 @@ $(document).ready(function () {
                         }
                     )
 
-                    const btnStartProcess$ = $('#btn-start-process');
-                    const btnStartProcessWithoutOpp$ = $('#btn-start-process-without-opp');
-                    const modalStartProcess$ = $("#modalStartProcess");
-                    const frmStartProcess$ = $('#frm-start-process-without-opp');
+                    function handlePlayProcess(){
+                        const btnStartProcess$ = $('#btn-start-process');
+                        const btnStartProcessWithoutOpp$ = $('#btn-start-process-without-opp');
+                        const modalStartProcess$ = $("#modalStartProcess");
+                        const frmStartProcess$ = $('#frm-start-process-without-opp');
 
-                    if (isActive === true) {
-                        if (forOpp === true) {
-                            btnStartProcess$.show(0);
-                            const eleA$ = btnStartProcess$.closest('a');
-                            eleA$.attr('href', eleA$.attr('href') + '?' + $.param({
-                                'create__process': processId,
-                                'create__process_name': processTitle
-                            }))
-                        } else {
-                            btnStartProcessWithoutOpp$.show(0);
-                            btnStartProcessWithoutOpp$.on('click', function () {
-                                modalStartProcess$.find(':input[name=title]').val(processTitle);
-                                modalStartProcess$.find(':input[name=remark]').val(processRemark);
-                                modalStartProcess$.modal('show');
-                            });
+                        if (isActive === true) {
+                            if (forOpp === true) {
+                                btnStartProcess$.show(0);
+                                const eleA$ = btnStartProcess$.closest('a');
+                                eleA$.attr('href', eleA$.attr('href') + '?' + $.param({
+                                    'create__process': processId,
+                                    'create__process_name': processTitle
+                                }))
+                            } else {
+                                btnStartProcessWithoutOpp$.show(0);
+                                btnStartProcessWithoutOpp$.on('click', function () {
+                                    modalStartProcess$.find(':input[name=title]').val(processTitle);
+                                    modalStartProcess$.find(':input[name=remark]').val(processRemark);
+                                    modalStartProcess$.modal('show');
+                                });
 
-                            SetupFormSubmit.validate(frmStartProcess$, {
-                                submitHandler: function (form, event) {
-                                    event.preventDefault();
-                                    const frm = new SetupFormSubmit($(form));
-                                    $.fn.callAjax2({
-                                        url: $(form).data('url'),
-                                        method: 'POST',
-                                        data: {
-                                            'config': processId,
-                                            ...frm.dataForm
-                                        },
-                                        isLoading: true,
-                                    }).then(
-                                        resp => {
-                                            const data = $.fn.switcherResp(resp);
-                                            if (data) {
-                                                $.fn.notifyB({
-                                                    'description': $.fn.gettext('Successful'),
-                                                }, 'success');
-                                                const process_runtime = data?.['process_runtime'];
-                                                if (process_runtime && process_runtime.hasOwnProperty('id')) {
-                                                    setTimeout(
-                                                        () => {
-                                                            window.location.href = $(form).data('url-redirect').replaceAll('__pk__', process_runtime['id']);
-                                                        },
-                                                        1000
-                                                    )
+                                SetupFormSubmit.validate(frmStartProcess$, {
+                                    submitHandler: function (form, event) {
+                                        event.preventDefault();
+                                        const frm = new SetupFormSubmit($(form));
+                                        $.fn.callAjax2({
+                                            url: $(form).data('url'),
+                                            method: 'POST',
+                                            data: {
+                                                'config': processId,
+                                                ...frm.dataForm
+                                            },
+                                            isLoading: true,
+                                        }).then(
+                                            resp => {
+                                                const data = $.fn.switcherResp(resp);
+                                                if (data) {
+                                                    $.fn.notifyB({
+                                                        'description': $.fn.gettext('Successful'),
+                                                    }, 'success');
+                                                    const process_runtime = data?.['process_runtime'];
+                                                    if (process_runtime && process_runtime.hasOwnProperty('id')) {
+                                                        setTimeout(
+                                                            () => {
+                                                                window.location.href = $(form).data('url-redirect').replaceAll('__pk__', process_runtime['id']);
+                                                            },
+                                                            1000
+                                                        )
+                                                    }
                                                 }
-                                            }
-                                        },
-                                        errs => $.fn.switcherResp(errs),
-                                    )
-                                }
-                            })
+                                            },
+                                            errs => $.fn.switcherResp(errs),
+                                        )
+                                    }
+                                })
+                            }
                         }
                     }
+
+                    let dateStart = process_detail?.['apply_start'];
+                    if (dateStart) dateStart = moment(dateStart, 'YYYY-MM-DD hh:mm:ss');
+                    let dateFinish = process_detail?.['apply_finish'];
+                    if (dateFinish) dateFinish = moment(dateFinish, 'YYYY-MM-DD hh:mm:ss');
+                    if (
+                        (
+                            !dateStart || (
+                                dateStart && dateStart.unix() <= moment().unix()
+                            )
+                        ) && (
+                            !dateFinish || (
+                                dateFinish && dateFinish.unix() >= moment().unix()
+                            )
+                        )
+                    ) handlePlayProcess();
                 }
             }
         },

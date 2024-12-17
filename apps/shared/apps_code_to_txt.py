@@ -107,7 +107,7 @@ class AppsCodeToList:
                 'is_active': True,
             },
             'documentforcustomer': {
-                'title': _('Document For Customers'),
+                'title': _('Document for customer'),
                 'is_active': True,
             },
             'opportunitycall': {

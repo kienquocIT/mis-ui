@@ -57,8 +57,12 @@ class RecurrenceLoadDataHandle {
     ];
     static appMapUrl = {
         'saleorder.saleorder': {
-            'url': RecurrenceLoadDataHandle.$urls.attr('data-sale-order'),
+            'url': RecurrenceLoadDataHandle.$urls.attr('data-so-recurrence'),
             'keyResp': "sale_order_recurrence",
+        },
+         'arinvoice.arinvoice': {
+            'url': RecurrenceLoadDataHandle.$urls.attr('data-ar-recurrence'),
+            'keyResp': "ar_invoice_recurrence",
         },
     }
 
@@ -76,7 +80,7 @@ class RecurrenceLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
                 let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
                 return $(`<span>${res1} ${res2}</span>`);
             }
@@ -152,7 +156,7 @@ class RecurrenceLoadDataHandle {
                 let contentType = data?.['app_label'] + "." + data?.['model_code'];
                 RecurrenceLoadDataHandle.$boxDocTem.attr('data-url', RecurrenceLoadDataHandle.appMapUrl[contentType]?.['url']);
                 RecurrenceLoadDataHandle.$boxDocTem.attr('data-keyResp', RecurrenceLoadDataHandle.appMapUrl[contentType]?.['keyResp']);
-                RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxDocTem, [], {"is_recurring": true});
+                RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxDocTem, [], {"is_recurrence_template": true});
             }
         }
     };
@@ -249,7 +253,7 @@ class RecurrenceLoadDataHandle {
         RecurrenceLoadDataHandle.$boxStatus.val(data?.['recurrence_status']).trigger('change');
         RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxApp, [data?.['application_data']], {"is_workflow": true});
         RecurrenceLoadDataHandle.$boxApp.trigger('change');
-        RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxDocTem, [data?.['doc_template_data']], {"is_recurring": true});
+        RecurrenceLoadDataHandle.loadInitS2(RecurrenceLoadDataHandle.$boxDocTem, [data?.['doc_template_data']], {"is_recurrence_template": true});
         RecurrenceLoadDataHandle.$boxPeriod.val(data?.['period']).trigger('change');
         RecurrenceLoadDataHandle.$boxRepeat.val(data?.['repeat']).trigger('change');
 

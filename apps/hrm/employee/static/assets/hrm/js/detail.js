@@ -2,8 +2,8 @@ $(document).ready(function () {
     EmployeeHRMInit.loadUserList();
     EmployeeHRMInit.loadEmpList();
     EmployeeHRMInit.loadDate($('#employee-dob'));
-    EmployeeHRMInit.loadDate($('#employee-date-joined'));
-    EmployeeHRMInit.loadDate($('#employee-doi'));
+    EmployeeHRMInit.loadDate($('#date_joined'));
+    EmployeeHRMInit.loadDate($('#employee_doi'));
 
     EmployeeHRMInit.loadPOI($('#employee-pob'));
     EmployeeHRMInit.loadNationality();
@@ -12,4 +12,17 @@ $(document).ready(function () {
     EmployeeHRMInit.loadBank();
 
     EmployeeHRMInit.loadDetail();
+
+    // init contract
+    EmployeeHRMInit.loadDate($('#effected_date'));
+    EmployeeHRMInit.loadDate($('#expired_date'));
+    EmployeeHRMInit.loadDate($('#signing_date'));
+
+    const _clsContract = new contract_data()
+    const _editor = new editor_handle()
+    $(document).on('detail.DetailLoaded', () =>{
+        _clsContract.load_list()
+        _editor.init()
+    })
+
 })

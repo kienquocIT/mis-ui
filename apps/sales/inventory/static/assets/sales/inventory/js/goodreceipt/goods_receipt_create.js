@@ -4,7 +4,6 @@ $(function () {
 
         let formSubmit = $('#frm_good_receipt_create');
         // Elements Case PO
-        let btnEdit = $('#btn-edit-product-good-receipt');
         let btnConfirmAdd = $('#btn-confirm-add-product');
 
         // Load init
@@ -57,7 +56,7 @@ $(function () {
             GRLoadDataHandle.loadChangePO($(this));
             GRLoadDataHandle.loadClearModal();
             GRLoadDataHandle.loadCallAjaxProduct();
-            btnEdit.click();
+            $('#btn-edit-product-good-receipt').click();
         });
 
         btnConfirmAdd.on('click', function () {
@@ -179,7 +178,7 @@ $(function () {
                 GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                 GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataSelected?.['gr_products_data']).draw();
             }
-            btnEdit.click();
+            $('#btn-edit-product-good-receipt').click();
         });
 
         // PRODUCTION BEGIN
@@ -214,7 +213,7 @@ $(function () {
                     GRDataTableHandle.tablePOProduct.DataTable().rows.add([dataProduction]).draw();
                 }
             }
-            btnEdit.click();
+            $('#btn-edit-product-good-receipt').click();
         });
 
 // SUBMIT FORM

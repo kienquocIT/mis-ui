@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% block title %}{% trans 'Account' %}{% endblock %}
 {% load static %}
 {% block cssHeader %}
     <!-- Select2 -->
@@ -8,8 +9,6 @@
             rel="stylesheet"
             type="text/css"
     />
-    <link href="{% static 'assets/css/masterdata/saledata/accounts/contact_create.css' %}" rel="stylesheet"
-          type="text/css"/>
     <link href="{% static 'vendors/monthpicker/monthpicker.css' %}" rel="stylesheet">
 {% endblock %}
 {% block jsHeader %}
@@ -87,7 +86,7 @@
             <div class="col-12 col-md-9 col-lg-9">
                 <div class="row">
                     <div class="col-12">
-                        <ul class="nav nav-pills nav-icon nav-light">
+                        <ul class="nav nav-tabs nav-icon nav-light">
                             <li class="nav-item">
                                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
                                     <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
@@ -677,7 +676,7 @@
         <div class="offcanvas-body">
             <div class="row">
                 <div class="text-left col-12 col-md-6 col-lg-6">
-                    <button type="button" class="btn btn-outline-primary mb-3" id="new_contact_shortcut"
+                    <button type="button" class="btn btn-sm btn-outline-primary mb-3" id="new_contact_shortcut"
                             data-bs-toggle="modal" data-bs-target="#modal-add-new-contact"
                             aria-label="Close">{% trans "New Contact Shortcut" %}&nbsp;
                         <i class="bi bi-journal-bookmark-fill"></i>

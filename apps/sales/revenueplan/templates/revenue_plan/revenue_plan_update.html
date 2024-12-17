@@ -1,41 +1,19 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Revenue Plan Update' %}{% endblock %}
+{% block title %}{% trans 'Revenue plan' %}{% endblock %}
 {% block cssHeader %}
     <style>
-        td, th {
-            min-width: 230px;
-        }
         .sticky {
             position: sticky;
             top: 0;
             z-index: 9999;
         }
-        td input {
-            text-align: right;
-        }
-        td {
+        td input, td, th {
             text-align: right;
         }
         th {
-            text-align: right;
-        }
-        .company-row input[readonly] {
-            border: none;
-            background-color: #ebf5f5;
-        }
-        .group-row input[readonly] {
-            border: none;
-            background-color: white;
-        }
-        .fix1 {
-            position: sticky;
-            left: -20px;
-        }
-        .fix2 {
-            position: sticky;
-            left: 210px;
+            color: white !important;
         }
     </style>
 {% endblock %}
@@ -53,8 +31,7 @@
 {% endblock %}
 {% block pageContent %}
     {{ data.revenue_plan_config | json_script:"revenue_plan_config" }}
-
-    <script id="trans-url"
+    <script id="trans-script"
             data-trans-m1th="{% trans 'January' %}"
             data-trans-m2th="{% trans 'February' %}"
             data-trans-m3th="{% trans 'March' %}"
@@ -72,7 +49,6 @@
             data-trans-gross-profit="{% trans 'Gross profit' %}"
             data-url-group-detail="{% url 'GroupDetailAPI' '0' %}"
     ></script>
-
     <form id="form-detail-revenue-plan"
           data-method="PUT"
           data-url-redirect="{% url 'RevenuePlanDetail' '0' %}"
@@ -142,7 +118,7 @@
             </div>
         </div>
         <div class="row mt-5">
-            <div class="col-6 main">
+            <div class="col-12 col-md-6 col-lg-6 main">
                 <button type="button" id="add-group-plan" class="btn btn-custom btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-group-plan-modal">
                     <span>
                         <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
@@ -150,7 +126,7 @@
                     </span>
                 </button>
             </div>
-            <div class="col-6 text-right" id="notify-change-group" hidden>
+            <div class="col-12 col-md-6 col-lg-6 mt-1 mt-md-0 mt-lg-0 text-right" id="notify-change-group" hidden>
                 <button type="button" class="btn btn-gradient-danger" id="btn_update_group">
                     {% trans "had been changed. Update here!" %}
                 </button>
@@ -159,122 +135,102 @@
         </div>
         <div class="row mt-5 mb-10">
             <div class="col-12 main" style="position: relative; overflow: auto; width: 100%; max-height: 70vh">
-                <table class="table nowrap w-100 fixed_header" id="revenue-plan-table"
-                       data-group-url="{% url 'GroupDetailAPI' '0' %}"
-                >
+                <table class="table nowrap w-100 fixed_header" id="revenue-plan-table" data-group-url="{% url 'GroupDetailAPI' '0' %}">
                     <thead class="sticky bg-primary">
                         <tr>
-                            <th class="text-white fix1 bg-primary">{% trans 'Employee' %}</th>
-                            <th class="text-white fix2 bg-primary">{% trans 'Target item' %}</th>
-                            <th class="text-white" id="m1th"></th>
-                            <th class="text-white" id="m2th"></th>
-                            <th class="text-white" id="m3th"></th>
-                            <th><span class="text-white"><b>{% trans 'QUARTER' %} 1</b></span></th>
-                            <th class="text-white" id="m4th"></th>
-                            <th class="text-white" id="m5th"></th>
-                            <th class="text-white" id="m6th"></th>
-                            <th><span class="text-white"><b>{% trans 'QUARTER' %} 2</b></span></th>
-                            <th class="text-white" id="m7th"></th>
-                            <th class="text-white" id="m8th"></th>
-                            <th class="text-white" id="m9th"></th>
-                            <th><span class="text-white"><b>{% trans 'QUARTER' %} 3</b></span></th>
-                            <th class="text-white" id="m10th"></th>
-                            <th class="text-white" id="m11th"></th>
-                            <th class="text-white" id="m12th"></th>
-                            <th><span class="text-white"><b>{% trans 'QUARTER' %} 4</b></span></th>
-                            <th><span class="text-white"><b>{% trans 'YEAR' %}</b></span></th>
+                            <th style="min-width: 200px;" class="bg-primary">{% trans 'Employee' %}</th>
+                            <th style="min-width: 150px;" class="bg-primary">{% trans 'Target item' %}</th>
+                            <th style="min-width: 200px;" id="m1th"></th>
+                            <th style="min-width: 200px;" id="m2th"></th>
+                            <th style="min-width: 200px;" id="m3th"></th>
+                            <th style="min-width: 200px;">{% trans 'QUARTER' %} 1</th>
+                            <th style="min-width: 200px;" id="m4th"></th>
+                            <th style="min-width: 200px;" id="m5th"></th>
+                            <th style="min-width: 200px;" id="m6th"></th>
+                            <th style="min-width: 200px;">{% trans 'QUARTER' %} 2</th>
+                            <th style="min-width: 200px;" id="m7th"></th>
+                            <th style="min-width: 200px;" id="m8th"></th>
+                            <th style="min-width: 200px;" id="m9th"></th>
+                            <th style="min-width: 200px;">{% trans 'QUARTER' %} 3</th>
+                            <th style="min-width: 200px;" id="m10th"></th>
+                            <th style="min-width: 200px;" id="m11th"></th>
+                            <th style="min-width: 200px;" id="m12th"></th>
+                            <th style="min-width: 200px;">{% trans 'QUARTER' %} 4</th>
+                            <th style="min-width: 200px;">{% trans 'YEAR' %}</th>
                         </tr>
                         <tr class="company-row bg-primary-light-5">
-                            <td class="fix1 bg-primary-light-5"><span class="text-primary"><b>{% trans 'Total' %}</b></span></td>
-                            <td class="fix2 bg-primary-light-5">
-                                <label class="col-form-label text-primary">{% trans 'Revenue' %}</label>
-                                <div class="my-1"></div>
-                                <label class="profit-type-span col-form-label text-secondary">{% trans 'Gross profit' %}</label>
+                            <td class="bg-primary-light-5">{% trans 'Total' %}</td>
+                            <td class="bg-primary-light-5">
+                                <label class="text-primary">{% trans 'Revenue' %}</label><br>
+                                <label class="profit-type-span text-secondary">{% trans 'Gross profit' %}</label>
                             </td>
                             <td class="sum-m1">
-                                <input readonly disabled class="sum-company-m1 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-m1 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-m1-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-m2">
-                                <input readonly disabled class="sum-company-m2 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-m2 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-m2-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-m3">
-                                <input readonly disabled class="sum-company-m3 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-m3 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-m3-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-q1">
-                                <input readonly disabled class="sum-company-q1 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-q1 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-q1-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-m4">
-                                <input readonly disabled class="sum-company-m4 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-m4 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-m4-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-m5">
-                                <input readonly disabled class="sum-company-m5 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-m5 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-m5-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-m6">
-                                <input readonly disabled class="sum-company-m6 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-m6 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-m6-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-q2">
-                                <input readonly disabled class="sum-company-q2 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-q2 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-q2-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-m7">
-                                <input readonly disabled class="sum-company-m7 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-m7 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-m7-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-m8">
-                                <input readonly disabled class="sum-company-m8 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-m8 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-m8-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-m9">
-                                <input readonly disabled class="sum-company-m9 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-m9 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-m9-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-q3">
-                                <input readonly disabled class="sum-company-q3 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-q3 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-q3-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-m10">
-                                <input readonly disabled class="sum-company-m10 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-m10 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-m10-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-m11">
-                                <input readonly disabled class="sum-company-m11 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-m11 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-m11-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-m12">
-                                <input readonly disabled class="sum-company-m12 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-m12 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-m12-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-q4">
-                                <input readonly disabled class="sum-company-q4 mask-money form-control text-primary" value="0">
-                                <div class="my-3"></div>
+                                <input readonly disabled class="mb-1 sum-company-q4 mask-money form-control text-primary" value="0">
                                 <input readonly disabled class="sum-company-q4-profit mask-money form-control text-secondary" value="0">
                             </td>
                             <td class="sum-year">
-                                <span class="sum-company-year mask-money text-primary" data-init-money="0"></span>
-                                <div class="my-3"></div>
-                                <span class="sum-company-year-profit mask-money text-secondary" data-init-money="0"></span>
+                                <input readonly disabled class="mb-1 sum-company-year mask-money form-control text-primary" value="0">
+                                <input readonly disabled class="sum-company-year-profit mask-money form-control text-secondary" value="0">
                             </td>
                         </tr>
                     </thead>
@@ -282,41 +238,41 @@
                 </table>
             </div>
         </div>
-
-        <div class="modal fade" style="z-index: 99999" id="add-group-plan-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans 'Add group plan' %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="modal-group" class="form-label">{% trans 'Select group' %}</label>
-                                    <select class="form-select select2" id="modal-group"
-                                            data-method="GET" data-url="{% url 'GroupListAPI' %}"
-                                    ></select>
-                                </div>
+    </form>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" style="z-index: 99999" id="add-group-plan-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Add group plan' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="modal-group" class="form-label">{% trans 'Select group' %}</label>
+                                <select class="form-select select2" id="modal-group"
+                                        data-method="GET" data-url="{% url 'GroupListAPI' %}"
+                                ></select>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                        <button type="button" class="btn btn-primary" id="btn-add-group-plan">{% trans 'Add' %}</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="button" class="btn btn-primary" id="btn-add-group-plan">{% trans 'Add' %}</button>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
 {% endblock %}
 {% block jsFooterUnCompress %}
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
     <script src="{% static 'assets/js/revenue_plan/revenue_plan_common.js' %}"></script>
     <script src="{% static 'assets/js/revenue_plan/revenue_plan_update.js' %}"></script>
 {% endblock %}

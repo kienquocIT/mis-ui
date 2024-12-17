@@ -3,7 +3,7 @@ function resetFormTask() {
     $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
     $('#employee_inherit_id').val('').trigger('change').prop('disabled', false).removeClass('is-invalid');
     $('#employee_inherit_id-error').remove()
-    $('#opportunity_id').val('').trigger('change').attr('disabled', false);
+    $('#opportunity_id').val('').trigger('change', BastionFieldControl.skipBastionChange).attr('disabled', false);
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
     $('#rangeValue').text(0)
@@ -16,6 +16,8 @@ function resetFormTask() {
     window.editor.setData('')
     $('.create-task').attr('disabled', false);
     $('.parents-block').addClass('hidden')
+    $('#process_id').val('').trigger('change', BastionFieldControl.skipBastionChange)
+    $('#process_stage_app_id').val('').trigger('change', BastionFieldControl.skipBastionChange)
 
     const $attachElm = $('#assigner_attachment'), $attachElmAssignee = $('#assignee_attachment');
     $attachElm.find('.dm-uploader').dmUploader("reset")
@@ -305,4 +307,5 @@ $(document).ready(function () {
             }
         }
     )
+
 });

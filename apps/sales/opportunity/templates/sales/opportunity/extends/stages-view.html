@@ -1,13 +1,14 @@
 {% load i18n %}
+
 <style>
     .pointer {
         color: #6f6f6f;
         flex-direction: row;
-        min-width: 240px;
-        height: 60px;
+        width: 100vw;
+        height: 32px;
         position: relative;
         background: #e7e7e7;
-        margin-left: -24px; !important;
+        margin-left: -12px; !important;
     }
     .pointer:after {
         content: "";
@@ -16,34 +17,41 @@
         bottom: 0;
         width: 0;
         height: 0;
-        border-left: 30px solid white;
-        border-top: 30px solid transparent;
-        border-bottom: 30px solid transparent;
+        border-left: 16px solid white;
+        border-top: 16px solid transparent;
+        border-bottom: 16px solid transparent;
     }
     .arrow-right {
-        margin-left: -1px;
+        margin-left: 0;
         width: 0;
         height: 0;
-        border-top: 30px solid transparent;
-        border-bottom: 30px solid transparent;
+        border-top: 16px solid transparent;
+        border-bottom: 16px solid transparent;
         z-index: 888;
     }
+    .ellipsis-text {
+        white-space: nowrap;       /* Prevent text from wrapping to the next line */
+        overflow: hidden;          /* Hide the overflowing text */
+        text-overflow: ellipsis;   /* Add the ellipsis (...) at the end of truncated text */
+        width: 80px;              /* Set a fixed width for the element */
+        display: block;            /* Ensure the element behaves like a block for width */
+    }
 </style>
-
-<div class="col-6 text-left">
-    <a href="#" id="btn-auto-update-stage" class="badge badge-soft-secondary badge-outline">
-        <i class="fas fa-sync-alt"></i> {% trans "Auto Update Stage" %}
-    </a>
-</div>
-<div class="col-6 text-right" hidden>
-    <a href="#" class="text-blue"><i class="bi bi-bar-chart-line-fill"></i></a>
-</div>
-<div class="col-12 mt-2" style="overflow: auto;">
-        <div class="d-flex" style="margin-left: 24px; !important;" id="div-stage" data-method="GET" data-url="{% url "OpportunityConfigStageListAPI" %}"></div>
+<div class="row">
+    <div class="col-6 text-left mb-2">
+        <a href="#" id="btn-auto-update-stage" class="badge badge-sm badge-soft-secondary badge-outline">
+            <i class="fas fa-sync-alt"></i> {% trans "Auto Update Stage" %}
+        </a>
+    </div>
+    <div class="col-6 text-right" hidden>
+        <a href="#" class="text-blue"><i class="bi bi-bar-chart-line-fill"></i></a>
+    </div>
+    <div class="col-12" style="overflow: auto;">
+        <div class="d-flex" style="margin-left: 12px; !important;" id="div-stage" data-method="GET" data-url="{% url "OpportunityConfigStageListAPI" %}"></div>
         <div id="stage-hidden" class="hidden">
-            <div class="pointer mb-2 sub-stage text-center d-flex justify-content-center">
-                <p class="mt-3 ml-5 stage-indicator"></p>
-                <div class="mt-3 ml-3 dropdown dropend">
+            <div class="pointer mb-2 sub-stage text-center d-flex justify-content-center align-items-center">
+                <p class="ml-4 stage-indicator ellipsis-text"></p>
+                <div class="ml-2 dropdown dropend">
                     <a href="#" data-bs-toggle="dropdown">
                         <span class="text-right" style="color: #706f6f;">
                             <i class="fas fa-chevron-circle-right"></i>
@@ -54,6 +62,7 @@
                     </div>
                 </div>
             </div>
-            <div class="arrow-right text-primary" style="border-left: 30px solid #e7e7e7"></div>
+            <div class="arrow-right text-primary" style="border-left: 16px solid #e7e7e7"></div>
         </div>
     </div>
+</div>

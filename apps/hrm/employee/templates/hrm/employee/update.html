@@ -4,6 +4,9 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/contextMenu/jquery.contextMenu.min.css' %}" rel="stylesheet" type="text/css"/>
+
+    <link href="{% static 'assets/online_sign/css/online_signature.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{% static 'assets/hrm/css/common.css' %}">
 {% endblock %}
 {% block pageAction %}
@@ -118,7 +121,7 @@
                                 <label class="form-label required"
                                        for="employee-first_name">{% trans 'First Name' %}</label>
                                 <input type="text" class="form-control" placeholder="Nguyen" name="first_name"
-                                       id="employee-first_name" required>
+                                       id="employee-first_name" required autocomplete="off">
                             </div>
                         </div>
                         <div class="col-12 col-md-9 col-lg-4">
@@ -140,9 +143,9 @@
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label required"
-                                       for="employee-date-joined">{% trans 'Date Joined' %}</label>
+                                       for="date_joined">{% trans 'Date Joined' %}</label>
                                 <div class="input-affix-wrapper">
-                                    <input class="form-control pl-2" type="text" id="employee-date-joined" name="date_joined"
+                                    <input class="form-control pl-2" type="text" id="date_joined" name="date_joined"
                                            required/>
                                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                                 </div>
@@ -167,9 +170,9 @@
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label" for="employee-doi">{% trans 'Date of issue' %}</label>
+                                <label class="form-label" for="employee_doi">{% trans 'Date of issue' %}</label>
                                 <div class="input-affix-wrapper">
-                                    <input class="form-control pl-2" id="employee-doi" type="text" name="date_of_issue"/>
+                                    <input class="form-control pl-2" id="employee_doi" type="text" name="date_of_issue"/>
                                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                                 </div>
                             </div>
@@ -182,7 +185,7 @@
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label" for="employee-dob">{% trans 'Date of Birthday' %}</label>
+                                <label class="form-label" for="employee-dob">{% trans 'Date of birth' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input class="form-control pl-2" id="employee-dob" type="text" name="dob"/>
                                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
@@ -289,14 +292,14 @@
                             <div class="form-group">
                                 <label class="form-label required" for="employee-email">{% trans 'Email' %}</label>
                                 <input type="email" class="form-control" placeholder="employee@mtsolution.com.vn"
-                                       name="email" id="employee-email" required>
+                                       name="email" id="employee-email" required autocomplete="off">
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label required" for="employee-phone">{% trans 'Phone' %}</label>
                                 <input type="text" class="form-control" name="phone" id="employee-phone" required
-                                placeholder="0123 456 789">
+                                placeholder="0123 456 789" autocomplete="off">
                             </div>
                         </div>
                         <div class="col-12">
@@ -317,16 +320,45 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab-contract">
+                <div class="contract-list">
+                    <button class="btn btn-outline-primary mt-3 mb-2 new-contract" type="button">
+                        <span>
+                            <span class="icon">
+                                <i class="fa-regular fa-square-plus"></i>
+                            </span>
+                            <span>{% trans 'Add' %}</span>
+                        </span>
+                    </button>
+                    {% include 'hrm/contract/list.html' %}
+                </div>
+                <div class="contract-edit hidden">
+                    {% include 'hrm/contract/create.html' with edit=True show_icon=True %}
+                </div>
             </div>
         </div>
     </form>
 {% endblock %}
+{% block modalData %}
+    {% include 'online_signature/online-sign.html' with navigation=True is_edit=True %}
+{% endblock %}
+{% block dataHiddenGroup %}
+    {{ data.template_list|json_script:'template_list' }}
 
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
     {% if base.language == 'vi' %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
+    <script src="{% static 'vendors/fabric/index.min.js' %}"></script>
+    <script src="{% static 'vendors/contextMenu/jquery.contextMenu.min.js' %}"></script>
+    <script src="{% static 'vendors/contextMenu/jquery.ui.position.min.js' %}"></script>
+    <script src="{% static 'vendors/hopscotch/dist/js/hopscotch.min.js' %}"></script>
+
+
+    <script src="{% static 'assets/hrm/js/extend/contract_editor.js' %}"></script>
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
+    <script src="{% static 'assets/online_sign/js/online_signature_common.js' %}"></script>
+
     <script src="{% static 'assets/hrm/js/update.js' %}"></script>
 {% endblock %}

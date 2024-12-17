@@ -1,0 +1,134 @@
+{% load i18n %}
+
+<div class="offcanvas offcanvas-end" style="min-width: 75%" tabindex="-1" id="offcanvas-call-log" aria-labelledby="offcanvasTopLabel">
+	<div class="offcanvas-header">
+		<h5 id="offcanvasRightLabel">{% trans 'New Call Log' %}</h5>
+		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+		<form data-url="{% url 'OpportunityCallLogListAPI' %}"
+              data-url-redirect="{% url 'OpportunityCallLogList' %}"
+              data-method="POST"
+              id="form-call-log"
+              method="post">
+            {% csrf_token %}
+            <div class="row" style="overflow: auto; max-height: 80vh">
+                {% trans 'Select Sale Person' as inherit_title %}
+                {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                <div class="col-12 col-lg-7 col-md-7">
+                    <div class="form-group">
+                        <label for="subject-input" class="form-label required">{% trans 'Subject' %}</label>
+                        <input id="subject-input" class="form-control">
+                    </div>
+                </div>
+                <div class="col-12 col-lg-5 col-md-5">
+                    <div class="form-group">
+                        <label for="date-input" class="form-label required">{% trans 'Date' %}</label>
+                        <input id="date-input" class="form-control">
+                    </div>
+                </div>
+                <div class="col-12 col-lg-7 col-md-7">
+                    <div class="form-group">
+                        <label for="account-select-box" class="form-label required">{% trans 'Customer' %}</label>
+                        <select disabled id="account-select-box" class="select2 form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-5 col-md-5">
+                    <div class="form-group">
+                        <label for="contact-select-box" class="form-label required">{% trans 'Contact' %}</label>
+                        <select disabled id="contact-select-box" class="select2 form-select"></select>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="result-text-area" class="form-label required">{% trans 'Contents' %}</label>
+                        <textarea id="result-text-area" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-12" hidden>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="repeat-activity">
+                        <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <button type="submit" class="btn btn-primary mt-3" form="form-call-log" id="btn-offcanvas-call-log">{% trans 'Save' %}</button>
+	</div>
+</div>
+
+<div class="offcanvas offcanvas-end" style="min-width: 40%" tabindex="-1" id="offcanvas-call-log-detail" aria-labelledby="offcanvasTopLabel">
+	<div class="offcanvas-header">
+		<h5 id="offcanvasRightLabel">{% trans 'Detail Call Log' %}</h5>
+		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+		<form data-url="{% url 'OpportunityCallLogListAPI' %}"
+              data-url-redirect="{% url 'OpportunityCallLogList' %}"
+              data-method="POST"
+              id="form-call-log"
+              method="post">
+            {% csrf_token %}
+            <button class="btn btn-light btn-sm w-100" type="button" data-bs-toggle="collapse" data-bs-target="#detail-opp-process-inherit">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="collapse multi-collapse" id="detail-opp-process-inherit">
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="detail-opp" class="form-label required">{% trans 'Opportunity' %}</label>
+                                <input disabled readonly id="detail-opp" class="form-control text-primary fw-bold form-control-line">
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label for="detail-process" class="form-label">{% trans 'Process' %}</label>
+                                <input disabled readonly id="detail-process" class="form-control text-primary fw-bold form-control-line">
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label for="detail-stage" class="form-label">{% trans 'Stage' %}</label>
+                                <input disabled readonly id="detail-stage" class="form-control text-primary fw-bold form-control-line">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="detail-inheritor" class="form-label required">{% trans 'Inheritor' %}</label>
+                                <input disabled readonly id="detail-inheritor" class="form-control text-primary fw-bold form-control-line">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-12">
+                    <span id="detail-subject-input" class="fs-3 fw-bold text-muted"></span>
+                    <span id="is-cancelled" class="badge badge-soft-danger badge-sm" hidden>{% trans 'Cancelled' %}</span>
+                    <span id="detail-date-input" class="ml-2 text-muted small"></span>
+                </div>
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Contact' %} - {% trans 'Customer' %}</span>
+                    <br>
+                    <span id="detail-contact-select-box" class="text-primary"></span>
+                    <span> - </span>
+                    <span id="detail-account-select-box" class="text-primary"></span>
+                </div>
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Contents' %}</span>
+                    <p id="detail-result-text-area" class="text-primary"></p>
+                </div>
+                <div class="col-12" hidden>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="detail-repeat-activity">
+                        <label class="form-check-label" for="detail-repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                    </div>
+                </div>
+                <div class="col-12 mt-5">
+                    <button type="button" id="cancel-activity" class="btn btn-sm btn-danger">{% trans 'Cancel' %}</button>
+                </div>
+            </div>
+        </form>
+	</div>
+</div>

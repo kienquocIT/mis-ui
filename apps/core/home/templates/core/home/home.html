@@ -774,6 +774,12 @@
 
 {% block dataHiddenGroup %}
     {{ data.app_name_list|json_script:'app_list' }}
+    <input
+        type="text"
+        id="home-urls-factory"
+        data-so-create="{% url 'SaleOrderCreate' %}"
+        data-so-detail="{% url 'SaleOrderDetail' pk=1 %}"
+    >
 {% endblock %}
 {% block jsHeaderUnCompress %}
     <script src="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.js' %}" defer></script>
@@ -1247,6 +1253,14 @@
             const dateSelected$ = $('#event-at-day-selected-date');
             const itemEmpty$ = $('#event-at-empty');
 
+            let $urls = $('#home-urls-factory');
+            let appMapUrl = {
+                'saleorder.saleorder': {
+                    "create": $urls.attr('data-so-create'),
+                    "detail": $urls.attr('data-so-detail'),
+                },
+            }
+
             function keepNumberHasTwoChar(numberData) {
                 return numberData >= 10 ? numberData.toString() : '0' + numberData;
             }
@@ -1255,6 +1269,8 @@
                 const ele$ = $(eventItemBase$.prop('outerHTML'));
                 ele$.removeAttr('id');
 
+                let link = "#";
+                let title = `<span>${data?.['title'] || ''}</span>`;
                 let iconApp = $('<i class="fa-solid fa-calendar-day"></i>');
                 switch (data?.['category']) {
                     case 'Opportunity Meeting':
@@ -1278,7 +1294,13 @@
                         iconApp = $(`<i class="fa-solid fa-cake-candles"></i>`)
                         break
                     case 'Recurrence':
-                        iconApp = $(`<i class="fas fa-recycle"></i>`)
+                        iconApp = $(`<i class="fas fa-sync-alt"></i>`)
+                        if (data?.['id'] && data?.['app_code'] && data?.['doc_template_data']?.['id']) {
+                            if (appMapUrl?.[data?.['app_code']]?.['create']) {
+                                link = appMapUrl[data?.['app_code']]['create'] + `?recurrence_template_id=${data?.['doc_template_data']?.['id']}&recurrence_task_id=${data?.['id']}`;
+                                title = `<a href="${link}"><span>${data?.['title'] || ''}</span></a>`;
+                            }
+                        }
                         break
                 }
 
@@ -1288,7 +1310,7 @@
                 } else {
                     ele$.find('.event-at-category-title').text('');
                 }
-                ele$.find('.event-at-title').html(iconApp.prop('outerHTML') + `<span>${data?.['title'] || ''}</span>`);
+                ele$.find('.event-at-title').html(iconApp.prop('outerHTML') + `${title}`);
                 if (data?.['location_title'] && data?.['location_address']){
                     ele$.find('.event-at-location').html(`${data['location_address']} - ${data['location_title']}`);
                 } else if (data?.['location_address']) {

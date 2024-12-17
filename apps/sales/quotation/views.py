@@ -1,4 +1,6 @@
 import json
+
+from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework import status
@@ -45,11 +47,11 @@ class QuotationCreate(View):
         breadcrumb='QUOTATION_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        opportunity = request.GET.get('opportunity', "")
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
         ctx = {
-            'employee_current': request.user.employee_current_data,
-            'opportunity': json.loads(opportunity) if opportunity else {},
-
+            'employee_current': employee_current,
             'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
             'form_id': 'frm_quotation_create',
             'list_from_app': 'quotation.quotation.create',
@@ -91,7 +93,8 @@ class QuotationCreate(View):
                         }
                     ]
                 }
-            }
+            },
+            'app_id': 'b9650500-aba7-44e3-b6e0-2542622702a3',
         }
         return ctx, status.HTTP_200_OK
 
@@ -128,9 +131,12 @@ class QuotationDetail(View):
         breadcrumb='QUOTATION_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
         return {
                    'data': {'doc_id': pk},
-                   'employee_current': request.user.employee_current_data,
+                   'employee_current': employee_current,
                    'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
                    'form_id': 'frm_quotation_create',
                }, status.HTTP_200_OK

@@ -15,6 +15,26 @@ $(document).ready(function () {
     let APPLY_ALL_CREATE_NEW_LIST = []
     let APPLY_ALL_GET_OLD_LIST = []
 
+    function excelDateToJSDate(excelDate) {
+        if (Number(excelDate)) {
+            const date = new Date((Number(excelDate) - 25569) * 86400000);
+            return date.toISOString().split('T')[0];
+        }
+        else if (moment(excelDate, 'YYYY-MM-DD') !== 'Invalid date') {
+            return excelDate;
+        }
+        else if (moment(excelDate, 'YYYY/MM/DD') !== 'Invalid date') {
+            return moment(excelDate, 'YYYY/MM/DD').format('YYYY-MM-DD');
+        }
+        else if (moment(excelDate, 'DD-MM-YYYY') !== 'Invalid date') {
+            return moment(excelDate, 'DD-MM-YYYY').format('YYYY-MM-DD');
+        }
+        else if (moment(excelDate, 'DD/MM/YYYY') !== 'Invalid date') {
+            return moment(excelDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
+        }
+        return ''
+    }
+
     $btn_group_import_datatable.on('click', function () {
         THIS_IMPORT_SPACE = $(this).closest('.import-db-space')
         let target_table_id = null
@@ -131,19 +151,24 @@ $(document).ready(function () {
             $import_db_form_modal_table.html(tableEle)
             $import_db_form_modal_table.find('table').attr('id', tableEle.attr('data-table-id')).prop('hidden', false)
             PREVIEW_TABLE = $import_db_form_modal_table.find('table')
+            let col_order_list = []
+            PREVIEW_TABLE.find('thead tr th').each(function () {
+                col_order_list.push($(this).text())
+            })
+            $('.col-order-list').text(col_order_list.slice(2))
         }
     })
 
     function displayExcelData(data, from_index_value, to_index_value, col_type) {
         if (data.length > 1) {
+            const limit_request_per_min = 500
             let from_index = from_index_value ? parseInt(from_index_value) : null
             let to_index = to_index_value ? parseInt(to_index_value) : null
             if (to_index >= data.length) {
                 to_index = data.length - 1
             }
-            console.log(to_index)
 
-            if (from_index && to_index) {
+            if (from_index && to_index && (to_index - from_index + 1) <= limit_request_per_min) {
                 PREVIEW_TABLE.find('tbody').html('')
 
                 for (let i = from_index; i <= to_index; i++) {
@@ -151,6 +176,8 @@ $(document).ready(function () {
                     for (let j = 0; j < col_type.length; j++) {
                         if (col_type[j] === 'input-text') {
                             tds += `<td style="min-width: 250px"><input class="form-control" value="${data[i][j] ? data[i][j] : ''}"></td>`
+                        } else if (col_type[j] === 'input-date') {
+                            tds += `<td style="min-width: 250px"><input class="form-control date-field" value="${data[i][j] ? excelDateToJSDate(data[i][j]) : ''}" placeholder="YYYY-MM-DD"></td>`
                         } else if (col_type[j] === 'input-money') {
                             tds += `<td style="min-width: 250px"><input class="form-control mask-money text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
                         } else if (col_type[j] === 'input-money(disabled)') {
@@ -195,6 +222,9 @@ $(document).ready(function () {
                     $.fn.initMaskMoney2()
                 }
             }
+            else {
+                $.fn.notifyB({description: `FromX or ToY is missing. Row number is limited at ${limit_request_per_min} (current: ${to_index - from_index + 1})!`}, 'warning')
+            }
         } else {
             $.fn.notifyB({description: "File is empty!"}, 'warning')
         }
@@ -215,6 +245,8 @@ $(document).ready(function () {
             let col_index = parseInt(value_list[i]['col_index'])
             if (col_index >= 0) {
                 if (col_type[col_index] === 'input-text') {
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).val() ? row.find(`td:eq(${col_index + 2}) input`).val() : null
+                } else if (col_type[col_index] === 'input-date') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).val() ? row.find(`td:eq(${col_index + 2}) input`).val() : null
                 } else if (col_type[col_index] === 'input-money') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).attr('value') ? row.find(`td:eq(${col_index + 2}) input`).attr('value') : null
@@ -250,7 +282,7 @@ $(document).ready(function () {
         return data_combined
     }
 
-    async function processRow(row, frm, data_combined, type) {
+    async function processRow(row, frm, data_combined, type, row_order) {
         let data = {
             url: frm.dataUrl,
             method: frm.dataMethod,
@@ -263,17 +295,20 @@ $(document).ready(function () {
             let resultData = $.fn.switcherResp(resp);
 
             if (resultData) {
+                $('.importing-row').text((row_order+1).toString() + ' /')
                 let import_data_rows = THIS_IMPORT_SPACE.find('.import_data_rows');
                 let old_rows = import_data_rows.text() ? JSON.parse(import_data_rows.text()) : [];
                 old_rows.push(resultData?.['import_data_row']);
                 import_data_rows.text(JSON.stringify(old_rows));
                 row.find('.status-ok').prop('hidden', false);
                 row.find('.err-title').prop('hidden', true);
+                row.addClass('bg-success-light-5');
                 return true
             }
         } catch (errs) {
             row.find('.status-ok').prop('hidden', true);
             row.find('.err-title').prop('hidden', false);
+            row.addClass('bg-danger-light-5');
 
             if (type === 'import') {
                 for (let key in errs.data ? errs.data.errors : {}) {
@@ -348,7 +383,8 @@ $(document).ready(function () {
 
     async function processAllRows(form, table_data, type = 'import') {
         let frm = new SetupFormSubmit(form);
-
+        $('.all-row').text(PREVIEW_TABLE.find('tbody tr').length)
+        PREVIEW_TABLE.find('tbody tr input').prop('disabled', true).prop('readonly', true)
         // Duyệt qua từng hàng và đợi từng AJAX hoàn tất trước khi tiếp tục, nếu gặp lỗi thì ngừng
         for (let i = 0; i < PREVIEW_TABLE.find('tbody tr').length; i++) {
             let row = PREVIEW_TABLE.find('tbody tr').eq(i);  // Lấy hàng hiện tại
@@ -356,8 +392,9 @@ $(document).ready(function () {
                 let data_combined = combinesDataImportDB(
                     row, table_data, APPLY_ALL_CREATE_NEW_LIST, APPLY_ALL_GET_OLD_LIST
                 )
-                let status = await processRow(row, frm, data_combined, type);   // Đợi AJAX hoàn thành cho từng hàng
+                let status = await processRow(row, frm, data_combined, type, i);   // Đợi AJAX hoàn thành cho từng hàng
                 if (status === false) {
+                    $('#modal-import-datatable-from-excel .modal-footer button').prop('hidden', false)
                     return false
                 }
             }
@@ -365,17 +402,30 @@ $(document).ready(function () {
         return true
     }
 
-    $import_db_form.submit(async function (event) {
+    $import_db_form.submit(function (event) {
         event.preventDefault();
-
-        // Gọi hàm xử lý tất cả các hàng
-        let all_success = await processAllRows($import_db_form, $import_db_form_select_table, 'import').then();
-        if (all_success) {
-            Swal.fire({
-                html: `<h5 class="text-success">${$trans_db_script.attr('data-trans-done')}</h5>
-                       <h6 class="text-muted">${$trans_db_script.attr('data-trans-reload')}</h6>`,
-            });
-        }
+        Swal.fire({
+            title: `<h5 class="text-muted">${$trans_db_script.attr('data-trans-start-import')}</h5><h6 class="text-danger mt-3">${$trans_db_script.attr('data-trans-start-import-noty')}</h6>`,
+            showCancelButton: false,
+            confirmButtonText: 'OK',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                $('#modal-import-datatable-from-excel .modal-footer button').prop('hidden', true)
+                // Gọi hàm xử lý tất cả các hàng
+                let all_success = await processAllRows($import_db_form, $import_db_form_select_table, 'import').then();
+                if (all_success) {
+                    $('#modal-import-datatable-from-excel .modal-footer button').prop('hidden', false)
+                    Swal.fire({
+                        html: `<h5 class="text-success">${$trans_db_script.attr('data-trans-done')}</h5>
+                               <h6 class="text-muted">${$trans_db_script.attr('data-trans-reload')}</h6>`,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload()
+                        }
+                    });
+                }
+            }
+        })
     })
 
     $(document).on('mouseenter', '.import-db-form-modal-table table tbody tr', function () {

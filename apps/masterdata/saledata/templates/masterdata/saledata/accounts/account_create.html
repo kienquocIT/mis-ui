@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% block title %}{% trans 'Account' %}{% endblock %}
 {% load static %}
 {% block cssHeader %}
-    <link
-            href="{% static 'assets/css/masterdata/saledata/accounts/account_create.css' %}" rel="stylesheet"
-            type="text/css"
-    />
     <link
             href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
             rel="stylesheet"
@@ -176,7 +173,7 @@
         </button>
         <div class="row">
             <div class="col-12">
-                <ul class="nav nav-pills nav-icon nav-light">
+                <ul class="nav nav-tabs nav-icon nav-light">
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_contact">
                             <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal-bookmark-fill"></i></span></span>
@@ -435,7 +432,7 @@
         <div class="offcanvas-body">
             <div class="row">
                 <div class="text-left col-6">
-                    <button type="button" class="btn btn-outline-primary mb-3" id="new_contact_shortcut"
+                    <button type="button" class="btn btn-sm btn-outline-primary mb-3" id="new_contact_shortcut"
                             data-bs-toggle="modal" data-bs-target="#modal-add-new-contact"
                             aria-label="Close">{% trans "New Contact Shortcut" %}&nbsp;
                         <i class="bi bi-journal-bookmark-fill"></i>

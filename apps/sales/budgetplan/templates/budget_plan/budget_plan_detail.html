@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Budget Plan Detail' %}{% endblock %}
+{% block title %}{% trans 'Budget plan' %}{% endblock %}
 {% block cssHeader %}
     <style>
         .money-input {
@@ -14,15 +14,6 @@
             position: sticky;
             top: 0;
             z-index: 999;
-        }
-        .fix1 {
-            position: sticky;
-            left: -20px;
-            min-width: 50px;
-        }
-        .fix2 {
-            position: sticky;
-            left: 30px;
         }
         tr input {
             text-align: right;
@@ -68,7 +59,6 @@
             data-url-group-list="{% url 'GroupListAPI' %}"
             data-url-row-expense-item="{% url 'ExpenseItemListAPI' %}"
     ></script>
-
     <div class="row">
         <div class="col-12 col-md-8 col-lg-8">
             <div class="form-group">
@@ -140,7 +130,6 @@
 {% block jsFooterUnCompress %}
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
     <script src="{% static 'assets/js/budget_plan/budget_plan_common.js' %}"></script>
     <script src="{% static 'assets/js/budget_plan/budget_plan_detail.js' %}"></script>
 {% endblock %}

@@ -32,6 +32,7 @@
             data-trans-for-so="{% trans 'For Sale Order' %}"
             data-trans-for-db="{% trans 'For Stock PLan' %}"
             data-trans-for-sf="{% trans 'For Stock Free' %}"
+            data-trans-for-fa="{% trans 'For Fixed Asset' %}"
     ></script>
     <form id="frm-detail-pr"
           data-method="PUT"
@@ -39,7 +40,7 @@
           data-url-redirect="{% url "PurchaseRequestDetail" pk=pk %}"
     >
         {% csrf_token %}
-        {% include 'sales/purchasing/purchase_request/common/body_block.html' %}
+        {% include 'sales/purchasing/purchase_request/common/information.html' %}
         {% include 'sales/purchasing/purchase_request/common/tabs.html' %}
         {% include 'sales/purchasing/purchase_request/common/modals.html' %}
     </form>

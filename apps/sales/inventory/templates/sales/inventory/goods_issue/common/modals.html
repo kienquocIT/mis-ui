@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="modal fade" id="select-detail-modal" tabindex="-1" role="dialog" aria-labelledby="select-detail-modal" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="min-width: 75%" role="document">
+    <div class="modal-dialog modal-lg" style="min-width: 85%" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Select detail' %}</h5>
@@ -17,15 +17,16 @@
                        data-sn-url="{% url 'ProductWarehouseSerialListAPIForGIS' %}">
                     <thead>
                         <tr>
-                            <th class="w-5"></th>
-                            <th class="w-20">{% trans 'Vendor serial no.' %}</th>
-                            <th class="w-20">{% trans 'Serial no.' %}</th>
-                            <th class="w-10">{% trans 'Expiration date' %}</th>
-                            <th class="w-10">{% trans 'Mfr date' %}</th>
-                            <th class="w-10">{% trans 'Warranty start' %}</th>
-                            <th class="w-10">{% trans 'Warranty end' %}</th>
-                            <th class="w-15">
+                            <th style="min-width: 30px"></th>
+                            <th style="min-width: 180px">{% trans 'Vendor serial no.' %}</th>
+                            <th style="min-width: 180px">{% trans 'Serial no.' %}</th>
+                            <th style="min-width: 120px">{% trans 'Expiration date' %}</th>
+                            <th style="min-width: 120px">{% trans 'Mfr date' %}</th>
+                            <th style="min-width: 120px">{% trans 'Warranty start' %}</th>
+                            <th style="min-width: 120px">{% trans 'Warranty end' %}</th>
+                            <th style="min-width: 120px">
                                 <span class="fst-italic text-muted">{% trans 'Selected' %}: <span class="text-muted" id="amount-selected-sn">0</span>/<span class="text-muted" data-value="" id="amount-balance-sn"></span></span>
+                                <button type="button" hidden id="get-all" data-get="" class="btn btn-xs btn-soft-primary">{% trans 'Get all' %}</button>
                             </th>
                         </tr>
                     </thead>
@@ -68,6 +69,69 @@
                 <button type="button" hidden class="btn btn-primary" id="select-detail-table-none-done">{% trans 'Done' %}</button>
                 <button type="button" hidden class="btn btn-primary" id="select-detail-table-sn-done">{% trans 'Done' %}</button>
                 <button type="button" hidden class="btn btn-primary" id="select-detail-table-lot-done">{% trans 'Done' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="select-ia-modal" tabindex="-1" role="dialog" aria-labelledby="select-ia-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Select' %} {% trans 'Inventory adjustment' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table nowrap w-100" id="select-ia-table" data-ia-url="{% url 'InventoryAdjustmentListAPIForGIS' %}">
+                    <thead>
+                        <tr>
+                            <th class="w-5"></th>
+                            <th class="w-20">{% trans 'Code' %}</th>
+                            <th class="w-35">{% trans 'Title' %}</th>
+                            <th class="w-20">{% trans 'Date created' %}</th>
+                            <th class="w-20"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn-accept-select-ia">{% trans 'Done' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="select-powo-modal" tabindex="-1" role="dialog" aria-labelledby="select-powo-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Select' %} {% trans 'Production order' %}/{% trans 'Work order' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table nowrap w-100" id="select-powo-table"
+                       data-url-po="{% url 'ProductionOrderListAPIForGIS' %}"
+                       data-url-wo="{% url 'WorkOrderListAPIForGIS' %}"
+                >
+                    <thead>
+                        <tr>
+                            <th class="w-5"></th>
+                            <th class="w-20">{% trans 'Code' %}</th>
+                            <th class="w-35">{% trans 'Title' %}</th>
+                            <th class="w-20">{% trans 'Date created' %}</th>
+                            <th class="w-20"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn-accept-select-powo">{% trans 'Done' %}</button>
             </div>
         </div>
     </div>

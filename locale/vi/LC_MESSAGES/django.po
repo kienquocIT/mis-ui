@@ -559,7 +559,7 @@ msgid "Department of the employee"
 msgstr "Phòng ban của nhân viên"
 
 #
-msgid "Date of Birthday"
+msgid "Date of birth"
 msgstr "Ngày Sinh"
 
 #
@@ -1804,7 +1804,7 @@ msgid "Click on title to move detail page."
 msgstr "Nhấn vào mã ở cột này để di chuyển đến trang chi tiết."
 
 #
-msgid "Transaction Type"
+msgid "Transaction type"
 msgstr "Loại giao dịch"
 
 #
@@ -3140,8 +3140,8 @@ msgid "Workflow"
 msgstr "Quy trình làm việc"
 
 #
-msgid "Business Process"
-msgstr "Quy trình kinh doanh"
+msgid "Config Process"
+msgstr "Cấu hình Tiến trình"
 
 #
 msgid "Automation"
@@ -3409,11 +3409,11 @@ msgstr "Xóa tất cả thông báo đã xem"
 
 #
 msgid "Win Rate"
-msgstr "Tỷ lệ thắng"
+msgstr "Xác suất thắng"
 
 #
 msgid "Manually input rate"
-msgstr "Tự nhập tỷ lệ"
+msgstr "Tự nhập xác suất"
 
 #
 msgid "agency role"
@@ -4059,15 +4059,11 @@ msgid "Add Document"
 msgstr "Thêm tài liệu"
 
 #
-msgid "Document For Customers"
-msgstr "Tài liệu"
-
-#
-msgid "Product introduction document for customers"
+msgid "Product introduction document for customer"
 msgstr "Tài liệu giới thiệu sản phẩm cho khách hàng"
 
 #
-msgid "Document For Customer"
+msgid "Document for customer"
 msgstr "Tài liệu cho khách hàng"
 
 #
@@ -5477,8 +5473,8 @@ msgid "Sale Activities"
 msgstr "Hoạt động bán hàng"
 
 #
-msgid "Log a call"
-msgstr "Ghi cuộc gọi"
+msgid "Call log"
+msgstr "Nhật ký cuộc gọi"
 
 #
 msgid "Send email"
@@ -5489,8 +5485,8 @@ msgid "Meeting"
 msgstr "Cuộc họp"
 
 #
-msgid "Activity logs"
-msgstr "Hoạt động ghi lại"
+msgid "Sale activities logged"
+msgstr "Nhật ký hoạt động bán hàng"
 
 #
 msgid "Current action"
@@ -5826,7 +5822,7 @@ msgstr "Báo giá mua hàng"
 
 #
 msgid "Inventory adjustment"
-msgstr "Điều chỉnh tồn kho"
+msgstr "Kiểm kê kho"
 
 #
 msgid "Goods receipt type"
@@ -5838,7 +5834,7 @@ msgstr "Cho đơn mua hàng"
 
 #
 msgid "For inventory adjustment"
-msgstr "Cho điều chỉnh tồn kho"
+msgstr "Cho kiểm kê kho"
 
 #
 msgid "For production"
@@ -7190,19 +7186,19 @@ msgstr "Điều chuyển hàng"
 
 #
 msgid "Inventory adjustment create"
-msgstr "Tạo phiếu Điều chỉnh tồn kho"
+msgstr "Tạo phiếu Kiểm kê kho"
 
 #
 msgid "Inventory adjustment detail"
-msgstr "Chi tiết phiếu Điều chỉnh tồn kho"
+msgstr "Chi tiết phiếu Kiểm kê kho"
 
 #
 msgid "Inventory adjustment update"
-msgstr "Cập nhật phiếu Điều chỉnh tồn kho"
+msgstr "Cập nhật phiếu Kiểm kê kho"
 
 #
 msgid "Inventory adjustment list"
-msgstr "Danh sách phiếu Điều chỉnh tồn kho"
+msgstr "Danh sách phiếu Kiểm kê kho"
 
 #
 msgid "Goods issue type"
@@ -7253,8 +7249,8 @@ msgid "Not yet"
 msgstr "Chưa xong"
 
 #
-msgid "Serial status"
-msgstr "Trạng thái Serial"
+msgid "Serial input status"
+msgstr "TT nhập Serial"
 
 #
 msgid "Inventory"
@@ -7519,10 +7515,6 @@ msgstr "Hoàn ứng"
 #
 msgid "Sale activities"
 msgstr "Hoạt động bán hàng"
-
-#
-msgid "Document for customer"
-msgstr "Tài liệu"
 
 #
 msgid "AR invoice"
@@ -8466,7 +8458,7 @@ msgstr "Tất cả (Hoàn thành)"
 
 #
 msgid "System status"
-msgstr "Trạng thái"
+msgstr "Trạng thái hệ thống"
 
 #
 msgid "Goods stock plan"
@@ -8502,7 +8494,7 @@ msgstr "Đã nhập"
 
 #
 msgid "This time"
-msgstr "Nhập"
+msgstr "Lần này"
 
 #
 msgid "Deliver"
@@ -9045,8 +9037,8 @@ msgid "Import data from excel"
 msgstr "Nhập dữ liệu từ excel"
 
 #
-msgid "The table in excel file must have the same column order as selected table."
-msgstr "Bảng trong file excel phải có thứ cột giống như bảng đã chọn."
+msgid "The table in excel file must have the column order below: "
+msgstr "Bảng trong file excel phải có thứ cột như sau: "
 
 #
 msgid "From row"
@@ -9069,18 +9061,6 @@ msgid "Production BOM"
 msgstr "BOM sản xuất"
 
 #
-msgid "Project BOM"
-msgstr "BOM dự án"
-
-#
-msgid "Project BOM create"
-msgstr "Tạo BOM dự án"
-
-#
-msgid "Project BOM list"
-msgstr "Danh sách BOM dự án"
-
-#
 msgid "Production BOM create"
 msgstr "Tạo BOM sản xuất"
 
@@ -9089,7 +9069,7 @@ msgid "Production BOM list"
 msgstr "Danh sách BOM sản xuất"
 
 #
-msgid "The product does not have project BOM"
+msgid "The product does not have opportunity BOM"
 msgstr "Sản phẩm không có định mức nguyên vật liệu dự án"
 
 #
@@ -9138,7 +9118,7 @@ msgstr "Bắt đầu kiểm kê"
 
 #
 msgid "Done IA"
-msgstr "Kiểm kê hoàn tất"
+msgstr "Hoàn tất kiểm kê"
 
 #
 msgid "Created IA"
@@ -9562,7 +9542,7 @@ msgstr "Hồ sơ dự thầu"
 
 #
 msgid "Result"
-msgstr "Kết quả thầu"
+msgstr "Kết quả"
 
 #
 msgid "Required Documents"
@@ -9679,6 +9659,258 @@ msgstr "Thông tin bổ sung"
 #
 msgid "Item"
 msgstr "Danh mục"
+
+#
+msgid "Linked"
+msgstr "Liên kết"
+
+#
+msgid "Not linked"
+msgstr "Không liên kết"
+
+#
+msgid "Recurrence date"
+msgstr "Ngày lặp lại"
+
+#
+msgid "Next execution date"
+msgstr "Ngày lặp tiếp theo"
+
+#
+msgid "Warehouse"
+msgstr "Kho"
+
+#
+msgid "State"
+msgstr "Trạng thái"
+
+#
+msgid "Price of purchase quotation"
+msgstr "Giá của báo giá mua hàng"
+
+#
+msgid "New Contact Shortcut"
+msgstr "Tạo nhanh Liên hệ"
+
+#
+msgid "Copy BOM"
+msgstr "Sao chép BOM"
+
+#
+msgid "Select BOM to copy"
+msgstr "Chọn BOM để sao chép"
+
+#
+msgid "Collaborator configuration conflict with the association node"
+msgstr "Cấu hình CTV mâu thuẫn với trạm liên kết"
+
+#
+msgid "Action list"
+msgstr "Danh sách thao tác"
+
+#
+msgid "Skip"
+msgstr "Bỏ qua"
+
+#
+msgid "Current execution date"
+msgstr "Ngày lặp hiện tại"
+
+#
+msgid "Select address"
+msgstr "Chọn địa điểm"
+
+#
+msgid "Detail Meeting"
+msgstr "Chi tiết cuộc họp"
+
+#
+msgid "Input Result"
+msgstr "Nhập kết quả"
+
+#
+msgid "Cancelled"
+msgstr "Bị hủy bỏ"
+
+#
+msgid "Detail Call Log"
+msgstr "Chi tiết cuộc gọi"
+
+#
+msgid "New Call Log"
+msgstr "Cuộc gọi mới"
+
+#
+msgid "Bidding"
+msgstr "Thầu"
+
+#
+msgid "Bidding Status"
+msgstr "Trạng thái thầu"
+
+#
+msgid "Bidding list"
+msgstr "Danh sách thầu"
+
+#
+msgid "Bidding create"
+msgstr "Tạo thầu"
+
+#
+msgid "Exceed undelivered quantity"
+msgstr "Vượt quá số lượng chưa giao"
+
+#
+msgid "Planned quantity"
+msgstr "SL theo kế hoạch"
+
+#
+msgid "Requested quantity"
+msgstr "SL đã yêu cầu"
+
+#
+msgid "For Fixed Asset"
+msgstr "Cho Tài sản cố định"
+
+#
+msgid "Start import now?"
+msgstr "Bắt đầu nhập bây giờ?"
+
+#
+msgid "Please wait until the import has finished!"
+msgstr "Làm ơn đợi cho đến khi nhập liệu hoàn tất! 😀"
+
+#
+msgid "Bidding Result Config"
+msgstr "Cấu hình cập nhật kết quả thầu"
+
+#
+msgid "Bid Value"
+msgstr "Giá thầu"
+
+#
+msgid "To Contact"
+msgstr "Tới liên hệ"
+
+#
+msgid "Cancel this call log?"
+msgstr "Huỷ cuộc gọi này?"
+
+#
+msgid "Cancel this meeting?"
+msgstr "Huỷ cuộc họp này?"
+
+#
+msgid "This action cannot be back."
+msgstr "Hành động này không thể hoàn tác."
+
+#
+msgid "Load by Opportunity"
+msgstr "Tải theo Cơ hội kinh doanh"
+
+#
+msgid "New Meeting With Customer"
+msgstr "Cuộc họp mới với khách hàng"
+
+#
+msgid "Detail Meeting With Customer"
+msgstr "Chi tiết cuộc họp với khách hàng"
+
+#
+msgid "Detail Email"
+msgstr "Chi tiết Email"
+
+#
+msgid "See detail process here"
+msgstr "Xem chi tiết Tiến trình tại đây"
+
+#
+msgid "Please click on the button to select"
+msgstr "Click vào nút ở cuối để chọn"
+
+#
+msgid "Shortcut menu"
+msgstr "Danh sách lối tắt"
+
+#
+msgid "Opportunity members"
+msgstr "Thành viên CHKD"
+
+#
+msgid "Opportunity detail"
+msgstr "Chi tiết CHKD"
+
+#
+msgid "Data Import Limit"
+msgstr "Giới hạn nhập dữ liệu"
+
+#
+msgid "To ensure system performance and stability, row number is limited to 500 rows. If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
+msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 500 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
+
+#
+msgid "Lease order"
+msgstr "Đơn cho thuê"
+
+#
+msgid "Asset type"
+msgstr "Loại tài sản"
+
+#
+msgid "Please select asset type"
+msgstr "Vui lòng chọn loại tài sản"
+
+#
+msgid "Fixed asset"
+msgstr "TSCĐ"
+
+#
+msgid "Declare product quantity"
+msgstr "Khai báo số lượng sản phẩm"
+
+#
+msgid "Quantity of new products:"
+msgstr "Số lượng sản phẩm mới:"
+
+#
+msgid "Quantity of leased products:"
+msgstr "Số lượng sản phẩm đã cho thuê:"
+
+#
+msgid "Return to warehouse"
+msgstr "Trả về kho"
+
+#
+msgid "Confirm delete this period?"
+msgstr "Xác nhận xóa kỳ kế toán này?"
+
+#
+msgid "Can not delete this period!"
+msgstr "Không thể xóa kỳ kế toán này!"
+
+#
+msgid "Posting periods"
+msgstr "Kỳ kế toán"
+
+#
+msgid "Main period code"
+msgstr "Mã kỳ chính"
+
+#
+msgid "Sub period code"
+msgstr "Mã kỳ con"
+
+#
+msgid "Period name"
+msgstr "Tên kỳ"
+
+#
+msgid "Lease from"
+msgstr "Thuê từ"
+
+#
+msgid "Lease to"
+msgstr "Thuê đến"
 
 msgid "Assets"
 msgstr "Tài sản"

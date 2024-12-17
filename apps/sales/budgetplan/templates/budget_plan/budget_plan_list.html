@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Budget Plan List' %}{% endblock %}
+{% block title %}{% trans 'Budget plan' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 {% block jsHeader %}
@@ -29,22 +29,23 @@
             >
                 <thead>
                 <tr>
-                    <th></th>
-                    <th>{% trans 'Code' %}</th>
-                    <th>{% trans 'Title' %}</th>
-                    <th>{% trans 'Fiscal year' %}</th>
-                    <th>{% trans 'Employee created' %}</th>
-                    <th>{% trans 'Date created' %}</th>
-                    <th>{% trans 'Status' %}</th>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 80px">{% trans 'Code' %}</th>
+                    <th style="min-width: 200px">{% trans 'Title' %}</th>
+                    <th style="min-width: 100px">{% trans 'Fiscal year' %}</th>
+                    <th style="min-width: 150px">{% trans 'Employee created' %}</th>
+                    <th style="min-width: 100px">{% trans 'Date created' %}</th>
+                    <th style="min-width: 100px">{% trans 'Status' %}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
     </div>
-
+{% endblock %}
+{% block modalData %}
     <div class="modal fade" id="modal-create" tabindex="-1" role="dialog" aria-labelledby="modal-create" aria-hidden="true">
-        <div class="modal-dialog modal-lg min-w-610p" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">{% trans 'Create new Budget plan' %}</h5>
@@ -104,6 +105,5 @@
     </div>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
     <script src="{% static 'assets/js/budget_plan/budget_plan_list.js' %}"></script>
 {% endblock %}

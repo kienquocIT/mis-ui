@@ -49,7 +49,7 @@ class GRLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
                 let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
                 return $(`<span>${res1} ${res2}</span>`);
             }
@@ -58,36 +58,63 @@ class GRLoadDataHandle {
         return true;
     };
 
-    static loadCssS2($ele, maxWidth) {
-        if ($ele.is("select") && $ele.hasClass("select2-hidden-accessible")) {
-            let $render = $ele.next('.select2-container').find('.select2-selection__rendered');
-            if ($render && $render.length > 0) {
-                $render.css('max-width', maxWidth);
+    static loadEventCheckbox($area, trigger = false) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function (event) {
+            // Prevent handling if the direct checkbox is clicked
+            if (event.target.classList.contains('form-check-input')) {
+                return; // Let the checkbox handler handle this
             }
-        }
+
+            // Find the checkbox inside the clicked element
+            let checkbox = this.querySelector('.form-check-input[type="checkbox"]');
+            if (checkbox) {
+                // Check if the checkbox is disabled
+                if (checkbox.disabled) {
+                    return; // Exit early if the checkbox is disabled
+                }
+                // Prevent the default behavior
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                // Toggle the checkbox state manually
+                checkbox.checked = !checkbox.checked;
+                // Optional: Trigger a change event if needed
+                if (trigger === true) {
+                    $(checkbox).trigger('change');
+                }
+            }
+        });
+
+        // Handle direct clicks on the checkbox itself
+        $area.on('click', '.form-check-input', function (event) {
+            // Prevent the default behavior to avoid double-triggering
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            // Checkbox state is toggled naturally, so no need to modify it
+            if (trigger === true) {
+                $(this).trigger('change'); // Optional: Trigger change event explicitly
+            }
+        });
+
         return true;
     };
 
-    static loadEventCheckbox($table) {
-        let checkboxes = $table[0].querySelectorAll('.form-check-input[type="radio"]');
-        checkboxes.forEach((checkbox) => {
-            checkbox.addEventListener('click', function () {
-                let checked = checkbox.checked;
+    static loadEventRadio($area) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function () {
+            // Find and mark the radio button inside this group as checked
+            let radio = this.querySelector('.form-check-input');
+            if (radio) {
+                let checkboxes = $area[0].querySelectorAll('.form-check-input[type="radio"]');
+                // Uncheck all radio buttons and reset row styles
                 for (let eleCheck of checkboxes) {
                     eleCheck.checked = false;
-                    let row = eleCheck.closest('tr');
-                    if (row) {
-                        $(row).css('background-color', '');
-                    }
                 }
-                checkbox.checked = checked;
-                let row = checkbox.closest('tr');
-                if (row) {
-                    if (checked === true) {
-                        $(row).css('background-color', '#ebfcf5');
-                    }
-                }
-            });
+                // Set the current radio button as checked and apply style
+                radio.checked = true;
+            }
         });
         return true;
     };
@@ -136,7 +163,7 @@ class GRLoadDataHandle {
         }
         if (type === "2") {
             if (!GRLoadDataHandle.IASelectEle.val()) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [], {'state': false}, null, false, {'res1': 'code', 'res2': 'title'});
+                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [], {'state': 2}, null, false, {'res1': 'code', 'res2': 'title'});
             }
         }
         if (type === "3") {
@@ -284,7 +311,6 @@ class GRLoadDataHandle {
                                 GRLoadDataHandle.initPOProductEle.val(JSON.stringify(dataValid));
                                 GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                                 GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataValid).draw();
-                                GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
                             }
                         }
                     }
@@ -367,7 +393,6 @@ class GRLoadDataHandle {
         if (dataRow?.['pr_products_data'].length > 0) { // If PO have PR
             GRDataTableHandle.tablePR.DataTable().rows.add(dataRow?.['pr_products_data']).draw();
             $('#scroll-table-pr')[0].removeAttribute('hidden');
-            GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePR);
         } else { // If PO doesn't have PR
             // Check if product have inventory choice
             if (dataRow?.['product_data']?.['product_choice'].includes(1)) {
@@ -457,7 +482,6 @@ class GRLoadDataHandle {
                                 }
                                 tableWH.DataTable().clear().draw();
                                 tableWH.DataTable().rows.add(data.warehouse_list).draw();
-                                GRLoadDataHandle.loadEventCheckbox(tableWH);
                                 GRLoadDataHandle.loadAreaLotOrAreaSerial();
                             }
                         }
@@ -1064,7 +1088,7 @@ class GRLoadDataHandle {
             let link = "";
             let linkDetail = elePR.attr('data-link-detail');
             link = linkDetail.format_url_with_uuid(prID);
-            eleAppend += `<div class="chip chip-outline-primary bg-green-light-5 mr-1 mb-1">
+            eleAppend += `<div class="chip chip-secondary bg-green-light-5 mr-1 mb-1">
                                 <span>
                                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
                                 </span>
@@ -1230,7 +1254,7 @@ class GRLoadDataHandle {
             GRLoadDataHandle.loadDataShowPR(data?.['purchase_requests']);
         }
         if (idAreaShow === '2') {  // GR for IA
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [data?.['inventory_adjustment_data']], {'state': false});
+            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [data?.['inventory_adjustment_data']], {'state': 2});
         }
         if (idAreaShow === '3') {  // GR for Production
             if (data?.['production_report_type'] === 0) {
@@ -1292,7 +1316,6 @@ class GRLoadDataHandle {
                             }
                             GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                             GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
-                            GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
                         }
                     }
                 }
@@ -1316,7 +1339,6 @@ class GRLoadDataHandle {
             }
             GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
             GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
-            GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
         }
         if (typeGR === '3' && (GRLoadDataHandle.$boxProductionOrder.val() || GRLoadDataHandle.$boxWorkOrder.val())) {
             let idList = [];
@@ -1364,7 +1386,6 @@ class GRLoadDataHandle {
                                 }
                                 GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                                 GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
-                                GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tablePOProduct);
                             }
                         }
                     }
@@ -1486,15 +1507,25 @@ class GRDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<div class="form-check form-check-lg">
+                        let targetID = row?.['purchase_order_product_id'];  // PO
+                        if (row?.['ia_item_id']) {  // IA
+                            targetID = row?.['ia_item_id'];
+                        }
+                        if (row?.['production_order_id']) {  // PRODUCTION
+                            targetID = row?.['production_order_id'];
+                        }
+                        if (targetID) {
+                            return `<div class="form-check form-check-lg">
                                     <input 
                                         type="radio" 
                                         class="form-check-input table-row-checkbox" 
-                                        id="po-pro-${row?.['purchase_order_product_id'].replace(/-/g, "")}"
+                                        id="po-pro-${targetID.replace(/-/g, "")}"
                                         data-id="${row?.['id']}"
                                     >
-                                    <label class="form-check-label table-row-item" for="po-pro-${row?.['purchase_order_product_id'].replace(/-/g, "")}">${row?.['product_data']?.['title']}</label>
+                                    <label class="form-check-label table-row-item" for="po-pro-${targetID.replace(/-/g, "")}">${row?.['product_data']?.['title']}</label>
                                 </div>`;
+                        }
+                        return ``;
                     }
                 },
                 {
@@ -1531,6 +1562,7 @@ class GRDataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 GRLoadDataHandle.loadCssToDtb('datable-good-receipt-po-product');
+                GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePOProduct);
             },
         });
     };
@@ -1605,6 +1637,7 @@ class GRDataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 GRLoadDataHandle.loadCssToDtb('datable-good-receipt-purchase-request');
+                GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePR);
             },
         });
     };
@@ -1622,22 +1655,18 @@ class GRDataTableHandle {
                         return `<div class="form-check form-check-lg">
                                     <input 
                                         type="radio" 
-                                        class="form-check-input table-row-checkbox" 
+                                        class="form-check-input table-row-checkbox"
+                                        name="row-checkbox"
                                         id="wh-${row?.['warehouse_id'].replace(/-/g, "")}"
                                         data-id="${row?.['warehouse_id']}" 
                                     >
-                                    <label class="form-check-label table-row-code" for="wh-${row?.['warehouse_id'].replace(/-/g, "")}">${row?.['code'] ? row?.['code'] : ''}</label>
+                                    <span class="badge badge-success badge-outline table-row-code">${row?.['title'] ? row?.['title'] : ''}</span>
+                                    <label class="form-check-label table-row-title" for="wh-${row?.['warehouse_id'].replace(/-/g, "")}">${row?.['title'] ? row?.['title'] : ''}</label>
                                 </div>`;
                     }
                 },
                 {
                     targets: 1,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-item">${row?.['title'] ? row?.['title'] : ''}</span>`;
-                    }
-                },
-                {
-                    targets: 2,
                     render: (data, type, row) => {
                         let checked = ``;
                         if (row?.['is_additional'] === true) {
@@ -1661,7 +1690,7 @@ class GRDataTableHandle {
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: (data, type, row) => {
                         let disabled = '';
                         if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
@@ -1687,7 +1716,7 @@ class GRDataTableHandle {
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
                         return `<span class="table-row-uom">${row?.['uom_data']?.['title'] ? row?.['uom_data']?.['title'] : ''}</span>`;
                     }
@@ -1696,6 +1725,7 @@ class GRDataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 GRLoadDataHandle.loadCssToDtb('datable-good-receipt-warehouse');
+                GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tableWH);
             },
         });
     };
@@ -1872,20 +1902,21 @@ class GRDataTableHandle {
                     targets: 1,
                     width: '18%',
                     render: (data, type, row) => {
-                        return `<div class="row table-row-item-area">
-                                        <div class="col-12 col-md-12 col-lg-12">
-                                            <select
-                                                class="form-select table-row-item"
-                                                data-product-id="${row?.['product_data']?.['id']}"
-                                                data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
-                                                data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                                data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
-                                                data-keyResp="product_sale_list"
-                                                readonly
-                                            >
-                                            </select>
-                                        </div>
-                                    </div>`;
+                        return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" readonly>${row?.['product_data']?.['title']}</textarea>
+                                <div class="row table-row-item-area hidden">
+                                    <div class="col-12 col-md-12 col-lg-12">
+                                        <select
+                                            class="form-select table-row-item"
+                                            data-product-id="${row?.['product_data']?.['id']}"
+                                            data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
+                                            data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                            data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
+                                            data-keyResp="product_sale_list"
+                                            readonly
+                                        >
+                                        </select>
+                                    </div>
+                                </div>`;
                     },
                 },
                 {
@@ -1926,6 +1957,7 @@ class GRDataTableHandle {
                                     class="form-control mask-money table-row-price" 
                                     value="${row?.['product_unit_price'] ? row?.['product_unit_price'] : 0}"
                                     data-return-type="number"
+                                    readonly
                                 >`;
                     }
                 },
@@ -1981,6 +2013,7 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                GRDataTableHandle.dtbProductHDCustom();
             },
         });
     };
@@ -2019,7 +2052,32 @@ class GRDataTableHandle {
                     },
                 },
             ],
+            drawCallback: function () {
+                GRLoadDataHandle.loadEventCheckbox(GRDataTableHandle.tableProductionReport);
+            },
         });
+    };
+
+    // Custom dtb
+    static dtbProductHDCustom() {
+        let $table = GRDataTableHandle.tableLineDetailPO;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-edit-product-good-receipt').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-edit-product-good-receipt" data-bs-toggle="modal" data-bs-target="#productModalCenter">
+                                    <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>${GRLoadDataHandle.transEle.attr('data-edit')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+            }
+        }
     };
 
 }
@@ -2261,7 +2319,6 @@ class GRStoreDataHandle {
             rowData['warehouse_id'] = rowData?.['id'];
             rowData['warehouse_data'] = {'id': rowData?.['id'], 'title': rowData?.['title'], 'code': rowData?.['code']};
             tableWH.DataTable().row(rowIndex).data(rowData).draw();
-            GRLoadDataHandle.loadEventCheckbox(tableWH);
             if (checked) {
                 row.querySelector('.table-row-checkbox').checked = true;
             }
@@ -2283,7 +2340,6 @@ class GRStoreDataHandle {
                 rowData['quantity_import'] = parseFloat(row.querySelector('.table-row-import').innerHTML);
             }
             tablePR.DataTable().row(rowIndex).data(rowData).draw();
-            GRLoadDataHandle.loadEventCheckbox(tablePR);
             if (checked) {
                 row.querySelector('.table-row-checkbox').checked = true;
             }
@@ -2306,7 +2362,6 @@ class GRStoreDataHandle {
                 }
                 rowData['quantity_import'] = parseFloat(rowChecked.querySelector('.table-row-import').innerHTML);
                 tablePO.DataTable().row(rowIndex).data(rowData).draw();
-                GRLoadDataHandle.loadEventCheckbox(tablePO);
                 rowChecked.querySelector('.table-row-checkbox').checked = true;
             }
         }

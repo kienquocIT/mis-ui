@@ -2,7 +2,6 @@ $(function () {
 
     $(document).ready(function () {
         let $form = $('#frm_quotation_create');
-        let eleDataDetail = $('#quotation-detail-data');
 
         // call ajax get info quotation detail
         $.fn.callAjax2({
@@ -16,7 +15,7 @@ $(function () {
                     $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data);
                     // store && load data detail
-                    eleDataDetail.val(JSON.stringify(data));
+                    QuotationLoadDataHandle.$eleStoreDetail.val(JSON.stringify(data));
                     QuotationLoadDataHandle.loadDetailQuotation(data);
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
                     indicatorHandle.loadIndicator();
@@ -24,10 +23,6 @@ $(function () {
                     // prepare for copy quotation to sale order
                     if (!$form.hasClass('sale-order')) { // QUOTATION PAGES
                         $('#data-copy-quotation-detail').val(JSON.stringify(data));
-                    }
-                    if ($form.attr('data-method').toLowerCase() === 'put') {
-                        // Check config when begin edit
-                        QuotationCheckConfigHandle.checkConfig(0);
                     }
 
                     // init workflow
@@ -56,34 +51,6 @@ $(function () {
                             new PrintTinymceControl().render('b9650500-aba7-44e3-b6e0-2542622702a3', data, false);
                         }
                     }
-
-                    //
-                    const processData = data?.['process'] || {};
-                    const oppData = data?.['opportunity'] || {};
-                    const inheritData = data?.['employee_inherit'] || {};
-                    new $x.cls.bastionField({
-                        has_opp: true,
-                        has_inherit: true,
-                        has_process: true,
-                        data_process: processData && Object.keys(processData).length > 0 ? [
-                            {
-                               ...processData,
-                               'selected': true,
-                            }
-                        ] : [],
-                        data_opp: oppData && Object.keys(oppData).length > 0 ? [
-                            {
-                                ...oppData,
-                                'selected': true,
-                            }
-                        ] : [],
-                        data_inherit: inheritData && Object.keys(inheritData).length > 0 ? [
-                            {
-                                ...inheritData,
-                                'selected': true,
-                            }
-                        ] : [],
-                    }).init();
                 }
             }
         )

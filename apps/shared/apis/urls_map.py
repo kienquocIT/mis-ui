@@ -504,8 +504,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROCESS_CONFIG_DETAIL = StringUrl('process/config/detail/{pk}')
     PROCESS_RUNTIME_LIST = StringUrl('process/runtime/list')
     PROCESS_RUNTIME_LIST_OF_ME = StringUrl('process/runtime/list/me')
+    PROCESS_STAGES_APPS_OF_ME = StringUrl('process/runtime/stages-apps/me')
+    PROCESS_DATA_MATCH = StringUrl('process/runtime/data-match')
     PROCESS_RUNTIME_DETAIL = StringUrl('process/runtime/detail/{pk}')
+    PROCESS_RUNTIME_MEMBERS = StringUrl('process/runtime/detail/{pk}/members')
+    PROCESS_RUNTIME_MEMBERS_SYNC = StringUrl('process/runtime/detail/{pk}/members/sync')
     PROCESS_RUNTIME_STAGES_APP_COMPLETE = StringUrl('process/runtime/app/{pk}')
+    PROCESS_RUNTIME_MEMBER_DETAIL = StringUrl('process/runtime/member/{pk}')
+    PROCESS_RUNTIME_LOG = StringUrl('process/runtime/detail/{pk}/log')
 
     # Chatbot
     CHATBOT_CHAT = StringUrl('chatbot/chat')
@@ -521,6 +527,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
 
     GOODS_DETAIL_LIST = StringUrl('inventory/goods-detail/list')
+    GOODS_DETAIL_SERIAL_DATA_LIST = StringUrl('inventory/goods-detail-sn-data/list')
     GOODS_DETAIL_DETAIL = StringUrl('inventory/goods-detail/{pk}')
     CREATE_UPDATE_GOODS_DETAIL_DATA = StringUrl('inventory/create-update-goods-detail-data/list')
     GOODS_DETAIL_IMPORT_DB = StringUrl('inventory/goods-detail-import-db')
@@ -657,6 +664,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
     AR_INVOICE_LIST = StringUrl('ar-invoice/list')
     AR_INVOICE_DETAIL = StringUrl('ar-invoice/detail/{pk}')
+    AR_INVOICE_RECURRENCE_LIST = StringUrl('ar-invoice/recurrence/list')
 
     # AP Invoice
     GOOD_RECEIPT_LIST_AP_INVOICE = StringUrl('ap-invoice/get-goods-receipts')
@@ -759,11 +767,21 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Recurrence
     RECURRENCE_LIST = StringUrl('recurrence/list')
     RECURRENCE_DETAIL = StringUrl('recurrence')
+    RECURRENCE_ACTION_LIST = StringUrl('recurrence/action/list')
+    RECURRENCE_ACTION_DETAIL = StringUrl('recurrence/action')
 
     # HRM
     HRM_EMPLOYEE_NOT_MAP_HRM = StringUrl('hrm/employee-not-map/list')
     HRM_EMPLOYEE_INFO_LIST = StringUrl('hrm/employee-info/list')
     HRM_EMPLOYEE_INFO_DETAIL = StringUrl('hrm/employee-info/detail/{pk}')
+    HRM_EMPLOYEE_CONTRACT_LIST = StringUrl('hrm/employee-info/contract/list')
+    HRM_EMPLOYEE_CONTRACT_DETAIL = StringUrl('hrm/employee-info/contract/detail/{pk}')
+    HRM_EMPLOYEE_SIGNATURE_LIST = StringUrl('hrm/employee-info/signature/list')
+    HRM_EMPLOYEE_SIGNATURE_UPDATE = StringUrl('hrm/employee-info/signature/update/{pk}')
+
+    # Lease order
+    LEASE_ORDER_LIST = StringUrl('leaseorder/list')
+    LEASE_ORDER_DETAIL = StringUrl('leaseorder')
 
     CHART_OF_ACCOUNTS_LIST = StringUrl('accounting-setting/chart-of-accounts')
     CHART_OF_ACCOUNTS_DETAIL = StringUrl('accounting-setting/chart-of-accounts/{pk}')

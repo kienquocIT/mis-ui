@@ -28,6 +28,68 @@ $(document).ready(function () {
             name: 'attachment',
             enable_edit: true,
         });
+        const {
+            opp_id,
+            opp_title,
+            opp_code,
+            process_id,
+            process_title,
+            process_stage_app_id,
+            process_stage_app_title,
+            inherit_id,
+            inherit_title
+        } = $x.fn.getManyUrlParameters([
+            'opp_id', 'opp_title', 'opp_code',
+            'process_id', 'process_title',
+            'process_stage_app_id', 'process_stage_app_title',
+            'inherit_id', 'inherit_title'
+        ])
+
+        new Promise((resolve)=>{
+            const urlParams = new URLSearchParams(window.location.search)
+            let customer_json= urlParams.get('customer')
+            let customer = customer_json ? JSON.parse(decodeURIComponent(customer_json)) : null
+            new $x.cls.bastionField({
+                data_opp: $x.fn.checkUUID4(opp_id) ? [
+                    {
+                        "id": opp_id,
+                        "title": $x.fn.decodeURI(opp_title),
+                        "code": $x.fn.decodeURI(opp_code),
+                        "customer": customer,
+                        "selected": true,
+                    }
+                ] : [],
+                data_process: $x.fn.checkUUID4(process_id) ? [
+                    {
+                        "id": process_id,
+                        "title": process_title,
+                        "selected": true,
+                    }
+                ] : [],
+                data_process_stage_app: $x.fn.checkUUID4(process_stage_app_id) ? [
+                    {
+                        "id": process_stage_app_id,
+                        "title": process_stage_app_title,
+                        "selected": true,
+                    }
+                ] : [],
+                data_inherit: $x.fn.checkUUID4(inherit_id) ? [
+                    {
+                        "id": inherit_id,
+                        "full_name": inherit_title,
+                        "selected": true,
+                    }
+                ] : [],
+                "inheritFlagData": {"disabled": false, "readonly": false},
+            }).init();
+            resolve()
+        }).then(()=>{
+                if($x.fn.checkUUID4(opp_id)){
+                BiddingLoadDataHandle.loadDataByOpportunity();
+            }
+        })
+
+
         BiddingDataTableHandle.dataTableDocument({}, false);
         BiddingDataTableHandle.dataTableVenture({}, false);
         BiddingDataTableHandle.dataTableFile();
@@ -35,7 +97,7 @@ $(document).ready(function () {
         BiddingTinymceHandle.initTinymce()
         BiddingDataTableHandle.$tableDocument.on('click', '.attach-file', function () {
             BiddingStoreHandle.storeAttachment();
-            BiddingLoadDataHandle.loadOpenAttachFile(this);
+            BiddingLoadDataHandle.loadOpenAttachFile(this, true);
         });
     }
 
@@ -87,18 +149,6 @@ $(document).ready(function () {
             checkbox.prop('checked', false);
         }
         BiddingCommonHandle.commonDeleteRow(row, BiddingDataTableHandle.$tableVenture);
-    });
-
-    BiddingDataTableHandle.$tableBidder.on('click', '.del-row', function () {
-        let row = $(this).closest('tr');
-
-        let rowData = BiddingDataTableHandle.$tableBidder.DataTable().row(row).data();
-
-        let checkbox = BiddingDataTableHandle.$tableAccountModal.find(`input[type="checkbox"][data-id="${rowData.bidder_account}"]`);
-        if (checkbox.length) {
-            checkbox.prop('checked', false);
-        }
-        BiddingCommonHandle.commonDeleteRow(row, BiddingDataTableHandle.$tableBidder);
     });
 
     BiddingDataTableHandle.$tableDocument.on('click', '.del-row', function () {
@@ -186,66 +236,8 @@ $(document).ready(function () {
     })
 
     $('#btn-attach-invite-doc').on('click', function () {
-        BiddingStoreHandle.storeAttachment()
-        BiddingDataTableHandle.$tableDocument.DataTable().rows().every(function () {
-            let row = this.node();
-            $(row).css('background-color', '');
-        });
-        $(this).closest('.form-control').css('background-color', '#ebfcf5');
-        let eleId = this.id
-        let isManual = this.getAttribute('data-is-manual')
-        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-id', eleId);
-        BiddingLoadDataHandle.$fileArea[0].setAttribute('doc-is-manual', isManual);
-        BiddingLoadDataHandle.$remark[0].removeAttribute('readonly');
-        BiddingLoadDataHandle.$remark.val('');
-        BiddingLoadDataHandle.loadAddFile([]);
-        let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-        if (fileIds) {
-            fileIds.value = "";
-        }
-        if(!this.getAttribute('data-store')){
-            let data = {
-                "id": eleId,
-                "title": '',
-                "attachment_data": [],
-                "isManual": true
-            }
-            this.setAttribute('data-store', JSON.stringify(data))
-        }
-         if (fileIds) {
-             let dataStore = JSON.parse(this.getAttribute('data-store'));
-             BiddingLoadDataHandle.$remark.val(dataStore?.['remark']);
-             BiddingLoadDataHandle.loadAddFile(dataStore?.['attachment_data']);
-             let ids = [];
-             for (let fileData of dataStore?.['attachment_data']) {
-                ids.push(fileData?.['attachment']?.['id']);
-             }
-             let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
-             fileIds.value = ids.join(',');
-             let attachmentParse = [];
-             for (let attachData of dataStore?.['attachment_data']) {
-                 attachmentParse.push(attachData?.['attachment']);
-             }
-             // append html file again
-             BiddingLoadDataHandle.$attachment.empty().html(`${BiddingLoadDataHandle.$attachmentTmp.html()}`);
-             // init file again
-             new $x.cls.file(BiddingLoadDataHandle.$attachment).init({
-                 name: 'attachment',
-                 enable_edit: true,
-                 enable_download: true,
-                 data: attachmentParse,
-             });
-             // add event
-             let inputs = BiddingLoadDataHandle.$attachment[0].querySelectorAll('input[type="file"]');
-
-             inputs.forEach((input) => {
-                 input.addEventListener('change', function () {
-                     let dataList = BiddingLoadDataHandle.loadSetupAddFile();
-                     BiddingLoadDataHandle.loadAddFile(dataList);
-                 });
-             });
-         }
-         BiddingLoadDataHandle.$attachment[0].removeAttribute('hidden');
+        let isCreatePage = formSubmit.attr('data-method').toLowerCase() === 'post'
+        BiddingLoadDataHandle.loadOpenBtnAttachInviteDoc(this, isCreatePage)
     });
 
     $('#bid-bond-value').on('focus',function () {
@@ -256,14 +248,13 @@ $(document).ready(function () {
     })
 
     let validator = SetupFormSubmit.call_validate(formSubmit, {
-
         onsubmit: true,
         submitHandler: function (form, event) {
             let _form = new SetupFormSubmit(formSubmit);
             BiddingSubmitHandle.setupDataSubmit(_form)
             const bidBondValue = $("#bid-bond-value").attr('value');
-            const isSecurityChecked = $("input[name='security_type']:checked").length === 0
-            if (bidBondValue && isSecurityChecked){
+            const isSecurityChecked = $("input[name='security_type']:checked").length !== 0
+            if (bidBondValue && !isSecurityChecked){
                 $.fn.notifyB({description: "Please select a security type if Bid Bond Value has data."}, 'failure');
                 return
             }
@@ -279,10 +270,13 @@ $(document).ready(function () {
                 'bid_date',
                 'employee_inherit_id',
                 'tinymce_content',
+                'process',
+                'process_stage_app'
             ]
             if (_form.dataForm) {
                 BiddingCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
+
             WFRTControl.callWFSubmitForm(_form)
         },
     })

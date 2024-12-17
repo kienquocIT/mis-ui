@@ -3,7 +3,6 @@ class ContractLoadDataHandle {
     static $form = $('#frm_contract_create');
     static $boxOpp = $('#opportunity_id');
     static $boxEmp = $('#employee_inherit_id');
-    static $btnAddDoc = $('#btn-add-doc');
     static $btnOpenAttach = $('#btn-open-attachment');
     static $drawer = $('#drawer_contract_data');
     static $fileArea = $('#file-area');
@@ -27,7 +26,7 @@ class ContractLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
                 let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
                 return $(`<span>${res1} ${res2}</span>`);
             }
@@ -40,6 +39,14 @@ class ContractLoadDataHandle {
         $('.accordion-item').css({
             'margin-bottom': 0
         });
+    };
+
+    static loadInitInherit() {
+        let dataStr = $('#employee_current').text();
+        if (dataStr) {
+            ContractLoadDataHandle.loadInitS2(ContractLoadDataHandle.$boxEmp, [JSON.parse(dataStr)]);
+        }
+        return true;
     };
 
     static loadDataByOpp() {
@@ -181,11 +188,11 @@ class ContractLoadDataHandle {
                     }
                     if (mediaBody.querySelector('.custom-file-data')) {
                         $(mediaBody.querySelector('.custom-file-data')).empty();
-                        $(mediaBody.querySelector('.custom-file-data')).append(`<div class="mt-2"><span class="file-date-created mr-1">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="badge badge-soft-${badge} file-is-current">${txt}</span></div>
+                        $(mediaBody.querySelector('.custom-file-data')).append(`<div class="mt-2"><span class="file-date-created mr-2">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="text-${badge} file-is-current">${txt}</span></div>
                                                                         ${btn}`);
                     } else {
                         $(mediaBody).append(`<div class="d-flex custom-file-data">
-                                        <div class="mt-2"><span class="file-date-created mr-1">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="badge badge-soft-${badge} file-is-current">${txt}</span></div>
+                                        <div class="mt-2"><span class="file-date-created mr-2">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="text-${badge} file-is-current">${txt}</span></div>
                                         ${btn}
                                     </div>`);
                     }
@@ -255,22 +262,41 @@ class ContractLoadDataHandle {
     static loadDetail(data) {
         $('#contract-title').val(data?.['title']);
 
+        const processData = data?.['process'] || {};
+        const processStageAppData = data?.['process_stage_app'] || {};
+        const oppData = data?.['opportunity'] || {};
+        const inheritData = data?.['employee_inherit'] || {};
         new $x.cls.bastionField({
             has_opp: true,
             has_inherit: true,
             has_process: true,
-            data_opp: [{
-                ...data?.['opportunity_data'],
-                'selected': true,
-            }],
-            data_process: [{
-                ...data?.['process'],
-                'selected': true,
-            }],
-            data_inherit: [{
-                ...data?.['employee_inherit_data'],
-                'selected': true,
-            }],
+            data_process: processData && Object.keys(processData).length > 0 ? [
+                {
+                    ...processData,
+                    'selected': true,
+                }
+            ] : [],
+            data_process_stage_app: processStageAppData && Object.keys(processStageAppData).length > 0 ? [
+                {
+                    ...processStageAppData,
+                    'selected': true,
+                }
+            ] : [],
+            processStageAppFlagData: {
+                'disable': true,
+            },
+            data_opp: oppData && Object.keys(oppData).length > 0 ? [
+                {
+                    ...oppData,
+                    'selected': true,
+                }
+            ] : [],
+            data_inherit: inheritData && Object.keys(inheritData).length > 0 ? [
+                {
+                    ...inheritData,
+                    'selected': true,
+                }
+            ] : [],
         }).init();
 
         ContractLoadDataHandle.setupDetailDocAttach(data);
@@ -378,10 +404,37 @@ class ContractDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                // add css to Dtb
-                ContractLoadDataHandle.loadCssToDtb(ContractDataTableHandle.$tableDocument[0].id);
+                if (['post', 'put'].includes(ContractLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    ContractDataTableHandle.dtbDocumentHDCustom();
+                }
             },
         });
+    };
+
+    // Custom dtb
+    static dtbDocumentHDCustom() {
+        let $table = ContractDataTableHandle.$tableDocument;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-doc').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-add-doc">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${ContractLoadDataHandle.$trans.attr('data-add')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-doc').on('click', function () {
+                    ContractLoadDataHandle.loadAddDoc();
+                });
+            }
+        }
     };
 
 }

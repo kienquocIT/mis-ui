@@ -1,4 +1,5 @@
 """system module"""
+import sys
 from operator import itemgetter
 from django.urls import reverse, NoReverseMatch
 from django.utils.translation import gettext_lazy as _
@@ -8,8 +9,10 @@ from unidecode import unidecode
 class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
     """prepare url breadcrumbs"""
 
-    def __init__(self, title: object, url: object = None,
-            arg_pattern: object = None, kw_pattern: object = None, is_append_code: object = False) -> object:
+    def __init__(
+            self, title: object, url: object = None,
+            arg_pattern: object = None, kw_pattern: object = None, is_append_code: object = False
+    ):
         self.title = title
         self.url = url if url else ''
         self.arg_pattern = arg_pattern if arg_pattern and isinstance(arg_pattern, list) else []
@@ -199,18 +202,18 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_CONFIG_PAGE = BreadcrumbChildren(_('Task config'), 'OpportunityTaskConfig')
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
 
-    #Document
+    # Document
     DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Document'), 'DocumentTypeMasterDataList')
 
-    #Bidding Result config
+    # Bidding Result config
     BIDDING_RESULT_CONFIG_PAGE = BreadcrumbChildren(_('Bidding'), 'BiddingResultConfigList')
 
     # Sale Activities
-    CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call log'), 'OpportunityCallLogList')
+    CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call to customer'), 'OpportunityCallLogList')
     EMAIL_LIST_PAGE = BreadcrumbChildren(_('Send email'), 'OpportunityEmailList')
-    MEETING_LIST_PAGE = BreadcrumbChildren(_('Meeting'), 'OpportunityMeetingList')
+    MEETING_LIST_PAGE = BreadcrumbChildren(_('Meeting with customer'), 'OpportunityMeetingList')
 
-    OPPORTUNITY_DOCUMENT_LIST_PAGE = BreadcrumbChildren(_('Document'), 'OpportunityDocumentList')
+    OPPORTUNITY_DOCUMENT_LIST_PAGE = BreadcrumbChildren(_('Document for customer'), 'OpportunityDocumentList')
 
     # Purchase
     # PURCHASE_REQUEST_LIST_PAGE = BreadcrumbChildren(_('Purchase Request List'), 'PurchaseRequestList'),
@@ -383,10 +386,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
-    PROJECT_BOM_LIST_PAGE = BreadcrumbChildren(_('Project BOM list'), 'ProjectBOMList')
-    PROJECT_BOM_CREATE_PAGE = BreadcrumbChildren(_('Project BOM create'), 'ProjectBOMCreate')
-    PROJECT_BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
-    PROJECT_BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+    OPP_BOM_LIST_PAGE = BreadcrumbChildren(_('Opportunity BOM list'), 'OpportunityBOMList')
+    OPP_BOM_CREATE_PAGE = BreadcrumbChildren(_('Opportunity BOM create'), 'OpportunityBOMCreate')
+    OPP_BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    OPP_BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     PRINTER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Print List'), 'PrintTemplatesListView')
     MAILER_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Mail Template'), 'MailTemplatesListView')
@@ -417,6 +420,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Recurrence
     RECURRENCE_LIST_PAGE = BreadcrumbChildren(_('Recurrence'), 'RecurrenceList')
+    RECURRENCE_TEMPLATE_LIST_PAGE = BreadcrumbChildren(_('Transaction template'), 'TransactionTemplateList')
+    RECURRENCE_ACTION_LIST_PAGE = BreadcrumbChildren(_('Action list'), 'RecurrenceActionList')
     # HRM
     HRM_EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('HRM Employee info'), 'HRMEmployeeList')
     HRM_EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'HRMEmployeeCreate')
@@ -458,31 +463,33 @@ class BreadcrumbView:
             True : Nothing happened
             or NoReverseMatch : raise Error and interrupt runtime process
         """
-        view_errs = {}
-        for att in dir(BreadcrumbItem()):
-            if not att.startswith('__'):
-                child = getattr(BreadcrumbItem, att)
-                try:
-                    if child.url:
-                        if child.kw_pattern and child.arg_pattern:
-                            reverse(child.url, args=child.arg_pattern, kwargs=child.kw_pattern)
-                        elif child.arg_pattern:
-                            reverse(child.url, args=child.arg_pattern)
-                        elif child.kw_pattern:
-                            reverse(child.url, kwargs=child.kw_pattern)
-                        else:
-                            reverse(child.url)
+        if hasattr(sys, 'argv') and isinstance(sys.argv, list) and len(sys.argv) > 0:
+            if sys.argv[0].endswith('mange.py') or sys.argv[0].endswith('wsgi.py'):  # allow check when runserver
+                view_errs = {}
+                for att in dir(BreadcrumbItem()):
+                    if not att.startswith('__'):
+                        child = getattr(BreadcrumbItem, att)
+                        try:
+                            if child.url:
+                                if child.kw_pattern and child.arg_pattern:
+                                    reverse(child.url, args=child.arg_pattern, kwargs=child.kw_pattern)
+                                elif child.arg_pattern:
+                                    reverse(child.url, args=child.arg_pattern)
+                                elif child.kw_pattern:
+                                    reverse(child.url, kwargs=child.kw_pattern)
+                                else:
+                                    reverse(child.url)
 
-                except NoReverseMatch as err:
-                    view_errs[att] = str(err)
+                        except NoReverseMatch as err:
+                            view_errs[att] = str(err)
 
-        if view_errs:
-            msg = 'Some view was used in Breadcrumb does not exist. It is: \n'
-            msg += '************************************************************\n'
-            for k, value in view_errs.items():
-                msg += f'* {k}: {value}\n'
-            msg += '************************************************************\n'
-            raise NoReverseMatch(msg)
+                if view_errs:
+                    msg = 'Some view was used in Breadcrumb does not exist. It is: \n'
+                    msg += '************************************************************\n'
+                    for k, value in view_errs.items():
+                        msg += f'* {k}: {value}\n'
+                    msg += '************************************************************\n'
+                    raise NoReverseMatch(msg)
         return True
 
     @classmethod
@@ -598,8 +605,8 @@ class BreadcrumbView:
     ]
 
     MEETING_CONFIG_PAGE = [
-        BreadcrumbItem.MEETING_CONFIG_PAGE
-    ],
+                              BreadcrumbItem.MEETING_CONFIG_PAGE
+                          ],
 
     CONTACT_MASTER_DATA_LIST_PAGE = [
         BreadcrumbItem.CONTACT_MASTER_DATA_LIST_PAGE
@@ -759,10 +766,10 @@ class BreadcrumbView:
     OPPORTUNITY_TASK_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_CONFIG_PAGE]
     OPPORTUNITY_TASK_LIST_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_LIST_PAGE]
 
-    #Document
+    # Document
     DOCUMENT_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.DOCUMENT_MASTER_DATA_LIST_PAGE]
 
-    #Bidding Result config
+    # Bidding Result config
     BIDDING_RESULT_CONFIG_PAGE = [BreadcrumbItem.BIDDING_RESULT_CONFIG_PAGE]
 
     # Sale Activities
@@ -1030,10 +1037,10 @@ class BreadcrumbView:
     BOM_DETAIL_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     BOM_UPDATE_PAGE = BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
-    PROJECT_BOM_LIST_PAGE = [BreadcrumbItem.PROJECT_BOM_LIST_PAGE]
-    PROJECT_BOM_CREATE_PAGE = PROJECT_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
-    PROJECT_BOM_DETAIL_PAGE = PROJECT_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
-    PROJECT_BOM_UPDATE_PAGE = PROJECT_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    OPP_BOM_LIST_PAGE = [BreadcrumbItem.OPP_BOM_LIST_PAGE]
+    OPP_BOM_CREATE_PAGE = OPP_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    OPP_BOM_DETAIL_PAGE = OPP_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    OPP_BOM_UPDATE_PAGE = OPP_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     PRINTER_CONFIG_LIST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.PRINTER_CONFIG_LIST_PAGE]
     PRINTER_CONFIG_LIST_PAGE = PRINTER_CONFIG_LIST + [BreadcrumbItem.BASTION_LIST]
@@ -1109,6 +1116,12 @@ class BreadcrumbView:
     RECURRENCE_CREATE_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     RECURRENCE_DETAIL_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     RECURRENCE_UPDATE_PAGE = RECURRENCE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    RECURRENCE_TEMPLATE_LIST_PAGE = [
+        BreadcrumbItem.RECURRENCE_TEMPLATE_LIST_PAGE
+    ]
+    RECURRENCE_ACTION_LIST_PAGE = [
+        BreadcrumbItem.RECURRENCE_ACTION_LIST_PAGE
+    ]
 
     HRM_EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,

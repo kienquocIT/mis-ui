@@ -141,18 +141,22 @@
                 <div class="row custom-area" id="custom-area-2" hidden>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label required" for="box-good-receipt-inventory-adjustment">{% trans 'Inventory adjustment' %}</label>
-                                <select
-                                        class="form-select"
-                                        id="box-good-receipt-inventory-adjustment"
-                                        data-url="{% url 'InventoryAdjustmentGRListAPI' %}"
-                                        data-method="GET"
-                                        data-link-detail=""
-                                        name="inventory_adjustment"
-                                        data-keyResp="inventory_adjustment_gr"
-                                >
-                                </select>
+                            <div class="row">
+                                <div class="col-12 col-md-7 col-lg-7">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-good-receipt-inventory-adjustment">{% trans 'Inventory adjustment' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-good-receipt-inventory-adjustment"
+                                                data-url="{% url 'InventoryAdjustmentGRListAPI' %}"
+                                                data-method="GET"
+                                                data-link-detail=""
+                                                name="inventory_adjustment"
+                                                data-keyResp="inventory_adjustment_gr"
+                                        >
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -280,19 +284,6 @@
                                     </tfoot>
                                 </table>
                             </div>
-                            <div class="row">
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline-primary"
-                                        id="btn-edit-product-good-receipt"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#productModalCenter"
-                                    >
-                                        <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %}</span></span>
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                         <div class="row custom-line-detail" id="custom-line-detail-3" hidden>
                             <div class="row">
@@ -409,8 +400,7 @@
                                             >
                                                 <thead>
                                                 <tr class="bg-light">
-                                                    <th class="w-15">{% trans 'Warehouse Code' %}</th>
-                                                    <th class="w-20">{% trans 'Warehouse Name' %}</th>
+                                                    <th class="w-30">{% trans 'Warehouse' %}</th>
                                                     <th class="w-15">{% trans 'Input data later' %}</th>
                                                     <th class="w-20">{% trans 'Quantity' %}</th>
                                                     <th class="w-15">{% trans 'UOM' %}</th>
@@ -604,6 +594,7 @@
             data-purchase-request="{% trans 'Purchase request' %}"
             data-production-report="{% trans 'Production report' %}"
             data-required-product="{% trans "Product is required" %}"
+            data-edit="{% trans "Edit" %}"
     >
     <input
             type="text"
@@ -643,6 +634,7 @@
             data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
             data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
             data-md-bom="{% url 'BOMOrderListAPI' %}"
+            data-md-product="{% url 'ProductForSaleListAPI' %}"
     >
 {% endblock %}
 

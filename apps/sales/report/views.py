@@ -5,9 +5,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL
 from apps.shared.msg import ReportMsg
-# from sklearn.feature_extraction.text import TfidfVectorizer
-# from sklearn.metrics.pairwise import cosine_similarity
-# from django.core.cache import cache
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 FILTER_QUARTER = (
     (1, ReportMsg.QUARTER_FIRST),
@@ -152,17 +151,12 @@ class ReportInventoryList(View):
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
         resp2 = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()
-        resp3 = ServerAPI(
-            request=request,
-            user=request.user,
-            url=ApiURL.COMPANY_DETAIL + '/' + request.user.company_current_data.get('id', None)
-        ).get()
         if len(resp1.result) > 0:
             return {
                 'data': {
                     'current_period': resp1.result[0],
                     'definition_inventory_valuation': resp2.result['definition_inventory_valuation'],
-                    'is_project': resp3.result['cost_cfg'].get('cost_per_project')
+                    'company_current_data': request.user.company_current_data,
                 },
             }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
@@ -281,23 +275,23 @@ class GetQRCodeSerialInfoAPI(APIView):
         return {'qr_path_sn': [{'path': path.replace('apps/sales/report', '')}]}, status.HTTP_200_OK
 
 
-# class ReportInventoryChatBotAPI(APIView):
-#
-#     @mask_view(
-#         auth_require=True,
-#         is_api=True,
-#     )
-#     def get(self, request, *args, **kwargs):
-#         params = request.query_params.dict()
-#         contexts = params.get('contexts')
-#         question = params.get('question')
-#         vectorizer = TfidfVectorizer()
-#         context_sentences = [sentence.strip() for sentence in contexts.split('.') if sentence]
-#         context_vectors = vectorizer.fit_transform(context_sentences)
-#         question_vector = vectorizer.transform([question])
-#         similarities = cosine_similarity(question_vector, context_vectors).flatten()
-#         best_context = context_sentences[similarities.argmax()]
-#         return {'response': best_context}, status.HTTP_200_OK
+class ReportInventoryAskAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        contexts = params.get('contexts')
+        question = params.get('question')
+        vectorizer = TfidfVectorizer()
+        context_sentences = [sentence.strip() for sentence in contexts.split('.') if sentence]
+        context_vectors = vectorizer.fit_transform(context_sentences)
+        question_vector = vectorizer.transform([question])
+        similarities = cosine_similarity(question_vector, context_vectors).flatten()
+        best_context = context_sentences[similarities.argmax()]
+        return {'response': best_context}, status.HTTP_200_OK
 
 
 # REPORT PIPELINE

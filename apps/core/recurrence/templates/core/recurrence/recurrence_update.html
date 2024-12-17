@@ -72,7 +72,7 @@
         <div class="row">
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
-                    <label class="form-label required" for="box-doc-template">{% trans 'Recurrence template' %}</label>
+                    <label class="form-label required" for="box-doc-template">{% trans 'Transaction template' %}</label>
                     <select
                             class="form-select"
                             id="box-doc-template"
@@ -250,7 +250,8 @@
     <input
         type="text"
         id="app-urls-factory"
-        data-sale-order="{% url 'SORecurrenceListAPI' %}"
+        data-so-recurrence="{% url 'SORecurrenceListAPI' %}"
+        data-ar-recurrence="{% url 'ARInvoiceRecurrenceListAPI' %}"
     >
     {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}

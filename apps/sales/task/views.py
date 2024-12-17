@@ -86,6 +86,7 @@ class OpportunityTaskList(View):
                    'task_config': task_config,
                    'employee_info': request.user.employee_current_data,
                    'list_from_app': 'task.opportunitytask.create',
+                   'app_id': 'e66cfb5a-b3ce-4694-a4da-47618f53de4c',
                }, status.HTTP_200_OK
 
 

@@ -340,6 +340,61 @@ $(async function () {
             return true;
         };
 
+        loadEventRadio($area) {
+            // Use event delegation for dynamically added elements
+            if (!$area.data('radio-handler-bound')) {
+                $area.on('click', '.form-check', function () {
+                    // Find and mark the radio button inside this group as checked
+                    let radio = this.querySelector('.form-check-input');
+                    if (radio) {
+                        let checkboxes = $area[0].querySelectorAll('.form-check-input[type="radio"]');
+                        // Uncheck all radio buttons and reset row styles
+                        for (let eleCheck of checkboxes) {
+                            eleCheck.checked = false;
+                        }
+                        // Set the current radio button as checked and apply style
+                        radio.checked = true;
+                    }
+                });
+
+                // Mark the handler as bound to prevent rebinding
+                $area.data('radio-handler-bound', true);
+            }
+
+            return true;
+        };
+
+        loadEventCheckboxAll($area) {
+            $area.on('click', '.table-row-checkbox-all', function () {
+                let checked = this.checked;
+                let stopLoop = false;
+                for (let checkbox of $area[0].querySelectorAll('.table-row-checkbox')) {
+                    if (checkbox) {
+                        checkbox.checked = checked;
+                        let state = prodTable.loadQuantityDeliveryBySerial(checkbox);
+                        if (state === false) {
+                            break;
+                        }
+                    }
+                }
+
+                // $area.DataTable().rows().every(function () {
+                //     if (stopLoop) return;
+                //
+                //     let row = this.node();
+                //     let checkbox = row.querySelector('.table-row-checkbox');
+                //     if (checkbox) {
+                //         checkbox.checked = checked;
+                //         let state = prodTable.loadQuantityDeliveryBySerial(checkbox);
+                //         if (state === false) {
+                //             stopLoop = true;
+                //         }
+                //     }
+                // });
+            });
+            return true;
+        };
+
         setupDataPW(dataSrc, prod_data, config, type) {
             let finalData = [];
             let baseData = [];
@@ -354,7 +409,7 @@ $(async function () {
                     }
                 }
                 for (let deliveryData of prod_data?.['delivery_data']) {
-                    if (pwh?.['sale_order']?.['id'] === deliveryData?.['sale_order']) {
+                    if (pwh?.['sale_order']?.['id'] === deliveryData?.['sale_order'] && pwh?.['warehouse']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
                         pwh['picked'] = deliveryData?.['stock'];
                     }
                 }
@@ -497,25 +552,26 @@ $(async function () {
                                         </div>`;
                             }
                             let checked = '';
-                            let disabled = '';
+                            let hidden = '';
                             if (row?.['is_checked'] === true) {
                                 checked = 'checked';
                             }
                             if (row?.['product']?.['general_traceability_method'] === 0) {
-                                disabled = 'disabled';
+                                hidden = 'hidden';
                             }
                             return `<div class="form-check form-check-lg">
                                         <input
                                             type="radio"
+                                            name="row-checkbox"
                                             class="form-check-input table-row-checkbox cl-child"
                                             id="pw-${row?.['id'].replace(/-/g, "")}"
                                             data-id="${row?.['id']}"
                                             data-row="${dataRow}"
                                             ${checked}
-                                            ${disabled}
+                                            ${hidden}
                                         >
-                                        <label class="form-check-label" for="pw-${row?.['id'].replace(/-/g, "")}">${row?.['warehouse']?.['title']}</label>
                                         <span class="badge badge-soft-success">${row?.['warehouse']?.['code']}</span>
+                                        <label class="form-check-label" for="pw-${row?.['id'].replace(/-/g, "")}">${row?.['warehouse']?.['title']}</label>
                                     </div>`;
                         }
                     },
@@ -587,35 +643,47 @@ $(async function () {
                             prodTable.setupTotal();
                         }
                     })
-                    // Check if Product has Lot or Serial then load table
-                    $(`input.form-check-input`, row).on('click', function (e) {
-                        e.preventDefault();
-                        if (this.checked === true) {
-                            prodTable.loadUnCheckWH();
-                            this.checked = true;
-                            if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
-                                let productWHID = this.getAttribute('data-id');
-                                if (data?.['product']?.['general_traceability_method'] === 1) {
-                                    prodTable.loadLot(this, row, data, productWHID);
-                                }
-                                if (data?.['product']?.['general_traceability_method'] === 2) {
-                                    prodTable.loadSerial(this, row, data, productWHID);
-                                }
-                            }
-                        } else {
-                            prodTable.loadUnCheckWH();
-                            prodTable.dataTableTableLot();
-                            prodTable.dataTableTableSerial();
-                            data['is_checked'] = false;
-                            $table.DataTable().row(index).data(data).draw();
-                        }
-                    })
                 },
                 drawCallback: function () {
                     prodTable.setupCollapse();
                     prodTable.setupTotal();
+                    prodTable.loadEventRadio($table);
+                    prodTable.loadEventPW();
                 },
             })
+        };
+
+        loadEventPW() {
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                let data = this.data();
+
+                // Find the checkbox only once
+                let checkbox = row.querySelector('.form-check');
+                if (checkbox) {
+                    // Remove any previously bound event listeners to avoid duplication
+                    checkbox.replaceWith(checkbox.cloneNode(true)); // Clear all event listeners
+                    checkbox = row.querySelector('.table-row-checkbox'); // Reassign the reference
+
+                    // Add the event listener
+                    checkbox.addEventListener('click', function () {
+                        prodTable.loadCheckPW(checkbox, data, row); // Pass necessary parameters
+                    });
+                }
+            });
+            return true;
+        };
+
+        loadCheckPW(ele, data, row) {
+            if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
+                let productWHID = ele.getAttribute('data-id');
+                if (data?.['product']?.['general_traceability_method'] === 1) {
+                    prodTable.loadLot(ele, row, data, productWHID);
+                }
+                if (data?.['product']?.['general_traceability_method'] === 2) {
+                    prodTable.loadSerial(ele, row, data, productWHID);
+                }
+            }
         };
 
         setupCollapse() {
@@ -757,7 +825,6 @@ $(async function () {
                             }
                             prodTable.dataTableTableLot(dataLotFn);
                             eleChecked.checked = true;
-                            $(row).css('background-color', '#ebfcf5');
                         }
                     }
                 }
@@ -929,6 +996,7 @@ $(async function () {
                 }
             }
             let detailData = [];
+            WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': url,
                     'method': 'GET',
@@ -947,14 +1015,25 @@ $(async function () {
                                     dataSerialFn.push(serial?.['sn_registered']);
                                 }
                             }
+                            let listIDDetail = [];
+                            if (data?.['serial_data']) {
+                                for (let delivery_serial of data?.['serial_data']) {
+                                    if (delivery_serial?.['product_warehouse_serial_id']) {
+                                        listIDDetail.push(delivery_serial?.['product_warehouse_serial_id']);
+                                    }
+                                }
+                            }
+
+                            let count = 0;
                             for (let serial of dataSerialFn) {
                                 if (data?.['serial_data']) {
-                                    for (let delivery_serial of data?.['serial_data']) {
-                                        if (delivery_serial?.['product_warehouse_serial_id'] === serial?.['id']) {
-                                            serial['is_checked'] = true;
-                                            if ($form.attr('data-method').toLowerCase() === 'get') {
-                                                detailData.push(serial);
-                                            }
+                                    if (listIDDetail.includes(serial?.['id'])) {
+                                        serial['is_checked'] = true;
+                                        if ($form.attr('data-method').toLowerCase() === 'get') {
+                                            detailData.push(serial);
+                                        }
+                                        count++;
+                                        if (count === listIDDetail.length) {
                                             break;
                                         }
                                     }
@@ -966,7 +1045,7 @@ $(async function () {
                                 prodTable.dataTableTableSerial(dataSerialFn);
                             }
                             eleChecked.checked = true;
-                            $(row).css('background-color', '#ebfcf5');
+                            WindowControl.hideLoading();
                         }
                     }
                 }
@@ -975,8 +1054,12 @@ $(async function () {
         };
 
         dataTableTableSerial(data) {
-            let tableLot = $('#datable-delivery-wh-serial');
-            tableLot.not('.dataTable').DataTableDefault({
+            let $table = $('#datable-delivery-wh-serial');
+            let checkAll = $table[0].querySelector('.table-row-checkbox-all');
+            if (checkAll) {
+                checkAll.checked = false;
+            }
+            $table.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
                 columns: [
                     {
@@ -1068,18 +1151,32 @@ $(async function () {
                 ],
                 rowCallback(row, data, index) {
                     $(`input.form-check-input`, row).on('click', function () {
+                        if (this.checked === false) {
+                            let checkAll = $table[0].querySelector('.table-row-checkbox-all');
+                            if (checkAll) {
+                                checkAll.checked = false;
+                            }
+                        }
                         prodTable.loadQuantityDeliveryBySerial(this);
                     });
                 },
+                drawCallback: function () {
+                    prodTable.loadEventCheckboxAll($table);
+                    let checkAll = $table[0].querySelector('.table-row-checkbox-all');
+                    if (checkAll) {
+                        checkAll.checked = false;
+                    }
+                },
             });
-            if (tableLot.hasClass('dataTable')) {
-                tableLot.DataTable().clear().draw();
-                tableLot.DataTable().rows.add(data ? data : []).draw();
+            if ($table.hasClass('dataTable')) {
+                $table.DataTable().clear().draw();
+                $table.DataTable().rows.add(data ? data : []).draw();
             }
         };
 
         loadQuantityDeliveryBySerial(ele) {
             let tableWH = $('#productStockDetail');
+            let $tblSerial = $('#datable-delivery-wh-serial');
             let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
             if (rowChecked) {
                 let newQuantity = 0;
@@ -1087,7 +1184,7 @@ $(async function () {
                 let eleWHInput = rowChecked?.querySelector('.table-row-picked');
                 let serialData = [];
                 if (eleWHInput) {
-                    $('#datable-delivery-wh-serial').DataTable().rows().every(function () {
+                    $tblSerial.DataTable().rows().every(function () {
                         let row = this.node();
                         let rowSerialData = this.data();
                         let eleCheck = row?.querySelector('.table-row-checkbox');
@@ -1147,13 +1244,6 @@ $(async function () {
                 }
             }
             return {valStock: valStock, valAvb: valAvb};
-        };
-
-        loadUnCheckWH() {
-            for (let eleCheck of $('#productStockDetail')[0].querySelectorAll('.table-row-checkbox')) {
-                eleCheck.checked = false;
-                $(eleCheck.closest('tr')).css('background-color', '');
-            }
         };
 
         formatNum(ele) {
@@ -1234,9 +1324,8 @@ $(async function () {
                 const res = $.fn.switcherResp(req);
                 prepareHTMLConfig(res?.['config_at_that_point'])
                 $x.fn.renderCodeBreadcrumb(res);
-
-                new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
-
+                $.fn.compareStatusShowPageAction(res);
+                // new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
                 const $saleOrder = $('#inputSaleOrder');
                 $saleOrder.html(res.sale_order_data.code)
                 $saleOrder.attr('data-so', JSON.stringify(res?.['sale_order_data']));

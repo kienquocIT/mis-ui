@@ -1,6 +1,6 @@
 {% load static i18n compress string_utils person_utils %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ base.language }}">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -390,7 +390,7 @@
 
     <script type="application/javascript">
         // all variable data global with CONST!! --> keep don't change value of variable
-        const globeLanguage = "{{ base.language }}";
+        const globeLanguage = $('html').attr('lang');
         const globeApiStatusOfRender = "{{ data.render_api_status }}";
         const globeUrlNotDeny = ['/log/notify/me/count'];
         const globePK = "{{ pk }}";

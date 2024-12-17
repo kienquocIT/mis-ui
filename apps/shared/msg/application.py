@@ -13,3 +13,4 @@ class AppMsg:  # pylint: disable=too-few-public-methods
     APP_GOODS_RETURN = _('Goods return')
     ZONES_UPDATE = _('Zones update successfully')
     EMPLOYEE_ZONES_CONFIG_UPDATE = _('Employee zones config update successfully')
+    APP_LEASE_ORDER = _('Lease order')

@@ -314,19 +314,14 @@ class OpportunityCallLogList(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/call_log_list.html',
+        template='sales/opportunity/activities/call_log/call_log_list.html',
         menu_active='id_menu_log_a_call',
         breadcrumb='CALL_LOG_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
         result = {
-            'employee_current_id': request.user.employee_current_data.get('id', None),
-            'account_list': resp1.result,
-            'contact_list': resp2.result,
-            'opportunity_list': resp3.result,
+            'list_from_app': 'opportunity.opportunitycall.create',
+            'app_id': '14dbc606-1453-4023-a2cf-35b1cd9e3efd',
         }
         return result, status.HTTP_200_OK
 
@@ -371,19 +366,14 @@ class OpportunityEmailList(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/email_list.html',
+        template='sales/opportunity/activities/email/email_list.html',
         menu_active='id_menu_email',
         breadcrumb='EMAIL_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
         result = {
-            'employee_current_id': request.user.employee_current_data.get('id', None),
-            'account_list': resp1.result,
-            'contact_list': resp2.result,
-            'opportunity_list': resp3.result,
+            'list_from_app': 'opportunity.opportunityemail.create',
+            'app_id': 'dec012bf-b931-48ba-a746-38b7fd7ca73b',
         }
         return result, status.HTTP_200_OK
 
@@ -428,21 +418,14 @@ class OpportunityMeetingList(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/meeting_list.html',
+        template='sales/opportunity/activities/meeting/meeting_list.html',
         menu_active='id_menu_meeting',
         breadcrumb='MEETING_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
-        resp4 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
         result = {
-            'employee_current_id': request.user.employee_current_data.get('id', None),
-            'account_list': resp1.result,
-            'contact_list': resp2.result,
-            'opportunity_list': resp3.result,
-            'employee_list': resp4.result,
+            'list_from_app': 'opportunity.meetingwithcustomer.create',
+            'app_id': '2fe959e3-9628-4f47-96a1-a2ef03e867e3',
         }
         return result, status.HTTP_200_OK
 
@@ -500,7 +483,7 @@ class OpportunityActivityLogListAPI(APIView):
 class OpportunityDocumentList(View):
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/activities/document_list.html',
+        template='sales/opportunity/activities/document/document_list.html',
         menu_active='menu_opportunity_document',
         breadcrumb='OPPORTUNITY_DOCUMENT_LIST_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DOCUMENT_LIST, method='GET'),
@@ -512,7 +495,7 @@ class OpportunityDocumentList(View):
 class OpportunityDocumentCreate(View):
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/activities/document_create.html',
+        template='sales/opportunity/activities/document/document_create.html',
         menu_active='menu_opportunity_document',
         breadcrumb='OPPORTUNITY_DOCUMENT_CREATE_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DOCUMENT_LIST, method='POST'),
@@ -524,7 +507,7 @@ class OpportunityDocumentCreate(View):
 class OpportunityDocumentDetail(View):
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/activities/document_detail.html',
+        template='sales/opportunity/activities/document/document_detail.html',
         menu_active='menu_opportunity_document',
         breadcrumb='OPPORTUNITY_DOCUMENT_DETAIL_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DOCUMENT_DETAIL, method='GET', fill_key=['pk']),

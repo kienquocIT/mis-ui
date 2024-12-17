@@ -32,8 +32,8 @@ function LoadTabCompanyTable(company_budget_data, space_month) {
         <table class="table nowrap w-100" id="table-company">
             <thead class="sticky bg-primary-light-5">
             <tr>
-                <th class="fix1 bg-primary-light-5"></th>
-                <th class="fix2 bg-primary-light-5 expense-item">${trans_script.attr('data-trans-expense-item')}</th>
+                <th class="bg-primary-light-5"></th>
+                <th class="bg-primary-light-5 expense-item">${trans_script.attr('data-trans-expense-item')}</th>
                 <th class="text-right m1th money-input"></th>
                 <th class="text-right m2th money-input"></th>
                 <th class="text-right m3th money-input"></th>
@@ -58,8 +58,8 @@ function LoadTabCompanyTable(company_budget_data, space_month) {
     `)
     for (const company_data of company_budget_data) {
         let expense_row_ele = $(`<tr>
-            <td class="fix1 bg-white"><span class="index">${company_data?.['order']}</span></td>
-            <td class="fix2 bg-white"><span class="fw-bold text-primary expense-item-span"></span></td>
+            <td class="bg-white"><span class="index">${company_data?.['order']}</span></td>
+            <td class="bg-white"><span class="fw-bold text-primary expense-item-span"></span></td>
             <td class="text-right"><span class="mask-money money-m1th belong-q1" data-init-money="${company_data?.['company_month_list'][0]}"></td>
             <td class="text-right"><span class="mask-money money-m2th belong-q1" data-init-money="${company_data?.['company_month_list'][1]}"></td>
             <td class="text-right"><span class="mask-money money-m3th belong-q1" data-init-money="${company_data?.['company_month_list'][2]}"></td>
@@ -92,8 +92,8 @@ function LoadTabGroupTable(group_budget_data, space_month, is_lock) {
             <table class="table nowrap w-100" id="table-${$(this).attr('data-group-id')}">
                 <thead class="sticky bg-primary-light-5">
                 <tr>
-                    <th class="fix1 bg-primary-light-5"></th>
-                    <th class="fix2 bg-primary-light-5 expense-item">${trans_script.attr('data-trans-expense-item')}</th>
+                    <th class="bg-primary-light-5"></th>
+                    <th class="bg-primary-light-5 expense-item">${trans_script.attr('data-trans-expense-item')}</th>
                     <th class="text-right m1th money-input"></th>
                     <th class="text-right m2th money-input"></th>
                     <th class="text-right m3th money-input"></th>
@@ -120,8 +120,8 @@ function LoadTabGroupTable(group_budget_data, space_month, is_lock) {
             if (group_data?.['group']?.['id'] === $(this).attr('data-group-id')) {
                 for (const expense of group_data?.['data_expense']) {
                     let expense_row_ele = $(`<tr>
-                        <td class="fix1 bg-white"><span class="index">${expense?.['order']}</span>&nbsp;<button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-row-btn" ${IS_DETAIL ? 'hidden' : ''}><span class="icon"><i class="far fa-trash-alt"></i></span></button></td>
-                        <td class="fix2 bg-white"><select ${is_lock ? 'disabled' : ''} class="select2 form-select expense-item-select" ${IS_DETAIL ? 'disabled' : ''}></select></td>
+                        <td class="bg-white"><span class="index">${expense?.['order']}</span>&nbsp;<button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-row-btn" ${IS_DETAIL ? 'hidden' : ''}><span class="icon"><i class="far fa-trash-alt"></i></span></button></td>
+                        <td class="bg-white"><select ${is_lock ? 'disabled' : ''} class="select2 form-select expense-item-select" ${IS_DETAIL ? 'disabled' : ''}></select></td>
                         <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m1th belong-q1" value="${expense?.['group_month_list'][0]}" ${IS_DETAIL ? 'readonly' : ''}></td>
                         <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m2th belong-q1" value="${expense?.['group_month_list'][1]}" ${IS_DETAIL ? 'readonly' : ''}></td>
                         <td><input ${is_lock ? 'disabled readonly' : ''} class="form-control mask-money money-m3th belong-q1" value="${expense?.['group_month_list'][2]}" ${IS_DETAIL ? 'readonly' : ''}></td>
@@ -323,8 +323,8 @@ $(document).on("click", '.btn-add-new-row', function () {
     let tab_table = $(document.getElementById(`table-${group_id}`))
     let row = $(`
         <tr>
-            <td class="fix1 bg-white"><span class="index"></span>&nbsp;<button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-row-btn"><span class="icon"><i class="far fa-trash-alt"></i></span></button></td>
-            <td class="fix2 bg-white"><select class="select2 form-select expense-item-select"></select></td>
+            <td class="bg-white"><span class="index"></span>&nbsp;<button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-row-btn"><span class="icon"><i class="far fa-trash-alt"></i></span></button></td>
+            <td class="bg-white"><select class="select2 form-select expense-item-select"></select></td>
             <td class="text-right"><input class="form-control mask-money money-m1th belong-q1" value="0"></td>
             <td class="text-right"><input class="form-control mask-money money-m2th belong-q1" value="0"></td>
             <td class="text-right"><input class="form-control mask-money money-m3th belong-q1" value="0"></td>

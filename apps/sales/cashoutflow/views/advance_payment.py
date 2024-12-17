@@ -53,8 +53,9 @@ class AdvancePaymentCreate(View):
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
         return {
-            'data': {'employee_current': request.user.employee_current_data},
+            'employee_current': request.user.employee_current_data,
             'list_from_app': 'cashoutflow.advancepayment.create',
+            'app_id': '57725469-8b04-428a-a4b0-578091d0e4f5',
             'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-create-advance'
         }, status.HTTP_200_OK

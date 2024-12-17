@@ -380,7 +380,7 @@ $(document).ready(function () {
             rowIdx: true,
             paging: false,
             scrollY: '70vh',
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollCollapse: true,
             reloadCurrency: true,
             data: data_list,

@@ -5,8 +5,6 @@ $(function () {
         let formSubmit = $('#frm_purchase_order_create');
         // Elements
         let elePurchaseRequest = $('#purchase-order-purchase-request');
-        let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
-        let btnAddPayment = $('#btn-add-po-payment-stage');
         let eleTabArea = $('#tab-content-quotation-product');
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
@@ -100,15 +98,8 @@ $(function () {
             POLoadDataHandle.loadOrHiddenMergeProductTable();
         });
 
-        // Checkbox all
-        tablePurchaseRequest.on('click', '.table-checkbox-all', function() {
-            clickCheckBoxAll($(this), tablePurchaseRequest);
-            POLoadDataHandle.loadModalPurchaseRequestProductTable();
-        });
-
         // Action on click .table-row-checkbox of tablePurchaseRequest
-        tablePurchaseRequest.on('click', '.table-row-checkbox', function() {
-            tablePurchaseRequest[0].querySelector('.table-checkbox-all').checked = false;
+        tablePurchaseRequest.on('change', '.form-check-input', function() {
             POLoadDataHandle.loadModalPurchaseRequestProductTable();
         });
 
@@ -155,52 +146,29 @@ $(function () {
         // Action on click ADD PURCHASE QUOTATION
         $('#btn-confirm-add-purchase-quotation').on('click', function () {
             POLoadDataHandle.loadDataShowPurchaseQuotation();
-            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         });
 
         // Action on click checkbox purchase quotation
-        elePurchaseQuotation.on('click', '.checkbox-quotation', function () {
-            POLoadDataHandle.loadUpdateDataPQ(this);
-            POLoadDataHandle.loadSupplierContactByCheckedQuotation(this);
-            POLoadDataHandle.loadDataByCheckedQuotation(this);
-            if (this.checked === true) {
-                for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
-                    if (item.getAttribute('data-id') !== $(this)[0].getAttribute('data-id')) {
-                        item.checked = false;
-                    }
-                }
-            }
+        POLoadDataHandle.$elePQ.on('click', '.checkbox-quotation', function () {
+            POLoadDataHandle.loadCheckPQ(this);
         });
 
         // Action on click btn remove purchase quotation
-        elePurchaseQuotation.on('click', '.custom-btn-remove', function() {
+        POLoadDataHandle.$elePQ.on('click', '.custom-btn-remove', function() {
             let checked_id = null;
-            for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
+            for (let item of POLoadDataHandle.$elePQ[0].querySelectorAll('.checkbox-quotation')) {
                 if (item.checked === true) {
                     checked_id = item.getAttribute('data-id');
                 }
             }
             POLoadDataHandle.loadDataWhenRemovePQ(this);
             if (checked_id) {
-                for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
+                for (let item of POLoadDataHandle.$elePQ[0].querySelectorAll('.checkbox-quotation')) {
                     if (item.getAttribute('data-id') === checked_id) {
                         $(item).click();
                     }
                 }
             }
-        });
-
-        // Action on click button add product
-        POLoadDataHandle.$btnAddProduct.on('click', function() {
-            if (POLoadDataHandle.PRDataEle.val()) {
-                $('#btn-warning-add-product').click();
-            } else {
-                POLoadDataHandle.loadAddRowTableProductAdd();
-            }
-        });
-
-        POLoadDataHandle.$btnAddShipping.on('click', function () {
-            POLoadDataHandle.loadAddRowTableProductAdd(1);
         });
 
         // Action on click btn continue to add product
@@ -272,9 +240,8 @@ $(function () {
             POLoadDataHandle.loadChangePSRateAllTbl();
         });
 
-        // PAYMENT STAGE
-        btnAddPayment.on('click', function () {
-            POLoadDataHandle.loadAddPaymentStage();
+        tablePurchaseOrderProductRequest.on('click', '.btn-view-price', function () {
+            POLoadDataHandle.loadPriceListPQ(this);
         });
 
         tablePaymentStage.on('change', '.table-row-ratio, .table-row-value-before-tax, .table-row-tax', function () {

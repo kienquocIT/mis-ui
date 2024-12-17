@@ -137,9 +137,9 @@
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label required"
-                                       for="employee-date-joined">{% trans 'Date Joined' %}</label>
+                                       for="date_joined">{% trans 'Date Joined' %}</label>
                                 <div class="input-affix-wrapper">
-                                    <input class="form-control pl-2" type="text" id="employee-date-joined" name="date_joined"
+                                    <input class="form-control pl-2" type="text" id="date_joined" name="date_joined"
                                            required/>
                                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                                 </div>
@@ -164,9 +164,9 @@
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label" for="employee-doi">{% trans 'Date of issue' %}</label>
+                                <label class="form-label" for="employee_doi">{% trans 'Date of issue' %}</label>
                                 <div class="input-affix-wrapper">
-                                    <input class="form-control pl-2" id="employee-doi" type="text" name="date_of_issue"/>
+                                    <input class="form-control pl-2" id="employee_doi" type="text" name="date_of_issue"/>
                                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                                 </div>
                             </div>
@@ -179,7 +179,7 @@
                         </div>
                         <div class="col-12 col-md-12 col-lg-4">
                             <div class="form-group">
-                                <label class="form-label" for="employee-dob">{% trans 'Date of Birthday' %}</label>
+                                <label class="form-label" for="employee-dob">{% trans 'Date of birth' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input class="form-control pl-2" id="employee-dob" type="text" name="dob"/>
                                     <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
@@ -315,6 +315,12 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab-contract">
+                <div class="contract-list">
+                    {% include 'hrm/contract/list.html' %}
+                </div>
+                <div class="contract-edit hidden">
+                    {% include 'hrm/contract/create.html' with addClass="contract-readonly" edit=True %}
+                </div>
             </div>
         </div>
     </form>
@@ -327,6 +333,9 @@
     {% if base.language == 'vi' %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
+
+    <script src="{% static 'assets/hrm/js/extend/contract_editor.js' %}"></script>
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
+
     <script src="{% static 'assets/hrm/js/detail.js' %}"></script>
 {% endblock %}

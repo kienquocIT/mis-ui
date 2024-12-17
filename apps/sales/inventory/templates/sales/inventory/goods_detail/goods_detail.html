@@ -30,91 +30,88 @@
             data-trans-delivered="{% trans 'is not in stock' %}"
             data-trans-done="{% trans 'Done' %}"
             data-trans-not-yet="{% trans 'Not yet' %}"
+            data-trans-detail="{% trans 'Detail' %}"
             data-trans-current="{% trans 'current' %}"
+            data-trans-filter="{% trans 'Filter' %}"
+            data-trans-add-new-row="{% trans 'Add new row' %}"
     ></script>
 
-    <form id="goods-detail-main-form"
-          data-method="GET"
-    >
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="form-group">
-                    <label for="prd-category" class="form-label">{% trans 'Product category' %}</label>
-                    <select class="form-select select2 select-multiple"
-                            multiple
-                            id="prd-category"
-                            data-method="GET"
-                            data-url="{% url 'ProductCategoryListAPI' %}"
-                    ></select>
+    <div class="row">
+        <div class="col-12">
+            <div class="collapse" id="collapseExample">
+                <div class="border border-light rounded p-2">
+                    <div class="row">
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label for="prd-category" class="form-label">{% trans 'Product category' %}</label>
+                                <select class="form-select select2 select-multiple"
+                                        multiple
+                                        id="prd-category"
+                                        data-method="GET"
+                                        data-url="{% url 'ProductCategoryListAPI' %}"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label for="prd" class="form-label">{% trans 'Product' %}</label>
+                                <select class="form-select select2 select-multiple"
+                                        multiple
+                                        id="prd"
+                                        data-method="GET"
+                                        data-url="{% url 'ProductListAPI' %}"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label for="wh" class="form-label">{% trans 'Warehouse' %}</label>
+                                <select class="form-select select2 select-multiple"
+                                        multiple
+                                        id="wh"
+                                        data-method="GET"
+                                        data-url="{% url 'WareHouseListAPI' %}"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label for="status" class="form-label">{% trans 'Serial input status' %}</label>
+                                <select class="form-select select2 select-multiple" multiple id="status">
+                                    <option value="0" selected>{% trans 'Not yet' %}</option>
+                                    <option value="1" selected>{% trans 'Done' %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-12">
+                            <button type="button" class="btn btn-primary btn-xs" id="apply-btn">{% trans 'Apply' %}</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="form-group">
-                    <label for="prd" class="form-label">{% trans 'Product' %}</label>
-                    <select class="form-select select2 select-multiple"
-                            multiple
-                            id="prd"
-                            data-method="GET"
-                            data-url="{% url 'ProductListAPI' %}"
-                    ></select>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="form-group">
-                    <label for="wh" class="form-label">{% trans 'Warehouse' %}</label>
-                    <select class="form-select select2 select-multiple"
-                            multiple
-                            id="wh"
-                            data-method="GET"
-                            data-url="{% url 'WareHouseListAPI' %}"
-                    ></select>
-                </div>
-            </div>
-            <div class="col-12 col-md-2 col-lg-2">
-                <div class="form-group">
-                    <label for="status" class="form-label">{% trans 'Serial status' %}</label>
-                    <select class="form-select select2 select-multiple" multiple id="status">
-                        <option value="0" selected>{% trans 'Not yet' %}</option>
-                        <option value="1" selected>{% trans 'Done' %}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-12 col-md-1 col-lg-1 mt-5">
-                <button class="btn btn-gradient-primary w-100" type="button" id="filter-btn">
-                    <span>
-                        <span>{% trans 'Filter' %}</span>
-                        <span class="icon">
-                            <i class="fas fa-filter"></i>
-                        </span>
-                    </span>
-                </button>
             </div>
         </div>
-        <div class="row mt-5">
-            <div class="col-12">
-                <table class="table nowrap w-100"
-                       data-method="GET"
-                       data-url="{% url 'GoodsDetailAPI' %}"
-                       id="goods-detail-main-table"
-                >
-                    <thead>
-                        <tr>
-                            <th class="w-5"></th>
-                            <th class="w-25">{% trans 'Product' %}</th>
-                            <th class="w-10">{% trans 'Receipt code' %}</th>
-                            <th class="w-10">{% trans 'Date' %}</th>
-                            <th class="w-15">{% trans 'PIC' %}</th>
-                            <th class="w-15">{% trans 'Warehouse' %}</th>
-                            <th class="w-10">{% trans 'Quantity' %}</th>
-                            <th class="w-10">{% trans 'Serial' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100" data-method="GET" data-url="{% url 'GoodsDetailAPI' %}" id="goods-detail-main-table">
+                <thead>
+                    <tr>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 200px">{% trans 'Product' %}</th>
+                        <th style="min-width: 120px">{% trans 'Goods receipt' %}</th>
+                        <th style="min-width: 120px">{% trans 'Purchase request' %}</th>
+                        <th style="min-width: 100px">{% trans 'Date' %}</th>
+                        <th style="min-width: 200px">{% trans 'PIC' %}</th>
+                        <th style="min-width: 150px">{% trans 'Warehouse' %}</th>
+                        <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                        <th style="min-width: 80px">{% trans 'Serial' %}/{% trans 'Lot' %}</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
-    </form>
+    </div>
 
     <div class="modal fade" id="modal-serial" tabindex="-1" role="dialog" aria-labelledby="modal-serial" aria-hidden="true">
         <div class="modal-dialog modal-lg min-w-1280p" role="document">
@@ -130,16 +127,15 @@
                         <div class="col-12">
                             <form id="form-serial" data-method="POST"
                                   data-url="{% url 'GoodsDetailAPI' %}"
-                                  data-url-redirect="{% url 'GoodsDetail' %}"
-                            >
+                                  data-url-redirect="{% url 'GoodsDetail' %}">
                                 {% csrf_token %}
                                 <div class="import-db-space">
                                     {% include 'extends/import-datatable/button-import-db.html' %}
                                     <script class="import-db-form-url"
-                                          data-import-db-method="POST"
-                                          data-import-db-url="{% url 'GoodsDetailListImportDBAPI' %}"
+                                            data-import-db-method="POST"
+                                            data-import-db-url="{% url 'GoodsDetailListImportDBAPI' %}"
                                     ></script>
-                                    <table class="table nowrap w-100" id="table-serial">
+                                    <table class="table nowrap w-100" id="table-serial" data-url="{% url 'GoodsDetailSerialDataAPI' %}">
                                         <thead class="bg-secondary-light-4">
                                             <tr>
                                                 <th class="w-5" style="min-width: 50px"></th>
@@ -194,5 +190,4 @@
     <script src="{% static 'assets/sales/inventory/js/goods_detail/goods_detail.js' %}"></script>
     <script src="{% static 'assets/js/xlsx-0.18.5.full.min.js' %}"></script>
     <script src="{% static 'assets/js/import-datatable.js' %}"></script>
-    <script src="{% static 'assets/sales/inventory/js/goods_detail/goods_detail_import.js' %}"></script>
 {% endblock %}

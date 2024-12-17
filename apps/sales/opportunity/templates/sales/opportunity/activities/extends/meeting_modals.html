@@ -1,0 +1,197 @@
+{% load i18n %}
+
+<div class="offcanvas offcanvas-end" style="min-width: 75%" tabindex="-1" id="offcanvas-meeting" aria-labelledby="offcanvasTopLabel">
+	<div class="offcanvas-header">
+		<h5 id="offcanvasRightLabel">{% trans 'New Meeting With Customer' %}</h5>
+		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+		<form data-url="{% url 'OpportunityMeetingListAPI' %}"
+              data-url-redirect="{% url 'OpportunityMeetingList' %}"
+              data-method="POST"
+              id="form-new-meeting"
+              method="post"
+        >
+            {% csrf_token %}
+            <div class="row" style="overflow: auto; max-height: 80vh">
+                {% trans 'Select Sale Person' as inherit_title %}
+                {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                <div class="col-12 col-md-12 col-lg-12">
+                    <div class="form-group">
+                        <label for="meeting-subject-input" class="form-label required">{% trans 'Subject' %}</label>
+                        <input id="meeting-subject-input" class="form-control">
+                    </div>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label for="meeting-date-input" class="form-label required">{% trans 'Date' %}</label>
+                        <input id="meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label for="InputFromTime" class="form-label">{% trans 'From time' %}</label>
+                        {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='meeting_from_time' id_select='InputFromTime' %}
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label for="InputToTime" class="form-label">{% trans 'To time' %}</label>
+                        {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='meeting_to_time' id_select='InputToTime' %}
+                    </div>
+                </div>
+                <div class="col-12 col-md-12 col-lg-12">
+                    <div class="form-group">
+                        <div id="meeting-address-select-div">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="meeting-address-select-box" class="form-label required">{% trans 'Meeting address' %}</label>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <a id="meeting-address-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'Input address' %}</a>
+                                </div>
+                            </div>
+                            <select disabled id="meeting-address-select-box" class="select2"></select>
+                            <span class="small text-muted">{% trans 'Load by Opportunity' %}</span>
+                        </div>
+                        <div id="meeting-address-input-div" hidden>
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="meeting-address-input" class="form-label required">{% trans 'Meeting address' %}</label>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <a id="meeting-address-select-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'Select address' %}</a>
+                                </div>
+                            </div>
+                            <textarea id="meeting-address-input" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-12 col-lg-12">
+                    <div class="form-group">
+                        <label for="meeting-room-location-input" class="form-label required">{% trans 'Room location' %}</label>
+                        <textarea id="meeting-room-location-input" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-12 col-md-12 col-lg-6">
+                    <div class="form-group">
+                        <label for="meeting-employee-attended-select-box" class="form-label required">{% trans 'Employee attended' %}</label>
+                        <select id="meeting-employee-attended-select-box" data-url="{% url 'EmployeeListAPI' %}"
+                                multiple class="select2 select-multiple" data-closeOnSelect="false"></select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-12 col-lg-6">
+                    <div class="form-group">
+                        <label for="meeting-customer-member-select-box" class="form-label">{% trans 'Customer member' %}</label>
+                        <select disabled id="meeting-customer-member-select-box" multiple data-closeOnSelect="false" class="select2 select-multiple"></select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-12 col-lg-12">
+                    <div class="form-group">
+                        <label for="meeting-result-text-area" class="form-label required">{% trans 'Input result' %}</label>
+                        <textarea id="meeting-result-text-area" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-12" hidden>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="repeat-activity">
+                        <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <button type="submit" class="btn btn-primary mt-3" form="form-new-meeting" id="btn-create-meeting">{% trans 'Save' %}</button>
+	</div>
+</div>
+
+<div class="offcanvas offcanvas-end" style="min-width: 40%" tabindex="-1" id="offcanvas-meeting-detail" aria-labelledby="offcanvasTopLabel">
+	<div class="offcanvas-header">
+		<h5 id="offcanvasRightLabel">{% trans 'Detail Meeting With Customer' %}</h5>
+		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+		<form data-url="{% url 'OpportunityCallLogListAPI' %}"
+              data-url-redirect="{% url 'OpportunityCallLogList' %}"
+              data-method="POST"
+              id="form-call-log"
+              method="post">
+            {% csrf_token %}
+            <button class="btn btn-light btn-sm w-100" type="button" data-bs-toggle="collapse" data-bs-target="#detail-opp-process-inherit">
+            <i class="fas fa-chevron-down"></i>
+        </button>
+            <div class="collapse multi-collapse" id="detail-opp-process-inherit">
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="detail-opp" class="form-label required">{% trans 'Opportunity' %}</label>
+                                <input disabled readonly id="detail-opp" class="form-control text-primary fw-bold form-control-line">
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label for="detail-process" class="form-label">{% trans 'Process' %}</label>
+                                <input disabled readonly id="detail-process" class="form-control text-primary fw-bold form-control-line">
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label for="detail-stage" class="form-label">{% trans 'Stage' %}</label>
+                                <input disabled readonly id="detail-stage" class="form-control text-primary fw-bold form-control-line">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="detail-inheritor" class="form-label required">{% trans 'Inheritor' %}</label>
+                                <input disabled readonly id="detail-inheritor" class="form-control text-primary fw-bold form-control-line">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-12">
+                    <span id="detail-subject-input" class="fs-3 fw-bold text-muted"></span>
+                    <span id="is-cancelled" class="badge badge-soft-danger badge-sm" hidden>{% trans 'Cancelled' %}</span>
+                    <span id="detail-date-input" class="ml-2 text-muted small"></span>
+                </div>
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Time range' %}</span>
+                    <br>
+                    <span id="detail-from" class="text-primary"></span>
+                    <span> - </span>
+                    <span id="detail-to" class="text-primary"></span>
+                </div>
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Meeting address' %}</span>
+                    <p id="detail-meeting-address" class="text-primary"></p>
+                </div>
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Room location' %}</span>
+                    <p id="detail-meeting-room" class="text-primary"></p>
+                </div>
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Employee attended' %}</span>
+                    <div id="detail-emp-attended"></div>
+                </div>
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Customer member' %}</span>
+                    <div id="detail-customer-member"></div>
+                </div>
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Content' %}</span>
+                    <p id="detail-result" class="text-primary"></p>
+                </div>
+                <div class="col-12" hidden>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="detail-repeat-activity">
+                        <label class="form-check-label" for="detail-repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                    </div>
+                </div>
+                <div class="col-12 mt-5">
+                    <button type="button" id="cancel-activity" class="btn btn-sm btn-danger">{% trans 'Cancel' %}</button>
+                </div>
+            </div>
+        </form>
+	</div>
+</div>

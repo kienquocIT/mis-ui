@@ -33,7 +33,7 @@
         <tr>
             <th></th>
             <th>{% trans 'Code' %}</th>
-            <th>{% trans 'Order name' %}</th>
+            <th>{% trans 'Title' %}</th>
             <th>{% trans 'Transaction type' %}</th>
             <th>{% trans 'Period' %}</th>
             <th>{% trans 'Repeat every' %}</th>
@@ -77,7 +77,6 @@
             data-saturday="{% trans 'Saturday' %}"
             data-sunday="{% trans 'Sunday' %}"
     >
-    {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 {% block jsFooter %}
 

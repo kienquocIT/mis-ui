@@ -13,7 +13,7 @@ $(function () {
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
-                    data: {'is_recurring': false},
+                    // data: {'is_recurring': false},
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('sale_order_list')) {

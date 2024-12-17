@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Revenue Plan Create' %}{% endblock %}
+{% block title %}{% trans 'Revenue plan' %}{% endblock %}
 {% block cssHeader %}
     <style>
         td, th {
@@ -54,7 +54,7 @@
 {% block pageContent %}
     {{ data.revenue_plan_config | json_script:"revenue_plan_config" }}
 
-    <script id="trans-url"
+    <script id="trans-script"
             data-trans-m1th="{% trans 'January' %}"
             data-trans-m2th="{% trans 'February' %}"
             data-trans-m3th="{% trans 'March' %}"
@@ -314,7 +314,6 @@
 {% block jsFooterUnCompress %}
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
     <script src="{% static 'assets/js/revenue_plan/revenue_plan_common.js' %}"></script>
     <script src="{% static 'assets/js/revenue_plan/revenue_plan_create.js' %}"></script>
 {% endblock %}

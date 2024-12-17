@@ -28,16 +28,20 @@
     ></script>
     <div class="row">
         <div class="col-12">
-            <table id="goods_transfer_list_table" class="table nowrap w-100 mb-5" data-method="GET"
+            <table id="goods_transfer_list_table"
+                   class="table nowrap w-100 mb-5"
+                   data-method="GET"
                    data-url="{% url 'GoodsTransferListAPI' %}"
                    data-url-detail="{% url 'GoodsTransferDetail' '0' %}"
             >
                 <thead>
+                <tr>
                 <th></th>
                 <th>{% trans "Code" %}</th>
                 <th>{% trans "Title" %}</th>
                 <th>{% trans "Date" %}</th>
                 <th>{% trans "Status" %}</th>
+                </tr>
                 </thead>
             </table>
         </div>

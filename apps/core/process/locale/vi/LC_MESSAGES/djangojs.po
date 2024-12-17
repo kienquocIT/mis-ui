@@ -240,3 +240,131 @@ msgstr "Nếu tài liệu có quy trình được áp dụng, trạng thái củ
 #
 msgid "Application is not supported"
 msgstr "Ứng dụng không hỗ trợ"
+
+#
+msgid "Minimize all applications at all stages"
+msgstr "Thu gọn tất cả ứng dụng ở mọi giai đoạn"
+
+#
+msgid "Show all applications at all stages"
+msgstr "Hiển thị tất cả ứng dụng ở mọi giai đoạn"
+
+#
+msgid "Destroy all applications at all stages"
+msgstr "Huỷ bỏ tất cả các ứng dụng ở mọi giai đoạn"
+
+#
+msgid "Destroy all stages"
+msgstr "Huỷ bỏ tất cả giai đoạn"
+
+#
+msgid "Are you sure you want to remove all item?"
+msgstr "Bạn có chắc chắn muốn xóa tất cả mục không?"
+
+#
+msgid "The clipboard is not available"
+msgstr "Sao chép vào bộ nhớ tạm không khả dụng"
+
+#
+msgid "The copied content is printed in the browser console (Inspect or F12 -> Console tab)"
+msgstr "Nội dung đã sao chép được in trong bảng điều khiển của trình duyệt (Kiểm tra hoặc F12 -> tab Bảng điều khiển)"
+
+#
+msgid "There are some errors in the configuration so copying is not allowed"
+msgstr "Có một số lỗi trong cấu hình nên sao chép không khả dụng"
+
+#
+msgid "Config"
+msgstr "Cấu hình"
+
+#
+msgid "Apply"
+msgstr "Áp dụng"
+
+#
+msgid "Copy configs"
+msgstr "Sao chép cấu hình"
+
+#
+msgid "Paste configs"
+msgstr "Dán cấu hình"
+
+#
+msgid "Paste from clipboard"
+msgstr "Dán từ bộ nhớ tạm"
+
+#
+msgid "Pretty format"
+msgstr "Định dạng dễ đọc"
+
+#
+msgid "Pretty format is successful"
+msgstr "Định dạng dễ đọc thành công"
+
+#
+msgid "The data does not conform to the JSON standard so it can be formatted"
+msgstr "Dữ liệu không tuân thủ tiêu chuẩn JSON nên không thể định dạng"
+
+#
+msgid "The data does not conform to the JSON standard so it can be apply"
+msgstr "Dữ liệu không tuân thủ tiêu chuẩn JSON nên không thể áp dụng"
+
+#
+msgid "Data does not comply with process configuration rules"
+msgstr "Dữ liệu không tuân thủ các quy tắc cấu hình quy trình"
+
+#
+msgid "Are you sure you want to apply?"
+msgstr "Bạn có chắc muốn áp dụng?"
+
+#
+msgid "Clean all applications of stages"
+msgstr "Xoá tất cả ứng dụng của các giai đoạn"
+
+#
+msgid "Clean all stages"
+msgstr "Xoá tất cả giai đoạn"
+
+#
+msgid "Clean all Cross-Stage Applications"
+msgstr "Xoá tất cả Ứng dụng toàn cầu"
+
+#
+msgid "Apply new configurations to stages"
+msgstr "Áp dụng cấu hình mới cho các giai đoạn"
+
+#
+msgid "Apply new configurations to Cross-Stage Applications"
+msgstr "Áp dụng cấu hình mới cho Ứng dụng toàn cầu"
+
+#
+msgid "Delete"
+msgstr "Xoá"
+
+#
+msgid "Are you sure you cleaned all Cross-Stage Apps?"
+msgstr "Bạn có chắc chắn làm sạch tất cả các Ứng dụng toàn cầu không?"
+
+#
+msgid "Created by"
+msgstr "Tạo bởi"
+
+#
+msgid "at"
+msgstr "vào lúc"
+
+#
+msgid "Are you sure about this delete?"
+msgstr "Bạn chắc chắn xoá dữ liệu này?"
+
+#
+msgid "Loading process members"
+msgstr "Đang tải thành viên của tiến trình"
+
+#
+msgid "Documents"
+msgstr "Tài liệu"
+
+#
+msgid "Members are controlled only by the system"
+msgstr "Thành viên chỉ chịu sự kiểm soát của hệ thống"

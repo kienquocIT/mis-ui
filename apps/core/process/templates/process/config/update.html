@@ -3,6 +3,7 @@
 
 {% block cssHeader %}
     <link rel="stylesheet" href="{% static 'process/stages.css' %}">
+    <link rel="stylesheet" href="{% static 'process/themes.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/flatpickr/flatpickr.min.css' %}">
     <link rel="stylesheet" href="{% static 'process/style.css' %}">
 {% endblock %}
@@ -27,14 +28,41 @@
             data-url-app="{% url 'TenantApplicationListAPI' %}"
     >
         {% include 'process/extends/config.html' %}
-        <div class="form-check mb-1">
-            <input type="checkbox" class="form-check-input mt-2" id="inp-for-opp" name="for_opp" disabled/>
-            <label for="inp-for-opp" class="form-label">
-                {% trans 'For Opportunity' %}
-                <small class="form-text text-muted d-inline-block">
-                    ({% trans "This selected can't change after created" %})
-                </small>
-            </label>
+        <div class="row">
+            <div class="col-xs-12 col-md-4 d-flex align-items-center">
+                <div class="form-check mb-1">
+                    <input type="checkbox" class="form-check-input mt-2" id="inp-for-opp" name="for_opp" disabled/>
+                    <label for="inp-for-opp" class="form-label">
+                        {% trans 'For Opportunity' %}
+                        <small class="form-text text-muted d-inline-block">
+                            ({% trans "This selected can't change after created" %})
+                        </small>
+                    </label>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <div class="form-group">
+                    <label for="inp-theme" class="form-label">{% trans 'Themes' %}</label>
+                    <select name="theme" id="inp-theme" class="form-select">
+                        <option value="" selected>{% trans 'Default' %}</option>
+                        <option value="dome-square">{% trans 'Dome - Square' %}</option>
+                        <option value="dome-rectangle">{% trans 'Dome - Rectangle' %}</option>
+                        <option value="dome-circle">{% trans 'Dome - Circle' %}</option>
+                        <option value="triangle-square">{% trans 'Triangle - Square' %}</option>
+                        <option value="triangle-rectangle">{% trans 'Triangle - Rectangle' %}</option>
+                        <option value="triangle-circle">{% trans 'Triangle - Circle' %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <div class="form-group">
+                    <label for="inp-app-style" class="form-label">{% trans 'Application style size' %}</label>
+                    <select name="app_style_size" id="inp-app-style" class="form-select">
+                        <option value="" selected>{% trans 'Default' %}</option>
+                        <option value="app-sm">{% trans 'Small' %}</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </form>
     <div class="w-100 d-flex justify-content-center align-items-center" id="btn-collapse-info">
@@ -67,7 +95,7 @@
             btnCollapse$.on('click', function () {
                 btnCollapse$.toggleClass('collapsed');
                 frm$.slideToggle('slow');
-            })
+            });
         })
     </script>
 {% endblock %}

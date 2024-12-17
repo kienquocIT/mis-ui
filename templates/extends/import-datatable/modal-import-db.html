@@ -31,6 +31,12 @@
 			</div>
 			<div class="modal-body">
                 <div class="row">
+                    <div class="col-12 mb-3">
+                        <div class="border rounded p-2">
+                            <span class="text-warning fw-bold">⚠️ {% trans 'Data Import Limit' %}</span>
+                            <p class="text-primary">{% trans 'To ensure system performance and stability, row number is limited to 500 rows. If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears.' %}</p>
+                        </div>
+                    </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="form-group">
                             <label class="form-label">{% trans 'Datatable name' %}</label>
@@ -69,16 +75,18 @@
                             <div class="progress progress-bar-xs progress-container">
                                 <div class="progress-bar bg-primary-light-3 progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
-                            <div class="import-db-form-modal-table" style="max-height: 50vh; overflow: auto"></div>
-                            <div class="text-muted small">{% trans 'The table in excel file must have the same column order as selected table.' %}</div>
+                            <div class="import-db-form-modal-table" style="max-height: 45vh; overflow: auto"></div>
+                            <span class="text-muted small">- {% trans 'The table in excel file must have the column order below: ' %}</span>
+                            <span class="text-blue small col-order-list"></span>
                         </form>
                     </div>
                 </div>
             </div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-				<button type="submit" form="import-db-form" class="btn btn-gradient-primary">{% trans 'Import' %}</button>
-			</div>
+                <span class="importing-row fw-bold text-primary">0 /</span><span class="all-row fw-bold text-primary mr-10">0</span>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                <button type="submit" form="import-db-form" class="btn btn-gradient-primary">{% trans 'Import' %}</button>
+            </div>
 		</div>
 	</div>
 </div>
@@ -133,12 +141,13 @@
                                 <div class="progress-bar bg-primary-light-3 progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="import-db-form-modal-table" style="max-height: 50vh; overflow: auto"></div>
-                            <div class="text-muted small">{% trans 'The table in excel file must have the same column order as selected table.' %}</div>
+                            <span class="text-muted small">{% trans 'The table in excel file must have the column order below: ' %}</span><span class="text-blue small col-order-list"></span>
                         </form>
                     </div>
                 </div>
             </div>
 			<div class="modal-footer">
+                <span class="importing-row fw-bold text-primary">0 /</span><span class="all-row fw-bold text-primary mr-10">0</span>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
 				<button type="submit" form="load-db-form" class="btn btn-gradient-primary">{% trans 'Load' %}</button>
 			</div>

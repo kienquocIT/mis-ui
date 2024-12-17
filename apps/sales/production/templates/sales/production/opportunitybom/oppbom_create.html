@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Bill of material create' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <style>
+        table .select2-selection__rendered {
+            max-width: 250px;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create-prj-bom">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-labor="{% url 'LaborListForOpportunityBOMAPI' %}"
+            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
+            data-url-material="{% url 'ProductMaterialListForOpportunityBOMAPI' %}"
+            data-url-tool="{% url 'ProductToolListForOpportunityBOMAPI' %}"
+            data-url-bom-detail="{% url 'BOMDetail' '0' %}"
+            data-url-opp-bom-detail="{% url 'OpportunityBOMDetail' '0' %}"
+            data-url-bom-detail-api="{% url 'BOMDetailAPI' '0' %}"
+    ></script>
+    <script id="script-trans"
+            data-trans-select-one="{% trans 'Select one' %}"
+            data-trans-can-not-select="{% trans "Can't be selected due to different UOM" %}"
+            data-trans-change-type="{% trans 'Do you want to change?' %}"
+            data-trans-reload-data="{% trans 'All data will be reloaded.' %}"
+            data-trans-change-ok="{% trans 'Change' %}"
+            data-trans-change-no="{% trans 'Cancel' %}"
+    ></script>
+    <form id="form-create-prj-bom"
+          data-method="POST"
+          data-url="{% url 'OpportunityBOMListAPI' %}"
+          data-url-redirect="{% url 'OpportunityBOMList' %}"
+    >
+        {% csrf_token %}
+        {% include 'sales/production/opportunitybom/common/information.html' %}
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/opportunitybom/oppbom_common.js' %}"></script>
+    <script src="{% static 'assets/sales/production/js/opportunitybom/oppbom_create.js' %}"></script>
+{% endblock %}

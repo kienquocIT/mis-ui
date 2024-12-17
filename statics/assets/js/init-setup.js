@@ -417,35 +417,14 @@ class LogController {
                     if (itemLog['is_system'] === true) {
                         childLogHTML += `<span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span>`;
                         if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                            childLogHTML += `<span class="badge badge-primary badge-outline mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
+                            childLogHTML += `<span class="badge badge-light badge-outline mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
                         }
                     } else {
                         if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                            childLogHTML += `<span class="badge badge-primary badge-outline mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
+                            childLogHTML += `<span class="badge badge-light badge-outline mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
                         }
                     }
-                    let msgMapIcon = "";
-                    let arrayNew = ["new"];
-                    let arrayDone = ["finish", "approved"];
-                    let arrayCancel = ["canceled", "rejected"];
-                    let arrayUpdate = ["update", "zone"];
-                    let isNew = arrayNew.some(item => itemLog?.['msg'].toLowerCase().includes(item));
-                    let isDone = arrayDone.some(item => itemLog?.['msg'].toLowerCase().includes(item));
-                    let isCancel = arrayCancel.some(item => itemLog?.['msg'].toLowerCase().includes(item));
-                    let isUpdate = arrayUpdate.some(item => itemLog?.['msg'].toLowerCase().includes(item));
-                    if (isNew === true) {
-                        msgMapIcon = '<i class="fas fa-tasks ml-2 mt-1"></i>';
-                    }
-                    if (isDone === true) {
-                        msgMapIcon = '<i class="fas fa-check text-green ml-2 mt-1"></i>';
-                    }
-                    if (isCancel === true) {
-                        msgMapIcon = '<i class="fas fa-times text-red ml-2 mt-1"></i>';
-                    }
-                    if (isUpdate === true) {
-                        msgMapIcon = '<i class="fas fa-user-edit ml-2 mt-1"></i>';
-                    }
-                    childLogHTML += ` <span class="fs-7">${itemLog['msg']}</span>${msgMapIcon}</div>`;
+                    childLogHTML += ` <span class="fs-7">${itemLog['msg']}</span></div>`;
                     logHTML.push(childLogHTML);
                 })
                 let logGroupHTML = `<div class="card-body mt-4"><div class="card-text">${logHTML.join("")}</div></div>`
@@ -2209,15 +2188,14 @@ class WFRTControl {
                 showCancelButton: true,
                 cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 didOpen: () => {
-                    // Add event listener after the modal is shown
-                    let checkboxes = document.querySelectorAll('.checkbox-save-status');
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.addEventListener('click', function () {
-                            let checked = checkbox.checked;
-                            for (let eleCheck of checkboxes) {
-                                eleCheck.checked = false;
+                    // Add event listener for click events on the group
+                    document.querySelectorAll('.group-checkbox-save-status').forEach((checkboxGr) => {
+                        checkboxGr.addEventListener('click', function () {
+                            // Mark the child radio button as checked
+                            let radio = this.querySelector('.checkbox-save-status');
+                            if (radio) {
+                                radio.checked = true; // Automatically unchecks other radios in the group
                             }
-                            checkbox.checked = checked;
                         });
                     });
                 }
@@ -2335,15 +2313,14 @@ class WFRTControl {
                 showCancelButton: true,
                 cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 didOpen: () => {
-                    // Add event listener after the modal is shown
-                    let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.addEventListener('click', function () {
-                            let checked = checkbox.checked;
-                            for (let eleCheck of checkboxes) {
-                                eleCheck.checked = false;
+                    // Attach click event listeners to each group container
+                    document.querySelectorAll('.group-checkbox-next-node-collab').forEach((checkboxGr) => {
+                        checkboxGr.addEventListener('click', function () {
+                            // Find and mark the radio button inside this group as checked
+                            let radio = this.querySelector('.checkbox-next-node-collab');
+                            if (radio) {
+                                radio.checked = true; // Automatically unchecks others in the group
                             }
-                            checkbox.checked = checked;
                         });
                     });
                 }
@@ -2416,15 +2393,14 @@ class WFRTControl {
                 showCancelButton: true,
                 cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 didOpen: () => {
-                    // Add event listener after the modal is shown
-                    let checkboxes = document.querySelectorAll('.checkbox-next-association');
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.addEventListener('click', function () {
-                            let checked = checkbox.checked;
-                            for (let eleCheck of checkboxes) {
-                                eleCheck.checked = false;
+                    // Attach click event listeners to each group container
+                    document.querySelectorAll('.group-checkbox-next-association').forEach((checkboxGr) => {
+                        checkboxGr.addEventListener('click', function () {
+                            // Find and mark the radio button inside this group as checked
+                            let radio = this.querySelector('.checkbox-next-association');
+                            if (radio) {
+                                radio.checked = true; // Automatically unchecks others in the group
                             }
-                            checkbox.checked = checked;
                         });
                     });
                 }
@@ -2474,15 +2450,14 @@ class WFRTControl {
                     showCancelButton: true,
                     cancelButtonText: $.fn.transEle.attr('data-cancel'),
                     didOpen: () => {
-                        // Add event listener after the modal is shown
-                        let checkboxes = document.querySelectorAll('.checkbox-next-node-collab');
-                        checkboxes.forEach((checkbox) => {
-                            checkbox.addEventListener('click', function () {
-                                let checked = checkbox.checked;
-                                for (let eleCheck of checkboxes) {
-                                    eleCheck.checked = false;
+                        // Attach click event listeners to each group container
+                        document.querySelectorAll('.group-checkbox-next-node-collab').forEach((checkboxGr) => {
+                            checkboxGr.addEventListener('click', function () {
+                                // Find and mark the radio button inside this group as checked
+                                let radio = this.querySelector('.checkbox-next-node-collab');
+                                if (radio) {
+                                    radio.checked = true; // Automatically unchecks others in the group
                                 }
-                                checkbox.checked = checked;
                             });
                         });
                     }
@@ -2507,16 +2482,16 @@ class WFRTControl {
     static setupHTMLSelectAssociation(AssociationData, type) {
         let htmlCustom = ``;
         let commonTxt = $.fn.transEle.attr('data-select-association-type-1');
-        let commonImg = `<i class="fas fa-check-circle text-info"></i>`;
+        let commonImg = `<i class="fas fa-check-circle text-blue"></i>`;
         if (type === 1) {
             commonTxt = $.fn.transEle.attr('data-select-association-type-2');
             commonImg = `<i class="fas fa-exclamation-triangle text-danger"></i>`;
         }
         htmlCustom += `<div class="d-flex mb-5">${commonImg}<span>${commonTxt}</span></div>`;
         for (let associate of AssociationData) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom group-checkbox-next-association">
                                 <div class="form-check form-check-lg d-flex align-items-center">
-                                    <input type="radio" class="form-check-input checkbox-next-association" id="associate-${associate?.['id'].replace(/-/g, "")}" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
+                                    <input type="radio" name="next-association" class="form-check-input checkbox-next-association" id="associate-${associate?.['id'].replace(/-/g, "")}" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
                                     <label class="form-check-label mr-2" for="associate-${associate?.['id'].replace(/-/g, "")}">${associate?.['node_out']?.['title']}</label>
                                 </div>
                             </div>`;
@@ -2527,12 +2502,12 @@ class WFRTControl {
     static setupHTMLSelectCollab(collabOutForm) {
         let htmlCustom = ``;
         for (let collab of collabOutForm) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom">
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom group-checkbox-next-node-collab">
                                 <div class="form-check form-check-lg d-flex align-items-center">
-                                    <input type="radio" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
+                                    <input type="radio" name="next-node-collab" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
                                     <label class="form-check-label mr-2" for="collab-${collab?.['id'].replace(/-/g, "")}">${collab?.['full_name']}</label>
+                                    <span class="badge badge-light badge-outline badge-sm">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                                 </div>
-                                <span class="badge badge-soft-success">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                             </div>`;
         }
         return htmlCustom;
@@ -2550,9 +2525,9 @@ class WFRTControl {
             if (status === 0) {
                 checked = "checked";
             }
-            htmlCustom += `<div class="d-flex mb-5 border-bottom">
+            htmlCustom += `<div class="d-flex mb-5 border-bottom group-checkbox-save-status">
                                 <div class="form-check form-check-lg d-flex align-items-center">
-                                    <input type="radio" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}" ${checked}>
+                                    <input type="radio" name="save-status" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}" ${checked}>
                                     <label class="form-check-label" for="save-type-${status}">${statusMapText[status]}</label>
                                 </div>
                             </div>`;
@@ -2611,8 +2586,11 @@ class WFRTControl {
                     let $dataRTNotFound = $('#idxDataRuntimeNotFound');
                     if (data['runtime_detail']?.['state'] === 3) $dataRTNotFound.removeClass('hidden');
                     $dataRTNotFound.empty().append(WFRTControl.setupHTMLNonWF(false));
+
                     let eleStatus = $('#systemStatus');
-                    if (eleStatus.attr('data-status') === '4') {  // if canceled after finish with workflow non-apply
+                    let docData = WFRTControl.getRuntimeDocData();
+
+                    if (docData?.['system_status'] === 4) {  // if canceled after finish with workflow non-apply
                         $dataRTNotFound.empty().append(WFRTControl.setupHTMLNonWF(true));
                     }
                     let actionMySelf = data['runtime_detail']['action_myself'];
@@ -2646,7 +2624,7 @@ class WFRTControl {
                             // active btn save change and back if current employee is owner, status is finished
                             let isCR = false;
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            if (eleStatus.attr('data-status-cr') === '5' && eleStatus.attr('data-inherit') === currentEmployee) {
+                            if (eleStatus.attr('data-status-cr') === '5' && docData?.['employee_inherit']?.['id'] === currentEmployee) {
                                 WFRTControl.setBtnWFAfterFinishUpdate();
                                 isCR = true;
                             }
@@ -2663,7 +2641,7 @@ class WFRTControl {
                             WFRTControl.activeSetZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
                             // active btn change and cancel if current employee is owner, status is finished
                             let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            if (eleStatus.attr('data-status') === '3' && eleStatus.attr('data-inherit') === currentEmployee) {
+                            if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === currentEmployee) {
                                 WFRTControl.setBtnWFAfterFinishDetail();
                                 // show print button
                                 let $btnPrint = $('#print-document');
@@ -2786,15 +2764,19 @@ class WFRTControl {
         let zonesData = WFRTControl.getZoneData();
         let zonesHiddenData = WFRTControl.getZoneHiddenData();
         let isEditAllZone = WFRTControl.getIsEditAllZone();
+        let docData = WFRTControl.getRuntimeDocData();
         // Case user is allowed to edit all page
         if (isEditAllZone === 'true') {
             if (window.location.href.includes('/update/')) {
                 let idFormID = globeFormMappedZone;
                 if (idFormID && globeWFRuntimeID) {
-                    DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
-                    $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
-                        DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
-                    });
+                    DocumentControl.getElePageAction().find('[form=' + idFormID + ']').not('.btn-wf-after-finish').addClass('hidden');
+                    if (docData?.['system_status'] === 1) {
+                        $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
+                            DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                        });
+                    }
+
                     let actionList = WFRTControl.getActionsList();
                     let actionBubble = null;
                     if (actionList.includes(1)) {
@@ -2957,10 +2939,12 @@ class WFRTControl {
                 if (window.location.href.includes('/update/')) {
                     let idFormID = globeFormMappedZone;
                     if (idFormID && globeWFRuntimeID) {
-                        DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
-                        $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
-                            DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
-                        });
+                        DocumentControl.getElePageAction().find('[form=' + idFormID + ']').not('.btn-wf-after-finish').addClass('hidden');
+                        if (docData?.['system_status'] === 1) {
+                            $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden').on('click', function () {
+                                DocumentControl.setBtnIDLastSubmit($(this).attr('id'));
+                            });
+                        }
 
                         let actionList = WFRTControl.getActionsList();
                         let actionBubble = null;
@@ -3081,7 +3065,7 @@ class WFRTControl {
     }
 
     static getCollabOutFormData() {
-        // typeWF 0: dataCreate, 1: dataRuntime
+        // typeWF 0: dataInitial, 1: dataRuntime
         let typeWF = 0;
         if (window.location.href.includes('/detail/')) {
             typeWF = 1;
@@ -3093,33 +3077,29 @@ class WFRTControl {
                     typeWF = 1;
                 }
             }
-            // let eleStatus = $('#systemStatus');
-            // if (eleStatus && eleStatus.length > 0) {
-            //     if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
-            //         typeWF = 1;
-            //     }
-            // }
-        }
-        let $collabOFCreate = $('#idxCollabOFCreate');
-        let dataCreate = [];
-        let $collabOFRuntime = $('#idxCollabOFRuntime');
-        let dataRuntime = [];
-        if ($collabOFCreate && $collabOFCreate.length > 0) {
-            dataCreate = JSON.parse($collabOFCreate.text());
-        }
-        if ($collabOFRuntime && $collabOFRuntime.length > 0) {
-            dataRuntime = JSON.parse($collabOFRuntime.text());
         }
         if (typeWF === 0) {
-            return dataCreate;
+            let $collabOFCreate = $('#idxCollabOFCreate');
+            if ($collabOFCreate && $collabOFCreate.length > 0) {
+                return JSON.parse($collabOFCreate.text());
+            }
         }
         if (typeWF === 1) {
-            return dataRuntime;
+            let $collabOFRuntime = $('#idxCollabOFRuntime');
+            if ($collabOFRuntime && $collabOFRuntime.length > 0) {
+                return JSON.parse($collabOFRuntime.text());
+            } else {  // case if not $collabOFRuntime then check & use dataInitial
+                let $collabOFCreate = $('#idxCollabOFCreate');
+                if ($collabOFCreate && $collabOFCreate.length > 0) {
+                    return JSON.parse($collabOFCreate.text());
+                }
+            }
         }
+        return [];
     }
 
     static getAssociateData() {
-        // typeWF 0: dataCreate, 1: dataRuntime
+        // typeWF 0: dataInitial, 1: dataRuntime
         let typeWF = 0;
         if (window.location.href.includes('/detail/')) {
             typeWF = 1;
@@ -3131,29 +3111,25 @@ class WFRTControl {
                     typeWF = 1;
                 }
             }
-            // let eleStatus = $('#systemStatus');
-            // if (eleStatus && eleStatus.length > 0) {
-            //     if (!['0', '3'].includes(eleStatus.attr('data-status'))) {
-            //         typeWF = 1;
-            //     }
-            // }
         }
-        let $associateCreate = $('#idxAssociateCreate');
-        let dataCreate = [];
-        let $associateRuntime = $('#idxAssociateRuntime');
-        let dataRuntime = [];
-        if ($associateCreate && $associateCreate.length > 0) {
-            dataCreate = JSON.parse($associateCreate.text());
+        if (typeWF === 0) {  // initial
+            let $associateCreate = $('#idxAssociateCreate');
+            if ($associateCreate && $associateCreate.length > 0) {
+                return JSON.parse($associateCreate.text());
+            }
         }
-        if ($associateRuntime && $associateRuntime.length > 0) {
-            dataRuntime = JSON.parse($associateRuntime.text());
+        if (typeWF === 1) {  // runtime
+            let $associateRuntime = $('#idxAssociateRuntime');
+            if ($associateRuntime && $associateRuntime.length > 0) {
+                return JSON.parse($associateRuntime.text());
+            } else {  // case if not $associateRuntime then check & use dataInitial
+                let $associateCreate = $('#idxAssociateCreate');
+                if ($associateCreate && $associateCreate.length > 0) {
+                    return JSON.parse($associateCreate.text());
+                }
+            }
         }
-        if (typeWF === 0) {
-            return dataCreate;
-        }
-        if (typeWF === 1) {
-            return dataRuntime;
-        }
+        return [];
     }
 
     static getZoneKeyData() {
@@ -3346,7 +3322,9 @@ class WFRTControl {
         WFRTControl.setRuntimeDoc(resultDetail);
         switch (resultDetail?.['system_status']) {
             case 1:  // created
-                $realActions.addClass('hidden');
+                if (resultDetail?.['workflow_runtime_id']) {
+                    $realActions.addClass('hidden');
+                }
                 break
             case 2:  // added
                 break
@@ -4073,7 +4051,7 @@ class UtilControl {
             let format = opts?.['format'] || "YYYY-MM-DD HH:mm:ss";
             let outputFormat = opts?.['outputFormat'] || "DD-MM-YYYY HH:mm:ss";
             let callback = opts?.['callback'] || function (data) {
-                return `<p>${data.relate}</p><small>${data.output}</small>`;
+                return opts?.['in_row'] === true ? `<small>${data.relate}</small> (<small>${data.output}</small>)` : `<p>${data.relate}</p><small>${data.output}</small>`;
             }
             const objDT = moment(dataStr, format);
             let relateTimeStr = objDT.fromNow();
@@ -7087,6 +7065,7 @@ class FileControl {
                                     ${opts.required ? "required" : ""}
                                 />
                             `);
+                            groupEle.addClass('dm-uploader-initializer');
 
                             // init table file cloud
                             clsThis.ui_on_show_file_cloud();
@@ -8575,8 +8554,6 @@ let $x = {
         buttonLinkBlank: DocumentControl.buttonLinkBlank,
         closeCard: DocumentControl.closeCard,
         openCard: DocumentControl.openCard,
-
-        getFeatureCode: BastionFieldControl.getFeatureCode,
 
         parseDateTime: UtilControl.parseDateTime,
         parseDate: UtilControl.parseDate,

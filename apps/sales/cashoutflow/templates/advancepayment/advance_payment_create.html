@@ -36,6 +36,7 @@
     ></script>
     <script id="script-url"
             data-trans-unplanned="{% trans 'Unplanned expenses' %}"
+            data-url-opp-list="{% url "OpportunityListAPI" %}"
             data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
             data-url-ap-mapped="{% url "AdvancePaymentListAPI" %}"
             data-url-expense-quotation="{% url 'QuotationExpenseListAPI' %}"
@@ -49,7 +50,7 @@
             data-trans-BICSWIFT-code="{% trans 'BIC/SWIFT code' %}"
     >
     </script>
-    {{ data.data.employee_current | json_script:"employee_current" }}
+    {{ data.employee_current | json_script:"employee_current" }}
     <form id="form-create-advance"
           data-method="POST"
           data-url-redirect="{% url "AdvancePaymentList" %}"
@@ -64,7 +65,6 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
-    <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>
     <script src="{% static "assets/js/advancepayment/advance_payment_common.js" %}"></script>
     <script src="{% static "assets/js/advancepayment/advance_payment_create.js" %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>

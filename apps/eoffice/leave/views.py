@@ -213,19 +213,11 @@ class LeaveRequestCreate(View):
     def get(self, request, *args, **kwargs):
         res_ws = []
         resp = ServerAPI(user=request.user, url=ApiURL.WORKING_CALENDAR_CONFIG).get()
-        reps_employee = ServerAPI(
-            user=request.user, url=ApiURL.EMPLOYEE_DETAIL_PK.fill_key(pk=request.user.employee_current_data['id'])
-        ).get({'list_from_app': 'leave.leaverequest.create', 'list_from_leave': '1'})
-        current_emp = {}
         if resp.state:
             res_ws = resp.result
-        if reps_employee.state:
-            current_emp = reps_employee.result
-        else:
-            return {}, status.HTTP_404_NOT_FOUND
         return {
                    'working_shift': res_ws,
-                   'employee': current_emp,
+                   'employee': request.user.employee_current_data,
                    'list_from_app': 'leave.leaverequest.create'
                }, status.HTTP_200_OK
 

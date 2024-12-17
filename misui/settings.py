@@ -85,6 +85,7 @@ INSTALLED_APPS = \
         'apps.core.attachment',
         'apps.core.form',
         'apps.core.recurrence',
+        'apps.core.online_sign',
     ] + [  # Another Application
         'apps.masterdata.saledata',
         'apps.masterdata.promotion',
@@ -109,8 +110,8 @@ INSTALLED_APPS = \
         'apps.sales.contract',
         'apps.sales.distributionplan',
         'apps.sales.production',
-        'apps.sales.projectproduction',
         'apps.sales.bidding',
+        'apps.sales.leaseorder',
     ] + [  # e-office Application
         'apps.eoffice.leave',
         'apps.eoffice.businesstrip',

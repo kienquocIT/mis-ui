@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.models import AnonymousUser
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -83,12 +84,13 @@ class SaleOrderCreate(View):
     )
     def get(self, request, *args, **kwargs):
         data_copy_to = request.GET.get('data_copy_to', "")
-        opportunity = request.GET.get('opportunity', "")
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
         result = {
-            'employee_current': request.user.employee_current_data,
+            'employee_current': employee_current,
+            'app_id': 'a870e392-9ad2-4fe2-9baa-298a38691cf2',
             'data_copy_to': data_copy_to,
-            'opportunity': json.loads(opportunity) if opportunity else {},
-
             'input_mapping_properties': InputMappingProperties.SALE_ORDER_SALE_ORDER,
             'form_id': 'frm_quotation_create',
             'list_from_app': 'saleorder.saleorder.create',

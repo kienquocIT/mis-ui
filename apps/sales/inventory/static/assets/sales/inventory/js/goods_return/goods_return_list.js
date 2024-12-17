@@ -13,7 +13,6 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            console.log(resp.data['goods_return_list'])
                             return resp.data['goods_return_list'] ? resp.data['goods_return_list'] : [];
                         }
                         return [];
@@ -60,7 +59,9 @@ $(document).ready(function () {
                         data: 'sale_order',
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-secondary badge-sm">${row?.['sale_order']?.['code']}</span>&nbsp;${row?.['sale_order']?.['title']} - <span class="text-blue"><i class="bi bi-truck"></i>&nbsp;<b>${row?.['delivery']?.['code']}</b></span>`
+                            return `<button type="button" class="btn btn-sm btn-light">
+                                ${row?.['sale_order']?.['code']} <span class="badge badge-sm badge-secondary">${row?.['delivery']?.['code']}</span>
+                            </button>`
                         }
                     },
                     {

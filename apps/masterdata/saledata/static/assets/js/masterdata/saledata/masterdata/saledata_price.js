@@ -269,6 +269,10 @@ $(document).ready(function () {
             ],
         });
     }
+    function loadSelectBoxTaxCategory(ele, data) {
+        ele.empty()
+        ele.initSelect2({data: data})
+    }
 
     loadBaseCurrency()
     loadCurrency()
@@ -445,9 +449,7 @@ $(document).ready(function () {
                         $('#tax-title').val(data?.['tax']?.['title']);
                         $('#tax-code').val(data?.['tax']?.['code']);
                         $('#tax-rate').val(data?.['tax']?.['rate']);
-                        $('#select-box-category-update').initSelect2({
-                            'data': data?.['tax']?.['category']
-                        })
+                        loadSelectBoxTaxCategory($('#select-box-category-update'), data?.['tax']?.['category'])
                         let typeEle = $('#tax-type');
                         typeEle.empty()
                         typeEle.initSelect2({
@@ -678,6 +680,7 @@ $(document).ready(function () {
                 after = data.after.hasOwnProperty('value') ? data.after.value : data.after;
             let $add_teams = $('#modal-add-table');
             $add_teams.attr('data-table-idx', rowIdx)
+            $add_teams.find('[name="title"]').val(data?.['title'])
             if (parseInt(unit) === 0 || parseInt(unit) === 2) {
                 $add_teams.find('[name="value"]').val(data.value)
                 $add_teams.find('[name="value_amount"]').addClass('hidden')
@@ -752,10 +755,18 @@ $(document).ready(function () {
                 {
                     targets: 0,
                     defaultContent: '',
-                    width: '10%',
+                    width: '5%',
                 },
                 {
                     targets: 1,
+                    render: (row, type, data) => {
+                        let textValue = data?.['title'] || '--'
+                        return `<p><span>${textValue}</span></p>`
+                    },
+                    width: '20%',
+                },
+                {
+                    targets: 2,
                     render: (row, type, data) => {
                         let textValue = data.value
                         return `<p><span class="mask-money">${textValue}</span></p>`
@@ -763,7 +774,7 @@ $(document).ready(function () {
                     width: '15%',
                 },
                 {
-                    targets: 2,
+                    targets: 3,
                     render: (data, type, row) => {
                         let txt;
                         if (row.unit_type.hasOwnProperty('text')) // if row data is object
@@ -775,34 +786,35 @@ $(document).ready(function () {
                     width: '10%',
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     render: (data, type, row) => {
                         return `<p>${row.no_of_days}</p>`
                     },
-                    width: '15%',
+                    width: '10%',
                 },
                 {
-                    targets: 4,
+                    targets: 5,
                     render: (data, type, row) => {
                         let txt;
                         if (row.day_type.hasOwnProperty('text')) txt = row.day_type.text
                         else txt = $('option[value="' + row.day_type + '"]', '[name="day_type"]').text()
                         return `<p>${txt}</p>`
                     },
-                    width: '20%',
+                    width: '15%',
                 },
                 {
-                    targets: 5,
+                    targets: 6,
+                    width: '15%',
                     render: (data, type, row) => {
                         let txt;
                         if (row.after.hasOwnProperty('text')) txt = row.after.text
                         else txt = $('option[value="' + row.after + '"]', '[name="after"]').text()
                         return `<p>${txt}</p>`
                     },
-                    width: '20%',
                 },
                 {
-                    targets: 6,
+                    targets: 7,
+                    width: '10%',
                     render: (data, type, row) => {
                         let _id = row.order
                         if (row.hasOwnProperty('id') && row.id)
@@ -876,6 +888,7 @@ $(document).ready(function () {
         $('.tab-content .tab-pane').removeClass('show active')
         $('#section-create-payment-terms').addClass('show active')
         $('.payment-terms-tabs').removeClass('hidden')
+        $('.btn_add_terms').prop('disabled', false)
         $termForm[0].reset();
         $('#table_terms').DataTable().clear().draw();
     });
@@ -905,6 +918,7 @@ $(document).ready(function () {
         let $modalForm = $('form', $(this).closest('.modal-body'))
         let convertData = {}
         convertData['value'] = $('input[name="value"]', $modalForm).val();
+        convertData['title'] = $('input[name="title"]', $modalForm).val();
 
         let value_amount = $('#modal-add-table [name="value_amount"]').valCurrency()
         convertData['unit_type'] = {

@@ -132,7 +132,55 @@ class TransactionTemplateList(View):
         auth_require=True,
         template='core/recurrence/recurrence_template.html',
         menu_active='menu_transaction_template',
-        breadcrumb='RECURRENCE_LIST_PAGE',
+        breadcrumb='RECURRENCE_TEMPLATE_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class RecurrenceActionList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='core/recurrence/recurrence_action.html',
+        menu_active='menu_action_list',
+        breadcrumb='RECURRENCE_ACTION_LIST_PAGE',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class RecurrenceActionListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.RECURRENCE_ACTION_LIST).get(data)
+        return resp.auto_return(key_success='recurrence_action')
+
+
+class RecurrenceActionDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.RECURRENCE_ACTION_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update_recurrence(
+            request=request,
+            url=ApiURL.RECURRENCE_ACTION_DETAIL,
+            pk=pk,
+            msg=CoreMsg.RECURRENCE_ACTION
+        )

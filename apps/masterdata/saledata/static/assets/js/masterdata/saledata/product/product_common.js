@@ -329,7 +329,7 @@ function loadPriceList(price_list_from_detail, option) {
     tbl.DataTableDefault({
         styleDom: 'hide-foot',
         paging: false,
-        scrollX: '100vh',
+        scrollX: '100vw',
         scrollY: '35vh',
         scrollCollapse: true,
         useDataServer: true,

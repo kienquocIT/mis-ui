@@ -137,3 +137,95 @@ msgstr "Nguồn nhân lực"
 #
 msgid "Employee data"
 msgstr "Dữ liệu nhân viên"
+
+#
+msgid "Contract type"
+msgstr "Loại hợp đồng"
+
+#
+msgid "Probationary contract"
+msgstr "Hợp đồng thử việc"
+
+#
+msgid "Labor contract"
+msgstr "Hợp đồng lao động"
+
+#
+msgid "Addendum contract"
+msgstr "Phụ lục hợp đồng"
+
+#
+msgid "Limited time"
+msgstr "giới hạn thời gian"
+
+#
+msgid "Signature status"
+msgstr "Trạng thái HD"
+
+#
+msgid "Unsigned"
+msgstr "Chưa ký"
+
+#
+msgid "Signed"
+msgstr "Đã ký"
+
+#
+msgid "File type"
+msgstr "Kiểu tệp tin"
+
+#
+msgid "Attached files"
+msgstr "Tệp đính kèm"
+
+#
+msgid "Online template"
+msgstr "Mẫu trực tuyến"
+
+#
+msgid "Company representative"
+msgstr "Đại diện công ty"
+
+#
+msgid "Signing date"
+msgstr "Ngày ký"
+
+#
+msgid "Effected date"
+msgstr "Ngày hiệu lực"
+
+#
+msgid "Choose gender"
+msgstr "Chọn giới tính"
+
+#
+msgid "Choose Marital status"
+msgstr "Chọn tình trạng hôn nhân"
+
+#
+msgid "Get signature"
+msgstr "Lấy chữ ký"
+
+#
+msgid "Signature"
+msgstr "Chữ ký"
+
+#
+msgid "Draw your signature"
+msgstr "Vẽ chữ ký của bạn"
+
+#
+msgid "Upload file to Cloud"
+msgstr "tải lên tệp lên Đám Mây"
+
+#
+msgid "Manager signature file"
+msgstr "Quản lý tệp chữ ký"
+
+#
+msgid "How to get signature file"
+msgstr "Cách lấy file chữ ký"
+
+#
+msgid "START TOUR"
+msgstr "BẮT ĐẦU XEM"

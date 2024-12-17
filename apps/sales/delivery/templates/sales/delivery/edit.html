@@ -266,10 +266,10 @@
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
                                 <div class="row">
-                                    <div class="form-check form-switch form-switch-lg">
-                                        <input type="checkbox" class="form-check-input" id="self-input">
-                                        <label class="form-check-label" for="self-input">{% trans 'Self input' %}</label>
-                                    </div>
+{#                                    <div class="form-check form-switch form-switch-lg">#}
+{#                                        <input type="checkbox" class="form-check-input" id="self-input">#}
+{#                                        <label class="form-check-label" for="self-input">{% trans 'Self input' %}</label>#}
+{#                                    </div>#}
                                     <div data-simplebar class="nicescroll-bar" id="scroll-table-lot" hidden>
                                         <table
                                             id="datable-delivery-wh-lot"
@@ -302,7 +302,17 @@
                                         >
                                             <thead>
                                             <tr class="bg-light">
-                                                <th></th>
+                                                <th>
+                                                    <div class="form-check form-check-lg">
+                                                        <input
+                                                            type="checkbox"
+                                                            name="row-checkbox"
+                                                            class="form-check-input table-row-checkbox-all"
+                                                            id="checkbox-all-serial"
+                                                        >
+                                                        <label class="form-check-label" for="checkbox-all-serial"></label>
+                                                    </div>
+                                                </th>
                                                 <th>{% trans 'Vendor serial no.' %}</th>
                                                 <th>{% trans 'Serial no.' %}</th>
                                                 <th>{% trans 'Warranty start' %}</th>

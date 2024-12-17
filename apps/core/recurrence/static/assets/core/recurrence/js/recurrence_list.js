@@ -82,8 +82,9 @@ $(function () {
                         targets: 1,
                         width: '5%',
                         render: (data, type, row) => {
-                            let link = $urls.data('link-detail').format_url_with_uuid(row?.['id']);
-                            if (row?.['code']) {
+                            let link = "";
+                            if (row?.['id'] && row?.['code']) {
+                                link = $urls.data('link-detail').format_url_with_uuid(row?.['id']);
                                 return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`;
                             }
                             return `<a href="${link}" class="link-primary underline_hover">--</a>`;
@@ -93,8 +94,12 @@ $(function () {
                         targets: 2,
                         width: '15%',
                         render: (data, type, row) => {
-                            const link = $urls.data('link-detail').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
+                            let link = "";
+                            if (row?.['id'] && row?.['title']) {
+                                link = $urls.data('link-detail').format_url_with_uuid(row?.['id']);
+                                return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`;
+                            }
+                            return `<a href="${link}" class="link-primary underline_hover">--</a>`;
                         }
                     },
                     {
@@ -126,7 +131,7 @@ $(function () {
                         render: (data, type, row) => {
                             if (row?.['period'] === 1) {
                                 if (row?.['date_daily']) {
-                                    return `<span>${moment(data?.['date_daily']).format('DD/MM/YYYY')}</span>`;
+                                    return `<span>${moment(row?.['date_daily']).format('DD/MM/YYYY')}</span>`;
                                 }
                                 return ``;
                             }
@@ -138,7 +143,7 @@ $(function () {
                             }
                             if (row?.['period'] === 4) {
                                 if (row?.['date_yearly']) {
-                                    return `<span>${moment(data?.['date_yearly']).format('DD/MM/YYYY')}</span>`;
+                                    return `<span>${moment(row?.['date_yearly']).format('DD/MM/YYYY')}</span>`;
                                 }
                                 return ``;
                             }
@@ -150,7 +155,7 @@ $(function () {
                         width: '10%',
                         render: (data, type, row) => {
                             if (row?.['date_start']) {
-                                return `<span>${moment(data?.['date_start']).format('DD/MM/YYYY')}</span>`;
+                                return `<span>${moment(row?.['date_start']).format('DD/MM/YYYY')}</span>`;
                             }
                             return ``;
                         },
@@ -161,7 +166,7 @@ $(function () {
                         width: '10%',
                         render: (data, type, row) => {
                             if (row?.['date_next']) {
-                                return `<span>${moment(data?.['date_next']).format('DD/MM/YYYY')}</span>`;
+                                return `<span>${moment(row?.['date_next']).format('DD/MM/YYYY')}</span>`;
                             }
                             return ``;
                         },
@@ -186,11 +191,11 @@ $(function () {
                                 disabled = 'disabled';
                             }
                             return `<div class="dropdown">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
-                                    <div role="menu" class="dropdown-menu">
-                                        <a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${$trans.attr('data-edit')}</span></a>
-                                    </div>
-                                </div>`;
+                                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                                        <div role="menu" class="dropdown-menu">
+                                            <a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${$trans.attr('data-edit')}</span></a>
+                                        </div>
+                                    </div>`;
                         },
                     }
                 ],

@@ -502,7 +502,7 @@ class SelectDDControl {
         //  1. attr('disabled')
         //  2. opts
         //  3. false
-        return this.ele.attr('disabled') ? true : !!this.opts?.disabled;
+        return this.ele.prop('disabled') || this.ele.attr('readonly') ? true : !!this.opts?.disabled;
     }
 
     get dropdownParent() {
@@ -773,6 +773,7 @@ class SelectDDControl {
             if (!this._config) this._config = this.config();
             this.renderDataOnload(this._config);
             const sel2$ = this.ele.select2(this._config);
+            this.ele.data('clsSelect2', this);
             // on event in select2 => call DOM event
             // don't trigger change + valid when change : because call duplicate showErrors
             const form$ = this.ele.closest('form');

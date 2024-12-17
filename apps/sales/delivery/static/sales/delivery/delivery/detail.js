@@ -125,8 +125,8 @@ $(async function () {
                         const picked = parseFloat(item?.['picked'])
                         if (picked > 0) {
                             sub_delivery_data.push({
-                                'sale_order': item?.['sale_order']?.['id'],
-                                'sale_order_data': item?.['sale_order'],
+                                'sale_order': item?.['sale_order']?.['id'] ? item?.['sale_order']?.['id'] : null,
+                                'sale_order_data': item?.['sale_order'] ? item?.['sale_order'] : {},
                                 'warehouse': item?.['warehouse']?.['id'],
                                 'warehouse_data': item?.['warehouse'],
                                 'uom': prod_data?.['uom_data']?.['id'],
@@ -1233,7 +1233,7 @@ $(async function () {
             if (rowChecked?.querySelector('.table-row-available')) {
                 valStock = parseFloat(rowChecked?.querySelector('.table-row-available')?.innerHTML);
             }
-            let valAvb = 0;
+            let valAvb = valStock;
             for (let cls of rowChecked.classList) {
                 if (cls.includes('cl')) {
                     let target = '.' + cls;
@@ -1344,7 +1344,7 @@ $(async function () {
                             }
                         }
                         $eleSO.val(res?.['lease_order_data']?.['code']);
-                        $eleSO.attr('data-so', JSON.stringify(res?.['lease_order_data']));
+                        $eleSO.attr('data-lo', JSON.stringify(res?.['lease_order_data']));
                     }
                 }
 

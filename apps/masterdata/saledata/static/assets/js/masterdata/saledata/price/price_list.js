@@ -28,6 +28,9 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 rowIdx: true,
+                scrollX: '100vw',
+                scrollY: '75vh',
+                scrollCollapse: true,
                 useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
@@ -42,48 +45,48 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'w-5',
+                        className: 'wrap-text w-5',
                         render: () => {
                             return ``;
                         }
                     }, {
                         data: 'title',
-                        className: 'w-35',
+                        className: 'wrap-text w-30',
                         render: (data, type, row) => {
-                            return `<a class="btn-detail" href="${urlEle.data('url-detail').format_url_with_uuid(row.id)}">
-                                        <span><b>${data}</b></span>
-                                    </a>${$x.fn.buttonLinkBlank(urlEle.data('url-detail').format_url_with_uuid(row.id))}`
+                            return `<a class="btn-detail" href="${urlEle.data('url-detail').format_url_with_uuid(row?.['id'])}">
+                                        <span><b>${row?.['is_default'] ? '<i class="bi bi-pin-angle-fill mr-1 text-danger"></i>' : ''}${data}</b></span>
+                                    </a>`
 
                         }
                     }, {
                         data: 'price_list_type',
-                        className: 'text-center w-15',
+                        className: 'wrap-text text-center w-20',
                         render: (data) => {
-                            if (data.value === 0) {
-                                return `<span class="text-primary">${trans_script.attr('data-trans-for-sale')}</span>`
-                            } else if (data.value === 1) {
-                                return `<span class="text-danger">${trans_script.attr('data-trans-for-purchase')}</span>`
-                            } else if (data.value === 2) {
-                                return `<span class="text-blue">${trans_script.attr('data-trans-for-expense')}</span>`
+                            if (data?.['value'] === 0) {
+                                return `<span class="text-muted">${trans_script.attr('data-trans-for-sale')}</span>`
+                            } else if (data?.['value'] === 1) {
+                                return `<span class="text-muted">${trans_script.attr('data-trans-for-purchase')}</span>`
+                            } else if (data?.['value'] === 2) {
+                                return `<span class="text-muted">${trans_script.attr('data-trans-for-expense')}</span>`
                             } else {
                                 return ''
                             }
                         }
                     }, {
-                        className: 'text-center w-20',
+                        className: 'wrap-text text-center w-20',
                         render: (data, type, row) => {
                             let start_time = moment(row?.['valid_time_start'].split(' ')[0]).format('DD/MM/YYYY')
                             let end_time = moment(row?.['valid_time_end'].split(' ')[0]).format('DD/MM/YYYY')
-                            if (row.is_default === false) {
-                                return `<span class="text-muted">${start_time} - ${end_time}</span>`
+                            if (!row?.['is_default']) {
+                                return `<span class="text-primary">${start_time} - ${end_time}</span>`
                             }
                             else {
-                                return `<span class="text-muted">${start_time} - ${trans_script.attr('data-trans-now')}</span>`
+                                return `<span class="text-primary">${start_time} - ${trans_script.attr('data-trans-now')}</span>`
                             }
                         }
                     }, {
                         data: 'status',
-                        className: 'text-center w-15',
+                        className: 'wrap-text text-center w-15',
                         render: (data) => {
                             let badge_type = ''
                             let badge_text = ''
@@ -103,12 +106,12 @@ $(document).ready(function () {
                             return `<span class="${badge_type}">${badge_text}</span>`;
                         }
                     }, {
-                        className: 'text-right w-10',
+                        className: 'wrap-text text-right w-10',
                         render: (data, type, row) => {
-                            if (row.is_default === false) {
-                                return `<a data-method="DELETE" data-id="${row.id}" class="btn btn-icon btn-del btn btn-icon btn-flush-secondary flush-soft-hover btn-rounded del-button delete-price-list-btn">
-                                    <span class="btn-icon-wrap"><span class="feather-icon"><i class="fas fa-trash-alt"></i></span></span>
-                                    </a>`;
+                            if (!row?.['is_default']) {
+                                return `<a data-method="DELETE" data-id="${row?.['id']}" class="btn btn-icon btn-del btn btn-icon btn-flush-secondary flush-soft-hover btn-rounded del-button delete-price-list-btn">
+                                            <span class="btn-icon-wrap"><span class="feather-icon"><i class="fas fa-trash-alt"></i></span></span>
+                                        </a>`;
                             } else {
                                 return ``
                             }

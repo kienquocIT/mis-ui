@@ -4043,9 +4043,9 @@ class LeaseOrderDataTableHandle {
                         if (row?.['title'] && row?.['code']) {
                             return `<div class="d-flex align-items-center ml-2">
                                         <div class="form-check form-check-lg">
-                                            <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" data-row="${dataRow}" ${disabled} ${checked} data-zone="${dataZone}">
+                                            <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-quantity-${row?.['id'].replace(/-/g, "")}" data-row="${dataRow}" ${disabled} ${checked} data-zone="${dataZone}">
                                             <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
-                                            <label class="form-check-label table-row-title" for="s-product-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                            <label class="form-check-label table-row-title" for="s-quantity-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
                                         </div>
                                     </div>`;
                         }

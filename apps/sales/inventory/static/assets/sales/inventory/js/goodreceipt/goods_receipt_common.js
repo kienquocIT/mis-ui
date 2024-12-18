@@ -1719,7 +1719,7 @@ class GRDataTableHandle {
                             disabled = '';
                         }
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-import validated-number text-primary" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" ${disabled}>
+                                    <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" ${disabled}>
                                 </div>`;
                     }
                 },

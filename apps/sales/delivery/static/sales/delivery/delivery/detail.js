@@ -119,7 +119,6 @@ $(async function () {
                             prodTable.dataTableTableSerial();
                         }
                     }
-                    prodTable.dataTableLease();
                 }
                 $('#warehouseStockModal').modal('show');
                 $('#save-stock').off().on('click', function () {
@@ -1286,12 +1285,12 @@ $(async function () {
                             let checked = '';
                             if (row?.['title'] && row?.['code']) {
                                 return `<div class="d-flex align-items-center ml-2">
-                                        <div class="form-check form-check-lg">
-                                            <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" data-row="${dataRow}" ${disabled} ${checked} data-zone="${dataZone}">
-                                            <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
-                                            <label class="form-check-label table-row-title" for="s-product-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
-                                        </div>
-                                    </div>`;
+                                            <div class="form-check form-check-lg">
+                                                <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-lease-${row?.['id'].replace(/-/g, "")}" data-row="${dataRow}" ${disabled} ${checked} data-zone="${dataZone}">
+                                                <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
+                                                <label class="form-check-label table-row-title" for="s-lease-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                            </div>
+                                        </div>`;
                             }
                             return `<span>--</span>`;
                         }
@@ -1432,6 +1431,8 @@ $(async function () {
                         }
                         $eleSO.val(res?.['lease_order_data']?.['code']);
                         $eleSO.attr('data-lo', JSON.stringify(res?.['lease_order_data']));
+                        prodTable.dataTableLease();
+                        $('#scroll-table-lease').removeAttr('hidden');
                     }
                 }
 

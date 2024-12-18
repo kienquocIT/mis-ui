@@ -788,3 +788,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     CONSULTING_PRODUCT_CATEGORY_LIST = StringUrl('consulting/product-category/list')
     CONSULTING_MASTERDATA_DOC_LIST = StringUrl('consulting/masterdata-doc/list')
     CONSULTING_DETAIL = StringUrl('consulting/detail')
+    CONSULTING_OPP_DETAIL = StringUrl('consulting/opp-detail')

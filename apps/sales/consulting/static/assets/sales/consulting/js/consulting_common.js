@@ -905,10 +905,7 @@ class ConsultingHandler{
      * @desc Init opp
      */
     initOpp(){
-        const urlParams = new URLSearchParams(window.location.search)
-        let customer_json= urlParams.get('customer')
-        let customer = customer_json ? JSON.parse(decodeURIComponent(customer_json)) : null
-        const {
+        let {
             opp_id,
             opp_title,
             opp_code,
@@ -924,14 +921,14 @@ class ConsultingHandler{
             'process_stage_app_id', 'process_stage_app_title',
             'inherit_id', 'inherit_title'
         ])
-        new $x.cls.bastionField({
+        let initBastionField=()=>{
+            new $x.cls.bastionField({
             data_opp: $x.fn.checkUUID4(opp_id) ? [
                 {
                     "id": opp_id,
                     "title": $x.fn.decodeURI(opp_title),
                     "code": $x.fn.decodeURI(opp_code),
                     "selected": true,
-                    "customer": customer,
                 }
             ] : [],
             data_process: $x.fn.checkUUID4(process_id) ? [
@@ -957,24 +954,44 @@ class ConsultingHandler{
             ] : [],
             "inheritFlagData": {"disabled": false, "readonly": false},
         }).init();
-        this.initDataWithOpp()
-    }
+        }
+        if (opp_id){
+            let currOpp = this.opp.val()
+            let urlDetail = this.urlScript.data('url-oppdetail').format_url_with_uuid(opp_id);
+            $.fn.callAjax2({
+                url: urlDetail,
+                method: 'GET',
+                isLoading: false,
+            })
+                .then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                         this.customerSelect.empty();
 
-    initDataWithOpp(){
-        let currOpp = this.opp.val()
-        if(currOpp){
-            let dataSelected = SelectDDControl.get_data_from_idx(this.opp, $(this.opp).val());
-            if (dataSelected) {
-                this.customerSelect.empty();
-                this.fetchDataSelect(this.customerSelect, {
-                    keyResp: 'consulting_account_list',
-                    keyId: 'id',
-                    keyText: 'name'
-                }, [{id: dataSelected['customer']['id'], name: dataSelected['customer']['title']}])
-            }
-            this.customerSelect.prop('disabled', true);
+                        this.fetchDataSelect(this.customerSelect, {
+                            keyResp: 'consulting_account_list',
+                            keyId: 'id',
+                            keyText: 'name'
+                        }, [{id: data['customer']['id'], name: data['customer']['title']}])
+                        this.customerSelect.prop('disabled', true);
+                        if(!process_id){
+                            process_id=data['process']['id']
+                            process_title= data['process']['title']
+                            process_stage_app_id=data['process_stage_app']['id']
+                            process_stage_app_title= data['process_stage_app']['title']
+                        }
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching opportunity details:", error);
+                }).finally(() => {
+                    initBastionField();
+                });
+        } else {
+            initBastionField();
         }
     }
+
 
     /**
      * @param {any} customerSelector The customer select field selector

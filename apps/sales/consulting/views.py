@@ -147,3 +147,13 @@ class ConsultingDocumentMasterDataListAPI(APIView):
         filter = request.query_params.dict()
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.CONSULTING_MASTERDATA_DOC_LIST).get(filter)
         return resp.auto_return(key_success='consulting_document_masterdata_list')
+
+class ConsultingOppDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.CONSULTING_OPP_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
+

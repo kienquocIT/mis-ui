@@ -2,7 +2,7 @@ from django.urls import path
 
 from apps.sales.consulting.views import ConsultingList, ConsultingCreate, ConsultingAccountListAPI, ConsultingListAPI, \
     ConsultingProductCategoryListAPI, ConsultingDocumentMasterDataListAPI, ConsultingDetail, ConsultingDetailAPI, \
-    ConsultingUpdate
+    ConsultingUpdate, ConsultingOppDetailAPI
 
 urlpatterns = [
     # view urls
@@ -17,4 +17,5 @@ urlpatterns = [
     path('api/account/list', ConsultingAccountListAPI.as_view(), name='ConsultingAccountListAPI'),
     path('api/product-category/list', ConsultingProductCategoryListAPI.as_view(), name='ConsultingProductCategoryListAPI'),
     path('api/masterdata-doc/list', ConsultingDocumentMasterDataListAPI.as_view(), name='ConsultingDocumentMasterDataListAPI'),
+    path('api/opp-detail/<str:pk>', ConsultingOppDetailAPI.as_view(), name='ConsultingOppDetailAPI'),
 ]

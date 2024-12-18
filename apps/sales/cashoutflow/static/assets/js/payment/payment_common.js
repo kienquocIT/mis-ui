@@ -446,7 +446,7 @@ class PaymentLoadTab {
             reloadCurrency: true,
             paging: false,
             scrollY: '40vh',
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -717,7 +717,7 @@ class PaymentLoadTab {
             reloadCurrency: true,
             paging: false,
             scrollY: '30vh',
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollCollapse: true,
             data: data_list,
             columns: [

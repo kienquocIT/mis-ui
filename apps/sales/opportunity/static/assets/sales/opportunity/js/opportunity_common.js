@@ -1059,7 +1059,7 @@ class OpportunityActivity {
         $table.DataTable().clear().destroy()
         $table.DataTableDefault({
             rowIdx: true,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollY: '40vh',
             scrollCollapse: true,
             ajax: {
@@ -1094,6 +1094,7 @@ class OpportunityActivity {
                             'task.opportunitytask': transEle.attr('data-trans-task'),
                             'production.bom': transEle.attr('data-trans-bom'),
                             'bidding.bidding': transEle.attr('data-trans-bidding'),
+                            'consulting.consulting': transEle.attr('data-trans-consulting'),
                         }
                         let typeMapActivityIcon = {
                             1: 'fa-solid fa-list-check',
@@ -1148,6 +1149,7 @@ class OpportunityActivity {
                             'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
                             'production.bom': urlFactory.attr('data-url-bom-detail'),
                             'bidding.bidding': urlFactory.attr('data-url-bidding-detail'),
+                            'consulting.consulting': urlFactory.attr('data-url-consulting-detail'),
                         }
                         let link = '';
                         let title = '';
@@ -1294,7 +1296,7 @@ class LoadConfigAndLoadStage {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '50vh',
                 ajax: {
                     url: frm.dataUrl,
@@ -1829,6 +1831,9 @@ class InitDataTables {
             $table.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
+                scrollX: '100vw',
+                scrollY: '70vh',
+                scrollCollapse: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -1843,6 +1848,7 @@ class InitDataTables {
                 columns: [
                     {
                         targets: 0,
+                        className: 'wrap-text w-5',
                         render: () => {
                             return ``
                         }
@@ -1851,30 +1857,30 @@ class InitDataTables {
                         targets: 1,
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                            return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`
+                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
                         targets: 2,
-                        className: 'wrap-text w-25',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
-                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                            return `<a href="${link}"><span class="fw-bold text-primary">${row.title}</span></a>`
+                            const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            return `<a href="${link}"><span class="fw-bold text-primary">${row?.['title']}</span></a>`
                         }
                     },
                     {
                         targets: 3,
                         className: 'wrap-text w-20',
                         render: (data, type, row) => {
-                            return `<span class="text-muted">${row.customer.title}</span>`
+                            return `<span class="text-muted">${row?.['customer']?.['title']}</span>`
                         }
                     },
                     {
                         targets: 4,
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            return `<span class="text-blue">${row?.['sale_person'].full_name}</span>`
+                            return `<span class="text-blue">${row?.['sale_person']?.['full_name']}</span>`
                         }
                     },
                     {
@@ -1885,7 +1891,7 @@ class InitDataTables {
                             return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
                                 'outputFormat': 'DD-MM-YYYY',
                                 callback: function (data) {
-                                    return `<p>${data.relate}</p><small>${data.output}</small>`;
+                                    return `<p>${data?.['relate']}</p><small>${data?.['output']}</small>`;
                                 }
                             }) : "_";
                         }
@@ -1898,20 +1904,20 @@ class InitDataTables {
                             return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
                                 'outputFormat': 'DD-MM-YYYY',
                                 callback: function (data) {
-                                    return `<p>${data.relate}</p><small>${data.output}</small>`;
+                                    return `<p>${data?.['relate']}</p><small>${data?.['output']}</small>`;
                                 }
                             }) : "_";
                         }
                     },
                     {
                         targets: 7,
-                        className: 'wrap-text w-10 text-center',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let stage_current;
-                            stage_current = row.stage.find(function (obj) {
-                                return obj.is_current === true;
+                            stage_current = row?.['stage'].find(function (obj) {
+                                return obj?.['is_current'] === true;
                             });
-                            return `<span class="badge badge-light badge-outline w-90">${stage_current.indicator}</span>`
+                            return `<span class="${stage_current?.['win_rate'] === 100 ? 'text-gold' : 'text-secondary'}">${stage_current?.['indicator']} (${stage_current?.['win_rate']}%)</span>${stage_current?.['win_rate'] === 100 ? '&nbsp;<i class="bi bi-trophy-fill text-gold"></i>' : ''}`
                         }
                     },
                 ],
@@ -1927,7 +1933,7 @@ class InitDataTables {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '25vh',
                 scrollCollapse: true,
                 data: data,
@@ -2012,7 +2018,7 @@ class InitDataTables {
                 rowIdx: true,
                 data: data,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '40vh',
                 scrollCollapse: true,
                 columns: [
@@ -2076,7 +2082,7 @@ class InitDataTables {
                 rowIdx: true,
                 data: data,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '25vh',
                 scrollCollapse: true,
                 columns: [
@@ -2136,7 +2142,7 @@ class OpportunityLoadPage {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '40vh',
                 scrollCollapse: true,
                 ajax: {
@@ -2322,11 +2328,30 @@ class OpportunityLoadPage {
                 console.log(errs);
             }
         )
-
+        const consulting_check_perm = $.fn.callAjax2({
+            url: urlFactory.attr('data-url-opp-list'),
+            data: {
+                'list_from_app': 'consulting.consulting.create', 'id': $.fn.getPkDetail()
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                        return data?.['opportunity_list'][0];
+                    }
+                    return null
+                }
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
         let create_return_sc = $('#create-return-advance-shortcut')
         create_return_sc.attr('href', create_return_sc.attr('data-url'))
 
-        Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm]).then(
+        Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm, consulting_check_perm]).then(
             (results_perm_app) => {
                 if (results_perm_app[0]) {
                     let create_quotation_sc = $('#create-quotation-shortcut')
@@ -2388,6 +2413,19 @@ class OpportunityLoadPage {
                         'customer': encodeURIComponent(JSON.stringify(results_perm_app[5]?.['customer'])),
                     })
                     create_bidding_sc.attr('href', param_url)
+                }
+                if (results_perm_app[6]) {
+                    let create_consulting_sc = $('#create-consulting-shortcut')
+                    create_consulting_sc.removeClass('disabled');
+                    let param_url = this.push_param_to_url(create_consulting_sc.attr('data-url'), {
+                        'opp_id': results_perm_app[6]?.['id'],
+                        'opp_code': results_perm_app[6]?.['code'],
+                        'opp_title': results_perm_app[6]?.['title'],
+                        'inherit_id': results_perm_app[6]?.['sale_person']?.['id'],
+                        'inherit_title': results_perm_app[6]?.['sale_person']?.['full_name'],
+                        'customer': encodeURIComponent(JSON.stringify(results_perm_app[6]?.['customer'])),
+                    })
+                    create_consulting_sc.attr('href', param_url)
                 }
                 $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
             })

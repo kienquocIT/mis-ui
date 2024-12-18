@@ -4,6 +4,9 @@ $(document).ready(function () {
     let urlEmployeeList = tbl.attr('data-url-employee')
     tbl.DataTableDefault({
         rowIdx: true,
+        scrollX: '100vw',
+        scrollY: '70vh',
+        scrollCollapse: true,
         useDataServer: true,
         ajax: {
             url: tbl.attr('data-url'),
@@ -63,8 +66,9 @@ $(document).ready(function () {
                 },
             },
         ],
-        columns: [  // 30,300,240,120,120,120,240,120,240,390 (1920p)
+        columns: [
             {
+                className: 'wrap-text w-5',
                 'render': () => {
                     return ``;
                 },
@@ -73,16 +77,16 @@ $(document).ready(function () {
                 className: 'wrap-text w-10',
                 data: 'name',
                 render: (data, type, row) => {
-                    const link = msgData.attr('data-url').format_url_with_uuid(row.id);
-                    return `<a href="${link}"><span class="w-70 badge badge-primary">${row?.['code']}</span></a> ${$x.fn.buttonLinkBlank(link)}`
+                    const link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
+                    return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`
                 }
             },
             {
-                className: 'wrap-text w-20',
+                className: 'wrap-text w-15',
                 data: 'name',
                 render: (data, type, row) => {
-                    let urlEditPage = msgData.attr('data-url').format_url_with_uuid(row.id);
-                    return `<a href="${urlEditPage}"><span><b>` + row.name + `</b></span></a>`
+                    let urlEditPage = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
+                    return `<a href="${urlEditPage}"><span><b>` + row?.['name'] + `</b></span></a>`
                 },
             },
             {
@@ -94,7 +98,7 @@ $(document).ready(function () {
                     return (row?.['account_type'] || []).map(
                         (item) => {
                             clsBadgeCurrent += 1;
-                            return `<span class="w-80 badge ${list_class_badge[clsBadgeCurrent]} mb-1 badge-sm">${item}</span><br>`;
+                            return `<span class="badge w-100 ${list_class_badge[clsBadgeCurrent]} mb-1">${item}</span><br>`;
                         }
                     ).join("");
                 },
@@ -103,8 +107,8 @@ $(document).ready(function () {
                 className: 'wrap-text w-10',
                 data: 'owner',
                 render: (data, type, row) => {
-                    if (row.owner.fullname) {
-                        return `<span class="badge badge-soft-blue badge-outline w-100">` + row.owner.fullname + `</span><br>`
+                    if (row?.['owner']?.['fullname']) {
+                        return `<span class="text-blue">` + row?.['owner']?.['fullname'] + `</span><br>`
                     }
                     return ``;
                 },
@@ -113,28 +117,28 @@ $(document).ready(function () {
                 className: 'wrap-text w-10',
                 data: 'revenue_information',
                 render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>`;
+                    return `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>`;
                 },
             },
             {
                 className: 'wrap-text w-10',
                 data: '',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-soft-primary w-80">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span>`;
+                    return `<span class="text-muted">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span>`;
                 },
             },
             {
                 className: 'wrap-text w-10',
                 data: 'revenue_information',
                 render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="${row?.['revenue_information']?.['revenue_average'] ? row?.['revenue_information']?.['revenue_average'] : 0}"></span>`;
+                    return `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_average'] ? row?.['revenue_information']?.['revenue_average'] : 0}"></span>`;
                 },
             },
             {
                 className: 'wrap-text w-10',
                 data: 'phone',
                 render: (data, type, row) => {
-                    return `<span>${row?.['phone'] ? row?.['phone'] : '--'}</span><br><a class="text-blue" target="_blank" href="${row?.['website'] ? row['website'] : '#'}">${row?.['website'] ? row['website'] : '--'}</a>`;
+                    return `<span>${row?.['phone'] ? 'Phone: ' + row?.['phone'] : ''}</span><br><a class="text-blue" target="_blank" href="${row?.['website'] ? row['website'] : '#'}">${row?.['website'] ? 'Website: ' + row['website'] : ''}</a>`;
                 },
             },
             {
@@ -142,8 +146,8 @@ $(document).ready(function () {
                 data: 'manager',
                 render: (data, type, row) => {
                     let element = ''
-                    for (let i = 0; i < row.manager.length; i++) {
-                        element += `<span class="w-100 badge badge-soft-success badge-outline mb-1">${row.manager[i].full_name}</span>`;
+                    for (let i = 0; i < row?.['manager'].length; i++) {
+                        element += `<span class="w-100 badge badge-soft-success badge-outline mb-1">${row?.['manager'][i]?.['full_name']}</span>`;
                     }
                     return element;
                 },

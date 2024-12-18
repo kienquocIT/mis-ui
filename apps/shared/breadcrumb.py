@@ -126,7 +126,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PAYMENT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Price
-    PRICE_LIST_PAGE = BreadcrumbChildren(_('Price'), 'PriceList')
+    PRICE_LIST_PAGE = BreadcrumbChildren(_('Price List'), 'PriceList')
     PRICE_LIST_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Expense
@@ -427,6 +427,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     HRM_EMPLOYEE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     HRM_EMPLOYEE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    #Consulting
+    CONSULTING_LIST_PAGE = BreadcrumbChildren(_('Consulting list'), 'ConsultingList')
+    CONSULTING_CREATE_PAGE = BreadcrumbChildren(_('Consulting create'), 'ConsultingCreate')
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1124,3 +1127,11 @@ class BreadcrumbView:
     HRM_EMPLOYEE_CREATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     HRM_EMPLOYEE_DETAIL_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     HRM_EMPLOYEE_UPDATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Consulting
+    CONSULTING_LIST_PAGE = [
+        BreadcrumbItem.CONSULTING_LIST_PAGE
+    ]
+    CONSULTING_CREATE_PAGE = CONSULTING_LIST_PAGE + [BreadcrumbItem.CONSULTING_CREATE_PAGE]
+    CONSULTING_DETAIL_PAGE = CONSULTING_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CONSULTING_UPDATE_PAGE = CONSULTING_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

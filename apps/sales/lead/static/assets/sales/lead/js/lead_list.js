@@ -23,6 +23,9 @@ $(document).ready(function () {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
+                scrollX: '100vw',
+                scrollY: '20vh',
+                scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
                     url: frm.dataUrl,
@@ -37,6 +40,7 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
+                        className: 'wrap-text w-5',
                         'render': () => {
                             return ``;
                         }
@@ -44,14 +48,14 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text w-10',
                         'render': (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-25',
+                        className: 'wrap-text w-20',
                         'render': (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}"><b>${row?.['title']}</b></a>`;
                         }
                     },
@@ -85,7 +89,7 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text text-center w-15',
                         'render': (data, type, row) => {
-                            return `<span class="w-80 ${STATUS_LIST_STYLE[row?.['lead_status']]}">${row?.['lead_status']}</span>`;
+                            return `<span class="${STATUS_LIST_STYLE[row?.['lead_status']]}">${row?.['lead_status']}</span>`;
                         }
                     },
                 ],

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% block title %}{% trans 'Account' %}{% endblock %}
 {% load static %}
 {% block cssHeader %}
 {% endblock %}
@@ -18,43 +19,41 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script type="hidden"
+        id="account-update-page"
+        data-url="{% url 'AccountDetail' 1 %}"
+        data-msg-by-group="{% trans 'By Group' %}"
+        data-msg-of-me="{% trans 'Of Me' %}"
+        data-msg-of-group="{% trans 'Of Same Group' %}"
+        data-msg-of-staff="{% trans 'Of My Staff' %}"
+        data-msg-of-all="{% trans 'All' %}"
+        data-msg-filter-manager="{% trans 'Account Manager' %}"
+    ></script>
+
     <div class="row">
         <div class="col-12">
-            <table
-                    id="datatable_account_list" class="table nowrap w-100"
-                    data-url="{% url "AccountListAPI" %}" data-method="GET"
-                    data-url-employee="{% url 'EmployeeListAPI' %}"
+            <table id="datatable_account_list" class="table nowrap w-100"
+                   data-url="{% url "AccountListAPI" %}" data-method="GET"
+                   data-url-employee="{% url 'EmployeeListAPI' %}"
             >
                 <thead>
                 <tr>
-                    <th></th>
-                    <th>{% trans "Code" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Type" %}</th>
-                    <th>{% trans "Account Owner" %}</th>
-                    <th>{% trans "Revenue ytd" %}</th>
-                    <th>{% trans "Number of order" %}</th>
-                    <th>{% trans "Revenue average" %}</th>
-                    <th>{% trans "Phone number" %} / {% trans "Website" %}</th>
-                    <th>{% trans "Account Manager" %}</th>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 80px">{% trans "Code" %}</th>
+                    <th style="min-width: 300px">{% trans "Name" %}</th>
+                    <th style="min-width: 100px">{% trans "Type" %}</th>
+                    <th style="min-width: 150px">{% trans "Account Owner" %}</th>
+                    <th style="min-width: 150px">{% trans "Revenue ytd" %}</th>
+                    <th style="min-width: 100px">{% trans "Number of order" %}</th>
+                    <th style="min-width: 150px">{% trans "Revenue average" %}</th>
+                    <th style="min-width: 250px">{% trans "Information" %}</th>
+                    <th style="min-width: 150px">{% trans "Account Manager" %}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
     </div>
-
-    <br
-            type="hidden"
-            id="account-update-page"
-            data-url="{% url 'AccountDetail' 1 %}"
-            data-msg-by-group="{% trans 'By Group' %}"
-            data-msg-of-me="{% trans 'Of Me' %}"
-            data-msg-of-group="{% trans 'Of Same Group' %}"
-            data-msg-of-staff="{% trans 'Of My Staff' %}"
-            data-msg-of-all="{% trans 'All' %}"
-            data-msg-filter-manager="{% trans 'Account Manager' %}"
-    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/accounts/account_list.js' %}"></script>

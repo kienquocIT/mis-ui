@@ -1578,6 +1578,7 @@ $(document).ready(function () {
             }
 
             dataParam['contexts'] = contexts
+            console.log(contexts)
             dataParam['question'] = message
             let chatbot_response_ajax = $.fn.callAjax2({
                 url: $('#url-script').attr('data-url-ask'),
@@ -1640,7 +1641,7 @@ $(document).ready(function () {
     }
 
     toggleChat.on('click', function () {
-        chatPopup.toggleClass('active bg-primary');
+        chatPopup.toggleClass('active');
         toggleChat.toggleClass('text-white');
     });
 

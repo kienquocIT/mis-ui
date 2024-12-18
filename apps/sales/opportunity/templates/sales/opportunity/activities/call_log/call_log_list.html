@@ -30,21 +30,14 @@
            data-url="{% url 'OpportunityCallLogListAPI' %}" data-method="GET">
         <thead>
         <tr>
-            <th></th>
-            <th>{% trans 'Subject' %}
-                <i class="fas fa-info-circle icon-info"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="bottom"
-                   title="{% trans 'Press row here to see detail call log.' %}">
-                </i>
-            </th>
-            <th>{% trans 'Sale Code' %}</th>
-            <th>{% trans 'Employee inherit' %} - {% trans 'Contact' %}</th>
-            <th>{% trans 'Date' %}</th>
+            <th style="min-width: 30px"></th>
+            <th style="min-width: 200px">{% trans 'Subject' %}=</th>
+            <th style="min-width: 100px">{% trans 'Sale Code' %}</th>
+            <th style="min-width: 300px">{% trans 'Employee inherit' %} - {% trans 'Contact' %}</th>
+            <th style="min-width: 100px">{% trans 'Date' %}</th>
         </tr>
         </thead>
-        <tbody>
-        </tbody>
+        <tbody></tbody>
     </table>
     {% include 'sales/opportunity/activities/extends/call_log_modals.html' %}
 {% endblock %}

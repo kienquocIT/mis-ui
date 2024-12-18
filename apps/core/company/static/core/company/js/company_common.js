@@ -308,7 +308,7 @@ const FunctionNumberTableData = [
 function loadFunctionNumberTable(table_data = []) {
     $('#function_number_table').DataTableDefault({
         rowIdx: true,
-        scrollX: '100vh',
+        scrollX: '100vw',
         scrollY: '50vh',
         scrollCollapse: true,
         paging: false,
@@ -359,7 +359,7 @@ function loadFunctionNumberTableDetail(option = 'detail', table_detail_data = []
     });
     $('#function_number_table').DataTableDefault({
         rowIdx: true,
-        scrollX: '100vh',
+        scrollX: '100vw',
         scrollY: '50vh',
         scrollCollapse: true,
         paging: false,

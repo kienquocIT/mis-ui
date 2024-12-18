@@ -89,6 +89,9 @@ class OpportunityBOMLoadTab {
         table_select_bom_copy.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
+            scrollX: '100vw',
+            scrollY: '60vh',
+            scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
                 url: table_select_bom_copy.attr('data-url'),
@@ -107,6 +110,14 @@ class OpportunityBOMLoadTab {
                     className: 'w-5',
                     'render': () => {
                         return ``;
+                    }
+                },
+                {
+                    className: 'w-5',
+                    'render': (data, type, row) => {
+                        return `<div class="form-check">
+                            <input data-id="${row?.['id']}" type="radio" name="bom-copy-group" class="bom-copy-selected form-check-input">
+                        </div>`;
                     }
                 },
                 {
@@ -130,14 +141,6 @@ class OpportunityBOMLoadTab {
                         return '--'
                     }
                 },
-                {
-                    className: 'w-5 text-right',
-                    'render': (data, type, row) => {
-                        return `<div class="form-check">
-                            <input data-id="${row?.['id']}" type="radio" name="bom-copy-group" class="bom-copy-selected form-check-input">
-                        </div>`;
-                    }
-                },
             ]
         });
     }
@@ -149,7 +152,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -321,7 +324,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollCollapse: true,
             data: [],
             columns: [
@@ -425,7 +428,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollY: '65vh',
             scrollCollapse: true,
             ajax: {
@@ -542,7 +545,7 @@ class OpportunityBOMLoadTab {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '50vh',
                 scrollCollapse: true,
                 ajax: {
@@ -640,7 +643,7 @@ class OpportunityBOMLoadTab {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vh',
+                scrollX: '100vw',
                 scrollY: '50vh',
                 scrollCollapse: true,
                 data: [],
@@ -706,7 +709,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollCollapse: true,
             data: [],
             columns: [
@@ -778,7 +781,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vh',
+            scrollX: '100vw',
             scrollY: '65vh',
             scrollCollapse: true,
             ajax: {

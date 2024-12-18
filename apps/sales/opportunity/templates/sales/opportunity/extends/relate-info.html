@@ -42,6 +42,7 @@
                         <a id="create-return-advance-shortcut" class="dropdown-item" data-url="{% url 'ReturnAdvanceCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-hand-holding-usd fa-flip-horizontal"></i><span class="small">{% trans 'Return Advance' %}</span></a>
                         <a id="create-project-bom-shortcut" class="disabled dropdown-item" data-url="{% url 'OpportunityBOMCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-dice"></i><span class="small">{% trans 'Opportunity BOM' %}</span></a>
                         <a id="create-bidding-shortcut" class="disabled dropdown-item" data-url="{% url 'BiddingCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-gavel"></i><span class="small">{% trans 'Bidding' %}</span></a>
+                        <a id="create-consulting-shortcut" class="disabled dropdown-item" data-url="{% url 'ConsultingCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-gavel"></i><span class="small">{% trans 'Consulting' %}</span></a>
                     </div>
                 </div>
                 <div class="btn-group" role="group">
@@ -59,7 +60,7 @@
                 </a>
             </div>
         </div>
-        <div class="row div-activity" style="overflow-y: auto; max-height: 60vh">
+        <div class="row div-activity" style="overflow-y: auto; max-height: 61vh">
             <div class="col-12 div-activity">
                 <table class="table table-hover nowrap w-100" id="table-timeline"
                        data-url-logs_list="{% url 'OpportunityActivityLogListAPI' %}"
@@ -96,7 +97,7 @@
         </div>
     </div>
     <div class="tab-pane fade" id="tab_details">
-        <div class="row div-details" style="overflow-y: auto; max-height: 60vh">
+        <div class="row div-details" style="overflow-y: auto; max-height: 61vh">
             <div class="col-12">
                 <ul class="nav nav-light nav-pills" id="tab-select">
                     <li class="nav-item" id="tab_product_btn">

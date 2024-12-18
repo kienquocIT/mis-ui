@@ -5,7 +5,8 @@ function InitAdvancePaymentTable(data_param={}) {
         useDataServer: true,
         rowIdx: true,
         reloadCurrency: true,
-        scrollX: '100vh',
+        scrollX: '100vw',
+        scrollY: '75vh',
         scrollCollapse: true,
         ajax: {
             data: data_param,
@@ -30,21 +31,22 @@ function InitAdvancePaymentTable(data_param={}) {
         },
         columns: [
             {
+                className: 'wrap-text w-5',
                 'render': () => {
                     return ``;
                 }
             },
             {
                 data: 'code',
-                className: 'wrap-text',
+                className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    const link = dtb.attr('data-url-detail').replace('0', row.id);
-                    return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                    const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                    return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`;
                 }
             },
             {
                 data: 'title',
-                className: 'wrap-text',
+                className: 'wrap-text w-10',
                 render: (data, type, row) => {
                     let return_btn = ''
                     if (row?.['system_status'] === 3 && !row?.['opportunity']?.['is_closed'] && parseFloat(row?.['remain_value'] ? row?.['remain_value'] : 0) !== 0) {
@@ -65,13 +67,13 @@ function InitAdvancePaymentTable(data_param={}) {
                                         ><i class="fas fa-hand-holding-usd fa-flip-horizontal"></i></button>
                                     </a>`;
                     }
-                    const link = dtb.attr('data-url-detail').replace('0', row.id);
+                    const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                     return `<a class="text-primary fw-bold" href="${link}">${row?.['title']}</a>${return_btn}`
                 }
             },
             {
                 data: 'advance_payment_type',
-                className: 'wrap-text',
+                className: 'wrap-text w-10',
                 render: (data, type, row) => {
                     let to_employee_trans = dtb.attr('data-type-translate-employee')
                     let to_supplier_trans = dtb.attr('data-type-translate-supplier')
@@ -84,39 +86,37 @@ function InitAdvancePaymentTable(data_param={}) {
             },
             {
                 data: 'sale_code',
-                className: 'wrap-text',
+                className: 'wrap-text w-5',
                 render: (data, type, row) => {
                     if (row?.['opportunity']?.['id']) {
-                        return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
+                        return `${row?.['sale_code'] ? row?.['sale_code'] : ''}`
                     }
                     else if (row?.['quotation_mapped']?.['id']) {
-                        return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row?.['quotation_mapped']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
+                        return `${row?.['sale_code'] ? row?.['sale_code'] : ''}`
                     }
                     else if (row?.['sale_order_mapped']?.['id']) {
-                        return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-so-detail').replace('0', row?.['sale_order_mapped']?.['id'])}"><b>${row?.['sale_code'] ? row?.['sale_code'] : ''}</b></a></span>`
+                        return `${row?.['sale_code'] ? row?.['sale_code'] : ''}`
                     }
-                    else {
-                        return ''
-                    }
+                    return ''
                 }
             },
             {
                 data: 'employee_inherit',
-                className: 'wrap-text',
+                className: 'wrap-text w-10',
                 render: (data, type, row) => {
                     return `<span class="text-blue">${row?.['employee_inherit']?.['full_name']}</span>`
                 }
             },
             {
                 data: 'date_created',
-                className: 'wrap-text',
+                className: 'wrap-text w-10',
                 render: (data) => {
                     return $x.fn.displayRelativeTime(data, {'outputFormat': 'DD/MM/YYYY',});
                 }
             },
             {
                 data: 'advance_value',
-                className: 'wrap-text',
+                className: 'wrap-text w-10',
                 render: (data, type, row) => {
                     return `
                         <span class="mask-money text-primary" data-init-money="${row?.['advance_value']}"></span>
@@ -128,14 +128,14 @@ function InitAdvancePaymentTable(data_param={}) {
             {
                 targets: 7,
                 data: 'return_date',
-                className: 'wrap-text',
+                className: 'wrap-text w-10',
                 render: (data) => {
                     return $x.fn.displayRelativeTime(data, {'outputFormat': 'DD/MM/YYYY'});
                 }
             },
             {
                 data: 'return_value',
-                className: 'wrap-text',
+                className: 'wrap-text w-10',
                 render: (data, type, row) => {
                     return `
                         <span class="mask-money text-primary" data-init-money="${row?.['return_value']}"></span>
@@ -146,7 +146,7 @@ function InitAdvancePaymentTable(data_param={}) {
             },
             {
                 data: 'ap_status',
-                className: 'wrap-text',
+                className: 'wrap-text w-5',
                 render: (data, type, row) => {
                     if (row?.['money_gave']) {
                         return `<span class="text-muted small">${dtb.attr('data-type-translate-gave')}</span>`
@@ -158,7 +158,7 @@ function InitAdvancePaymentTable(data_param={}) {
             },
             {
                 data: 'status',
-                className: 'wrap-text text-center status-col bg-white',
+                className: 'wrap-text text-center status-col bg-white w-5',
                 render: (data, type, row) => {
                     let approved_trans = ``
                     let text_color = ``

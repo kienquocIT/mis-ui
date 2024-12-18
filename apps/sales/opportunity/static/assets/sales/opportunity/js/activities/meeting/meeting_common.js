@@ -13,6 +13,9 @@ function loadOpportunityMeetingList() {
         let frm = new SetupFormSubmit(dtb);
         dtb.DataTableDefault({
             rowIdx: true,
+            scrollX: '100vw',
+            scrollY: '75vh',
+            scrollCollapse: true,
             useDataServer: true,
             ajax: {
                 url: frm.dataUrl,
@@ -50,14 +53,14 @@ function loadOpportunityMeetingList() {
                     data: 'opportunity',
                     className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue badge-outline">${row?.['opportunity']?.['code']}</span>`
+                        return `${row?.['opportunity']?.['code']}`
                     }
                 },
                 {
                     data: 'employee_inherit',
                     className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<span class="text-primary">${row?.['employee_inherit']?.['full_name']}</span>`
+                        return `<span class="text-blue">${row?.['employee_inherit']?.['full_name']}</span>`
                     }
                 },
                 {

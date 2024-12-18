@@ -1,0 +1,61 @@
+{% load i18n %}
+
+<div class="modal fade" id="modal-document" tabindex="-1" role="dialog" aria-labelledby="modal-document" >
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Select required documents' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body nicescroll-bar" data-simplebar style="max-height: 60vh">
+                <label class="form-label fs-5" for="document-modal-table">
+                    {% trans 'Masterdata Documents' %}
+                </label>
+                <table class="table nowrap w-100"
+                       id="document-modal-table"
+                >
+                    <thead>
+                        <tr class="bg-light">
+                            <th class="w-10">{% trans 'Action' %}</th>
+                            <th class="w-90">{% trans 'Name' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+                <label class="form-label fs-5 mt-4" for="document-modal-table-manual">
+                    {% trans 'Manual Documents' %}
+                </label>
+                <table class="table nowrap w-100"
+                       id="document-modal-table-manual"
+                >
+                    <thead>
+                        <tr class="bg-light">
+                            <th class="w-10">{% trans 'Action' %}</th>
+                            <th class="w-90">{% trans 'Name' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-outline-primary" id="btn-add-document-manual">
+                    <span>
+                        <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                        <span>{% trans 'New' %}</span>
+                    </span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+                <button type="button" id="btn-add-document" class="btn btn-primary" >
+                    {% trans 'Add' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

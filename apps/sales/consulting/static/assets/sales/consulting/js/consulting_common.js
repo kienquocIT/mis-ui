@@ -905,6 +905,9 @@ class ConsultingHandler{
      * @desc Init opp
      */
     initOpp(){
+        const urlParams = new URLSearchParams(window.location.search)
+        let customer_json= urlParams.get('customer')
+        let customer = customer_json ? JSON.parse(decodeURIComponent(customer_json)) : null
         const {
             opp_id,
             opp_title,
@@ -928,6 +931,7 @@ class ConsultingHandler{
                     "title": $x.fn.decodeURI(opp_title),
                     "code": $x.fn.decodeURI(opp_code),
                     "selected": true,
+                    "customer": customer,
                 }
             ] : [],
             data_process: $x.fn.checkUUID4(process_id) ? [
@@ -953,6 +957,23 @@ class ConsultingHandler{
             ] : [],
             "inheritFlagData": {"disabled": false, "readonly": false},
         }).init();
+        this.initDataWithOpp()
+    }
+
+    initDataWithOpp(){
+        let currOpp = this.opp.val()
+        if(currOpp){
+            let dataSelected = SelectDDControl.get_data_from_idx(this.opp, $(this.opp).val());
+            if (dataSelected) {
+                this.customerSelect.empty();
+                this.fetchDataSelect(this.customerSelect, {
+                    keyResp: 'consulting_account_list',
+                    keyId: 'id',
+                    keyText: 'name'
+                }, [{id: dataSelected['customer']['id'], name: dataSelected['customer']['title']}])
+            }
+            this.customerSelect.prop('disabled', true);
+        }
     }
 
     /**

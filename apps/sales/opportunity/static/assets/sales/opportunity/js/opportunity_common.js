@@ -2418,12 +2418,12 @@ class OpportunityLoadPage {
                     let create_consulting_sc = $('#create-consulting-shortcut')
                     create_consulting_sc.removeClass('disabled');
                     let param_url = this.push_param_to_url(create_consulting_sc.attr('data-url'), {
-                        'opp_id': results_perm_app[5]?.['id'],
-                        'opp_code': results_perm_app[5]?.['code'],
-                        'opp_title': results_perm_app[5]?.['title'],
-                        'inherit_id': results_perm_app[5]?.['sale_person']?.['id'],
-                        'inherit_title': results_perm_app[5]?.['sale_person']?.['full_name'],
-                        'customer': encodeURIComponent(JSON.stringify(results_perm_app[5]?.['customer'])),
+                        'opp_id': results_perm_app[6]?.['id'],
+                        'opp_code': results_perm_app[6]?.['code'],
+                        'opp_title': results_perm_app[6]?.['title'],
+                        'inherit_id': results_perm_app[6]?.['sale_person']?.['id'],
+                        'inherit_title': results_perm_app[6]?.['sale_person']?.['full_name'],
+                        'customer': encodeURIComponent(JSON.stringify(results_perm_app[6]?.['customer'])),
                     })
                     create_consulting_sc.attr('href', param_url)
                 }

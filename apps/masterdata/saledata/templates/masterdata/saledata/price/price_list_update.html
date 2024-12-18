@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Price List Detail' %}{% endblock %}
+{% block title %}{% trans 'Price List' %}{% endblock %}
 {% block cssHeader %}
     <link
             href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
@@ -15,7 +15,7 @@
 {% block pageAction %}
     <button id="btn-update" class="btn btn-outline-primary" type="submit" form="form-update-item-price">
         <span>
-            <span>{% trans 'Save Price List' %}</span>
+            <span>{% trans 'Save' %}</span>
             <span class="icon">
                 <i class="fa-regular fa-floppy-disk"></i>
             </span>
@@ -28,10 +28,10 @@
     <script id="script_price_id" data-price-id=""></script>
 
     <div class="row mb-5">
-        <div class="col-10">
+        <div class="col-12 col-md-8 col-lg-8">
             <h3 class="text-primary fw-bold" id="price_list_name"></h3>
         </div>
-        <div class="col-2 text-right">
+        <div class="col-12 col-md-4 col-lg-4 text-right">
             <span id="time-valid" class="fw-bold"></span>
             <button id="config-btn"
                     data-bs-toggle="modal"
@@ -61,11 +61,11 @@
                     <table id="datatable-item-list" class="table nowrap w-100">
                         <thead>
                             <tr>
-                                <th></th>
-                                <th>{% trans "Code" %}</th>
-                                <th>{% trans "Item name" %}</th>
-                                <th>{% trans "Group" %}</th>
-                                <th>{% trans "UOM" %}</th>
+                                <th style="min-width: 50px"></th>
+                                <th style="min-width: 100px">{% trans "Code" %}</th>
+                                <th style="min-width: 200px">{% trans "Item name" %}</th>
+                                <th style="min-width: 150px">{% trans "UoM group" %}</th>
+                                <th style="min-width: 150px">{% trans "UoM" %}</th>
                             </tr>
                         </thead>
                     </table>

@@ -1,11 +1,14 @@
 $(document).ready(function () {
-    function loadAdvanceList() {
+    function loadPaymentList() {
         if (!$.fn.DataTable.isDataTable('#datatable_payment_list')) {
             let dtb = $('#datatable_payment_list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
+                scrollX: '100vw',
+                scrollY: '75vh',
+                scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
                     url: frm.dataUrl,
@@ -20,7 +23,7 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text',
+                        className: 'wrap-text w-5',
                         'render': () => {
                             return ``;
                         }
@@ -30,12 +33,12 @@ $(document).ready(function () {
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}" class="badge badge-primary w-70">${row?.['code']}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}" class="badge badge-primary">${row?.['code']}</a>`;
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text w-25',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}"><span class="text-primary"><b>${row?.['title']}</b></span></a>`
@@ -63,17 +66,15 @@ $(document).ready(function () {
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             if (row?.['opportunity']?.['id']) {
-                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity']?.['id'])}"><b>${row?.['opportunity']?.['code']}</b></a></span>`
+                                return `${row?.['opportunity']?.['code']}`
                             }
                             else if (row?.['quotation_mapped']?.['id']) {
-                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-quo-detail').replace('0', row?.['quotation_mapped']?.['id'])}"><b>${row?.['quotation_mapped']?.['code']}</b></a></span>`
+                                return `${row?.['quotation_mapped']?.['code']}`
                             }
                             else if (row?.['sale_order_mapped']?.['id']) {
-                                return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-so-detail').replace('0', row?.['sale_order_mapped']?.['id'])}"><b>${row?.['sale_order_mapped']?.['code']}</b></a></span>`
+                                return `${row?.['sale_order_mapped']?.['code']}`
                             }
-                            else {
-                                return ''
-                            }
+                            return ''
                         }
                     },
                     {
@@ -124,5 +125,5 @@ $(document).ready(function () {
         }
     }
 
-    loadAdvanceList();
+    loadPaymentList();
 })

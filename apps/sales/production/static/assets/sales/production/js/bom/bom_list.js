@@ -7,6 +7,9 @@ $(document).ready(function () {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
+                scrollX: '100vw',
+                scrollY: '75vh',
+                scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
                     data: {
@@ -25,6 +28,7 @@ $(document).ready(function () {
                 data: [],
                 columns: [
                     {
+                        className: 'wrap-text w-5',
                         'render': () => {
                             return ``;
                         }
@@ -32,14 +36,14 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text w-10',
                         'render': (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="badge badge-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}" class="badge badge-primary">${row?.['code']}</a>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-30',
+                        className: 'wrap-text w-25',
                         'render': (data, type, row) => {
-                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            const link = dtb.attr('data-url-detail').replace('0', row?.[id]);
                             return `<a href="${link}" class="text-primary"><b>${row?.['title']}</b></a>`;
                         }
                     },
@@ -62,19 +66,19 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'wrap-text w-15 text-center',
+                        className: 'wrap-text w-15',
                         'render': (data, type, row) => {
                             return `<span>${parseFloat(row?.['sum_time'].toFixed(2))} (h)</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-15 text-center',
+                        className: 'wrap-text w-15',
                         'render': (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${row?.['sum_price']}"></span>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-10 text-center',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             let approved_trans = ``
                             let text_color = ``

@@ -71,7 +71,7 @@ class LeaseOrderList(View):
         auth_require=True,
         template='sales/leaseorder/lease_order_list.html',
         menu_active='menu_sale_order_list',
-        breadcrumb='SALE_ORDER_LIST_PAGE',
+        breadcrumb='LEASE_ORDER_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS, 'delivery_status': DELIVERY_STATUS}, status.HTTP_200_OK
@@ -81,7 +81,7 @@ class LeaseOrderCreate(View):
     @mask_view(
         auth_require=True,
         template='sales/leaseorder/lease_order_create.html',
-        breadcrumb='SALE_ORDER_CREATE_PAGE',
+        breadcrumb='LEASE_ORDER_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         employee_current = {}
@@ -89,7 +89,7 @@ class LeaseOrderCreate(View):
             employee_current = getattr(request.user, 'employee_current_data', {})
         result = {
             'employee_current': employee_current,
-            'app_id': 'a870e392-9ad2-4fe2-9baa-298a38691cf2',
+            'app_id': '010404b3-bb91-4b24-9538-075f5f00ef14',
             'input_mapping_properties': InputMappingProperties.LEASE_ORDER_LEASE_ORDER,
             'form_id': 'frm_lease_create',
             'list_from_app': 'leaseorder.leaseorder.create',
@@ -138,7 +138,7 @@ class LeaseOrderDetail(View):
         auth_require=True,
         template='sales/leaseorder/lease_order_detail.html',
         menu_active='menu_sale_order_list',
-        breadcrumb='SALE_ORDER_DETAIL_PAGE',
+        breadcrumb='LEASE_ORDER_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         return {
@@ -157,7 +157,7 @@ class LeaseOrderUpdate(View):
     @mask_view(
         auth_require=True,
         template='sales/leaseorder/lease_order_update.html',
-        breadcrumb='SALE_ORDER_UPDATE_PAGE',
+        breadcrumb='LEASE_ORDER_UPDATE_PAGE',
         menu_active='menu_sale_order_list',
     )
     def get(self, request, pk, *args, **kwargs):

@@ -721,15 +721,15 @@ $(function () {
             QuotationLoadDataHandle.loadAddPaymentStage();
         });
 
-        tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
+        tablePS.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
             if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 if ($(this).hasClass('table-row-date')) {
                     let isCheck = true;
                     let eleDueDate = row.querySelector('.table-row-due-date');
-                    let eleTerm = row.querySelector('.table-row-term');
-                    if (eleDueDate && eleTerm) {
-                        if ($(this).val() && $(eleDueDate).val() && !$(eleTerm).val()) {
+                    let eleInstallment = row.querySelector('.table-row-installment');
+                    if (eleDueDate && eleInstallment) {
+                        if ($(this).val() && $(eleDueDate).val() && !$(eleInstallment).val()) {
                             isCheck = validateStartEndDate($(this).val(), $(eleDueDate).val());
                         }
                     }
@@ -741,8 +741,8 @@ $(function () {
                         return false;
                     }
                 }
-                if ($(this).hasClass('table-row-term')) {
-                    QuotationLoadDataHandle.loadChangePSTerm(this);
+                if ($(this).hasClass('table-row-installment')) {
+                    QuotationLoadDataHandle.loadChangeInstallment(this);
                 }
                 if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
                     validateNumber(this);

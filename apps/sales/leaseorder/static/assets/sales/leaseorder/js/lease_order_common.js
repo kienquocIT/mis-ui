@@ -29,6 +29,15 @@ class LeaseOrderLoadDataHandle {
         {'id': 2, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-2')},
         {'id': 3, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-3')},
     ];
+    static dataIssueInvoice = [
+        {'id': '', 'title': 'Select...',},
+        {'id': 1, 'title': '1'}, {'id': 2, 'title': '2'},
+        {'id': 3, 'title': '3'}, {'id': 4, 'title': '4'},
+        {'id': 5, 'title': '5'}, {'id': 6, 'title': '6'},
+        {'id': 7, 'title': '7'}, {'id': 8, 'title': '8'},
+        {'id': 9, 'title': '9'}, {'id': 10, 'title': '10'},
+        {'id': 11, 'title': '11'}, {'id': 12, 'title': '12'},
+    ];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
@@ -1373,8 +1382,8 @@ class LeaseOrderLoadDataHandle {
     static loadBalanceValPaymentTerm() {
         let totalValue = 0;
         let term = [];
-        if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
+        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
             if (dataSelected) {
                 term = dataSelected?.['term'];
                 for (let termDataCheck of term) {
@@ -1388,11 +1397,12 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadChangePaymentTerm() {
-        if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
+        let formSubmit = $('#frm_quotation_create');
+        if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
             let $table = $('#datable-quotation-payment-stage');
             let term = [];
-            if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
+            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
                 if (dataSelected) {
                     term = dataSelected?.['term'];
                     let dataDateType = JSON.parse($('#payment_date_type').text());
@@ -1400,19 +1410,18 @@ class LeaseOrderLoadDataHandle {
                         // termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
-                            termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
+                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
                         }
                     }
                 }
             }
             $table.DataTable().rows().every(function () {
                 let row = this.node();
-                let eleTerm = row.querySelector('.table-row-term');
-                if (eleTerm) {
-                    eleTerm.removeAttribute('disabled');
-                    $(eleTerm).empty();
-                    $(eleTerm).initSelect2({data: term, 'allowClear': true});
-                    $(eleTerm).val('').trigger('change');
+                let eleInstallment = row.querySelector('.table-row-installment');
+                if (eleInstallment) {
+                    eleInstallment.removeAttribute('disabled');
+                    QuotationLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
+                    $(eleInstallment).val('').trigger('change');
                 }
             });
         }
@@ -1464,29 +1473,28 @@ class LeaseOrderLoadDataHandle {
             // load init data
             let term = [];
             let isDisabled = true;
-            if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
+            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
                 if (dataSelected) {
                     isDisabled = false;
                     term = dataSelected?.['term'];
-                    let dataDateType = JSON.parse($('#payment_date_type').text());
                     for (let termData of term) {
                         // termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
-                            termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
+                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
                         }
                     }
                 }
             }
-            let eleTerm = newRow.querySelector('.table-row-term');
-            if (eleTerm) {
-                $(eleTerm).initSelect2({
-                    data: term,
-                    disabled: isDisabled,
-                    'allowClear': true,
-                });
-                $(eleTerm).val('').trigger('change');
+            let eleInstallment = newRow.querySelector('.table-row-installment');
+            if (eleInstallment) {
+                QuotationLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
+                $(eleInstallment).val('').trigger('change');
+            }
+            let eleIssueInvoice = newRow.querySelector('.table-row-issue-invoice');
+            if (eleIssueInvoice) {
+                QuotationLoadDataHandle.loadInitS2($(eleIssueInvoice), QuotationLoadDataHandle.dataIssueInvoice, {}, null, true);
             }
             // mask money
             $.fn.initMaskMoney2();
@@ -1497,10 +1505,10 @@ class LeaseOrderLoadDataHandle {
     static loadChangePSDate(ele) {
         let row = ele.closest('tr');
         let eleDueDate = row.querySelector('.table-row-due-date');
-        let eleTerm = row.querySelector('.table-row-term');
-        if (eleDueDate && eleTerm) {
-            if ($(eleTerm).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx($(eleTerm), $(eleTerm).val());
+        let eleInstallment = row.querySelector('.table-row-installment');
+        if (eleDueDate && eleInstallment) {
+            if ($(eleInstallment).val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx($(eleInstallment), $(eleInstallment).val());
                 if (dataSelected) {
                     let date = $(ele).val();
                     if (date && dataSelected?.['no_of_days']) {
@@ -1515,20 +1523,23 @@ class LeaseOrderLoadDataHandle {
         return true;
     };
 
-    static loadChangePSTerm(ele) {
+    static loadChangeInstallment(ele) {
         let row = ele.closest('tr');
-        let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
+        let dataDateType = JSON.parse($('#payment_date_type').text());
+        let eleTerm = row.querySelector('.table-row-term');
         let eleRatio = row.querySelector('.table-row-ratio');
         let eleDate = row.querySelector('.table-row-date');
         let eleValueBT = row.querySelector('.table-row-value-before-tax');
         let eleDueDate = row.querySelector('.table-row-due-date');
         if ($(ele).val()) {
-            if (eleRatio && eleDate && eleValueBT && eleDueDate && dataSelected) {
+            let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
+            if (eleTerm && eleRatio && eleDate && eleValueBT && eleDueDate && dataSelected && dataDateType) {
+                eleTerm.innerHTML = dataDateType[dataSelected?.['after']][1];
                 eleRatio.setAttribute('readonly', 'true');
                 if (dataSelected?.['value']) {
                     eleRatio.value = parseFloat(dataSelected?.['value']);
                 }
-                LeaseOrderLoadDataHandle.loadPSValueBeforeTax(eleValueBT, dataSelected?.['value']);
+                QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBT, dataSelected?.['value']);
                 eleDueDate.setAttribute('disabled', 'true');
                 let date = $(eleDate).val();
                 if (date && dataSelected?.['no_of_days']) {
@@ -1577,7 +1588,7 @@ class LeaseOrderLoadDataHandle {
             let eleRatio = row.querySelector('.table-row-ratio');
             let eleValueBT = row.querySelector('.table-row-value-before-tax');
             if (eleTerm && eleRatio && eleValueBT) {
-                LeaseOrderLoadDataHandle.loadPSValueBeforeTax(eleValueBT, $(eleRatio).val());
+                QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBT, $(eleRatio).val());
             }
         });
     };
@@ -3751,22 +3762,33 @@ class LeaseOrderDataTableHandle {
 
     static dataTablePaymentStage(data) {
         // init dataTable
-        let $tables = $('#datable-quotation-payment-stage');
-        $tables.DataTableDefault({
+        QuotationDataTableHandle.$tablePayment.DataTableDefault({
+            styleDom: 'hide-foot',
             data: data ? data : [],
             paging: false,
             info: false,
             searching: false,
+            autoWidth: true,
+            scrollX: true,
             columns: [
                 {
                     targets: 0,
+                    width: '10%',
+                    render: () => {
+                        return `<select class="form-select table-row-installment"></select>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '10%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<input type="text" class="form-control table-row-remark" data-row="${dataRow}" value="${row?.['remark'] ? row?.['remark'] : ''}" required>`;
                     }
                 },
                 {
-                    targets: 1,
+                    targets: 2,
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['date'] !== '') {
                             return `<div class="input-affix-wrapper">
@@ -3782,13 +3804,15 @@ class LeaseOrderDataTableHandle {
                     },
                 },
                 {
-                    targets: 2,
+                    targets: 3,
+                    width: '10%',
                     render: () => {
-                        return `<select class="form-select table-row-term"></select>`;
+                        return `<span class="table-row-term"></span>`;
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 4,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
@@ -3799,7 +3823,8 @@ class LeaseOrderDataTableHandle {
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 5,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
@@ -3811,7 +3836,39 @@ class LeaseOrderDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 6,
+                    width: '5%',
+                    render: () => {
+                        return `<select class="form-select table-row-issue-invoice"></select>`;
+                    }
+                },
+                {
+                    targets: 7,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-value-after-tax text-black" 
+                                    value="${row?.['value_after_tax'] ? row?.['value_after_tax'] : '0'}"
+                                    data-return-type="number"
+                                >`;
+                    }
+                },
+                {
+                    targets: 8,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-value-total text-black" 
+                                    value="${row?.['value_total'] ? row?.['value_total'] : '0'}"
+                                    data-return-type="number"
+                                >`;
+                    }
+                },
+                {
+                    targets: 9,
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['due_date'] !== '') {
                             return `<div class="input-affix-wrapper">
@@ -3827,17 +3884,8 @@ class LeaseOrderDataTableHandle {
                     }
                 },
                 {
-                    targets: 6,
-                    render: (data, type, row) => {
-                        if (row?.['is_ar_invoice'] === true) {
-                            return `<div class="form-check form-check-lg"><input type="checkbox" class="form-check-input table-row-checkbox-invoice" checked></div>`;
-                        } else {
-                            return `<div class="form-check form-check-lg"><input type="checkbox" class="form-check-input table-row-checkbox-invoice"></div>`;
-                        }
-                    }
-                },
-                {
-                    targets: 7,
+                    targets: 10,
+                    width: '1%',
                     render: () => {
                         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
@@ -3845,8 +3893,8 @@ class LeaseOrderDataTableHandle {
             ],
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    LeaseOrderDataTableHandle.dtbPaymentHDCustom();
+                if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    QuotationDataTableHandle.dtbPaymentHDCustom();
                 }
             },
         });

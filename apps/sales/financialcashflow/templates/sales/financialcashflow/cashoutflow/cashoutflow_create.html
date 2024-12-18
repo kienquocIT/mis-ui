@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Cash outflow' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frmCreate">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/financialcashflow/js/cashoutflow/cashoutflow_common.js' %}"></script>
+    <script src="{% static 'assets/sales/financialcashflow/js/cashoutflow/cashoutflow_create.js' %}"></script>
+{% endblock %}

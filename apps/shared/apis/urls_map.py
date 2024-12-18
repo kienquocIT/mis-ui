@@ -781,3 +781,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Lease order
     LEASE_ORDER_LIST = StringUrl('leaseorder/list')
     LEASE_ORDER_DETAIL = StringUrl('leaseorder')
+
+    # Cash inflow
+    AR_INVOICE_LIST_FOR_CASHINFLOW = StringUrl('financial-cashflow/ar-invoice-for-cashinflow/list')

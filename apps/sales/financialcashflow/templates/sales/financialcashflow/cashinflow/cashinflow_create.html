@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Cash inflow' %}{% endblock %}
+{% block cssHeader %}
+        <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create-cashinflow">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="script_trans"
+    ></script>
+    <form id="form-create-cashinflow"
+          data-method="POST"
+          data-url="{% url 'CashInflowListAPI' %}"
+          data-url-redirect="{% url 'CashInflowList' %}"
+    >
+        {% csrf_token %}
+        {% include 'sales/financialcashflow/cashinflow/common/information.html' %}
+        {% include 'sales/financialcashflow/cashinflow/common/main_area.html' %}
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/sales/financialcashflow/js/cashinflow/cashinflow_common.js' %}"></script>
+    <script src="{% static 'assets/sales/financialcashflow/js/cashinflow/cashinflow_create.js' %}"></script>
+{% endblock %}

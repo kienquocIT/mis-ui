@@ -121,6 +121,8 @@ INSTALLED_APPS = \
         'apps.web_builder',
     ] + [  # HRM
         'apps.hrm.employee'
+    ] + [
+        'apps.sales.financialcashflow'
     ]
 
 INSTALLED_APPS += [

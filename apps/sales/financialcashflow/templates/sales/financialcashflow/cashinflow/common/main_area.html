@@ -1,0 +1,43 @@
+{% load i18n %}
+
+<div class="row mt-3">
+    <div class="col-12">
+        <h6 class="text-black fw-bold">{% trans 'Customer pays by invoice' %}</h6>
+    </div>
+    <div class="col-12">
+        <div class="border rounded p-2">
+            <table id="table-select-invoice" class="table nowrap w-100" data-method="GET" data-url="{% url 'ARInvoiceListForCashInflowAPI' %}">
+                <thead>
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 80px">{% trans 'Code' %}</th>
+                    <th style="min-width: 100px">{% trans 'Document type' %}</th>
+                    <th style="min-width: 100px">{% trans 'Document date' %}</th>
+                    <th style="min-width: 150px">{% trans 'Total' %}</th>
+                    <th style="min-width: 150px">{% trans 'Balance value' %}</th>
+                    <th style="min-width: 200px">{% trans 'Payment value' %}</th>
+                    <th style="min-width: 150px">{% trans 'Payment discount' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-12 col-md-6 col-lg-3">
+        <div class="form-group">
+            <label class="form-label text-black fw-bold" for="advance_value">{% trans "Customers advance purchase money" %}</label>
+            <input name="advance_value" class="form-control mask-money" value="0" id="advance_value">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-3">
+        <div class="form-group">
+            <label class="form-label text-black fw-bold" for="total_payment">{% trans "Total payment" %}</label>
+            <input disabled readonly name="total_payment" class="form-control mask-money" value="0" id="total_payment">
+        </div>
+    </div>
+</div>

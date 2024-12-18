@@ -9911,3 +9911,51 @@ msgstr "Thuê từ"
 #
 msgid "Lease to"
 msgstr "Thuê đến"
+
+#
+msgid "Account payable"
+msgstr "Các khoản phải trả"
+
+#
+msgid "Cash inflow"
+msgstr "Phiếu thu"
+
+#
+msgid "Cash outflow"
+msgstr "Phiếu chi"
+
+#
+msgid "Cash inflow list"
+msgstr "Danh sách phiếu thu"
+
+#
+msgid "Cash outflow list"
+msgstr "Danh sách phiếu chi"
+
+#
+msgid "Customer pays by invoice"
+msgstr "Khách hàng thanh toán theo hóa đơn"
+
+#
+msgid "Payment discount"
+msgstr "Chiết khấu thanh toán"
+
+#
+msgid "Document type"
+msgstr "Loại tài liệu"
+
+#
+msgid "Document date"
+msgstr "Ngày chứng từ"
+
+#
+msgid "Balance value"
+msgstr "Giá trị cân bằng"
+
+#
+msgid "Customers advance purchase money"
+msgstr "Khách hàng ứng trước tiền mua hàng"
+
+#
+msgid "Total payment"
+msgstr "Tổng thanh toán"

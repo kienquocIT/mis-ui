@@ -133,6 +133,10 @@ class MenusCoreConfigurations:
         icon='<i class="fas fa-cogs"></i>',
         child=[
             MenuCommon(
+                name='Accounting policies', code='id_menu_master_data_accounting_policies', view_name='AccountingPoliciesList',
+                icon='<i class="bi bi-calculator"></i>',
+            ),
+            MenuCommon(
                 name='Posting periods', code='id_menu_master_data_periods_config', view_name='PeriodsConfigList',
                 icon='<i class="far fa-calendar-alt"></i>',
             ),
@@ -409,8 +413,8 @@ class MenusCRM:
             ),
         ]
     )
-    CASH_OUTFLOW = MenuCommon(
-        name='Cashflow', code='menu_cash_outflow', view_name='',
+    ACCOUNT_PAYABLE = MenuCommon(
+        name='Account payable', code='menu_account_payable', view_name='',
         icon='<i class="fas fa-coins"></i>',
         child=[
             MenuCommon(
@@ -776,6 +780,25 @@ class MenusHRM:
     )
 
 
+class MenusFinancials:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    CASHFLOW = MenuCommon(
+        name='Cashflow', code='', view_name='', icon='<i class="bi bi-arrow-left-right"></i>',
+        child=[
+            MenuCommon(
+                name='Cash inflow', code='menu_cash_inflow', view_name='CashInflowList',
+                icon='<i class="bi bi-box-arrow-in-down"></i>',
+            ),
+            MenuCommon(
+                name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
+                icon='<i class="bi bi-box-arrow-right"></i>',
+            ),
+        ],
+    )
+
+
 # Space Setup
 class SpaceCommon:
     name: str  # 'Sale'
@@ -840,7 +863,7 @@ class SpaceItem:
                 MenusCRM.PRODUCT,
                 MenusCRM.OPP_BOM,
                 MenusCRM.PRICING,
-                MenusCRM.CASH_OUTFLOW,
+                MenusCRM.ACCOUNT_PAYABLE,
                 MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
             ],
@@ -866,6 +889,15 @@ class SpaceItem:
                 MenuEOffice.ASSET_TOOLS,
                 MenuEOffice.MEETING,
             ],
+        ),
+        'financials': SpaceCommon(
+            'Financials',
+            'financials',
+            icon='<i class="fas fa-balance-scale"></i>',
+            menus=[
+                MenusFinancials.HOME,
+                MenusFinancials.CASHFLOW
+            ]
         ),
         'forms': SpaceCommon(
             'Forms',
@@ -989,6 +1021,7 @@ class SpaceGroup:
             SpaceItem.mapping['crm'],
             # SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
+            SpaceItem.mapping['financials'],
             SpaceItem.mapping['forms'],
             SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],

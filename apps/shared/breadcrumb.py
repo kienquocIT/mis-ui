@@ -367,6 +367,16 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     GOODS_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    CASH_INFLOW_LIST_PAGE = BreadcrumbChildren(_('Cash inflow list'), 'CashInflowList')
+    CASH_INFLOW_CREATE_PAGE = BreadcrumbChildren(_('Cash inflow create'), 'CashInflowCreate')
+    CASH_INFLOW_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    CASH_INFLOW_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
+    CASH_OUTFLOW_LIST_PAGE = BreadcrumbChildren(_('Cash outflow list'), 'CashOutflowList')
+    CASH_OUTFLOW_CREATE_PAGE = BreadcrumbChildren(_('Cash outflow create'), 'CashOutflowCreate')
+    CASH_OUTFLOW_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    CASH_OUTFLOW_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     GOODS_REGISTRATION_LIST_PAGE = BreadcrumbChildren(_('Goods registration list'), 'GoodsRegistrationList')
     GOODS_REGISTRATION_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
@@ -1012,6 +1022,16 @@ class BreadcrumbView:
     GOODS_RETURN_CREATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_RETURN_DETAIL_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RETURN_UPDATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    CASH_INFLOW_LIST_PAGE = [BreadcrumbItem.CASH_INFLOW_LIST_PAGE]
+    CASH_INFLOW_CREATE_PAGE = CASH_INFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    CASH_INFLOW_DETAIL_PAGE = CASH_INFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CASH_INFLOW_UPDATE_PAGE = CASH_INFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    CASH_OUTFLOW_LIST_PAGE = [BreadcrumbItem.CASH_OUTFLOW_LIST_PAGE]
+    CASH_OUTFLOW_CREATE_PAGE = CASH_OUTFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    CASH_OUTFLOW_DETAIL_PAGE = CASH_OUTFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CASH_OUTFLOW_UPDATE_PAGE = CASH_OUTFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     GOODS_REGISTRATION_LIST_PAGE = [BreadcrumbItem.GOODS_REGISTRATION_LIST_PAGE]
     GOODS_REGISTRATION_DETAIL_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]

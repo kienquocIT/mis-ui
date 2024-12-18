@@ -402,6 +402,13 @@ class GRLoadDataHandle {
         return true;
     };
 
+    static loadEventCheckPR() {
+        GRDataTableHandle.tablePR.on('click', '.form-check', function () {
+            GRLoadDataHandle.loadCheckPR();
+        });
+        return true;
+    };
+
     static loadCheckPR() {
         GRDataTableHandle.tableLot.DataTable().clear().draw();
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
@@ -1638,6 +1645,7 @@ class GRDataTableHandle {
                 // add css to Dtb
                 GRLoadDataHandle.loadCssToDtb('datable-good-receipt-purchase-request');
                 GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePR);
+                GRLoadDataHandle.loadEventCheckPR();
             },
         });
     };

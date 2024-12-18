@@ -271,7 +271,7 @@
 {#                                        <input type="checkbox" class="form-check-input" id="self-input">#}
 {#                                        <label class="form-check-label" for="self-input">{% trans 'Self input' %}</label>#}
 {#                                    </div>#}
-                                    <div data-simplebar class="nicescroll-bar" id="scroll-table-lot" hidden>
+                                    <div data-simplebar class="h-350p nicescroll-bar" id="scroll-table-lot" hidden>
                                         <table
                                             id="datable-delivery-wh-lot"
                                             class="table nowrap w-100"
@@ -293,7 +293,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div data-simplebar class="nicescroll-bar" id="scroll-table-serial" hidden>
+                                    <div data-simplebar class="h-350p nicescroll-bar" id="scroll-table-serial" hidden>
                                         <table
                                             id="datable-delivery-wh-serial"
                                             class="table nowrap min-w-800p w-100"
@@ -318,6 +318,24 @@
                                                 <th>{% trans 'Serial no.' %}</th>
                                                 <th>{% trans 'Warranty start' %}</th>
                                                 <th>{% trans 'Warranty end' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div data-simplebar class="nicescroll-bar" id="scroll-table-lease">
+                                        <table
+                                                id="datable-delivery-wh-lease"
+                                                class="table nowrap w-100 mb-5"
+                                        >
+                                            <thead>
+                                            <tr class="bg-light">
+                                                <th class="w-40">{% trans 'Lease code' %}</th>
+                                                <th class="w-30">{% trans 'Original code' %}</th>
+                                                <th class="w-30">{% trans 'Leased time before' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>

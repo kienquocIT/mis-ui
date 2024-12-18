@@ -1384,14 +1384,14 @@ class PODataTableHandle {
                                     <input 
                                         type="checkbox" 
                                         class="form-check-input table-row-checkbox" 
-                                        id="pr-pro-${row?.['product']?.['id'].replace(/-/g, "")}"
+                                        id="pr-pro-${row?.['product']?.['id'].replace(/-/g, "")}-${purchase_request_id.replace(/-/g, "")}"
                                         data-id="${row?.['id']}" 
                                         data-purchase-request-id="${purchase_request_id}"
                                         data-sale-order-product-id="${row?.['sale_order_product_id']}"
                                         ${checked}
                                         ${disabled}
                                     >
-                                    <label class="form-check-label table-row-item" for="pr-pro-${row?.['product']?.['id'].replace(/-/g, "")}" id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</label>
+                                    <label class="form-check-label table-row-item" for="pr-pro-${row?.['product']?.['id'].replace(/-/g, "")}-${purchase_request_id.replace(/-/g, "")}" id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</label>
                                 </div>`;
                     },
                 },
@@ -1446,6 +1446,7 @@ class PODataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 POLoadDataHandle.loadCssToDtb('datable-purchase-request-product');
+                POLoadDataHandle.loadEventCheckbox($table);
             },
         });
     };

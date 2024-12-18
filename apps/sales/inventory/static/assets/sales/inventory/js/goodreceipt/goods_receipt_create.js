@@ -77,10 +77,6 @@ $(function () {
             }
         });
 
-        GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
-            GRLoadDataHandle.loadCheckPR();
-        });
-
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {
             GRLoadDataHandle.loadCheckWH(this);
         });

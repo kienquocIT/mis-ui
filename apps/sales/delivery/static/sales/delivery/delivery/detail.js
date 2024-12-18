@@ -4,6 +4,10 @@ $(async function () {
     let $form = $('#delivery_form');
     let $table = $('#productStockDetail');
     let $eleSO = $('#inputSaleOrder');
+
+    let $tableLot = $('#datable-delivery-wh-lot');
+    let $tableSerial = $('#datable-delivery-wh-serial');
+    let $tableLease = $('#datable-delivery-wh-lease');
     let dataCompanyConfig = await DocumentControl.getCompanyConfig();
     // prod tab handle
     class prodDetailUtil {
@@ -115,6 +119,7 @@ $(async function () {
                             prodTable.dataTableTableSerial();
                         }
                     }
+                    prodTable.dataTableLease();
                 }
                 $('#warehouseStockModal').modal('show');
                 $('#save-stock').off().on('click', function () {
@@ -341,6 +346,49 @@ $(async function () {
                 }
             }
             $ele.initSelect2(opts);
+            return true;
+        };
+
+        loadEventCheckbox($area, trigger = false) {
+            // Use event delegation for dynamically added elements
+            $area.on('click', '.form-check', function (event) {
+                // Prevent handling if the direct checkbox is clicked
+                if (event.target.classList.contains('form-check-input')) {
+                    return; // Let the checkbox handler handle this
+                }
+
+                // Find the checkbox inside the clicked element
+                let checkbox = this.querySelector('.form-check-input[type="checkbox"]');
+                if (checkbox) {
+                    // Check if the checkbox is disabled
+                    if (checkbox.disabled) {
+                        return; // Exit early if the checkbox is disabled
+                    }
+                    // Prevent the default behavior
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+
+                    // Toggle the checkbox state manually
+                    checkbox.checked = !checkbox.checked;
+                    // Optional: Trigger a change event if needed
+                    if (trigger === true) {
+                        $(checkbox).trigger('change');
+                    }
+                }
+            });
+
+            // Handle direct clicks on the checkbox itself
+            $area.on('click', '.form-check-input', function (event) {
+                // Prevent the default behavior to avoid double-triggering
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+
+                // Checkbox state is toggled naturally, so no need to modify it
+                if (trigger === true) {
+                    $(this).trigger('change'); // Optional: Trigger change event explicitly
+                }
+            });
+
             return true;
         };
 
@@ -767,14 +815,13 @@ $(async function () {
             let dataRegisConfig = prodTable.getRegisConfig();
             let isRegis = dataRegisConfig?.['isRegis'];
             let dataSO = dataRegisConfig?.['dataSO'];
-            let tableLot = $('#datable-delivery-wh-lot');
-            let url = tableLot.attr('data-url');
+            let url = $tableLot.attr('data-url');
             let dataParam = {'product_warehouse_id': productWHID};
             let keyResp = 'warehouse_lot_list';
             if (isRegis === true && dataSO && eleChecked.getAttribute('data-row')) {
                 let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
                 if (!dataRow?.['is_pw']) {
-                    url = tableLot.attr('data-url-regis');
+                    url = $tableLot.attr('data-url-regis');
                     dataParam = {
                         'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
                         'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
@@ -837,8 +884,7 @@ $(async function () {
         };
 
         dataTableTableLot(data) {
-            let tableLot = $('#datable-delivery-wh-lot');
-            tableLot.not('.dataTable').DataTableDefault({
+            $tableLot.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
                 ordering: false,
                 paginate: false,
@@ -906,9 +952,9 @@ $(async function () {
                     });
                 },
             });
-            if (tableLot.hasClass('dataTable')) {
-                tableLot.DataTable().clear().draw();
-                tableLot.DataTable().rows.add(data ? data : []).draw();
+            if ($tableLot.hasClass('dataTable')) {
+                $tableLot.DataTable().clear().draw();
+                $tableLot.DataTable().rows.add(data ? data : []).draw();
             }
         };
 
@@ -924,15 +970,14 @@ $(async function () {
                     return false;
                 }
             }
-            let tableWH = $('#productStockDetail');
-            let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
+            let rowChecked = $table[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
             if (rowChecked) {
                 let newQuantity = 0;
-                let {valStock, valAvb} = prodTable.getValStockValAvb(tableWH, rowChecked);
+                let {valStock, valAvb} = prodTable.getValStockValAvb($table, rowChecked);
                 let eleWHInput = rowChecked?.querySelector('.table-row-picked');
                 let lotData = [];
                 if (eleWHInput) {
-                    $('#datable-delivery-wh-lot').DataTable().rows().every(function () {
+                    $tableLot.DataTable().rows().every(function () {
                         let row = this.node();
                         let rowLotData = this.data();
                         let valueLotInit = row?.querySelector('.table-row-quantity-init')?.innerHTML;
@@ -955,13 +1000,13 @@ $(async function () {
                             return false;
                         }
                         // store new row data & redraw row
-                        let rowIndex = tableWH.DataTable().row(rowChecked).index();
-                        let $row = tableWH.DataTable().row(rowIndex);
+                        let rowIndex = $table.DataTable().row(rowChecked).index();
+                        let $row = $table.DataTable().row(rowIndex);
                         let rowData = $row.data();
                         rowData['picked'] = newQuantity;
                         rowData['lot_data'] = lotData;
                         rowData['is_checked'] = true;
-                        tableWH.DataTable().row(rowIndex).data(rowData).draw();
+                        $table.DataTable().row(rowIndex).data(rowData).draw();
                     } else {
                         $.fn.notifyB({description: $trans.attr('data-exceed-available-quantity')}, 'failure');
                         ele.value = '0';
@@ -977,8 +1022,7 @@ $(async function () {
             let dataRegisConfig = prodTable.getRegisConfig();
             let isRegis = dataRegisConfig?.['isRegis'];
             let dataSO = dataRegisConfig?.['dataSO'];
-            let tableSerial = $('#datable-delivery-wh-serial');
-            let url = tableSerial.attr('data-url');
+            let url = $tableSerial.attr('data-url');
             let dataParam = {'product_warehouse_id': productWHID, 'is_delete': false, 'gre_sn_registered__isnull': true};
             let keyResp = 'warehouse_serial_list';
             if ($form.attr('data-method').toLowerCase() === 'get') {
@@ -987,7 +1031,7 @@ $(async function () {
             if (isRegis === true && dataSO && eleChecked.getAttribute('data-row')) {
                 let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
                 if (!dataRow?.['is_pw']) {
-                    url = tableSerial.attr('data-url-regis');
+                    url = $tableSerial.attr('data-url-regis');
                     dataParam = {
                         'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
                         'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
@@ -1058,12 +1102,11 @@ $(async function () {
         };
 
         dataTableTableSerial(data) {
-            let $table = $('#datable-delivery-wh-serial');
-            let checkAll = $table[0].querySelector('.table-row-checkbox-all');
+            let checkAll = $tableSerial[0].querySelector('.table-row-checkbox-all');
             if (checkAll) {
                 checkAll.checked = false;
             }
-            $table.not('.dataTable').DataTableDefault({
+            $tableSerial.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
                 columns: [
                     {
@@ -1156,7 +1199,7 @@ $(async function () {
                 rowCallback(row, data, index) {
                     $(`input.form-check-input`, row).on('click', function () {
                         if (this.checked === false) {
-                            let checkAll = $table[0].querySelector('.table-row-checkbox-all');
+                            let checkAll = $tableSerial[0].querySelector('.table-row-checkbox-all');
                             if (checkAll) {
                                 checkAll.checked = false;
                             }
@@ -1165,22 +1208,21 @@ $(async function () {
                     });
                 },
                 drawCallback: function () {
-                    prodTable.loadEventCheckboxAll($table);
-                    let checkAll = $table[0].querySelector('.table-row-checkbox-all');
+                    prodTable.loadEventCheckboxAll($tableSerial);
+                    let checkAll = $tableSerial[0].querySelector('.table-row-checkbox-all');
                     if (checkAll) {
                         checkAll.checked = false;
                     }
                 },
             });
-            if ($table.hasClass('dataTable')) {
-                $table.DataTable().clear().draw();
-                $table.DataTable().rows.add(data ? data : []).draw();
+            if ($tableSerial.hasClass('dataTable')) {
+                $tableSerial.DataTable().clear().draw();
+                $tableSerial.DataTable().rows.add(data ? data : []).draw();
             }
         };
 
         loadQuantityDeliveryBySerial(ele) {
             let tableWH = $('#productStockDetail');
-            let $tblSerial = $('#datable-delivery-wh-serial');
             let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
             if (rowChecked) {
                 let newQuantity = 0;
@@ -1188,7 +1230,7 @@ $(async function () {
                 let eleWHInput = rowChecked?.querySelector('.table-row-picked');
                 let serialData = [];
                 if (eleWHInput) {
-                    $tblSerial.DataTable().rows().every(function () {
+                    $tableSerial.DataTable().rows().every(function () {
                         let row = this.node();
                         let rowSerialData = this.data();
                         let eleCheck = row?.querySelector('.table-row-checkbox');
@@ -1226,6 +1268,51 @@ $(async function () {
                 }
             }
             return true;
+        };
+
+        dataTableLease(data) {
+            $tableLease.not('.dataTable').DataTableDefault({
+                data: data ? data : [],
+                pageLength: 5,
+                columnDefs: [],
+                columns: [
+                    {
+                        targets: 0,
+                        render: (data, type, row) => {
+                            let dataZone = "lease_products_data";
+                            let clsZoneReadonly = '';
+                            let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                            let disabled = '';
+                            let checked = '';
+                            if (row?.['title'] && row?.['code']) {
+                                return `<div class="d-flex align-items-center ml-2">
+                                        <div class="form-check form-check-lg">
+                                            <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" data-row="${dataRow}" ${disabled} ${checked} data-zone="${dataZone}">
+                                            <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
+                                            <label class="form-check-label table-row-title" for="s-product-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                        </div>
+                                    </div>`;
+                            }
+                            return `<span>--</span>`;
+                        }
+                    },
+                    {
+                        targets: 1,
+                        render: (data, type, row) => {
+                            return `<textarea class="form-control table-row-description" rows="2" readonly>${row?.['serial_number'] ? row?.['serial_number'] : ''}</textarea>`;
+                        }
+                    },
+                    {
+                        targets: 2,
+                        render: (data, type, row) => {
+                            return `<span class="table-row-uom">${row?.['time_leased_before']}</span>`;
+                        }
+                    },
+                ],
+                drawCallback: function () {
+                    prodTable.loadEventCheckbox($tableLease);
+                },
+            });
         };
 
         getValStockValAvb(table, rowChecked) {

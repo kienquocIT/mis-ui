@@ -763,7 +763,7 @@ $(function () {
                     }
                 }
                 if (isCheck === true) {
-                    LeaseOrderLoadDataHandle.loadPSDate(this);
+                    LeaseOrderLoadDataHandle.loadChangePSDate(this);
                 } else {
                     $(this).val(null);
                     $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
@@ -771,7 +771,7 @@ $(function () {
                 }
             }
             if ($(this).hasClass('table-row-installment')) {
-                LeaseOrderLoadDataHandle.loadPSInstallment(this);
+                LeaseOrderLoadDataHandle.loadChangePSInstallment(this);
             }
             if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
                 validateNumber(this);

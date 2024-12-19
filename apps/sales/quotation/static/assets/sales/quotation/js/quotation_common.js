@@ -1385,7 +1385,7 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadPSInstallment(ele) {
+    static loadChangePSInstallment(ele) {
         let row = ele.closest('tr');
         let dataDateType = JSON.parse($('#payment_date_type').text());
         let eleDateType = row.querySelector('.table-row-date-type');
@@ -1422,7 +1422,7 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadPSDate(ele) {
+    static loadChangePSDate(ele) {
         let row = ele.closest('tr');
         let eleDueDate = row.querySelector('.table-row-due-date');
         let eleInstallment = row.querySelector('.table-row-installment');
@@ -1443,20 +1443,54 @@ class QuotationLoadDataHandle {
         return true;
     };
 
+    static loadChangePSValueAfterTax(ele) {
+        let valueSO = 0;
+        let valuePayment = 0;
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+        if (tableProductWrapper) {
+            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+            if (tableProductFt) {
+                let eleTotal = tableProductFt.querySelector('.quotation-create-product-total-raw');
+                if (eleTotal) {
+                    valueSO = parseFloat(eleTotal.value);
+                }
+            }
+        }
+        QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+            let row = this.node();
+            let eleValAT = row.querySelector('.table-row-value-total');
+            if (eleValAT) {
+                if ($(eleValAT).valCurrency()) {
+                    valuePayment += $(eleValAT).valCurrency();
+                }
+            }
+        });
+        if (valuePayment > valueSO) {
+            $(ele).attr('value', String(0));
+            // mask money
+            $.fn.initMaskMoney2();
+            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+            return false;
+        }
+        return true;
+    };
+
     static loadPSValueBeforeTax(ele, ratio) {
         let valueSO = 0;
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         if (tableProductWrapper) {
             let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-            let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
-            let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
-            if (elePretax && eleDiscount) {
-                valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
-                if (ratio) {
-                    let value = (parseFloat(ratio) * valueSO) / 100;
-                    $(ele).attr('value', String(value));
-                    // mask money
-                    $.fn.initMaskMoney2();
+            if (tableProductFt) {
+                let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+                let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+                if (elePretax && eleDiscount) {
+                    valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
+                    if (ratio) {
+                        let value = (parseFloat(ratio) * valueSO) / 100;
+                        $(ele).attr('value', String(value));
+                        // mask money
+                        $.fn.initMaskMoney2();
+                    }
                 }
             }
         }
@@ -6363,8 +6397,22 @@ class QuotationSubmitHandle {
             }
             let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
             if (eleIssueInvoice) {
+                rowData['is_ar_invoice'] = false;
                 if ($(eleIssueInvoice).val()) {
                     rowData['issue_invoice'] = parseInt($(eleIssueInvoice).val());
+                    rowData['is_ar_invoice'] = true;
+                }
+            }
+            let eleValueAT = row.querySelector('.table-row-value-after-tax');
+            if (eleValueAT) {
+                if ($(eleValueAT).valCurrency()) {
+                    rowData['value_after_tax'] = parseFloat($(eleValueAT).valCurrency());
+                }
+            }
+            let eleValueTotal = row.querySelector('.table-row-value-total');
+            if (eleValueTotal) {
+                if ($(eleValueTotal).valCurrency()) {
+                    rowData['value_total'] = parseFloat($(eleValueTotal).valCurrency());
                 }
             }
             let eleDueDate = row.querySelector('.table-row-due-date');
@@ -6372,10 +6420,6 @@ class QuotationSubmitHandle {
                 if (eleDueDate.value) {
                     rowData['due_date'] = String(moment(eleDueDate.value, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
                 }
-            }
-            let eleARInvoice = row.querySelector('.table-row-checkbox-invoice');
-            if (eleARInvoice) {
-                rowData['is_ar_invoice'] = eleARInvoice.checked;
             }
             result.push(rowData);
         });

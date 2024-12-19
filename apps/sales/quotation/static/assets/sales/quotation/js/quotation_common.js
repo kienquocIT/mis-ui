@@ -1443,7 +1443,7 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadChangePSValueAfterTax(ele) {
+    static loadChangePSValueTotal(ele) {
         let valueSO = 0;
         let valuePayment = 0;
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
@@ -2601,6 +2601,7 @@ class QuotationLoadDataHandle {
         }
         for (let ele of table[0].querySelectorAll('.table-row-date')) {
             ele.setAttribute('disabled', 'true');
+            ele.classList.add('text-black');
         }
         for (let ele of table[0].querySelectorAll('.table-row-installment')) {
             ele.setAttribute('readonly', 'true');
@@ -2611,8 +2612,18 @@ class QuotationLoadDataHandle {
         for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
             ele.setAttribute('readonly', 'true');
         }
+        for (let ele of table[0].querySelectorAll('.table-row-issue-invoice')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-after-tax')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-total')) {
+            ele.setAttribute('readonly', 'true');
+        }
         for (let ele of table[0].querySelectorAll('.table-row-due-date')) {
             ele.setAttribute('disabled', 'true');
+            ele.classList.add('text-black');
         }
         for (let ele of table[0].querySelectorAll('.table-row-checkbox-invoice')) {
             ele.setAttribute('disabled', 'true');

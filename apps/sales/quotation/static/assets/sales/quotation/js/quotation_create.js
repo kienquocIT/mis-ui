@@ -761,7 +761,7 @@ $(function () {
                     validatePSValue(eleValueBeforeTax);
                 }
                 if ($(this).hasClass('table-row-value-total')) {
-                    QuotationLoadDataHandle.loadChangePSValueAfterTax(this);
+                    QuotationLoadDataHandle.loadChangePSValueTotal(this);
                 }
                 if ($(this).hasClass('table-row-due-date')) {
                     let row = this.closest('tr');

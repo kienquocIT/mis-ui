@@ -751,7 +751,7 @@ $(function () {
             LeaseOrderLoadDataHandle.loadAddPaymentStage();
         });
 
-        tablePS.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
+        tablePS.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-value-total, .table-row-due-date', function () {
             let row = this.closest('tr');
             if ($(this).hasClass('table-row-date')) {
                 let isCheck = true;
@@ -778,6 +778,9 @@ $(function () {
                 let eleValueBeforeTax = row.querySelector('.table-row-value-before-tax');
                 LeaseOrderLoadDataHandle.loadPSValueBeforeTax(eleValueBeforeTax, $(this).val());
                 validatePSValue(eleValueBeforeTax);
+            }
+            if ($(this).hasClass('table-row-value-total')) {
+                LeaseOrderLoadDataHandle.loadChangePSValueTotal(this);
             }
             if ($(this).hasClass('table-row-due-date')) {
                 let row = this.closest('tr');

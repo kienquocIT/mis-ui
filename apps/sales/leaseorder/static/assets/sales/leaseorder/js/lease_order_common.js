@@ -1604,6 +1604,7 @@ class LeaseOrderLoadDataHandle {
 
     static loadChangePSValueTotal(ele) {
         let valueSO = 0;
+        let ratio = 0;
         let valuePayment = 0;
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         if (tableProductWrapper) {
@@ -1617,14 +1618,25 @@ class LeaseOrderLoadDataHandle {
         }
         LeaseOrderDataTableHandle.$tablePayment.DataTable().rows().every(function () {
             let row = this.node();
+            let eleRatio = row.querySelector('.table-row-ratio');
             let eleValAT = row.querySelector('.table-row-value-total');
-            if (eleValAT) {
+            if (eleRatio && eleValAT) {
+                if ($(eleRatio).val()) {
+                    ratio += parseFloat($(eleRatio).val());
+                }
                 if ($(eleValAT).valCurrency()) {
                     valuePayment += $(eleValAT).valCurrency();
                 }
             }
         });
         if (valuePayment > valueSO) {
+            $(ele).attr('value', String(0));
+            // mask money
+            $.fn.initMaskMoney2();
+            $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+            return false;
+        }
+        if (valuePayment < valueSO && ratio === 100) {
             $(ele).attr('value', String(0));
             // mask money
             $.fn.initMaskMoney2();
@@ -3927,7 +3939,7 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '6%',
+                    width: '8%',
                     render: () => {
                         return `<select class="form-select table-row-issue-invoice"></select>`;
                     }
@@ -3965,7 +3977,7 @@ class LeaseOrderDataTableHandle {
                             value = moment(row?.['due_date']).format('DD/MM/YYYY');
                         }
                         return `<div class="input-affix-wrapper">
-                                    <input type="text" class="form-control table-row-due-date" value="${value}">
+                                    <input type="text" class="form-control table-row-due-date text-black" value="${value}">
                                     <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                 </div>`;
                     }

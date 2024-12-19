@@ -321,8 +321,8 @@ class ConsultingHandler{
                     render: (data, type, row) => {
                         let prodCateUrl = this.urlScript.data('url-product-category');
                         console.log(row)
-                        let defaultOption = row['product_category_id']
-                            ? `<option value="${row['product_category_id']}" selected>${row['title']}</option>`
+                        let defaultOption = row['product_category']
+                            ? `<option value="${row['product_category']}">${row['title']}</option>`
                             : ``;
 
                         return `<select name="product_category_${row.order}"  class="form-select select2 product-select" data-method="GET" data-url=${prodCateUrl} required>
@@ -1080,6 +1080,7 @@ class ConsultingHandler{
         _form.dataForm['document_data'] = dataDocParse?.['document_data'];
         _form.dataForm['attachment'] = dataDocParse?.['attachment'];
         _form.dataForm['product_categories'] = this.getDataCategories(this.tableProductCategories)
+        _form.dataForm['product_categories_total_number'] = _form.dataForm['product_categories']?.length
         _form.dataForm['value'] = this.getConsultingValue(this.consultingValue)
         _form.dataForm['abstract_content'] = this.getContent();
         let tmpDate = _form.dataForm['due_date']
@@ -1131,13 +1132,13 @@ class ConsultingHandler{
         let result=[]
         tableSelector.DataTable().rows().every(function(){
             let row = $(this.node());
-            let eleOption = row.find('option');
+            let eleOption = row.find('.product-select');
             let eleValueInput = row.find('input[type="text"]')
             let eleOrd = row.find('.table-row-order')
             if (eleOption && eleValueInput) {
                 result.push({
-                    'product_category': eleOption.attr('value'),
-                    'value': eleValueInput.attr('value'),
+                    'product_category': eleOption.val(),
+                    'value': eleValueInput.valCurrency(),
                     'order': parseInt(eleOrd.text()),
                 })
             }

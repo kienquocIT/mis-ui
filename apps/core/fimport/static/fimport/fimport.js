@@ -861,10 +861,27 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(form);
             let inpCheckAll$ = $(form).closest('tr').find('input[type=checkbox].inp-checkall');
 
+            // update convert input data-type=json sang JSON để tránh lỗi
+            let bodyData = frm.dataForm;
+            $(form).find(':input[data-type="json"]').each(function (){
+                const inpName = $(this).attr('name');
+                if (inpName && inpName.length > 0 && bodyData.hasOwnProperty(inpName)){
+                    let dataTmp = bodyData[inpName];
+                    try {
+                        bodyData[inpName] = JSON.parse(dataTmp);
+                    } catch (e) {
+                        let errors = {};
+                        errors[inpName] = '';
+                        $(form).validate().showErrors(errors)
+                        return false;
+                    }
+                }
+            });
+
             return await $.fn.callAjax2({
                 url: frm.dataUrl,
                 method: frm.dataMethod,
-                data: frm.dataForm,
+                data: bodyData,
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);

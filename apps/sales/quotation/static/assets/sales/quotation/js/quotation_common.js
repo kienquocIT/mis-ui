@@ -3820,7 +3820,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '6%',
+                    width: '8%',
                     render: () => {
                         return `<select class="form-select table-row-issue-invoice"></select>`;
                     }
@@ -3858,7 +3858,7 @@ class QuotationDataTableHandle {
                             value = moment(row?.['due_date']).format('DD/MM/YYYY');
                         }
                         return `<div class="input-affix-wrapper">
-                                    <input type="text" class="form-control table-row-due-date" value="${value}">
+                                    <input type="text" class="form-control table-row-due-date text-black" value="${value}">
                                     <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
                                 </div>`;
                     }

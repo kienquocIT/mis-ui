@@ -1132,13 +1132,13 @@ class ConsultingHandler{
         let result=[]
         tableSelector.DataTable().rows().every(function(){
             let row = $(this.node());
-            let eleOption = row.find('option:selected');
+            let eleOption = row.find('.product-select');
             let eleValueInput = row.find('input[type="text"]')
             let eleOrd = row.find('.table-row-order')
             if (eleOption && eleValueInput) {
                 result.push({
-                    'product_category': eleOption.attr('value'),
-                    'value': eleValueInput.attr('value'),
+                    'product_category': eleOption.val(),
+                    'value': eleValueInput.valCurrency(),
                     'order': parseInt(eleOrd.text()),
                 })
             }

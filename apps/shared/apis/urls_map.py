@@ -142,6 +142,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     COMPANY_OVERVIEW = StringUrl('company/overview/list')
     COMPANY_USER_NOT_MAP_EMPLOYEE = StringUrl('company/user/available')
     COMPANY_USER_COMPANY = StringUrl('company/user-company')
+    COMPANY_BANK_ACCOUNT_LIST = StringUrl('company/company-bank-account/list')
 
     # organization/role
     ROLE_LIST = StringUrl('hr/roles')
@@ -784,3 +785,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Cash inflow
     AR_INVOICE_LIST_FOR_CASHINFLOW = StringUrl('financial-cashflow/ar-invoice-for-cashinflow/list')
+    SALE_ORDER_LIST_FOR_CASHINFLOW = StringUrl('financial-cashflow/sale-order-for-cashinflow/list')

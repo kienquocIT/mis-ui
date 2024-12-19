@@ -1548,11 +1548,11 @@ msgstr "Quốc gia"
 
 #
 msgid "Bank name"
-msgstr "Tên NH"
+msgstr "Tên ngân hàng"
 
 #
 msgid "Bank code"
-msgstr "Mã NH"
+msgstr "Mã ngân hàng"
 
 #
 msgid "Account number"
@@ -9949,13 +9949,53 @@ msgid "Document date"
 msgstr "Ngày chứng từ"
 
 #
-msgid "Balance value"
-msgstr "Giá trị cân bằng"
+msgid "Posting date"
+msgstr "Ngày ghi sổ"
 
 #
-msgid "Customers advance purchase money"
+msgid "Balance value"
+msgstr "Giá trị cân đối"
+
+#
+msgid "Customer prepay for purchase"
 msgstr "Khách hàng ứng trước tiền mua hàng"
 
 #
 msgid "Total payment"
 msgstr "Tổng thanh toán"
+
+#
+msgid "Payment method"
+msgstr "Phương thức thanh toán"
+
+#
+msgid "Company information"
+msgstr "Thông tin công ty"
+
+#
+msgid "Company representative"
+msgstr "Người đại diện công ty"
+
+#
+msgid "Inventory management"
+msgstr "Quản lý tồn kho"
+
+#
+msgid "Bank account"
+msgstr "Tài khoản ngân hàng"
+
+#
+msgid "Bank account owner"
+msgstr "Chủ tài khoản"
+
+#
+msgid "Customer advance payment according to contract"
+msgstr "Khách hàng tạm ứng theo hợp đồng"
+
+#
+msgid "Add Company Bank Account"
+msgstr "Thêm tài khoản ngân hàng Công ty"
+
+#
+msgid "Deactivate/Activate this bank account ?"
+msgstr "Đóng/Mở tài khoản ngân hàng này ?"

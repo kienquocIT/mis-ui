@@ -27,6 +27,9 @@
         {% include 'sales/financialcashflow/cashinflow/common/main_area.html' %}
     </form>
 {% endblock %}
+{% block modalData %}
+    {% include 'sales/financialcashflow/cashinflow/common/modals.html' %}
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/financialcashflow/js/cashinflow/cashinflow_common.js' %}"></script>

@@ -133,10 +133,6 @@ class MenusCoreConfigurations:
         icon='<i class="fas fa-cogs"></i>',
         child=[
             MenuCommon(
-                name='Accounting policies', code='id_menu_master_data_accounting_policies', view_name='AccountingPoliciesList',
-                icon='<i class="bi bi-calculator"></i>',
-            ),
-            MenuCommon(
                 name='Posting periods', code='id_menu_master_data_periods_config', view_name='PeriodsConfigList',
                 icon='<i class="far fa-calendar-alt"></i>',
             ),

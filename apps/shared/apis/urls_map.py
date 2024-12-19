@@ -446,6 +446,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_PICKING_DETAIL = StringUrl('delivery/picking/{pk}')
     DELIVERY_PICKING_DETAIL_PRODUCTS = StringUrl('delivery/picking/{pk}/products')
     DELIVERY_SALEORDER_CALL = StringUrl('delivery/sale-order/{pk}')
+    DELIVERY_LEASEORDER_CALL = StringUrl('delivery/lease-order/{pk}')
     DELIVERY_LIST = StringUrl('delivery')
     DELIVERY_SUB_LIST = StringUrl('delivery/sub')
     # Opportunity detail
@@ -782,6 +783,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Lease order
     LEASE_ORDER_LIST = StringUrl('leaseorder/list')
     LEASE_ORDER_DETAIL = StringUrl('leaseorder')
+
+    # CONSULTING
+    CONSULTING_LIST = StringUrl('consulting/list')
+    CONSULTING_ACCOUNT_LIST = StringUrl('consulting/account/list')
+    CONSULTING_PRODUCT_CATEGORY_LIST = StringUrl('consulting/product-category/list')
+    CONSULTING_MASTERDATA_DOC_LIST = StringUrl('consulting/masterdata-doc/list')
+    CONSULTING_DETAIL = StringUrl('consulting/detail')
+    CONSULTING_OPP_DETAIL = StringUrl('consulting/opp-detail')
 
     # Cash inflow
     AR_INVOICE_LIST_FOR_CASHINFLOW = StringUrl('financial-cashflow/ar-invoice-for-cashinflow/list')

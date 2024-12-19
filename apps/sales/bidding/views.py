@@ -8,14 +8,14 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 from apps.shared.constant import SYSTEM_STATUS
 
-def create_bidding(request, url, msg):
+def create(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
     if resp.state:
         resp.result['message'] = msg
         return resp.result, status.HTTP_201_CREATED
     return resp.auto_return()
 
-def update_contract(request, url, pk, msg):
+def update(request, url, pk, msg):
     resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
     if resp.state:
         resp.result['message'] = msg
@@ -50,7 +50,7 @@ class BiddingListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_bidding(
+        return create(
             request=request,
             url=ApiURL.BIDDING_LIST,
             msg=SaleMsg.BIDDING_CREATE
@@ -121,7 +121,7 @@ class BiddingDetailAPI(APIView):
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        return update_contract(
+        return update(
             request=request,
             url=ApiURL.BIDDING_DETAIL,
             pk=pk,
@@ -134,7 +134,7 @@ class BiddingResultAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_bidding(
+        return create(
             request=request,
             url=ApiURL.BIDDING_RESULT,
             msg=SaleMsg.BIDDING_UPDATE

@@ -97,7 +97,8 @@ $(function () {
 // PRODUCT
         $quotationTabs.on('click', '.tab-detail', function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
-            LeaseOrderStoreDataHandle.storeDtbData(2);
+            LeaseOrderStoreDataHandle.storeDtbData(3);
+            LeaseOrderStoreDataHandle.storeDtbData(4);
             LeaseOrderLoadDataHandle.loadReInitDataTableProduct();
         });
 
@@ -330,7 +331,8 @@ $(function () {
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
-            LeaseOrderStoreDataHandle.storeDtbData(2);
+            LeaseOrderStoreDataHandle.storeDtbData(3);
+            LeaseOrderStoreDataHandle.storeDtbData(4);
             LeaseOrderLoadDataHandle.loadReInitDataTableExpense();
         });
 
@@ -388,7 +390,8 @@ $(function () {
 // COST
         $quotationTabs.on('click', '.tab-cost', function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
-            LeaseOrderStoreDataHandle.storeDtbData(2);
+            LeaseOrderStoreDataHandle.storeDtbData(3);
+            LeaseOrderStoreDataHandle.storeDtbData(4);
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 LeaseOrderLoadDataHandle.loadDataTableCost();
             }
@@ -737,51 +740,59 @@ $(function () {
         });
 
 // PAYMENT STAGE
+        $quotationTabs.on('click', '.tab-payment', function () {
+            LeaseOrderStoreDataHandle.storeDtbData(1);
+            LeaseOrderStoreDataHandle.storeDtbData(3);
+            LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
+        });
+
         $('#btn-add-payment-stage').on('click', function () {
             LeaseOrderLoadDataHandle.loadAddPaymentStage();
         });
 
-        tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
-            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+        tablePS.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-value-total, .table-row-due-date', function () {
+            let row = this.closest('tr');
+            if ($(this).hasClass('table-row-date')) {
+                let isCheck = true;
+                let eleDueDate = row.querySelector('.table-row-due-date');
+                let eleInstallment = row.querySelector('.table-row-installment');
+                if (eleDueDate && eleInstallment) {
+                    if ($(this).val() && $(eleDueDate).val() && !$(eleInstallment).val()) {
+                        isCheck = validateStartEndDate($(this).val(), $(eleDueDate).val());
+                    }
+                }
+                if (isCheck === true) {
+                    LeaseOrderLoadDataHandle.loadChangePSDate(this);
+                } else {
+                    $(this).val(null);
+                    $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
+                    return false;
+                }
+            }
+            if ($(this).hasClass('table-row-installment')) {
+                LeaseOrderLoadDataHandle.loadChangePSInstallment(this);
+            }
+            if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
+                validateNumber(this);
+                let eleValueBeforeTax = row.querySelector('.table-row-value-before-tax');
+                LeaseOrderLoadDataHandle.loadPSValueBeforeTax(eleValueBeforeTax, $(this).val());
+                validatePSValue(eleValueBeforeTax);
+            }
+            if ($(this).hasClass('table-row-value-total')) {
+                LeaseOrderLoadDataHandle.loadChangePSValueTotal(this);
+            }
+            if ($(this).hasClass('table-row-due-date')) {
                 let row = this.closest('tr');
-                if ($(this).hasClass('table-row-date')) {
-                    let isCheck = true;
-                    let eleDueDate = row.querySelector('.table-row-due-date');
-                    let eleTerm = row.querySelector('.table-row-term');
-                    if (eleDueDate && eleTerm) {
-                        if ($(this).val() && $(eleDueDate).val() && !$(eleTerm).val()) {
-                            isCheck = validateStartEndDate($(this).val(), $(eleDueDate).val());
-                        }
-                    }
-                    if (isCheck === true) {
-                        LeaseOrderLoadDataHandle.loadChangePSDate(this);
-                    } else {
-                        $(this).val(null);
-                        $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
-                        return false;
-                    }
-                }
-                if ($(this).hasClass('table-row-term')) {
-                    LeaseOrderLoadDataHandle.loadChangePSTerm(this);
-                }
-                if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
-                    validateNumber(this);
-                    let eleValueBeforeTax = row.querySelector('.table-row-value-before-tax');
-                    LeaseOrderLoadDataHandle.loadPSValueBeforeTax(eleValueBeforeTax, $(this).val());
-                    validatePSValue(eleValueBeforeTax);
-                }
-                if ($(this).hasClass('table-row-due-date')) {
-                    let row = this.closest('tr');
-                    let eleDate = row.querySelector('.table-row-date');
-                    let eleTerm = row.querySelector('.table-row-term');
-                    if (eleDate && eleTerm) {
-                        if ($(this).val() && $(eleDate).val() && !$(eleTerm).val()) {
-                            let isCheck = validateStartEndDate($(eleDate).val(), $(this).val());
-                            if (isCheck === false) {
-                                $(this).val(null);
-                                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
-                                return false;
-                            }
+                let eleDate = row.querySelector('.table-row-date');
+                let eleTerm = row.querySelector('.table-row-term');
+                if (eleDate && eleTerm) {
+                    if ($(this).val() && $(eleDate).val() && !$(eleTerm).val()) {
+                        let isCheck = validateStartEndDate($(eleDate).val(), $(this).val());
+                        if (isCheck === false) {
+                            $(this).val(null);
+                            $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
+                            return false;
                         }
                     }
                 }

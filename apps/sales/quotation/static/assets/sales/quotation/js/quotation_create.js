@@ -93,7 +93,8 @@ $(function () {
 // PRODUCT
         $quotationTabs.on('click', '.tab-detail', function () {
             QuotationStoreDataHandle.storeDtbData(1);
-            QuotationStoreDataHandle.storeDtbData(2);
+            QuotationStoreDataHandle.storeDtbData(3);
+            QuotationStoreDataHandle.storeDtbData(4);
             QuotationLoadDataHandle.loadReInitDataTableProduct();
         });
 
@@ -318,7 +319,8 @@ $(function () {
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {
             QuotationStoreDataHandle.storeDtbData(1);
-            QuotationStoreDataHandle.storeDtbData(2);
+            QuotationStoreDataHandle.storeDtbData(3);
+            QuotationStoreDataHandle.storeDtbData(4);
             QuotationLoadDataHandle.loadReInitDataTableExpense();
         });
 
@@ -376,7 +378,8 @@ $(function () {
 // COST
         $quotationTabs.on('click', '.tab-cost', function () {
             QuotationStoreDataHandle.storeDtbData(1);
-            QuotationStoreDataHandle.storeDtbData(2);
+            QuotationStoreDataHandle.storeDtbData(3);
+            QuotationStoreDataHandle.storeDtbData(4);
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 QuotationLoadDataHandle.loadDataTableCost();
             }
@@ -717,19 +720,26 @@ $(function () {
         });
 
 // PAYMENT STAGE
+        $quotationTabs.on('click', '.tab-payment', function () {
+            QuotationStoreDataHandle.storeDtbData(1);
+            QuotationStoreDataHandle.storeDtbData(3);
+            QuotationStoreDataHandle.storeDtbData(4);
+            QuotationLoadDataHandle.loadReInitDataTablePayment();
+        });
+
         $('#btn-add-payment-stage').on('click', function () {
             QuotationLoadDataHandle.loadAddPaymentStage();
         });
 
-        tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
+        tablePS.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-value-total, .table-row-due-date', function () {
             if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 if ($(this).hasClass('table-row-date')) {
                     let isCheck = true;
                     let eleDueDate = row.querySelector('.table-row-due-date');
-                    let eleTerm = row.querySelector('.table-row-term');
-                    if (eleDueDate && eleTerm) {
-                        if ($(this).val() && $(eleDueDate).val() && !$(eleTerm).val()) {
+                    let eleInstallment = row.querySelector('.table-row-installment');
+                    if (eleDueDate && eleInstallment) {
+                        if ($(this).val() && $(eleDueDate).val() && !$(eleInstallment).val()) {
                             isCheck = validateStartEndDate($(this).val(), $(eleDueDate).val());
                         }
                     }
@@ -741,14 +751,17 @@ $(function () {
                         return false;
                     }
                 }
-                if ($(this).hasClass('table-row-term')) {
-                    QuotationLoadDataHandle.loadChangePSTerm(this);
+                if ($(this).hasClass('table-row-installment')) {
+                    QuotationLoadDataHandle.loadChangePSInstallment(this);
                 }
                 if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
                     validateNumber(this);
                     let eleValueBeforeTax = row.querySelector('.table-row-value-before-tax');
                     QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBeforeTax, $(this).val());
                     validatePSValue(eleValueBeforeTax);
+                }
+                if ($(this).hasClass('table-row-value-total')) {
+                    QuotationLoadDataHandle.loadChangePSValueTotal(this);
                 }
                 if ($(this).hasClass('table-row-due-date')) {
                     let row = this.closest('tr');

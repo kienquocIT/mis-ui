@@ -112,6 +112,7 @@ INSTALLED_APPS = \
         'apps.sales.production',
         'apps.sales.bidding',
         'apps.sales.leaseorder',
+        'apps.sales.consulting',
     ] + [  # e-office Application
         'apps.eoffice.leave',
         'apps.eoffice.businesstrip',

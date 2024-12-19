@@ -75,8 +75,9 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
-                            <p class="mt-2 border-bottom" id="inputSaleOrder">{% trans 'None' %}</p>
+                            <label for="inputSaleOrder" class="form-label deli-for sale-order">{% trans 'Sale Order' %}</label>
+                            <label for="inputSaleOrder" class="form-label deli-for lease-order" hidden>{% trans 'Lease order' %}</label>
+                            <input type="text" class="form-control form-control-line mt-1" id="inputSaleOrder" value="{% trans 'None' %}" readonly>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
@@ -326,8 +327,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="save-stock" data-zone="products">{% trans 'Get' %}</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="products">{% trans 'Cancel' %}</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="products">{% trans 'Close' %}</button>
+                        <button type="button" class="btn btn-primary" id="save-stock" data-zone="products" hidden>{% trans 'Get' %}</button>
                     </div>
                 </div>
             </div>

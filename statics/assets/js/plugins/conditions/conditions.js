@@ -34,6 +34,10 @@ class Conditions {
             'url': Conditions.$url.attr('data-md-product-type'),
             'keyResp': 'product_type_list',
         },
+        'saledata.ProductCategory': {
+            'url': Conditions.$url.attr('data-md-product-category'),
+            'keyResp': 'product_category_list',
+        },
     }
 
     /***

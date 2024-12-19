@@ -456,6 +456,10 @@ class MenusCRM:
         icon='<i class="fa-solid fa-list-check"></i>',
         child=[],
     )
+    CONSULTING = MenuCommon(
+        name='Consulting', code='menu_consulting_list', view_name='ConsultingList',
+        icon='<i class="fa-solid fa-briefcase"></i>',
+    )
 
 
 class MenusPurchase:
@@ -848,6 +852,7 @@ class SpaceItem:
                 MenusCRM.ACCOUNT,
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
+                MenusCRM.CONSULTING,
                 MenusCRM.BIDDING,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,

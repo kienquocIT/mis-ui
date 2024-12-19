@@ -675,11 +675,12 @@
            data-node="{% url 'NodeSystemListAPI' %}"
            data-app-property="{% url 'ApplicationPropertyListAPI' %}"
            {# url of MD begin #}
-           data-md-account="{% url 'AccountForSaleListAPI' %}"
+           data-md-account="{% url 'AccountListAPI' %}"
            data-md-industry="{% url 'IndustryListAPI' %}"
            data-md-employee="{% url 'EmployeeListAPI' %}"
-           data-md-product="{% url 'ProductForSaleListAPI' %}"
+           data-md-product="{% url 'ProductListAPI' %}"
            data-md-product-type="{% url 'ProductTypeListAPI' %}"
+           data-md-product-category="{% url 'ProductCategoryListAPI' %}"
     >
     <input type="text" id="translate-factory"
            data-context_delete="{% trans 'Delete connection' %}"

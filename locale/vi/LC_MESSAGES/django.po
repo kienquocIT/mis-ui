@@ -9987,3 +9987,7 @@ msgstr "Tổng thanh toán"
 #
 msgid "Total payment must equal to total after tax"
 msgstr "Tổng thanh toán phải bằng tổng giá trị đơn hàng sau thuế"
+
+#
+msgid "Value invoice"
+msgstr "Giá trị hóa đơn"

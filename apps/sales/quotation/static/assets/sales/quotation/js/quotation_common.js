@@ -1443,6 +1443,29 @@ class QuotationLoadDataHandle {
         return true;
     };
 
+    static loadChangePSIssueInvoice(ele) {
+        let listIssue = [];
+        QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+            let row = this.node();
+            let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
+            if (eleIssueInvoice) {
+                if ($(eleIssueInvoice).val()) {
+                    listIssue.push(parseInt($(eleIssueInvoice).val()));
+                }
+            }
+        });
+        let maxNumber = Math.max(...listIssue);
+        if ($(ele).val()) {
+            let checkNum = parseInt($(ele).val()) - maxNumber;
+            if (checkNum > 1) {
+                $(ele).val("").trigger('change');
+                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                return false;
+            }
+        }
+        return true;
+    };
+
     static loadChangePSValueTotal(ele) {
         let valueSO = 0;
         let ratio = 0;

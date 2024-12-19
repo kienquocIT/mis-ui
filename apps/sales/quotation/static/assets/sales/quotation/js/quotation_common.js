@@ -680,15 +680,14 @@ class QuotationLoadDataHandle {
     };
 
     static loadAddRowProduct(data) {
-        let tableProduct = $('#datable-quotation-create-product');
         // delete all Promotion rows
-        deletePromotionRows(tableProduct, true, false);
+        deletePromotionRows(QuotationDataTableHandle.$tableProduct, true, false);
         // Delete all shipping rows
-        deletePromotionRows(tableProduct, false, true);
+        deletePromotionRows(QuotationDataTableHandle.$tableProduct, false, true);
         // ReCalculate Total
-        QuotationCalculateCaseHandle.updateTotal(tableProduct[0]);
-        let TotalOrder = tableProduct[0].querySelectorAll('.table-row-order').length;
-        let TotalGroup = tableProduct[0].querySelectorAll('.table-row-group').length;
+        QuotationCalculateCaseHandle.updateTotal(QuotationDataTableHandle.$tableProduct[0]);
+        let TotalOrder = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-order').length;
+        let TotalGroup = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-group').length;
         let order = (TotalOrder - TotalGroup) + 1;
         let dataAdd = {
             "order": order,
@@ -705,9 +704,9 @@ class QuotationLoadDataHandle {
             "product_subtotal_price": 0,
             "product_discount_amount": 0,
         }
-        let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+        let newRow = QuotationDataTableHandle.$tableProduct.DataTable().row.add(dataAdd).draw().node();
         // check disable
-        tableProduct.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+        QuotationDataTableHandle.$tableProduct.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         // check config for new row
         QuotationCheckConfigHandle.checkConfig(1, newRow);
         // load data dropdown
@@ -732,7 +731,7 @@ class QuotationLoadDataHandle {
         // QuotationLoadDataHandle.loadDataTableCost();
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
         // add classes for collapse
-        let eleGroups = tableProduct[0].querySelectorAll('.table-row-group');
+        let eleGroups = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-group');
         if (eleGroups) {
             let lastGroup = eleGroups[eleGroups.length - 1];
             if (lastGroup) {
@@ -1024,12 +1023,10 @@ class QuotationLoadDataHandle {
     };
 
     static loadReInitDataTableProduct() {
-        let $form = $('#frm_quotation_create');
-        let $table = $('#datable-quotation-create-product');
         let tableData = [];
         let dataDetail = {};
         let dataPriceJSON = {};
-        if ($form.attr('data-method').toLowerCase() === 'get') {
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             let eleDetail = $('#quotation-detail-data');
             if (eleDetail && eleDetail.length > 0) {
                 if (eleDetail.val()) {
@@ -1043,7 +1040,7 @@ class QuotationLoadDataHandle {
                 }
             }
         } else {
-            $table.DataTable().rows().every(function () {
+            QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
                 let row = this.node();
                 let eleOrder = row.querySelector('.table-row-order');
                 let eleProduct = row.querySelector('.table-row-item');
@@ -1061,9 +1058,9 @@ class QuotationLoadDataHandle {
                 }
             })
         }
-        $table.DataTable().destroy();
+        QuotationDataTableHandle.$tableProduct.DataTable().destroy();
         QuotationDataTableHandle.dataTableProduct();
-        if (tableData.length === 0 && $form.attr('data-method').toLowerCase() === 'put') {
+        if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
             let eleDetail = $('#quotation-detail-data');
             if (eleDetail && eleDetail.length > 0) {
                 if (eleDetail.val()) {
@@ -1077,14 +1074,14 @@ class QuotationLoadDataHandle {
                 }
             }
         }
-        $table.DataTable().rows.add(tableData).draw();
+        QuotationDataTableHandle.$tableProduct.DataTable().rows.add(tableData).draw();
         // load dropdowns
-        QuotationLoadDataHandle.loadDropDowns($table);
+        QuotationLoadDataHandle.loadDropDowns(QuotationDataTableHandle.$tableProduct);
         // load price
-        if ($form.attr('data-method').toLowerCase() !== 'get') {
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
             QuotationLoadDataHandle.loadReInitPrice(dataPriceJSON);
         }
-        $table.DataTable().rows().every(function () {
+        QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let row = this.node();
             let eleOrder = row.querySelector('.table-row-order');
             let eleGroup = row.querySelector('.table-row-group');
@@ -1133,20 +1130,19 @@ class QuotationLoadDataHandle {
             }
         });
         // load disabled if page detail
-        if ($form.attr('data-method').toLowerCase() === 'get') {
-            QuotationLoadDataHandle.loadTableDisabled($table);
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            QuotationLoadDataHandle.loadTableDisabled(QuotationDataTableHandle.$tableProduct);
         }
         $.fn.initMaskMoney2();
         // set again WF runtime
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
+        return true;
     };
 
     static loadReInitDataTableExpense() {
-        let $form = $('#frm_quotation_create');
-        let $table = $('#datable-quotation-create-expense');
         let tableData = [];
         let dataDetail = {};
-        if ($form.attr('data-method').toLowerCase() === 'get') {
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             let eleDetail = $('#quotation-detail-data');
             if (eleDetail && eleDetail.length > 0) {
                 if (eleDetail.val()) {
@@ -1160,7 +1156,7 @@ class QuotationLoadDataHandle {
                 }
             }
         } else {
-            $table.DataTable().rows().every(function () {
+            QuotationDataTableHandle.$tableExpense.DataTable().rows().every(function () {
                 let row = this.node();
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder.getAttribute('data-row')) {
@@ -1169,9 +1165,9 @@ class QuotationLoadDataHandle {
                 }
             })
         }
-        $table.DataTable().destroy();
+        QuotationDataTableHandle.$tableExpense.DataTable().destroy();
         QuotationDataTableHandle.dataTableExpense();
-        if (tableData.length === 0 && $form.attr('data-method').toLowerCase() === 'put') {
+        if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
             let eleDetail = $('#quotation-detail-data');
             if (eleDetail && eleDetail.length > 0) {
                 if (eleDetail.val()) {
@@ -1185,14 +1181,58 @@ class QuotationLoadDataHandle {
                 }
             }
         }
-        $table.DataTable().rows.add(tableData).draw();
-        if ($form.attr('data-method').toLowerCase() === 'get') {
-            QuotationLoadDataHandle.loadTableDisabled($table);
+        QuotationDataTableHandle.$tableExpense.DataTable().rows.add(tableData).draw();
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            QuotationLoadDataHandle.loadTableDisabled(QuotationDataTableHandle.$tableExpense);
         }
-        QuotationLoadDataHandle.loadDropDowns($table);
+        QuotationLoadDataHandle.loadDropDowns(QuotationDataTableHandle.$tableExpense);
         $.fn.initMaskMoney2();
         // set again WF runtime
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
+        return true;
+    };
+
+    static loadReInitDataTablePayment() {
+        let tableData = [];
+        let dataDetail = {};
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            let eleDetail = $('#quotation-detail-data');
+            if (eleDetail && eleDetail.length > 0) {
+                if (eleDetail.val()) {
+                    dataDetail = JSON.parse(eleDetail.val());
+                    tableData = dataDetail?.['sale_order_payment_stage'];
+                }
+            }
+        } else {
+            QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+                let row = this.node();
+                let eleOrder = row.querySelector('.table-row-order');
+                if (eleOrder.getAttribute('data-row')) {
+                    let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
+                    tableData.push(dataRow);
+                }
+            })
+        }
+        QuotationDataTableHandle.$tablePayment.DataTable().destroy();
+        QuotationDataTableHandle.dataTablePaymentStage();
+        if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+            let eleDetail = $('#quotation-detail-data');
+            if (eleDetail && eleDetail.length > 0) {
+                if (eleDetail.val()) {
+                    dataDetail = JSON.parse(eleDetail.val());
+                    tableData = dataDetail?.['sale_order_payment_stage'];
+                }
+            }
+        }
+        QuotationDataTableHandle.$tablePayment.DataTable().rows.add(tableData).draw();
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            QuotationLoadDataHandle.loadTableDisabled(QuotationDataTableHandle.$tablePayment);
+        }
+        QuotationLoadDataHandle.loadDropDowns(QuotationDataTableHandle.$tablePayment);
+        $.fn.initMaskMoney2();
+        // set again WF runtime
+        QuotationLoadDataHandle.loadSetWFRuntimeZone();
+        return true;
     };
 
     static loadReInitPrice(data) {
@@ -1216,6 +1256,9 @@ class QuotationLoadDataHandle {
             }
         });
     };
+
+
+
 
     // PAYMENT TERM
     static loadBalanceValPaymentTerm() {
@@ -1268,13 +1311,14 @@ class QuotationLoadDataHandle {
 
     // TABLE PAYMENT STAGE
     static loadAddPaymentStage() {
-        let $table = $('#datable-quotation-payment-stage');
+        let order = QuotationDataTableHandle.$tablePayment[0].querySelectorAll('.table-row-order').length + 1;
         let dataAdd = {
+            'order': order,
             'payment_ratio': 0,
             'value_before_tax': 0,
             'is_ar_invoice': false,
         };
-        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
+        let newRow = QuotationDataTableHandle.$tablePayment.DataTable().row.add(dataAdd).draw().node();
         if (newRow) {
             // load datePicker
             let eleDate = newRow.querySelector('.table-row-date');
@@ -1341,39 +1385,18 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadChangePSDate(ele) {
-        let row = ele.closest('tr');
-        let eleDueDate = row.querySelector('.table-row-due-date');
-        let eleInstallment = row.querySelector('.table-row-installment');
-        if (eleDueDate && eleInstallment) {
-            if ($(eleInstallment).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx($(eleInstallment), $(eleInstallment).val());
-                if (dataSelected) {
-                    let date = $(ele).val();
-                    if (date && dataSelected?.['no_of_days']) {
-                        let dueDate = calculateDate(date, {'number_day_after': parseInt(dataSelected?.['no_of_days'])});
-                        if (dueDate) {
-                            $(eleDueDate).val(dueDate);
-                        }
-                    }
-                }
-            }
-        }
-        return true;
-    };
-
-    static loadChangeInstallment(ele) {
+    static loadPSInstallment(ele) {
         let row = ele.closest('tr');
         let dataDateType = JSON.parse($('#payment_date_type').text());
-        let eleTerm = row.querySelector('.table-row-term');
+        let eleDateType = row.querySelector('.table-row-date-type');
         let eleRatio = row.querySelector('.table-row-ratio');
         let eleDate = row.querySelector('.table-row-date');
         let eleValueBT = row.querySelector('.table-row-value-before-tax');
         let eleDueDate = row.querySelector('.table-row-due-date');
         if ($(ele).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
-            if (eleTerm && eleRatio && eleDate && eleValueBT && eleDueDate && dataSelected && dataDateType) {
-                eleTerm.innerHTML = dataDateType[dataSelected?.['after']][1];
+            if (eleDateType && eleRatio && eleDate && eleValueBT && eleDueDate && dataSelected && dataDateType) {
+                $(eleDateType).val(dataDateType[dataSelected?.['after']][1]);
                 eleRatio.setAttribute('readonly', 'true');
                 if (dataSelected?.['value']) {
                     eleRatio.value = parseFloat(dataSelected?.['value']);
@@ -1396,6 +1419,27 @@ class QuotationLoadDataHandle {
         }
         // mask money
         $.fn.initMaskMoney2();
+        return true;
+    };
+
+    static loadPSDate(ele) {
+        let row = ele.closest('tr');
+        let eleDueDate = row.querySelector('.table-row-due-date');
+        let eleInstallment = row.querySelector('.table-row-installment');
+        if (eleDueDate && eleInstallment) {
+            if ($(eleInstallment).val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx($(eleInstallment), $(eleInstallment).val());
+                if (dataSelected) {
+                    let date = $(ele).val();
+                    if (date && dataSelected?.['no_of_days']) {
+                        let dueDate = calculateDate(date, {'number_day_after': parseInt(dataSelected?.['no_of_days'])});
+                        if (dueDate) {
+                            $(eleDueDate).val(dueDate);
+                        }
+                    }
+                }
+            }
+        }
         return true;
     };
 
@@ -1423,14 +1467,17 @@ class QuotationLoadDataHandle {
         let $table = $('#datable-quotation-payment-stage');
         $table.DataTable().rows().every(function () {
             let row = this.node();
-            let eleTerm = row.querySelector('.table-row-term');
+            let eleInstallment = row.querySelector('.table-row-installment');
             let eleRatio = row.querySelector('.table-row-ratio');
             let eleValueBT = row.querySelector('.table-row-value-before-tax');
-            if (eleTerm && eleRatio && eleValueBT) {
+            if (eleInstallment && eleRatio && eleValueBT) {
                 QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBT, $(eleRatio).val());
             }
         });
     };
+
+
+
 
     // TABLE COST
     static loadDataTableCost() {
@@ -2452,18 +2499,15 @@ class QuotationLoadDataHandle {
         if (table[0].id === "datable-quotation-payment-stage") {  // PAYMENT
             table.DataTable().rows().every(function () {
                 let row = this.node();
-                let dataRow = JSON.parse(row.querySelector('.table-row-remark')?.getAttribute('data-row'));
-                let eleTerm = row.querySelector('.table-row-term');
-                if (eleTerm) {
-                    $(eleTerm).empty();
+                let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
+                let eleInstallment = row.querySelector('.table-row-installment');
+                if (eleInstallment) {
                     let term = [];
                     if (QuotationLoadDataHandle.paymentSelectEle.val()) {
                         let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
                         if (dataSelected) {
                             term = dataSelected?.['term'];
-                            let dataDateType = JSON.parse($('#payment_date_type').text());
                             for (let termData of term) {
-                                // termData['title'] = dataDateType[termData?.['after']][1];
                                 let isNum = parseFloat(termData?.['value']);
                                 if (!isNum) {  // balance
                                     termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
@@ -2471,11 +2515,13 @@ class QuotationLoadDataHandle {
                             }
                         }
                     }
-                    $(eleTerm).initSelect2({
-                        data: term,
-                        'allowClear': true,
-                    });
-                    $(eleTerm).val(dataRow?.['term_id']).trigger('change');
+                    QuotationLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
+                    $(eleInstallment).val(dataRow?.['term_id']).trigger('change');
+                }
+                let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
+                if (eleIssueInvoice) {
+                    QuotationLoadDataHandle.loadInitS2($(eleIssueInvoice), QuotationLoadDataHandle.dataIssueInvoice, {}, null, true);
+                    $(eleIssueInvoice).val(dataRow?.['issue_invoice']).trigger('change');
                 }
             });
         }
@@ -2522,7 +2568,7 @@ class QuotationLoadDataHandle {
         for (let ele of table[0].querySelectorAll('.table-row-date')) {
             ele.setAttribute('disabled', 'true');
         }
-        for (let ele of table[0].querySelectorAll('.table-row-term')) {
+        for (let ele of table[0].querySelectorAll('.table-row-installment')) {
             ele.setAttribute('readonly', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-ratio')) {
@@ -3649,46 +3695,50 @@ class QuotationDataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '1%',
+                    render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" data-row="${dataRow}">${row?.['order']}</span>`
+                    }
+                },
+                {
+                    targets: 1,
                     width: '10%',
                     render: () => {
                         return `<select class="form-select table-row-installment"></select>`;
                     }
                 },
                 {
-                    targets: 1,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<input type="text" class="form-control table-row-remark" data-row="${dataRow}" value="${row?.['remark'] ? row?.['remark'] : ''}" required>`;
-                    }
-                },
-                {
                     targets: 2,
-                    width: '10%',
+                    width: '12%',
                     render: (data, type, row) => {
-                        if (row?.['date'] !== '') {
-                            return `<div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${moment(row?.['date']).format('DD/MM/YYYY')}">
-                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
-                                    </div>`;
-                        } else {
-                            return `<div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="">
-                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
-                                    </div>`;
-                        }
-                    },
+                        return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ''}</textarea>`;
+                    }
                 },
                 {
                     targets: 3,
-                    width: '10%',
-                    render: () => {
-                        return `<span class="table-row-term"></span>`;
-                    }
+                    width: '8%',
+                    render: (data, type, row) => {
+                        let value = "";
+                        if (row?.['date'] !== "") {
+                            value = moment(row?.['date']).format('DD/MM/YYYY');
+                        }
+                        return `<div class="input-affix-wrapper">
+                                    <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${value}">
+                                    <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
+                                </div>`;
+                    },
                 },
                 {
                     targets: 4,
                     width: '10%',
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control table-row-date-type" rows="2" readonly>${row?.['date_type'] ? row?.['date_type'] : ""}</textarea>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    width: '6%',
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
@@ -3699,8 +3749,8 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
-                    width: '10%',
+                    targets: 6,
+                    width: '12%',
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
@@ -3712,15 +3762,15 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 6,
-                    width: '5%',
+                    targets: 7,
+                    width: '6%',
                     render: () => {
                         return `<select class="form-select table-row-issue-invoice"></select>`;
                     }
                 },
                 {
-                    targets: 7,
-                    width: '10%',
+                    targets: 8,
+                    width: '12%',
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
@@ -3731,8 +3781,8 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 8,
-                    width: '10%',
+                    targets: 9,
+                    width: '12%',
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
@@ -3743,24 +3793,21 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 9,
-                    width: '10%',
+                    targets: 10,
+                    width: '8%',
                     render: (data, type, row) => {
-                        if (row?.['due_date'] !== '') {
-                            return `<div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date']).format('DD/MM/YYYY')}">
-                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
-                                    </div>`;
-                        } else {
-                            return `<div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-due-date" value="">
-                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
-                                    </div>`;
+                        let value = "";
+                        if (row?.['due_date'] !== "") {
+                            value = moment(row?.['due_date']).format('DD/MM/YYYY');
                         }
+                        return `<div class="input-affix-wrapper">
+                                    <input type="text" class="form-control table-row-due-date" value="${value}">
+                                    <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
+                                </div>`;
                     }
                 },
                 {
-                    targets: 10,
+                    targets: 11,
                     width: '1%',
                     render: () => {
                         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
@@ -5770,9 +5817,13 @@ class QuotationStoreDataHandle {
             datas = QuotationSubmitHandle.setupDataProduct();
             $table = QuotationDataTableHandle.$tableProduct;
         }
-        if (type === 2) {
+        if (type === 3) {
             datas = QuotationSubmitHandle.setupDataExpense();
             $table = QuotationDataTableHandle.$tableExpense;
+        }
+        if (type === 4) {
+            datas = QuotationSubmitHandle.setupDataPaymentStage();
+            $table = QuotationDataTableHandle.$tablePayment;
         }
         if (datas.length > 0 && $table) {
             for (let data of datas) {
@@ -6269,13 +6320,26 @@ class QuotationSubmitHandle {
 
     static setupDataPaymentStage() {
         let result = [];
-        let $table = $('#datable-quotation-payment-stage');
-        $table.DataTable().rows().every(function () {
+        QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
             let rowData = {};
             let row = this.node();
+            let eleOrder = row.querySelector('.table-row-order');
+            if (eleOrder) {
+                rowData['order'] = parseInt(eleOrder.innerHTML);
+            }
+            let eleInstallment = row.querySelector('.table-row-installment');
+            if (eleInstallment) {
+                if ($(eleInstallment).val()) {
+                    let dataSelected = SelectDDControl.get_data_from_idx($(eleInstallment), $(eleInstallment).val());
+                    if (dataSelected) {
+                        rowData['term_id'] = $(eleInstallment).val();
+                        rowData['term_data'] = dataSelected;
+                    }
+                }
+            }
             let eleRemark = row.querySelector('.table-row-remark');
             if (eleRemark) {
-                rowData['remark'] = eleRemark.value;
+                rowData['remark'] = $(eleRemark).val();
             }
             let eleDate = row.querySelector('.table-row-date');
             if (eleDate) {
@@ -6283,15 +6347,9 @@ class QuotationSubmitHandle {
                     rowData['date'] = String(moment(eleDate.value, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
                 }
             }
-            let eleTerm = row.querySelector('.table-row-term');
-            if (eleTerm) {
-                if ($(eleTerm).val()) {
-                    let dataSelected = SelectDDControl.get_data_from_idx($(eleTerm), $(eleTerm).val());
-                    if (dataSelected) {
-                        rowData['term_id'] = $(eleTerm).val();
-                        rowData['term_data'] = dataSelected;
-                    }
-                }
+            let eleDateType = row.querySelector('.table-row-date-type');
+            if (eleDateType) {
+                rowData['date_type'] = $(eleDateType).val();
             }
             let eleRatio = row.querySelector('.table-row-ratio');
             if (eleRatio) {
@@ -6301,6 +6359,12 @@ class QuotationSubmitHandle {
             if (eleValueBT) {
                 if ($(eleValueBT).valCurrency()) {
                     rowData['value_before_tax'] = parseFloat($(eleValueBT).valCurrency());
+                }
+            }
+            let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
+            if (eleIssueInvoice) {
+                if ($(eleIssueInvoice).val()) {
+                    rowData['issue_invoice'] = parseInt($(eleIssueInvoice).val());
                 }
             }
             let eleDueDate = row.querySelector('.table-row-due-date');
@@ -6462,9 +6526,8 @@ class QuotationSubmitHandle {
                 }
             }
         }
-
+        // LOGISTIC
         _form.dataForm[quotation_logistic_data] = QuotationSubmitHandle.setupDataLogistic();
-
         let customer_shipping = $('#quotation-create-customer-shipping');
         if (customer_shipping.val()) {
             _form.dataForm['customer_shipping'] = customer_shipping.val();

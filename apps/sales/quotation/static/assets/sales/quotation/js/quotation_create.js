@@ -93,7 +93,8 @@ $(function () {
 // PRODUCT
         $quotationTabs.on('click', '.tab-detail', function () {
             QuotationStoreDataHandle.storeDtbData(1);
-            QuotationStoreDataHandle.storeDtbData(2);
+            QuotationStoreDataHandle.storeDtbData(3);
+            QuotationStoreDataHandle.storeDtbData(4);
             QuotationLoadDataHandle.loadReInitDataTableProduct();
         });
 
@@ -318,7 +319,8 @@ $(function () {
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {
             QuotationStoreDataHandle.storeDtbData(1);
-            QuotationStoreDataHandle.storeDtbData(2);
+            QuotationStoreDataHandle.storeDtbData(3);
+            QuotationStoreDataHandle.storeDtbData(4);
             QuotationLoadDataHandle.loadReInitDataTableExpense();
         });
 
@@ -376,7 +378,8 @@ $(function () {
 // COST
         $quotationTabs.on('click', '.tab-cost', function () {
             QuotationStoreDataHandle.storeDtbData(1);
-            QuotationStoreDataHandle.storeDtbData(2);
+            QuotationStoreDataHandle.storeDtbData(3);
+            QuotationStoreDataHandle.storeDtbData(4);
             if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
                 QuotationLoadDataHandle.loadDataTableCost();
             }
@@ -717,6 +720,13 @@ $(function () {
         });
 
 // PAYMENT STAGE
+        $quotationTabs.on('click', '.tab-payment', function () {
+            QuotationStoreDataHandle.storeDtbData(1);
+            QuotationStoreDataHandle.storeDtbData(3);
+            QuotationStoreDataHandle.storeDtbData(4);
+            QuotationLoadDataHandle.loadReInitDataTablePayment();
+        });
+
         $('#btn-add-payment-stage').on('click', function () {
             QuotationLoadDataHandle.loadAddPaymentStage();
         });
@@ -734,7 +744,7 @@ $(function () {
                         }
                     }
                     if (isCheck === true) {
-                        QuotationLoadDataHandle.loadChangePSDate(this);
+                        QuotationLoadDataHandle.loadPSDate(this);
                     } else {
                         $(this).val(null);
                         $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
@@ -742,7 +752,7 @@ $(function () {
                     }
                 }
                 if ($(this).hasClass('table-row-installment')) {
-                    QuotationLoadDataHandle.loadChangeInstallment(this);
+                    QuotationLoadDataHandle.loadPSInstallment(this);
                 }
                 if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
                     validateNumber(this);

@@ -247,29 +247,17 @@ class QuotationLoadDataHandle {
     };
 
     static loadBoxQuotationCustomer(dataCustomer = {}) {
-        QuotationLoadDataHandle.customerSelectEle.empty();
-        let form = $('#frm_quotation_create');
         let data_filter = {};
-        let sale_person_id = null;
         let employee_current_data = JSON.parse($('#employee_current').text());
-        sale_person_id = employee_current_data?.['id'];
+        let sale_person_id = employee_current_data?.['id'];
         if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
             sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val();
         }
-        data_filter['employee__id'] = sale_person_id;
-        if (sale_person_id) { // Has SalePerson
-            QuotationLoadDataHandle.customerSelectEle.initSelect2({
-                data: dataCustomer,
-                'dataParams': data_filter,
-                disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
-            });
-        } else { // No SalePerson
-            QuotationLoadDataHandle.customerSelectEle.initSelect2({
-                data: dataCustomer,
-                disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
-            });
+        if (sale_person_id) {
+            data_filter['employee__id'] = sale_person_id;
         }
-        if (form.attr('data-method').toLowerCase() !== 'get') {
+        QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.customerSelectEle, [dataCustomer], data_filter);
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
             if (!dataCustomer?.['is_copy']) {
                 QuotationLoadDataHandle.loadDataProductAll();
             }
@@ -314,10 +302,14 @@ class QuotationLoadDataHandle {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
                 if (dataSelected?.['contact_mapped']) {
-                    dataContact = dataSelected?.['contact_mapped'];
+                    if (Object.keys(dataSelected?.['contact_mapped']).length > 0) {
+                        dataContact = dataSelected?.['contact_mapped'];
+                    }
                 }
                 if (dataSelected?.['owner']) {
-                    dataContact = dataSelected?.['owner'];
+                    if (Object.keys(dataSelected?.['owner']).length > 0) {
+                        dataContact = dataSelected?.['owner'];
+                    }
                 }
                 customerID = dataSelected?.['id'];
             }

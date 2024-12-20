@@ -7,25 +7,6 @@ from apps.shared import mask_view, ServerAPI, ApiURL
 from apps.shared.constant import GENDER_TYPE, MARITAL_STT, LIST_BANK, CONTRACT_TYPE
 from apps.shared.msg import BaseMsg
 from apps.shared.msg.hrm_employee import HRMMsg
-from django.utils.translation import gettext_lazy as _
-
-template_list = [
-    {
-        'title': _('Labor contract'),
-        'url': 'assets/hrm/template/labor_contract.html',
-        'description': 'Hợp đồng lao động mẫu của BFLOW theo quy định pháp luật.',
-    },
-    {
-        'title': _('Addendum contract'),
-        'url': 'assets/hrm/template/addendum_contract.html',
-        'description': 'Phụ lục hợp đồng lao động mẫu của BFLOW theo quy định pháp luật.',
-    },
-    {
-        'title': _('Probationary contract'),
-        'url': 'assets/hrm/template/probation_contract.html',
-        'description': 'Hợp đồng thử việc mẫu của BFLOW theo quy định pháp luật.',
-    }
-]
 
 
 class HRMEmployeeList(View):
@@ -58,6 +39,12 @@ class HRMEmployeeCreate(View):
     )
     def get(self, request, *args, **kwargs):
         language = getattr(request.user, 'language', settings.LANGUAGE_CODE)
+        resp = ServerAPI(user=request.user, url=ApiURL.CORE_CONTRACT_TEMPLATE_LIST).get({
+            'application': "7436c857-ad09-4213-a190-c1c7472e99be"
+        })
+        template_list = []
+        if resp.state:
+            template_list = resp.result
         return {
                    'gender': GENDER_TYPE,
                    'marital': MARITAL_STT,

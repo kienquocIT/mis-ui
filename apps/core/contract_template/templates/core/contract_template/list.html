@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}
+    {% trans 'Contract Template list' %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'ContractTemplateCreate' %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <table
+            id="dtb_contract_template_list" class="table nowrap min-w-1500p mb-5"
+            data-url="{% url 'ContractTemplateListAPI' %}"
+            data-method="GET"
+            data-detail="{% url 'ContractTemplateDetail' 1 %}"
+            data-detail-api="{% url 'ContractTemplateDetailAPI' 1 %}"
+    >
+        {% csrf_token %}
+        <thead>
+        <tr>
+            <th></th>
+            <th>{% trans 'Title' %}</th>
+            <th>{% trans 'Application' %}</th>
+            <th>{% trans 'Employee created' %}</th>
+            <th>{% trans 'Date created' %}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+{% block dataHiddenGroup %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/core/contract-template/js/list.js' %}"></script>
+{% endblock %}

@@ -262,6 +262,10 @@ class MenusCoreConfigurations:
                 name='Import Data', code='menu_import_data', view_name='FImportCreateView',
                 icon='<i class="fa-solid fa-file-import"></i>'
             ),
+            MenuCommon(
+                name='Contract Template', code='menu_contract_template', view_name='ContractTemplateList',
+                icon='<i class="fa-solid fa-file-contract"></i>'
+            ),
         ]
     )
     INVENTORY_DATA_CONFIG = MenuCommon(

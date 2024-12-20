@@ -40,13 +40,13 @@ const detail_payment_value_column_opts = [
     {
         className: 'wrap-text w-10',
         render: (data, type, row) => {
-            return `<span class="text-muted">${row?.['issue_invoice'] ? row?.['issue_invoice'] : ''}</span>`;
+            return row?.['is_ar_invoice'] ? `<span class="text-muted">${row?.['issue_invoice'] ? row?.['issue_invoice'] : ''}</span>` : '--';
         }
     },
     {
         className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return `<span class="mask-money detail-invoice-value" data-init-money="${row?.['value_after_tax'] ? row?.['value_after_tax'] : 0}"></span>`;
+            return row?.['is_ar_invoice'] ? `<span class="mask-money detail-invoice-value" data-init-money="${row?.['value_after_tax'] ? row?.['value_after_tax'] : 0}"></span>` : '--';
         }
     },
     {
@@ -56,15 +56,15 @@ const detail_payment_value_column_opts = [
         }
     },
     {
-        className: 'wrap-text text-right w-20',
+        className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return `<span class="mask-money detail-payment-value-balance" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>`;
+            return row?.['is_ar_invoice'] ? `<span class="mask-money detail-payment-value-balance" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>` : '--';
         }
     },
     {
-        className: 'wrap-text text-right w-10',
+        className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return `<input readonly disabled class="form-control text-right mask-money detail-payment-value-input" value="0">`;
+            return row?.['is_ar_invoice'] ? `<input readonly disabled class="form-control text-right mask-money detail-payment-value-input" value="0">` : '--';
         }
     },
     {
@@ -102,37 +102,37 @@ const so_column_opts = [
     {
         className: 'wrap-text w-5',
         render: (data, type, row) => {
-            return `<span class="badge badge-primary">${row?.['code']}</span>`
+            return `<span class="badge badge-primary">${row?.['so_code']}</span>`
         }
     },
     {
         className: 'wrap-text w-15',
         render: (data, type, row) => {
-            return `<span class="text-muted">--</span>`;
+            return `<span class="text-muted">${row?.['term_data']?.['title']}</span>`;
         }
     },
     {
         className: 'wrap-text w-20',
         render: (data, type, row) => {
-            return `<span class="text-muted">--</span>`;
+            return `<span class="text-muted">${row?.['remark']}</span>`;
         }
     },
     {
         className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return `<span class="mask-money total-advance-value" data-init-money="0"></span>`;
+            return `<span class="mask-money total-advance-value" data-init-money="${row?.['value_total']}"></span>`;
         }
     },
     {
         className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return `<span class="mask-money balance-advance-value" data-init-money="0"></span>`;
+            return `<span class="mask-money balance-advance-value" data-init-money="${row?.['value_total']}"></span>`;
         }
     },
     {
         className: 'wrap-text text-right w-20',
         render: (data, type, row) => {
-            return `<input class="form-control text-right mask-money payment-advance-value" data-max="0" value="0" placeholder="max = 0">`;
+            return `<input class="form-control text-right mask-money payment-advance-value" value="0"">`;
         }
     },
 ]
@@ -232,7 +232,6 @@ class CashInflowLoadPage {
             keyText: 'name',
         }).on('change', function () {
             if (element.val()) {
-                CashInflowAction.LoadSaleOrderTable({'customer_id': element.val()})
                 CashInflowAction.LoadARInvoiceTable({'customer_mapped_id': element.val()})
             }
         })
@@ -257,47 +256,20 @@ class CashInflowLoadPage {
 }
 
 class CashInflowAction {
-    static LoadSaleOrderTable(data_params={}) {
+    static LoadSaleOrderTable(datalist=[]) {
+        console.log(datalist)
         $so_table.DataTable().clear().destroy()
-        let frm = new SetupFormSubmit($so_table);
-        if ($customer.val()) {
-            $so_table.DataTableDefault({
-                styleDom: 'hide-foot',
-                useDataServer: true,
-                reloadCurrency: true,
-                rowIdx: true,
-                scrollX: '100vw',
-                scrollY: '40vh',
-                scrollCollapse: true,
-                paging: false,
-                ajax: {
-                    url: frm.dataUrl,
-                    type: frm.dataMethod,
-                    data: data_params,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : [];
-                        }
-                        return [];
-                    },
-                },
-                columns: so_column_opts,
-            });
-        }
-        else {
-            $so_table.DataTableDefault({
-                styleDom: 'hide-foot',
-                reloadCurrency: true,
-                rowIdx: true,
-                scrollX: '100vw',
-                scrollY: '40vh',
-                scrollCollapse: true,
-                paging: false,
-                data: [],
-                columns: so_column_opts,
-            });
-        }
+        $so_table.DataTableDefault({
+            styleDom: 'hide-foot',
+            reloadCurrency: true,
+            rowIdx: true,
+            scrollX: '100vw',
+            scrollY: '40vh',
+            scrollCollapse: true,
+            paging: false,
+            data: datalist,
+            columns: so_column_opts,
+        });
     }
     static LoadARInvoiceTable(data_params={}) {
         $ar_invoice_table.DataTable().clear().destroy()
@@ -319,7 +291,12 @@ class CashInflowAction {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            return resp.data['ar_invoice_list'] ? resp.data['ar_invoice_list'] : [];
+                            let sale_order_data_list = []
+                            for (let i=0; i < resp.data['ar_invoice_list'].length; i++) {
+                                sale_order_data_list = sale_order_data_list.concat(resp.data?.['ar_invoice_list'][i]?.['sale_order_data']?.['payment_term'])
+                            }
+                            CashInflowAction.LoadSaleOrderTable(sale_order_data_list.filter((item) => {return item?.['is_ar_invoice'] === false}))
+                            return resp.data?.['ar_invoice_list'] ? resp.data?.['ar_invoice_list'] : [];
                         }
                         return [];
                     },
@@ -372,6 +349,9 @@ class CashInflowAction {
     }
     static RecalculateTotalPayment() {
         let total_payment = 0
+        $so_table.find('tbody tr').each(function () {
+            total_payment += parseFloat($(this).find('.payment-advance-value').attr('value'))
+        })
         $ar_invoice_table.find('tbody tr').each(function () {
             total_payment += parseFloat($(this).find('.payment-value').attr('value'))
         })
@@ -390,6 +370,7 @@ class CashInflowAction {
             }
         })
         current_detail_payment_row.find('.payment-value').attr('value', total_detail_payment)
+        $('#total-detail-payment-modal').attr('data-init-money', total_detail_payment)
         CashInflowAction.RecalculateTotalPayment()
     }
 }
@@ -404,6 +385,23 @@ class CashInflowHandle {
         CashInflowAction.LoadARInvoiceTable()
     }
 }
+
+$(document).on('change', '.selected-so', function () {
+    $(this).closest('tr').find('.payment-advance-value').attr('value', $(this).prop('checked') ? $(this).closest('tr').find('.balance-advance-value').attr('data-init-money') : 0)
+    $.fn.initMaskMoney2()
+    CashInflowAction.RecalculateTotalPayment()
+})
+
+$(document).on('change', '.payment-advance-value', function () {
+    let this_value = parseFloat($(this).attr('value'))
+    let balance_value = parseFloat($(this).closest('tr').find('.balance-advance-value').attr('data-init-money'))
+    if (this_value > balance_value) {
+        $.fn.notifyB({description: `Payment value can not > Balance value`}, 'failure');
+        $(this).attr('value', balance_value)
+    }
+
+    $.fn.initMaskMoney2()
+})
 
 $(document).on('change', '.selected-ar', function () {
     $('.selected-ar').each(function () {
@@ -435,12 +433,21 @@ $save_changes_payment_method.on('click', function () {
 $(document).on('change', '.selected-detail-payment', function () {
     $(this).closest('tr').find('.detail-payment-value-input').attr(
         'value',
-        $(this).prop('checked') ? $(this).closest('tr').find('.detail-invoice-value').attr('data-init-money') : 0
+        $(this).prop('checked') ? $(this).closest('tr').find('.detail-payment-value-balance').attr('data-init-money') : 0
     ).prop(
         'disabled', !$(this).prop('checked')
     ).prop(
         'readonly', !$(this).prop('checked')
     )
+
+    // calculate total payment value modal
+    let total_detail_payment = 0
+    $table_detail_payment_value_modal.find('tbody tr').each(function () {
+        if ($(this).find('.selected-detail-payment').prop('checked')) {
+            total_detail_payment += parseFloat($(this).find('.detail-payment-value-input').attr('value'))
+        }
+    })
+    $('#total-detail-payment-modal').attr('data-init-money', total_detail_payment)
     $.fn.initMaskMoney2()
 })
 
@@ -451,12 +458,21 @@ $('#save-detail-payment-value').on('click', function () {
 
 $(document).on('change', '.detail-payment-value-input', function () {
     let this_value = parseFloat($(this).attr('value'))
-    let invoice_value = parseFloat($(this).closest('tr').find('.detail-invoice-value').attr('data-init-money'))
-    if (this_value > invoice_value) {
-        $.fn.notifyB({description: `Payment value can not > Invoice value`}, 'failure');
-        $(this).attr('value', invoice_value)
-        $.fn.initMaskMoney2()
+    let balance_value = parseFloat($(this).closest('tr').find('.detail-payment-value-balance').attr('data-init-money'))
+    if (this_value > balance_value) {
+        $.fn.notifyB({description: `Payment value can not > Balance value`}, 'failure');
+        $(this).attr('value', balance_value)
     }
+
+    // calculate total payment value modal
+    let total_detail_payment = 0
+    $table_detail_payment_value_modal.find('tbody tr').each(function () {
+        if ($(this).find('.selected-detail-payment').prop('checked')) {
+            total_detail_payment += parseFloat($(this).find('.detail-payment-value-input').attr('value'))
+        }
+    })
+    $('#total-detail-payment-modal').attr('data-init-money', total_detail_payment)
+    $.fn.initMaskMoney2()
 })
 
 $(document).on('click', '.btn-detail-payment-value', function () {

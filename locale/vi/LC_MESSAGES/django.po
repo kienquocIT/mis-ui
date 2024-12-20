@@ -9546,7 +9546,7 @@ msgstr "Kết quả"
 
 #
 msgid "Required Documents"
-msgstr "Tài liệu dự thầu"
+msgstr "Tài liệu bắt buộc"
 
 #
 msgid "Document Name"
@@ -9778,7 +9778,7 @@ msgstr "Bắt đầu nhập bây giờ?"
 
 #
 msgid "Please wait until the import has finished!"
-msgstr "Làm ơn đợi cho đến khi nhập liệu hoàn tất! 😀"
+msgstr "Vui lòng đợi cho đến khi nhập liệu hoàn tất! 😀"
 
 #
 msgid "Bidding Result Config"

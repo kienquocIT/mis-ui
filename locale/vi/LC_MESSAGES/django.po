@@ -9987,7 +9987,6 @@ msgstr "Tổng thanh toán"
 #
 msgid "Total payment must equal to total after tax"
 msgstr "Tổng thanh toán phải bằng tổng giá trị đơn hàng sau thuế"
-msgstr "Tài liệu nhập tay"
 
 #
 msgid "Account payable"
@@ -10074,5 +10073,9 @@ msgid "Add Company Bank Account"
 msgstr "Thêm tài khoản ngân hàng Công ty"
 
 #
-msgid "Deactivate/Activate this bank account ?"
-msgstr "Đóng/Mở tài khoản ngân hàng này ?"
+msgid "Invoice value"
+msgstr "Giá trị hóa đơn"
+
+#
+msgid "Detail payment value by invoice"
+msgstr "Chi tiết thanh toán theo hóa đơn"

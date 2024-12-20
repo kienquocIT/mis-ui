@@ -19,10 +19,10 @@ const detail_payment_value_column_opts = [
     {
         className: 'wrap-text w-5',
         render: (data, type, row) => {
-            return `<div class="form-check form-check-sm">
-            <input type="checkbox" class="form-check-input selected-detail-payment">
-            <label class="form-check-label"></label>
-        </div>`
+            return row?.['is_ar_invoice'] ? `<div class="form-check form-check-sm">
+                <input type="checkbox" class="form-check-input selected-detail-payment">
+                <label class="form-check-label"></label>
+            </div>` : ''
         }
     },
     {
@@ -46,7 +46,7 @@ const detail_payment_value_column_opts = [
     {
         className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return `<span class="mask-money" data-init-money="${row?.['value_after_tax'] ? row?.['value_after_tax'] : 0}"></span>`;
+            return `<span class="mask-money detail-invoice-value" data-init-money="${row?.['value_after_tax'] ? row?.['value_after_tax'] : 0}"></span>`;
         }
     },
     {
@@ -435,7 +435,7 @@ $save_changes_payment_method.on('click', function () {
 $(document).on('change', '.selected-detail-payment', function () {
     $(this).closest('tr').find('.detail-payment-value-input').attr(
         'value',
-        $(this).prop('checked') ? $(this).closest('tr').find('.detail-payment-value-balance').attr('data-init-money') : 0
+        $(this).prop('checked') ? $(this).closest('tr').find('.detail-invoice-value').attr('data-init-money') : 0
     ).prop(
         'disabled', !$(this).prop('checked')
     ).prop(
@@ -447,6 +447,16 @@ $(document).on('change', '.selected-detail-payment', function () {
 $('#save-detail-payment-value').on('click', function () {
     CashInflowAction.CalculateARInvoiceRow()
     $detail_payment_value_modal.modal('hide')
+})
+
+$(document).on('change', '.detail-payment-value-input', function () {
+    let this_value = parseFloat($(this).attr('value'))
+    let invoice_value = parseFloat($(this).closest('tr').find('.detail-invoice-value').attr('data-init-money'))
+    if (this_value > invoice_value) {
+        $.fn.notifyB({description: `Payment value can not > Invoice value`}, 'failure');
+        $(this).attr('value', invoice_value)
+        $.fn.initMaskMoney2()
+    }
 })
 
 $(document).on('click', '.btn-detail-payment-value', function () {

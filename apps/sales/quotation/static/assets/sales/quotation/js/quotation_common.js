@@ -1351,10 +1351,8 @@ class QuotationLoadDataHandle {
             if (QuotationLoadDataHandle.paymentSelectEle.val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
                 if (dataSelected) {
-                    isDisabled = false;
                     term = dataSelected?.['term'];
                     for (let termData of term) {
-                        // termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
                             termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
@@ -1367,6 +1365,14 @@ class QuotationLoadDataHandle {
                 QuotationLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
                 $(eleInstallment).val('').trigger('change');
             }
+
+            //
+            let count = QuotationDataTableHandle.$tablePayment.DataTable().data().count();
+            let dataIssue = [{'id': '', 'title': 'Select...',},];
+            for (let i = 1; i <= count; i++) {
+                dataIssue.push()
+            }
+
             let eleIssueInvoice = newRow.querySelector('.table-row-issue-invoice');
             if (eleIssueInvoice) {
                 QuotationLoadDataHandle.loadInitS2($(eleIssueInvoice), QuotationLoadDataHandle.dataIssueInvoice, {}, null, true);
@@ -1436,22 +1442,39 @@ class QuotationLoadDataHandle {
     };
 
     static loadChangePSIssueInvoice(ele) {
-        let listIssue = [];
-        QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
-            let row = this.node();
-            let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
-            if (eleIssueInvoice) {
-                if ($(eleIssueInvoice).val()) {
-                    listIssue.push(parseInt($(eleIssueInvoice).val()));
-                }
-            }
-        });
-        let maxNumber = Math.max(...listIssue);
+        // if (!$(ele).val()) {
+        //     let row
+        // }
+
         if ($(ele).val()) {
-            let checkNum = parseInt($(ele).val()) - maxNumber;
+            let issueTarget = parseInt($(ele).val());
+            let listIssue = [];
+            QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+                let row = this.node();
+                let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
+                if (eleIssueInvoice) {
+                    if ($(eleIssueInvoice).val()) {
+                        let issue = parseInt($(eleIssueInvoice).val());
+                        listIssue.push(issue);
+                        // check other same issue
+                        if (issue === issueTarget) {
+                            let eleValueAT = row.querySelector('.table-row-after-tax');
+                            if (eleValueAT) {
+                                if ($(eleValueAT).valCurrency() === 0) {
+                                    $(ele).val("").trigger('change');
+                                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-invalid')}, 'failure');
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            let maxNumber = Math.max(...listIssue);
+            let checkNum = issueTarget - maxNumber;
             if (checkNum > 1) {
                 $(ele).val("").trigger('change');
-                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-invalid')}, 'failure');
                 return false;
             }
         }

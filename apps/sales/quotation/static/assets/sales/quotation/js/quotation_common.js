@@ -1345,9 +1345,8 @@ class QuotationLoadDataHandle {
                 });
                 $(eleDueDate).val(null).trigger('change');
             }
-            // load init data
+            // installment
             let term = [];
-            let isDisabled = true;
             if (QuotationLoadDataHandle.paymentSelectEle.val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
                 if (dataSelected) {
@@ -1365,17 +1364,16 @@ class QuotationLoadDataHandle {
                 QuotationLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
                 $(eleInstallment).val('').trigger('change');
             }
-
-            //
+            // issue invoice
             let count = QuotationDataTableHandle.$tablePayment.DataTable().data().count();
-            let dataIssue = [{'id': '', 'title': 'Select...',},];
+            let dataIssue = [{'id': '', 'title': 'Select...',}];
             for (let i = 1; i <= count; i++) {
-                dataIssue.push()
+                let add = {'id': String(i), 'title': String(i)};
+                dataIssue.push(add);
             }
-
             let eleIssueInvoice = newRow.querySelector('.table-row-issue-invoice');
             if (eleIssueInvoice) {
-                QuotationLoadDataHandle.loadInitS2($(eleIssueInvoice), QuotationLoadDataHandle.dataIssueInvoice, {}, null, true);
+                QuotationLoadDataHandle.loadInitS2($(eleIssueInvoice), dataIssue, {}, null, true);
             }
             // mask money
             $.fn.initMaskMoney2();
@@ -1442,40 +1440,45 @@ class QuotationLoadDataHandle {
     };
 
     static loadChangePSIssueInvoice(ele) {
-        // if (!$(ele).val()) {
-        //     let row
-        // }
+        let rowFocus = ele.closest('tr');
+        if (rowFocus) {
+            let eleValueATFocus = rowFocus.querySelector('.table-row-value-after-tax');
+            if (eleValueATFocus) {
 
-        if ($(ele).val()) {
-            let issueTarget = parseInt($(ele).val());
-            let listIssue = [];
-            QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
-                let row = this.node();
-                let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
-                if (eleIssueInvoice) {
-                    if ($(eleIssueInvoice).val()) {
-                        let issue = parseInt($(eleIssueInvoice).val());
-                        listIssue.push(issue);
-                        // check other same issue
-                        if (issue === issueTarget) {
-                            let eleValueAT = row.querySelector('.table-row-after-tax');
-                            if (eleValueAT) {
-                                if ($(eleValueAT).valCurrency() === 0) {
-                                    $(ele).val("").trigger('change');
-                                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-invalid')}, 'failure');
-                                    return false;
+                if (!$(ele).val()) {
+                    $(eleValueATFocus).attr('disabled', 'true');
+                    $(eleValueATFocus).attr('value', String(0));
+                    // mask money
+                    $.fn.initMaskMoney2();
+                    return true;
+                }
+
+                if ($(ele).val()) {
+                    $(eleValueATFocus).removeAttr('disabled');
+                    let issueTarget = parseInt($(ele).val());
+                    QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+                        let row = this.node();
+                        let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
+                        if (eleIssueInvoice) {
+                            if (eleIssueInvoice !== ele) {
+                                if ($(eleIssueInvoice).val()) {
+                                    let issue = parseInt($(eleIssueInvoice).val());
+                                    // check other same issue
+                                    if (issue === issueTarget) {
+                                        let eleValueAT = row.querySelector('.table-row-value-after-tax');
+                                        if (eleValueAT) {
+                                            if ($(eleValueAT).valCurrency() === 0) {
+                                                $(ele).val("").trigger('change');
+                                                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-invalid')}, 'failure');
+                                                return false;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
+                    });
                 }
-            });
-            let maxNumber = Math.max(...listIssue);
-            let checkNum = issueTarget - maxNumber;
-            if (checkNum > 1) {
-                $(ele).val("").trigger('change');
-                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-invalid')}, 'failure');
-                return false;
             }
         }
         return true;
@@ -3872,6 +3875,7 @@ class QuotationDataTableHandle {
                                     class="form-control mask-money table-row-value-after-tax text-black" 
                                     value="${row?.['value_after_tax'] ? row?.['value_after_tax'] : '0'}"
                                     data-return-type="number"
+                                    disabled
                                 >`;
                     }
                 },

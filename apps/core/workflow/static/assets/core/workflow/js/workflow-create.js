@@ -52,13 +52,19 @@ $(function () {
                 if (flowNode.hasOwnProperty(item.order)) {
                     let node = document.getElementById(`control-${item.order}`);
                     let offset = jsPlumb.getOffset(node);
-                    // item.condition = flowNode[item.order].condition
+
+                    let el = node;
+                    let container = el.closest('#flowchart_workflow');
+                    let containerRect = container.getBoundingClientRect();
+                    let elRect = el.getBoundingClientRect();
+
+                    let relativeLeft = elRect.left - containerRect.left;
+                    let relativeTop = elRect.top - containerRect.top;
                     item.coordinates = {
-                        top: offset.top,
-                        left: offset.left,
+                        top: relativeTop,
+                        left: relativeLeft,
                     }
                 } else {
-                    // item.condition = []
                     item.coordinates = {}
                 }
             }

@@ -325,7 +325,7 @@ $(document).ready(function () {
                             `;
                         }
                         if (row?.['is_delete']) {
-                            return `<span class="small">${$trans_script.attr('data-trans-delivered')}</span>`
+                            return `<span class="small sn-is-delete">${$trans_script.attr('data-trans-delivered')}</span>`
                         }
                         return `<button class="btn-del-sn-row btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
@@ -376,13 +376,13 @@ $(document).ready(function () {
     $(document).on('click', '#add-row-sn', function () {
         if ($table_serial.attr('data-status') === 'false') {
             AddRow($table_serial, {})
-            let row_added = $table_serial.find('tbody tr:last-child')
-            row_added.find('.date-input').each(function () {
+            const nodes = $table_serial.DataTable().rows().nodes();
+            const row_added = nodes[nodes.length - 1];
+            $(row_added).find('.date-input').each(function () {
                 LoadDate($(this), $(this).val() === '')
             })
-        }
-        else {
-            $.fn.notifyB({description: `You can only import for ${$table_serial.attr('data-quantity-import')} rows.`}, 'warning')
+            $table_serial.DataTable().page('last').draw('page');
+            $.fn.notifyB({description: '1 row added on the last page!'}, 'success');
         }
     })
 
@@ -430,10 +430,10 @@ $(document).ready(function () {
         frm.dataForm['product_id'] = frmEle.find('#table-serial').attr('data-product-id')
         frm.dataForm['warehouse_id'] = frmEle.find('#table-serial').attr('data-warehouse-id')
         frm.dataForm['goods_receipt_id'] = frmEle.find('#table-serial').attr('data-goods-receipt-id')
-        frm.dataForm['purchase_request_id'] = frmEle.find('#table-serial').attr('data-purchase-request-id') !== 'undefined' ? frmEle.find('#table-serial').attr('data-purchase-request-id') : null
+        frm.dataForm['purchase_request_id'] = !['undefined', 'null', ''].includes(frmEle.find('#table-serial').attr('data-purchase-request-id')) ? frmEle.find('#table-serial').attr('data-purchase-request-id') : null
         frm.dataForm['serial_data'] = []
         $table_serial.find('tbody tr').each(function () {
-            let serial_id = $(this).find('.vendor_serial_number').attr('data-serial-id') !== "null" ? $(this).find('.vendor_serial_number').attr('data-serial-id') : null
+            let serial_id = !['undefined', 'null', ''].includes($(this).find('.vendor_serial_number').attr('data-serial-id')) ? $(this).find('.vendor_serial_number').attr('data-serial-id') : null
             let vendor_serial_number = $(this).find('.vendor_serial_number').val()
             let serial_number = $(this).find('.serial_number').val()
             let expire_date = $(this).find('.expire_date').val() ? moment($(this).find('.expire_date').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
@@ -441,7 +441,7 @@ $(document).ready(function () {
             let warranty_start = $(this).find('.warranty_start').val() ? moment($(this).find('.warranty_start').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
             let warranty_end = $(this).find('.warranty_end').val() ? moment($(this).find('.warranty_end').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
 
-            if (vendor_serial_number && serial_number) {
+            if (vendor_serial_number && serial_number && $(this).find('.sn-is-delete').length === 0) {
                 frm.dataForm['serial_data'].push({
                     "serial_id": serial_id,
                     "vendor_serial_number": vendor_serial_number,

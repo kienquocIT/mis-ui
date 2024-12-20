@@ -426,6 +426,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     HRM_EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'HRMEmployeeCreate')
     HRM_EMPLOYEE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     HRM_EMPLOYEE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+    # CONTRACT TEMPLATE
+    CONTRACT_TEMPLATE_LIST_PAGE = BreadcrumbChildren(_('Contract template list'), 'ContractTemplateList')
+    CONTRACT_TEMPLATE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'ContractTemplateCreate')
+    CONTRACT_TEMPLATE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    CONTRACT_TEMPLATE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
 
 class BreadcrumbView:
@@ -1117,6 +1122,7 @@ class BreadcrumbView:
         BreadcrumbItem.RECURRENCE_ACTION_LIST_PAGE
     ]
 
+    # HRM
     HRM_EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.HRM_EMPLOYEE_LIST_PAGE
@@ -1124,3 +1130,12 @@ class BreadcrumbView:
     HRM_EMPLOYEE_CREATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     HRM_EMPLOYEE_DETAIL_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     HRM_EMPLOYEE_UPDATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # CONTRACT TEMPLATE
+    CONTRACT_TEMPLATE_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.CONTRACT_TEMPLATE_LIST_PAGE
+    ]
+    CONTRACT_TEMPLATE_CREATE_PAGE = CONTRACT_TEMPLATE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    CONTRACT_TEMPLATE_DETAIL_PAGE = CONTRACT_TEMPLATE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CONTRACT_TEMPLATE_UPDATE_PAGE = CONTRACT_TEMPLATE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

@@ -28,7 +28,7 @@ const detail_payment_value_column_opts = [
     {
         className: 'wrap-text w-5',
         render: (data, type, row) => {
-            return `<span class="text-muted">${row?.['installment'] ? row?.['installment'] : ''}</span>`
+            return `<span class="text-muted">${row?.['term_data']?.['title'] ? row?.['term_data']?.['title'] : ''}</span>`
         }
     },
     {
@@ -40,7 +40,7 @@ const detail_payment_value_column_opts = [
     {
         className: 'wrap-text w-10',
         render: (data, type, row) => {
-            return `<span class="text-muted">${row?.['issue_invoice'] ? row?.['issue_invoice'] : '1'}</span>`;
+            return `<span class="text-muted">${row?.['issue_invoice'] ? row?.['issue_invoice'] : ''}</span>`;
         }
     },
     {
@@ -52,13 +52,13 @@ const detail_payment_value_column_opts = [
     {
         className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return `<span class="mask-money" data-init-money="${row?.['total_payment'] ? row?.['total_payment'] : 0}"></span>`;
+            return `<span class="mask-money" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>`;
         }
     },
     {
         className: 'wrap-text text-right w-20',
         render: (data, type, row) => {
-            return `<span class="mask-money" data-init-money="0"></span>`;
+            return `<span class="mask-money detail-payment-value-balance" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>`;
         }
     },
     {
@@ -433,7 +433,15 @@ $save_changes_payment_method.on('click', function () {
 })
 
 $(document).on('change', '.selected-detail-payment', function () {
-    $(this).closest('tr').find('.detail-payment-value-input').attr('value', 0).prop('disabled', !$(this).prop('checked')).prop('readonly', !$(this).prop('checked'))
+    $(this).closest('tr').find('.detail-payment-value-input').attr(
+        'value',
+        $(this).prop('checked') ? $(this).closest('tr').find('.detail-payment-value-balance').attr('data-init-money') : 0
+    ).prop(
+        'disabled', !$(this).prop('checked')
+    ).prop(
+        'readonly', !$(this).prop('checked')
+    )
+    $.fn.initMaskMoney2()
 })
 
 $('#save-detail-payment-value').on('click', function () {

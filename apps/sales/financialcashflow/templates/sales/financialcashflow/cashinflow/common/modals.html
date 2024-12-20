@@ -62,7 +62,7 @@
 </div>
 
 <div class="modal fade" id="detail-payment-value-modal" tabindex="-1" role="dialog" aria-labelledby="detail-payment-value-modal" aria-hidden="true">
-	<div class="modal-dialog modal-lg" style="min-width: 75%" role="document">
+	<div class="modal-dialog modal-lg" style="min-width: 90%" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">{% trans 'Detail payment value' %}</h5>
@@ -80,10 +80,13 @@
                                 <th style="min-width: 30px"></th>
                                 <th style="min-width: 100px">{% trans 'Installment' %}</th>
                                 <th style="min-width: 100px">{% trans 'Description' %}</th>
-                                <th style="min-width: 100px">{% trans 'Issue invoice' %}</th>
-                                <th style="min-width: 150px">{% trans 'Invoice value after tax' %}</th>
-                                <th style="min-width: 150px">{% trans 'Total payment' %}</th>
-                                <th style="min-width: 150px">{% trans 'Balance value' %}</th>
+                                <th style="min-width: 80px">{% trans 'Issue invoice' %}</th>
+                                <th style="min-width: 100px">
+                                    {% trans 'Invoice value' %}
+                                    <i class="fas fa-info-circle" data-bs-toggle="tooltip" title="{% trans 'After tax' %}"></i>
+                                </th>
+                                <th style="min-width: 100px">{% trans 'Total payment' %}</th>
+                                <th style="min-width: 100px">{% trans 'Balance value' %}</th>
                                 <th style="min-width: 200px">{% trans 'Payment value' %}</th>
                                 <th style="min-width: 100px">{% trans 'Due date' %}</th>
                             </tr>

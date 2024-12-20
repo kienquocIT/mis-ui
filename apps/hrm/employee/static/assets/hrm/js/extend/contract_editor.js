@@ -14,8 +14,8 @@ class editor_handle {
                 'template', 'codesample', 'table', 'charmap', 'hr', 'pagebreak', 'nonbreaking', 'anchor', 'toc',
                 'insertdatetime', 'advlist', 'lists', 'wordcount', 'imagetools', 'textpattern', 'noneditable',
                 'help', 'charmap', 'quickbars', 'emoticons'],
-            toolbar: 'bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist table twoColumn threeColumn removeColumnsSplit cleanColumnItem | forecolor backcolor removeformat removeSelectionEle template | link hr pagebreak| preview print visualblocks | rarely_used',
-            quickbars_insert_toolbar: 'link image | numlist bullist table twoColumn threeColumn | hr pagebreak | removeSelectionEle',
+            toolbar: 'bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist table twoColumn threeColumn | preview pagebreak removeformat print visualblocks | template | rarely_used',
+            quickbars_insert_toolbar: 'link image | numlist bullist table twoColumn threeColumn | hr pagebreak',
             toolbar_groups: {
                 rarely_used: {
                     icon: 'more-drawer',
@@ -170,8 +170,10 @@ class contract_data {
                     $('#signing_date')[0]._flatpickr.setDate(data.signing_date)
                     $('input[name="file_type"]').prop('checked', false)
                     $(`input[name="file_type"][value="${data.file_type}"]`).prop('checked', true)
-                    $('input[name="sign_status"]').prop('checked', false)
-                    $(`input[name="sign_status"][value="${data.sign_status}"]`).prop('checked', true)
+
+                    $('.sign_check span').text(data.sign_status === true
+                        ? $.fn.gettext('Signed') : $.fn.gettext('Unsigned')).addClass(data.sign_status === true
+                    ? 'badge-soft-primary' : 'badge-soft-danger')
                     let attchElm = $('#attachment');
                     if (data.attachment) {
                         attchElm.find('.dm-uploader-results input[name="attachment"]').remove()
@@ -204,7 +206,6 @@ class contract_data {
         dataList.limit_time = formSer.limit_time
         dataList.employee_info = formSer.id
         if (formSer['contract_id']) dataList.id = formSer['contract_id']
-        if (formSer['sign_status']) dataList.sign_status = parseInt(formSer['sign_status'])
         if (formSer['effected_date']) dataList.effected_date = formSer['effected_date']
         if (formSer['expired_date']) dataList.expired_date = formSer['expired_date']
         if (formSer['company_representative']) dataList.represent = formSer['company_representative']
@@ -213,7 +214,7 @@ class contract_data {
         if (formSer['remarks'] && dataList.file_type === 1) dataList.content = formSer['remarks']
         if (formSer['attachment'] && dataList.file_type === 0)
             dataList.attachment = $x.cls.file.get_val(formSer['attachment'], [])
-        if (Object.keys(dataList).length < 9)
+        if (Object.keys(dataList).length < 8)
             return {}
         return dataList
     }

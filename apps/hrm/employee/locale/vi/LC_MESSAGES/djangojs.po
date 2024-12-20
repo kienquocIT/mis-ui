@@ -96,3 +96,11 @@ msgstr "Sau"
 #
 msgid "Done"
 msgstr "Hoàn thành"
+
+#
+msgid "Unsigned"
+msgstr "Chưa ký"
+
+#
+msgid "Signed"
+msgstr "Đã ký"

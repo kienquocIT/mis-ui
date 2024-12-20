@@ -591,7 +591,7 @@ $(document).ready(function () {
                     e.stopPropagation();
                     let crf = $('[name=csrfmiddlewaretoken]', '#form-create-payment-term').val()
                     let url = $('#url-factory').data('detail').format_url_with_uuid(data.id)
-                    DataTableAction.delete(url, data, crf, row)
+                    DataTableAction.delete(url, crf, row)
                 })
                 $('.row-title', row).off().on('click', function () {
                     $('#btn-show-modal-create').trigger('click')

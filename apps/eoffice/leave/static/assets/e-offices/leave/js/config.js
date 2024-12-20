@@ -106,7 +106,7 @@ $(document).ready(function(){
 
     function deleteLeaveType(typeRow, dataRow){
         const url = $urlElm.attr('data-detail').format_url_with_uuid(dataRow.id);
-        DataTableAction.delete(url, {}, $('[name="csrfmiddlewaretoken"]').val(), typeRow)
+        DataTableAction.delete(url, $('[name="csrfmiddlewaretoken"]').val(), typeRow)
     }
 
     // run table Leave Type

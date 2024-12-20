@@ -348,12 +348,12 @@ class CashInflowAction {
         }
     }
     static RecalculateTotalPayment() {
-        let total_payment = 0
+        let total_payment = $('#advance_value').attr('value') ? parseFloat($('#advance_value').attr('value')) : 0
         $so_table.find('tbody tr').each(function () {
-            total_payment += parseFloat($(this).find('.payment-advance-value').attr('value'))
+            total_payment += $(this).find('.payment-advance-value').attr('value') ? parseFloat($(this).find('.payment-advance-value').attr('value')) : 0
         })
         $ar_invoice_table.find('tbody tr').each(function () {
-            total_payment += parseFloat($(this).find('.payment-value').attr('value'))
+            total_payment += $(this).find('.payment-value').attr('value') ? parseFloat($(this).find('.payment-value').attr('value')) : 0
         })
         $total_payment.attr('value', total_payment)
         $total_payment_modal.attr('value', $total_payment.attr('value'))
@@ -366,7 +366,7 @@ class CashInflowAction {
         let total_detail_payment = 0
         $table_detail_payment_value_modal.find('tbody tr').each(function () {
             if ($(this).find('.selected-detail-payment').prop('checked')) {
-                total_detail_payment += parseFloat($(this).find('.detail-payment-value-input').attr('value'))
+                total_detail_payment += $(this).find('.detail-payment-value-input').attr('value') ? parseFloat($(this).find('.detail-payment-value-input').attr('value')) : 0
             }
         })
         current_detail_payment_row.find('.payment-value').attr('value', total_detail_payment)
@@ -385,6 +385,10 @@ class CashInflowHandle {
         CashInflowAction.LoadARInvoiceTable()
     }
 }
+
+$('#advance_value').on('change', function () {
+    CashInflowAction.RecalculateTotalPayment()
+})
 
 $(document).on('change', '.selected-so', function () {
     $(this).closest('tr').find('.payment-advance-value').attr('value', $(this).prop('checked') ? $(this).closest('tr').find('.balance-advance-value').attr('data-init-money') : 0)

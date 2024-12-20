@@ -51,15 +51,23 @@ $(function () {
             for (let item of nodeData) {
                 if (flowNode.hasOwnProperty(item.order)) {
                     let node = document.getElementById(`control-${item.order}`);
-                    let offset = jsPlumb.getOffset(node);
-                    // item.condition = flowNode[item.order].condition
-                    item.coordinates = {
-                        top: offset.top,
-                        left: offset.left,
+                    item.coordinates = {};
+                    let el = node;
+                    if (el) {
+                        let container = el.closest('#flowchart_workflow');
+                        if (container) {
+                            let containerRect = container.getBoundingClientRect();
+                            let elRect = el.getBoundingClientRect();
+                            let relativeLeft = elRect.left - containerRect.left;
+                            let relativeTop = elRect.top - containerRect.top;
+                            item.coordinates = {
+                                top: relativeTop,
+                                left: relativeLeft,
+                            }
+                        }
                     }
                 } else {
-                    // item.condition = []
-                    item.coordinates = {}
+                    item.coordinates = {};
                 }
             }
             _form.dataForm['node'] = nodeData;

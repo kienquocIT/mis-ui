@@ -1512,16 +1512,13 @@ class LeaseOrderLoadDataHandle {
                 });
                 $(eleDueDate).val(null).trigger('change');
             }
-            // load init data
+            // installment
             let term = [];
-            let isDisabled = true;
             if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
                 if (dataSelected) {
-                    isDisabled = false;
                     term = dataSelected?.['term'];
                     for (let termData of term) {
-                        // termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
                             termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
@@ -1534,9 +1531,16 @@ class LeaseOrderLoadDataHandle {
                 LeaseOrderLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
                 $(eleInstallment).val('').trigger('change');
             }
+            // issue invoice
+            let count = LeaseOrderDataTableHandle.$tablePayment.DataTable().data().count();
+            let dataIssue = [{'id': '', 'title': 'Select...',}];
+            for (let i = 1; i <= count; i++) {
+                let add = {'id': String(i), 'title': String(i)};
+                dataIssue.push(add);
+            }
             let eleIssueInvoice = newRow.querySelector('.table-row-issue-invoice');
             if (eleIssueInvoice) {
-                LeaseOrderLoadDataHandle.loadInitS2($(eleIssueInvoice), LeaseOrderLoadDataHandle.dataIssueInvoice, {}, null, true);
+                LeaseOrderLoadDataHandle.loadInitS2($(eleIssueInvoice), dataIssue, {}, null, true);
             }
             // mask money
             $.fn.initMaskMoney2();
@@ -1596,6 +1600,51 @@ class LeaseOrderLoadDataHandle {
                             $(eleDueDate).val(dueDate);
                         }
                     }
+                }
+            }
+        }
+        return true;
+    };
+
+    static loadChangePSIssueInvoice(ele) {
+        let rowFocus = ele.closest('tr');
+        if (rowFocus) {
+            let eleValueATFocus = rowFocus.querySelector('.table-row-value-after-tax');
+            if (eleValueATFocus) {
+
+                if (!$(ele).val()) {
+                    $(eleValueATFocus).attr('disabled', 'true');
+                    $(eleValueATFocus).attr('value', String(0));
+                    // mask money
+                    $.fn.initMaskMoney2();
+                    return true;
+                }
+
+                if ($(ele).val()) {
+                    $(eleValueATFocus).removeAttr('disabled');
+                    let issueTarget = parseInt($(ele).val());
+                    LeaseOrderDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+                        let row = this.node();
+                        let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
+                        if (eleIssueInvoice) {
+                            if (eleIssueInvoice !== ele) {
+                                if ($(eleIssueInvoice).val()) {
+                                    let issue = parseInt($(eleIssueInvoice).val());
+                                    // check other same issue
+                                    if (issue === issueTarget) {
+                                        let eleValueAT = row.querySelector('.table-row-value-after-tax');
+                                        if (eleValueAT) {
+                                            if ($(eleValueAT).valCurrency() === 0) {
+                                                $(ele).val("").trigger('change');
+                                                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-invalid')}, 'failure');
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
                 }
             }
         }

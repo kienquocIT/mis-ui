@@ -1312,7 +1312,7 @@ msgstr "Không khả dụng"
 
 #
 msgid "Invalid"
-msgstr "Không khả dụng"
+msgstr "Không hợp lệ"
 
 #
 msgid "Expired"
@@ -9987,6 +9987,11 @@ msgstr "Tổng thanh toán"
 #
 msgid "Total payment must equal to total after tax"
 msgstr "Tổng thanh toán phải bằng tổng giá trị đơn hàng sau thuế"
+
+#
+msgid "Value invoice after tax"
+msgstr "GT hóa đơn sau thuế"
+
 
 #
 msgid "Account payable"

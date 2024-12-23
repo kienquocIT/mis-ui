@@ -246,29 +246,17 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadBoxQuotationCustomer(dataCustomer = {}) {
-        LeaseOrderLoadDataHandle.customerSelectEle.empty();
-        let form = $('#frm_lease_create');
         let data_filter = {};
-        let sale_person_id = null;
         let employee_current_data = JSON.parse($('#employee_current').text());
-        sale_person_id = employee_current_data?.['id'];
+        let sale_person_id = employee_current_data?.['id'];
         if (LeaseOrderLoadDataHandle.salePersonSelectEle.val()) {
             sale_person_id = LeaseOrderLoadDataHandle.salePersonSelectEle.val();
         }
-        data_filter['employee__id'] = sale_person_id;
-        if (sale_person_id) { // Has SalePerson
-            LeaseOrderLoadDataHandle.customerSelectEle.initSelect2({
-                data: dataCustomer,
-                'dataParams': data_filter,
-                disabled: !(LeaseOrderLoadDataHandle.customerSelectEle.attr('data-url')),
-            });
-        } else { // No SalePerson
-            LeaseOrderLoadDataHandle.customerSelectEle.initSelect2({
-                data: dataCustomer,
-                disabled: !(LeaseOrderLoadDataHandle.customerSelectEle.attr('data-url')),
-            });
+        if (sale_person_id) {
+            data_filter['employee__id'] = sale_person_id;
         }
-        if (form.attr('data-method').toLowerCase() !== 'get') {
+        LeaseOrderLoadDataHandle.loadInitS2(LeaseOrderLoadDataHandle.customerSelectEle, [dataCustomer], data_filter);
+        if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
             if (!dataCustomer?.['is_copy']) {
                 LeaseOrderLoadDataHandle.loadDataProductAll();
             }
@@ -308,19 +296,23 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadBoxQuotationContact(dataContact = {}, customerID = null) {
-        LeaseOrderLoadDataHandle.contactSelectEle.empty();
-        if ($(LeaseOrderLoadDataHandle.customerSelectEle).val()) {
+        if ($(LeaseOrderLoadDataHandle.customerSelectEle).val() && Object.keys(dataContact).length === 0) {
             let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.customerSelectEle, $(LeaseOrderLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
                 if (dataSelected?.['contact_mapped']) {
-                    dataContact = dataSelected?.['contact_mapped'];
+                    if (Object.keys(dataSelected?.['contact_mapped']).length > 0) {
+                        dataContact = dataSelected?.['contact_mapped'];
+                    }
                 }
                 if (dataSelected?.['owner']) {
-                    dataContact = dataSelected?.['owner'];
+                    if (Object.keys(dataSelected?.['owner']).length > 0) {
+                        dataContact = dataSelected?.['owner'];
+                    }
                 }
                 customerID = dataSelected?.['id'];
             }
         }
+        LeaseOrderLoadDataHandle.contactSelectEle.empty();
         LeaseOrderLoadDataHandle.contactSelectEle.initSelect2({
             data: dataContact,
             'dataParams': {'account_name_id': customerID},
@@ -1512,16 +1504,13 @@ class LeaseOrderLoadDataHandle {
                 });
                 $(eleDueDate).val(null).trigger('change');
             }
-            // load init data
+            // installment
             let term = [];
-            let isDisabled = true;
             if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
                 if (dataSelected) {
-                    isDisabled = false;
                     term = dataSelected?.['term'];
                     for (let termData of term) {
-                        // termData['title'] = dataDateType[termData?.['after']][1];
                         let isNum = parseFloat(termData?.['value']);
                         if (!isNum) {  // balance
                             termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
@@ -1534,9 +1523,16 @@ class LeaseOrderLoadDataHandle {
                 LeaseOrderLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
                 $(eleInstallment).val('').trigger('change');
             }
+            // issue invoice
+            let count = LeaseOrderDataTableHandle.$tablePayment.DataTable().data().count();
+            let dataIssue = [{'id': '', 'title': 'Select...',}];
+            for (let i = 1; i <= count; i++) {
+                let add = {'id': String(i), 'title': String(i)};
+                dataIssue.push(add);
+            }
             let eleIssueInvoice = newRow.querySelector('.table-row-issue-invoice');
             if (eleIssueInvoice) {
-                LeaseOrderLoadDataHandle.loadInitS2($(eleIssueInvoice), LeaseOrderLoadDataHandle.dataIssueInvoice, {}, null, true);
+                LeaseOrderLoadDataHandle.loadInitS2($(eleIssueInvoice), dataIssue, {}, null, true);
             }
             // mask money
             $.fn.initMaskMoney2();
@@ -1596,6 +1592,51 @@ class LeaseOrderLoadDataHandle {
                             $(eleDueDate).val(dueDate);
                         }
                     }
+                }
+            }
+        }
+        return true;
+    };
+
+    static loadChangePSIssueInvoice(ele) {
+        let rowFocus = ele.closest('tr');
+        if (rowFocus) {
+            let eleValueATFocus = rowFocus.querySelector('.table-row-value-after-tax');
+            if (eleValueATFocus) {
+
+                if (!$(ele).val()) {
+                    $(eleValueATFocus).attr('disabled', 'true');
+                    $(eleValueATFocus).attr('value', String(0));
+                    // mask money
+                    $.fn.initMaskMoney2();
+                    return true;
+                }
+
+                if ($(ele).val()) {
+                    $(eleValueATFocus).removeAttr('disabled');
+                    let issueTarget = parseInt($(ele).val());
+                    LeaseOrderDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+                        let row = this.node();
+                        let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
+                        if (eleIssueInvoice) {
+                            if (eleIssueInvoice !== ele) {
+                                if ($(eleIssueInvoice).val()) {
+                                    let issue = parseInt($(eleIssueInvoice).val());
+                                    // check other same issue
+                                    if (issue === issueTarget) {
+                                        let eleValueAT = row.querySelector('.table-row-value-after-tax');
+                                        if (eleValueAT) {
+                                            if ($(eleValueAT).valCurrency() === 0) {
+                                                $(ele).val("").trigger('change');
+                                                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-invalid')}, 'failure');
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
                 }
             }
         }

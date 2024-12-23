@@ -8859,20 +8859,24 @@ String.prototype.valid_uuid4 = function () {
  * common function for DataTable action
  */
 var DataTableAction = {
-    'delete': function (url, data, crf, row) {
+    'delete': function (url, crf, row) {
         let div = jQuery('<div>');
-        let $transElm = $('#trans-factory')
-        let $content = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content">' + `<div class="modal-header"><h5 class="modal-title">${$transElm.data('terms-mess_tit')}</h5></div>` + `<div class="modal-body"><p class="text-center">${$transElm.data('terms-mess')}</p></div>` + '<div class="modal-footer justify-content-between">' + `<button type="button" class="btn btn-primary" data-type="confirm">${$transElm.data('terms-config')}</button>` + `<button type="reset" class="btn btn-outline-primary" data-type="cancel">${$transElm.data('terms-cancel')}` + '</button></div></div></div>';
+        let $content = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content">' +
+            `<div class="modal-header"><h5 class="modal-title">${$.fn.gettext('Delete Item')}</h5></div>` +
+            `<div class="modal-body"><p class="text-center">${$.fn.gettext('Do you really want to delete this item')}</p></div>` +
+            '<div class="modal-footer justify-content-between">' +
+            `<button type="button" class="btn btn-primary" data-type="confirm">${$.fn.gettext('Confirm')}</button>` +
+            `<button type="reset" class="btn btn-outline-primary" data-type="cancel">${$.fn.gettext('Cancel')}` +
+            '</button></div></div></div>';
         div.addClass('modal fade')
         div.html($content)
         div.appendTo('body');
         div.modal('show');
-        div.find('.btn').off().on('click', function (e) {
+        div.find('.btn').off().on('click', function () {
             if ($(this).attr('data-type') === 'cancel') div.remove(); else {
                 $.fn.callAjax2({
                     url: url,
                     method: 'DELETE',
-                    data: data,
                 }).then((res) => {
                     if (res.hasOwnProperty('status')) {
                         div.modal('hide');

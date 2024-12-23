@@ -163,14 +163,6 @@ msgid "Signature status"
 msgstr "Trạng thái HD"
 
 #
-msgid "Unsigned"
-msgstr "Chưa ký"
-
-#
-msgid "Signed"
-msgstr "Đã ký"
-
-#
 msgid "File type"
 msgstr "Kiểu tệp tin"
 

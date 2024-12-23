@@ -246,29 +246,17 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadBoxQuotationCustomer(dataCustomer = {}) {
-        LeaseOrderLoadDataHandle.customerSelectEle.empty();
-        let form = $('#frm_lease_create');
         let data_filter = {};
-        let sale_person_id = null;
         let employee_current_data = JSON.parse($('#employee_current').text());
-        sale_person_id = employee_current_data?.['id'];
+        let sale_person_id = employee_current_data?.['id'];
         if (LeaseOrderLoadDataHandle.salePersonSelectEle.val()) {
             sale_person_id = LeaseOrderLoadDataHandle.salePersonSelectEle.val();
         }
-        data_filter['employee__id'] = sale_person_id;
-        if (sale_person_id) { // Has SalePerson
-            LeaseOrderLoadDataHandle.customerSelectEle.initSelect2({
-                data: dataCustomer,
-                'dataParams': data_filter,
-                disabled: !(LeaseOrderLoadDataHandle.customerSelectEle.attr('data-url')),
-            });
-        } else { // No SalePerson
-            LeaseOrderLoadDataHandle.customerSelectEle.initSelect2({
-                data: dataCustomer,
-                disabled: !(LeaseOrderLoadDataHandle.customerSelectEle.attr('data-url')),
-            });
+        if (sale_person_id) {
+            data_filter['employee__id'] = sale_person_id;
         }
-        if (form.attr('data-method').toLowerCase() !== 'get') {
+        LeaseOrderLoadDataHandle.loadInitS2(LeaseOrderLoadDataHandle.customerSelectEle, [dataCustomer], data_filter);
+        if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
             if (!dataCustomer?.['is_copy']) {
                 LeaseOrderLoadDataHandle.loadDataProductAll();
             }
@@ -308,19 +296,23 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadBoxQuotationContact(dataContact = {}, customerID = null) {
-        LeaseOrderLoadDataHandle.contactSelectEle.empty();
-        if ($(LeaseOrderLoadDataHandle.customerSelectEle).val()) {
+        if ($(LeaseOrderLoadDataHandle.customerSelectEle).val() && Object.keys(dataContact).length === 0) {
             let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.customerSelectEle, $(LeaseOrderLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
                 if (dataSelected?.['contact_mapped']) {
-                    dataContact = dataSelected?.['contact_mapped'];
+                    if (Object.keys(dataSelected?.['contact_mapped']).length > 0) {
+                        dataContact = dataSelected?.['contact_mapped'];
+                    }
                 }
                 if (dataSelected?.['owner']) {
-                    dataContact = dataSelected?.['owner'];
+                    if (Object.keys(dataSelected?.['owner']).length > 0) {
+                        dataContact = dataSelected?.['owner'];
+                    }
                 }
                 customerID = dataSelected?.['id'];
             }
         }
+        LeaseOrderLoadDataHandle.contactSelectEle.empty();
         LeaseOrderLoadDataHandle.contactSelectEle.initSelect2({
             data: dataContact,
             'dataParams': {'account_name_id': customerID},

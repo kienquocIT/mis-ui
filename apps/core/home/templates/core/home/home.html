@@ -779,6 +779,8 @@
         id="home-urls-factory"
         data-so-create="{% url 'SaleOrderCreate' %}"
         data-so-detail="{% url 'SaleOrderDetail' pk=1 %}"
+        data-lo-create="{% url 'LeaseOrderCreate' %}"
+        data-lo-detail="{% url 'LeaseOrderDetail' pk=1 %}"
     >
 {% endblock %}
 {% block jsHeaderUnCompress %}
@@ -1258,6 +1260,10 @@
                 'saleorder.saleorder': {
                     "create": $urls.attr('data-so-create'),
                     "detail": $urls.attr('data-so-detail'),
+                },
+                'leaseorder.leaseorder': {
+                    "create": $urls.attr('data-lo-create'),
+                    "detail": $urls.attr('data-lo-detail'),
                 },
             }
 

@@ -2351,7 +2351,7 @@ class LeaseOrderLoadDataHandle {
         if (urlParams?.['recurrence_template_id']) {
             // call ajax get info quotation detail
             $.fn.callAjax2({
-                url: LeaseOrderLoadDataHandle.urlEle.attr('data-so-detail').format_url_with_uuid(urlParams?.['recurrence_template_id']),
+                url: LeaseOrderLoadDataHandle.urlEle.attr('data-lo-detail').format_url_with_uuid(urlParams?.['recurrence_template_id']),
                 method: 'GET',
                 isLoading: true,
             }).then(

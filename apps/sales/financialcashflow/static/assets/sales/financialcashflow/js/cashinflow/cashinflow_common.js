@@ -1,6 +1,7 @@
 const $script_trans = $('#script_trans');
 const $title = $('#title');
 const $customer = $('#customer');
+const $advance_value = $('#advance_value')
 const $posting_date = $('#posting_date');
 const $document_date = $('#document_date');
 const $so_table = $('#table-select-so');
@@ -348,7 +349,7 @@ class CashInflowAction {
         }
     }
     static RecalculateTotalPayment() {
-        let total_payment = $('#advance_value').attr('value') ? parseFloat($('#advance_value').attr('value')) : 0
+        let total_payment = $advance_value.attr('value') ? parseFloat($advance_value.attr('value')) : 0
         $so_table.find('tbody tr').each(function () {
             total_payment += $(this).find('.payment-advance-value').attr('value') ? parseFloat($(this).find('.payment-advance-value').attr('value')) : 0
         })
@@ -386,7 +387,7 @@ class CashInflowHandle {
     }
 }
 
-$('#advance_value').on('change', function () {
+$advance_value.on('change', function () {
     CashInflowAction.RecalculateTotalPayment()
 })
 

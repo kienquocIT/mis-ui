@@ -1,0 +1,81 @@
+.div-input {
+    min-height: 40px;
+    margin-top: -0.4px
+}
+
+.input-group-wth-btn .input-affix-wrapper .input-suffix {
+    top: unset;
+}
+
+.modal-fullscreen.modal-fullscreen-custom {
+    width: 97vw;
+    height: 100%;
+}
+
+.modal-body.modal-body-custom {
+    margin-top: -15px;
+}
+
+.inline-elements {
+    display: inline-block;
+}
+
+
+
+
+
+
+
+.disabled-custom-show:disabled {
+    color: #0c0c0c;
+}
+
+.modal-xlg-custom {
+    max-width: 100%;
+    height: 100%;
+    margin-left: 70px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ul.quotation-tabs li.quotation-tab-item {
+  margin-right: 10px;
+}
+
+.fa-info-circle {
+    color: #298dff;
+}
+
+.option-btn-checked {
+    background-color: #f7f7f7;
+}
+
+.expired-price {
+    color: #EB5757CC;
+}
+
+.valid-price {
+    color: #00D67F;
+}
+
+.fa-angle-down {
+    font-size: x-small;
+    color: #c7c7c7;
+}

@@ -797,4 +797,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     CORE_CONTRACT_TEMPLATE_DETAIL = StringUrl('contract-template/detail/{pk}')
 
     # Cash inflow
+    FINANCIAL_CASHINFLOW_LIST = StringUrl('financial-cashflow/cashinflows')
+    FINANCIAL_CASHINFLOW_DETAIL = StringUrl('financial-cashflow/cashinflow/{pk}')
     AR_INVOICE_LIST_FOR_CASHINFLOW = StringUrl('financial-cashflow/ar-invoice-for-cashinflow/list')

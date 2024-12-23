@@ -62,7 +62,7 @@ class CashInflowListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_LIST).get(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.FINANCIAL_CASHINFLOW_LIST).get(data)
         return resp.auto_return(key_success='cash_inflow_list')
 
     @mask_view(
@@ -70,9 +70,9 @@ class CashInflowListAPI(APIView):
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_LIST).post(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.FINANCIAL_CASHINFLOW_LIST).post(request.data)
         if resp.state:
-            resp.result['message'] = SaleMsg.GRT_CREATE
+            resp.result['message'] = SaleMsg.CIF_CREATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -83,7 +83,7 @@ class CashInflowDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_DETAIL.fill_key(pk=pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.FINANCIAL_CASHINFLOW_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='cash_inflow_detail')
 
     @mask_view(
@@ -92,9 +92,9 @@ class CashInflowDetailAPI(APIView):
     )
     def put(self, request, pk, *arg, **kwargs):
         data = request.data
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_DETAIL.fill_key(pk=pk)).put(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.FINANCIAL_CASHINFLOW_DETAIL.fill_key(pk=pk)).put(data)
         if resp.state:
-            resp.result['message'] = SaleMsg.GRT_UPDATE
+            resp.result['message'] = SaleMsg.CIF_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 

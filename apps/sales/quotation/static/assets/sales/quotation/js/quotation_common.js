@@ -297,8 +297,7 @@ class QuotationLoadDataHandle {
     };
 
     static loadBoxQuotationContact(dataContact = {}, customerID = null) {
-        QuotationLoadDataHandle.contactSelectEle.empty();
-        if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
+        if ($(QuotationLoadDataHandle.customerSelectEle).val() && Object.keys(dataContact).length === 0) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
                 if (dataSelected?.['contact_mapped']) {
@@ -314,6 +313,7 @@ class QuotationLoadDataHandle {
                 customerID = dataSelected?.['id'];
             }
         }
+        QuotationLoadDataHandle.contactSelectEle.empty();
         QuotationLoadDataHandle.contactSelectEle.initSelect2({
             data: dataContact,
             'dataParams': {'account_name_id': customerID},
@@ -1249,9 +1249,6 @@ class QuotationLoadDataHandle {
         });
     };
 
-
-
-
     // PAYMENT TERM
     static loadBalanceValPaymentTerm() {
         let totalValue = 0;
@@ -1562,9 +1559,6 @@ class QuotationLoadDataHandle {
             }
         });
     };
-
-
-
 
     // TABLE COST
     static loadDataTableCost() {

@@ -1438,15 +1438,19 @@ class GRLoadDataHandle {
         }
         for (let ele of table[0].querySelectorAll('.table-row-expire-date')) {
             ele.setAttribute('disabled', 'true');
+            ele.classList.add('text-black');
         }
         for (let ele of table[0].querySelectorAll('.table-row-manufacture-date')) {
             ele.setAttribute('disabled', 'true');
+            ele.classList.add('text-black');
         }
         for (let ele of table[0].querySelectorAll('.table-row-warranty-start')) {
             ele.setAttribute('disabled', 'true');
+            ele.classList.add('text-black');
         }
         for (let ele of table[0].querySelectorAll('.table-row-warranty-end')) {
             ele.setAttribute('disabled', 'true');
+            ele.classList.add('text-black');
         }
     };
 
@@ -1832,7 +1836,7 @@ class GRDataTableHandle {
                     render: (data, type, row) => {
                         let date = '';
                         if (row?.['expire_date']) {
-                            date = moment(row?.['expire_date']).format('DD/MM/YYYY')
+                            date = moment(row?.['expire_date']).format('DD/MM/YYYY');
                         }
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-expire-date date-picker" value="${date}">
@@ -1844,7 +1848,7 @@ class GRDataTableHandle {
                     render: (data, type, row) => {
                         let date = '';
                         if (row?.['manufacture_date']) {
-                            date = moment(row?.['manufacture_date']).format('DD/MM/YYYY')
+                            date = moment(row?.['manufacture_date']).format('DD/MM/YYYY');
                         }
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-manufacture-date date-picker" value="${date}">
@@ -1856,7 +1860,7 @@ class GRDataTableHandle {
                     render: (data, type, row) => {
                         let date = '';
                         if (row?.['warranty_start']) {
-                            date = moment(row?.['warranty_start']).format('DD/MM/YYYY')
+                            date = moment(row?.['warranty_start']).format('DD/MM/YYYY');
                         }
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-warranty-start date-picker" value="${date}">
@@ -1868,7 +1872,7 @@ class GRDataTableHandle {
                     render: (data, type, row) => {
                         let date = '';
                         if (row?.['warranty_end']) {
-                            date = moment(row?.['warranty_end']).format('DD/MM/YYYY')
+                            date = moment(row?.['warranty_end']).format('DD/MM/YYYY');
                         }
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-warranty-end date-picker" value="${date}">
@@ -2241,7 +2245,7 @@ class GRStoreDataHandle {
                     }
                     if (eleExpireDate) {
                         if (eleExpireDate.value) {
-                            rowData['manufacture_date'] = moment(eleExpireDate.value,
+                            rowData['expire_date'] = moment(eleExpireDate.value,
                                 'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
                         }
                     }
@@ -2291,7 +2295,7 @@ class GRStoreDataHandle {
                     rowData['quantity_import'] = parseFloat(eleQuantityImport.value);
                     if (eleExpireDate) {
                         if (eleExpireDate.value) {
-                            rowData['manufacture_date'] = moment(eleExpireDate.value,
+                            rowData['expire_date'] = moment(eleExpireDate.value,
                                 'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
                         }
                     }

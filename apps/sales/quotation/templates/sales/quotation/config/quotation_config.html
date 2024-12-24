@@ -116,9 +116,12 @@
     <input
             type="text"
             id="app-url-factory"
-            data-url-labor="{% url "ExpenseListAPI" %}"
-            data-url-expense-item="{% url "ExpenseItemListAPI" %}"
             data-url-app-emp-config="{% url "AppEmpConfigListAPI" %}"
+
+            data-md-labor="{% url "ExpenseListAPI" %}"
+            data-md-expense-item="{% url "ExpenseItemListAPI" %}"
+            data-md-product="{% url "ProductForSaleListAPI" %}"
+            data-md-type="{% url "ProductTypeListAPI" %}"
     >
 {% endblock %}
 

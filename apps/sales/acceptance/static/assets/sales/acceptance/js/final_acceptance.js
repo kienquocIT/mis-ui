@@ -658,8 +658,8 @@ $(function () {
             // loadOpp();
             // loadSO();
             loadCustomCss();
-            loadInitS2($boxSO);
-            loadInitS2($boxLO);
+            loadInitS2($boxSO, [], {}, null, true);
+            loadInitS2($boxLO, [], {}, null, true);
             loadDbl();
         }
 

@@ -4888,18 +4888,31 @@ class indicatorHandle {
             rightValue = item.function_data[operatorIndex + 1];
         }
         let lastElement = item.function_data[item.function_data.length - 1];
+        let dataList = [];
         // Tab Products
-        if (data_form?.['quotation_products_data']) {}
-        // Tab Expense
-        if (is_sale_order === false) {
-            if (data_form?.['quotation_expenses_data']) {
-                functionBody = indicatorHandle.extractDataToSum(data_form?.['quotation_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
-            }
-        } else {
-            if (data_form?.['sale_order_expenses_data']) {
-                functionBody = indicatorHandle.extractDataToSum(data_form?.['sale_order_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
-            }
+        if (data_form?.['quotation_products_data']) {
+            dataList = data_form?.['quotation_products_data'];
         }
+        if (data_form?.['sale_order_products_data']) {
+            dataList = data_form?.['sale_order_products_data'];
+        }
+        if (data_form?.['quotation_expenses_data']) {
+            dataList = data_form?.['quotation_expenses_data'];
+        }
+        if (data_form?.['sale_order_expenses_data']) {
+            dataList = data_form?.['sale_order_expenses_data'];
+        }
+        functionBody = indicatorHandle.extractDataToSum(dataList, leftValueJSON, condition_operator, rightValue, lastElement);
+        // Tab Expense
+        // if (is_sale_order === false) {
+        //     if (data_form?.['quotation_expenses_data']) {
+        //         functionBody = indicatorHandle.extractDataToSum(data_form?.['quotation_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
+        //     }
+        // } else {
+        //     if (data_form?.['sale_order_expenses_data']) {
+        //         functionBody = indicatorHandle.extractDataToSum(data_form?.['sale_order_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
+        //     }
+        // }
         if (functionBody[functionBody.length - 1] === ",") {
             let functionBodySlice = functionBody.slice(0, -1);
             return syntax + functionBodySlice + ")";
@@ -4911,9 +4924,18 @@ class indicatorHandle {
         let functionBody = "";
         for (let data of data_list) {
             if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
-                if (data.hasOwnProperty(leftValueJSON.code)) {
-                    if (typeof data[leftValueJSON.code] === 'string') {
-                        let leftValue = data[leftValueJSON.code].replace(/\s/g, "").toLowerCase();
+                let val = indicatorHandle.findKey(data, leftValueJSON.code);
+                if (val) {
+                    if (Array.isArray(val)) {
+                        val = val.map(item => item.replace(/\s/g, "").toLowerCase());
+                        let check = val.includes(rightValue);
+                        if (check === true) {
+                            functionBody += String(data[lastElement.code]);
+                            functionBody += ",";
+                        }
+                    }
+                    if (typeof val === 'string') {
+                        let leftValue = val.replace(/\s/g, "").toLowerCase();
                         let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
                         let check = indicatorHandle.evaluateFormula(checkExpression);
                         if (check === true) {
@@ -4954,6 +4976,30 @@ class indicatorHandle {
     static formatExpression(input) {
         // Replace consecutive subtraction operators with a space before each minus sign
         return input.replace(/--/g, '+');
+    };
+
+    static findKey(data, key) {
+        if (!key.includes("__")) {
+            return data?.[key];
+        }
+        let listSub = key.split("__");
+        return listSub.reduce((acc, curr) => {
+            if (Array.isArray(acc)) {
+                // If the current accumulator is an array, use flatMap to continue reduction
+                return acc.flatMap(item => {
+                    if (Array.isArray(item?.[curr])) {
+                        // If the current item is also an array, return the array itself
+                        return item?.[curr];
+                    } else {
+                        // If the item is not an array, proceed normally
+                        return item?.[curr];
+                    }
+                });
+            } else {
+                // Regular reduction step if `acc` is not an array
+                return acc?.[curr];
+            }
+        }, data);
     };
 
 }

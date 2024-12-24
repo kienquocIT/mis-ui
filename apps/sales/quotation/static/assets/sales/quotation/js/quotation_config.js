@@ -43,14 +43,22 @@ $(function () {
         let boxZonesHiddenEdit = $('#edit-zone-box-zones-hidden');
         let $eleRemarkEdit = $('#edit-zone-remark');
         let appMapMDUrls = {
-            "saledata.expenseitem": {
-                "url": $eleUrlFact.attr('data-url-expense-item'),
-                "keyResp": "expense_item_list"
+            "saledata.product": {
+                "url": $eleUrlFact.attr('data-md-product'),
+                "keyResp": "product_sale_list"
+            },
+            "saledata.producttype": {
+                "url": $eleUrlFact.attr('data-md-type'),
+                "keyResp": "product_type_list"
             },
             "saledata.expense": {
-                "url": $eleUrlFact.attr('data-url-labor'),
+                "url": $eleUrlFact.attr('data-md-labor'),
                 "keyResp": "expense_list"
-            }
+            },
+            "saledata.expenseitem": {
+                "url": $eleUrlFact.attr('data-md-expense-item'),
+                "keyResp": "expense_item_list"
+            },
         }
 
         // call ajax get info quotation config detail

@@ -4890,16 +4890,16 @@ class indicatorHandle {
         let lastElement = item.function_data[item.function_data.length - 1];
         let dataList = [];
         // Tab Products
-        if (data_form?.['quotation_products_data']) {
+        if (data_form?.['quotation_products_data'] && leftValueJSON?.['code'].includes("product_data")) {
             dataList = data_form?.['quotation_products_data'];
         }
-        if (data_form?.['sale_order_products_data']) {
+        if (data_form?.['sale_order_products_data'] && leftValueJSON?.['code'].includes("product_data")) {
             dataList = data_form?.['sale_order_products_data'];
         }
-        if (data_form?.['quotation_expenses_data']) {
+        if (data_form?.['quotation_expenses_data'] && ["expense_data", "expense_item_data"].some(keyword => leftValueJSON?.['code']?.includes(keyword))) {
             dataList = data_form?.['quotation_expenses_data'];
         }
-        if (data_form?.['sale_order_expenses_data']) {
+        if (data_form?.['sale_order_expenses_data'] && ["expense_data", "expense_item_data"].some(keyword => leftValueJSON?.['code']?.includes(keyword))) {
             dataList = data_form?.['sale_order_expenses_data'];
         }
         functionBody = indicatorHandle.extractDataToSum(dataList, leftValueJSON, condition_operator, rightValue, lastElement);

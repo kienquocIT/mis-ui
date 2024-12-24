@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="customer">{% trans "Customer" %}</label>
-                    <select required id="customer" class="select2 form-select" data-method="GET" data-url="{% url 'AccountListAPI' %}"></select>
+                    <select required id="customer" class="select2 form-select" data-method="GET" data-url="{% url 'CustomerListForCashInflowAPI' %}"></select>
                 </div>
             </div>
         </div>
@@ -36,8 +36,8 @@
             </div>
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
-                    <label class="form-label" for="note">{% trans "Note" %}</label>
-                    <textarea name="note" class="form-control" id="note"></textarea>
+                    <label class="form-label" for="description">{% trans "Note" %}</label>
+                    <textarea name="description" class="form-control" id="description"></textarea>
                 </div>
             </div>
         </div>

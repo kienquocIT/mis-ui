@@ -2,9 +2,10 @@
 {% load static i18n %}
 {% block title %}{% trans 'Cash inflow' %}{% endblock %}
 {% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frmDetail">
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-cashinflow">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -14,12 +15,24 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <div class="row">
-        <div class="col-12">
-        </div>
-    </div>
+    <script id="script_trans"
+    ></script>
+    <form id="form-detail-cashinflow"
+          data-method="GET"
+          data-url="{% url 'CashInflowDetailAPI' pk=pk %}"
+          data-url-redirect="{% url 'CashInflowDetail' pk=pk %}"
+    >
+        {% csrf_token %}
+        {% include 'sales/financialcashflow/cashinflow/common/information.html' %}
+        {% include 'sales/financialcashflow/cashinflow/common/main_area.html' %}
+    </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'sales/financialcashflow/cashinflow/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
     <script src="{% static 'assets/sales/financialcashflow/js/cashinflow/cashinflow_common.js' %}"></script>
     <script src="{% static 'assets/sales/financialcashflow/js/cashinflow/cashinflow_update.js' %}"></script>
 {% endblock %}

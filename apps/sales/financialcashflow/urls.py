@@ -3,7 +3,7 @@ from apps.sales.financialcashflow.views import (
     CashInflowList, CashInflowCreate, CashInflowDetail, CashInflowUpdate,
     CashInflowListAPI, CashInflowDetailAPI, ARInvoiceListForCashInflowAPI,
     CashOutflowList, CashOutflowCreate, CashOutflowDetail, CashOutflowUpdate,
-    CashOutflowListAPI, CashOutflowDetailAPI,
+    CashOutflowListAPI, CashOutflowDetailAPI, CustomerListForCashInflowAPI,
 )
 
 urlpatterns = [
@@ -14,7 +14,8 @@ urlpatterns = [
     path('cashinflow/update/<str:pk>', CashInflowUpdate.as_view(), name='CashInflowUpdate'),
     path('cashinflow/api/list', CashInflowListAPI.as_view(), name='CashInflowListAPI'),
     path('cashinflow/api/<str:pk>', CashInflowDetailAPI.as_view(), name='CashInflowDetailAPI'),
-    path('ar-invoice-for-cashinflow/api', ARInvoiceListForCashInflowAPI.as_view(), name='ARInvoiceListForCashInflowAPI'),
+    path('customer-list-for-cashinflow/api', CustomerListForCashInflowAPI.as_view(), name='CustomerListForCashInflowAPI'),
+    path('ar-invoice-list-for-cashinflow/api', ARInvoiceListForCashInflowAPI.as_view(), name='ARInvoiceListForCashInflowAPI'),
     # cash outflow
     path('cashoutflow/list', CashOutflowList.as_view(), name='CashOutflowList'),
     path('cashoutflow/create', CashOutflowCreate.as_view(), name='CashOutflowCreate'),

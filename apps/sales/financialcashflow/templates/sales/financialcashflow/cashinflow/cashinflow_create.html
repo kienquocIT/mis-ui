@@ -2,7 +2,7 @@
 {% load static i18n %}
 {% block title %}{% trans 'Cash inflow' %}{% endblock %}
 {% block cssHeader %}
-        <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="form-create-cashinflow">
@@ -32,6 +32,7 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
     <script src="{% static 'assets/sales/financialcashflow/js/cashinflow/cashinflow_common.js' %}"></script>
     <script src="{% static 'assets/sales/financialcashflow/js/cashinflow/cashinflow_create.js' %}"></script>
 {% endblock %}

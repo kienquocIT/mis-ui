@@ -799,4 +799,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Cash inflow
     FINANCIAL_CASHINFLOW_LIST = StringUrl('financial-cashflow/cashinflows')
     FINANCIAL_CASHINFLOW_DETAIL = StringUrl('financial-cashflow/cashinflow/{pk}')
+    CUSTOMER_LIST_FOR_CASHINFLOW = StringUrl('financial-cashflow/customer-for-cashinflow/list')
     AR_INVOICE_LIST_FOR_CASHINFLOW = StringUrl('financial-cashflow/ar-invoice-for-cashinflow/list')

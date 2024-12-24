@@ -10079,3 +10079,19 @@ msgstr "Giá trị hóa đơn"
 #
 msgid "Detail payment value by invoice"
 msgstr "Chi tiết thanh toán theo hóa đơn"
+
+#
+msgid "Installment"
+msgstr "Đợt"
+
+#
+msgid "Cash value"
+msgstr "Giá trị tiền mặt"
+
+#
+msgid "Bank value"
+msgstr "Giá trị chuyển khoản"
+
+#
+msgid "Select company bank account"
+msgstr "Chọn tài khoản ngân hàng công ty"

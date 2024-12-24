@@ -2,6 +2,7 @@
 {% load static i18n %}
 {% block title %}{% trans 'Cash inflow' %}{% endblock %}
 {% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'CashInflowUpdate' pk=pk %}" id="btn-edit">
@@ -16,12 +17,22 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <div class="row">
-        <div class="col-12">
-        </div>
-    </div>
+    <script id="script_trans"
+    ></script>
+    <form id="form-detail-cashinflow"
+          data-method="GET"
+          data-url="{% url 'CashInflowDetailAPI' pk=pk %}"
+    >
+        {% csrf_token %}
+        {% include 'sales/financialcashflow/cashinflow/common/information.html' %}
+        {% include 'sales/financialcashflow/cashinflow/common/main_area.html' %}
+    </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'sales/financialcashflow/cashinflow/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/financialcashflow/js/cashinflow/cashinflow_common.js' %}"></script>
     <script src="{% static 'assets/sales/financialcashflow/js/cashinflow/cashinflow_detail.js' %}"></script>
 {% endblock %}

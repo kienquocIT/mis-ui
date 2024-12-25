@@ -789,16 +789,16 @@ class MenusFinancials:
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     CASHFLOW = MenuCommon(
-        name='Cashflow', code='', view_name='', icon='<i class="bi bi-arrow-left-right"></i>',
+        name='Cashflow', code='menu_cashflow', view_name='', icon='<i class="fas fa-exchange-alt"></i>',
         child=[
             MenuCommon(
                 name='Cash inflow', code='menu_cash_inflow', view_name='CashInflowList',
-                icon='<i class="bi bi-box-arrow-in-down"></i>',
+                icon='<i class="fas fa-share"></i>',
             ),
-            MenuCommon(
-                name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
-                icon='<i class="bi bi-box-arrow-right"></i>',
-            ),
+            # MenuCommon(
+            #     name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
+            #     icon='<i class="fas fa-reply"></i>',
+            # ),
         ],
     )
 

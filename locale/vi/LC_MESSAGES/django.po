@@ -9778,7 +9778,7 @@ msgstr "Bắt đầu nhập bây giờ?"
 
 #
 msgid "Please wait until the import has finished!"
-msgstr "Vui lòng đợi cho đến khi nhập liệu hoàn tất! 😀"
+msgstr "Vui lòng đợi cho đến khi nhập liệu hoàn tất!"
 
 #
 msgid "Bidding Result Config"
@@ -9845,8 +9845,8 @@ msgid "Data Import Limit"
 msgstr "Giới hạn nhập dữ liệu"
 
 #
-msgid "To ensure system performance and stability, row number is limited to 500 rows. If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
-msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 500 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
+msgid "To ensure system performance and stability, row number is limited to 150 rows. If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
+msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 150 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
 
 #
 msgid "Lease order"

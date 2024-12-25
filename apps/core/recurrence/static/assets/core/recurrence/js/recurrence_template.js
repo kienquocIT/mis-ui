@@ -8,6 +8,10 @@ $(document).ready(function () {
             'url': $urls.attr('data-so-recurrence'),
             'keyResp': "sale_order_recurrence",
         },
+        "leaseorder.leaseorder": {
+            'url': $urls.attr('data-lo-recurrence'),
+            'keyResp': "lease_order_recurrence",
+        },
         "arinvoice.arinvoice": {
             'url': $urls.attr('data-ar-recurrence'),
             'keyResp': "ar_invoice_recurrence",

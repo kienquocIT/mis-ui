@@ -9993,6 +9993,9 @@ msgid "Value invoice after tax"
 msgstr "GT hóa đơn sau thuế"
 
 #
+msgid "Example"
+msgstr "Ví dụ"
+#
 msgid "Account payable"
 msgstr "Các khoản phải trả"
 

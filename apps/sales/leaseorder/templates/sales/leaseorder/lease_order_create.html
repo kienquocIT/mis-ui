@@ -157,6 +157,8 @@
                             </div>
                         </div>
                     </div>
+                    {% include 'extends/recurrence/all.html' %}
+
 
                     <div class="row">
                         <div class="row">
@@ -930,7 +932,7 @@
         data-md-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
         data-md-bom="{% url 'BOMOrderListAPI' %}"
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
-        data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
+        data-lo-detail="{% url 'LeaseOrderDetailAPI' pk=1 %}"
     >
 
     <input

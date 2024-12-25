@@ -21,7 +21,7 @@ const detail_payment_value_column_opts = [
     {
         className: 'wrap-text w-5',
         render: (data, type, row) => {
-            return row?.['is_ar_invoice'] && row?.['value_total'] - row?.['value_payment'] > 0 ? `<div class="form-check">
+            return row?.['is_ar_invoice'] ? `<div class="form-check">
                 <input type="checkbox"
                        class="form-check-input selected-detail-payment"
                        data-so-pm-stage-id="${row?.['id']}"
@@ -97,9 +97,13 @@ const so_column_opts = [
     },
     {
         className: 'wrap-text w-5',
-        render: () => {
+        render: (data, type, row) => {
             return `<div class="form-check">
-            <input type="checkbox" class="form-check-input selected-so">
+            <input type="checkbox"
+                   class="form-check-input selected-so-pm-stage"
+                   data-so-pm-stage-id="${row?.['id']}"
+                   data-sale-order-id="${row?.['so_id']}"
+            >
             <label class="form-check-label"></label>
         </div>`
         }
@@ -131,7 +135,7 @@ const so_column_opts = [
     {
         className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return `<span class="mask-money balance-advance-value" data-init-money="${row?.['value_total']}"></span>`;
+            return `<span class="mask-money balance-advance-value" data-init-money="${row?.['value_total'] - row?.['value_payment']}"></span>`;
         }
     },
     {
@@ -266,7 +270,7 @@ class CashInflowLoadPage {
 }
 
 class CashInflowAction {
-    static LoadSaleOrderTable(datalist=[]) {
+    static LoadSOPaymentStageTable(datalist=[], no_ar_invoice_data=[]) {
         $so_table.DataTable().clear().destroy()
         $so_table.DataTableDefault({
             styleDom: 'hide-foot',
@@ -283,10 +287,12 @@ class CashInflowAction {
                 let is_disabled = !$('#no_ar_inp').prop('checked')
                 area.find('input').prop('disabled', is_disabled);
                 area.find('select').prop('disabled', is_disabled);
+
+                CashInflowAction.LoadSOPaymentStageTableDetailPage(no_ar_invoice_data)
             }
         });
     }
-    static LoadARInvoiceTable(data_params={}, has_ar_invoice_data=[]) {
+    static LoadARInvoiceTable(data_params={}, no_ar_invoice_data=[], has_ar_invoice_data=[]) {
         $ar_invoice_table.DataTable().clear().destroy()
         let frm = new SetupFormSubmit($ar_invoice_table);
         if ($customer.val()) {
@@ -306,12 +312,30 @@ class CashInflowAction {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            let sale_order_data_list = []
-                            for (let i=0; i < resp.data['ar_invoice_list'].length; i++) {
-                                sale_order_data_list = sale_order_data_list.concat(resp.data?.['ar_invoice_list'][i]?.['sale_order_data']?.['payment_term'])
+                            if (no_ar_invoice_data.length > 0 && has_ar_invoice_data.length === 0) {
+                                let so_pm_stage_data_list = []
+                                for (let i = 0; i < resp.data['ar_invoice_list'].length; i++) {
+                                    so_pm_stage_data_list = so_pm_stage_data_list.concat(resp.data?.['ar_invoice_list'][i]?.['sale_order_data']?.['payment_term'])
+                                }
+                                CashInflowAction.LoadSOPaymentStageTable(so_pm_stage_data_list.filter((item) => {
+                                    return item?.['is_ar_invoice'] === false
+                                }), no_ar_invoice_data)
+                                return []
                             }
-                            CashInflowAction.LoadSaleOrderTable(sale_order_data_list.filter((item) => {return item?.['is_ar_invoice'] === false}))
-                            return resp.data?.['ar_invoice_list'] ? resp.data?.['ar_invoice_list'] : [];
+                            else if (no_ar_invoice_data.length === 0 && has_ar_invoice_data.length > 0) {
+                                CashInflowAction.LoadSOPaymentStageTable()
+                                return resp.data?.['ar_invoice_list'] ? resp.data?.['ar_invoice_list'] : [];
+                            }
+                            else {
+                                let so_pm_stage_data_list = []
+                                for (let i = 0; i < resp.data['ar_invoice_list'].length; i++) {
+                                    so_pm_stage_data_list = so_pm_stage_data_list.concat(resp.data?.['ar_invoice_list'][i]?.['sale_order_data']?.['payment_term'])
+                                }
+                                CashInflowAction.LoadSOPaymentStageTable(so_pm_stage_data_list.filter((item) => {
+                                    return item?.['is_ar_invoice'] === false
+                                }), no_ar_invoice_data)
+                                return resp.data?.['ar_invoice_list'] ? resp.data?.['ar_invoice_list'] : [];
+                            }
                         }
                         return [];
                     },
@@ -444,6 +468,20 @@ class CashInflowAction {
             $('.modal-footer').remove();
         }
     }
+    static LoadSOPaymentStageTableDetailPage(data_list=[]) {
+        $so_table.find('tbody tr').each(function () {
+            let row = $(this);
+            for (let i=0; i < data_list.length; i++) {
+                if (row.find('.selected-so-pm-stage').attr('data-so-pm-stage-id') === data_list[i]?.['detail_payment'][0]?.['so_pm_stage_data']?.['id']) {
+
+                    row.find('.selected-so-pm-stage').prop('checked', true)
+                    row.find('.balance-advance-value').attr('data-init-money', data_list[i]?.['sum_balance_value'])
+                    row.find('.payment-advance-value').attr('value', data_list[i]?.['sum_payment_value'])
+                }
+            }
+        })
+        $.fn.initMaskMoney2()
+    }
     static LoadARInvoiceTableDetailPage(data_list=[]) {
         $ar_invoice_table.find('tbody tr').each(function () {
             let row = $(this);
@@ -495,7 +533,7 @@ class CashInflowHandle {
         CashInflowLoadPage.LoadDate($posting_date)
         CashInflowLoadPage.LoadDate($document_date)
         CashInflowLoadPage.LoadCompanyBankAccount($company_bank_account)
-        CashInflowAction.LoadSaleOrderTable()
+        CashInflowAction.LoadSOPaymentStageTable()
         CashInflowAction.LoadARInvoiceTable()
     }
     static CombinesData(frmEle) {
@@ -528,7 +566,21 @@ class CashInflowHandle {
         }
         else if ($('#no_ar_inp').prop('checked')) {
             frm.dataForm['purchase_advance_value'] = 0
-            has_ar_invoice_data = []
+            no_ar_invoice_data = []
+            $so_table.find('tbody tr').each(function () {
+                if ($(this).find('.selected-so-pm-stage').prop('checked')) {
+                    no_ar_invoice_data.push({
+                        'sale_order_id': $(this).find('.selected-so-pm-stage').attr('data-sale-order-id'),
+                        'sum_balance_value': $(this).find('.balance-advance-value').attr('data-init-money'),
+                        'sum_payment_value': $(this).find('.payment-advance-value').attr('value'),
+                        'detail_payment': [{
+                            'so_pm_stage_id': $(this).find('.selected-so-pm-stage').attr('data-so-pm-stage-id'),
+                            'balance_value': $(this).find('.balance-advance-value').attr('data-init-money'),
+                            'payment_value': $(this).find('.payment-advance-value').attr('value'),
+                        }]
+                    })
+                }
+            })
         }
         else if ($('#has_ar_inp').prop('checked')) {
             frm.dataForm['purchase_advance_value'] = 0
@@ -585,13 +637,14 @@ class CashInflowHandle {
                         checkbox.closest('.form-check').find('label').removeClass('text-muted').addClass('text-primary').addClass('fs-4')
                         checkbox.prop('checked', true)
                         $('#space-table-select-so').removeClass('bg-secondary-light-5')
+                        CashInflowAction.LoadARInvoiceTable({'customer_mapped_id': $customer.val()}, data?.['no_ar_invoice_data'], [])
                     }
                     else if (data?.['has_ar_invoice_data'].length > 0) {
                         let checkbox = $('#has_ar_inp')
                         checkbox.closest('.form-check').find('label').removeClass('text-muted').addClass('text-primary').addClass('fs-4')
                         checkbox.prop('checked', true)
                         $('#space-table-select-ar-invoice').removeClass('bg-secondary-light-5')
-                        CashInflowAction.LoadARInvoiceTable({'customer_mapped_id': $customer.val()}, data?.['has_ar_invoice_data'])
+                        CashInflowAction.LoadARInvoiceTable({'customer_mapped_id': $customer.val()}, [], data?.['has_ar_invoice_data'])
                     }
 
                     $total_payment.attr('value', data?.['total_value'])
@@ -622,7 +675,7 @@ $purchase_advance_value.on('change', function () {
     CashInflowAction.RecalculateTotalPayment()
 })
 
-$(document).on('change', '.selected-so', function () {
+$(document).on('change', '.selected-so-pm-stage', function () {
     $(this).closest('tr').find('.payment-advance-value').attr('value', $(this).prop('checked') ? $(this).closest('tr').find('.balance-advance-value').attr('data-init-money') : 0)
     $.fn.initMaskMoney2()
     CashInflowAction.RecalculateTotalPayment()
@@ -635,8 +688,8 @@ $(document).on('change', '.payment-advance-value', function () {
         $.fn.notifyB({description: `Payment value can not > Balance value`}, 'failure');
         $(this).attr('value', balance_value)
     }
-
     $.fn.initMaskMoney2()
+    CashInflowAction.RecalculateTotalPayment()
 })
 
 $(document).on('change', '.selected-ar', function () {

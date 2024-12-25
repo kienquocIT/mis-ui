@@ -1228,7 +1228,7 @@ msgstr "Nhóm"
 
 #
 msgid "Industry"
-msgstr "Lĩnh vực"
+msgstr "Ngành nghề"
 
 #
 msgid "Size"
@@ -10095,3 +10095,7 @@ msgstr "Giá trị chuyển khoản"
 #
 msgid "Select company bank account"
 msgstr "Chọn tài khoản ngân hàng công ty"
+
+#
+msgid "Related leads:"
+msgstr "Lead liên quan:"

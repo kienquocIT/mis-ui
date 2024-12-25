@@ -1,4 +1,4 @@
-const $script_trans = $('#script_trans');
+// const $script_trans = $('#script_trans');
 const $title = $('#title');
 const $customer = $('#customer');
 const $purchase_advance_value = $('#purchase_advance_value')
@@ -97,7 +97,7 @@ const so_column_opts = [
     },
     {
         className: 'wrap-text w-5',
-        render: (data, type, row) => {
+        render: () => {
             return `<div class="form-check">
             <input type="checkbox" class="form-check-input selected-so">
             <label class="form-check-label"></label>
@@ -136,7 +136,7 @@ const so_column_opts = [
     },
     {
         className: 'wrap-text text-right w-20',
-        render: (data, type, row) => {
+        render: () => {
             return `<input class="form-control text-right mask-money payment-advance-value" value="0"">`;
         }
     },
@@ -206,7 +206,7 @@ const ar_invoice_column_opts = [
     },
     {
         className: 'wrap-text text-right w-10',
-        render: (data, type, row) => {
+        render: () => {
             return `<div class="input-group">
                         <input readonly type="number" class="form-control text-right discount_payment" value="0">
                         <span class="input-group-text">%</span>
@@ -423,6 +423,16 @@ class CashInflowAction {
         $('#total-detail-payment-modal').attr('data-init-money', total_detail_payment)
         CashInflowAction.RecalculateTotalPayment()
     }
+    static CalculateModalDetailPaymentSum() {
+        let modal_detail_payment_sum = 0
+        $table_detail_payment_value_modal.find('tbody tr').each(function () {
+            if ($(this).find('.selected-detail-payment').prop('checked')) {
+                modal_detail_payment_sum += parseFloat($(this).find('.detail_payment_value').attr('value'))
+            }
+        })
+        $('#total-detail-payment-modal').attr('data-init-money', modal_detail_payment_sum)
+        $.fn.initMaskMoney2()
+    }
     // detail
     static DisabledDetailPage(option) {
         if (option === 'detail') {
@@ -488,7 +498,7 @@ class CashInflowHandle {
         CashInflowAction.LoadSaleOrderTable()
         CashInflowAction.LoadARInvoiceTable()
     }
-    static CombinesData(frmEle, option) {
+    static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['title'] = $title.val()
@@ -676,16 +686,9 @@ $(document).on('change', '.selected-detail-payment', function () {
     ).prop(
         'readonly', !$(this).prop('checked')
     )
-
-    // calculate total payment value modal
-    let total_detail_payment = 0
-    $table_detail_payment_value_modal.find('tbody tr').each(function () {
-        if ($(this).find('.selected-detail-payment').prop('checked')) {
-            total_detail_payment += parseFloat($(this).find('.detail_payment_value').attr('value'))
-        }
-    })
-    $('#total-detail-payment-modal').attr('data-init-money', total_detail_payment)
     $.fn.initMaskMoney2()
+    // calculate total payment value modal
+    CashInflowAction.CalculateModalDetailPaymentSum()
 })
 
 $('#save-detail-payment-value').on('click', function () {
@@ -700,16 +703,9 @@ $(document).on('change', '.detail_payment_value', function () {
         $.fn.notifyB({description: `Payment value can not > Balance value`}, 'failure');
         $(this).attr('value', balance_value)
     }
-
-    // calculate total payment value modal
-    let total_detail_payment = 0
-    $table_detail_payment_value_modal.find('tbody tr').each(function () {
-        if ($(this).find('.selected-detail-payment').prop('checked')) {
-            total_detail_payment += parseFloat($(this).find('.detail_payment_value').attr('value'))
-        }
-    })
-    $('#total-detail-payment-modal').attr('data-init-money', total_detail_payment)
     $.fn.initMaskMoney2()
+    // calculate total payment value modal
+    CashInflowAction.CalculateModalDetailPaymentSum()
 })
 
 $(document).on('click', '.btn-detail-payment-value', function () {

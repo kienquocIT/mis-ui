@@ -5,7 +5,7 @@ const $purchase_advance_value = $('#purchase_advance_value')
 const $posting_date = $('#posting_date');
 const $document_date = $('#document_date');
 const $description = $('#description');
-const $so_table = $('#table-select-so');
+const $so_pm_stage_table = $('#table-select-so');
 const $ar_invoice_table = $('#table-select-ar-invoice');
 const $total_payment = $('#total_payment')
 
@@ -88,7 +88,7 @@ const $save_changes_payment_method = $('#save-changes-payment-method')
 const $cash_value = $('#cash_value')
 const $bank_value = $('#bank_value')
 const $company_bank_account = $('#company_bank_account')
-const so_column_opts = [
+const so_pm_stage_column_opts = [
     {
         className: 'wrap-text w-5',
         render: () => {
@@ -271,8 +271,8 @@ class CashInflowLoadPage {
 
 class CashInflowAction {
     static LoadSOPaymentStageTable(datalist=[], no_ar_invoice_data=[]) {
-        $so_table.DataTable().clear().destroy()
-        $so_table.DataTableDefault({
+        $so_pm_stage_table.DataTable().clear().destroy()
+        $so_pm_stage_table.DataTableDefault({
             styleDom: 'hide-foot',
             reloadCurrency: true,
             rowIdx: true,
@@ -281,7 +281,7 @@ class CashInflowAction {
             scrollCollapse: true,
             paging: false,
             data: datalist,
-            columns: so_column_opts,
+            columns: so_pm_stage_column_opts,
             initComplete: function () {
                 let area = $('#space-table-select-so')
                 let is_disabled = !$('#no_ar_inp').prop('checked')
@@ -413,7 +413,7 @@ class CashInflowAction {
             total_payment += $purchase_advance_value.attr('value') ? parseFloat($purchase_advance_value.attr('value')) : 0
         }
         else if ($('#no_ar_inp').prop('checked')) {
-            $so_table.find('tbody tr').each(function () {
+            $so_pm_stage_table.find('tbody tr').each(function () {
                 total_payment += $(this).find('.payment-advance-value').attr('value') ? parseFloat($(this).find('.payment-advance-value').attr('value')) : 0
             })
         }
@@ -469,7 +469,7 @@ class CashInflowAction {
         }
     }
     static LoadSOPaymentStageTableDetailPage(data_list=[]) {
-        $so_table.find('tbody tr').each(function () {
+        $so_pm_stage_table.find('tbody tr').each(function () {
             let row = $(this);
             for (let i=0; i < data_list.length; i++) {
                 if (row.find('.selected-so-pm-stage').attr('data-so-pm-stage-id') === data_list[i]?.['detail_payment'][0]?.['so_pm_stage_data']?.['id']) {
@@ -567,7 +567,7 @@ class CashInflowHandle {
         else if ($('#no_ar_inp').prop('checked')) {
             frm.dataForm['purchase_advance_value'] = 0
             no_ar_invoice_data = []
-            $so_table.find('tbody tr').each(function () {
+            $so_pm_stage_table.find('tbody tr').each(function () {
                 if ($(this).find('.selected-so-pm-stage').prop('checked')) {
                     no_ar_invoice_data.push({
                         'sale_order_id': $(this).find('.selected-so-pm-stage').attr('data-sale-order-id'),

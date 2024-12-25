@@ -562,7 +562,7 @@ class CashInflowHandle {
                     let payment_method_data = {
                         'cash_value': data?.['cash_value'],
                         'bank_value': data?.['bank_value'],
-                        'company_bank_account_id': data?.['company_bank_account']?.['id'],
+                        'company_bank_account_id': data?.['company_bank_account_data']?.['id'],
                     }
                     $btn_modal_payment_method.prop('disabled', false)
                     $btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
@@ -616,7 +616,8 @@ $(document).on('change', '.selected-ar', function () {
 $save_changes_payment_method.on('click', function () {
     if (
         parseFloat($cash_value.attr('value')) + parseFloat($bank_value.attr('value')) ===
-        parseFloat($total_payment_modal.attr('value')) && parseFloat($total_payment_modal.attr('value')) !== 0
+        parseFloat($total_payment_modal.attr('value')) && parseFloat($total_payment_modal.attr('value')) !== 0,
+        $company_bank_account.val()
     ) {
         let payment_method_data = {
             'cash_value': $cash_value.attr('value'),

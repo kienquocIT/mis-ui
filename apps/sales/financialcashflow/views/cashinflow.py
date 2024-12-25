@@ -23,8 +23,12 @@ class CashInflowCreate(View):
         breadcrumb='CASH_INFLOW_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
         return {
-            'data': {},
+            'app_id': '7ba35923-d8ff-4f6d-bf80-468a7190a63b',
+            'list_from_app': 'financialcashflow.cashinflow.create',
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'form-create-cashinflow'
         }, status.HTTP_200_OK
 
 
@@ -36,7 +40,12 @@ class CashInflowDetail(View):
         breadcrumb='CASH_INFLOW_DETAIL_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
+        return {
+            'list_from_app': 'financialcashflow.cashinflow.create',
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'form-detail-cashinflow'
+        }, status.HTTP_200_OK
 
 
 class CashInflowUpdate(View):
@@ -47,11 +56,12 @@ class CashInflowUpdate(View):
         breadcrumb='CASH_INFLOW_UPDATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        # input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_RETURN
+        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
         return {
-            'data': {},
-            # 'input_mapping_properties': input_mapping_properties,
-            # 'form_id': 'frm_goods_return_update'
+            'app_id': '7ba35923-d8ff-4f6d-bf80-468a7190a63b',
+            'list_from_app': 'financialcashflow.cashinflow.edit',
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'form-detail-cashinflow'
         }, status.HTTP_200_OK
 
 
@@ -91,8 +101,7 @@ class CashInflowDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *arg, **kwargs):
-        data = request.data
-        resp = ServerAPI(user=request.user, url=ApiURL.FINANCIAL_CASHINFLOW_DETAIL.fill_key(pk=pk)).put(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.FINANCIAL_CASHINFLOW_DETAIL.fill_key(pk=pk)).put(request.data)
         if resp.state:
             resp.result['message'] = SaleMsg.CIF_UPDATE
             return resp.result, status.HTTP_200_OK

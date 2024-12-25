@@ -4813,7 +4813,7 @@ class indicatorHandle {
                 'indicator_value': value ? value : 0,
                 'indicator_rate': rateValue,
                 'quotation_indicator_value': quotationValue,
-                'difference_indicator_value': differenceValue,
+                'difference_indicator_value': differenceValue ? differenceValue : 0,
             });
             result_json[indicator?.['order']] = {
                 'indicator_value': value ? value : 0,

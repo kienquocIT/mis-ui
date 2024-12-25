@@ -2733,9 +2733,15 @@ class LeaseOrderLoadDataHandle {
                     LeaseOrderLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
                     $(eleInstallment).val(dataRow?.['term_id']).trigger('change');
                 }
+                let count = dataRow?.['order'];
+                let dataIssue = [{'id': '', 'title': 'Select...',}];
+                for (let i = 1; i <= count; i++) {
+                    let add = {'id': String(i), 'title': String(i)};
+                    dataIssue.push(add);
+                }
                 let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
                 if (eleIssueInvoice) {
-                    LeaseOrderLoadDataHandle.loadInitS2($(eleIssueInvoice), LeaseOrderLoadDataHandle.dataIssueInvoice, {}, null, true);
+                    LeaseOrderLoadDataHandle.loadInitS2($(eleIssueInvoice), dataIssue, {}, null, true);
                     $(eleIssueInvoice).val(dataRow?.['issue_invoice']).trigger('change');
                 }
             });

@@ -33,15 +33,22 @@ $(document).ready(function () {
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}" class="badge badge-primary">${row?.['code']}</a>`;
+                            return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`;
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text w-75',
+                        className: 'wrap-text w-30',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}"><span class="text-primary"><b>${row?.['title']}</b></span></a>`
+                        }
+                    },
+                    {
+                        data: 'customer_data',
+                        className: 'wrap-text w-45',
+                        render: (data, type, row) => {
+                            return `<span class="text-muted">${row?.['customer_data']?.['name']}</span>`
                         }
                     },
                     {

@@ -21,7 +21,7 @@ const detail_payment_value_column_opts = [
     {
         className: 'wrap-text w-5',
         render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<div class="form-check">
+            return row?.['is_ar_invoice'] && row?.['value_total'] - row?.['value_payment'] > 0 ? `<div class="form-check">
                 <input type="checkbox"
                        class="form-check-input selected-detail-payment"
                        data-so-pm-stage-id="${row?.['id']}"
@@ -401,7 +401,7 @@ class CashInflowAction {
         $total_payment.attr('value', total_payment)
         $total_payment_modal.attr('value', $total_payment.attr('value'))
         $btn_modal_payment_method.prop('disabled', total_payment === 0)
-        $btn_modal_payment_method.removeClass('btn-outline-success').addClass('btn-outline-light')
+        $btn_modal_payment_method.removeClass('btn-outline-success').addClass('btn-outline-danger')
         $icon_done_payment_method.prop('hidden', true)
         $.fn.initMaskMoney2()
     }
@@ -593,7 +593,7 @@ class CashInflowHandle {
                     }
                     $btn_modal_payment_method.prop('disabled', false)
                     $btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
-                    $btn_modal_payment_method.removeClass('btn-outline-light').addClass('btn-outline-success')
+                    $btn_modal_payment_method.removeClass('btn-outline-danger').addClass('btn-outline-success')
                     $icon_done_payment_method.prop('hidden', false)
                     $total_payment_modal.attr('value', data?.['total_value'])
                     $cash_value.attr('value', data?.['cash_value'])
@@ -644,20 +644,24 @@ $save_changes_payment_method.on('click', function () {
     if (
         parseFloat($cash_value.attr('value')) + parseFloat($bank_value.attr('value')) === parseFloat($total_payment_modal.attr('value'))
         && parseFloat($total_payment_modal.attr('value')) !== 0
-        && $company_bank_account.val()
     ) {
-        let payment_method_data = {
-            'cash_value': $cash_value.attr('value'),
-            'bank_value': $bank_value.attr('value'),
-            'company_bank_account_id': $company_bank_account.val(),
+        if (parseFloat($bank_value.attr('value')) > 0 && !$company_bank_account.val()) {
+            $.fn.notifyB({description: `Company bank account is required if Bank value > 0`}, 'failure');
         }
-        $btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
-        $btn_modal_payment_method.removeClass('btn-outline-light').addClass('btn-outline-success')
-        $icon_done_payment_method.prop('hidden', false)
-        $payment_method_modal.modal('hide')
+        else {
+            let payment_method_data = {
+                'cash_value': $cash_value.attr('value'),
+                'bank_value': $bank_value.attr('value'),
+                'company_bank_account_id': $company_bank_account.val(),
+            }
+            $btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
+            $btn_modal_payment_method.removeClass('btn-outline-danger').addClass('btn-outline-success')
+            $icon_done_payment_method.prop('hidden', false)
+            $payment_method_modal.modal('hide')
+        }
     }
     else {
-        $btn_modal_payment_method.removeClass('btn-outline-success').addClass('btn-outline-light')
+        $btn_modal_payment_method.removeClass('btn-outline-success').addClass('btn-outline-danger')
         $icon_done_payment_method.prop('hidden', true)
         $.fn.notifyB({description: `Error value or missing information`}, 'failure');
     }

@@ -234,7 +234,7 @@ $(function () {
                                                                 <span class="nav-link-text">${transEle.attr('data-function')}</span>
                                                                 </a>
                                                             </li>
-                                                            <li class="nav-item">
+                                                            <li class="nav-item" hidden>
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabOperatorHref}">
                                                                 <span class="nav-link-text">${transEle.attr('data-operator')}</span>
                                                                 </a>
@@ -336,14 +336,13 @@ $(function () {
                     }
                 ],
                 rowCallback(row, data, index) {
-                    loadBoxAcceptanceAffect($(row.querySelector('.box-acceptance-affect')));
-                    $(row.querySelector('.box-acceptance-affect')).val(data?.['acceptance_affect_by']);
-                    let boxRender = row?.querySelector('.form-group-data-source')?.querySelector('.select2-selection__rendered');
-                    if (boxRender) {
-                        boxRender.innerHTML = dataAcceptanceAffectJSON[data?.['acceptance_affect_by']]?.['title'];
-                        boxRender.setAttribute('title', dataAcceptanceAffectJSON[data?.['acceptance_affect_by']]?.['title']);
+                    let eleAcceptanceAffect = row.querySelector('.box-acceptance-affect');
+                    let eleAcceptanceIsEdit = row.querySelector('.acceptance-editable');
+                    if (eleAcceptanceAffect && eleAcceptanceIsEdit) {
+                        loadInitS2($(eleAcceptanceAffect), dataAcceptanceAffect);
+                        eleAcceptanceIsEdit.checked = data?.['is_acceptance_editable'];
+                        $(eleAcceptanceAffect).val(data?.['acceptance_affect_by']).trigger('change');
                     }
-                    row.querySelector('.acceptance-editable').checked = data?.['is_acceptance_editable'];
                 },
                 drawCallback: function () {
                     dtbHDCustom();

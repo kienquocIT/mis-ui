@@ -10,7 +10,7 @@ class ListList(View):
     @mask_view(
         auth_require=True,
         template='sales/partnercenter/list/list_list.html',
-        menu_active='',
+        menu_active='menu_partner_center_lists',
         breadcrumb='',
     )
     def get(self, request, *args, **kwargs):

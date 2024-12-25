@@ -63,7 +63,7 @@ const detail_payment_value_column_opts = [
     {
         className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<span class="mask-money detail_balance_value" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>` : '--';
+            return row?.['is_ar_invoice'] ? `<span class="mask-money detail_balance_value" data-init-money="${row?.['value_total'] - row?.['value_payment']}"></span>` : '--';
         }
     },
     {
@@ -182,7 +182,7 @@ const ar_invoice_column_opts = [
     {
         className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return `<span class="mask-money" data-init-money="${row?.['total'] ? row?.['total'] : ''}"></span>`;
+            return `<span class="mask-money" data-init-money="${row?.['total']}"></span>`;
         }
     },
     {
@@ -260,7 +260,7 @@ class CashInflowLoadPage {
             data: (data ? data : null),
             keyResp: 'company_bank_account_list',
             keyId: 'id',
-            keyText: 'bank_account_number'
+            keyText: 'bank_name'
         })
     }
 }
@@ -323,7 +323,7 @@ class CashInflowAction {
                     area.find('input').prop('disabled', is_disabled);
                     area.find('select').prop('disabled', is_disabled);
 
-                    CashInflowAction.LoadDetailARInvoiceTable(has_ar_invoice_data)
+                    CashInflowAction.LoadARInvoiceTableDetailPage(has_ar_invoice_data)
                 }
             });
         }
@@ -360,6 +360,13 @@ class CashInflowAction {
                 paging: false,
                 data: data_list,
                 columns: detail_payment_value_column_opts,
+                initComplete: function () {
+                    let detail_payment_value_data = current_detail_payment_row.find('.btn-detail-payment-value').attr('data-detail-payment')
+                    detail_payment_value_data = detail_payment_value_data ? JSON.parse(detail_payment_value_data) : []
+                    if (detail_payment_value_data.length > 0) {
+                        CashInflowAction.LoadDetailPaymentValueTableDetailPage(detail_payment_value_data)
+                    }
+                }
             });
         }
         else {
@@ -421,9 +428,13 @@ class CashInflowAction {
         if (option === 'detail') {
             $('.form-control').prop('readonly', true).prop('disabled', true);
             $('.form-select').prop('readonly', true).prop('disabled', true);
+            $('#purchase_advance_value_inp').prop('disabled', true)
+            $('#no_ar_inp').prop('disabled', true)
+            $('#has_ar_inp').prop('disabled', true)
+            $('.modal-footer').remove();
         }
     }
-    static LoadDetailARInvoiceTable(data_list=[]) {
+    static LoadARInvoiceTableDetailPage(data_list=[]) {
         $ar_invoice_table.find('tbody tr').each(function () {
             let row = $(this);
             for (let i=0; i < data_list.length; i++) {
@@ -448,6 +459,22 @@ class CashInflowAction {
                 }
             }
         })
+        $.fn.initMaskMoney2()
+    }
+    static LoadDetailPaymentValueTableDetailPage(data_list=[]) {
+        let total_detail_payment = 0
+        $table_detail_payment_value_modal.find('tbody tr').each(function () {
+            let row = $(this);
+            for (let i=0; i < data_list.length; i++) {
+                if (row.find('.selected-detail-payment').attr('data-so-pm-stage-id') === data_list[i]?.['so_pm_stage_id']) {
+                    row.find('.selected-detail-payment').prop('checked', true)
+                    row.find('.detail_balance_value').attr('data-init-money', data_list[i]?.['balance_value'])
+                    row.find('.detail_payment_value').attr('value', data_list[i]?.['payment_value'])
+                    total_detail_payment += parseFloat(data_list[i]?.['payment_value'])
+                }
+            }
+        })
+        $('#total-detail-payment-modal').attr('data-init-money', total_detail_payment)
         $.fn.initMaskMoney2()
     }
 }
@@ -533,7 +560,7 @@ class CashInflowHandle {
                     $title.val(data?.['title'])
                     $posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     $document_date.val(moment(data?.['document_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
-                    CashInflowLoadPage.LoadCustomer($customer, data?.['customer'])
+                    CashInflowLoadPage.LoadCustomer($customer, data?.['customer_data'])
                     $description.val(data?.['description'])
 
                     if (data?.['purchase_advance_value'] > 0) {
@@ -615,9 +642,9 @@ $(document).on('change', '.selected-ar', function () {
 
 $save_changes_payment_method.on('click', function () {
     if (
-        parseFloat($cash_value.attr('value')) + parseFloat($bank_value.attr('value')) ===
-        parseFloat($total_payment_modal.attr('value')) && parseFloat($total_payment_modal.attr('value')) !== 0,
-        $company_bank_account.val()
+        parseFloat($cash_value.attr('value')) + parseFloat($bank_value.attr('value')) === parseFloat($total_payment_modal.attr('value'))
+        && parseFloat($total_payment_modal.attr('value')) !== 0
+        && $company_bank_account.val()
     ) {
         let payment_method_data = {
             'cash_value': $cash_value.attr('value'),

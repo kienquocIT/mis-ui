@@ -560,44 +560,7 @@ $(function () {
             return true;
         }
 
-        // function loadOpp() {
-        //     boxOpp.empty();
-        //     let dataParams = {};
-        //     if (boxEmployee.val()) {
-        //         dataParams['employee_inherit'] = boxEmployee.val();
-        //     }
-        //     boxOpp.initSelect2({
-        //         'dataParams': dataParams,
-        //         'allowClear': true,
-        //     });
-        // }
-
-        // function loadEmployee(dataEmployee = {}) {
-        //     boxEmployee.empty();
-        //     boxEmployee.initSelect2({
-        //         data: dataEmployee,
-        //         'allowClear': true,
-        //     });
-        // }
-
-        // function loadSO() {
-        //     boxSO.empty();
-        //     let dataParams = {'system_status': 3};
-        //     if (boxOpp.val()) {
-        //         dataParams['opportunity_id'] = boxOpp.val();
-        //     }
-        //     if (boxEmployee.val()) {
-        //         dataParams['employee_inherit_id'] = boxEmployee.val();
-        //     }
-        //     boxSO.initSelect2({
-        //         'dataParams': dataParams,
-        //         'allowClear': true,
-        //     });
-        // }
-
         function loadDataByEmployee() {
-            // loadSO();
-            // loadOpp();
             return true;
         }
 
@@ -622,30 +585,6 @@ $(function () {
             return true;
         }
 
-        // function loadDataBySO() {
-        //     if (boxSO.val()) {
-        //         let dataSelected = SelectDDControl.get_data_from_idx(boxSO, boxSO.val());
-        //         if (dataSelected) {
-        //             boxEmployee.empty();
-        //             boxEmployee.initSelect2({
-        //                 data: dataSelected?.['sale_person'],
-        //                 'allowClear': true,
-        //             });
-        //             boxEmployee[0].setAttribute('readonly', 'true');
-        //             boxOpp.empty();
-        //             boxOpp.initSelect2({
-        //                 data: dataSelected?.['opportunity'],
-        //                 'allowClear': true,
-        //             });
-        //             boxOpp[0].setAttribute('readonly', 'true');
-        //         }
-        //     } else {
-        //         boxEmployee[0].removeAttribute('readonly');
-        //         boxOpp[0].removeAttribute('readonly');
-        //     }
-        //     return true;
-        // }
-
         function filterFieldList(field_list, data_json) {
             for (let key in data_json) {
                 if (!field_list.includes(key)) delete data_json[key]
@@ -654,12 +593,9 @@ $(function () {
         }
 
         function loadInit() {
-            // loadEmployee();
-            // loadOpp();
-            // loadSO();
             loadCustomCss();
-            loadInitS2($boxSO, [], {}, null, true);
-            loadInitS2($boxLO, [], {}, null, true);
+            loadInitS2($boxSO, [], {'is_minimal': true}, null, true);
+            loadInitS2($boxLO, [], {'is_minimal': true}, null, true);
             loadDbl();
         }
 

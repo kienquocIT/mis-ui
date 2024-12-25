@@ -12,9 +12,13 @@ from django.conf import settings
 
 
 def request_span_callback(span, result):
-    if result.status_code in [401, 403]:
-        # keep UI 401 is normal, not errors!
-        span.set_status(Status(StatusCode.OK))
+    if result is None:
+        span.set_status(Status(StatusCode.ERROR))
+        span.set_attribute("error", "Result is None")
+    elif result and hasattr(result, 'status_code'):
+        if result.status_code in [401, 403]:
+            # keep UI 401 is normal, not errors!
+            span.set_status(Status(StatusCode.OK))
 
 
 def init():

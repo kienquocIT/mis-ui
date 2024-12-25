@@ -9992,3 +9992,6 @@ msgstr "Tổng thanh toán phải bằng tổng giá trị đơn hàng sau thu�
 msgid "Value invoice after tax"
 msgstr "GT hóa đơn sau thuế"
 
+#
+msgid "Example"
+msgstr "Ví dụ"

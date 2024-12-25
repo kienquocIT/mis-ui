@@ -203,3 +203,14 @@ class LeaseOrderDetailDeliveryAPI(APIView):
     def post(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LEASEORDER_CALL.fill_key(pk=pk)).post(data=request.data)
         return resp.auto_return()
+
+
+class LORecurrenceListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.LEASE_ORDER_RECURRENCE_LIST).get(data)
+        return resp.auto_return(key_success='lease_order_recurrence')

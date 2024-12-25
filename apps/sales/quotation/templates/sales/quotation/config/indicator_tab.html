@@ -1,34 +1,34 @@
 {% load static i18n %}
 
 <!-- Config Indicator -->
-<br>
-<div class="row">
-    <div class="col-12 col-md-6 col-lg-6">
-        <div class="row float-left">
-            <button
-                    type="button"
-                    class="btn btn-outline-primary"
-                    id="btn-add-indicator"
-                    data-bs-toggle="modal"
-                    data-bs-target="#indicatorCreateModalCenter"
-            >
-            <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-plus"></i></span></span><span>{% trans 'Add indicator' %}</span></span>
-            </button>
-        </div>
-    </div>
-    <div class="col-12 col-md-6 col-lg-6">
-        <div class="row float-right mr-2">
-            <button
-                    type="button"
-                    class="btn btn-outline-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#restoreIndicatorModalCenter"
-            >
-            <span><span class="icon"><span class="feather-icon"><i class="fas fa-redo-alt"></i></span></span><span>{% trans 'Restore default' %}</span></span>
-            </button>
-        </div>
-    </div>
-</div>
+{#<br>#}
+{#<div class="row">#}
+{#    <div class="col-12 col-md-6 col-lg-6">#}
+{#        <div class="row float-left">#}
+{#            <button#}
+{#                    type="button"#}
+{#                    class="btn btn-outline-primary"#}
+{#                    id="btn-add-indicator"#}
+{#                    data-bs-toggle="modal"#}
+{#                    data-bs-target="#indicatorCreateModalCenter"#}
+{#            >#}
+{#            <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-plus"></i></span></span><span>{% trans 'Add indicator' %}</span></span>#}
+{#            </button>#}
+{#        </div>#}
+{#    </div>#}
+{#    <div class="col-12 col-md-6 col-lg-6">#}
+{#        <div class="row float-right mr-2">#}
+{#            <button#}
+{#                    type="button"#}
+{#                    class="btn btn-outline-primary"#}
+{#                    data-bs-toggle="modal"#}
+{#                    data-bs-target="#restoreIndicatorModalCenter"#}
+{#            >#}
+{#            <span><span class="icon"><span class="feather-icon"><i class="fas fa-redo-alt"></i></span></span><span>{% trans 'Restore default' %}</span></span>#}
+{#            </button>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
 
 <br>
 <input
@@ -43,7 +43,7 @@
         data-method="get"
 >
     <thead>
-    <tr>
+    <tr class="bg-light">
         <th class="w-10">{% trans 'STT' %}</th>
         <th class="w-35">{% trans 'Indicator' %}</th>
         <th class="w-5"></th>
@@ -74,11 +74,9 @@
                         <label class="form-label" for="indicator-create-title">{% trans 'Title' %}<span class="required"></span></label>
                         <input
                                 type="text" class="form-control"
-                                placeholder="input title"
                                 id="indicator-create-title"
                                 name="indicator_title"
                         >
-                        <small class="form-text text-muted">{% trans 'Title of indicator' %}</small>
                     </div>
                 </div>
                 <div class="row">
@@ -86,11 +84,9 @@
                         <label class="form-label" for="indicator-create-description">{% trans 'Description' %}<span class="required"></span></label>
                         <input
                                 type="text" class="form-control"
-                                placeholder="input description"
                                 id="indicator-create-description"
                                 name="indicator_description"
                         >
-                        <small class="form-text text-muted">{% trans 'Description of indicator' %}</small>
                     </div>
                 </div>
             </div>

@@ -4900,7 +4900,6 @@ class LeaseOrderIndicatorHandle {
         let result_json = {};
         let revenueValue = 0;
         let formSubmit = $('#frm_lease_create');
-        let is_sale_order = true;
         let _form = new SetupFormSubmit(formSubmit);
         LeaseOrderSubmitHandle.setupDataSubmit(_form, 1);
         let data_form = _form.dataForm;
@@ -4963,7 +4962,7 @@ class LeaseOrderIndicatorHandle {
                                 let functionData = LeaseOrderIndicatorHandle.functionMaxMin(item, data_form, result_json);
                                 parse_formula += functionData;
                             } else if (item.code === 'sumItemIf') {
-                                let functionData = LeaseOrderIndicatorHandle.functionSumItemIf(item, data_form, is_sale_order);
+                                let functionData = LeaseOrderIndicatorHandle.functionSumItemIf(item, data_form);
                                 parse_formula += functionData;
                             }
                         }
@@ -5079,7 +5078,7 @@ class LeaseOrderIndicatorHandle {
         return item.syntax + functionBody + "])";
     };
 
-    static functionSumItemIf(item, data_form, is_sale_order) {
+    static functionSumItemIf(item, data_form) {
         let syntax = "sum(";
         let functionBody = "";
         let leftValueJSON = null;
@@ -5092,18 +5091,15 @@ class LeaseOrderIndicatorHandle {
             rightValue = item.function_data[operatorIndex + 1];
         }
         let lastElement = item.function_data[item.function_data.length - 1];
+        let dataList = [];
         // Tab Products
-        if (data_form?.['lease_products_data']) {}
-        // Tab Expense
-        if (is_sale_order === false) {
-            if (data_form?.['lease_expenses_data']) {
-                functionBody = LeaseOrderIndicatorHandle.extractDataToSum(data_form?.['lease_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
-            }
-        } else {
-            if (data_form?.['sale_order_expenses_data']) {
-                functionBody = LeaseOrderIndicatorHandle.extractDataToSum(data_form?.['sale_order_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
-            }
+        if (data_form?.['lease_products_data'] && leftValueJSON?.['code'].includes("product_data")) {
+            dataList = data_form?.['lease_products_data'];
         }
+        if (data_form?.['lease_expenses_data'] && ["expense_data", "expense_item_data"].some(keyword => leftValueJSON?.['code']?.includes(keyword))) {
+            dataList = data_form?.['lease_expenses_data'];
+        }
+        functionBody = LeaseOrderIndicatorHandle.extractDataToSum(dataList, leftValueJSON, condition_operator, rightValue, lastElement);
         if (functionBody[functionBody.length - 1] === ",") {
             let functionBodySlice = functionBody.slice(0, -1);
             return syntax + functionBodySlice + ")";
@@ -5115,9 +5111,18 @@ class LeaseOrderIndicatorHandle {
         let functionBody = "";
         for (let data of data_list) {
             if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
-                if (data.hasOwnProperty(leftValueJSON.code)) {
-                    if (typeof data[leftValueJSON.code] === 'string') {
-                        let leftValue = data[leftValueJSON.code].replace(/\s/g, "").toLowerCase();
+                let val = LeaseOrderIndicatorHandle.findKey(data, leftValueJSON.code);
+                if (val) {
+                    if (Array.isArray(val)) {
+                        val = val.map(item => item.replace(/\s/g, "").toLowerCase());
+                        let check = val.includes(rightValue);
+                        if (check === true) {
+                            functionBody += String(data[lastElement.code]);
+                            functionBody += ",";
+                        }
+                    }
+                    if (typeof val === 'string') {
+                        let leftValue = val.replace(/\s/g, "").toLowerCase();
                         let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
                         let check = LeaseOrderIndicatorHandle.evaluateFormula(checkExpression);
                         if (check === true) {
@@ -5158,6 +5163,30 @@ class LeaseOrderIndicatorHandle {
     static formatExpression(input) {
         // Replace consecutive subtraction operators with a space before each minus sign
         return input.replace(/--/g, '+');
+    };
+
+    static findKey(data, key) {
+        if (!key.includes("__")) {
+            return data?.[key];
+        }
+        let listSub = key.split("__");
+        return listSub.reduce((acc, curr) => {
+            if (Array.isArray(acc)) {
+                // If the current accumulator is an array, use flatMap to continue reduction
+                return acc.flatMap(item => {
+                    if (Array.isArray(item?.[curr])) {
+                        // If the current item is also an array, return the array itself
+                        return item?.[curr];
+                    } else {
+                        // If the item is not an array, proceed normally
+                        return item?.[curr];
+                    }
+                });
+            } else {
+                // Regular reduction step if `acc` is not an array
+                return acc?.[curr];
+            }
+        }, data);
     };
 
 }

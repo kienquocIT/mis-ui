@@ -4683,11 +4683,7 @@ class indicatorHandle {
         let result_json = {};
         let revenueValue = 0;
         let formSubmit = $('#frm_quotation_create');
-        let is_sale_order = false;
         let _form = new SetupFormSubmit(formSubmit);
-        if (formSubmit[0].classList.contains('sale-order')) {
-            is_sale_order = true;
-        }
         QuotationSubmitHandle.setupDataSubmit(_form, 1);
         let data_form = _form.dataForm;
         let dataDetailCopy = {};
@@ -4749,7 +4745,7 @@ class indicatorHandle {
                                 let functionData = indicatorHandle.functionMaxMin(item, data_form, result_json);
                                 parse_formula += functionData;
                             } else if (item.code === 'sumItemIf') {
-                                let functionData = indicatorHandle.functionSumItemIf(item, data_form, is_sale_order);
+                                let functionData = indicatorHandle.functionSumItemIf(item, data_form);
                                 parse_formula += functionData;
                             }
                         }
@@ -4824,10 +4820,6 @@ class indicatorHandle {
                 'indicator_rate': rateValue
             }
         }
-        // let $table = $('#datable-quotation-create-indicator');
-        // $table.DataTable().clear().draw();
-        // $table.DataTable().rows.add(result_list).draw();
-
         if (!formSubmit.hasClass('sale-order')) {
             QuotationDataTableHandle.dataTableQuotationIndicator(result_list);
         } else {
@@ -4875,7 +4867,7 @@ class indicatorHandle {
         return item.syntax + functionBody + "])";
     };
 
-    static functionSumItemIf(item, data_form, is_sale_order) {
+    static functionSumItemIf(item, data_form) {
         let syntax = "sum(";
         let functionBody = "";
         let leftValueJSON = null;
@@ -4903,16 +4895,6 @@ class indicatorHandle {
             dataList = data_form?.['sale_order_expenses_data'];
         }
         functionBody = indicatorHandle.extractDataToSum(dataList, leftValueJSON, condition_operator, rightValue, lastElement);
-        // Tab Expense
-        // if (is_sale_order === false) {
-        //     if (data_form?.['quotation_expenses_data']) {
-        //         functionBody = indicatorHandle.extractDataToSum(data_form?.['quotation_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
-        //     }
-        // } else {
-        //     if (data_form?.['sale_order_expenses_data']) {
-        //         functionBody = indicatorHandle.extractDataToSum(data_form?.['sale_order_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
-        //     }
-        // }
         if (functionBody[functionBody.length - 1] === ",") {
             let functionBodySlice = functionBody.slice(0, -1);
             return syntax + functionBodySlice + ")";

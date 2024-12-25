@@ -794,3 +794,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # CONTRACT TEMPLATE
     CORE_CONTRACT_TEMPLATE_LIST = StringUrl('contract-template/list')
     CORE_CONTRACT_TEMPLATE_DETAIL = StringUrl('contract-template/detail/{pk}')
+
+    #PARTNER CENTER
+    #LIST
+    PARTNER_CENTER_LIST_DATA_OBJ_LIST = StringUrl('partner-center/data-obj-list')
+    LIST_LIST = StringUrl('partner-center/list/list')

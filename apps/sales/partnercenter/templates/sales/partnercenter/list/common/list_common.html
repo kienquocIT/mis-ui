@@ -9,42 +9,6 @@
                 </div>
                 <div class="col-12 col-lg-6">
                     <div class="row" id="data-object-area">
-                         <div class="col-2 mb-1">
-                            <div class="form-check">
-                                <div class="chip chip-outline-primary chip-lg">
-                                    <label hidden for="contact"></label>
-                                    <input type="checkbox" id="contact">
-                                    <span><span class="chip-text">Contact</span></span>
-                                </div>
-                            </div>
-                        </div>
-                         <div class="col-2 mb-1">
-                            <div class="form-check">
-                                <div class="chip chip-outline-primary chip-lg">
-                                    <label hidden for="customer"></label>
-                                    <input type="checkbox" id="customer">
-                                    <span><span class="chip-text">Customer</span></span>
-                                </div>
-                            </div>
-                        </div>
-                         <div class="col-2 mb-1">
-                            <div class="form-check">
-                                <div class="chip chip-outline-primary chip-lg">
-                                    <label hidden for="supplier"></label>
-                                    <input type="checkbox" id="supplier">
-                                    <span><span class="chip-text">Supplier</span></span>
-                                </div>
-                            </div>
-                        </div>
-                         <div class="col-2 mb-1">
-                            <div class="form-check">
-                                <div class="chip chip-outline-primary chip-lg">
-                                    <label hidden for="employee"></label>
-                                    <input type="checkbox" id="employee">
-                                    <span><span class="chip-text">Employee</span></span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -85,20 +49,17 @@
                                         <div class="row">
                                             <div class="col-3">
                                                 <div class="form-group">
-                                                    <label class="form-label required" hidden></label>
-                                                    <select name="customer" class="form-select select2" data-method="GET" data-url="{% url 'ConsultingAccountListAPI' %}" required></select>
+                                                    <select name="left" class="form-select select2 select-prop" data-method="GET" data-url="{% url 'ApplicationPropertyListAPI' %}" data-keyResp="application_property_list" required></select>
                                                 </div>
                                             </div>
                                             <div class="col-3">
                                                 <div class="form-group">
-                                                    <label class="form-label required" hidden></label>
-                                                    <select name="customer" class="form-select select2" data-method="GET" data-url="{% url 'ConsultingAccountListAPI' %}" required></select>
+                                                    <select name="operator" class="form-select select2 select-operator" required></select>
                                                 </div>
                                             </div>
                                             <div class="col-3">
                                                 <div class="form-group">
-                                                    <label class="form-label required" hidden></label>
-                                                    <select name="customer" class="form-select select2" data-method="GET" data-url="{% url 'ConsultingAccountListAPI' %}" required></select>
+                                                    <select name="right" class="form-select select2 select-prop-data" data-method="GET" required></select>
                                                 </div>
                                             </div>
                                             <div class="col-1">

@@ -13,7 +13,26 @@
 {% endblock %}
 
 {% block pageContent %}
-    {% include 'sales/partnercenter/list/common/list_common.html' %}
+    <form
+            data-url="{% url 'ListListAPI' %}"
+            data-url-redirect="{% url 'ListList' %}"
+            data-method="POST"
+            id="form_partnercenter_list_create"
+    >
+        {% csrf_token %}
+        {% include 'sales/partnercenter/list/common/list_common.html' %}
+    </form>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-url-factory"
+        data-md-product-type="{% url 'ProductTypeListAPI' %}"
+        data-md-data-obj = "{% url 'ListDataObjectListAPI' %}"
+        data-md-prop-list = "{% url 'ApplicationPropertyListAPI' %}"
+        data-md-employee = "{% url 'EmployeeListAPI' %}"
+    >
 {% endblock %}
 
 {% block jsFooter %}

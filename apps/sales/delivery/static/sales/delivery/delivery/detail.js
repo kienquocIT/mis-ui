@@ -158,19 +158,31 @@ $(async function () {
 
         loadProductWHModal(pwh, prod_data) {
             for (let val of prod_data?.['delivery_data']) {
-                if (val?.['warehouse'] === pwh?.['warehouse']?.['id'] && val?.['sale_order'] === pwh?.['sale_order']?.['id']) {
-                    if (val?.['stock'] && prod_data?.['picked_quantity']) {
-                        if (prod_data?.['picked_quantity'] > 0) {
-                            pwh['picked'] = val?.['stock'];
+                let check = false;
+                if (val?.['warehouse'] === pwh?.['warehouse']?.['id']) {
+                    if (($eleSO.attr('data-so'))) {
+                        if (val?.['sale_order'] === pwh?.['sale_order']?.['id']) {
+                            check = true;
                         }
                     }
-                    if (val?.['lot_data']) {
-                        pwh['lot_data'] = val?.['lot_data'];
+                    if (($eleSO.attr('data-lo'))) {
+                        check = true;
                     }
-                    if (val?.['serial_data']) {
-                        pwh['serial_data'] = val?.['serial_data'];
+
+                    if (check === true) {
+                        if (val?.['stock'] && prod_data?.['picked_quantity']) {
+                            if (prod_data?.['picked_quantity'] > 0) {
+                                pwh['picked'] = val?.['stock'];
+                            }
+                        }
+                        if (val?.['lot_data']) {
+                            pwh['lot_data'] = val?.['lot_data'];
+                        }
+                        if (val?.['serial_data']) {
+                            pwh['serial_data'] = val?.['serial_data'];
+                        }
+                        break;
                     }
-                    break;
                 }
             }
             return true;
@@ -457,13 +469,21 @@ $(async function () {
                 if (!pwh.hasOwnProperty('sale_order') && type === 0) {
                     if ($eleSO.attr('data-so')) {
                         pwh['sale_order'] = JSON.parse($eleSO.attr('data-so'));
+                        for (let deliveryData of prod_data?.['delivery_data']) {
+                            if (pwh?.['sale_order']?.['id'] === deliveryData?.['sale_order'] && pwh?.['warehouse']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
+                                pwh['picked'] = deliveryData?.['stock'];
+                            }
+                        }
+                    }
+                    if ($eleSO.attr('data-lo')) {
+                        for (let deliveryData of prod_data?.['delivery_data']) {
+                            if (pwh?.['warehouse']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
+                                pwh['picked'] = deliveryData?.['stock'];
+                            }
+                        }
                     }
                 }
-                for (let deliveryData of prod_data?.['delivery_data']) {
-                    if (pwh?.['sale_order']?.['id'] === deliveryData?.['sale_order'] && pwh?.['warehouse']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
-                        pwh['picked'] = deliveryData?.['stock'];
-                    }
-                }
+
                 let finalRate = 1;
                 if (pwh?.['uom'] && prod_data?.['uom_data']) {
                     pwh['uom_stock'] = pwh?.['uom'];
@@ -1487,7 +1507,7 @@ $(async function () {
                 $('#textareaRemarks').val(res.remarks)
 
                 // reset data stock
-                if ($form.attr('data-method').toLowerCase() === 'put') {
+                if ($form.attr('data-method').toLowerCase() === 'put' && res?.['system_status'] !== 0) {
                     if (res.hasOwnProperty('products') && Array.isArray(res?.['products'])) {
                         for (let product of res?.['products']) {
                             if (product.hasOwnProperty('delivery_data') && Array.isArray(product?.['delivery_data'])) {
@@ -1524,7 +1544,7 @@ $(async function () {
                 // after prepare HTML run event click button done
                 btnDoneClick()
                 // reset data for edit page
-                if ($form.attr('data-method').toLowerCase() === 'put') {
+                if ($form.attr('data-method').toLowerCase() === 'put' && res?.['system_status'] !== 0) {
                     for (let productData of res?.['products']) {
                         for (let deliveryData of productData?.['delivery_data']) {
                             deliveryData['lot_data'] = [];

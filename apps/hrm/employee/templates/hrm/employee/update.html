@@ -6,7 +6,8 @@
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/contextMenu/jquery.contextMenu.min.css' %}" rel="stylesheet" type="text/css"/>
 
-    <link href="{% static 'assets/online_sign/css/online_signature.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/core/contract-template/css/online_signature.css' %}" rel="stylesheet"
+          type="text/css"/>
     <link rel="stylesheet" href="{% static 'assets/hrm/css/common.css' %}">
 {% endblock %}
 {% block pageAction %}
@@ -343,7 +344,6 @@
 {% endblock %}
 {% block dataHiddenGroup %}
     {{ data.template_list|json_script:'template_list' }}
-
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
@@ -353,7 +353,6 @@
     <script src="{% static 'vendors/fabric/index.min.js' %}"></script>
     <script src="{% static 'vendors/contextMenu/jquery.contextMenu.min.js' %}"></script>
     <script src="{% static 'vendors/contextMenu/jquery.ui.position.min.js' %}"></script>
-    <script src="{% static 'vendors/hopscotch/dist/js/hopscotch.min.js' %}"></script>
 
 
     <script src="{% static 'assets/hrm/js/extend/contract_editor.js' %}"></script>

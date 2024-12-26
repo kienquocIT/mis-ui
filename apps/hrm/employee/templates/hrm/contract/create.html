@@ -64,18 +64,19 @@
                     <label class="form-check-label mr-4" for="file_type2">
                         {% trans 'Online template' %}
                     </label>
-                    {% if show_icon %}
-                        <button class="btn btn-outline-primary btn-sm ntt-drawer-toggle-link" type="button"
-                                data-drawer-target="#drawer_signature"
-                                data-drawer-active="false">
-                            {% trans 'Get signature' %}</button>
-                    {% endif %}
                 </div>
             </div>
             {% if edit %}
                 <div class="col-md-12 col-lg-6 hidden sign_check">
                     <div class="title">{% trans 'Signature status' %}</div>
                     <span class="badge"></span>
+                </div>
+            {% endif %}
+            {% if show_icon %}
+                <div class="col-md-12 col-lg-12 request_sign text-right hidden">
+                    <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal"
+                            data-bs-target="#modal_prepare_sign">
+                    {% trans 'Sign a contract' %}</button>
                 </div>
             {% endif %}
         <div class="clearfix mt-4"></div>

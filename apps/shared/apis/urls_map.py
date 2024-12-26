@@ -793,4 +793,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # CONTRACT TEMPLATE
     CORE_CONTRACT_TEMPLATE_LIST = StringUrl('contract-template/list')
+    CORE_CONTRACT_TEMPLATE_LIST_DD = StringUrl('contract-template/dd-list')
     CORE_CONTRACT_TEMPLATE_DETAIL = StringUrl('contract-template/detail/{pk}')
+
+    # CONTRACT RUNTIME
+    CORE_CONTRACT_RUNTIME = StringUrl('hrm/employee-info/contract-signing/create')

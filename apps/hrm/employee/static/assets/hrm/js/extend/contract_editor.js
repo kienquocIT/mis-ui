@@ -26,7 +26,8 @@ class editor_handle {
             font_formats: 'Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Cambria=cambria,serif; Helvetica=helvetica; Impact=impact,chicago; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats',
             templates: templateList.map(
                 (item) => {
-                    item['url'] = staticStart + item['url'];
+                    item['content'] = item['template'];
+                    item['description'] = 'lorem ipsum'
                     return item;
                 }
             ),
@@ -36,6 +37,7 @@ class editor_handle {
             insertdatetime_formats: ['%d-%m-%Y %H:%M:%S', '%d-%m-%Y', '%H:%M:%S', '%I:%M:%S %p'],
             content_css: $txtArea.attr('data-css-url-render'),
             content_style: `
+                body { font-family: Cambria,sans-serif; font-size: 12pt; }
                 @import url('/static/assets/fonts/cambria/Cambria.ttf');
                 @media print {
                     .mce-visual-caret {
@@ -48,6 +50,7 @@ class editor_handle {
             tinymce.activeEditor.setMode('readonly');
     }
 }
+
 class contract_data {
     load_list(){
         const $contractTb = $('#datable_employee_contract_list')
@@ -156,11 +159,12 @@ class contract_data {
             }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $('#tab-contract input[name="contract_id"]').remove()
-                    $('#tab-contract').append(`<input type="hidden" value="${data.id}" id="contract_id" name="contract_id"/>`)
+                    const wrapElmContractForm = $('.contract-edit')
+                    $('.contract-edit input[name="contract_id"]').remove()
+                    wrapElmContractForm.append(`<input type="hidden" value="${data.id}" id="contract_id" name="contract_id"/>`)
+                    .removeClass('hidden')
 
                     $('.contract-list').addClass('hidden')
-                    $('.contract-edit').removeClass('hidden')
                     $('#contract_type_id').val(data.contract_type).trigger('change')
                     $('#gridCheck').prop('checked', data.limit_time)
                     $('#effected_date')[0]._flatpickr.setDate(data.effected_date)
@@ -171,25 +175,29 @@ class contract_data {
                     $('input[name="file_type"]').prop('checked', false)
                     $(`input[name="file_type"][value="${data.file_type}"]`).prop('checked', true)
 
-                    $('.sign_check span').text(data.sign_status === true
-                        ? $.fn.gettext('Signed') : $.fn.gettext('Unsigned')).addClass(data.sign_status === true
-                    ? 'badge-soft-primary' : 'badge-soft-danger')
-                    let attchElm = $('#attachment');
+                    const signStt = [
+                        {'text': $.fn.gettext('Unsigned'), 'class': 'badge-soft-secondary'},
+                        {'text': $.fn.gettext('Signing'), 'class': 'badge-soft-primary'},
+                        {'text': $.fn.gettext('Signed'), 'class': 'badge-soft-danger'}
+                    ]
+                    $('.sign_check span').text(signStt[data['sign_status']]['text'])
+                        .addClass(signStt[data['sign_status']]['class'])
+                    let attachElm = $('#attachment');
                     if (data.attachment) {
-                        attchElm.find('.dm-uploader-results input[name="attachment"]').remove()
-                        if (attchElm.find('.dm-uploader-initializer').length > 0)
-                            attchElm.find('.dm-uploader').dmUploader("destroy");
+                        attachElm.find('.dm-uploader-results input[name="attachment"]').remove()
+                        if (attachElm.find('.dm-uploader-initializer').length > 0)
+                            attachElm.find('.dm-uploader').dmUploader("destroy");
 
-                        if (attchElm.hasClass('contract-readonly'))
-                            attchElm.find('.dm-uploader').addClass('hidden')
+                        if (attachElm.hasClass('contract-readonly'))
+                            attachElm.find('.dm-uploader').addClass('hidden')
 
                         new $x.cls.file(
-                            attchElm
+                            attachElm
                         ).init({
                             enable_choose_file: true,
                             enable_download: true,
                             name: 'attachment',
-                            enable_edit: !attchElm.hasClass('contract-readonly'),
+                            enable_edit: !attachElm.hasClass('contract-readonly'),
                             data: data.attachment,
                         })
                     }

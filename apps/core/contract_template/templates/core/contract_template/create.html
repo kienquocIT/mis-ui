@@ -43,13 +43,8 @@
                             required
                     ></select>
             </div>
-            <div class="col-lg-6 col-md-12 form-group">
-                <label class="form-label" for="from_signatures">{% trans 'Signature replacement character' %}</label>
-                <div id="signatures"></div>
-            </div>
-            <div class="col-lg-6 col-md-12">
-            </div>
             <div class="col-lg-12 col-xs-12">
+                <label class="form-label" for="txt_template">{% trans 'Template' %}</label>
                 <textarea id="txt_template" type="text"
                         name="template"
                         class="form-control"
@@ -60,18 +55,12 @@
 {% endblock %}
 
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory" data-employee="{% url 'EmployeeListAPI' %}"
-    data-template="{% url 'ContractTemplateConfigAPI' %}">
+    <input type="text" id="url-factory" data-template="{% url 'ContractTemplateConfigAPI' %}">
 {% endblock %}
-
-{#    https://daynhauhoc.com/t/cach-in-website-ra-giay-a4/28821/10 #}
 {% block jsFooter %}
     <script src="{% static 'assets/core/contract-template/js/common.js' %}"></script>
     <script>
         $(document).ready(function () {
-            // run signature list
-            window.signObj.init()
-
             // run editor
             window.is_editor.init()
         });

@@ -319,9 +319,6 @@
         </div>
     </form>
 {% endblock %}
-{% block modalData %}
-    {% include 'online_signature/online-sign.html' with navigation=True %}
-{% endblock %}
 {% block dataHiddenGroup %}
     {{ data.template_list|json_script:'template_list' }}
 {% endblock %}

@@ -39,8 +39,8 @@ class HRMEmployeeCreate(View):
     )
     def get(self, request, *args, **kwargs):
         language = getattr(request.user, 'language', settings.LANGUAGE_CODE)
-        resp = ServerAPI(user=request.user, url=ApiURL.CORE_CONTRACT_TEMPLATE_LIST).get({
-            'application': "7436c857-ad09-4213-a190-c1c7472e99be"
+        resp = ServerAPI(user=request.user, url=ApiURL.CORE_CONTRACT_TEMPLATE_LIST_DD).get({
+            'application_model_code': "employeeinfo"
         })
         template_list = []
         if resp.state:
@@ -129,6 +129,14 @@ class HRMEmployeeUpdate(View):
     )
     def get(self, request, *args, pk, **kwargs):
         language = getattr(request.user, 'language', settings.LANGUAGE_CODE)
+        resp = ServerAPI(user=request.user, url=ApiURL.CORE_CONTRACT_TEMPLATE_LIST_DD).get(
+            {
+                'application_model_code': "employeeinfo"
+            }
+        )
+        template_list = []
+        if resp.state:
+            template_list = resp.result
         return {
                    'gender': GENDER_TYPE,
                    'marital': MARITAL_STT,

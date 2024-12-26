@@ -5,16 +5,17 @@
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{% static 'assets/hrm/css/common.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/core/contract-template/css/extend/modal-submit.css' %}">
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'HRMEmployeeUpdate' data.pk %}" class="btn-edit-page">
         <button class="btn btn-outline-primary">
-        <span>
-            <span>{% trans 'Edit' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-pen-to-square"></i>
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
         </button>
     </a>
 {% endblock %}
@@ -318,14 +319,19 @@
                     {% include 'hrm/contract/list.html' %}
                 </div>
                 <div class="contract-edit hidden">
-                    {% include 'hrm/contract/create.html' with addClass="contract-readonly" edit=True %}
+                    {% include 'hrm/contract/create.html' with addClass="contract-readonly" edit=True show_icon=True %}
                 </div>
             </div>
         </div>
     </form>
 {% endblock %}
+{% block modalData %}
+    {% include 'core/contract_template/extend/submit-to-sign.html' %}
+{% endblock %}
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory" data-hrm-detail="{% url 'HRMEmployeeDetail' pk %}">
+    <input type="text" id="url-factory" data-hrm-detail="{% url 'HRMEmployeeDetail' pk %}"
+           data-employee="{% url 'EmployeeListAPI' %}" data-contract-sign="{% url 'ContractRuntimeCreateAPI' %}"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
@@ -335,6 +341,7 @@
 
     <script src="{% static 'assets/hrm/js/extend/contract_editor.js' %}"></script>
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
+    <script src="{% static 'assets/core/contract-template/js/extend/runtime-signature.js' %}"></script>
 
     <script src="{% static 'assets/hrm/js/detail.js' %}"></script>
 {% endblock %}

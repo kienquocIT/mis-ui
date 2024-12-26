@@ -13,7 +13,6 @@ $(document).ready(function () {
             $('input[name="title"]').val(data.title)
             $('select[name="application"]').append(`<option value="${data.application.id}" selected>${
                 data.application.title}</option>`).prop('disabled', true)
-            window.signObj.init(data.signatures, true)
             $('#txt_template').text(data.template);
             window.is_editor.init()
             setTimeout(()=>{

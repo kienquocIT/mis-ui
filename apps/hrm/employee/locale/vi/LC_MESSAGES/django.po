@@ -195,29 +195,9 @@ msgid "Choose Marital status"
 msgstr "Chọn tình trạng hôn nhân"
 
 #
-msgid "Get signature"
-msgstr "Lấy chữ ký"
-
-#
-msgid "Signature"
-msgstr "Chữ ký"
-
-#
-msgid "Draw your signature"
-msgstr "Vẽ chữ ký của bạn"
-
-#
 msgid "Upload file to Cloud"
 msgstr "tải lên tệp lên Đám Mây"
 
 #
-msgid "Manager signature file"
-msgstr "Quản lý tệp chữ ký"
-
-#
-msgid "How to get signature file"
-msgstr "Cách lấy file chữ ký"
-
-#
-msgid "START TOUR"
-msgstr "BẮT ĐẦU XEM"
+msgid "Sign a contract"
+msgstr "Ký hợp đồng"

@@ -1,9 +1,6 @@
 $(document).ready(function () {
-    // run signature list
-    var signObj = new signaturesHandle()
     // run editor
     var is_editor = new tiny_editor()
-    window.signObj = signObj
     window.is_editor = is_editor
 
     // handle form SUBMIT
@@ -11,22 +8,11 @@ $(document).ready(function () {
         $('#form_contract_template'),
         {
             submitHandler: function (form) {
-                let contractData = {members: []};
+                let contractData = {};
                 const serializerArray = SetupFormSubmit.serializerObject(form);
                 for (let key in serializerArray) {
                     const item = serializerArray[key]
                     if (item) contractData[key] = item
-                }
-                const signatures = signObj.get_data()
-                if (signatures){
-                    contractData.signatures = signatures
-                    for (let item in signatures){
-                        const val = signatures[item]
-                        const temp = contractData['members']
-                        for (let child in val){
-                            contractData['members'] = temp.concat(val[child])
-                        }
-                    }
                 }
 
                 $.fn.callAjax2({
@@ -122,16 +108,6 @@ class signaturesHandle {
         })
     }
 
-    get_data(){
-        let obj_data = {}
-        $('#signatures > div').each(function(){
-            const key = $(this).find('input').val();
-            const param_value = $(this).find('input').data('data-key');
-            if (key && param_value)
-                obj_data[key] = param_value
-        });
-        return obj_data
-    }
     init(data=[], is_detail=false){
         const $signElm = $('#signatures')
         // nếu không phải là detail page thì load template đầu tiên

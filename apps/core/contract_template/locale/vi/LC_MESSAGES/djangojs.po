@@ -18,17 +18,5 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
-msgid "Contract Template"
-msgstr "Mẫu hợp đồng"
-
-#
-msgid "Contract Template list"
-msgstr "Danh sách mẫu hợp đồng"
-
-#
-msgid "Signature replacement character"
-msgstr "Ký tự thay thế chữ ký"
-
-#
-msgid "Assign employee to signature character"
-msgstr "Chỉ định nhân viên cho Ký tự thay thế"
+msgid "Signature and employee not equal"
+msgstr "Số lượng chữ ký và nhân viên không khớp"

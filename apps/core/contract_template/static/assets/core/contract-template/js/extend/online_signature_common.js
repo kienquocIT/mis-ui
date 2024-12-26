@@ -11,65 +11,68 @@ class Signature {
     }
 
     init() {
-        const clearEl = $('#sign_clear');
-        const $canvas = $('#signature_element');
-        const width = 570;
-        const height = 9/16 * width;
-        if (!$('.canvas-container').length){
-            const canvas = new fabric.Canvas($canvas[0], {
-                isDrawingMode: true,
-            });
-            canvas.setWidth(width);
-            canvas.setHeight(height);
-            canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
 
-            clearEl.on('click', () => canvas.clear());
+        // show btn sign request
+        const $btnSign = $('.request_sign')
+        $btnSign.removeClass('hidden')
+        // load draw tab
+        $('a.nav-link[href="#tab_block_2"]').on('shown.bs.tab', function(){
+            const $canvas = $('#signature_element');
+            const width = $canvas.closest('.tab-pane').width();
+            const height = 1 / 3 * width;
+            if (!$('.canvas-container').length) {
+                const canvas = new fabric.Canvas($canvas[0], {
+                    isDrawingMode: true,
+                });
+                canvas.setWidth(width);
+                canvas.setHeight(height);
+                canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
 
-            if (canvas.freeDrawingBrush) {
-                canvas.freeDrawingBrush.color = '#000';
-                canvas.freeDrawingBrush.width = 1
-            }
+                $('#sign_clear').on('click', () => canvas.clear());
 
-            $('#sign_export').on('click', () => {
-                Swal.fire({
-                    html: `<h5 class="mb-1">${$.fn.gettext('rename signature file')}</h5>`,
-                    input: 'text',
-                    inputAttributes: {
-                        autocapitalize: 'off',
-                        name: "txt_file_name",
-                    },
-                    customClass: {
-                        confirmButton: 'btn btn-primary me-2',
-                        denyButton: 'btn btn-info',
-                        input: 'form-control'
-                    },
-                    buttonsStyling: false,
-                    showCancelButton: false,
-                    confirmButtonText: $.fn.gettext('Rename'),
-                    showDenyButton: true,
-                    denyButtonText: $.fn.gettext('Name generator'),
+                if (canvas.freeDrawingBrush) {
+                    canvas.freeDrawingBrush.color = '#000';
+                    canvas.freeDrawingBrush.width = 3
+                }
 
-                }).then((result) => {
-                    const date = new Date().getTime()
-                    let fileName = `signature-${date}.png`
-                    if (result.value && result.isConfirmed) {
-                        fileName = `${result.value}.png`
-                    }
-                    canvas.getElement().toBlob(blob => {
-                        let fileNew = new File([blob], fileName, {type: blob.type});
-                        this.uploadDataFile(fileNew)
-                    }, 'image/png');
+                $('#sign_export').on('click', () => {
+                    Swal.fire({
+                        html: `<h5 class="mb-1">${$.fn.gettext('rename signature file')}</h5>`,
+                        input: 'text',
+                        inputAttributes: {
+                            autocapitalize: 'off',
+                            name: "txt_file_name",
+                        },
+                        customClass: {
+                            confirmButton: 'btn btn-primary me-2',
+                            denyButton: 'btn btn-info',
+                            input: 'form-control'
+                        },
+                        buttonsStyling: false,
+                        showCancelButton: false,
+                        confirmButtonText: $.fn.gettext('Rename'),
+                        showDenyButton: true,
+                        denyButtonText: $.fn.gettext('Name generator'),
 
+                    }).then((result) => {
+                        const date = new Date().getTime()
+                        let fileName = `signature-${date}.png`
+                        if (result.value && result.isConfirmed) {
+                            fileName = `${result.value}.png`
+                        }
+                        canvas.getElement().toBlob(blob => {
+                            let fileNew = new File([blob], fileName, {type: blob.type});
+                            this.uploadDataFile(fileNew)
+                        }, 'image/png');
+
+                    })
                 })
-            })
-        }
-
-        // init attachment
-        const _this = this
-        $(document).on('detail.DetailLoaded', function(){
-            _this.loadSignList();
+            }
         });
 
+
+        // init attachment
+        this.loadSignList();
     }
 
     uploadDataFile(dataFile) {
@@ -204,56 +207,3 @@ class Signature {
     }
 
 }
-$(document).ready(function () {
-    const activeSignature = new Signature();
-    activeSignature.init()
-
-    var tour = {
-        id: "hopscotch-light",
-		steps: [
-            {
-                target: "signature_element",
-                placement: 'left',
-                title: $.fn.gettext('Step 1'),
-                content: $.fn.gettext("Firstly draw your signature"),
-            },
-            {
-                target: "sign_clear",
-                placement: 'bottom',
-                title: $.fn.gettext('Clear Signature error file'),
-                content: $.fn.gettext("Clear file and redrawn file"),
-            },
-            {
-                target: "sign_export",
-                placement: 'bottom',
-                title: $.fn.gettext('Step 2'),
-                content: $.fn.gettext("Secondly click to upload file"),
-                onNext: function () {
-                    hopscotch.endTour();
-                    $('#drawer_signature .simplebar-content-wrapper').animate({ scrollTop: 400 }, 300);
-                    setTimeout(() => {
-                        hopscotch.startTour(tour, 3);
-                    }, 400); // Delay 0.6 giây
-                }
-            },
-            {
-                target: $("#attach_sign .dm-uploader-results")[0],
-                placement: 'top',
-                zindex: 1111,
-                title: $.fn.gettext('File after uploaded'),
-                content: $.fn.gettext("Finally r-click to copy file URL"),
-            },
-        ],
-        showPrevButton: true,
-        i18n: {
-            nextBtn: $.fn.gettext('Next'),
-            prevBtn: $.fn.gettext('Back'),
-            doneBtn: $.fn.gettext('Done')
-        }
-    }
-    // Start the tour!
-    $('.start-tour').on('click', function(){
-	    hopscotch.startTour(tour);
-    });
-
-});

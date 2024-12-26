@@ -20,9 +20,11 @@ $(document).ready(function () {
 
     const _clsContract = new contract_data()
     const _editor = new editor_handle()
+    const runtime = new PrepareSign()
     $(document).on('detail.DetailLoaded', () =>{
         _clsContract.load_list()
         _editor.init()
+        runtime.init()
     })
 
 })

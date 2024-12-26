@@ -54,53 +54,13 @@ msgid "Copy image URL"
 msgstr "Sao chép URL hình ảnh"
 
 #
-msgid "Step 1"
-msgstr "Bước 1"
-
-#
-msgid "Firstly draw your signature"
-msgstr "Đầu tiên vẽ chữ ký của bạn"
-
-#
-msgid "Clear Signature error file"
-msgstr "Xoá chữ ký lỗi"
-
-#
-msgid "Clear file and redrawn file"
-msgstr "Xoá chữ ký và vẽ lại"
-
-#
-msgid "Step 2"
-msgstr "Bước 2"
-
-#
-msgid "Secondly click to upload file"
-msgstr "Thứ hai nhấn vào nút tải tệp"
-
-#
-msgid "File after uploaded"
-msgstr "Tệp sau khi tải lên"
-
-#
-msgid "Finally r-click to copy file URL"
-msgstr "Sau cùng nhấp phải chuột vào Sao chép URL hình ảnh"
-
-#
-msgid "Next"
-msgstr "Tiếp"
-
-#
-msgid "Back"
-msgstr "Sau"
-
-#
-msgid "Done"
-msgstr "Hoàn thành"
-
-#
 msgid "Unsigned"
 msgstr "Chưa ký"
 
 #
 msgid "Signed"
 msgstr "Đã ký"
+
+#
+msgid "Signing"
+msgstr "Đang ký"

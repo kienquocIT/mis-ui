@@ -197,7 +197,7 @@ $(function () {
                                     <div
                                             class="modal fade" id="${modalID}" tabindex="-1"
                                             role="dialog" aria-labelledby="${modalID}"
-                                            aria-hidden="true"
+                                            aria-hidden="true" data-bs-backdrop="static"
                                     >
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">

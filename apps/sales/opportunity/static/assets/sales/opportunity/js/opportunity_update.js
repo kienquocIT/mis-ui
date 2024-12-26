@@ -573,10 +573,10 @@ $(document).ready(function () {
                                     if (i <= index) {
                                         if (!ele_stage.eq(i).hasClass('stage-lost')) {
                                             ele_stage.eq(i).addClass('stage-selected');
-                                            ele_stage.eq(i).css('background-color', '#5a82b7')
+                                            ele_stage.eq(i).css('background-color', '#0070D2')
                                             ele_stage.eq(i).css('color', 'white')
                                             ele_stage.eq(i).find('.dropdown span').css('color', 'white')
-                                            ele_stage.eq(i).next().css('border-left', '16px solid #5a82b7')
+                                            ele_stage.eq(i).next().css('border-left', '16px solid #0070D2')
                                         }
                                     } else {
                                         ele_stage.eq(i).removeClass('stage-selected');
@@ -623,10 +623,10 @@ $(document).ready(function () {
                 $(document).on('change', '#input-close-deal', function () {
                     if ($(this).is(':checked')) {
                         $(this).closest('.sub-stage').addClass('stage-selected');
-                        $(this).closest('.sub-stage').css('background-color', '#5a82b7')
+                        $(this).closest('.sub-stage').css('background-color', '#0070D2')
                         $(this).closest('.sub-stage').css('color', 'white')
                         $(this).closest('.sub-stage').find('.dropdown span').css('color', 'white')
-                        $(this).closest('.sub-stage').next().css('border-left', '16px solid #5a82b7')
+                        $(this).closest('.sub-stage').next().css('border-left', '16px solid #0070D2')
                         $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
                     } else {
                         $(this).closest('.sub-stage').removeClass('stage-selected');

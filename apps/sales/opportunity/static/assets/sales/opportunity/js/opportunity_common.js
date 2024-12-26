@@ -460,10 +460,10 @@ class OpportunityLoadDetail {
                         )
                         let ele_stage = ele_first_stage.find('.dropdown-menu').closest('.sub-stage')
                         ele_stage.addClass('stage-selected')
-                        ele_stage.css('background-color', '#5a82b7')
+                        ele_stage.css('background-color', '#0070D2')
                         ele_stage.css('color', 'white')
                         ele_stage.find('.dropdown span').css('color', 'white')
-                        ele_stage.next().css('border-left', '30px solid #5a82b7')
+                        ele_stage.next().css('border-left', '30px solid #0070D2')
                     } else {
                         ele_first_stage.find('.dropdown-menu').append(
                             `<div class="form-check form-switch">
@@ -498,16 +498,16 @@ class OpportunityLoadDetail {
                     el_close_deal.prop('checked', true);
 
                     ele_stage.addClass('stage-selected')
-                    ele_stage.css('background-color', '#5a82b7')
+                    ele_stage.css('background-color', '#0070D2')
                     ele_stage.css('color', 'white')
                     ele_stage.find('.dropdown span').css('color', 'white')
-                    ele_stage.next().css('border-left', '16px solid #5a82b7')
+                    ele_stage.next().css('border-left', '16px solid #0070D2')
                 } else {
                     ele_stage.addClass('stage-selected')
-                    ele_stage.css('background-color', '#5a82b7')
+                    ele_stage.css('background-color', '#0070D2')
                     ele_stage.css('color', 'white')
                     ele_stage.find('.dropdown span').css('color', 'white')
-                    ele_stage.next().css('border-left', '16px solid #5a82b7')
+                    ele_stage.next().css('border-left', '16px solid #0070D2')
                 }
             })
         }
@@ -1721,10 +1721,10 @@ class LoadConfigAndLoadStage {
                     if (i <= index) {
                         if (!ele_stage.eq(i).hasClass('stage-lost')) {
                             ele_stage.eq(i).addClass('stage-selected');
-                            ele_stage.eq(i).css('background-color', '#5a82b7')
+                            ele_stage.eq(i).css('background-color', '#0070D2')
                             ele_stage.eq(i).css('color', 'white')
                             ele_stage.eq(i).find('.dropdown span').css('color', 'white')
-                            ele_stage.eq(i).next().css('border-left', '16px solid #5a82b7')
+                            ele_stage.eq(i).next().css('border-left', '16px solid #0070D2')
                         }
                         else {
                             ele_stage.eq(i).removeClass('stage-selected');
@@ -1746,10 +1746,10 @@ class LoadConfigAndLoadStage {
             if (ele_close_deal.is(':checked')) {
                 ele_stage_current = ele_close_deal.closest('.sub-stage');
                 ele_close_deal.closest('.sub-stage').addClass('stage-selected');
-                ele_close_deal.closest('.sub-stage').css('background-color', '#5a82b7')
+                ele_close_deal.closest('.sub-stage').css('background-color', '#0070D2')
                 ele_close_deal.closest('.sub-stage').css('color', 'white')
                 ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', 'white')
-                ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #5a82b7')
+                ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #0070D2')
                 $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
                 if (!config_is_input_rate) {
                     input_rate_ele.prop('disabled', true);

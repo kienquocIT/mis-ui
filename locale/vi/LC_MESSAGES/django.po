@@ -10092,10 +10092,6 @@ msgid "Detail payment value by invoice"
 msgstr "Chi tiết thanh toán theo hóa đơn"
 
 #
-msgid "Installment"
-msgstr "Đợt"
-
-#
 msgid "Cash value"
 msgstr "Giá trị tiền mặt"
 
@@ -10122,3 +10118,11 @@ msgstr "Kết nối thành công. Đang cập nhập API Key..."
 #
 msgid "Can not verify your Email. Check your API Key again"
 msgstr "Không thể xác tực Email của bạn. Kiểm tra lại API Key"
+
+#
+msgid "Delivery (sale)"
+msgstr "Giao hàng (bán)"
+
+#
+msgid "Delivery (lease)"
+msgstr "Giao hàng (cho thuê)"

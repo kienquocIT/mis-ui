@@ -199,9 +199,9 @@ $(document).ready(function () {
                     if (is_lost) {
                         let ele_stage = $('.stage-lost')
                         ele_stage.addClass('stage-selected');
-                        ele_stage.css('background-color', 'rgb(255,94,94)')
+                        ele_stage.css('background-color', '#EB2925')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid #EB2925')
                     } else {
                         $('.stage-lost').removeClass('stage-selected');
                         $('.stage-lost').css('background-color', '#e7e7e7')
@@ -609,9 +609,9 @@ $(document).ready(function () {
                     if (is_lost) {
                         let ele_stage = $('.stage-lost')
                         ele_stage.addClass('stage-selected');
-                        ele_stage.css('background-color', 'rgb(255,94,94)')
+                        ele_stage.css('background-color', '#EB2925')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid #EB2925')
                     } else {
                         $('.stage-lost').removeClass('stage-selected');
                         $('.stage-lost').css('background-color', '#e7e7e7')

@@ -488,9 +488,9 @@ class OpportunityLoadDetail {
                 if (ele_stage.hasClass('stage-lost')) {
                     if (!is_delivery) {
                         ele_stage.addClass('stage-selected')
-                        ele_stage.css('background-color', 'rgb(255,94,94)')
+                        ele_stage.css('background-color', '#EB2925')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid #EB2925')
                     }
                 } else if (ele_stage.hasClass('stage-close')) {
                     let el_close_deal = $('#input-close-deal');

@@ -93,6 +93,18 @@ msgstr "Chưa xem"
 msgid "Seen"
 msgstr "Đã xem"
 
+#
+msgid "Press esc to exit"
+msgstr "Nhấn nút ESC để thoát"
+
+#
+msgid "Enter your search text"
+msgstr "Nhập thông tin tìm kiếm"
+
+#
+msgid "Menu finder"
+msgstr "Tìm nhanh Menu"
+
 #: .\apps\core\account\templates\core\account\user_create.html:89
 msgid "Select your company"
 msgstr "Chọn công ty của bạn"

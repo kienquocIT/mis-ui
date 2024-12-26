@@ -111,6 +111,20 @@
                     regexDefault = format;
                 }
                 let valueMethod = rules['datetime'];
+                let format = $(element).data('date-format');
+                if (format){
+                    format = '^' + format
+                        .replaceAll('-', '[\\-]')
+                        .replaceAll('/', '[\\/]')
+                        .replaceAll('YYYY', '\\d{4}')
+                        .replaceAll('MM', '(0?[1-9]|1[012])')
+                        .replaceAll('DD', '(0?[1-9]|[12][0-9]|3[01])')
+                        .replaceAll('HH', '(0?[0-9]|1[0-9]|2[0-3])')
+                        .replaceAll('mm', '([0-5][0-9])')
+                        .replaceAll('ss', '([0-5][0-9])')
+                        + '$';
+                    regexDefault = format;
+                }
                 let regexStr = valueMethod && valueMethod !== 'true' ? valueMethod : regexDefault;
                 let regex = new RegExp(regexStr);
                 return regex.test(value);

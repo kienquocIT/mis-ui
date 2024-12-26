@@ -229,6 +229,20 @@ class EmployeeDetailAPI(APIView):
         return resp.auto_return()
 
 
+class EmployeeUpdateEmailAPIKeyAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, pk, *args, **kwargs):
+        print(1)
+        resp = ServerAPI(
+            request=request,
+            user=request.user,
+            url=ApiURL.EMPLOYEE_DETAIL_UPDATE_EMAIL_API_KEY_PK.fill_key(pk=pk)
+        ).put(request.data)
+        return resp.auto_return()
+
+
 class EmployeeCompanyListAPI(APIView):
     permission_classes = [IsAuthenticated]
 

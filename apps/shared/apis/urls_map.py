@@ -114,6 +114,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_ALL_LIST = StringUrl('hr/employees/all')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_DETAIL_PK = StringUrl('hr/employee/{pk}')
+    EMPLOYEE_DETAIL_UPDATE_EMAIL_API_KEY_PK = StringUrl('hr/employee-email-api-key/{pk}')
     EMPLOYEE_DETAIL_APP_LIST = StringUrl('hr/employee/{pk}/app')
     EMPLOYEE_APPLICATION_ALL_LIST = StringUrl('hr/employee/{pk}/app/all')
     EMPLOYEE_APPLICATION_SUMMARY_LIST = StringUrl('hr/employee/{pk}/app/summary')

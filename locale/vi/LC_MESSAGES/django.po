@@ -8073,8 +8073,8 @@ msgid "Received money"
 msgstr "Đã nhận tiền"
 
 #
-msgid "Google app password"
-msgstr "Mật khẩu ứng dụng Google"
+msgid "Google API Key"
+msgstr "API Key của Google"
 
 #
 msgid "include space"
@@ -10114,3 +10114,11 @@ msgstr "Lead liên quan:"
 #
 msgid "Direct"
 msgstr "Điều hướng"
+
+#
+msgid "Connect successfully. Updating API Key..."
+msgstr "Kết nối thành công. Đang cập nhập API Key..."
+
+#
+msgid "Can not verify your Email. Check your API Key again"
+msgstr "Không thể xác tực Email của bạn. Kiểm tra lại API Key"

@@ -1481,50 +1481,6 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadChangePSValueTotal(ele) {
-        let valueSO = 0;
-        let ratio = 0;
-        let valuePayment = 0;
-        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
-        if (tableProductWrapper) {
-            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-            if (tableProductFt) {
-                let eleTotal = tableProductFt.querySelector('.quotation-create-product-total-raw');
-                if (eleTotal) {
-                    valueSO = parseFloat(eleTotal.value);
-                }
-            }
-        }
-        QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
-            let row = this.node();
-            let eleRatio = row.querySelector('.table-row-ratio');
-            let eleValAT = row.querySelector('.table-row-value-total');
-            if (eleRatio && eleValAT) {
-                if ($(eleRatio).val()) {
-                    ratio += parseFloat($(eleRatio).val());
-                }
-                if ($(eleValAT).valCurrency()) {
-                    valuePayment += $(eleValAT).valCurrency();
-                }
-            }
-        });
-        if (valuePayment > valueSO) {
-            $(ele).attr('value', String(0));
-            // mask money
-            $.fn.initMaskMoney2();
-            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-            return false;
-        }
-        if (valuePayment < valueSO && ratio === 100) {
-            $(ele).attr('value', String(0));
-            // mask money
-            $.fn.initMaskMoney2();
-            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-            return false;
-        }
-        return true;
-    };
-
     static loadPSValueBeforeTax(ele, ratio) {
         let valueSO = 0;
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
@@ -2599,9 +2555,15 @@ class QuotationLoadDataHandle {
                     QuotationLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
                     $(eleInstallment).val(dataRow?.['term_id']).trigger('change');
                 }
+                let count = dataRow?.['order'];
+                let dataIssue = [{'id': '', 'title': 'Select...',}];
+                for (let i = 1; i <= count; i++) {
+                    let add = {'id': String(i), 'title': String(i)};
+                    dataIssue.push(add);
+                }
                 let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
                 if (eleIssueInvoice) {
-                    QuotationLoadDataHandle.loadInitS2($(eleIssueInvoice), QuotationLoadDataHandle.dataIssueInvoice, {}, null, true);
+                    QuotationLoadDataHandle.loadInitS2($(eleIssueInvoice), dataIssue, {}, null, true);
                     $(eleIssueInvoice).val(dataRow?.['issue_invoice']).trigger('change');
                 }
             });
@@ -4813,7 +4775,7 @@ class indicatorHandle {
                 'indicator_value': value ? value : 0,
                 'indicator_rate': rateValue,
                 'quotation_indicator_value': quotationValue,
-                'difference_indicator_value': differenceValue,
+                'difference_indicator_value': differenceValue ? differenceValue : 0,
             });
             result_json[indicator?.['order']] = {
                 'indicator_value': value ? value : 0,
@@ -6713,12 +6675,30 @@ class QuotationSubmitHandle {
                 }
             }
         }
+
         // payment stage
         if (is_sale_order === true) {
-            let dataPaymentStage = QuotationSubmitHandle.setupDataPaymentStage();
-            if (dataPaymentStage.length > 0) {
-                _form.dataForm['sale_order_payment_stage'] = dataPaymentStage;
+            _form.dataForm['sale_order_payment_stage'] = QuotationSubmitHandle.setupDataPaymentStage();
+            // validate payment stage submit
+            if (type === 0) {
+                if (_form.dataForm?.['sale_order_payment_stage'] && _form.dataForm?.['total_product']) {
+                    let totalRatio = 0;
+                    let totalPayment = 0;
+                    for (let payment of _form.dataForm['sale_order_payment_stage']) {
+                        totalRatio += payment?.['payment_ratio'] ? payment?.['payment_ratio'] : 0;
+                        totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
+                    }
+                    if (totalRatio !== 100) {
+                        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-ratio-payment')}, 'failure');
+                        return false;
+                    }
+                    if (totalPayment !== _form.dataForm?.['total_product']) {
+                        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                        return false;
+                    }
+                }
             }
+
         }
 
         // recurrence

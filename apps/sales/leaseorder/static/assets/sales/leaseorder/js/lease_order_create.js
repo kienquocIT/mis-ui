@@ -782,9 +782,6 @@ $(function () {
             if ($(this).hasClass('table-row-issue-invoice')) {
                 LeaseOrderLoadDataHandle.loadChangePSIssueInvoice(this);
             }
-            if ($(this).hasClass('table-row-value-total')) {
-                LeaseOrderLoadDataHandle.loadChangePSValueTotal(this);
-            }
             if ($(this).hasClass('table-row-due-date')) {
                 let row = this.closest('tr');
                 let eleDate = row.querySelector('.table-row-date');

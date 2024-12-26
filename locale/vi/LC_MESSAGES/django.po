@@ -9986,7 +9986,7 @@ msgstr "Tổng thanh toán"
 
 #
 msgid "Total payment must equal to total after tax"
-msgstr "Tổng thanh toán phải bằng tổng giá trị đơn hàng sau thuế"
+msgstr "Tổng số tiền thanh toán phải bằng tổng số tiền sau thuế"
 
 #
 msgid "Value invoice after tax"
@@ -9995,6 +9995,14 @@ msgstr "GT hóa đơn sau thuế"
 #
 msgid "Example"
 msgstr "Ví dụ"
+
+#
+msgid "Installment"
+msgstr "Khoản thanh toán"
+
+#
+msgid "Total payment ratio must be 100%"
+msgstr "Tổng tỉ lệ thanh toán phải đủ 100%"
 #
 msgid "Account payable"
 msgstr "Các khoản phải trả"

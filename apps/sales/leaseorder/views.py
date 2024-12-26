@@ -141,9 +141,12 @@ class LeaseOrderDetail(View):
         breadcrumb='LEASE_ORDER_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
         return {
                    'data': {'doc_id': pk},
-                   'employee_current': request.user.employee_current_data,
+                   'employee_current': employee_current,
                    'input_mapping_properties': InputMappingProperties.LEASE_ORDER_LEASE_ORDER,
                    'form_id': 'frm_lease_create',
                    'payment_term_stage': PAYMENT_TERM_STAGE,

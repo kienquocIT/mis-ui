@@ -176,7 +176,6 @@ class QuotationLoadDataHandle {
         if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) {
             QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
             QuotationLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
-            QuotationLoadDataHandle.contactSelectEle[0].setAttribute('readonly', 'true');
             // load sale person
             QuotationLoadDataHandle.salePersonSelectEle.empty();
             QuotationLoadDataHandle.salePersonSelectEle.initSelect2({

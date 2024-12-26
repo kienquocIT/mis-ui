@@ -896,8 +896,11 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods return') {
                                         bg_in = 'badge-soft-blue'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'badge-soft-danger'
+                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                        bg_out = 'badge-soft-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'badge-soft-green'
@@ -960,8 +963,11 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods return') {
                                         bg_in = 'badge-soft-blue'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'badge-soft-danger'
+                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                        bg_out = 'badge-soft-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'badge-soft-green'
@@ -1036,8 +1042,11 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods return') {
                                         bg_in = 'badge-soft-blue'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'badge-soft-danger'
+                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                        bg_out = 'badge-soft-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'badge-soft-green'
@@ -1099,8 +1108,11 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods return') {
                                         bg_in = 'badge-soft-blue'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'badge-soft-danger'
+                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                        bg_out = 'badge-soft-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'badge-soft-green'
@@ -1179,10 +1191,15 @@ $(document).ready(function () {
                 $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-grt'))
             }
-            if ($(this).attr('class').includes('badge-soft-danger')) {
+            if ($(this).attr('class').includes('badge-soft-danger dlvr-sale')) {
                 $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
                 $(this).closest('tr').attr('data-bs-placement', 'top')
-                $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr'))
+                $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr-sale'))
+            }
+            if ($(this).attr('class').includes('badge-soft-danger dlvr-lease')) {
+                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
+                $(this).closest('tr').attr('data-bs-placement', 'top')
+                $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr-lease'))
             }
             if ($(this).attr('class').includes('badge-soft-green')) {
                 $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
@@ -1453,7 +1470,7 @@ $(document).ready(function () {
         }
         static get_products_opening_quantity_gte(threshold) {
             let row_info = ''
-            $('#table-inventory-report').find('tbody tr').each(function () {
+            table_inventory_report.find('tbody tr').each(function () {
                 if (!$(this).hasClass('fixed-row')) {
                     let opening_quantity = $(this).find('td:eq(2) span:eq(0)').text()
                     if (parseFloat(opening_quantity) >= parseFloat(threshold)) {
@@ -1468,7 +1485,7 @@ $(document).ready(function () {
         }
         static get_products_opening_quantity_lte(threshold) {
             let row_info = ''
-            $('#table-inventory-report').find('tbody tr').each(function () {
+            table_inventory_report.find('tbody tr').each(function () {
                 if (!$(this).hasClass('fixed-row')) {
                     let opening_quantity = $(this).find('td:eq(2) span:eq(0)').text()
                     if (parseFloat(opening_quantity) <= parseFloat(threshold)) {
@@ -1483,7 +1500,7 @@ $(document).ready(function () {
         }
         static get_products_ending_quantity_gte(threshold) {
             let row_info = ''
-            $('#table-inventory-report').find('tbody tr').each(function () {
+            table_inventory_report.find('tbody tr').each(function () {
                 if (!$(this).hasClass('fixed-row')) {
                     let ending_quantity = $(this).find('td:eq(5) span:eq(0)').text()
                     if (parseFloat(ending_quantity) >= parseFloat(threshold)) {
@@ -1498,7 +1515,7 @@ $(document).ready(function () {
         }
         static get_products_ending_quantity_lte(threshold) {
             let row_info = ''
-            $('#table-inventory-report').find('tbody tr').each(function () {
+            table_inventory_report.find('tbody tr').each(function () {
                 if (!$(this).hasClass('fixed-row')) {
                     let ending_quantity = $(this).find('td:eq(2) span:eq(0)').text()
                     if (parseFloat(ending_quantity) <= parseFloat(threshold)) {
@@ -1567,7 +1584,7 @@ $(document).ready(function () {
             }
             else {
                 is_filter = false
-                $('#table-inventory-report').find('tbody tr').each(function () {
+                table_inventory_report.find('tbody tr').each(function () {
                     if (!$(this).hasClass('fixed-row')) {
                         contexts += GetContexts.get_product_row_info($(this))
                     } else {
@@ -1581,7 +1598,7 @@ $(document).ready(function () {
             console.log(contexts)
             dataParam['question'] = message
             let chatbot_response_ajax = $.fn.callAjax2({
-                url: $('#url-script').attr('data-url-ask'),
+                url: url_script.attr('data-url-ask'),
                 data: dataParam,
                 method: 'GET'
             }).then(
@@ -1604,7 +1621,7 @@ $(document).ready(function () {
                         for (let i = 0; i < data.length; i++) {
                             let messageResponse = $(`<div class="mt-2">
                                 <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">
-                                    ${data[i] === '' ? $('#trans-script').attr('data-trans-no-response') : data[i]}
+                                    ${data[i] === '' ? trans_script.attr('data-trans-no-response') : data[i]}
                                 </div>
                             </div>`);
                             chatShowSpace.append(messageResponse)
@@ -1612,7 +1629,7 @@ $(document).ready(function () {
                     } else {
                         let messageResponse = $(`<div class="mt-2">
                             <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">
-                                ${results[0] === '' ? $('#trans-script').attr('data-trans-no-response') : results[0]}
+                                ${results[0] === '' ? trans_script.attr('data-trans-no-response') : results[0]}
                             </div>
                         </div>`);
                         chatShowSpace.append(messageResponse)
@@ -1632,7 +1649,7 @@ $(document).ready(function () {
                 chatInput.val('');
 
                 let messageResponse = $(`<div class="mt-2">
-                    <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">${$('#trans-script').attr('data-trans-no-response')}</div>
+                    <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">${trans_script.attr('data-trans-no-response')}</div>
                 </div>`);
                 chatShowSpace.append(messageResponse)
                 chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));

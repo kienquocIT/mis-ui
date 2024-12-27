@@ -10,16 +10,16 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'ReconUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
-            </span>
-        </button>
-    </a>
+{#    <a href="{% url 'ReconUpdate' pk=pk %}">#}
+{#        <button class="btn btn-outline-primary" id="btn-enable-edit">#}
+{#            <span>#}
+{#                <span>{% trans 'Edit' %}</span>#}
+{#                <span class="icon">#}
+{#                    <i class="fa-regular fa-pen-to-square"></i>#}
+{#                </span>#}
+{#            </span>#}
+{#        </button>#}
+{#    </a>#}
 {% endblock %}
 {% block pageContent %}
     <script id="trans-script"

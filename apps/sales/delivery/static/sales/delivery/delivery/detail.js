@@ -1435,7 +1435,9 @@ $(async function () {
                 prepareHTMLConfig(res?.['config_at_that_point'])
                 $x.fn.renderCodeBreadcrumb(res);
                 $.fn.compareStatusShowPageAction(res);
-                // new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
+                if ($('#delivery_form').attr('data-method') === 'GET') {
+                    new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
+                }
                 let formGroup = $eleSO[0].closest('.form-group');
                 if (formGroup) {
                     if (res?.['sale_order_data']?.['code']) {

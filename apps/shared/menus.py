@@ -801,6 +801,15 @@ class MenusFinancials:
             # ),
         ],
     )
+    GENERAL = MenuCommon(
+        name='General', code='menu_general', view_name='', icon='<i class="bi bi-link"></i>',
+        child=[
+            MenuCommon(
+                name='Reconciliation', code='menu_reconciliation', view_name='ReconList',
+                icon='<i class="bi bi-ui-checks"></i>',
+            ),
+        ],
+    )
 
 
 # Space Setup
@@ -901,7 +910,8 @@ class SpaceItem:
             icon='<i class="fas fa-balance-scale"></i>',
             menus=[
                 MenusFinancials.HOME,
-                MenusFinancials.CASHFLOW
+                MenusFinancials.CASHFLOW,
+                MenusFinancials.GENERAL,
             ]
         ),
         'forms': SpaceCommon(

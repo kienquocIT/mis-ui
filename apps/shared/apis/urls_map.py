@@ -289,6 +289,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # crm/account
     ACCOUNT_LIST = StringUrl('saledata/accounts')
+    CUSTOMER_LIST_FOR_CASHINFLOW = StringUrl('saledata/customer/list')
     ACCOUNT_DETAIL = StringUrl('saledata/account/{pk}')
     ACCOUNTS_MAP_EMPLOYEES = StringUrl('saledata/accounts-map-employees')
     ACCOUNT_SALE_LIST = StringUrl('saledata/accounts-sale')
@@ -801,5 +802,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Cash inflow
     FINANCIAL_CASHINFLOW_LIST = StringUrl('financial-cashflow/cashinflows')
     FINANCIAL_CASHINFLOW_DETAIL = StringUrl('financial-cashflow/cashinflow/{pk}')
-    CUSTOMER_LIST_FOR_CASHINFLOW = StringUrl('financial-cashflow/customer-for-cashinflow/list')
     AR_INVOICE_LIST_FOR_CASHINFLOW = StringUrl('financial-cashflow/ar-invoice-for-cashinflow/list')
+
+    # Recon
+    FINANCIAL_RECON_LIST = StringUrl('financial-reconciliation/list')
+    FINANCIAL_RECON_DETAIL = StringUrl('financial-reconciliation/detail/{pk}')

@@ -10126,3 +10126,27 @@ msgstr "Giao hàng (bán)"
 #
 msgid "Delivery (lease)"
 msgstr "Giao hàng (cho thuê)"
+
+#
+msgid "Reconciliation"
+msgstr "Cấn trừ"
+
+#
+msgid "Reconciliation list"
+msgstr "Danh sách phiếu cấn trừ"
+
+#
+msgid "Reconciliation create"
+msgstr "Tạo phiếu cấn trừ"
+
+#
+msgid "Reconciliation amount"
+msgstr "Giá trị cấn trừ"
+
+#
+msgid "Reconciliation total"
+msgstr "Tổng cấn trừ"
+
+#
+msgid "Reconciliation total must be 0"
+msgstr "Tổng cấn trừ phải bằng 0"

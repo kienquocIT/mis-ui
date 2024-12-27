@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Reconciliation' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create-recon">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="trans-script"
+    ></script>
+    <form id="form-create-recon" data-method="POST" data-url="{% url 'ReconListAPI' %}">
+        {% include 'sales/reconciliation/common/information.html' %}
+        {% include 'sales/reconciliation/common/table.html' %}
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
+    <script src="{% static 'assets/sales/reconciliation/js/reconciliation_common.js' %}"></script>
+    <script src="{% static 'assets/sales/reconciliation/js/reconciliation_create.js' %}"></script>
+{% endblock %}

@@ -108,17 +108,6 @@ class CashInflowDetailAPI(APIView):
         return resp.auto_return()
 
 
-class CustomerListForCashInflowAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.CUSTOMER_LIST_FOR_CASHINFLOW).get(data)
-        return resp.auto_return(key_success='customer_list')
-
-
 class ARInvoiceListForCashInflowAPI(APIView):
     @mask_view(
         auth_require=True,

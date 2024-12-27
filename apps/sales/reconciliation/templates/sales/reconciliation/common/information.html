@@ -5,14 +5,18 @@
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
-                    <label class="form-label required" for="title">{% trans "Name" %}</label>
-                    <input required maxlength="100" name="title" class="form-control" id="title">
+                    <label class="form-label required" for="title">{% trans "Title" %}</label>
+                    <input class="form-control" id="title" name="title">
                 </div>
             </div>
             <div class="col-12">
                 <div class="form-group">
-                    <label class="form-label required" for="customer">{% trans "Customer" %}</label>
-                    <select required id="customer" class="select2 form-select" data-method="GET" data-url="{% url 'CustomerListAPI' %}"></select>
+                    <label class="form-label required" for="type">{% trans "Type" %}</label>
+                    <select required id="type" class="select2 form-select" disabled>
+                        <option value="0" selected>{% trans 'Reconciliation of Customer' %}</option>
+                        <option value="1">{% trans 'Reconciliation of Supplier' %}</option>
+                        <option value="2">{% trans 'Reconciliation of Employee' %}</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -31,10 +35,10 @@
                     <input required name="document_date" class="form-control" id="document_date">
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="form-group">
-                    <label class="form-label" for="description">{% trans "Note" %}</label>
-                    <textarea name="description" class="form-control" id="description"></textarea>
+                    <label class="form-label required" for="customer">{% trans "Customer" %}</label>
+                    <select required id="customer" class="select2 form-select" data-method="GET" data-url="{% url 'CustomerListAPI' %}"></select>
                 </div>
             </div>
         </div>

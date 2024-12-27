@@ -372,6 +372,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     CASH_INFLOW_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     CASH_INFLOW_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    RECON_LIST_PAGE = BreadcrumbChildren(_('Reconciliation list'), 'ReconList')
+    RECON_CREATE_PAGE = BreadcrumbChildren(_('Reconciliation create'), 'ReconCreate')
+    RECON_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    RECON_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     CASH_OUTFLOW_LIST_PAGE = BreadcrumbChildren(_('Cash outflow list'), 'CashOutflowList')
     CASH_OUTFLOW_CREATE_PAGE = BreadcrumbChildren(_('Cash outflow create'), 'CashOutflowCreate')
     CASH_OUTFLOW_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
@@ -1038,6 +1043,11 @@ class BreadcrumbView:
     CASH_INFLOW_CREATE_PAGE = CASH_INFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     CASH_INFLOW_DETAIL_PAGE = CASH_INFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     CASH_INFLOW_UPDATE_PAGE = CASH_INFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    RECON_LIST_PAGE = [BreadcrumbItem.RECON_LIST_PAGE]
+    RECON_CREATE_PAGE = RECON_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    RECON_DETAIL_PAGE = RECON_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    RECON_UPDATE_PAGE = RECON_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     CASH_OUTFLOW_LIST_PAGE = [BreadcrumbItem.CASH_OUTFLOW_LIST_PAGE]
     CASH_OUTFLOW_CREATE_PAGE = CASH_OUTFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]

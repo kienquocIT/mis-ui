@@ -6,10 +6,7 @@ $(function () {
         let btnConfirmAdd = $('#btn-confirm-add-product');
 
         // Load init
-        if (RecoveryLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
-            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.typeSelectEle, RecoveryLoadDataHandle.dataTypeGr);
-            RecoveryLoadDataHandle.loadCustomAreaByType();
-        }
+        RecoveryLoadDataHandle.loadInit();
 
         // run datetimepicker
         $('.date-picker').each(function () {
@@ -46,169 +43,119 @@ $(function () {
         // workflow init
         WFRTControl.setWFInitialData("goodsreceipt");
 
-        GRLoadDataHandle.typeSelectEle.on('change', function () {
-            GRLoadDataHandle.loadCustomAreaByType();
+        RecoveryLoadDataHandle.typeSelectEle.on('change', function () {
+            RecoveryLoadDataHandle.loadCustomAreaByType();
         });
 
         // Action on change dropdown PO
-        GRLoadDataHandle.POSelectEle.on('change', function () {
-            GRLoadDataHandle.loadChangePO($(this));
-            GRLoadDataHandle.loadClearModal();
-            GRLoadDataHandle.loadCallAjaxProduct();
+        RecoveryLoadDataHandle.POSelectEle.on('change', function () {
+            RecoveryLoadDataHandle.loadChangePO($(this));
+            RecoveryLoadDataHandle.loadClearModal();
+            RecoveryLoadDataHandle.loadCallAjaxProduct();
             $('#btn-edit-product-good-receipt').click();
         });
 
         btnConfirmAdd.on('click', function () {
-            GRStoreDataHandle.storeDataProduct();
-            GRLoadDataHandle.loadLineDetail();
+            RecoveryStoreDataHandle.storeDataProduct();
+            RecoveryLoadDataHandle.loadLineDetail();
         });
 
-        GRDataTableHandle.tablePOProduct.on('click', '.table-row-checkbox', function () {
-            GRLoadDataHandle.loadCheckPOProduct(this);
+        RecoveryDataTableHandle.tablePOProduct.on('click', '.table-row-checkbox', function () {
+            RecoveryLoadDataHandle.loadCheckPOProduct(this);
         });
 
-        GRDataTableHandle.tablePOProduct.on('change', '.table-row-import', function () {
+        RecoveryDataTableHandle.tablePOProduct.on('change', '.table-row-import', function () {
             let remain = parseFloat(this.closest('tr').querySelector('.table-row-gr-remain').innerHTML);
-            let valid_import = GRValidateHandle.validateImportProductNotInventory(this, remain);
+            let valid_import = RecoveryValidateHandle.validateImportProductNotInventory(this, remain);
             let eleCheck = this?.closest('tr')?.querySelector('.table-row-checkbox');
             if (eleCheck) {
                 eleCheck.checked = valid_import;
             }
         });
 
-        GRDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {
-            GRLoadDataHandle.loadCheckWH(this);
+        RecoveryDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {
+            RecoveryLoadDataHandle.loadCheckWH(this);
         });
 
-        GRDataTableHandle.tableWH.on('change', '.table-row-import', function () {
+        RecoveryDataTableHandle.tableWH.on('change', '.table-row-import', function () {
             if (this.closest('tr').querySelector('.table-row-checkbox').checked === false) {
                 $(this.closest('tr').querySelector('.table-row-checkbox')).click();
             }
-            let result = GRLoadDataHandle.loadQuantityImport();
+            let result = RecoveryLoadDataHandle.loadQuantityImport();
             if (result === false) {
                 this.value = 0;
-                GRLoadDataHandle.loadQuantityImport();
+                RecoveryLoadDataHandle.loadQuantityImport();
             }
-            GRStoreDataHandle.storeDataProduct();
+            RecoveryStoreDataHandle.storeDataProduct();
         });
 
-        GRDataTableHandle.tableWH.on('click', '.table-row-checkbox-additional', function () {
-            GRLoadDataHandle.loadCheckIsAdditional(this);
+        RecoveryDataTableHandle.tableWH.on('click', '.table-row-checkbox-additional', function () {
+            RecoveryLoadDataHandle.loadCheckIsAdditional(this);
         });
 
-        GRLoadDataHandle.btnAddLot.on('click', function () {
-            GRLoadDataHandle.loadAddRowLot();
+        RecoveryLoadDataHandle.btnAddLot.on('click', function () {
+            RecoveryLoadDataHandle.loadAddRowLot();
         });
 
-        GRDataTableHandle.tableLot.on('click', '.dropdown-item-lot', function () {
+        RecoveryDataTableHandle.tableLot.on('click', '.dropdown-item-lot', function () {
             let row = this.closest('tr');
-            GRLoadDataHandle.loadUnCheckLotDDItem(row);
-            GRLoadDataHandle.loadCheckLotDDItem(this, row);
+            RecoveryLoadDataHandle.loadUnCheckLotDDItem(row);
+            RecoveryLoadDataHandle.loadCheckLotDDItem(this, row);
         });
 
-        GRDataTableHandle.tableLot.on('change', '.table-row-lot-number', function () {
-            GRLoadDataHandle.loadCheckApplyLot(this);
+        RecoveryDataTableHandle.tableLot.on('change', '.table-row-lot-number', function () {
+            RecoveryLoadDataHandle.loadCheckApplyLot(this);
         });
 
-        GRDataTableHandle.tableLot.on('change', '.table-row-import', function () {
-            let result = GRLoadDataHandle.loadQuantityImport();
+        RecoveryDataTableHandle.tableLot.on('change', '.table-row-import', function () {
+            let result = RecoveryLoadDataHandle.loadQuantityImport();
             if (result === false) {
-                let rowIndex = GRDataTableHandle.tableLot.DataTable().row(this.closest('tr')).index();
-                let row = GRDataTableHandle.tableLot.DataTable().row(rowIndex);
+                let rowIndex = RecoveryDataTableHandle.tableLot.DataTable().row(this.closest('tr')).index();
+                let row = RecoveryDataTableHandle.tableLot.DataTable().row(rowIndex);
                 row.remove().draw();
-                GRLoadDataHandle.loadQuantityImport();
+                RecoveryLoadDataHandle.loadQuantityImport();
             }
-            GRStoreDataHandle.storeDataProduct();
+            RecoveryStoreDataHandle.storeDataProduct();
         });
 
-        GRDataTableHandle.tableLot.on('change', '.table-row-expire-date, .table-row-manufacture-date', function () {
+        RecoveryDataTableHandle.tableLot.on('change', '.table-row-expire-date, .table-row-manufacture-date', function () {
             let row = this.closest('tr');
-            GRLoadDataHandle.loadDataIfChangeDateLotRow(row);
+            RecoveryLoadDataHandle.loadDataIfChangeDateLotRow(row);
         });
 
-        GRLoadDataHandle.btnAddSerial.on('click', function () {
-            GRLoadDataHandle.loadAddRowSerial();
+        RecoveryLoadDataHandle.btnAddSerial.on('click', function () {
+            RecoveryLoadDataHandle.loadAddRowSerial();
         });
 
-        GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
-            GRLoadDataHandle.loadCheckApplySerial(this);
+        RecoveryDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
+            RecoveryLoadDataHandle.loadCheckApplySerial(this);
         });
 
-        GRDataTableHandle.tableLineDetailPO.on('change', '.table-row-price, .table-row-tax', function () {
+        RecoveryDataTableHandle.$tableProduct.on('change', '.table-row-price, .table-row-tax', function () {
             let row = this.closest('tr');
-            GRCalculateHandle.calculateMain(GRDataTableHandle.tableLineDetailPO, row);
+            GRCalculateHandle.calculateMain(RecoveryDataTableHandle.$tableProduct, row);
         });
 
-        GRDataTableHandle.tableLineDetailPO.on('click', '.del-row', function () {
-            deleteRowGR(this.closest('tr'), GRDataTableHandle.tableLineDetailPO);
-            reOrderRowTable(GRDataTableHandle.tableLineDetailPO);
-            GRCalculateHandle.calculateTable(GRDataTableHandle.tableLineDetailPO);
+        RecoveryDataTableHandle.$tableProduct.on('click', '.del-row', function () {
+            deleteRowGR(this.closest('tr'), RecoveryDataTableHandle.$tableProduct);
+            reOrderRowTable(RecoveryDataTableHandle.$tableProduct);
+            GRCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);
         });
 
-        GRDataTableHandle.tableLot.on('click', '.del-row', function () {
-            deleteRowGR(this.closest('tr'), GRDataTableHandle.tableLot);
+        RecoveryDataTableHandle.tableLot.on('click', '.del-row', function () {
+            deleteRowGR(this.closest('tr'), RecoveryDataTableHandle.tableLot);
         });
 
-        GRDataTableHandle.tableSerial.on('click', '.del-row', function () {
-            deleteRowGR(this.closest('tr'), GRDataTableHandle.tableSerial);
+        RecoveryDataTableHandle.tableSerial.on('click', '.del-row', function () {
+            deleteRowGR(this.closest('tr'), RecoveryDataTableHandle.tableSerial);
         });
 
         $('#productModalCenter').on('change', '.validated-number', function () {
-            GRValidateHandle.validateNumber(this);
+            RecoveryValidateHandle.validateNumber(this);
         });
 
         $('#productIAModalCenter').on('change', '.validated-number', function () {
-            GRValidateHandle.validateNumber(this);
-        });
-
-        // IA BEGIN
-        GRLoadDataHandle.IASelectEle.on('change', function () {
-            if ($(this).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.IASelectEle, $(this).val());
-                for (let dataIAProduct of dataSelected?.['gr_products_data']) {
-                    if (dataIAProduct?.['product_data']?.['general_traceability_method'] !== 0) {
-                        dataIAProduct['quantity_import'] = 0;
-                    }
-                }
-                GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
-                GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataSelected?.['gr_products_data']).draw();
-            }
-            $('#btn-edit-product-good-receipt').click();
-        });
-
-        // PRODUCTION BEGIN
-        GRLoadDataHandle.$boxTypeReport.on('change', function () {
-           GRLoadDataHandle.loadCustomAreaReportByType();
-        });
-
-        GRLoadDataHandle.$boxProductionOrder.on('change', function () {
-            GRLoadDataHandle.loadChangeProductionWorkOrder();
-        });
-
-        GRLoadDataHandle.$boxWorkOrder.on('change', function () {
-            GRLoadDataHandle.loadChangeProductionWorkOrder();
-        });
-
-        GRLoadDataHandle.$btnSR.on('click', function () {
-            let listData = [];
-            for (let eleCheck of GRDataTableHandle.tableProductionReport[0].querySelectorAll('.table-row-checkbox:checked')) {
-                if (eleCheck.getAttribute('data-row')) {
-                    listData.push(JSON.parse(eleCheck.getAttribute('data-row')));
-                }
-            }
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, listData);
-            GRLoadDataHandle.$boxProductionReport.change();
-        });
-
-        GRLoadDataHandle.$boxProductionReport.on('change', function () {
-            if (GRLoadDataHandle.$boxProductionReport.val() && GRLoadDataHandle.$boxProductionReport.val().length > 0) {
-                let dataProduction = GRLoadDataHandle.loadSetupProduction();
-                if (dataProduction?.['product_data']) {
-                    GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
-                    GRDataTableHandle.tablePOProduct.DataTable().rows.add([dataProduction]).draw();
-                }
-            }
-            $('#btn-edit-product-good-receipt').click();
+            RecoveryValidateHandle.validateNumber(this);
         });
 
 // SUBMIT FORM
@@ -225,7 +172,7 @@ $(function () {
 
         function submitHandlerFunc() {
             let _form = new SetupFormSubmit(RecoveryLoadDataHandle.$form);
-            let result = GRSubmitHandle.setupDataSubmit(_form);
+            let result = RecoverySubmitHandle.setupDataSubmit(_form);
             if (result === false) {
                 return false;
             }

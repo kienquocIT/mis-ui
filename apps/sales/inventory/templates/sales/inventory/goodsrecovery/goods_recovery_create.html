@@ -58,10 +58,10 @@
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label class="form-label required" for="box-status">{% trans 'Status' %}</label>
+                            <label class="form-label required" for="status">{% trans 'Status' %}</label>
                             <select
                                 class="form-select"
-                                id="box-status"
+                                id="status"
                                 data-url=""
                                 data-method="GET"
                                 data-link-detail=""
@@ -97,7 +97,6 @@
                                     data-method="GET"
                                     name="lease_order_id"
                                     data-keyResp="lease_order_list"
-                                    data-keyText="name"
                                     required
                             ></select>
                         </div>
@@ -141,7 +140,7 @@
                         <div class="row custom-line-detail" id="custom-line-detail-1">
                             <div class="row">
                                 <table
-                                    id="datable-good-receipt-line-detail-po"
+                                    id="datable-product"
                                     class="table nowrap min-w-1600p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
@@ -513,6 +512,10 @@
             data-production-report="{% trans 'Production report' %}"
             data-required-product="{% trans "Product is required" %}"
             data-edit="{% trans "Edit" %}"
+
+            data-status-1="{% trans "Open" %}"
+            data-status-2="{% trans "Open" %}"
+            data-status-3="{% trans "Open" %}"
     >
     <input
             type="text"
@@ -562,7 +565,7 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 
-    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_recovery_common.js' %}"></script>
-    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_recovery_create.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodsrecovery/goods_recovery_common.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodsrecovery/goods_recovery_create.js' %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

@@ -11,6 +11,11 @@ class RecoveryLoadDataHandle {
         {'id': 1, 'title': RecoveryLoadDataHandle.transEle.attr('data-status-2')},
         {'id': 2, 'title': RecoveryLoadDataHandle.transEle.attr('data-status-3')},
     ];
+    static dataAssetType = {
+        1: RecoveryLoadDataHandle.transEle.attr('data-asset-type-1'),
+        2: RecoveryLoadDataHandle.transEle.attr('data-asset-type-2'),
+        3: RecoveryLoadDataHandle.transEle.attr('data-asset-type-3'),
+    }
 
 
     static typeSelectEle = $('#box-good-receipt-type');
@@ -18,7 +23,6 @@ class RecoveryLoadDataHandle {
     static supplierSelectEle = $('#box-good-receipt-supplier');
     static IASelectEle = $('#box-good-receipt-inventory-adjustment');
     static $boxTypeReport = $('#box-report-type');
-    static $btnSR = $('#btn-save-production-report');
     static $boxProductionOrder = $('#box-production-order');
     static $boxWorkOrder = $('#box-work-order');
     static $boxProductionReport = $('#box-production-report');
@@ -41,10 +45,6 @@ class RecoveryLoadDataHandle {
             'id': 1,
             'title': RecoveryLoadDataHandle.transEle.attr('data-for-po')
         },
-    ];
-    static dataTypeReport = [
-        {'id': 0, 'title': RecoveryLoadDataHandle.transEle.attr('data-for-pro')},
-        {'id': 1, 'title': RecoveryLoadDataHandle.transEle.attr('data-for-wo')},
     ];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -153,6 +153,8 @@ class RecoveryLoadDataHandle {
         RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxLeaseOrder);
         // dtb
         RecoveryDataTableHandle.dataTableProduct();
+        RecoveryDataTableHandle.dataTableDelivery();
+        RecoveryDataTableHandle.dataTableDeliveryProduct();
     }
 
     static loadDDLot(ele, checkedID = null) {
@@ -1417,78 +1419,10 @@ class RecoveryDataTableHandle {
     static tableWH = $('#datable-good-receipt-warehouse');
     static tableLot = $('#datable-good-receipt-manage-lot');
     static tableSerial = $('#datable-good-receipt-manage-serial');
-    static $tableProduct = $('#datable-product');
 
-    // PO
-    static dataTableGoodReceiptPOProduct(data) {
-        RecoveryDataTableHandle.tablePOProduct.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
-            columnDefs: [],
-            columns: [
-                {
-                    targets: 0,
-                    render: (data, type, row) => {
-                        let targetID = row?.['purchase_order_product_id'];  // PO
-                        if (row?.['ia_item_id']) {  // IA
-                            targetID = row?.['ia_item_id'];
-                        }
-                        if (row?.['production_order_id']) {  // PRODUCTION
-                            targetID = row?.['production_order_id'];
-                        }
-                        if (targetID) {
-                            return `<div class="form-check form-check-lg">
-                                    <input 
-                                        type="radio" 
-                                        class="form-check-input table-row-checkbox" 
-                                        id="po-pro-${targetID.replace(/-/g, "")}"
-                                        data-id="${row?.['id']}"
-                                    >
-                                    <label class="form-check-label table-row-item" for="po-pro-${targetID.replace(/-/g, "")}">${row?.['product_data']?.['title']}</label>
-                                </div>`;
-                        }
-                        return ``;
-                    }
-                },
-                {
-                    targets: 1,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['uom_data']?.['title']}</span>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity">${row?.['product_quantity_order_actual'] ? row?.['product_quantity_order_actual'] : 0}</span>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-gr-completed">${row?.['gr_completed_quantity'] ? row?.['gr_completed_quantity'] : 0}</span>`;
-                    }
-                },
-                {
-                    targets: 4,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-gr-remain">${row?.['gr_remain_quantity'] ? row?.['gr_remain_quantity'] : 0}</span>`;
-                    }
-                },
-                {
-                    targets: 5,
-                    render: (data, type, row) => {
-                        return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
-                    }
-                },
-            ],
-            drawCallback: function () {
-                // add css to Dtb
-                RecoveryLoadDataHandle.loadCssToDtb('datable-good-receipt-po-product');
-                RecoveryLoadDataHandle.loadEventRadio(RecoveryDataTableHandle.tablePOProduct);
-            },
-        });
-    };
+    static $tableProduct = $('#datable-product');
+    static $tableDelivery = $('#datable-delivery');
+    static $tableDeliveryProduct = $('#datable-deli-product');
 
     static dataTableGoodReceiptPR(data) {
         RecoveryDataTableHandle.tablePR.not('.dataTable').DataTableDefault({
@@ -1938,6 +1872,113 @@ class RecoveryDataTableHandle {
             ],
             drawCallback: function () {
                 RecoveryDataTableHandle.dtbProductHDCustom();
+            },
+        });
+    };
+
+    static dataTableDelivery(data) {
+        RecoveryDataTableHandle.$tableDelivery.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        return `<div class="form-check form-check-lg">
+                                    <input 
+                                        type="radio" 
+                                        class="form-check-input table-row-checkbox" 
+                                        id="delivery-${row?.['id'].replace(/-/g, "")}"
+                                        data-id="${row?.['id']}"
+                                    >
+                                    <label class="form-check-label table-row-item" for="delivery-${row?.['id'].replace(/-/g, "")}">${row?.['code']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        let date = '';
+                        if (row?.['date_created']) {
+                            date = moment(row?.['date_created']).format('DD/MM/YYYY');
+                        }
+                        return `<span type="text" class="table-row-date">${date}</span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                // add css to Dtb
+                RecoveryLoadDataHandle.loadCssToDtb('datable-delivery');
+                RecoveryLoadDataHandle.loadEventRadio(RecoveryDataTableHandle.$tableDelivery);
+            },
+        });
+    };
+
+    static dataTableDeliveryProduct(data) {
+        RecoveryDataTableHandle.$tableDeliveryProduct.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    width: '80%',
+                    render: (data, type, row) => {
+                        return `<div class="form-check form-check-lg">
+                                    <input 
+                                        type="radio" 
+                                        class="form-check-input table-row-checkbox" 
+                                        id="deli-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}"
+                                        data-id="${row?.['offset_data']?.['id']}"
+                                    >
+                                    <label class="form-check-label table-row-item" for="deli-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}">${row?.['offset_data']?.['title']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-asset-type">${RecoveryLoadDataHandle.dataAssetType?.[row?.['asset_type']] ? RecoveryLoadDataHandle.dataAssetType?.[row?.['asset_type']] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-uom">${row?.['offset_data']?.['sale_information']?.['default_uom']?.['title'] ? row?.['offset_data']?.['sale_information']?.['default_uom']?.['title'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['quantity_ordered']}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['quantity_delivered']}</span>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['quantity_recovered']}</span>`;
+                    }
+                },
+                {
+                    targets: 6,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-recovery">${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : ''}</span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                // add css to Dtb
+                RecoveryLoadDataHandle.loadCssToDtb('datable-deli-product');
+                RecoveryLoadDataHandle.loadEventRadio(RecoveryDataTableHandle.$tableDeliveryProduct);
             },
         });
     };

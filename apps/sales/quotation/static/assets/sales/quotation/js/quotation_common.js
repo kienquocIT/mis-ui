@@ -2995,9 +2995,10 @@ class QuotationDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                // QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     QuotationDataTableHandle.dtbProductHDCustom();
+                    // set again WF runtime
+                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
             },
         });
@@ -3388,6 +3389,8 @@ class QuotationDataTableHandle {
                 $.fn.initMaskMoney2();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     QuotationDataTableHandle.dtbExpenseHDCustom();
+                    // set again WF runtime
+                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
             },
         });
@@ -3872,6 +3875,8 @@ class QuotationDataTableHandle {
                 $.fn.initMaskMoney2();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     QuotationDataTableHandle.dtbPaymentHDCustom();
+                    // set again WF runtime
+                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
             },
         });

@@ -43,9 +43,48 @@ $(function () {
         // workflow init
         WFRTControl.setWFInitialData("goodsreceipt");
 
-        RecoveryLoadDataHandle.typeSelectEle.on('change', function () {
-            RecoveryLoadDataHandle.loadCustomAreaByType();
+
+        RecoveryLoadDataHandle.$boxLeaseOrder.on('change', function () {
+            RecoveryDataTableHandle.$tableDelivery.DataTable().clear().draw();
+            RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().clear().draw();
+            if (RecoveryLoadDataHandle.$boxLeaseOrder.val()) {
+                let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.$boxLeaseOrder, RecoveryLoadDataHandle.$boxLeaseOrder.val());
+                if (data) {
+                    WindowControl.showLoading();
+                    $.fn.callAjax2({
+                            'url': RecoveryLoadDataHandle.urlEle.attr('data-delivery'),
+                            'method': 'GET',
+                            'data': {'order_delivery__lease_order_id': RecoveryLoadDataHandle.$boxLeaseOrder.val()},
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('delivery_for_recovery_list') && Array.isArray(data.delivery_for_recovery_list)) {
+                                    RecoveryDataTableHandle.$tableDelivery.DataTable().rows.add(data.delivery_for_recovery_list).draw();
+                                    WindowControl.hideLoading();
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+            return true;
         });
+
+        RecoveryDataTableHandle.$tableDelivery.on('click', '.table-row-checkbox', function () {
+            RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().clear().draw();
+            let row = this.closest('tr');
+            if (row) {
+                let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
+                let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
+                let rowData = $row.data();
+                RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows.add(rowData?.['delivery_product']).draw();
+            }
+            return true;
+        });
+
+
 
         // Action on change dropdown PO
         RecoveryLoadDataHandle.POSelectEle.on('change', function () {

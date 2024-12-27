@@ -202,44 +202,6 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="row custom-line-detail" id="custom-line-detail-3" hidden>
-                            <div class="row">
-                                <table
-                                    id="datable-good-receipt-line-detail-production"
-                                    class="table nowrap min-w-1500p w-100 mb-5"
-                                    data-url=""
-                                    data-method="get"
-                                >
-                                    <thead>
-                                    <tr class="bg-light">
-                                        <th></th>
-                                        <th>{% trans 'Product' %}</th>
-                                        <th>{% trans 'Description' %}</th>
-                                        <th>{% trans 'UOM' %}</th>
-                                        <th>{% trans 'Quantity' %}</th>
-                                        <th>{% trans 'Warehouse' %}</th>
-                                        <th>{% trans 'Unit cost' %}</th>
-                                        <th>{% trans 'Subtotal Price' %}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline-primary"
-                                        id="btn-edit-production-good-receipt"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#productionModalCenter"
-                                    >
-                                        <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %}</span></span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="tab-pane fade" id="attachment">
                         {% include 'extends/files/all.html' %}
@@ -262,19 +224,13 @@
                                     <div class="row mb-2">
                                         <div data-simplebar class="h-350p nicescroll-bar">
                                             <table
-                                                id="datable-good-receipt-po-product"
+                                                id="datable-delivery"
                                                 class="table nowrap w-100"
-                                                data-url="{% url "PurchaseOrderProductGRListAPI" %}"
-                                                data-method="GET"
                                             >
                                                 <thead>
                                                 <tr class="bg-light">
-                                                    <th class="w-25">{% trans 'Product' %}</th>
-                                                    <th class="w-20">{% trans 'UOM' %}(PO)</th>
-                                                    <th class="w-10">{% trans 'Quantity' %}(PO)</th>
-                                                    <th class="w-15">{% trans 'Received before' %}</th>
-                                                    <th class="w-15">{% trans 'Remain' %}</th>
-                                                    <th class="w-15">{% trans 'This time' %}</th>
+                                                    <th class="w-60">{% trans 'Delivery' %}</th>
+                                                    <th class="w-20">{% trans 'Date' %}</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -283,21 +239,20 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div data-simplebar class="h-350p nicescroll-bar" id="scroll-table-pr" hidden>
+                                        <div data-simplebar class="h-350p nicescroll-bar">
                                             <table
-                                                id="datable-good-receipt-purchase-request"
+                                                id="datable-deli-product"
                                                 class="table nowrap w-100"
-                                                data-url="{% url "PurchaseRequestListAPI" %}"
-                                                data-method="GET"
                                             >
                                                 <thead>
                                                 <tr class="bg-light">
-                                                    <th class="w-25 th-custom"></th>
-                                                    <th class="w-20">{% trans 'UOM' %}</th>
-                                                    <th class="w-10">{% trans 'Quantity' %}</th>
-                                                    <th class="w-15">{% trans 'Received before' %}</th>
-                                                    <th class="w-15">{% trans 'Remain' %}</th>
-                                                    <th class="w-15">{% trans 'This time' %}</th>
+                                                    <th class="w-25">{% trans 'Product' %}</th>
+                                                    <th class="w-15">{% trans 'Asset type' %}</th>
+                                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                                    <th class="w-10">{% trans 'Ordered' %}</th>
+                                                    <th class="w-10">{% trans 'Delivered' %}</th>
+                                                    <th class="w-10">{% trans 'Recovered' %}</th>
+                                                    <th class="w-10">{% trans 'Recovery' %}</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -390,99 +345,6 @@
                     </div>
                 </div>
             </div>
-
-            <div
-                    class="modal fade" id="productionReportModal" tabindex="-1"
-                    role="dialog" aria-labelledby="productionReportModal"
-                    aria-hidden="true"
-            >
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title"><b>{% trans 'Select production report' %}</b></h5>
-                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-12 col-md-4 col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-label required" for="box-report-type">{% trans 'Report for' %}</label>
-                                        <div class="input-group">
-                                            <div class="input-affix-wrapper">
-                                                <div class="input-prefix">
-                                                    <i class="fas fa-file-import text-dark"></i>
-                                                </div>
-                                                <select
-                                                    class="form-select"
-                                                    id="box-report-type"
-                                                    data-url=""
-                                                    data-method="GET"
-                                                    data-link-detail=""
-                                                    name="report_type"
-                                                    data-keyResp=""
-                                                >
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <div class="custom-area-report" id="custom-area-report-0">
-                                        <div class="form-group">
-                                            <label class="form-label required" for="box-production-order">{% trans 'Production order' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="box-production-order"
-                                                    data-url="{% url 'ProductionOrderDDListAPI' %}"
-                                                    data-method="GET"
-                                                    data-link-detail=""
-                                                    name="production_order"
-                                                    data-keyResp="production_order_dd"
-                                            >
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="custom-area-report" id="custom-area-report-1" hidden>
-                                        <div class="form-group">
-                                            <label class="form-label required" for="box-work-order">{% trans 'Work order' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="box-work-order"
-                                                    data-url="{% url 'WorkOrderDDListAPI' %}"
-                                                    data-method="GET"
-                                                    data-link-detail=""
-                                                    name="work_order"
-                                                    data-keyResp="work_order_dd"
-                                            >
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <table
-                                    id="table-production-report"
-                                    class="table nowrap w-100 mb-5"
-                                    data-url="{% url 'ProductionReportGRListAPI' %}"
-                                    data-method="GET"
-                            >
-                                <thead>
-                                <tr class="bg-light">
-                                    <th>{% trans 'Production report' %}</th>
-                                    <th>{% trans 'Quantity' %}</th>
-                                    <th>{% trans 'Remain' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-production-report" data-bs-dismiss="modal">{% trans 'Save' %}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
     </form>
@@ -516,6 +378,9 @@
             data-status-1="{% trans "Open" %}"
             data-status-2="{% trans "Open" %}"
             data-status-3="{% trans "Open" %}"
+            data-asset-type-1="{% trans "Product" %}"
+            data-asset-type-2="{% trans "Tool" %}"
+            data-asset-type-3="{% trans "Fixed asset" %}"
     >
     <input
             type="text"
@@ -552,6 +417,7 @@
     >
     <input
             type="text" id="url-factory"
+            data-delivery="{% url 'DeliveryForRecoveryListAPI' %}"
             data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
             data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
             data-md-bom="{% url 'BOMOrderListAPI' %}"

@@ -7,6 +7,7 @@ from typing import Union
 from urllib.parse import urlencode
 
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as trans
 from .utils import RandomGenerate
 
 
@@ -42,6 +43,7 @@ class MenuCommon:
             url += '?' + urlencode(self.params)
         return {
             'name': self.name,
+            'name_i18n': trans(self.name),
             'code': self.code if self.code else RandomGenerate.get_string(length=32),
             'view_name': self.view_name,
             'url': url,
@@ -1028,6 +1030,12 @@ class SpaceItem:
         if space_code in cls.mapping:
             return cls.mapping[space_code].data_menus
         return None
+
+    @classmethod
+    def get_menus(cls):
+        return {
+            key: value.data_menus for key, value in cls.mapping.items()
+        }
 
 
 class SpaceGroup:

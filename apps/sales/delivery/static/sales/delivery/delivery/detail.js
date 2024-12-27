@@ -131,6 +131,8 @@ $(async function () {
                             sub_delivery_data.push({
                                 'sale_order': item?.['sale_order']?.['id'] ? item?.['sale_order']?.['id'] : null,
                                 'sale_order_data': item?.['sale_order'] ? item?.['sale_order'] : {},
+                                'lease_order': item?.['lease_order']?.['id'] ? item?.['lease_order']?.['id'] : null,
+                                'lease_order_data': item?.['lease_order'] ? item?.['lease_order'] : {},
                                 'warehouse': item?.['warehouse']?.['id'],
                                 'warehouse_data': item?.['warehouse'],
                                 'uom': prod_data?.['uom_data']?.['id'],
@@ -459,6 +461,8 @@ $(async function () {
         };
 
         setupDataPW(dataSrc, prod_data, config, type) {
+            // type: 0 normal | 1: borrow
+
             let finalData = [];
             let baseData = [];
             let soDataJson = {};
@@ -475,7 +479,10 @@ $(async function () {
                             }
                         }
                     }
+                }
+                if (!pwh.hasOwnProperty('lease_order') && type === 0) {
                     if ($eleSO.attr('data-lo')) {
+                        pwh['lease_order'] = JSON.parse($eleSO.attr('data-lo'));
                         for (let deliveryData of prod_data?.['delivery_data']) {
                             if (pwh?.['warehouse']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
                                 pwh['picked'] = deliveryData?.['stock'];
@@ -519,7 +526,8 @@ $(async function () {
                 }
 
                 baseData.push(pwh);
-                if (type === 0) {
+
+                if (type === 0) {  // normal
                     if (pwh?.['sale_order']?.['id']) {
                         if (!soDataJson.hasOwnProperty(String(pwh?.['sale_order']?.['id']))) {
                             soDataJson[String(pwh?.['sale_order']?.['id'])] = {
@@ -534,7 +542,7 @@ $(async function () {
                         }
                     }
                 }
-                if (type === 1) {
+                if (type === 1) {  // borrow
                     if (!commonDataJson.hasOwnProperty('common_warehouse')) {
                         commonDataJson['common_warehouse'] = {
                             'sale_order': pwh?.['sale_order'],

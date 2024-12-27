@@ -1095,6 +1095,8 @@ class OpportunityActivity {
                             'production.bom': transEle.attr('data-trans-bom'),
                             'bidding.bidding': transEle.attr('data-trans-bidding'),
                             'consulting.consulting': transEle.attr('data-trans-consulting'),
+                            'leaseorder.leaseorder': transEle.attr('data-trans-lease-order'),
+                            'contract.contractapproval': transEle.attr('data-trans-contract'),
                         }
                         let typeMapActivityIcon = {
                             1: 'fa-solid fa-list-check',
@@ -1108,14 +1110,9 @@ class OpportunityActivity {
                             3: transEle.attr('data-trans-email'),
                             4: transEle.attr('data-trans-meeting'),
                         }
-                        let typeMapIcon = {
-                            0: "fas fa-file-alt",
-                            1: "fas fa-tasks",
-                        }
-
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code']) {
-                                return `<i class="text-primary ${typeMapIcon[row?.['log_type']]}"></i>  <span class="text-primary small">${appMapTrans[row?.['app_code']]}</span>`;
+                                return `<span class="badge badge-light badge-outline">${appMapTrans[row?.['app_code']]}</span>`;
                             }
                         } else {
                             let status = '';
@@ -1124,7 +1121,7 @@ class OpportunityActivity {
                             }
                             return `<i class="text-primary ${typeMapActivityIcon[row?.['log_type']]}"></i>  <span class="text-primary small">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                         }
-                        return `<p></p>`;
+                        return ``;
                     }
                 },
                 {
@@ -1135,7 +1132,7 @@ class OpportunityActivity {
                                 return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
                             }
                         }
-                        return `<p></p>`;
+                        return ``;
                     }
                 },
                 {
@@ -1150,6 +1147,8 @@ class OpportunityActivity {
                             'production.bom': urlFactory.attr('data-url-bom-detail'),
                             'bidding.bidding': urlFactory.attr('data-url-bidding-detail'),
                             'consulting.consulting': urlFactory.attr('data-url-consulting-detail'),
+                            'leaseorder.leaseorder': urlFactory.attr('data-url-lease-order-detail'),
+                            'contract.contractapproval': urlFactory.attr('data-url-contract-detail'),
                         }
                         let link = '';
                         let title = '';
@@ -1164,7 +1163,7 @@ class OpportunityActivity {
                                 }
                                 return result;
                             } else {
-                                return `<p>--</p>`;
+                                return ``;
                             }
                         }
                         if (row?.['log_type'] === 1) {
@@ -1186,7 +1185,7 @@ class OpportunityActivity {
                     targets: 4,
                     render: (data, type, row) => {
                         if (row?.['app_code'] && [0, 1].includes(row?.['log_type'])) {
-                            if (row?.['log_type'] === 0 && row?.['doc_data']?.['system_status']) {
+                            if (row?.['log_type'] === 0 && (row?.['doc_data']?.['system_status'] || row?.['doc_data']?.['system_status'] === 0)) {
                                 let sttTxt = JSON.parse($('#stt_sys').text());
                                 let sttMapBadge = [
                                     "soft-light",
@@ -1201,7 +1200,7 @@ class OpportunityActivity {
                                 return `<span class="badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span>`;
                             }
                         }
-                        return `<p></p>`;
+                        return ``;
                     }
                 },
                 {
@@ -1233,6 +1232,7 @@ class OpportunityActivity {
             let appMapPerm = {
                 'quotation.quotation': 'quotation.quotation.create',
                 'saleorder.saleorder': 'saleorder.saleorder.create',
+                'leaseorder.leaseorder': 'leaseorder.leaseorder.create',
             };
             if (appMapPerm?.[label] && detail?.['id']) {
                 let tableData = $tableTimeLine.DataTable().rows().data().toArray();
@@ -1248,7 +1248,7 @@ class OpportunityActivity {
                         if (data) {
                             if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                                 if (data.opportunity_list.length === 1) {
-                                    // check opp already has quotation/ sale order
+                                    // Validate: check opp already has quotation/ sale order
                                     for (let tData of tableData) {
                                         if (label === 'quotation.quotation') {
                                             if (tData?.['app_code'] === 'saleorder.saleorder' && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
@@ -1284,7 +1284,7 @@ class OpportunityActivity {
             }
         }
         return true;
-    }
+    };
 }
 
 class LoadConfigAndLoadStage {

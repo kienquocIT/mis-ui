@@ -211,6 +211,8 @@
             data-url-bom-detail="{% url "OpportunityBOMDetail" '0' %}"
             data-url-bidding-detail="{% url "BiddingDetail" pk=0%}"
             data-url-consulting-detail="{% url "ConsultingDetail" pk=0%}"
+            data-url-lease-order-detail="{% url "LeaseOrderDetail" pk=0%}"
+            data-url-contract-detail="{% url "ContractApprovalDetail" pk=0%}"
 
             data-url-quo-list="{% url "QuotationListAPI" %}"
             data-url-so-list="{% url "SaleOrderListAPI" %}"
@@ -239,6 +241,9 @@
             data-trans-return="{% trans "Return Advance" %}"
             data-trans-task="{% trans "Task" %}"
             data-trans-bom="{% trans 'BOM' %}"
+            data-trans-lease-order="{% trans 'Lease order' %}"
+            data-trans-contract="{% trans 'Contract approval' %}"
+
             data-trans-call="{% trans "Call" %}"
             data-trans-email="{% trans "Email" %}"
             data-trans-meeting="{% trans "Meeting" %}"

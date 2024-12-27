@@ -1,36 +1,6 @@
 {% load static i18n %}
 
 <!-- Config Indicator -->
-{#<br>#}
-{#<div class="row">#}
-{#    <div class="col-12 col-md-6 col-lg-6">#}
-{#        <div class="row float-left">#}
-{#            <button#}
-{#                    type="button"#}
-{#                    class="btn btn-outline-primary"#}
-{#                    id="btn-add-indicator"#}
-{#                    data-bs-toggle="modal"#}
-{#                    data-bs-target="#indicatorCreateModalCenter"#}
-{#            >#}
-{#            <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-plus"></i></span></span><span>{% trans 'Add indicator' %}</span></span>#}
-{#            </button>#}
-{#        </div>#}
-{#    </div>#}
-{#    <div class="col-12 col-md-6 col-lg-6">#}
-{#        <div class="row float-right mr-2">#}
-{#            <button#}
-{#                    type="button"#}
-{#                    class="btn btn-outline-primary"#}
-{#                    data-bs-toggle="modal"#}
-{#                    data-bs-target="#restoreIndicatorModalCenter"#}
-{#            >#}
-{#            <span><span class="icon"><span class="feather-icon"><i class="fas fa-redo-alt"></i></span></span><span>{% trans 'Restore default' %}</span></span>#}
-{#            </button>#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}
-
-<br>
 <input
         type="hidden" id="quotation-link"
         data-link-update="{% url 'QuotationDetail' 1 %}"
@@ -58,7 +28,7 @@
 <div
         class="modal fade" id="indicatorCreateModalCenter" tabindex="-1"
         role="dialog" aria-labelledby="indicatorCreateModalCenter"
-        aria-hidden="true"
+        aria-hidden="true" data-bs-backdrop="static"
 >
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">

@@ -6,9 +6,9 @@ $(function () {
         let btnConfirmAdd = $('#btn-confirm-add-product');
 
         // Load init
-        if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
-            GRLoadDataHandle.loadCustomAreaByType();
+        if (RecoveryLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
+            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.typeSelectEle, RecoveryLoadDataHandle.dataTypeGr);
+            RecoveryLoadDataHandle.loadCustomAreaByType();
         }
 
         // run datetimepicker
@@ -31,7 +31,7 @@ $(function () {
         });
 
         // file
-        if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
+        if (RecoveryLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
             new $x.cls.file($('#attachment')).init({
                 name: 'attachment',
                 enable_edit: true,
@@ -212,7 +212,7 @@ $(function () {
         });
 
 // SUBMIT FORM
-        SetupFormSubmit.validate(GRLoadDataHandle.$form, {
+        SetupFormSubmit.validate(RecoveryLoadDataHandle.$form, {
             rules: {
                 title: {
                     required: true,
@@ -224,7 +224,7 @@ $(function () {
         });
 
         function submitHandlerFunc() {
-            let _form = new SetupFormSubmit(GRLoadDataHandle.$form);
+            let _form = new SetupFormSubmit(RecoveryLoadDataHandle.$form);
             let result = GRSubmitHandle.setupDataSubmit(_form);
             if (result === false) {
                 return false;

@@ -1,6 +1,6 @@
 // LoadData
-class GRLoadDataHandle {
-    static $form = $('#frm_good_receipt_create');
+class RecoveryLoadDataHandle {
+    static $form = $('#frm_goods_recovery');
     static typeSelectEle = $('#box-good-receipt-type');
     static POSelectEle = $('#box-good-receipt-purchase-order');
     static supplierSelectEle = $('#box-good-receipt-supplier');
@@ -137,7 +137,7 @@ class GRLoadDataHandle {
 
     static loadCustomAreaByType() {
         // Custom Area
-        for (let eleArea of GRLoadDataHandle.$form[0].querySelectorAll('.custom-area')) {
+        for (let eleArea of RecoveryLoadDataHandle.$form[0].querySelectorAll('.custom-area')) {
             eleArea.setAttribute('hidden', 'true');
         }
         let idAreaShow = 'custom-area-' + String(GRLoadDataHandle.typeSelectEle.val());
@@ -554,7 +554,7 @@ class GRLoadDataHandle {
             let $row = tablePO.DataTable().row(rowIndex);
             let dataStore = $row.data();
             if ([1, 2].includes(dataStore?.['product_data']?.['general_traceability_method'])) {
-                if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
+                if (RecoveryLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                     let eleWHChecked = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked');
                     if (eleWHChecked) {
                         let isAdditional = eleWHChecked.closest('tr').querySelector('.table-row-checkbox-additional').checked;
@@ -649,7 +649,7 @@ class GRLoadDataHandle {
                         }
                     }
                 }
-                if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                if (RecoveryLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
                     GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLot);
                 }
             }
@@ -781,7 +781,7 @@ class GRLoadDataHandle {
                         }
                     }
                 }
-                if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                if (RecoveryLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
                     GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableSerial);
                 }
             }
@@ -1269,7 +1269,7 @@ class GRLoadDataHandle {
         }
         GRDataTableHandle.tableLineDetailPO.DataTable().rows.add(data?.['gr_products_data']).draw();
         GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailPO);
-        if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+        if (RecoveryLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLineDetailPO);
         }
         GRLoadDataHandle.loadDetailProducts(data);
@@ -1488,7 +1488,7 @@ class GRLoadDataHandle {
 }
 
 // DataTable
-class GRDataTableHandle {
+class RecoveryDataTableHandle {
     static productInitEle = $('#data-init-product');
     static uomInitEle = $('#data-init-uom');
     static taxInitEle = $('#data-init-tax');
@@ -2090,7 +2090,7 @@ class GRDataTableHandle {
 }
 
 // Calculate
-class GRCalculateHandle {
+class RecoveryCalculateHandle {
     static calculateTotal(table) {
         let tableWrapper = document.getElementById('datable-good-receipt-line-detail-po_wrapper');
         if (tableWrapper) {
@@ -2209,7 +2209,7 @@ class GRCalculateHandle {
 }
 
 // Store data
-class GRStoreDataHandle {
+class RecoveryStoreDataHandle {
     static storeDataProduct() {
         let serial_data = [];
         let lot_data = [];
@@ -2378,7 +2378,7 @@ class GRStoreDataHandle {
 }
 
 // Validate
-class GRValidateHandle {
+class RecoveryValidateHandle {
 
     static validateImportProductNotInventory(ele, remain) {
         if (parseFloat(ele.value) > remain) {
@@ -2402,7 +2402,7 @@ class GRValidateHandle {
 }
 
 // Submit Form
-class GRSubmitHandle {
+class RecoverySubmitHandle {
 
     static setupDataShowLineDetail(is_submit = false) {
         let result = [];
@@ -2727,27 +2727,31 @@ class GRSubmitHandle {
 }
 
 // COMMON FUNCTION
-function filterFieldList(field_list, data_json) {
-    for (let key in data_json) {
-        if (!field_list.includes(key)) delete data_json[key]
+class RecoveryCommonHandle {
+    static filterFieldList(field_list, data_json) {
+        for (let key in data_json) {
+            if (!field_list.includes(key)) delete data_json[key]
+        }
+        return data_json;
     }
-    return data_json;
-}
 
-function reOrderRowTable($table) {
-    for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
-        let row = $table[0].tBodies[0].rows[i];
-        let dataRowRaw = row?.querySelector('.table-row-order')?.getAttribute('data-row');
-        if (dataRowRaw) {
-            let dataRow = JSON.parse(dataRowRaw);
-            dataRow['order'] = (i + 1);
-            row?.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
+    static reOrderRowTable($table) {
+        for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
+            let row = $table[0].tBodies[0].rows[i];
+            let dataRowRaw = row?.querySelector('.table-row-order')?.getAttribute('data-row');
+            if (dataRowRaw) {
+                let dataRow = JSON.parse(dataRowRaw);
+                dataRow['order'] = (i + 1);
+                row?.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
+            }
         }
     }
+
+    static deleteRowGR(currentRow, $table) {
+        let rowIndex = $table.DataTable().row(currentRow).index();
+        let row = $table.DataTable().row(rowIndex);
+        row.remove().draw();
+    }
 }
 
-function deleteRowGR(currentRow, $table) {
-    let rowIndex = $table.DataTable().row(currentRow).index();
-    let row = $table.DataTable().row(rowIndex);
-    row.remove().draw();
-}
+

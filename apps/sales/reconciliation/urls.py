@@ -1,6 +1,6 @@
 from django.urls import path
 from apps.sales.reconciliation.views import (
-    ReconList, ReconCreate, ReconDetail, ReconUpdate,
+    ReconList, ReconCreate, ReconDetail,
     ReconListAPI, ReconDetailAPI
 )
 

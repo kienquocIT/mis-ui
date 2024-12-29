@@ -84,6 +84,167 @@ $(function () {
             return true;
         });
 
+        // EVENT CHANGE IN LINE APP LIST
+        $(document).on('change', '.mode-workflow', function (event) {
+            event.preventDefault();
+            let valId = $(this).val();
+            let state = confirm($('#idxSpanMsgGroup').attr('data-make-sure') + ' "' + $(this).find('option[value="' + valId + '"]').text() + '"');
+            let previousValue = $(this).data("previousValue");
+            if (!state) {
+                $(this).prop("selectedIndex", -1);
+                if (previousValue) $(this).val(previousValue);
+            } else {
+                let rowData = DTBControl.getRowData($(this));
+                if (rowData.id) {
+                    WindowControl.showLoading();
+                    let urlBase = $('#url-factory').attr('data-url-app-workflow-detail');
+                    let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, rowData.id);
+                    $.fn.callAjax(urlData, 'PUT', {'mode': valId}, $("input[name=csrfmiddlewaretoken]").val(),).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data?.status === 200) {
+                            $.fn.notifyB({
+                                'description': $('#base-trans-factory').attr('data-success')
+                            }, 'success');
+                        }
+                        setTimeout(() => {
+                            WindowControl.hideLoading();
+                        }, 1000,)
+                    }, (errs) => {
+                        if (previousValue) $(this).val(previousValue);
+                        WindowControl.hideLoading();
+                    })
+
+                }
+            }
+        });
+        $(document).on('change', '.select-workflow-current', function (event) {
+            event.preventDefault();
+            let valId = $(this).val();
+            let state = confirm($('#idxSpanMsgGroup').attr('data-make-sure') + ' "' + $(this).find('option[value="' + valId + '"]').text() + '"');
+            if (!state) {
+                let previousValue = $(this).data("previousValue");
+                $(this).prop("selectedIndex", -1);
+                if (previousValue) $(this).val(previousValue);
+            } else {
+                let rowData = DTBControl.getRowData($(this));
+                if (rowData.id) {
+                    WindowControl.showLoading();
+                    let urlBase = $('#url-factory').attr('data-url-app-workflow-detail');
+                    let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, rowData.id);
+                    $.fn.callAjax(urlData, 'PUT', {'workflow_currently': valId}, $("input[name=csrfmiddlewaretoken]").val(),).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data?.status === 200) {
+                            $.fn.notifyB({
+                                'description': $('#base-trans-factory').attr('data-success')
+                            }, 'success');
+                        }
+                        setTimeout(() => {
+                            WindowControl.hideLoading();
+                        }, 1000,)
+                    }, (errs) => {
+                        WindowControl.hideLoading();
+                    })
+
+                }
+            }
+        });
+
+        // EVENT CLICK TO COLLAPSE IN LINE APP LIST
+        //      ACTION: INSERT TABLE WORKFLOW LIST TO NEXT ROW (OF APP LIST)
+        $(document).on('click', '.btn-collapse-app-wf', function (event) {
+            event.preventDefault();
+
+            let idTbl = UtilControl.generateRandomString(12);
+            let trEle = $(this).closest('tr');
+            let iconEle = $(this).find('.icon-collapse-app-wf');
+
+            iconEle.toggleClass('fa-caret-right').toggleClass('fa-caret-down');
+
+            if (iconEle.hasClass('fa-caret-right')) {
+                trEle.removeClass('bg-grey-light-5');
+                iconEle.removeClass('text-dark').addClass('text-secondary');
+                trEle.next().find('.child-workflow-group').slideToggle({
+                    complete: function () {
+                        trEle.next().addClass('hidden');
+                    }
+                });
+            }
+
+            if (iconEle.hasClass('fa-caret-down')) {
+                trEle.addClass('bg-grey-light-5');
+                iconEle.removeClass('text-secondary').addClass('text-dark');
+
+                if (!trEle.next().hasClass('child-workflow-list')) {
+                    let dtlSub = `<table id="${idTbl}" class="table table-child nowrap w-100 mb-5"><thead></thead><tbody></tbody></table>`
+                    $(this).closest('tr').after(
+                        `<tr class="child-workflow-list"><td colspan="4"><div class="child-workflow-group pt-3 pb-3 ml-3 pl-5 pr-5 hidden-simple">${dtlSub}</div></td></tr>`
+                    );
+
+                    let placeGetData = $('#url-factory');
+                    let urlWorkflowDetail = placeGetData.attr('data-url-workflow-detail');
+                    $('#' + idTbl).DataTableDefault({
+                        "url-detail": urlWorkflowDetail,
+                        data: [
+                            {'lease_code': 'LEASE1', 'serial': '', 'remark': '',},
+                            {'lease_code': 'LEASE2', 'serial': '', 'remark': '',},
+                            {'lease_code': 'LEASE3', 'serial': '', 'remark': '',},
+                        ],
+                        paging: false,
+                        info: false,
+                        columns: [
+                            {
+                                title: 'Lease number',
+                                render: (data, type, row) => {
+                                    return `${row?.['lease_code']}`;
+                                }
+                            },
+                            {
+                                title: 'Serial',
+                                render: (data, type, row) => {
+                                    return `${row?.['serial']}`;
+                                }
+                            },
+                            {
+                                title: 'Note',
+                                render: (data, type, row) => {
+                                    return `${row?.['remark']}`;
+                                }
+                            },
+                            {
+                                title: 'Get',
+                                render: (data, type, row) => {
+                                    return ``;
+                                }
+                            },
+                        ],
+                        drawCallback: function () {
+                            // add css to Dtb
+                            RecoveryLoadDataHandle.loadCssToDtb(idTbl);
+                        },
+                    });
+                } else {
+                    let $child = trEle.next();
+                    if ($child.length > 0) {
+                        let tblChild = $child[0].querySelector('.table-child');
+                    if (tblChild) {
+                        $(tblChild).DataTable().clear().draw();
+                        $(tblChild).DataTable().rows.add([
+                            {'lease_code': 'LEASE1', 'serial': '', 'remark': '',},
+                            {'lease_code': 'LEASE2', 'serial': '', 'remark': '',},
+                            {'lease_code': 'LEASE3', 'serial': '', 'remark': '',},
+                        ]).draw();
+                    }
+                    }
+
+                }
+                trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
+            }
+        });
+
+
+
+
+
 
 
         // Action on change dropdown PO

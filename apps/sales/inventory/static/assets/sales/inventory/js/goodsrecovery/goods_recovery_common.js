@@ -155,7 +155,9 @@ class RecoveryLoadDataHandle {
         RecoveryDataTableHandle.dataTableProduct();
         RecoveryDataTableHandle.dataTableDelivery();
         RecoveryDataTableHandle.dataTableDeliveryProduct();
-    }
+        RecoveryDataTableHandle.dataTableWareHouse();
+        return true;
+    };
 
     static loadDDLot(ele, checkedID = null) {
         let productID = null;
@@ -1423,321 +1425,7 @@ class RecoveryDataTableHandle {
     static $tableProduct = $('#datable-product');
     static $tableDelivery = $('#datable-delivery');
     static $tableDeliveryProduct = $('#datable-deli-product');
-
-    static dataTableGoodReceiptPR(data) {
-        RecoveryDataTableHandle.tablePR.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
-            columnDefs: [],
-            columns: [
-                {
-                    targets: 0,
-                    render: (data, type, row) => {
-                        let typeGR = RecoveryLoadDataHandle.typeSelectEle.val();
-                        let prTxt = RecoveryLoadDataHandle.transEle.attr('data-stock');
-                        let prID = '';
-                        if (typeGR === '1') {
-                            if (row?.['purchase_request_data']?.['code']) {
-                                prID = row?.['purchase_order_request_product_id'];
-                                prTxt = row?.['purchase_request_data']?.['code'];
-                            }
-                        }
-                        if (typeGR === '3') {
-                            if (row?.['production_report_data']?.['code']) {
-                                prID = row?.['production_report_id'];
-                                prTxt = row?.['production_report_data']?.['code'];
-                            }
-                        }
-                        return `<div class="form-check form-check-lg">
-                                    <input 
-                                        type="radio" 
-                                        class="form-check-input table-row-checkbox" 
-                                        id="pr-${prID.replace(/-/g, "")}"
-                                        data-id="${prID}" 
-                                    >
-                                    <label class="form-check-label table-row-item" for="pr-${prID.replace(/-/g, "")}">${prTxt}</label>
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 1,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['uom_data']?.['title'] ? row?.['uom_data']?.['title'] : ''}</span>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity">${row?.['quantity_order']}</span>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-gr-completed">${row?.['gr_completed_quantity'] ? row?.['gr_completed_quantity'] : 0}</span>`;
-                    }
-                },
-                {
-                    targets: 4,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-gr-remain">${row?.['gr_remain_quantity'] ? row?.['gr_remain_quantity'] : 0}</span>`;
-                    }
-                },
-                {
-                    targets: 5,
-                    render: (data, type, row) => {
-                        return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
-                    }
-                },
-            ],
-            drawCallback: function () {
-                // add css to Dtb
-                RecoveryLoadDataHandle.loadCssToDtb('datable-good-receipt-purchase-request');
-                RecoveryLoadDataHandle.loadEventRadio(RecoveryDataTableHandle.tablePR);
-                RecoveryLoadDataHandle.loadEventCheckPR();
-            },
-        });
-    };
-
-    static dataTableGoodReceiptWH(data) {
-        RecoveryDataTableHandle.tableWH.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
-            columnDefs: [],
-            columns: [
-                {
-                    targets: 0,
-                    render: (data, type, row) => {
-                        return `<div class="form-check form-check-lg">
-                                    <input 
-                                        type="radio" 
-                                        class="form-check-input table-row-checkbox"
-                                        name="row-checkbox"
-                                        id="wh-${row?.['warehouse_id'].replace(/-/g, "")}"
-                                        data-id="${row?.['warehouse_id']}" 
-                                    >
-                                    <span class="badge badge-success badge-outline table-row-code">${row?.['title'] ? row?.['title'] : ''}</span>
-                                    <label class="form-check-label table-row-title" for="wh-${row?.['warehouse_id'].replace(/-/g, "")}">${row?.['title'] ? row?.['title'] : ''}</label>
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 1,
-                    render: (data, type, row) => {
-                        let checked = ``;
-                        if (row?.['is_additional'] === true) {
-                            checked = `checked`;
-                        }
-                        let disabled = '';
-                        let tablePO = RecoveryDataTableHandle.tablePOProduct;
-                        let elePOChecked = tablePO[0].querySelector('.table-row-checkbox:checked');
-                        if (elePOChecked) {
-                            let row = elePOChecked.closest('tr');
-                            let rowIndex = tablePO.DataTable().row(row).index();
-                            let $row = tablePO.DataTable().row(rowIndex);
-                            let dataStore = $row.data();
-                            if ([0, 1].includes(dataStore?.['product_data']?.['general_traceability_method'])) {
-                                disabled = 'disabled';
-                            }
-                        }
-                        return `<div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" ${checked} ${disabled}>
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        let disabled = '';
-                        if (RecoveryLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-                            disabled = 'disabled';
-                        }
-                        let tablePO = RecoveryDataTableHandle.tablePOProduct;
-                        let elePOChecked = tablePO[0].querySelector('.table-row-checkbox:checked');
-                        if (elePOChecked) {
-                            let row = elePOChecked.closest('tr');
-                            let rowIndex = tablePO.DataTable().row(row).index();
-                            let $row = tablePO.DataTable().row(rowIndex);
-                            let dataStore = $row.data();
-                            if ([1, 2].includes(dataStore?.['product_data']?.['general_traceability_method'])) {
-                                disabled = 'disabled';
-                            }
-                        }
-                        if (row?.['is_additional'] === true) {
-                            disabled = '';
-                        }
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" ${disabled}>
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['uom_data']?.['title'] ? row?.['uom_data']?.['title'] : ''}</span>`;
-                    }
-                },
-            ],
-            drawCallback: function () {
-                // add css to Dtb
-                RecoveryLoadDataHandle.loadCssToDtb('datable-good-receipt-warehouse');
-                RecoveryLoadDataHandle.loadEventRadio(RecoveryDataTableHandle.tableWH);
-            },
-        });
-    };
-
-    static dataTableGoodReceiptWHLot(data) {
-        RecoveryDataTableHandle.tableLot.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
-            columnDefs: [],
-            columns: [
-                {
-                    targets: 0,
-                    render: (data, type, row) => {
-                        return `<div class="row">
-                                    <div class="input-group">
-                                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">${RecoveryLoadDataHandle.transEle.attr('data-select')}</button>
-                                        <ul class="dropdown-menu dropdown-bordered dropdown-menu-lot w-250p"></ul>
-                                        <input type="text" class="form-control table-row-lot-number" value="${row?.['lot_number'] ? row?.['lot_number'] : ''}">
-                                    </div>
-                                </div>`;
-
-                    }
-                },
-                {
-                    targets: 1,
-                    render: (data, type, row) => {
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : ''}" required>
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        let date = '';
-                        if (row?.['expire_date']) {
-                            date = moment(row?.['expire_date']).format('DD/MM/YYYY')
-                        }
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-expire-date date-picker" value="${date}">
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        let date = '';
-                        if (row?.['manufacture_date']) {
-                            date = moment(row?.['manufacture_date']).format('DD/MM/YYYY')
-                        }
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-manufacture-date date-picker" value="${date}">
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 4,
-                    render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
-                    }
-                },
-            ],
-            drawCallback: function () {
-                // add css to Dtb
-                RecoveryLoadDataHandle.loadCssToDtb('datable-good-receipt-manage-lot');
-            },
-        });
-    };
-
-    static dataTableGoodReceiptWHSerial(data) {
-        RecoveryDataTableHandle.tableSerial.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
-            columnDefs: [],
-            columns: [
-                {
-                    targets: 0,
-                    render: (data, type, row) => {
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-vendor-serial-number" value="${row?.['vendor_serial_number'] ? row?.['vendor_serial_number'] : ''}">
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 1,
-                    render: (data, type, row) => {
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-serial-number" value="${row?.['serial_number'] ? row?.['serial_number'] : ''}" required>
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        let date = '';
-                        if (row?.['expire_date']) {
-                            date = moment(row?.['expire_date']).format('DD/MM/YYYY');
-                        }
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-expire-date date-picker" value="${date}">
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        let date = '';
-                        if (row?.['manufacture_date']) {
-                            date = moment(row?.['manufacture_date']).format('DD/MM/YYYY');
-                        }
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-manufacture-date date-picker" value="${date}">
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 4,
-                    render: (data, type, row) => {
-                        let date = '';
-                        if (row?.['warranty_start']) {
-                            date = moment(row?.['warranty_start']).format('DD/MM/YYYY');
-                        }
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-warranty-start date-picker" value="${date}">
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 5,
-                    render: (data, type, row) => {
-                        let date = '';
-                        if (row?.['warranty_end']) {
-                            date = moment(row?.['warranty_end']).format('DD/MM/YYYY');
-                        }
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-warranty-end date-picker" value="${date}">
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 6,
-                    render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
-                    }
-                },
-            ],
-            drawCallback: function () {
-                // add css to Dtb
-                RecoveryLoadDataHandle.loadCssToDtb('datable-good-receipt-manage-serial');
-            },
-        });
-    };
+    static $tableWarehouse = $('#datable-warehouse');
 
     static dataTableProduct(data) {
         RecoveryDataTableHandle.$tableProduct.not('.dataTable').DataTableDefault({
@@ -1981,6 +1669,56 @@ class RecoveryDataTableHandle {
                 RecoveryLoadDataHandle.loadEventRadio(RecoveryDataTableHandle.$tableDeliveryProduct);
             },
         });
+    };
+
+    static dataTableWareHouse() {
+        RecoveryDataTableHandle.$tableWarehouse.DataTableDefault({
+            ajax: {
+                url: RecoveryLoadDataHandle.urlEle.attr('data-warehouse'),
+                type: "GET",
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && data.hasOwnProperty('warehouse_list')) return data['warehouse_list'];
+                    return [];
+                },
+            },
+            paging: false,
+            info: false,
+            columns: [
+                {
+                    targets: 0,
+                    width: "20%",
+                    render: (data, type, row) => {
+                        return `<button class="btn-collapse-app-wf btn btn-icon btn-rounded mr-1"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>`;
+                    }
+                },
+                {
+                    targets: 0,
+                    width: "20%",
+                    render: (data, type, row) => {
+                        return ``;
+                    }
+                },
+                {
+                    targets: 0,
+                    width: "20%",
+                    render: (data, type, row) => {
+                        return ``;
+                    }
+                },
+                {
+                    targets: 0,
+                    width: "20%",
+                    render: (data, type, row) => {
+                        return `<input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}">`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                // add css to Dtb
+                RecoveryLoadDataHandle.loadCssToDtb('datable-warehouse');
+            },
+        }, false);
     };
 
     // Custom dtb

@@ -4,6 +4,29 @@
     <link href="{% static 'assets/sales/inventory/css/goodreceipt/goods_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        .child-workflow-group {
+            border-left: 1px groove #bfcbd0;
+        }
+
+        .btn-collapse-app-wf:hover, .btn-collapse-doc-wf:hover {
+            background-color: slategrey !important;
+        }
+
+        .btn-collapse-app-wf:hover .icon-collapse-app-wf, .btn-collapse-doc-wf:hover .icon-collapse-doc-wf {
+            color: #FFFFFF !important;
+        }
+
+        .bg-grey-light-5 {
+            background-color: #f7f7f7;
+        }
+        .bg-gray-light-4 {
+            background-color: #eaeaea;
+        }
+        .miner-group {
+            display: none!important;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="frm_good_receipt_create">
@@ -265,17 +288,19 @@
                                     <div class="row mb-2">
                                         <div data-simplebar class="h-350p nicescroll-bar">
                                             <table
-                                                id="datable-good-receipt-warehouse"
-                                                class="table nowrap w-100"
-                                                data-url="{% url 'WareHouseListAPI' %}?interact=1"
-                                                data-method="GET"
+                                                    id="datable-warehouse"
+                                                    class="table nowrap w-100 mb-5"
+                                                    data-url="{% url 'WorkflowListAPI' %}"
+                                                    data-method="get"
+                                                    data-app-list="{% url 'TenantApplicationListAPI' %}"
                                             >
+                                                {% csrf_token %}
                                                 <thead>
                                                 <tr class="bg-light">
-                                                    <th class="w-30">{% trans 'Warehouse' %}</th>
-                                                    <th class="w-15">{% trans 'Input data later' %}</th>
-                                                    <th class="w-20">{% trans 'Quantity' %}</th>
-                                                    <th class="w-15">{% trans 'UOM' %}</th>
+                                                    <th>{% trans 'Warehouse' %}</th>
+                                                    <th>{% trans 'Delivered' %}</th>
+                                                    <th>{% trans 'Recovered' %}</th>
+                                                    <th>{% trans 'This time' %}</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -418,8 +443,8 @@
     <input
             type="text" id="url-factory"
             data-delivery="{% url 'DeliveryForRecoveryListAPI' %}"
-            data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
-            data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
+            data-warehouse="{% url "WareHouseListAPI" %}?interact=1"
+
             data-md-bom="{% url 'BOMOrderListAPI' %}"
             data-md-product="{% url 'ProductForSaleListAPI' %}"
     >

@@ -3,6 +3,7 @@ const $title = $('#title');
 const $customer = $('#customer');
 const $posting_date = $('#posting_date');
 const $document_date = $('#document_date');
+const $type = $('#type');
 const $table_recon = $('#table-recon');
 const $check_all = $('#check-all');
 const $recon_total = $('#recon-total');
@@ -20,6 +21,8 @@ const table_recon_column_opts = [
             return `<div class="form-check">
                 <input type="checkbox"
                        ${row?.['id'] ? 'disabled checked' : ''}
+                       data-cif-id="${Object.keys(row?.['cash_inflow_data']).length > 0 ? row?.['cash_inflow_data']?.['id'] : ''}"
+                       data-ar-id="${Object.keys(row?.['ar_invoice_data']).length > 0 ? row?.['ar_invoice_data']?.['id'] : ''}"
                        class="form-check-input selected_document"
                 >
                 <label class="form-check-label"></label>
@@ -29,35 +32,52 @@ const table_recon_column_opts = [
     {
         className: 'wrap-text w-10',
         render: (data, type, row) => {
-            if (Object.keys(row?.['ar_invoice_data']).length > 0) {
-                return `<span class="badge badge-light document_code">${row?.['ar_invoice_data']?.['code']}</span>`;
+            let document_code = ''
+            if (row?.['ar_invoice_data'] ? Object.keys(row?.['ar_invoice_data']).length > 0 : false) {
+                document_code = row?.['ar_invoice_data']?.['code'] ? row?.['ar_invoice_data']?.['code'] : ''
             }
-            else if (Object.keys(row?.['cash_inflow_data']).length > 0) {
-                return `<span class="badge badge-light document_code">${row?.['cash_inflow_data']?.['code']}</span>`;
+            else if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
+                document_code = row?.['cash_inflow_data']?.['code'] ? row?.['cash_inflow_data']?.['code'] : ''
             }
-            return ``;
+            return `<span class="badge badge-light document_code">${document_code}</span>`;
         }
     },
     {
         className: 'wrap-text w-10',
         render: (data, type, row) => {
-            if (Object.keys(row?.['ar_invoice_data']).length > 0) {
-                return `<span class="document_type">${$trans_script.attr('data-trans-ar')}</span>`;
+            let document_type = ''
+            if (row?.['ar_invoice_data'] ? Object.keys(row?.['ar_invoice_data']).length > 0 : false) {
+                document_type = $trans_script.attr('data-trans-ar')
             }
-            else if (Object.keys(row?.['cash_inflow_data']).length > 0) {
-                return `<span class="document_type">${$trans_script.attr('data-trans-cif')}</span>`;
+            else if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
+                document_type = $trans_script.attr('data-trans-cif')
             }
-            return ``;
+            return `<span class="document_type">${document_type}</span>`;
         }
     },
     {
         className: 'wrap-text w-10',
         render: (data, type, row) => {
-            if (Object.keys(row?.['ar_invoice_data']).length > 0) {
-                return `<span class="posting_date">${moment(row?.['ar_invoice_data']?.['posting_date'].split(' '), 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`;
+            let posting_date = ''
+            if (row?.['ar_invoice_data'] ? Object.keys(row?.['ar_invoice_data']).length > 0 : false) {
+                posting_date = row?.['ar_invoice_data']?.['posting_date'] ? moment(row?.['ar_invoice_data']?.['posting_date'].split(' '), 'YYYY-MM-DD').format('DD/MM/YYYY') : ''
             }
-            else if (Object.keys(row?.['cash_inflow_data']).length > 0) {
-                return `<span class="posting_date">${moment(row?.['cash_inflow_data']?.['posting_date'].split(' '), 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`;
+            else if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
+                posting_date = row?.['cash_inflow_data']?.['posting_date'] ? moment(row?.['cash_inflow_data']?.['posting_date'].split(' '), 'YYYY-MM-DD').format('DD/MM/YYYY') : ''
+            }
+            return `<span class="posting_date">${posting_date}</span>`;
+        }
+    },
+    {
+        className: 'wrap-text text-right w-10',
+        render: (data, type, row) => {
+            if (row?.['ar_invoice_data'] ? Object.keys(row?.['ar_invoice_data']).length > 0 : false) {
+                let sum_total_value = row?.['ar_invoice_data']?.['sum_total_value'] ? row?.['ar_invoice_data']?.['sum_total_value'] : 0
+                return `<span class="mask-money total_value" data-init-money="${sum_total_value}"></span>`;
+            }
+            else if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
+                let sum_total_value = row?.['cash_inflow_data']?.['sum_total_value'] ? row?.['cash_inflow_data']?.['sum_total_value'] : 0
+                return `(<span class="mask-money total_value" data-init-money="${sum_total_value}"></span>)`;
             }
             return ``;
         }
@@ -65,23 +85,12 @@ const table_recon_column_opts = [
     {
         className: 'wrap-text text-right w-10',
         render: (data, type, row) => {
-            if (Object.keys(row?.['ar_invoice_data']).length > 0) {
-                return `<span class="mask-money total_value" data-init-money="${row?.['ar_invoice_data']?.['sum_total_value']}"></span>`;
+            let recon_balance = row?.['recon_balance'] ? row?.['recon_balance'] : 0
+            if (row?.['ar_invoice_data'] ? Object.keys(row?.['ar_invoice_data']).length > 0 : false) {
+                return `<span class="mask-money balance_value" data-init-money="${recon_balance}"></span>`;
             }
-            else if (Object.keys(row?.['cash_inflow_data']).length > 0) {
-                return `(<span class="mask-money total_value" data-init-money="${row?.['cash_inflow_data']?.['sum_total_value']}"></span>)`;
-            }
-            return ``;
-        }
-    },
-    {
-        className: 'wrap-text text-right w-10',
-        render: (data, type, row) => {
-            if (Object.keys(row?.['ar_invoice_data']).length > 0) {
-                return `<span class="mask-money balance_value" data-init-money="${row?.['recon_balance']}"></span>`;
-            }
-            else if (Object.keys(row?.['cash_inflow_data']).length > 0) {
-                return `(<span class="mask-money balance_value" data-init-money="${row?.['recon_balance']}"></span>)`;
+            else if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
+                return `(<span class="mask-money balance_value" data-init-money="${recon_balance}"></span>)`;
             }
             return ``;
         }
@@ -89,13 +98,14 @@ const table_recon_column_opts = [
     {
         className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            if (Object.keys(row?.['ar_invoice_data']).length > 0) {
-                return `<span class="mask-money recon_amount positive-no" data-init-money="${row?.['recon_amount']}"></span>`;
+            let recon_amount = row?.['recon_amount'] ? row?.['recon_amount'] : 0
+            if (row?.['ar_invoice_data'] ? Object.keys(row?.['ar_invoice_data']).length > 0 : false) {
+                return `<input ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount positive-no" value="${recon_amount}">`;
             }
-            else if (Object.keys(row?.['cash_inflow_data']).length > 0) {
-                return `(<span class="mask-money recon_amount negative-no" data-init-money="${row?.['recon_amount']}"></span>)`;
+            else if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
+                return `<input ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount negative-no" value="${recon_amount}">`;
             }
-            return `<input class="form-control mask-money text-right recon_amount" value="0">`;
+            return ``;
         }
     },
     {
@@ -138,7 +148,7 @@ class ReconLoadPage {
             keyText: 'name',
         }).on('change', function () {
             if (element.val()) {
-                CashInflowAction.LoadARInvoiceTable({'customer_mapped_id': element.val()})
+                ReconAction.LoadARInvoiceItems({'customer_mapped_id': element.val()})
             }
         })
     }
@@ -155,22 +165,12 @@ class ReconLoadPage {
             data: data_list,
             columns: table_recon_column_opts,
             initComplete: function () {
-                let positive_value = 0
-                element.find('tbody tr .positive-no').each(function () {
-                    positive_value += parseFloat($(this).attr('data-init-money'))
-                })
-                let negative_value = 0
-                element.find('tbody tr .negative-no').each(function () {
-                    negative_value += parseFloat($(this).attr('data-init-money'))
-                })
-                $recon_total.attr('value', positive_value - negative_value)
-                $.fn.initMaskMoney2()
+                ReconAction.RecalculateReconTotal()
 
                 $check_all.prop(
                     'checked',
-                    $table_recon.find('tbody .selected_document').length === $table_recon.find('.selected_document:checked').length
+                    $table_recon.find('tbody .selected_document').length === $table_recon.find('.selected_document:checked').length && data_list.length > 0
                 )
-                $check_all.prop('disabled', data_list.length > 0)
             }
         }).on('draw.dt', function () {
             element.find('tbody').find('tr').each(function () {
@@ -180,10 +180,88 @@ class ReconLoadPage {
     }
 }
 
-class ReconLoadTab {
-}
-
 class ReconAction {
+    static LoadARInvoiceItems(data_params={}) {
+            let ar_items_ajax = $.fn.callAjax2({
+                url: $table_recon.attr('data-url-ar-item'),
+                data: data_params,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('ar_invoice_list')) {
+                        return data?.['ar_invoice_list'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([ar_items_ajax]).then(
+                (results) => {
+                    let ar_items_data = results[0]
+                    console.log(ar_items_data)
+                    let ar_items_data_list = []
+                    for (let i=0; i < ar_items_data.length; i++) {
+                        ar_items_data_list.push({
+                            'id': null,
+                            'order': ar_items_data_list.length,
+                            'ar_invoice_data': {
+                                'id': ar_items_data[i]?.['id'],
+                                'code': ar_items_data[i]?.['code'],
+                                'title': ar_items_data[i]?.['title'],
+                                'type_doc': 'AR invoice',
+                                'document_date': ar_items_data[i]?.['document_date'],
+                                'posting_date': ar_items_data[i]?.['posting_date'],
+                                'sum_total_value': ar_items_data[i]?.['total']
+                            },
+                            'cash_inflow_data': {},
+                            'recon_balance': parseFloat(ar_items_data[i]?.['total']) - parseFloat(ar_items_data[i]?.['payment_value']),
+                            'note': '',
+                            'accounting_account': '1311'
+                        })
+                        for (let j=0; j < ar_items_data[i]?.['cash_inflow_data'].length; j++) {
+                            let cif_data = ar_items_data[i]?.['cash_inflow_data'][j]
+                            ar_items_data_list.push({
+                                'id': null,
+                                'order': ar_items_data_list.length,
+                                'ar_invoice_data': {},
+                                'cash_inflow_data': {
+                                    'id': cif_data?.['id'],
+                                    'code': cif_data?.['code'],
+                                    'title': cif_data?.['title'],
+                                    'type_doc': 'Cash inflow',
+                                    'document_date': cif_data?.['document_date'],
+                                    'posting_date': cif_data?.['posting_date'],
+                                    'sum_total_value': cif_data?.['sum_total_value'],
+                                },
+                                'recon_balance': cif_data?.['recon_balance'],
+                                'note': '',
+                                'accounting_account': '1311'
+                            })
+                        }
+                    }
+                    ReconLoadPage.LoadTableRecon($table_recon, ar_items_data_list)
+                })
+    }
+    static RecalculateReconTotal() {
+        let positive_value = 0
+        $table_recon.find('tbody tr .positive-no').each(function () {
+            if ($(this).closest('tr').find('.selected_document').prop('checked')) {
+                positive_value += parseFloat($(this).attr('value'))
+            }
+        })
+        let negative_value = 0
+        $table_recon.find('tbody tr .negative-no').each(function () {
+            if ($(this).closest('tr').find('.selected_document').prop('checked')) {
+                negative_value += parseFloat($(this).attr('value'))
+            }
+        })
+        $recon_total.attr('value', positive_value - negative_value)
+        $.fn.initMaskMoney2()
+    }
     // detail
     static DisabledDetailPage(option) {
         if (option === 'detail') {
@@ -200,6 +278,34 @@ class ReconHandle {
         ReconLoadPage.LoadDate($document_date)
         ReconLoadPage.LoadTableRecon($table_recon)
     }
+    static CombinesData(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle));
+
+        frm.dataForm['title'] = $title.val()
+        frm.dataForm['customer_id'] = $customer.val()
+        frm.dataForm['posting_date'] = moment($posting_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['document_date'] = moment($document_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['type'] = $type.val()
+
+        let recon_item_data = []
+        $table_recon.find('tbody tr').each(function () {
+            if ($(this).find('.selected_document').prop('checked')) {
+                recon_item_data.push({
+                    'ar_invoice_id': $(this).find('.selected_document').attr('data-ar-id') ? $(this).find('.selected_document').attr('data-ar-id') : null,
+                    'cash_inflow_id': $(this).find('.selected_document').attr('data-cif-id') ? $(this).find('.selected_document').attr('data-cif-id') : null,
+                    'recon_balance': $(this).find('.balance_value').attr('data-init-money'),
+                    'recon_amount': $(this).find('.recon_amount').attr('value'),
+                    'note': $(this).find('.note').val(),
+                    'accounting_account': '1311'
+                })
+            }
+        })
+
+        frm.dataForm['recon_item_data'] = recon_item_data
+
+        // console.log(frm)
+        return frm
+    }
     static LoadDetailRecon(option) {
         let url_loaded = $('#form-detail-recon').attr('data-url');
         $.fn.callAjax(url_loaded, 'GET').then(
@@ -209,7 +315,7 @@ class ReconHandle {
                     data = data['recon_detail'];
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    // console.log(data)
+                    console.log(data)
 
                     $title.val(data?.['title'])
                     $posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
@@ -228,11 +334,17 @@ class ReconHandle {
 
 $check_all.on('change', function () {
     $table_recon.find('.selected_document').prop('checked', $(this).prop('checked'));
+    ReconAction.RecalculateReconTotal()
 })
 
 $(document).on('change', '.selected_document', function () {
+    ReconAction.RecalculateReconTotal()
     $check_all.prop(
         'checked',
         $table_recon.find('tbody .selected_document').length === $table_recon.find('.selected_document:checked').length
     )
+})
+
+$(document).on('change', '.recon_amount', function () {
+    ReconAction.RecalculateReconTotal()
 })

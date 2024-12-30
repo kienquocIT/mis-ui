@@ -3,7 +3,7 @@ $(document).ready(function () {
     WFRTControl.setWFInitialData('cashinflow', 'PUT')
     CashInflowHandle.LoadDetailCIF('update');
 
-    // SUBMIT FORM UPDATE ADVANCE PAYMENT
+    // SUBMIT FORM UPDATE
     let form_validator = $('#form-detail-cashinflow').validate({
         submitHandler: function (form) {
             let form_data = CashInflowHandle.CombinesData(form, 'update');

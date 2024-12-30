@@ -2,7 +2,7 @@ $(document).ready(function () {
     CashInflowHandle.LoadPage();
     WFRTControl.setWFInitialData('cashinflow', 'POST')
 
-    // SUBMIT FORM CREATE ADVANCE PAYMENT
+    // SUBMIT FORM CREATE
     let form_validator = $('#form-create-cashinflow').validate({
         submitHandler: function (form) {
             let form_data = CashInflowHandle.CombinesData(form, 'create');

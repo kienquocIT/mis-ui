@@ -1,28 +1,25 @@
 {% load i18n %}
 
 <div class="row mt-5">
-    <div class="col-12">
-        <div class="form-check">
-            <input id="purchase_advance_value_inp" type="radio" class="form-check-input" name="cif_type">
-            <label for="purchase_advance_value_inp" class="form-label text-muted fw-bold">{% trans "Customer prepay for purchase" %}</label>
-        </div>
-    </div>
     <div class="col-12 col-md-6 col-lg-6">
         <div class="form-group">
-            <label hidden for="purchase_advance_value" class="form-label"></label>
-            <input disabled name="purchase_advance_value" class="form-control mask-money" value="0" id="purchase_advance_value">
+            <label for="purchase_advance_value" class="form-label fw-bold">{% trans "Customer prepay for purchase" %}</label>
+            <input name="purchase_advance_value" class="form-control mask-money" value="0" id="purchase_advance_value">
         </div>
     </div>
 </div>
 <div class="row mt-5">
-    <div class="col-12">
-        <div class="form-check">
-            <input id="no_ar_inp" type="radio" class="form-check-input" name="cif_type">
-            <label for="no_ar_inp" class="form-label text-muted fw-bold">{% trans 'Customer advance payment according to contract' %}</label>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="dropdown">
+            <label data-value="0" id="cif_type_label" data-bs-toggle="dropdown" class="form-label fw-bold dropdown-toggle m-0">{% trans 'Customer advance payment according to contract' %}</label>
+            <div id="cif_type" role="menu" class="dropdown-menu">
+                <a class="dropdown-item" href="#" data-value="0">{% trans 'Customer advance payment according to contract' %}</a>
+                <a class="dropdown-item" href="#" data-value="1">{% trans 'Customer pays by invoice' %}</a>
+            </div>
         </div>
     </div>
     <div class="col-12">
-        <div class="border rounded p-2 bg-secondary-light-5" id="space-table-select-so">
+        <div id="area-table-select-so">
             <table id="table-select-so" class="table nowrap w-100" data-method="GET">
                 <thead>
                 <tr>
@@ -39,17 +36,7 @@
                 <tbody></tbody>
             </table>
         </div>
-    </div>
-</div>
-<div class="row mt-5">
-    <div class="col-12">
-        <div class="form-check">
-            <input id="has_ar_inp" type="radio" class="form-check-input" name="cif_type">
-            <label for="has_ar_inp" class="form-label text-muted fw-bold">{% trans 'Customer pays by invoice' %}</label>
-        </div>
-    </div>
-    <div class="col-12">
-        <div class="border rounded p-2 bg-secondary-light-5" id="space-table-select-ar-invoice">
+        <div hidden id="area-table-select-ar">
             <table id="table-select-ar-invoice" class="table nowrap w-100" data-method="GET" data-url="{% url 'ARInvoiceListForCashInflowAPI' %}">
                 <thead>
                 <tr>

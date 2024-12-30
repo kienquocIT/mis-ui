@@ -121,9 +121,10 @@ $(function () {
             GRStoreDataHandle.storeDataProduct();
         });
 
-        GRDataTableHandle.tableLot.on('change', '.table-row-expire-date, .table-row-manufacture-date', function () {
+        GRDataTableHandle.tableLot.on('change', '.date-picker', function () {
             let row = this.closest('tr');
             GRLoadDataHandle.loadDataIfChangeDateLotRow(row);
+            GRStoreDataHandle.storeDataProduct();
         });
 
         GRLoadDataHandle.btnAddSerial.on('click', function () {
@@ -132,6 +133,10 @@ $(function () {
 
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
             GRLoadDataHandle.loadCheckApplySerial(this);
+        });
+
+        GRDataTableHandle.tableSerial.on('change', '.date-picker', function () {
+            GRStoreDataHandle.storeDataProduct();
         });
 
         GRDataTableHandle.tableLineDetailPO.on('change', '.table-row-price, .table-row-tax', function () {

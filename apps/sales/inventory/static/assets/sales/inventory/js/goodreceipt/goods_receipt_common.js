@@ -704,14 +704,14 @@ class GRLoadDataHandle {
                 if (dataLot?.['expire_date']) {
                     date = moment(dataLot?.['expire_date']).format('DD/MM/YYYY');
                 }
-                eleExpire.value = date;
+                $(eleExpire).val(date);
             }
             if (eleManufacture) {
                 let date = '';
                 if (dataLot?.['manufacture_date']) {
                     date = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY');
                 }
-                eleManufacture.value = date;
+                $(eleManufacture).val(date);
             }
         }
         return true;
@@ -2268,7 +2268,7 @@ class GRStoreDataHandle {
                                 'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
                         }
                     }
-                    tableSerial.DataTable().row(rowIndex).data(rowData).draw();
+                    tableSerial.DataTable().row(rowIndex).data(rowData);
                     for (let ele of row.querySelectorAll('.date-picker')) {
                         GRLoadDataHandle.loadDatePicker($(ele));
                     }
@@ -2306,7 +2306,7 @@ class GRStoreDataHandle {
                                 'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
                         }
                     }
-                    tableLot.DataTable().row(rowIndex).data(rowData).draw();
+                    tableLot.DataTable().row(rowIndex).data(rowData);
                     for (let ele of row.querySelectorAll('.date-picker')) {
                         GRLoadDataHandle.loadDatePicker($(ele));
                     }
@@ -2331,7 +2331,7 @@ class GRStoreDataHandle {
             }
             rowData['warehouse_id'] = rowData?.['id'];
             rowData['warehouse_data'] = {'id': rowData?.['id'], 'title': rowData?.['title'], 'code': rowData?.['code']};
-            tableWH.DataTable().row(rowIndex).data(rowData).draw();
+            tableWH.DataTable().row(rowIndex).data(rowData);
             if (checked) {
                 row.querySelector('.table-row-checkbox').checked = true;
             }
@@ -2352,7 +2352,7 @@ class GRStoreDataHandle {
             if (row.querySelector('.table-row-import')) {
                 rowData['quantity_import'] = parseFloat(row.querySelector('.table-row-import').innerHTML);
             }
-            tablePR.DataTable().row(rowIndex).data(rowData).draw();
+            tablePR.DataTable().row(rowIndex).data(rowData);
             if (checked) {
                 row.querySelector('.table-row-checkbox').checked = true;
             }
@@ -2374,7 +2374,7 @@ class GRStoreDataHandle {
                     rowData['gr_warehouse_data'] = [];
                 }
                 rowData['quantity_import'] = parseFloat(rowChecked.querySelector('.table-row-import').innerHTML);
-                tablePO.DataTable().row(rowIndex).data(rowData).draw();
+                tablePO.DataTable().row(rowIndex).data(rowData);
                 rowChecked.querySelector('.table-row-checkbox').checked = true;
             }
         }

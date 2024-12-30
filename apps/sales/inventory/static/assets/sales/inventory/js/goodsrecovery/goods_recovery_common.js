@@ -1347,7 +1347,6 @@ class RecoveryStoreDataHandle {
         let gr_warehouse_data = [];
         let pr_products_data = [];
         let tableWH = RecoveryDataTableHandle.tableWH;
-        let tablePR = RecoveryDataTableHandle.tablePR;
         let tablePO = RecoveryDataTableHandle.tablePOProduct;
 
         tableWH.DataTable().rows().every(function () {
@@ -1366,7 +1365,7 @@ class RecoveryStoreDataHandle {
             }
             rowData['warehouse_id'] = rowData?.['id'];
             rowData['warehouse_data'] = {'id': rowData?.['id'], 'title': rowData?.['title'], 'code': rowData?.['code']};
-            tableWH.DataTable().row(rowIndex).data(rowData).draw();
+            tableWH.DataTable().row(rowIndex).data(rowData);
             if (checked) {
                 row.querySelector('.table-row-checkbox').checked = true;
             }
@@ -1374,26 +1373,6 @@ class RecoveryStoreDataHandle {
                 gr_warehouse_data.push(rowData);
             }
         });
-
-        tablePR.DataTable().rows().every(function () {
-            let row = this.node();
-            let rowIndex = tablePR.DataTable().row(row).index();
-            let $row = tablePR.DataTable().row(rowIndex);
-            let rowData = $row.data();
-            let checked = row.querySelector('.table-row-checkbox:checked');
-            if (checked) {
-                rowData['gr_warehouse_data'] = gr_warehouse_data;
-            }
-            if (row.querySelector('.table-row-import')) {
-                rowData['quantity_import'] = parseFloat(row.querySelector('.table-row-import').innerHTML);
-            }
-            tablePR.DataTable().row(rowIndex).data(rowData).draw();
-            if (checked) {
-                row.querySelector('.table-row-checkbox').checked = true;
-            }
-            pr_products_data.push(rowData);
-        });
-
 
         let elePOChecked = tablePO[0]?.querySelector('.table-row-checkbox:checked');
         if (elePOChecked) {
@@ -1409,7 +1388,7 @@ class RecoveryStoreDataHandle {
                     rowData['gr_warehouse_data'] = [];
                 }
                 rowData['quantity_import'] = parseFloat(rowChecked.querySelector('.table-row-import').innerHTML);
-                tablePO.DataTable().row(rowIndex).data(rowData).draw();
+                tablePO.DataTable().row(rowIndex).data(rowData);
                 rowChecked.querySelector('.table-row-checkbox').checked = true;
             }
         }

@@ -29,15 +29,6 @@ class LeaseOrderLoadDataHandle {
         {'id': 2, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-2')},
         {'id': 3, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-3')},
     ];
-    static dataIssueInvoice = [
-        {'id': '', 'title': 'Select...',},
-        {'id': 1, 'title': '1'}, {'id': 2, 'title': '2'},
-        {'id': 3, 'title': '3'}, {'id': 4, 'title': '4'},
-        {'id': 5, 'title': '5'}, {'id': 6, 'title': '6'},
-        {'id': 7, 'title': '7'}, {'id': 8, 'title': '8'},
-        {'id': 9, 'title': '9'}, {'id': 10, 'title': '10'},
-        {'id': 11, 'title': '11'}, {'id': 12, 'title': '12'},
-    ];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
@@ -53,8 +44,14 @@ class LeaseOrderLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                let res1 = ``;
+                let res2 = ``;
+                if (customRes?.['res1']) {
+                    res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
+                }
+                if (customRes?.['res2']) {
+                    res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
+                }
                 return $(`<span>${res1} ${res2}</span>`);
             }
         }
@@ -1601,15 +1598,31 @@ class LeaseOrderLoadDataHandle {
             if (eleValueATFocus) {
 
                 if (!$(ele).val()) {
-                    $(eleValueATFocus).attr('disabled', 'true');
+                    $(eleValueATFocus).attr('hidden', 'true');
                     $(eleValueATFocus).attr('value', String(0));
                     // mask money
                     $.fn.initMaskMoney2();
+                    let issueTarget = parseInt($(ele).val());
+                    LeaseOrderDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+                        let row = this.node();
+                        let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
+                        if (eleIssueInvoice) {
+                            if (eleIssueInvoice !== ele) {
+                                if ($(eleIssueInvoice).val()) {
+                                    let issue = parseInt($(eleIssueInvoice).val());
+                                    // check other different issue -> trigger change
+                                    if (issue !== issueTarget) {
+                                        $(eleIssueInvoice).trigger('change');
+                                    }
+                                }
+                            }
+                        }
+                    });
                     return true;
                 }
 
                 if ($(ele).val()) {
-                    $(eleValueATFocus).removeAttr('disabled');
+                    $(eleValueATFocus).removeAttr('hidden');
                     let issueTarget = parseInt($(ele).val());
                     LeaseOrderDataTableHandle.$tablePayment.DataTable().rows().every(function () {
                         let row = this.node();
@@ -1627,6 +1640,7 @@ class LeaseOrderLoadDataHandle {
                                                 $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-invalid')}, 'failure');
                                                 return false;
                                             }
+                                            $(eleValueATFocus).attr('hidden', 'true');
                                         }
                                     }
                                 }
@@ -3949,7 +3963,7 @@ class LeaseOrderDataTableHandle {
                                     class="form-control mask-money table-row-value-after-tax text-black" 
                                     value="${row?.['value_after_tax'] ? row?.['value_after_tax'] : '0'}"
                                     data-return-type="number"
-                                    disabled
+                                    hidden
                                 >`;
                     }
                 },

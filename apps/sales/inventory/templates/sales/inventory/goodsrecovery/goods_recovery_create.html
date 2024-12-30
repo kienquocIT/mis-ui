@@ -286,7 +286,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="row mb-2">
-                                        <div data-simplebar class="h-350p nicescroll-bar">
+                                        <div data-simplebar class="h-700p nicescroll-bar">
                                             <table
                                                     id="datable-warehouse"
                                                     class="table nowrap w-100 mb-5"
@@ -306,58 +306,6 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div id="scroll-table-lot-serial" hidden>
-                                            <div data-simplebar class="nicescroll-bar" id="table-good-receipt-manage-lot-area" hidden>
-                                                <table
-                                                    id="datable-good-receipt-manage-lot"
-                                                    class="table nowrap min-w-800p w-100"
-                                                    data-url=""
-                                                    data-method="GET"
-                                                >
-                                                    <thead>
-                                                    <tr class="bg-light">
-                                                        <th class="required w-30">{% trans 'Lot number' %}</th>
-                                                        <th class="required w-15">{% trans 'Quantity' %}</th>
-                                                        <th class="w-15">{% trans 'Exp date' %}</th>
-                                                        <th class="w-15">{% trans 'Mfg date' %}</th>
-                                                        <th class="w-10"></th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    </tbody>
-                                                </table>
-                                                <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-lot">
-                                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
-                                                </button>
-                                            </div>
-                                            <div data-simplebar class="nicescroll-bar" id="table-good-receipt-manage-serial-area" hidden>
-                                                <table
-                                                    id="datable-good-receipt-manage-serial"
-                                                    class="table nowrap min-w-800p w-100"
-                                                    data-url=""
-                                                    data-method="GET"
-                                                >
-                                                    <thead>
-                                                    <tr class="bg-light">
-                                                        <th class="w-15">{% trans 'Vendor serial no.' %}</th>
-                                                        <th class="w-15">{% trans 'Serial no.' %}</th>
-                                                        <th class="w-15">{% trans 'Exp date' %}</th>
-                                                        <th class="w-15">{% trans 'Mfg date' %}</th>
-                                                        <th class="w-15">{% trans 'Warranty start' %}</th>
-                                                        <th class="w-15">{% trans 'Warranty end' %}</th>
-                                                        <th class="w-5"></th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    </tbody>
-                                                </table>
-                                                <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-serial">
-                                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
-                                                </button>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -406,6 +354,7 @@
             data-asset-type-1="{% trans "Product" %}"
             data-asset-type-2="{% trans "Tool" %}"
             data-asset-type-3="{% trans "Fixed asset" %}"
+            data-exceed-quantity="{% trans 'Exceed quantity' %}"
     >
     <input
             type="text"

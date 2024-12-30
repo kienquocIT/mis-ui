@@ -42,8 +42,14 @@ class QuotationLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                let res1 = ``;
+                let res2 = ``;
+                if (customRes?.['res1']) {
+                    res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
+                }
+                if (customRes?.['res2']) {
+                    res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
+                }
                 return $(`<span>${res1} ${res2}</span>`);
             }
         }
@@ -1442,15 +1448,31 @@ class QuotationLoadDataHandle {
             if (eleValueATFocus) {
 
                 if (!$(ele).val()) {
-                    $(eleValueATFocus).attr('disabled', 'true');
+                    $(eleValueATFocus).attr('hidden', 'true');
                     $(eleValueATFocus).attr('value', String(0));
                     // mask money
                     $.fn.initMaskMoney2();
+                    let issueTarget = parseInt($(ele).val());
+                    QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+                        let row = this.node();
+                        let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
+                        if (eleIssueInvoice) {
+                            if (eleIssueInvoice !== ele) {
+                                if ($(eleIssueInvoice).val()) {
+                                    let issue = parseInt($(eleIssueInvoice).val());
+                                    // check other different issue -> trigger change
+                                    if (issue !== issueTarget) {
+                                        $(eleIssueInvoice).trigger('change');
+                                    }
+                                }
+                            }
+                        }
+                    });
                     return true;
                 }
 
                 if ($(ele).val()) {
-                    $(eleValueATFocus).removeAttr('disabled');
+                    $(eleValueATFocus).removeAttr('hidden');
                     let issueTarget = parseInt($(ele).val());
                     QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
                         let row = this.node();
@@ -1468,6 +1490,7 @@ class QuotationLoadDataHandle {
                                                 $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-invalid')}, 'failure');
                                                 return false;
                                             }
+                                            $(eleValueATFocus).attr('hidden', 'true');
                                         }
                                     }
                                 }
@@ -3833,7 +3856,7 @@ class QuotationDataTableHandle {
                                     class="form-control mask-money table-row-value-after-tax text-black" 
                                     value="${row?.['value_after_tax'] ? row?.['value_after_tax'] : '0'}"
                                     data-return-type="number"
-                                    disabled
+                                    hidden
                                 >`;
                     }
                 },

@@ -99,7 +99,6 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
-            LeaseOrderLoadDataHandle.loadReInitDataTableProduct();
         });
 
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
@@ -333,7 +332,6 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
-            LeaseOrderLoadDataHandle.loadReInitDataTableExpense();
         });
 
         $('#btn-add-expense-quotation-create').on('click', function (e) {
@@ -744,7 +742,6 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
-            LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
         });
 
         $('#btn-add-payment-stage').on('click', function () {

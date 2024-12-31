@@ -6,8 +6,6 @@ $(function () {
         let formSubmit = $('#frm_quotation_create');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let tabPrice = $('#tab_terms');
-        let btnAddProductGr = $('#btn-add-product-group-quotation');
-        let btnAddProduct = $('#btn-add-product-quotation-create');
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -95,7 +93,6 @@ $(function () {
             QuotationStoreDataHandle.storeDtbData(1);
             QuotationStoreDataHandle.storeDtbData(3);
             QuotationStoreDataHandle.storeDtbData(4);
-            QuotationLoadDataHandle.loadReInitDataTableProduct();
         });
 
         QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
@@ -321,7 +318,6 @@ $(function () {
             QuotationStoreDataHandle.storeDtbData(1);
             QuotationStoreDataHandle.storeDtbData(3);
             QuotationStoreDataHandle.storeDtbData(4);
-            QuotationLoadDataHandle.loadReInitDataTableExpense();
         });
 
         $('#btn-add-expense-quotation-create').on('click', function (e) {
@@ -724,7 +720,6 @@ $(function () {
             QuotationStoreDataHandle.storeDtbData(1);
             QuotationStoreDataHandle.storeDtbData(3);
             QuotationStoreDataHandle.storeDtbData(4);
-            QuotationLoadDataHandle.loadReInitDataTablePayment();
         });
 
         $('#btn-add-payment-stage').on('click', function () {

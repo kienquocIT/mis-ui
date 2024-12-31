@@ -27,6 +27,7 @@ from apps.sales.inventory.views import (
     WorkOrderListAPIForGIS, WorkOrderDetailAPIForGIS, GoodsIssueProductListAPI,
     GoodsDetailListImportDBAPI, GoodsDetailSerialDataAPI
 )
+from apps.sales.inventory.views.goods_recovery import GoodsRecoveryCreate
 
 urlpatterns = [
     # good receipt
@@ -171,4 +172,12 @@ urlpatterns += [
     path('none-gre-item-available-quantity/list/api', NoneGReItemAvailableQuantityAPI.as_view(),
          name='NoneGReItemAvailableQuantityAPI'),
     path('goods-regis-borrow/api/list', GoodsRegisBorrowListAPI.as_view(), name='GoodsRegisBorrowListAPI'),
+
+    # goods recovery
+    # path('goods-receipt/list', GoodsReceiptList.as_view(), name='GoodsReceiptList'),
+    # path('goods-receipt/api/list', GoodsReceiptListAPI.as_view(), name='GoodsReceiptListAPI'),
+    path('goods-recovery/create', GoodsRecoveryCreate.as_view(), name='GoodsRecoveryCreate'),
+    # path('goods-receipt/detail/<str:pk>', GoodsReceiptDetail.as_view(), name='GoodsReceiptDetail'),
+    # path('goods-receipt/detail-api/<str:pk>', GoodsReceiptDetailAPI.as_view(), name='GoodsReceiptDetailAPI'),
+    # path('goods-receipt/update/<str:pk>', GoodsReceiptUpdate.as_view(), name='GoodsReceiptUpdate'),
 ]

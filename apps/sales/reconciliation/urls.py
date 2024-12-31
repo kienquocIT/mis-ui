@@ -1,7 +1,7 @@
 from django.urls import path
 from apps.sales.reconciliation.views import (
     ReconList, ReconCreate, ReconDetail,
-    ReconListAPI, ReconDetailAPI
+    ReconListAPI, ReconDetailAPI, ARInvoiceListForReconAPI
 )
 
 urlpatterns = [
@@ -11,4 +11,5 @@ urlpatterns = [
     path('detail/<str:pk>', ReconDetail.as_view(), name='ReconDetail'),
     path('api/list', ReconListAPI.as_view(), name='ReconListAPI'),
     path('api/<str:pk>', ReconDetailAPI.as_view(), name='ReconDetailAPI'),
+    path('ar-invoice-list-for-recon/api', ARInvoiceListForReconAPI.as_view(), name='ARInvoiceListForReconAPI'),
 ]

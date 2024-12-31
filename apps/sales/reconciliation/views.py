@@ -89,3 +89,14 @@ class ReconDetailAPI(APIView):
             resp.result['message'] = SaleMsg.CIF_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class ARInvoiceListForReconAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.AR_INVOICE_LIST_FOR_RECON).get(data)
+        return resp.auto_return(key_success='ar_invoice_list')

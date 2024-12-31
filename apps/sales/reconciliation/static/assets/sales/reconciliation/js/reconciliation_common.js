@@ -100,10 +100,10 @@ const table_recon_column_opts = [
         render: (data, type, row) => {
             let recon_amount = row?.['recon_amount'] ? row?.['recon_amount'] : 0
             if (row?.['ar_invoice_data'] ? Object.keys(row?.['ar_invoice_data']).length > 0 : false) {
-                return `<input ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount positive-no" value="${recon_amount}">`;
+                return `<input disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount positive-no" value="${recon_amount}">`;
             }
             else if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
-                return `<input ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount negative-no" value="${recon_amount}">`;
+                return `<input disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount negative-no" value="${recon_amount}">`;
             }
             return ``;
         }
@@ -111,7 +111,7 @@ const table_recon_column_opts = [
     {
         className: 'wrap-text w-20',
         render: (data, type, row) => {
-            return `<textarea ${row?.['id'] ? 'disabled readonly' : ''} rows="1" class="form-control note"></textarea>`;
+            return `<textarea disabled ${row?.['id'] ? 'disabled readonly' : ''} rows="1" class="form-control note"></textarea>`;
         }
     },
     {
@@ -202,45 +202,50 @@ class ReconAction {
             Promise.all([ar_items_ajax]).then(
                 (results) => {
                     let ar_items_data = results[0]
-                    console.log(ar_items_data)
                     let ar_items_data_list = []
                     for (let i=0; i < ar_items_data.length; i++) {
-                        ar_items_data_list.push({
-                            'id': null,
-                            'order': ar_items_data_list.length,
-                            'ar_invoice_data': {
-                                'id': ar_items_data[i]?.['id'],
-                                'code': ar_items_data[i]?.['code'],
-                                'title': ar_items_data[i]?.['title'],
-                                'type_doc': 'AR invoice',
-                                'document_date': ar_items_data[i]?.['document_date'],
-                                'posting_date': ar_items_data[i]?.['posting_date'],
-                                'sum_total_value': ar_items_data[i]?.['total']
-                            },
-                            'cash_inflow_data': {},
-                            'recon_balance': parseFloat(ar_items_data[i]?.['total']) - parseFloat(ar_items_data[i]?.['payment_value']),
-                            'note': '',
-                            'accounting_account': '1311'
-                        })
-                        for (let j=0; j < ar_items_data[i]?.['cash_inflow_data'].length; j++) {
-                            let cif_data = ar_items_data[i]?.['cash_inflow_data'][j]
+                        let recon_balance = parseFloat(ar_items_data[i]?.['total']) - parseFloat(ar_items_data[i]?.['payment_value'])
+                        if (recon_balance > 0) {
                             ar_items_data_list.push({
                                 'id': null,
                                 'order': ar_items_data_list.length,
-                                'ar_invoice_data': {},
-                                'cash_inflow_data': {
-                                    'id': cif_data?.['id'],
-                                    'code': cif_data?.['code'],
-                                    'title': cif_data?.['title'],
-                                    'type_doc': 'Cash inflow',
-                                    'document_date': cif_data?.['document_date'],
-                                    'posting_date': cif_data?.['posting_date'],
-                                    'sum_total_value': cif_data?.['sum_total_value'],
+                                'ar_invoice_data': {
+                                    'id': ar_items_data[i]?.['id'],
+                                    'code': ar_items_data[i]?.['code'],
+                                    'title': ar_items_data[i]?.['title'],
+                                    'type_doc': 'AR invoice',
+                                    'document_date': ar_items_data[i]?.['document_date'],
+                                    'posting_date': ar_items_data[i]?.['posting_date'],
+                                    'sum_total_value': ar_items_data[i]?.['total']
                                 },
-                                'recon_balance': cif_data?.['recon_balance'],
+                                'cash_inflow_data': {},
+                                'recon_balance': parseFloat(ar_items_data[i]?.['total']) - parseFloat(ar_items_data[i]?.['payment_value']),
                                 'note': '',
                                 'accounting_account': '1311'
                             })
+                        }
+                        for (let j=0; j < ar_items_data[i]?.['cash_inflow_data'].length; j++) {
+                            let cif_data = ar_items_data[i]?.['cash_inflow_data'][j]
+                            let recon_balance = parseFloat(cif_data?.['recon_balance'])
+                            if (recon_balance > 0) {
+                                ar_items_data_list.push({
+                                    'id': null,
+                                    'order': ar_items_data_list.length,
+                                    'ar_invoice_data': {},
+                                    'cash_inflow_data': {
+                                        'id': cif_data?.['id'],
+                                        'code': cif_data?.['code'],
+                                        'title': cif_data?.['title'],
+                                        'type_doc': 'Cash inflow',
+                                        'document_date': cif_data?.['document_date'],
+                                        'posting_date': cif_data?.['posting_date'],
+                                        'sum_total_value': cif_data?.['sum_total_value'],
+                                    },
+                                    'recon_balance': cif_data?.['recon_balance'],
+                                    'note': '',
+                                    'accounting_account': '1311'
+                                })
+                            }
                         }
                     }
                     ReconLoadPage.LoadTableRecon($table_recon, ar_items_data_list)
@@ -281,6 +286,11 @@ class ReconHandle {
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
+        if (parseFloat($recon_total.attr('value')) !== 0) {
+            $.fn.notifyB({description: `Reconciliation total must be 0`}, 'failure');
+            return false
+        }
+
         frm.dataForm['title'] = $title.val()
         frm.dataForm['customer_id'] = $customer.val()
         frm.dataForm['posting_date'] = moment($posting_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
@@ -303,8 +313,18 @@ class ReconHandle {
 
         frm.dataForm['recon_item_data'] = recon_item_data
 
+        if (recon_item_data.length === 0) {
+            $.fn.notifyB({description: `Reconciliation item is missing`}, 'failure');
+            return false
+        }
+
         // console.log(frm)
-        return frm
+        return {
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm,
+            urlRedirect: frm.dataUrlRedirect,
+        };
     }
     static LoadDetailRecon(option) {
         let url_loaded = $('#form-detail-recon').attr('data-url');
@@ -315,7 +335,7 @@ class ReconHandle {
                     data = data['recon_detail'];
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
+                    // console.log(data)
 
                     $title.val(data?.['title'])
                     $posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
@@ -333,11 +353,14 @@ class ReconHandle {
 }
 
 $check_all.on('change', function () {
-    $table_recon.find('.selected_document').prop('checked', $(this).prop('checked'));
+    $table_recon.find('.selected_document').prop('checked', $(this).prop('checked')).trigger('change');
     ReconAction.RecalculateReconTotal()
 })
 
 $(document).on('change', '.selected_document', function () {
+    $(this).closest('tr').find('input').prop('disabled', !$(this).prop('checked'))
+    $(this).closest('tr').find('textarea').prop('disabled', !$(this).prop('checked'))
+    $(this).closest('tr').find('.recon_amount').attr('value', $(this).prop('checked') ? $(this).closest('tr').find('.balance_value').attr('data-init-money') : 0)
     ReconAction.RecalculateReconTotal()
     $check_all.prop(
         'checked',
@@ -346,5 +369,11 @@ $(document).on('change', '.selected_document', function () {
 })
 
 $(document).on('change', '.recon_amount', function () {
+    let this_value = parseFloat($(this).attr('value'))
+    let balance_value = parseFloat($(this).closest('tr').find('.balance_value').attr('data-init-money'))
+    if (this_value > balance_value) {
+        $.fn.notifyB({description: `Recon value can not > Balance value`}, 'failure');
+        $(this).attr('value', balance_value)
+    }
     ReconAction.RecalculateReconTotal()
 })

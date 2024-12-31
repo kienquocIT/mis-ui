@@ -353,8 +353,14 @@ $(async function () {
             }
             if (Object.keys(customRes).length !== 0) {
                 opts['templateResult'] = function (state) {
-                    let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                    let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                    let res1 = ``;
+                    let res2 = ``;
+                    if (customRes?.['res1']) {
+                        res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
+                    }
+                    if (customRes?.['res2']) {
+                        res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
+                    }
                     return $(`<span>${res1} ${res2}</span>`);
                 }
             }
@@ -432,7 +438,6 @@ $(async function () {
         loadEventCheckboxAll($area) {
             $area.on('click', '.table-row-checkbox-all', function () {
                 let checked = this.checked;
-                let stopLoop = false;
                 for (let checkbox of $area[0].querySelectorAll('.table-row-checkbox')) {
                     if (checkbox) {
                         checkbox.checked = checked;
@@ -442,20 +447,6 @@ $(async function () {
                         }
                     }
                 }
-
-                // $area.DataTable().rows().every(function () {
-                //     if (stopLoop) return;
-                //
-                //     let row = this.node();
-                //     let checkbox = row.querySelector('.table-row-checkbox');
-                //     if (checkbox) {
-                //         checkbox.checked = checked;
-                //         let state = prodTable.loadQuantityDeliveryBySerial(checkbox);
-                //         if (state === false) {
-                //             stopLoop = true;
-                //         }
-                //     }
-                // });
             });
             return true;
         };
@@ -1013,6 +1004,7 @@ $(async function () {
                         if (parseFloat(valueLotInput) > 0 && parseFloat(valueLotInput) <= parseFloat(valueLotInit)) {
                             lotData.push({
                                 'product_warehouse_lot_id': rowLotData?.['id'],
+                                'product_warehouse_lot_data': rowLotData,
                                 'quantity_initial': parseFloat(valueLotInit),
                                 'quantity_delivery': parseFloat(valueLotInput),
                             })
@@ -1266,6 +1258,7 @@ $(async function () {
                                 newQuantity++;
                                 serialData.push({
                                     'product_warehouse_serial_id': rowSerialData?.['id'],
+                                    'product_warehouse_serial_data': rowSerialData,
                                 })
                             }
                         }

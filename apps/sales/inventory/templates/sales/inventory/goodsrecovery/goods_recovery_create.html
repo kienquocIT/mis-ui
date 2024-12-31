@@ -1,0 +1,411 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'assets/sales/inventory/css/goodreceipt/goods_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        .child-workflow-group {
+            border-left: 1px groove #bfcbd0;
+        }
+
+        .btn-collapse-app-wf:hover, .btn-collapse-doc-wf:hover {
+            background-color: slategrey !important;
+        }
+
+        .btn-collapse-app-wf:hover .icon-collapse-app-wf, .btn-collapse-doc-wf:hover .icon-collapse-doc-wf {
+            color: #FFFFFF !important;
+        }
+
+        .bg-grey-light-5 {
+            background-color: #f7f7f7;
+        }
+        .bg-gray-light-4 {
+            background-color: #eaeaea;
+        }
+        .miner-group {
+            display: none!important;
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frm_good_receipt_create">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <script hidden id="direct-btn-group-url"
+        data-url-list-api="{% url 'GoodsReceiptListAPI' %}"
+        data-url-create="{% url 'GoodsReceiptCreate' %}"
+        data-url-detail="{% url 'GoodsReceiptDetail' '0' %}"
+        data-key-return="goods_receipt_list"
+    ></script>
+    <form
+            data-url="{% url 'GoodsReceiptListAPI' %}"
+            data-url-redirect="{% url 'GoodsReceiptList' %}"
+            data-method="POST"
+            id="frm_goods_recovery"
+            method="post"
+    >
+        {% csrf_token %}
+        <div class="container-fluid">
+            <div class="collapse show" id="collapseInfo">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="title">{% trans 'Title' %}</label>
+                            <input
+                                    type="text" class="form-control"
+                                    name="title" id="title"
+                                    required
+                            >
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label required" for="good-receipt-date-received">{% trans 'Date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="date-received" id="good-receipt-date-received"
+                                       class="form-control date-picker" autocomplete="off" required>
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label required" for="status">{% trans 'Status' %}</label>
+                            <select
+                                class="form-select"
+                                id="status"
+                                data-url=""
+                                data-method="GET"
+                                data-link-detail=""
+                                name="status"
+                                data-keyResp=""
+                                disabled
+                            ></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="customer_id">{% trans 'Customer' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="customer_id"
+                                    data-url="{% url "AccountForSaleListAPI" %}"
+                                    data-method="GET"
+                                    data-link-detail="{% url "AccountDetail" 1 %}"
+                                    name="customer_id"
+                                    data-keyResp="account_sale_list"
+                                    data-keyText="name"
+                                    required
+                            ></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" for="lease_order_id">{% trans 'Lease order' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="lease_order_id"
+                                    data-url="{% url "LeaseOrderListAPI" %}"
+                                    data-method="GET"
+                                    name="lease_order_id"
+                                    data-keyResp="lease_order_list"
+                                    required
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="remark">{% trans 'Note' %}</label>
+                            <textarea class="form-control" rows="3" id="remark" name="remark"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-sm" id="btn-collapse" data-bs-toggle="collapse" data-bs-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo"><span class="icon"><i class="fas fa-angle-double-up collapse-icon"></i></span></button>
+            </div>
+
+
+
+            <div class="row">
+                <div class="row">
+                    <ul class="nav nav-light nav-tabs" id="quotation-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                                <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
+                                <span class="nav-link-text">{% trans 'Product' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#attachment">
+                                <span class="nav-icon-wrap mr-1"><i class="fas fa-paperclip"></i></span>
+                                <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tab-content" id="tab-content-quotation-product">
+                    <div class="tab-pane fade show active" id="tab_line_detail">
+                        <div class="row custom-line-detail" id="custom-line-detail-1">
+                            <div class="row">
+                                <table
+                                    id="datable-product"
+                                    class="table nowrap min-w-1600p w-100 mb-5"
+                                    data-url=""
+                                    data-method="get"
+                                >
+                                    <thead>
+                                    <tr class="bg-light">
+                                        <th></th>
+                                        <th>{% trans 'Product' %}</th>
+                                        <th>{% trans 'Description' %}</th>
+                                        <th>{% trans 'UOM' %}</th>
+                                        <th>{% trans 'Quantity' %}</th>
+                                        <th>{% trans 'Unit Price' %}</th>
+                                        <th>{% trans 'Tax' %}</th>
+                                        <th>{% trans 'Subtotal Price' %}</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th colspan="5"></th>
+                                        <th colspan="4">
+                                            <div class="row mb-2">
+                                                <div class="col-6">
+                                                    <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <span class="mask-money font-3 good-receipt-product-pretax-amount" data-init-money="0"></span>
+                                                    <input type="text" class="form-control good-receipt-product-pretax-amount-raw" value="0" hidden>
+                                                    <input type="hidden" class="good-receipt-final-revenue-before-tax">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <p style="text-align: right">{% trans 'Taxes' %}:</p>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <span class="mask-money font-3 good-receipt-product-taxes" data-init-money="0"></span>
+                                                    <input type="text" class="form-control good-receipt-product-taxes-raw" value="0" hidden>
+                                                </div>
+                                            </div>
+                                            <hr class="bg-teal">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <b><p style="text-align: right">{% trans 'Total' %}:</p></b>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <b><span class="mask-money font-3 good-receipt-product-total" data-init-money="0"></span></b>
+                                                    <input type="text" class="form-control good-receipt-product-total-raw" value="0" hidden>
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="attachment">
+                        {% include 'extends/files/all.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-area">
+            <div class="modal fade" id="productModalCenter" tabindex="-1" role="dialog" aria-labelledby="productModalCenter" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title ml-4"><b>{% trans 'Product list' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-6 border-right">
+                                    <div class="row mb-2">
+                                        <div data-simplebar class="h-350p nicescroll-bar">
+                                            <table
+                                                id="datable-delivery"
+                                                class="table nowrap w-100"
+                                            >
+                                                <thead>
+                                                <tr class="bg-light">
+                                                    <th class="w-60">{% trans 'Delivery' %}</th>
+                                                    <th class="w-20">{% trans 'Date' %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div data-simplebar class="h-350p nicescroll-bar">
+                                            <table
+                                                id="datable-deli-product"
+                                                class="table nowrap w-100"
+                                            >
+                                                <thead>
+                                                <tr class="bg-light">
+                                                    <th class="w-25">{% trans 'Product' %}</th>
+                                                    <th class="w-15">{% trans 'Asset type' %}</th>
+                                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                                    <th class="w-10">{% trans 'Ordered' %}</th>
+                                                    <th class="w-10">{% trans 'Delivered' %}</th>
+                                                    <th class="w-10">{% trans 'Recovered' %}</th>
+                                                    <th class="w-10">{% trans 'Recovery' %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row mb-2">
+                                        <div data-simplebar class="h-700p nicescroll-bar">
+                                            <table
+                                                    id="datable-warehouse"
+                                                    class="table nowrap w-100 mb-5"
+                                                    data-url="{% url 'WorkflowListAPI' %}"
+                                                    data-method="get"
+                                                    data-app-list="{% url 'TenantApplicationListAPI' %}"
+                                            >
+                                                {% csrf_token %}
+                                                <thead>
+                                                <tr class="bg-light">
+                                                    <th>{% trans 'Warehouse' %}</th>
+                                                    <th>{% trans 'Delivered' %}</th>
+                                                    <th>{% trans 'Recovered' %}</th>
+                                                    <th>{% trans 'This time' %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-confirm-add-product" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-view-detail-info="{% trans 'View detail' %}"
+            data-more-information="{% trans 'More information' %}"
+            data-validate-import="{% trans 'Exceeded remaining quantity' %}"
+            data-validate-no-warehouse="{% trans 'Must select one warehouse' %}"
+            data-select="{% trans 'Select' %}"
+            data-lot-exist="{% trans 'Lot number is exist' %}"
+            data-serial-exist="{% trans 'Serial number is exist' %}"
+            data-lot-different="{% trans 'Lot number must be different' %}"
+            data-serial-different="{% trans 'Serial number must be different' %}"
+            data-for-po="{% trans 'For purchase order' %}"
+            data-for-ia="{% trans 'For inventory adjustment' %}"
+            data-for-production="{% trans 'For production' %}"
+            data-ia-quantity-valid="{% trans 'Please enter sufficient quantity' %}"
+            data-stock="{% trans 'Stock' %}"
+            data-for-pro="{% trans 'General production' %}"
+            data-for-wo="{% trans 'Production for orders' %}"
+            data-purchase-request="{% trans 'Purchase request' %}"
+            data-production-report="{% trans 'Production report' %}"
+            data-required-product="{% trans "Product is required" %}"
+            data-edit="{% trans "Edit" %}"
+
+            data-status-1="{% trans "Open" %}"
+            data-status-2="{% trans "Open" %}"
+            data-status-3="{% trans "Open" %}"
+            data-asset-type-1="{% trans "Product" %}"
+            data-asset-type-2="{% trans "Tool" %}"
+            data-asset-type-3="{% trans "Fixed asset" %}"
+            data-exceed-quantity="{% trans 'Exceed quantity' %}"
+    >
+    <input
+            type="text"
+            id="data-init-product"
+            data-url="{% url "ProductForSaleListAPI" %}"
+            data-link-detail="{% url "ProductDetail" 1 %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-uom"
+            data-url="{% url "UnitOfMeasureListAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-tax"
+            data-url="{% url "TaxListAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-warehouse"
+            data-url="{% url "WareHouseListAPI" %}?interact=1"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-init-purchase-order-products"
+    >
+    <input
+            type="text"
+            id="data-submit-pr-warehouse"
+    >
+    <input
+            type="text" id="url-factory"
+            data-delivery="{% url 'DeliveryForRecoveryListAPI' %}"
+            data-warehouse="{% url "WareHouseListAPI" %}?interact=1"
+
+            data-md-bom="{% url 'BOMOrderListAPI' %}"
+            data-md-product="{% url 'ProductForSaleListAPI' %}"
+    >
+{% endblock %}
+
+{% block jsFooter %}
+
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
+    <script src="{% static 'assets/sales/inventory/js/goodsrecovery/goods_recovery_common.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodsrecovery/goods_recovery_create.js' %}"></script>
+    <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
+{% endblock %}

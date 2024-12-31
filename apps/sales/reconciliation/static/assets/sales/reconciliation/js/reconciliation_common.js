@@ -201,36 +201,36 @@ class ReconAction {
 
             Promise.all([ar_items_ajax]).then(
                 (results) => {
-                    let ar_items_data = results[0]
-                    let ar_items_data_list = []
-                    for (let i=0; i < ar_items_data.length; i++) {
-                        let recon_balance = parseFloat(ar_items_data[i]?.['total']) - parseFloat(ar_items_data[i]?.['payment_value'])
+                    let recon_items_data = results[0]
+                    let recon_items_data_list = []
+                    for (let i=0; i < recon_items_data.length; i++) {
+                        let recon_balance = parseFloat(recon_items_data[i]?.['sum_total_value']) - parseFloat(recon_items_data[i]?.['recon_total'])
                         if (recon_balance > 0) {
-                            ar_items_data_list.push({
+                            recon_items_data_list.push({
                                 'id': null,
-                                'order': ar_items_data_list.length,
+                                'order': recon_items_data.length,
                                 'ar_invoice_data': {
-                                    'id': ar_items_data[i]?.['id'],
-                                    'code': ar_items_data[i]?.['code'],
-                                    'title': ar_items_data[i]?.['title'],
+                                    'id': recon_items_data[i]?.['id'],
+                                    'code': recon_items_data[i]?.['code'],
+                                    'title': recon_items_data[i]?.['title'],
                                     'type_doc': 'AR invoice',
-                                    'document_date': ar_items_data[i]?.['document_date'],
-                                    'posting_date': ar_items_data[i]?.['posting_date'],
-                                    'sum_total_value': ar_items_data[i]?.['total']
+                                    'document_date': recon_items_data[i]?.['document_date'],
+                                    'posting_date': recon_items_data[i]?.['posting_date'],
+                                    'sum_total_value': recon_items_data[i]?.['sum_total_value']
                                 },
                                 'cash_inflow_data': {},
-                                'recon_balance': parseFloat(ar_items_data[i]?.['total']) - parseFloat(ar_items_data[i]?.['payment_value']),
+                                'recon_balance': recon_balance,
                                 'note': '',
                                 'accounting_account': '1311'
                             })
                         }
-                        for (let j=0; j < ar_items_data[i]?.['cash_inflow_data'].length; j++) {
-                            let cif_data = ar_items_data[i]?.['cash_inflow_data'][j]
+                        for (let j=0; j < recon_items_data[i]?.['cash_inflow_data'].length; j++) {
+                            let cif_data = recon_items_data[i]?.['cash_inflow_data'][j]
                             let recon_balance = parseFloat(cif_data?.['recon_balance'])
                             if (recon_balance > 0) {
-                                ar_items_data_list.push({
+                                recon_items_data_list.push({
                                     'id': null,
-                                    'order': ar_items_data_list.length,
+                                    'order': recon_items_data.length,
                                     'ar_invoice_data': {},
                                     'cash_inflow_data': {
                                         'id': cif_data?.['id'],
@@ -248,7 +248,7 @@ class ReconAction {
                             }
                         }
                     }
-                    ReconLoadPage.LoadTableRecon($table_recon, ar_items_data_list)
+                    ReconLoadPage.LoadTableRecon($table_recon, recon_items_data_list)
                 })
     }
     static RecalculateReconTotal() {

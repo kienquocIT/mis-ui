@@ -13,6 +13,59 @@ $(document).ready(function () {
     let redirect_create_period = $('#form-create-periods-config').attr('data-url-redirect').replace(`/0`, `/${pk}`)
     $('#form-create-periods-config').attr('data-url-redirect', redirect_create_period)
 
+    $("#form-company-bank-account").submit(function (event) {
+        event.preventDefault();
+        let combinesData = new CompanyHandle().combinesDataCompanyBankAccount($(this), false);
+        if (combinesData) {
+            WindowControl.showLoading();
+            $.fn.callAjax2(combinesData)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            setTimeout(() => {
+                                loadCompanyBankAccountTable('update', true)
+                                WindowControl.hideLoading();
+                                $('#modal-company-bank-account').modal('hide')
+                                $('#form-company-bank-account')[0].reset();
+                            }, 1000);
+                        }
+                    },
+                    (errs) => {
+                        setTimeout(
+                            () => {
+                                WindowControl.hideLoading();
+                            },
+                            1000
+                        )
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+        }
+    })
+    $(document).on("change", '.activate_bank_account', function () {
+        if ($(this).attr('data-id')) {
+            Swal.fire({
+                html: `<h5 class="text-primary">${$("#form-company-bank-account").attr('data-trans-message')}</h5>`,
+                customClass: {
+                    confirmButton: 'btn btn-primary',
+                },
+                showCancelButton: false,
+                buttonsStyling: false,
+                confirmButtonText: 'OK',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    loadCompanyBankAccountTable('update', true, [], {
+                        'disabled_account': $(this).prop('checked') ? '1' : '0',
+                        'pk': $(this).attr('data-id')
+                    })
+                }
+            })
+        }
+    })
+
     new CompanyHandle().load();
     LoadDetailCompany($('#frm-update-company'), 'update');
 

@@ -17,14 +17,16 @@ class APLoadPage {
     static LoadCreatedDate() {
         $('#created_date_id').daterangepicker({
             singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: false,
-            minYear: 1901,
+            timePicker: false,
+            showDropdowns: true,
+            autoApply: true,
+            minYear: parseInt(moment().format('YYYY')),
+            minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM'))-1, parseInt(moment().format('DD'))),
             locale: {
-                format: 'YYYY-MM-DD'
+                format: 'DD/MM/YYYY'
             },
             "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY'), 10)
+            maxYear: parseInt(moment().format('YYYY')) + 100,
         }).prop('disabled', true);
     }
     static LoadCreator(data) {
@@ -1733,7 +1735,7 @@ class APHandle {
 
                     ap_method_Ele.val(data.method)
 
-                    $('#created_date_id').val(data.date_created.split(' ')[0]).prop('readonly', true)
+                    $('#created_date_id').val(moment(data.date_created.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
 
                     $('#return_date_id').val(moment(data.return_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
 

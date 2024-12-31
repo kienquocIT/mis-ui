@@ -43,10 +43,10 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'wrap-text w-15',
+                        className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             if (row?.['sale_order_mapped']?.['id']) {
-                                return `<span class="badge badge-soft-blue badge-outline badge-sm w-30">${row?.['sale_order_mapped']?.['code']}</span> ${row?.['sale_order_mapped']?.['title']}`
+                                return `<span class="badge badge-soft-blue badge-outline badge-sm">${row?.['sale_order_mapped']?.['code']}</span>`
                             }
                             else {
                                 return ``
@@ -68,7 +68,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'wrap-text w-10',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             return `${row?.['invoice_number'] !== '0' ? `<span class="text-primary">${row?.['invoice_number']}</span>` : `<span class="text-danger small">Chưa cấp số</span>`}`
                         }

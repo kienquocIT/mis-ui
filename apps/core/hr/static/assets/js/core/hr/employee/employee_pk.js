@@ -115,8 +115,6 @@ class EmployeeLoadPage {
         if (!frm.dataForm['user']) frm.dataForm['user'] = null;
         if (!frm.dataForm['group']) frm.dataForm['group'] = null;
 
-        frm.dataForm['email_app_password'] = $('#email-app-password').attr('data-value')
-
         return {
             url: frm.dataUrl,
             method: frm.dataMethod,

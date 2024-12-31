@@ -247,3 +247,15 @@ class CompanyConfigDetailAPI(APIView):
                     except Company.DoesNotExist:
                         pass
         return resp.auto_return()
+
+
+class CompanyBankAccountListAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_BANK_ACCOUNT_LIST).get()
+        return resp.auto_return(key_success='company_bank_account_list')
+
+    @mask_view(auth_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_BANK_ACCOUNT_LIST).post(request.data)
+        return resp.auto_return()

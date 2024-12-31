@@ -33,30 +33,74 @@
         </span>
     </button>
 {% endblock %}
-
 {% block pageContent %}
-    <form
-            id="frm_employee_update" class="needs-validation" data-url="{% url 'EmployeeDetailAPI' pk=pk %}"
-            data-method="PUT"
-            data-url-redirect="{% url 'EmployeeList' %}"
-            novalidate
-            data-doc-id="{{ data.data.doc_id }}"
+    <form id="frm_employee_update" class="needs-validation" data-url="{% url 'EmployeeDetailAPI' pk=pk %}"
+          data-method="PUT"
+          data-url-redirect="{% url 'EmployeeList' %}"
+          novalidate
+          data-doc-id="{{ data.data.doc_id }}"
     >
         {% csrf_token %}
-        <div
-                id="employee-detail-page" class="needs-validation"
-                data-url="{% url 'EmployeeDetailAPI' pk=pk %}"
-                data-method="GET"
-                data-url-redirect="{% url 'EmployeeList' %}"
-                data-doc-id="{{ data.data.doc_id }}"
+        <div id="employee-detail-page" class="needs-validation"
+             data-url="{% url 'EmployeeDetailAPI' pk=pk %}"
+             data-method="GET"
+             data-url-redirect="{% url 'EmployeeList' %}"
+             data-doc-id="{{ data.data.doc_id }}"
         >
             {% csrf_token %}
             {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with range_allowed="1,2,3,4" get_from='employee' actions_enabled=True plan_app_enabled=True permit_enabled=True li_head='core/hr/employee/extends/tab-info.html' li_content_head='core/hr/employee/extends/tab-info-content.html' li_content_head_disabled=False %}
         </div>
     </form>
 {% endblock %}
-
-
+{% block modalData %}
+    <div class="modal fade" id="update-email-api-key-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Email verify' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-email-api-key"
+                          data-trans-update-success="{% trans 'Connect successfully. Updating API Key...' %}"
+                          data-trans-update-fail="{% trans 'Can not verify your Email. Check your API Key again' %}"
+                          data-url="{% url 'EmployeeUpdateEmailAPIKeyAPI' '0' %}"
+                          data-method="PUT">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <label class="form-label" for="email-app-password">
+                                                {% trans 'Google API Key' %}
+                                            </label>
+                                        </div>
+                                        <div class="col-4 text-right small fw-bold">
+                                            <a href="https://myaccount.google.com/apppasswords" target="_blank">{% trans 'Get here' %}</a>
+                                        </div>
+                                    </div>
+                                    <input type="password" class="form-control" id="email-app-password" placeholder="{% trans '19 letters' %} ({% trans 'include space' %})">
+                                    <label class="text-muted fst-italic small">{% trans 'Your Google account must be TURNED ON 2-Step verification first.' %}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button id="btn-test-email-connection"
+                            data-url="{% url 'TestEmailConnection' %}"
+                            type="button"
+                            class="btn btn-primary"
+                    >{% trans 'Test connection and Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 {% block jsFooter %}
     <script>
         function onLoadDropdownUserDetail(eleInfo, eleInfoData, selectedData) {
@@ -69,9 +113,7 @@
             return eleInfo;
         }
     </script>
-
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-
     <script src="{% static 'assets/js/core/hr/employee/employee_pk.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_update.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>

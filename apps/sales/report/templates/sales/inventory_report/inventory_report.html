@@ -37,7 +37,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.7);
         }
         .chat-content {
             display: none; /* Ẩn nội dung chat ban đầu */
@@ -80,7 +80,8 @@
             data-trans-ob="{% trans 'Opening balance' %}"
             data-trans-grc="{% trans 'Goods receipt' %}"
             data-trans-grt="{% trans 'Goods return' %}"
-            data-trans-dlvr="{% trans 'Delivery' %}"
+            data-trans-dlvr-sale="{% trans 'Delivery (sale)' %}"
+            data-trans-dlvr-lease="{% trans 'Delivery (lease)' %}"
             data-trans-gis="{% trans 'Goods issue' %}"
             data-trans-gtf="{% trans 'Goods transfer' %}"
             data-trans-bii="{% trans 'Balance init input' %}"

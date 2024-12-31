@@ -24,7 +24,7 @@ $(document).ready(function () {
                 useDataServer: true,
                 rowIdx: true,
                 scrollX: '100vw',
-                scrollY: '20vh',
+                scrollY: '35vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {

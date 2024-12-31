@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Cash inflow' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'CashInflowCreate' %}">
+        <button class="btn btn-outline-primary">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+            <table id="table-cash-inflow"
+                   class="table nowrap w-100"
+                   data-url="{% url 'CashInflowListAPI' %}"
+                   data-url-detail="{% url 'CashInflowDetail' pk=0 %}"
+                   data-method="GET"
+            >
+                <thead>
+                    <tr>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 80px">{% trans 'Code' %}</th>
+                        <th style="min-width: 200px">{% trans 'Name' %}</th>
+                        <th style="min-width: 200px">{% trans 'Customer' %}</th>
+                        <th style="min-width: 100px">{% trans 'Status' %}</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/financialcashflow/js/cashinflow/cashinflow_list.js' %}"></script>
+{% endblock %}

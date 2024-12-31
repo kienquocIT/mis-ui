@@ -1,0 +1,44 @@
+{% load i18n %}
+
+<div class="row mt-5">
+    <div class="col-12">
+        <table class="table table-advance nowrap w-100" id="table-recon" data-url-ar-item="{% url 'ARInvoiceListForReconAPI' %}">
+            <thead>
+            <tr>
+                <th style="min-width: 30px"></th>
+                <th style="min-width: 30px">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="check-all">
+                        <label class="form-check-label" for="check-all"></label>
+                    </div>
+                </th>
+                <th style="min-width: 80px">{% trans 'Code' %}</th>
+                <th style="min-width: 80px">{% trans 'Document type' %}</th>
+                <th style="min-width: 80px">{% trans 'Posting date' %}</th>
+                <th style="min-width: 120px">{% trans 'Total value' %}</th>
+                <th style="min-width: 120px">{% trans 'Balance value' %}</th>
+                <th style="min-width: 150px">{% trans 'Reconciliation amount' %}</th>
+                <th style="min-width: 150px">{% trans 'Note' %}</th>
+                <th style="min-width: 80px">{% trans 'Account' %}</th>
+            </tr>
+            </thead>
+            <tfoot>
+                <tr style="position: sticky; bottom: 0">
+                    <td style="min-width: 30px"></td>
+                    <td style="min-width: 30px"></td>
+                    <td style="min-width: 80px"></td>
+                    <td style="min-width: 80px"></td>
+                    <td style="min-width: 80px"></td>
+                    <td style="min-width: 120px"></td>
+                    <td style="min-width: 120px"><label for="recon-total" class="form-label text-primary fw-bold text-decoration-underline">{% trans 'Reconciliation total' %}</label></td>
+                    <td style="min-width: 150px">
+                        <input disabled readonly id="recon-total" class="form-control form-control-line mask-money fw-bold text-primary text-right" value="0">
+                        <span class="small fst-italic text-muted">{% trans 'Reconciliation total must be 0' %}</span>
+                    </td>
+                    <td style="min-width: 150px"></td>
+                    <td style="min-width: 80px"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

@@ -326,7 +326,7 @@ class QuotationLoadDataHandle {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
                 if (dataSelected?.['payment_term_customer_mapped']) {
-                    QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [dataSelected?.['payment_term_customer_mapped']]);
+                    QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [dataSelected?.['payment_term_customer_mapped']], {}, null, true);
                 }
             }
         }
@@ -1401,8 +1401,10 @@ class QuotationLoadDataHandle {
             }
         } else {
             if (eleRatio && eleValueBT && eleDueDate) {
-                eleRatio.removeAttribute('readonly');
-                eleDueDate.removeAttribute('disabled');
+                if (["post", "put"].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    eleRatio.removeAttribute('readonly');
+                    eleDueDate.removeAttribute('disabled');
+                }
             }
         }
         // mask money
@@ -6563,10 +6565,6 @@ class QuotationSubmitHandle {
             }
             if (!QuotationLoadDataHandle.contactSelectEle.val()) {
                 $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-contact')}, 'failure');
-                return false;
-            }
-            if (!QuotationLoadDataHandle.paymentSelectEle.val()) {
-                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-payment')}, 'failure');
                 return false;
             }
         }

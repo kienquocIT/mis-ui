@@ -856,9 +856,6 @@ $(function () {
                 contact_id: {
                     required: true,
                 },
-                payment_term_id: {
-                    required: true,
-                },
             },
             errorClass: 'is-invalid cl-red',
             submitHandler: submitHandlerFunc

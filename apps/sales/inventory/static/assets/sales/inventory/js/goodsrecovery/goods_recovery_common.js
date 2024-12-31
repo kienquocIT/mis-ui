@@ -1128,7 +1128,7 @@ class RecoveryDataTableHandle {
                     title: 'Lease number',
                     width: '25%',
                     render: (data, type, row) => {
-                        return `${row?.['lease_code']}`;
+                        return `<span class="table-row-code">${row?.['lease_code']}</span>`;
                     }
                 },
                 {
@@ -1182,7 +1182,31 @@ class RecoveryDataTableHandle {
                                                 }
                                             }
                                         }
-                                        RecoveryLoadDataHandle.loadInitS2($(serialEle), serialData, {}, null, false, {'res2': 'serial_number'});
+                                        RecoveryLoadDataHandle.loadInitS2($(serialEle), serialData, {}, $('#productModalCenter'), false, {'res2': 'serial_number'});
+                                        $(serialEle).on('change', function () {
+                                            let rowTarget = this.closest('tr');
+                                            let $ele = $(this);
+                                            let val = $ele.val();
+                                            if (val && rowTarget) {
+                                                let codeTargetEle = rowTarget.querySelector('.table-row-code');
+                                                if (codeTargetEle) {
+                                                    $('#' + idTbl).DataTable().rows().every(function () {
+                                                        let row = this.node();
+                                                        let codeEle = row.querySelector('.table-row-code');
+                                                        let serialEle = row.querySelector('.table-row-serial');
+                                                        if (codeEle && serialEle) {
+                                                            if (codeEle.innerHTML !== codeTargetEle.innerHTML) {
+                                                                if ($(serialEle).val() === val) {
+                                                                    $ele.val('').trigger('change');
+                                                                    $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-unique-serial')}, 'failure');
+                                                                    return false;
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
                                         if (serialData.length === 0) {
                                             serialEle.removeAttribute('hidden');
                                         }
@@ -1342,56 +1366,72 @@ class RecoveryCalculateHandle {
 // Store data
 class RecoveryStoreDataHandle {
     static storeDataProduct() {
-        let serial_data = [];
-        let lot_data = [];
-        let gr_warehouse_data = [];
-        let pr_products_data = [];
-        let tableWH = RecoveryDataTableHandle.tableWH;
-        let tablePO = RecoveryDataTableHandle.tablePOProduct;
+        let warehouse_data = [];
+        let product_data = [];
 
-        tableWH.DataTable().rows().every(function () {
+        RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
             let row = this.node();
-            let rowIndex = tableWH.DataTable().row(row).index();
-            let $row = tableWH.DataTable().row(rowIndex);
+            let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(row).index();
+            let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
             let rowData = $row.data();
-            let checked = row.querySelector('.table-row-checkbox:checked');
-            if (checked) {
-                rowData['serial_data'] = serial_data;
-                rowData['lot_data'] = lot_data;
+
+            let lease_generate_data = [];
+            let $child = $(row).next();
+            if ($child.length > 0) {
+                let tblChild = $child[0].querySelector('.table-child');
+                if (tblChild) {
+                    $(tblChild).DataTable().rows().every(function () {
+                        let row = this.node();
+                        let leaseGenData = {};
+                        let codeEle = row.querySelector('.table-row-code');
+                        let serialEle = row.querySelector('.table-row-serial');
+                        let remarkEle = row.querySelector('.table-row-remark');
+                        if (codeEle) {
+                            leaseGenData['code'] = codeEle.innerHTML;
+                        }
+                        if (serialEle) {
+                            if ($(serialEle).val()) {
+                                let data = SelectDDControl.get_data_from_idx($(serialEle), $(serialEle).val());
+                                if (data) {
+                                    leaseGenData['serial_id'] = $(serialEle).val();
+                                    leaseGenData['serial_data'] = data;
+                                }
+                            }
+                        }
+                        if (remarkEle) {
+                            leaseGenData['remark'] = $(remarkEle).val();
+                        }
+                        lease_generate_data.push(leaseGenData);
+                    });
+                }
             }
-            if (row.querySelector('.table-row-import') && row.querySelector('.table-row-checkbox-additional')) {
-                rowData['quantity_import'] = parseFloat(row.querySelector('.table-row-import').value);
-                rowData['is_additional'] = row.querySelector('.table-row-checkbox-additional').checked;
-            }
-            rowData['warehouse_id'] = rowData?.['id'];
-            rowData['warehouse_data'] = {'id': rowData?.['id'], 'title': rowData?.['title'], 'code': rowData?.['code']};
-            tableWH.DataTable().row(rowIndex).data(rowData);
-            if (checked) {
-                row.querySelector('.table-row-checkbox').checked = true;
-            }
-            if (rowData?.['quantity_import'] > 0) {
-                gr_warehouse_data.push(rowData);
-            }
+            rowData['lease_generate_data'] = lease_generate_data;
+
+            RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData);
+            warehouse_data.push(rowData);
+
         });
 
-        let elePOChecked = tablePO[0]?.querySelector('.table-row-checkbox:checked');
-        if (elePOChecked) {
-            let rowChecked = elePOChecked.closest('tr');
-            // store new row data & redraw row
-            let rowIndex = tablePO.DataTable().row(rowChecked).index();
-            let $row = tablePO.DataTable().row(rowIndex);
+        RecoveryDataTableHandle.$tableProduct.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = RecoveryDataTableHandle.$tableProduct.DataTable().row(row).index();
+            let $row = RecoveryDataTableHandle.$tableProduct.DataTable().row(rowIndex);
             let rowData = $row.data();
-            if (rowChecked.querySelector('.table-row-import')) {
-                rowData['pr_products_data'] = pr_products_data;
-                rowData['gr_warehouse_data'] = gr_warehouse_data;
-                if (pr_products_data.length > 0) {
-                    rowData['gr_warehouse_data'] = [];
-                }
-                rowData['quantity_import'] = parseFloat(rowChecked.querySelector('.table-row-import').innerHTML);
-                tablePO.DataTable().row(rowIndex).data(rowData);
-                rowChecked.querySelector('.table-row-checkbox').checked = true;
+
+            let checked = row.querySelector('.table-row-checkbox:checked');
+            if (checked) {
+                rowData['warehouse_data'] = warehouse_data;
             }
-        }
+            let recoveryEle = row.querySelector('.table-row-quantity-recovery');
+            if (recoveryEle) {
+                rowData['quantity_recovery'] = parseFloat(recoveryEle.innerHTML);
+            }
+
+            RecoveryDataTableHandle.$tableProduct.DataTable().row(rowIndex).data(rowData);
+            product_data.push(rowData);
+
+        });
+
         return true;
     };
 

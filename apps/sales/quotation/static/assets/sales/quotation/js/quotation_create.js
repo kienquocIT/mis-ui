@@ -782,59 +782,7 @@ $(function () {
 
 // IMPORT TABLE
         $('#modal-load-datatable-from-excel .btn-gradient-primary').on('click', function () {
-            let import_data_rows = $('#tab_line_detail').find('.import_data_rows');
-            let dataIP = [];
-            if (import_data_rows.text()) {
-                dataIP = JSON.parse(import_data_rows.text());
-            }
-            if (dataIP.length > 0) {
-                let listProdID = [];
-                let JSonProd = {};
-                let result = [];
-                for (let data of dataIP) {
-                    listProdID.push(data?.['product']?.['id']);
-                    JSonProd[data?.['product']?.['id']] = data;
-                }
-                if (listProdID.length > 0) {
-                    WindowControl.showLoading();
-                    $.fn.callAjax2({
-                            'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
-                            'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
-                            'data': {'id__in': listProdID.join(',')},
-                            'isDropdown': true,
-                        }
-                    ).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                                    let order = 1;
-                                    for (let dataProd of data?.['product_sale_list']) {
-                                        let dataPush = {'product_data': dataProd, 'order': order};
-                                        if (JSonProd.hasOwnProperty(dataProd?.['id'])) {
-                                            dataPush['uom_data'] = JSonProd[dataProd?.['id']]?.['uom'];
-                                            dataPush['tax_data'] = JSonProd[dataProd?.['id']]?.['tax'];
-                                            dataPush['product_quantity'] = JSonProd[dataProd?.['id']]?.['quantity'];
-                                            dataPush['product_unit_price'] = JSonProd[dataProd?.['id']]?.['unit_price'];
-                                            dataPush['product_tax_value'] = JSonProd[dataProd?.['id']]?.['tax_value'];
-                                            dataPush['product_discount_value'] = 0;
-                                            dataPush['product_subtotal_price'] = JSonProd[dataProd?.['id']]?.['subtotal_price'];
-                                        }
-                                        order++;
-                                        result.push(dataPush);
-                                    }
-                                    tableProduct.DataTable().clear().draw();
-                                    // load table product
-                                    tableProduct.DataTable().rows.add(result).draw();
-                                    QuotationLoadDataHandle.loadReInitDataTableProduct();
-                                    $('#modal-load-datatable-from-excel').modal('hide');
-                                    WindowControl.hideLoading();
-                                }
-                            }
-                        }
-                    )
-                }
-            }
+            QuotationLoadDataHandle.loadImport();
         });
 
 

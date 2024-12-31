@@ -325,7 +325,7 @@ class LeaseOrderLoadDataHandle {
             let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.customerSelectEle, $(LeaseOrderLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
                 if (dataSelected?.['payment_term_customer_mapped']) {
-                    LeaseOrderLoadDataHandle.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [dataSelected?.['payment_term_customer_mapped']]);
+                    LeaseOrderLoadDataHandle.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [dataSelected?.['payment_term_customer_mapped']], {}, null, true);
                 }
             }
         }
@@ -1555,8 +1555,10 @@ class LeaseOrderLoadDataHandle {
             }
         } else {
             if (eleRatio && eleValueBT && eleDueDate) {
-                eleRatio.removeAttribute('readonly');
-                eleDueDate.removeAttribute('disabled');
+                if (["post", "put"].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    eleRatio.removeAttribute('readonly');
+                    eleDueDate.removeAttribute('disabled');
+                }
             }
         }
         // mask money
@@ -4194,7 +4196,6 @@ class LeaseOrderDataTableHandle {
                     render: (data, type, row) => {
                         let dataZone = "lease_products_data";
                         let clsZoneReadonly = '';
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         let disabled = '';
                         let checked = '';
                         if (row?.['title'] && row?.['code']) {
@@ -6667,10 +6668,6 @@ class LeaseOrderSubmitHandle {
             }
             if (!LeaseOrderLoadDataHandle.contactSelectEle.val()) {
                 $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-required-contact')}, 'failure');
-                return false;
-            }
-            if (!LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
-                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-required-payment')}, 'failure');
                 return false;
             }
         }

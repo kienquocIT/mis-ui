@@ -1,0 +1,132 @@
+{% load i18n %}
+
+<div class="row mt-3">
+    <div class="col-12">
+        <ul class="nav nav-line nav-tabs nav-light" id="tab-select-table">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_line_detail">
+                <div class="row" style="position: relative; overflow: auto">
+                    <div class="table_space col-12">
+                        <script id="data-line-detail-table"></script>
+                        <table id="tab_line_detail_datatable" data-delivery-selected="" class="table nowrap w-100"
+                               data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
+                               data-url-tax-list="{% url 'TaxListAPI' %}">
+                            <thead>
+                            <tr>
+                                <th class="text-center" style="min-width: 30px"></th>
+                                <th class="text-center" style="min-width: 30px"></th>
+                                <th style="min-width: 250px">{% trans 'Product' %}</th>
+                                <th style="min-width: 250px">{% trans 'Description' %}</th>
+                                <th style="min-width: 150px">{% trans 'UoM' %}</th>
+                                <th style="min-width: 150px">{% trans 'Quantity' %}</th>
+                                <th class="text-right" style="min-width: 200px">{% trans 'Unit price' %}</th>
+                                <th class="text-right" style="min-width: 200px">{% trans 'Subtotal price' %}</th>
+                                <th class="text-right" style="min-width: 150px">{% trans 'Discount rate' %}</th>
+                                <th class="text-right" style="min-width: 200px">{% trans 'Discount value' %}</th>
+                                <th class="text-right" style="min-width: 150px">{% trans 'Tax' %}</th>
+                                <th class="text-right" style="min-width: 200px">{% trans 'Tax value' %}</th>
+                                <th class="text-right" style="min-width: 200px">{% trans 'Total amount' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div hidden class="table_space col-12">
+                        <table id="tab_line_detail_datatable_simple" class="table nowrap w-100">
+                            <thead>
+                            <tr>
+                                <th class="text-center" style="min-width: 30px"></th>
+                                <th class="text-center" style="min-width: 30px"></th>
+                                <th style="min-width: 250px">{% trans 'Description' %}</th>
+                                <th class="text-right" style="min-width: 200px">{% trans 'Total amount' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-7 mt-3">
+                        <div class="btn-group dropdown" id="add_row_dropdown">
+                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans 'Add new row' %}
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" id="add_row_items_btn"><i class="dropdown-icon bi bi-box"></i><span>{% trans 'Add new product row' %}</span></a>
+                                <a class="dropdown-item" id="add_row_items_btn_without_prd"><i class="dropdown-icon bi bi-blockquote-left"></i><span>{% trans 'Add new description row' %}</span></a>
+                            </div>
+                        </div>
+                        <button hidden type="button" id="edit_items_btn" class="btn btn-primary btn-sm">
+                            <i class="far fa-edit"></i>
+                            {% trans 'Edit items' %}
+                        </button>
+                    </div>
+                    <div class="col-12 col-lg-5 mt-3 text-right">
+                        <div class="row">
+                            <label for="pretax-value" class="col-4 col-form-label text-primary">{% trans 'Pretax Amount' %}</label>
+                            <div class="col-8">
+                                <input disabled
+                                       class="text-primary text-right form-control form-control-line mask-money zone-readonly mb-1"
+                                       id="pretax-value"
+                                       value="0"
+                                >
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="taxes-value" class="col-4 col-form-label text-danger">{% trans 'Discount' %}</label>
+                            <div class="col-8">
+                                <input disabled
+                                       class="text-danger text-right form-control form-control-line mask-money zone-readonly mb-1"
+                                       id="discount-all"
+                                       value="0"
+                                >
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="taxes-value" class="col-4 col-form-label text-primary">{% trans 'Taxes' %}</label>
+                            <div class="col-8">
+                                <input disabled
+                                       class="text-primary text-right form-control form-control-line mask-money zone-readonly mb-1"
+                                       id="taxes-value"
+                                       value="0"
+                                >
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="total-value" class="col-4 col-form-label text-primary">{% trans 'TOTAL' %}</label>
+                            <div class="col-8">
+                                <input disabled
+                                       class="text-primary text-right form-control form-control-line mask-money zone-readonly mb-1"
+                                       id="total-value"
+                                       value="0"
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_attachment">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="w-100" id="attachment">
+                            {% include 'extends/files/all.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

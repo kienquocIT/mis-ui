@@ -10,10 +10,14 @@ const tableSelectDeliveryEle = $('#table-select-delivery')
 const tableDetailProductEle = $('#table-product-detail')
 const dataLineDetailTableScript = $('#data-line-detail-table')
 const tabLineDetailTable = $('#tab_line_detail_datatable')
+const tabLineDetailTableSimple = $('#tab_line_detail_datatable_simple')
 const postingDateEle = $('#posting-date')
 const documentDateEle = $('#document-date')
 const invoiceDateEle= $('#invoice-date')
 const customerSelectBtn = $('#customer-select-btn')
+const invoice_exp = $('#invoice-exp')
+const invoice_action = $('#invoice-action')
+const invoice_sign = $('#invoice-sign')
 let invoice_signs_Ele = $('#invoice_signs')
 const invoice_signs = invoice_signs_Ele.text() ? JSON.parse(invoice_signs_Ele.text()) : {};
 
@@ -87,7 +91,7 @@ selectCustomerBtn.on('click', function () {
         loadSaleOrder()
         $('.for-free-input').prop('readonly', true).prop('disabled', true)
         saleOrderEle.prop('disabled', false)
-        $('#add_row_items_btn').prop('hidden', true)
+        $('#add_row_dropdown').prop('hidden', true)
         $('#edit_items_btn').prop('hidden', false)
     }
     else {
@@ -95,10 +99,10 @@ selectCustomerBtn.on('click', function () {
     }
 })
 
-$('#invoice-exp').on('change', function () {
+invoice_exp.on('change', function () {
     if ($(this).val() === '2') {
         if (invoice_signs?.['sale_invoice_sign']) {
-            $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+            invoice_sign.val(invoice_signs?.['sale_invoice_sign'])
         } else {
             $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
         }
@@ -119,15 +123,15 @@ $('#invoice-exp').on('change', function () {
                 }
             })
             if (vat_number.length > 1) {
-                if ($('#invoice-exp').val() === '0') {
+                if (invoice_exp.val() === '0') {
                     if (invoice_signs?.['many_vat_sign']) {
-                        $('#invoice-sign').val(invoice_signs?.['many_vat_sign'])
+                        invoice_sign.val(invoice_signs?.['many_vat_sign'])
                     } else {
                         $.fn.notifyB({description: "Can not get Invoice sign for many tax case. Input in Setting."}, 'failure')
                     }
-                } else if ($('#invoice-exp').val() === '2') {
+                } else if (invoice_exp.val() === '2') {
                     if (invoice_signs?.['sale_invoice_sign']) {
-                        $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                        invoice_sign.val(invoice_signs?.['sale_invoice_sign'])
                     } else {
                         $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
                     }
@@ -135,15 +139,15 @@ $('#invoice-exp').on('change', function () {
                     $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
                 }
             } else {
-                if ($('#invoice-exp').val() === '0') {
+                if (invoice_exp.val() === '0') {
                     if (invoice_signs?.['one_vat_sign']) {
-                        $('#invoice-sign').val(invoice_signs?.['one_vat_sign'])
+                        invoice_sign.val(invoice_signs?.['one_vat_sign'])
                     } else {
                         $.fn.notifyB({description: "Can not get Invoice sign for one tax case. Input in Setting."}, 'failure')
                     }
-                } else if ($('#invoice-exp').val() === '2') {
+                } else if (invoice_exp.val() === '2') {
                     if (invoice_signs?.['sale_invoice_sign']) {
-                        $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                        invoice_sign.val(invoice_signs?.['sale_invoice_sign'])
                     } else {
                         $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
                     }
@@ -153,7 +157,7 @@ $('#invoice-exp').on('change', function () {
             }
         }
         else {
-            $('#invoice-sign').val('')
+            invoice_sign.val('')
         }
     }
 })
@@ -161,7 +165,6 @@ $('#invoice-exp').on('change', function () {
 function loadTableSelectDelivery() {
     tableSelectDeliveryEle.DataTable().clear().destroy()
     tableSelectDeliveryEle.DataTableDefault({
-        dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
         useDataServer: true,
         rowIdx: true,
         reloadCurrency: true,
@@ -253,17 +256,15 @@ $(document).on("change", '.selected-delivery', function () {
 })
 
 function SelectDeliveryOnChange() {
-    let data_product_already = []
-    $('.selected-delivery').each(function () {
-        if ($(this).prop('checked') && $(this).attr('data-already') === '1') {
-            data_product_already = data_product_already.concat(JSON.parse($(this).closest('div').find('.details').text()))
-        }
-    })
-
     let data_product = []
+    let data_product_already = []
     $('.selected-delivery').each(function () {
         if ($(this).prop('checked') && $(this).attr('data-already') === '0') {
             data_product = data_product.concat(JSON.parse($(this).closest('div').find('.details').text()))
+        }
+
+        if ($(this).prop('checked') && $(this).attr('data-already') === '1') {
+            data_product_already = data_product_already.concat(JSON.parse($(this).closest('div').find('.details').text()))
         }
     })
 
@@ -351,22 +352,22 @@ function loadTableLineDetail(datasource=[]) {
     if (datasource.length > 0) {
         let vat_number = []
         for (const item of datasource) {
-            if (item?.['picked_quantity'] > 0 && vat_number.includes(item?.['data_from_so']?.['product_tax_value']) === false) {
+            if (parseFloat(item?.['picked_quantity']) > 0 && vat_number.includes(item?.['data_from_so']?.['product_tax_value']) === false) {
                 vat_number.push(item?.['data_from_so']?.['product_tax_value'])
             }
         }
         if (vat_number.length > 1) {
-            if ($('#invoice-exp').val() === '0') {
+            if (invoice_exp.val() === '0') {
                 if (invoice_signs?.['many_vat_sign']) {
-                    $('#invoice-sign').val(invoice_signs?.['many_vat_sign'])
+                    invoice_sign.val(invoice_signs?.['many_vat_sign'])
                 } else {
                     $.fn.notifyB({description: "Can not get Invoice sign for many tax case. Input in Setting."}, 'failure')
                     return;
                 }
             }
-            else if ($('#invoice-exp').val() === '2') {
+            else if (invoice_exp.val() === '2') {
                 if (invoice_signs?.['sale_invoice_sign']) {
-                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                    invoice_sign.val(invoice_signs?.['sale_invoice_sign'])
                 } else {
                     $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
                 }
@@ -376,17 +377,17 @@ function loadTableLineDetail(datasource=[]) {
                 return;
             }
         } else {
-            if ($('#invoice-exp').val() === '0') {
+            if (invoice_exp.val() === '0') {
                 if (invoice_signs?.['one_vat_sign']) {
-                    $('#invoice-sign').val(invoice_signs?.['one_vat_sign'])
+                    invoice_sign.val(invoice_signs?.['one_vat_sign'])
                 } else {
                     $.fn.notifyB({description: "Can not get Invoice sign for one tax case. Input in Setting."}, 'failure')
                     return;
                 }
             }
-            else if ($('#invoice-exp').val() === '2') {
+            else if (invoice_exp.val() === '2') {
                 if (invoice_signs?.['sale_invoice_sign']) {
-                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                    invoice_sign.val(invoice_signs?.['sale_invoice_sign'])
                 } else {
                     $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
                 }
@@ -412,112 +413,182 @@ function loadTableLineDetail(datasource=[]) {
                 }
             },
             {
-                data: 'product_data__title',
+                className: 'wrap-text text-center',
+                render: () => {
+                    return `<button type='button' ${datasource.length > 0 ? 'disabled' : ''} class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
+                }
+            },
+            {
                 className: 'wrap-text text-primary',
                 render: (data, type, row) => {
-                    return `<span class="product-id" data-id="${row?.['product_data']?.['id']}"><b>${row?.['product_data']?.['title']}</b></span>`
+                    return `<select ${row?.['product_data']?.['id'] ? 'disabled' : ''}
+                                    data-id="${row?.['product_data']?.['id'] ? row?.['product_data']?.['id'] : ''}"
+                                    data-code="${row?.['product_data']?.['code'] ? row?.['product_data']?.['code'] : ''}"
+                                    data-title="${row?.['product_data']?.['title'] ? row?.['product_data']?.['title'] : ''}"
+                                    class="form-select select-2 product-select"></select>`
                 }
             },
             {
-                data: 'product_data__des',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<textarea rows="5" disabled readonly class="des small form-control">${row?.['data_from_so']?.['product_description']}</textarea>`
+                    let product_description = row?.['data_from_so']?.['product_description'] ? row?.['data_from_so']?.['product_description'] : ''
+                    return `<textarea rows="2" disabled readonly class="des small form-control">${product_description}</textarea>`
                 }
             },
             {
-                data: 'uom_data__title',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="uom-id" data-id="${row?.['uom_data']?.['id']}">${row?.['uom_data']?.['title']}</span>`
+                    return `<select ${row?.['product_data']?.['id'] ? 'disabled' : ''}
+                                    data-id="${row?.['uom_data']?.['id'] ? row?.['uom_data']?.['id'] : ''}"
+                                    data-code="${row?.['uom_data']?.['code'] ? row?.['uom_data']?.['code'] : ''}"
+                                    data-title="${row?.['uom_data']?.['title'] ? row?.['uom_data']?.['title'] : ''}"
+                                    class="form-select select-2 uom-select"></select>`
                 }
             },
             {
-                data: 'picked_quantity',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<input type="number" disabled readonly value="${row?.['picked_quantity']}" class="form-control picked_quantity recalculate-field">`
+                    let picked_quantity = row?.['picked_quantity'] ? row?.['picked_quantity'] : 0
+                    return `<input type="number" ${row?.['product_data']?.['id'] ? 'disabled readonly' : ''}
+                                   value="${picked_quantity}" class="form-control picked_quantity recalculate-field">`
                 }
             },
             {
-                data: 'product_unit_price',
-                className: 'wrap-text',
+                className: 'wrap-text text-right',
                 render: (data, type, row) => {
-                    return `<input class="recalculate-field product_unit_price mask-money form-control" value="${row?.['data_from_so']?.['product_unit_price']}">`
+                    let product_unit_price = row?.['data_from_so']?.['product_unit_price'] ? row?.['data_from_so']?.['product_unit_price'] : 0
+                    return `<input ${row?.['product_data']?.['id'] ? 'disabled readonly' : ''}
+                                   class="recalculate-field product_unit_price mask-money form-control text-right" 
+                                   value="${product_unit_price}">`
                 }
             },
             {
-                data: 'product_subtotal_price',
-                className: 'wrap-text',
+                className: 'wrap-text text-right',
                 render: (data, type, row) => {
-                    return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['data_from_so']?.['product_unit_price'] * row?.['picked_quantity']}"></span>`
+                    let product_subtotal_price = row?.['data_from_so']?.['product_unit_price'] && row?.['picked_quantity'] ? parseFloat(row?.['data_from_so']?.['product_unit_price']) * parseFloat(row?.['picked_quantity']) : 0
+                    return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${product_subtotal_price}"></span>`
                 }
             },
             {
-                data: 'product_discount_rate',
-                className: 'wrap-text',
+                className: 'wrap-text text-right',
                 render: (data, type, row) => {
+                    let product_discount_value = row?.['data_from_so']?.['product_discount_value'] ? row?.['data_from_so']?.['product_discount_value'] : 0
                     return `<div class="input-affix-wrapper">
-                                <input type="number" class="recalculate-field form-control product_discount_rate" value="${row?.['data_from_so']?.['product_discount_value']}">
+                                <input type="number" class="recalculate-field form-control product_discount_rate text-right" value="${product_discount_value}">
                                 <div class="input-suffix"><i class="fas fa-percentage"></i></div>
                             </div>`
                 }
             },
             {
-                data: 'product_discount_value',
-                className: 'wrap-text',
+                className: 'wrap-text text-right',
                 render: (data, type, row) => {
-                    return `<span class="product_discount_value mask-money text-danger" data-init-money="${row?.['data_from_so']?.['product_discount_value'] / 100 * row?.['data_from_so']?.['product_unit_price'] * row?.['picked_quantity']}"></span>`
+                    let product_discount_value = row?.['data_from_so']?.['product_discount_value'] && row?.['data_from_so']?.['product_unit_price'] && row?.['picked_quantity'] ? (
+                        row?.['data_from_so']?.['product_discount_value'] / 100
+                    ) * (
+                        row?.['data_from_so']?.['product_unit_price'] * row?.['picked_quantity']
+                    ) : 0
+                    return `<span class="product_discount_value mask-money text-danger" data-init-money="${product_discount_value}"></span>`
                 }
             },
             {
-                data: 'product_tax_rate',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<select data-tax-rate="0" class="recalculate-field form-select select2 product_taxes"></select>
-                            <script class="script_product_taxes" data-tax-id="${row?.['data_from_so']?.['tax']}" data-tax-rate="${row?.['data_from_so']?.['product_tax_value']}" data-tax-title="${row?.['data_from_so']?.['product_tax_title']}"></script>`
+                    return `<select data-tax-id="${row?.['data_from_so']?.['tax'] ? row?.['data_from_so']?.['tax'] : ''}"
+                                    data-tax-rate="${row?.['data_from_so']?.['product_tax_value'] ? row?.['data_from_so']?.['product_tax_value'] : 0}"
+                                    data-tax-title="${row?.['data_from_so']?.['product_tax_title'] ? row?.['data_from_so']?.['product_tax_title'] : ''}"
+                                    class="recalculate-field form-select select2 product_taxes"></select>`
                 }
             },
             {
-                data: 'product_tax_value',
-                className: 'wrap-text',
+                className: 'wrap-text text-right',
                 render: (data, type, row) => {
-                    let subtotal = row?.['data_from_so']?.['product_unit_price'] * row?.['picked_quantity']
-                    let discount = subtotal * row?.['data_from_so']?.['product_discount_value'] / 100
-                    let tax_value = (subtotal - discount) * row?.['data_from_so']?.['product_tax_value'] / 100
+                    let subtotal = row?.['data_from_so']?.['product_unit_price'] && row?.['picked_quantity'] ? parseFloat(row?.['data_from_so']?.['product_unit_price']) * parseFloat(row?.['picked_quantity']) : 0
+                    let discount = row?.['data_from_so']?.['product_discount_value'] ? subtotal * parseFloat(row?.['data_from_so']?.['product_discount_value']) / 100 : 0
+                    let tax_value = row?.['data_from_so']?.['product_tax_value'] ? (subtotal - discount) * parseFloat(row?.['data_from_so']?.['product_tax_value']) / 100 : 0
                     return `<span class="mask-money text-primary product_taxes_value" data-init-money="${tax_value}"></span>`
                 }
             },
             {
-                data: 'product_subtotal_price_final',
-                className: 'wrap-text',
+                className: 'wrap-text text-right',
                 render: (data, type, row) => {
-                    let subtotal = row?.['data_from_so']?.['product_unit_price'] * row?.['picked_quantity']
-                    let discount = subtotal * row?.['data_from_so']?.['product_discount_value'] / 100
-                    let tax_value = (subtotal - discount) * row?.['data_from_so']?.['product_tax_value'] / 100
+                    let subtotal = row?.['data_from_so']?.['product_unit_price'] && row?.['picked_quantity'] ? parseFloat(row?.['data_from_so']?.['product_unit_price']) * parseFloat(row?.['picked_quantity']) : 0
+                    let discount = row?.['data_from_so']?.['product_discount_value'] ? subtotal * parseFloat(row?.['data_from_so']?.['product_discount_value']) / 100 : 0
+                    let tax_value = row?.['data_from_so']?.['product_tax_value'] ? (subtotal - discount) * parseFloat(row?.['data_from_so']?.['product_tax_value']) / 100 : 0
                     let final = subtotal - discount + tax_value
                     return `<span class="product_subtotal_price_final mask-money text-primary" data-init-money="${final}"></span>`
-                }
-            },
-            {
-                className: 'wrap-text text-center',
-                render: () => {
-                    return `<button type='button' disabled class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
                 }
             },
         ],
         initComplete: function(settings, json) {
             if (datasource.length > 0) {
                 tabLineDetailTable.find('tbody tr').each(function () {
-                    let tax_script = $(this).find('.script_product_taxes')
+                    let prd_select = $(this).find('.product-select')
+                    loadRowPrd(prd_select, prd_select.attr('data-id') !== '' ? {
+                        'id': prd_select.attr('data-id'),
+                        'code': prd_select.attr('data-code'),
+                        'title': prd_select.attr('data-title')
+                    } : null)
+
+                    let uom_select = $(this).find('.uom-select')
+                    loadRowUOM(uom_select, uom_select.attr('data-id') !== '' ? {
+                        'id': uom_select.attr('data-id'),
+                        'code': uom_select.attr('data-code'),
+                        'title': uom_select.attr('data-title')
+                    } : null)
+
                     let tax_select = $(this).find('.product_taxes')
-                    loadRowTax(tax_select, {
-                        'id': tax_script.attr('data-tax-id'),
-                        'title': tax_script.attr('data-tax-title'),
-                        'rate': tax_script.attr('data-tax-rate')
-                    })
+                    loadRowTax(tax_select, tax_select.attr('data-tax-id') !== '' ? {
+                        'id': tax_select.attr('data-tax-id'),
+                        'title': tax_select.attr('data-tax-title'),
+                        'rate': tax_select.attr('data-tax-rate')
+                    } : null)
                 })
                 calculatePrice()
+            }
+        }
+    });
+}
+
+function loadTableLineDetailSimple(datasource=[]) {
+    tabLineDetailTableSimple.DataTable().clear().destroy()
+    tabLineDetailTableSimple.DataTableDefault({
+        dom: "",
+        rowIdx: true,
+        reloadCurrency: true,
+        paging: false,
+        data: datasource,
+        columns: [
+            {
+                className: 'wrap-text w-5',
+                'render': () => {
+                    return ``;
+                }
+            },
+            {
+                className: 'wrap-text text-center w-5',
+                render: () => {
+                    return `<button type='button' class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
+                }
+            },
+            {
+                className: 'wrap-text w-60',
+                render: (data, type, row) => {
+                    let ar_product_des = row?.['ar_product_des'] ? row?.['ar_product_des'] : ''
+                    return `<textarea rows="1" class="ar_product_des form-control">${ar_product_des}</textarea>`
+                }
+            },
+            {
+                className: 'wrap-text text-right w-30',
+                render: (data, type, row) => {
+                    let product_subtotal_final = row?.['product_subtotal_final'] ? row?.['product_subtotal_final'] : 0
+                    return `<input class="product_subtotal_final mask-money form-control text-right" 
+                                   value="${product_subtotal_final}">`
+                }
+            },
+        ],
+        initComplete: function(settings, json) {
+            if (datasource.length > 0) {
+                calculatePriceSimple()
             }
         }
     });
@@ -543,50 +614,55 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_fre
                     }
                 },
                 {
-                    data: 'product__title',
+                    className: 'wrap-text text-center',
+                    render: () => {
+                        return `<button disabled class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
+                    }
+                },
+                {
                     className: 'wrap-text text-primary',
                     render: (data, type, row) => {
-                        return `<span class="product-id" data-id="${row?.['product']?.['id']}"><b>${row?.['product']?.['title']}</b></span>`
+                        return `<select data-id="${row?.['product']?.['id'] ? row?.['product']?.['id'] : ''}"
+                                        data-code="${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}"
+                                        data-title="${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}"
+                                        class="form-select select-2 product-select"></select>`
                     }
                 },
                 {
-                    data: 'product_data__des',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<textarea rows="5" disabled readonly class="des small form-control">${row?.['product']?.['des']}</textarea>`
+                        return `<textarea rows="2" disabled readonly class="des small form-control">${row?.['product']?.['des'] ? row?.['product']?.['des'] : ''}</textarea>`
                     }
                 },
                 {
-                    data: 'uom_data__title',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="uom-id" data-id="${row?.['product_uom']?.['id']}">${row?.['product_uom']?.['title']}</span>`
+                        return `<select data-id="${row?.['product_uom']?.['id'] ? row?.['product_uom']?.['id'] : ''}"
+                                        data-code="${row?.['product_uom']?.['code'] ? row?.['product_uom']?.['code'] : ''}"
+                                        data-title="${row?.['product_uom']?.['title'] ? row?.['product_uom']?.['title'] : ''}"
+                                        class="form-select select-2 uom-select"></select>`
                     }
                 },
                 {
-                    data: 'picked_quantity',
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<input type="number" disabled readonly value="${row?.['product_quantity']}" class="form-control picked_quantity recalculate-field">`
                     }
                 },
                 {
-                    data: 'product_unit_price',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         return `<input ${input_disabled} class="product_unit_price mask-money form-control" value="${row?.['product_unit_price']}">`
                     }
                 },
                 {
-                    data: 'product_subtotal_price',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal']}"></span>`
                     }
                 },
                 {
-                    data: 'product_discount_rate',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         return `<div class="input-affix-wrapper">
                                     <input ${input_disabled} type="number" class="form-control product_discount_rate recalculate-field" value="${row?.['product_discount_rate']}">
@@ -595,50 +671,56 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_fre
                     }
                 },
                 {
-                    data: 'product_discount_value',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         return `<span class="product_discount_value mask-money text-danger" data-init-money="${row?.['product_discount_value']}"></span>`
                     }
                 },
                 {
-                    data: 'product_tax_rate',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<select data-tax-rate="0" ${input_disabled} class="form-select select2 product_taxes recalculate-field"></select>
-                                <script class="script_product_taxes" data-tax-id="${row?.['product_tax']?.['id']}" data-tax-rate="${row?.['product_tax']?.['rate']}" data-tax-title="${row?.['product_tax']?.['title']}"></script>`
+                        return `<select ${input_disabled}
+                                        data-tax-id="${row?.['product_tax']?.['id'] ? row?.['product_tax']?.['id'] : ''}"
+                                        data-tax-rate="${row?.['product_tax']?.['rate'] ? row?.['product_tax']?.['rate'] : 0}"
+                                        data-tax-title="${row?.['product_tax']?.['title'] ? row?.['product_tax']?.['title'] : ''}"
+                                        class="form-select select2 product_taxes recalculate-field"></select>`
                     }
                 },
                 {
-                    data: 'product_tax_value',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         return `<span class="mask-money text-primary product_taxes_value" data-init-money="${row?.['product_tax_value']}"></span>`
                     }
                 },
                 {
-                    data: 'product_subtotal_final',
-                    className: 'wrap-text',
+                    className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         return `<span class="product_subtotal_price_final mask-money text-primary" data-init-money="${row?.['product_subtotal_final']}"></span>`
-                    }
-                },
-                {
-                    className: 'wrap-text text-center',
-                    render: () => {
-                        return `<button disabled class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
                     }
                 },
             ],
             initComplete: function(settings, json) {
                 if (datasource.length > 0) {
                     tabLineDetailTable.find('tbody tr').each(function () {
-                        let tax_script = $(this).find('.script_product_taxes')
+                        let prd_select = $(this).find('.product-select')
+                        loadRowPrd(prd_select, prd_select.attr('data-id') !== '' ? {
+                            'id': prd_select.attr('data-id'),
+                            'code': prd_select.attr('data-code'),
+                            'title': prd_select.attr('data-title')
+                        } : null)
+
+                        let uom_select = $(this).find('.uom-select')
+                        loadRowUOM(uom_select, uom_select.attr('data-id') !== '' ? {
+                            'id': uom_select.attr('data-id'),
+                            'code': uom_select.attr('data-code'),
+                            'title': uom_select.attr('data-title')
+                        } : null)
+
                         let tax_select = $(this).find('.product_taxes')
-                        loadRowTax(tax_select, tax_script.attr('data-tax-id') !== 'undefined' ? {
-                            'id': tax_script.attr('data-tax-id'),
-                            'title': tax_script.attr('data-tax-title'),
-                            'rate': tax_script.attr('data-tax-rate')
+                        loadRowTax(tax_select, tax_select.attr('data-tax-id') !== '' ? {
+                            'id': tax_select.attr('data-tax-id'),
+                            'title': tax_select.attr('data-tax-title'),
+                            'rate': tax_select.attr('data-tax-rate')
                         } : null)
                     })
                     calculatePrice()
@@ -648,7 +730,6 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_fre
     }
     else {
         for (const item of datasource) {
-            tabLineDetailTable.find('tbody .dataTables_empty').closest('tr').remove()
             let index = tabLineDetailTable.find('tbody tr').length + 1
             let row = $(`
                 <tr>
@@ -657,7 +738,7 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_fre
                         <select class="form-select select-2 product-select"></select>
                     </td>
                     <td class="wrap-text">
-                        <textarea rows="5" disabled readonly class="des small form-control">${item?.['product']?.['des']}</textarea>
+                        <textarea rows="2" disabled readonly class="des small form-control">${item?.['product']?.['des']}</textarea>
                     </td>
                     <td class="wrap-text">
                         <select class="form-select select-2 uom-select"></select>
@@ -723,6 +804,10 @@ function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_fre
     }
 }
 
+$(document).on("change", '.product_subtotal_final', function () {
+    calculatePriceSimple()
+})
+
 $(document).on("change", '.product_unit_price', function () {
     let subtotal = parseFloat($(this).attr('value')) * parseFloat($(this).closest('tr').find('.picked_quantity').text())
     $(this).closest('tr').find('.product_subtotal_price').attr('data-init-money', subtotal)
@@ -739,11 +824,12 @@ function loadTableSelectCustomer() {
     if (!$.fn.DataTable.isDataTable('#table-select-customer')) {
         let frm = new SetupFormSubmit(tableSelectCustomerEle);
         tableSelectCustomerEle.DataTableDefault({
-            dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
             useDataServer: true,
             rowIdx: true,
             reloadCurrency: true,
-            paging: false,
+            scrollY: '50vh',
+            scrollX: '100vw',
+            scrollCollapse: true,
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
@@ -768,31 +854,10 @@ function loadTableSelectCustomer() {
                     }
                 },
                 {
-                    data: 'code',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return row.code
-                    }
-                },
-                {
                     data: 'name',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return row.name
-                    }
-                },
-                {
-                    data: 'tax_code',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return row.tax_code
-                    }
-                },
-                {
-                    data: 'select',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<div class="form-check form-check-lg">
+                        return `<div class="form-check d-flex">
                                     <input type="radio" name="customer-selected-radio" class="form-check-input"
                                            data-id="${row?.['id']}"
                                            data-name="${row?.['name']}"
@@ -802,7 +867,15 @@ function loadTableSelectCustomer() {
                                            data-bank-name="${row?.['bank_accounts_mapped'].length > 0 ? row?.['bank_accounts_mapped'][0]['bank_name'] : ''}"
                                            data-bank-number="${row?.['bank_accounts_mapped'].length > 0 ? row?.['bank_accounts_mapped'][0]['bank_account_number'] : ''}"
                                     >
+                                    <span class="badge badge-soft-primary w-15">${row?.['code']}</span>&nbsp;<span>${row?.['name']}</span>
                                 </div>`
+                    }
+                },
+                {
+                    data: 'tax_code',
+                    className: 'wrap-text',
+                    render: (data, type, row) => {
+                        return row.tax_code
                     }
                 },
             ],
@@ -817,15 +890,6 @@ function loadSaleOrder(data) {
             url: saleOrderEle.attr('data-url') + `?customer_id=${customerNameEle.attr('data-id')}`,
             method: 'GET',
         },
-        callbackDataResp: function (resp, keyResp) {
-            let result = [];
-            for (let i = 0; i < resp.data[keyResp].length; i++) {
-                if (resp.data[keyResp][i].system_status === 3) {
-                    result.push(resp.data[keyResp][i])
-                }
-            }
-            return result;
-        },
         templateResult: function(data) {
             let opp_code = data.data?.['opportunity']?.['code']
             if (data.data?.['opportunity']?.['code'] === undefined) {
@@ -833,7 +897,7 @@ function loadSaleOrder(data) {
             }
             let ele = $('<div class="row"></div>');
             ele.append(`<div class="col-9"><span class="badge badge-soft-primary">${data.data?.['code']}</span>&nbsp;&nbsp;&nbsp;${data.data?.['title']}</div>
-                        <div class="col-3"><span class="badge badge-soft-secondary">${opp_code}</span></div>`);
+                        <div class="col-3 text-right"><span class="badge badge-light" data-bs-toggle="tooltip" title="${data.data?.['opportunity']?.['title']}">${opp_code}</span></div>`);
             return ele;
         },
         data: (data ? data : null),
@@ -843,7 +907,7 @@ function loadSaleOrder(data) {
     }).on('change', function () {
         if (saleOrderEle.val()) {
             loadTableSelectDelivery()
-            $('#add_row_items_btn').prop('hidden', true)
+            $('#add_row_dropdown').prop('hidden', true)
             $('#edit_items_btn').prop('hidden', false)
         }
         else {
@@ -881,20 +945,36 @@ function calculatePrice() {
     let sum_subtotal_price = 0
     let sum_discount = 0
     tabLineDetailTable.find('tbody tr').each(function () {
-        if ($(this).find('.product_subtotal_price').length > 0) {
+        if ($(this).find('.product_subtotal_price').attr('data-init-money')) {
             sum_subtotal_price += parseFloat($(this).find('.product_subtotal_price').attr('data-init-money'))
         }
-        if ($(this).find('.product_discount_value').length > 0) {
+        if ($(this).find('.product_discount_value').attr('data-init-money')) {
             sum_discount += parseFloat($(this).find('.product_discount_value').attr('data-init-money'))
         }
-        if ($(this).find('.product_taxes_value').length > 0) {
+        if ($(this).find('.product_taxes_value').attr('data-init-money')) {
             sum_taxes += parseFloat($(this).find('.product_taxes_value').attr('data-init-money'))
         }
     })
-    $('#pretax-value').attr('data-init-money', sum_subtotal_price)
-    $('#taxes-value').attr('data-init-money', sum_taxes)
-    $('#discount-all').attr('data-init-money', sum_discount)
-    $('#total-value').attr('data-init-money', sum_subtotal_price + sum_taxes - sum_discount)
+    $('#pretax-value').attr('value', sum_subtotal_price)
+    $('#taxes-value').attr('value', sum_taxes)
+    $('#discount-all').attr('value', sum_discount)
+    $('#total-value').attr('value', sum_subtotal_price + sum_taxes - sum_discount)
+
+    $.fn.initMaskMoney2()
+}
+
+function calculatePriceSimple() {
+    let product_subtotal_final = 0
+
+    tabLineDetailTableSimple.find('tbody tr').each(function () {
+        if ($(this).find('.product_subtotal_final').attr('value')) {
+            product_subtotal_final += parseFloat($(this).find('.product_subtotal_final').attr('value'))
+        }
+    })
+    $('#pretax-value').attr('value', product_subtotal_final)
+    $('#taxes-value').attr('value', 0)
+    $('#discount-all').attr('value', 0)
+    $('#total-value').attr('value', product_subtotal_final)
 
     $.fn.initMaskMoney2()
 }
@@ -902,21 +982,22 @@ function calculatePrice() {
 class ARInvoiceHandle {
     load() {
         loadTableLineDetail([])
+        loadTableLineDetailSimple([])
         loadTableSelectCustomer()
     }
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle))
 
-        frm.dataForm['title'] = $('#name').val()
+        frm.dataForm['title'] = $('#title').val()
         frm.dataForm['customer_mapped'] = customerNameEle.attr('data-id')
         frm.dataForm['sale_order_mapped'] = saleOrderEle.val()
 
         frm.dataForm['posting_date'] = moment(postingDateEle.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
         frm.dataForm['document_date'] = moment(documentDateEle.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
         frm.dataForm['invoice_date'] = moment(invoiceDateEle.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
-        frm.dataForm['invoice_sign'] = $('#invoice-sign').val()
+        frm.dataForm['invoice_sign'] = invoice_sign.val()
         frm.dataForm['invoice_number'] = $('#invoice-number').val()
-        frm.dataForm['invoice_example'] = $('#invoice-exp').val()
+        frm.dataForm['invoice_example'] = invoice_exp.val()
 
         frm.dataForm['customer_code'] = customerCodeEle.val()
         frm.dataForm['customer_name'] = customerNameEle.val()
@@ -929,33 +1010,13 @@ class ARInvoiceHandle {
         frm.dataForm['delivery_mapped_list'] = tabLineDetailTable.attr('data-delivery-selected') !== '' ? tabLineDetailTable.attr('data-delivery-selected').split(',') : []
 
         let vat_number = []
-        frm.dataForm['data_item_list'] = []
-        if (saleOrderEle.val()) {
+        let data_item_list = []
+        if (!tabLineDetailTable.closest('.table_space').prop('hidden')) {
             tabLineDetailTable.find('tbody tr').each(function () {
                 if ($(this).find('.product_taxes').val()) {
                     vat_number.push($(this).find('.product_taxes').val())
                 }
-                frm.dataForm['data_item_list'].push({
-                    'item_index': $(this).find('td:first-child').text(),
-                    'product_id': $(this).find('.product-id').attr('data-id'),
-                    'product_uom_id': $(this).find('.uom-id').attr('data-id'),
-                    'product_quantity': $(this).find('.picked_quantity').val(),
-                    'product_unit_price': $(this).find('.product_unit_price').attr('value'),
-                    'product_subtotal': $(this).find('.product_subtotal_price').attr('data-init-money'),
-                    'product_discount_rate': $(this).find('.product_discount_rate').val(),
-                    'product_discount_value': $(this).find('.product_discount_value').attr('data-init-money'),
-                    'product_tax_id': $(this).find('.product_taxes').val(),
-                    'product_tax_value': $(this).find('.product_taxes_value').attr('data-init-money'),
-                    'product_subtotal_final': $(this).find('.product_subtotal_price_final').attr('data-init-money')
-                })
-            })
-        }
-        else {
-            tabLineDetailTable.find('tbody tr').each(function () {
-                if ($(this).find('.product_taxes').val()) {
-                    vat_number.push($(this).find('.product_taxes').val())
-                }
-                frm.dataForm['data_item_list'].push({
+                data_item_list.push({
                     'item_index': $(this).find('td:first-child').text(),
                     'product_id': $(this).find('.product-select').val(),
                     'product_uom_id': $(this).find('.uom-select').val(),
@@ -970,15 +1031,24 @@ class ARInvoiceHandle {
                 })
             })
         }
+        else if (!tabLineDetailTableSimple.closest('.table_space').prop('hidden')) {
+            tabLineDetailTableSimple.find('tbody tr').each(function () {
+                data_item_list.push({
+                    'item_index': $(this).find('td:first-child').text(),
+                    'ar_product_des': $(this).find('.ar_product_des').val(),
+                    'product_subtotal_final': $(this).find('.product_subtotal_price_final').attr('value')
+                })
+            })
+        }
 
-        // frm.dataForm['system_status'] = 1;
+        frm.dataForm['data_item_list'] = data_item_list
 
         if (frm.dataForm['data_item_list'].length === 0) {
             $.fn.notifyB({description: "No item in tab line detail"}, 'failure')
             return false
         }
 
-        if (vat_number.length > 0 && $('#invoice-exp').val() === '2') {
+        if (vat_number.length > 0 && invoice_exp.val() === '2') {
             $.fn.notifyB({description: "Product rows in sales invoice can not have VAT."}, 'failure')
             return false
         }
@@ -992,6 +1062,7 @@ class ARInvoiceHandle {
                 urlRedirect: frm.dataUrlRedirect,
             };
         }
+
         return {
             url: frm.dataUrl,
             method: frm.dataMethod,
@@ -1021,41 +1092,41 @@ function LoadDetailARInvoice(option) {
                 $x.fn.renderCodeBreadcrumb(data);
 
                 if (invoice_signs?.['many_vat_sign'] === data?.['invoice_sign']) {
-                    $('#invoice-sign').val(invoice_signs?.['many_vat_sign'])
+                    invoice_sign.val(invoice_signs?.['many_vat_sign'])
                 }
 
                 if (invoice_signs?.['one_vat_sign'] === data?.['invoice_sign']) {
-                    $('#invoice-sign').val(invoice_signs?.['one_vat_sign'])
+                    invoice_sign.val(invoice_signs?.['one_vat_sign'])
                 }
 
                 if (invoice_signs?.['sale_invoice_sign'] === data?.['invoice_sign']) {
-                    $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                    invoice_sign.val(invoice_signs?.['sale_invoice_sign'])
                 }
 
                 if (data?.['is_created_einvoice'] === false) {
                     $('#view_invoice_btn').closest('a').remove()
                 }
                 else {
-                    $('#invoice-action').text($('#invoice-action').attr('data-trans-update'))
-                    $('#invoice-action').closest('button').find('.icon').html('<i class="fa-solid fa-retweet"></i>')
+                    invoice_action.text(invoice_action.attr('data-trans-update'))
+                    invoice_action.closest('button').find('.icon').html('<i class="fa-solid fa-retweet"></i>')
                 }
 
                 if (data?.['is_free_input'] === false) {
                     $('.for-free-input').prop('readonly', true).prop('disabled', true)
-                    $('#add_row_items_btn').remove()
+                    $('#add_row_dropdown').remove()
                 }
 
-                $('#name').val(data?.['title'])
+                $('#title').val(data?.['title'])
                 customerNameEle.attr('data-id', data?.['customer_mapped'])
                 loadSaleOrder(data?.['sale_order_mapped'])
                 postingDateEle.val(moment(data?.['posting_date'].split(' ')[0]).format('DD/MM/YYYY'))
                 documentDateEle.val(moment(data?.['document_date'].split(' ')[0]).format('DD/MM/YYYY'))
                 invoiceDateEle.val(moment(data?.['invoice_date'].split(' ')[0]).format('DD/MM/YYYY'))
-                $('#invoice-sign').val(data?.['invoice_sign'])
+                invoice_sign.val(data?.['invoice_sign'])
                 $('#invoice-number').val(data?.['invoice_number'])
                 $('#invoice-status').text(['Khởi tạo', 'Đã phát hành', 'Đã kê khai', 'Đã thay thế', 'Đã điều chỉnh'][data?.['invoice_status']])
 
-                $('#invoice-exp').val(data?.['invoice_example'])
+                invoice_exp.val(data?.['invoice_example'])
 
                 customerCodeEle.val(data?.['customer_code'])
                 customerNameEle.val(data?.['customer_name'])
@@ -1080,6 +1151,17 @@ function LoadDetailARInvoice(option) {
                 $.fn.initMaskMoney2();
             }
         })
+}
+
+function AddRow(table, data) {
+    table.DataTable().row.add(data).draw();
+}
+
+function DeleteRow(table, currentRow) {
+    currentRow = parseInt(currentRow) - 1
+    let rowIndex = table.DataTable().row(currentRow).index();
+    let row = table.DataTable().row(rowIndex);
+    row.remove().draw();
 }
 
 $('#create_invoice_btn').on('click', function () {
@@ -1111,7 +1193,7 @@ $('#create_invoice_btn').on('click', function () {
 
 $('#view_invoice_btn').on('click', function () {
     let pk = $.fn.getPkDetail();
-    $(this).closest('a').attr('href', $(this).closest('a').attr('data-href').replace(0, pk) + `?pattern=${$('#invoice-sign').val()}`)
+    $(this).closest('a').attr('href', $(this).closest('a').attr('data-href').replace(0, pk) + `?pattern=${invoice_sign.val()}`)
 })
 
 $('#edit_items_btn').on('click', function () {
@@ -1125,77 +1207,45 @@ $('#edit_items_btn').on('click', function () {
 })
 
 $('#add_row_items_btn').on('click', function () {
-    tabLineDetailTable.find('tbody .dataTables_empty').closest('tr').remove()
-    let index = tabLineDetailTable.find('tbody tr').length + 1
-    let row = $(`
-        <tr>
-            <td class="wrap-text">${index}</td>
-            <td class="wrap-text">
-                <select class="form-select select-2 product-select"></select>
-            </td>
-            <td class="wrap-text">
-                <textarea rows="5" disabled readonly class="des small form-control"></textarea>
-            </td>
-            <td class="wrap-text">
-                <select class="form-select select-2 uom-select"></select>
-            </td>
-            <td class="wrap-text">
-                <input type="number" class="form-control picked_quantity recalculate-field">
-            </td>
-            <td class="wrap-text">
-                <input class="product_unit_price mask-money form-control recalculate-field" value="0">
-            </td>
-            <td class="wrap-text">
-                <span class="product_subtotal_price mask-money text-primary" data-init-money="0"></span>
-            </td>
-            <td class="wrap-text">
-                <div class="input-affix-wrapper">
-                    <input type="number" class="form-control product_discount_rate recalculate-field" value="0">
-                    <div class="input-suffix">
-                        <i class="fas fa-percentage"></i>
-                    </div>
-                </div>
-            </td>
-            <td class="wrap-text">
-                <span class="product_discount_value mask-money text-danger" data-init-money="0"></span>
-            </td>
-            <td class="wrap-text">
-                <select data-tax-rate="0" class="form-select select2 product_taxes recalculate-field"></select>
-            </td>
-            <td class="wrap-text">
-                <span class="mask-money text-primary product_taxes_value" data-init-money="0"></span>
-            </td>
-            <td class="wrap-text">
-                <span class="product_subtotal_price_final mask-money text-primary" data-init-money="0"></span>
-            </td>
-            <td class="wrap-text text-center">
-                <button type='button' class="delete-item-row btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs">
-                    <span class="icon"><i class="fas fa-trash"></i></span>
-                </button>
-            </td>
-        </tr>
-    `)
-    tabLineDetailTable.find('tbody').append(row)
-    row.find('.product-select').initSelect2({
+    tabLineDetailTable.closest('.table_space').prop('hidden', false)
+    tabLineDetailTableSimple.closest('.table_space').prop('hidden', true)
+    AddRow(tabLineDetailTable, {})
+    let row_added = tabLineDetailTable.find('tbody tr:last-child')
+    loadRowPrd(row_added.find('.product-select'))
+    $.fn.initMaskMoney2()
+    calculatePrice()
+})
+
+$('#add_row_items_btn_without_prd').on('click', function () {
+    tabLineDetailTable.closest('.table_space').prop('hidden', true)
+    tabLineDetailTableSimple.closest('.table_space').prop('hidden', false)
+    AddRow(tabLineDetailTableSimple, {})
+    $.fn.initMaskMoney2()
+    calculatePriceSimple()
+})
+
+function loadRowPrd(ele, data) {
+    ele.initSelect2({
         ajax: {
             url: scriptUrlEle.attr('data-url-product-list'),
             method: 'GET',
         },
-        data: null,
+        data: data ? data : null,
         keyResp: 'product_list',
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
-        if ($(this).val()) {
-            let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-            $(this).closest('tr').find('.des').text(selected?.['description'])
-            loadRowUOM(row.find('.uom-select'), selected?.['sale_default_uom'], selected?.['general_uom_group']?.['id'])
-            loadRowTax(row.find('.product_taxes'))
+        if (ele.val()) {
+            let selected = SelectDDControl.get_data_from_idx(ele, ele.val())
+            ele.closest('tr').find('.des').text(selected?.['description'] ? selected?.['description'] : '')
+            loadRowUOM(ele.closest('tr').find('.uom-select'), selected?.['sale_default_uom'], selected?.['general_uom_group']?.['id'])
+            loadRowTax(ele.closest('tr').find('.product_taxes'))
         }
     })
-})
+}
 
 function loadRowUOM(ele, data, group_id) {
+    ele.empty()
     ele.initSelect2({
         ajax: {
             url: scriptUrlEle.attr('data-url-uom-list') + `?group=${group_id}`,
@@ -1209,6 +1259,7 @@ function loadRowUOM(ele, data, group_id) {
 }
 
 function loadRowTax(ele, data) {
+    ele.empty()
     ele.initSelect2({
         allowClear: true,
         ajax: {
@@ -1231,13 +1282,8 @@ function loadRowTax(ele, data) {
 }
 
 $(document).on("click", '.delete-item-row', function () {
-    $(this).closest('tr').remove()
-    if (tabLineDetailTable.find('tbody tr').length === 0) {
-        loadTableLineDetail([])
-    }
-    tabLineDetailTable.find('tbody tr').each(function (index, ele) {
-        $(this).find('td:first-child').text(index + 1)
-    })
+    DeleteRow(tabLineDetailTable, parseInt($(this).closest('tr').find('td:first-child').text()))
+    calculatePriceRow();
 })
 
 function calculatePriceRow(row) {
@@ -1281,16 +1327,16 @@ $(document).on("change", '.recalculate-field', function () {
         }
     })
     if (vat_number.length > 1) {
-        if ($('#invoice-exp').val() === '0') {
+        if (invoice_exp.val() === '0') {
             if (invoice_signs?.['many_vat_sign']) {
-                $('#invoice-sign').val(invoice_signs?.['many_vat_sign'])
+                invoice_sign.val(invoice_signs?.['many_vat_sign'])
             } else {
                 $.fn.notifyB({description: "Can not get Invoice sign for many tax case. Input in Setting."}, 'failure')
             }
         }
-        else if ($('#invoice-exp').val() === '2') {
+        else if (invoice_exp.val() === '2') {
             if (invoice_signs?.['sale_invoice_sign']) {
-                $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                invoice_sign.val(invoice_signs?.['sale_invoice_sign'])
             } else {
                 $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
             }
@@ -1299,16 +1345,16 @@ $(document).on("change", '.recalculate-field', function () {
             $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
         }
     } else {
-        if ($('#invoice-exp').val() === '0') {
+        if (invoice_exp.val() === '0') {
             if (invoice_signs?.['one_vat_sign']) {
-                $('#invoice-sign').val(invoice_signs?.['one_vat_sign'])
+                invoice_sign.val(invoice_signs?.['one_vat_sign'])
             } else {
                 $.fn.notifyB({description: "Can not get Invoice sign for one tax case. Input in Setting."}, 'failure')
             }
         }
-        else if ($('#invoice-exp').val() === '2') {
+        else if (invoice_exp.val() === '2') {
             if (invoice_signs?.['sale_invoice_sign']) {
-                $('#invoice-sign').val(invoice_signs?.['sale_invoice_sign'])
+                invoice_sign.val(invoice_signs?.['sale_invoice_sign'])
             } else {
                 $.fn.notifyB({description: "Can not get Invoice sign for sales invoice case. Input in Setting."}, 'failure')
             }

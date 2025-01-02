@@ -1,7 +1,8 @@
 // LoadData
 class RecoveryLoadDataHandle {
     static $form = $('#frm_goods_recovery');
-    static $boxStatus = $('#status');
+    static $date = $('#date_recovery');
+    static $boxStatus = $('#recovery_status');
     static $boxCustomer = $('#customer_id');
     static $boxLeaseOrder = $('#lease_order_id');
     static $modalMain = $('#productModalCenter');
@@ -271,33 +272,39 @@ class RecoveryLoadDataHandle {
             iconEle.removeClass('text-secondary').addClass('text-dark');
 
             let dataDtb = [];
+            let inputRecovery = 0;
             let fromRecovery = 0;
             let totalRecovery = 0;
             RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
                 let row = this.node();
-                let recoveryEle = row.querySelector('.table-row-quantity-recovery');
-                if (recoveryEle) {
-                    if ($(recoveryEle).val()) {
-                        totalRecovery += parseFloat($(recoveryEle).val());
+                if (!$(row).hasClass('child-workflow-list')) {
+                    let recoveryEle = row.querySelector('.table-row-quantity-recovery');
+                    if (recoveryEle) {
+                        if ($(recoveryEle).val()) {
+                            totalRecovery += parseFloat($(recoveryEle).val());
+                        }
                     }
                 }
             });
             let inputEle = trEle[0].querySelector('.table-row-quantity-recovery');
             if (inputEle) {
                 if ($(inputEle).val()) {
-                    fromRecovery = totalRecovery - parseFloat($(inputEle).val()) + 1;
+                    inputRecovery = parseFloat($(inputEle).val());
+                    fromRecovery = totalRecovery - inputRecovery + 1;
                 }
             }
             for (let i = fromRecovery; i <= totalRecovery; i++) {
                 let code = 'LEASE-' + String(i);
-                dataDtb.push({'lease_code': code})
+                dataDtb.push({'code': code})
             }
-            let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(trEle[0]).index();
-            let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
-            let rowData = $row.data();
-            if (rowData?.['lease_generate_data']) {
-                dataDtb = rowData?.['lease_generate_data'];
-            }
+
+
+            // let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(trEle[0]).index();
+            // let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
+            // let rowData = $row.data();
+            // if (rowData?.['lease_generate_data']) {
+            //     dataDtb = rowData?.['lease_generate_data'];
+            // }
 
 
 
@@ -312,8 +319,11 @@ class RecoveryLoadDataHandle {
                 if ($child.length > 0) {
                     let tblChild = $child[0].querySelector('.table-child');
                     if (tblChild) {
-                        $(tblChild).DataTable().clear().draw();
-                        $(tblChild).DataTable().rows.add(dataDtb).draw();
+                        let count = $(tblChild).DataTable().data().count();
+                        if (count !== inputRecovery) {
+                            $(tblChild).DataTable().clear().draw();
+                            $(tblChild).DataTable().rows.add(dataDtb).draw();
+                        }
                     }
                 }
             }
@@ -968,7 +978,7 @@ class RecoveryDataTableHandle {
                     title: 'Lease number',
                     width: '25%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row?.['lease_code']}</span>`;
+                        return `<span class="table-row-code">${row?.['code']}</span>`;
                     }
                 },
                 {
@@ -1205,76 +1215,76 @@ class RecoveryCalculateHandle {
 
 // Store data
 class RecoveryStoreDataHandle {
-    static storeDataProduct() {
+    static storeData() {
         let warehouse_data = [];
         let delivery_product_data = [];
 
         RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
             let row = this.node();
-            let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(row).index();
-            let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
-            let rowData = $row.data();
+            if (!$(row).hasClass('child-workflow-list')) {
+                let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(row).index();
+                let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
+                let rowData = $row.data();
 
-            let recoveryEle = row.querySelector('.table-row-quantity-recovery');
-            if (recoveryEle) {
-                rowData['quantity_recovery'] = parseFloat($(recoveryEle).val());
-            }
+                let recoveryEle = row.querySelector('.table-row-quantity-recovery');
+                if (recoveryEle) {
+                    rowData['quantity_recovery'] = parseFloat($(recoveryEle).val());
+                }
 
-            let lease_generate_data = [];
-            let $child = $(row).next();
-            if ($child.length > 0) {
-                let tblChild = $child[0].querySelector('.table-child');
-                if (tblChild) {
-                    $(tblChild).DataTable().rows().every(function () {
-                        let row = this.node();
-                        let leaseGenData = {};
-                        let codeEle = row.querySelector('.table-row-code');
-                        let serialEle = row.querySelector('.table-row-serial');
-                        let remarkEle = row.querySelector('.table-row-remark');
-                        if (codeEle) {
-                            leaseGenData['code'] = codeEle.innerHTML;
-                        }
-                        if (serialEle) {
-                            if ($(serialEle).val()) {
-                                let data = SelectDDControl.get_data_from_idx($(serialEle), $(serialEle).val());
-                                if (data) {
-                                    leaseGenData['serial_id'] = $(serialEle).val();
-                                    leaseGenData['serial_data'] = data;
+                let lease_generate_data = [];
+                let $child = $(row).next();
+                if ($child.length > 0) {
+                    let tblChild = $child[0].querySelector('.table-child');
+                    if (tblChild) {
+                        $(tblChild).DataTable().rows().every(function () {
+                            let row = this.node();
+                            let leaseGenData = {};
+                            let codeEle = row.querySelector('.table-row-code');
+                            let serialEle = row.querySelector('.table-row-serial');
+                            let remarkEle = row.querySelector('.table-row-remark');
+                            if (codeEle) {
+                                leaseGenData['code'] = codeEle.innerHTML;
+                            }
+                            if (serialEle) {
+                                if ($(serialEle).val()) {
+                                    let data = SelectDDControl.get_data_from_idx($(serialEle), $(serialEle).val());
+                                    if (data) {
+                                        leaseGenData['serial_id'] = $(serialEle).val();
+                                        leaseGenData['serial_data'] = data;
+                                    }
                                 }
                             }
-                        }
-                        if (remarkEle) {
-                            leaseGenData['remark'] = $(remarkEle).val();
-                        }
-                        lease_generate_data.push(leaseGenData);
-                    });
+                            if (remarkEle) {
+                                leaseGenData['remark'] = $(remarkEle).val();
+                            }
+                            lease_generate_data.push(leaseGenData);
+                        });
+                    }
                 }
+                rowData['lease_generate_data'] = lease_generate_data;
+
+
+                let iconEle = $(row).find('.icon-collapse-app-wf');
+                let right_or_down = '';
+                if (iconEle.hasClass('fa-caret-right')) {
+                    right_or_down = 'right';
+                }
+                if (iconEle.hasClass('fa-caret-down')) {
+                    right_or_down = 'down';
+                }
+
+                RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData);
+                warehouse_data.push(rowData);
+
+                iconEle = $(row).find('.icon-collapse-app-wf');
+                if (right_or_down === 'right') {
+                    iconEle.removeClass('fa-caret-down').addClass('fa-caret-right');
+                }
+                if (right_or_down === 'down') {
+                    iconEle.removeClass('fa-caret-right').addClass('fa-caret-down');
+                }
+
             }
-            rowData['lease_generate_data'] = lease_generate_data;
-
-            // let iconEle = row.querySelector('.icon-collapse-app-wf');
-            // let right_or_down = '';
-            // if (iconEle) {
-            //     if ($(iconEle).hasClass('fa-caret-right')) {
-            //         right_or_down = "right";
-            //     }
-            //     if ($(iconEle).hasClass('fa-caret-down')) {
-            //         right_or_down = "down";
-            //     }
-            // }
-
-
-            RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData);
-            warehouse_data.push(rowData);
-
-            // if (right_or_down === 'right') {
-            //     $(iconEle).removeClass('fa-caret-down');
-            //     $(iconEle).addClass('fa-caret-right');
-            // }
-            // if (right_or_down === 'down') {
-            //     $(iconEle).removeClass('fa-caret-right');
-            //     $(iconEle).addClass('fa-caret-down');
-            // }
         });
 
         RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows().every(function () {
@@ -1356,295 +1366,47 @@ class RecoveryValidateHandle {
 // Submit Form
 class RecoverySubmitHandle {
 
-    static setupDataShowLineDetail(is_submit = false) {
+    static setupDataDelivery() {
         let result = [];
-        if (RecoveryLoadDataHandle.POSelectEle.val() || RecoveryLoadDataHandle.IASelectEle.val() || RecoveryLoadDataHandle.$boxProductionOrder.val() || RecoveryLoadDataHandle.$boxWorkOrder.val()) {
-            let table = RecoveryDataTableHandle.tablePOProduct;
-            let order = 0;
-            table.DataTable().rows().every(function () {
-                let row = this.node();
-                let rowIndex = table.DataTable().row(row).index();
-                let $row = table.DataTable().row(rowIndex);
-                let dataRowRaw = $row.data();
-                let dataRow = {};
-                for (let key in dataRowRaw) {
-                    if (dataRowRaw.hasOwnProperty(key)) {
-                        dataRow[key] = dataRowRaw[key];
-                    }
-                }
-                order++;
-                let quantityImport = 0;
-                if (dataRow?.['product_data']?.['product_choice'].includes(1) || dataRow?.['pr_products_data'].length > 0) { // If PO Product have inventory choice or PO have PR
-                    quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
-                } else { // If PO Product doesn't have inventory choice and PO doesn't have PR
-                    quantityImport = parseFloat(row.querySelector('.table-row-import').value);
-                }
-                if (quantityImport > 0) {
-                    dataRow['quantity_import'] = quantityImport;
-                    dataRow['order'] = order;
-                    let dataProductID = dataRow?.['product_data']?.['id'];
-                    if (is_submit === true) {
-                        if (dataRow?.['product_data']?.['id']) {
-                            dataRow['product_id'] = dataRow?.['product_data']?.['id'];
-                            dataRow['product_data'] = dataRow?.['product_data'];
-                        }
-                        if (dataRow?.['uom_data']?.['id']) {
-                            dataRow['uom_id'] = dataRow?.['uom_data']?.['id'];
-                            dataRow['uom_data'] = dataRow?.['uom_data'];
-                        }
-                        if (dataRow?.['tax_data']?.['id']) {
-                            dataRow['tax_id'] = dataRow?.['tax_data']?.['id'];
-                            dataRow['tax_data'] = dataRow?.['tax_data'];
-                        }
-                        let field_list = [
-                            'purchase_order_product_id',
-                            'ia_item_id',
-                            'production_order_id',
-                            'work_order_id',
-                            'product_id',
-                            'product_data',
-                            'uom_id',
-                            'uom_data',
-                            'tax_id',
-                            'tax_data',
-                            'product_quantity_order_actual',
-                            'quantity_import',
-                            'product_title',
-                            'product_code',
-                            'product_description',
-                            'product_unit_price',
-                            'product_subtotal_price',
-                            'product_subtotal_price_after_tax',
-                            'order',
-                            'pr_products_data',
-                            'gr_warehouse_data',
-                        ]
-                        filterFieldList(field_list, dataRow);
-                        RecoveryDataTableHandle.$tableProduct.DataTable().rows().every(function () {
-                            let row = this.node();
-                            if (row.querySelector('.table-row-order')) {
-                                if (row.querySelector('.table-row-order').getAttribute('data-product-id') === dataProductID) {
-                                    let elePrice = row.querySelector('.table-row-price');
-                                    if (elePrice) {
-                                        dataRow['product_unit_price'] = $(elePrice).valCurrency();
-                                    }
-                                    let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
-                                    if (eleSubtotal) {
-                                        dataRow['product_subtotal_price'] = parseFloat(eleSubtotal.value);
-                                    }
-                                    let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
-                                    if (eleTaxAmount) {
-                                        dataRow['product_tax_amount'] = parseFloat(eleTaxAmount.value);
-                                    }
-                                    if (dataRow.hasOwnProperty('product_subtotal_price') && dataRow.hasOwnProperty('product_tax_amount')) {
-                                        dataRow['product_subtotal_price_after_tax'] = dataRow['product_subtotal_price'] + dataRow['product_tax_amount'];
-                                    }
-                                }
-                            }
-                        });
-                        if (dataRow['product_unit_price'] <= 0) {
-                            delete dataRow['product_unit_price'];
-                        }
-                        // If PO have PR
-                        let pr_product_submit_list = [];
-                        for (let pr_product of dataRow?.['pr_products_data'] ? dataRow?.['pr_products_data'] : []) {
-                            if (pr_product?.['quantity_import'] > 0) {
-                                GRSubmitHandle.setupDataWHLotSerial(pr_product);
-                                pr_product_submit_list.push(pr_product);
-                                let field_list = [
-                                    'purchase_order_request_product_id',
-                                    'purchase_request_product_id',
-                                    'purchase_request_data',
-                                    'production_report_id',
-                                    'production_report_data',
-                                    'uom_id',
-                                    'uom_data',
-                                    'quantity_order',
-                                    'quantity_import',
-                                    'is_stock',
-                                    'gr_warehouse_data',
-                                ]
-                                filterFieldList(field_list, pr_product);
-                            }
-                        }
-                        dataRow['pr_products_data'] = pr_product_submit_list;
-                        // If PO doesn't have PR
-                        GRSubmitHandle.setupDataWHLotSerial(dataRow);
-                    }
-                    result.push(dataRow);
-                }
-            });
-        }
-        return result
-    };
-
-    static setupDataWHLotSerial(dataStore) {
-        for (let warehouse of dataStore?.['gr_warehouse_data'] ? dataStore?.['gr_warehouse_data'] : []) {
-            let field_list = [
-                'warehouse_id',
-                'warehouse_data',
-                'quantity_import',
-                'lot_data',
-                'serial_data',
-                'is_additional',
-            ]
-            filterFieldList(field_list, warehouse);
-            for (let lot of warehouse?.['lot_data'] ? warehouse?.['lot_data'] : []) {
-                let field_list = [
-                    'lot_id',
-                    'lot_number',
-                    'quantity_import',
-                    'expire_date',
-                    'manufacture_date',
-                ]
-                filterFieldList(field_list, lot);
-                if (lot?.['expire_date']) {
-                    let date = moment(lot?.['expire_date'],
-                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
-                    if (date !== "Invalid date") {
-                        lot['expire_date'] = String(date);
-                    }
-                } else {
-                    lot['expire_date'] = null;
-                }
-                if (lot?.['manufacture_date']) {
-                    let date = moment(lot?.['manufacture_date'],
-                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
-                    if (date !== "Invalid date") {
-                        lot['manufacture_date'] = String(date);
-                    }
-                } else {
-                    lot['manufacture_date'] = null;
-                }
-            }
-            for (let serial of warehouse?.['serial_data'] ? warehouse?.['serial_data'] : []) {
-                let field_list = [
-                    'vendor_serial_number',
-                    'serial_number',
-                    'expire_date',
-                    'manufacture_date',
-                    'warranty_start',
-                    'warranty_end',
-                ]
-                filterFieldList(field_list, serial);
-                if (serial?.['expire_date']) {
-                    let date = moment(serial?.['expire_date'],
-                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
-                    if (date !== "Invalid date") {
-                        serial['expire_date'] = String(date);
-                    }
-                } else {
-                    serial['expire_date'] = null;
-                }
-                if (serial?.['manufacture_date']) {
-                    let date = moment(serial?.['manufacture_date'],
-                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
-                    if (date !== "Invalid date") {
-                        serial['manufacture_date'] = String(date);
-                    }
-                } else {
-                    serial['manufacture_date'] = null;
-                }
-                if (serial?.['warranty_start']) {
-                    let date = moment(serial?.['warranty_start'],
-                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
-                    if (date !== "Invalid date") {
-                        serial['warranty_start'] = String(date);
-                    }
-                } else {
-                    serial['warranty_start'] = null;
-                }
-                if (serial?.['warranty_end']) {
-                    let date = moment(serial?.['warranty_end'],
-                        'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
-                    if (date !== "Invalid date") {
-                        serial['warranty_end'] = String(date);
-                    }
-                } else {
-                    serial['warranty_end'] = null;
-                }
-            }
-        }
-    };
-
-    static setupDataProduct() {
-        return GRSubmitHandle.setupDataShowLineDetail(true);
+        RecoveryDataTableHandle.$tableDelivery.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
+            let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
+            let rowData = $row.data();
+            result.push(rowData);
+        });
+        return result;
     };
 
     static setupDataSubmit(_form) {
-        let type = RecoveryLoadDataHandle.typeSelectEle.val();
-        if (type === '1') {
-            if (RecoveryLoadDataHandle.POSelectEle.val()) {
-                _form.dataForm['purchase_order_id'] = RecoveryLoadDataHandle.POSelectEle.val();
-                let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.POSelectEle, RecoveryLoadDataHandle.POSelectEle.val());
-                if (data) {
-                    _form.dataForm['purchase_order_data'] = data;
-                }
-            }
-            if (RecoveryLoadDataHandle.supplierSelectEle.val()) {
-                _form.dataForm['supplier_id'] = RecoveryLoadDataHandle.supplierSelectEle.val();
-                let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.supplierSelectEle, RecoveryLoadDataHandle.supplierSelectEle.val());
-                if (data) {
-                    _form.dataForm['supplier_data'] = data;
-                }
+        if (RecoveryLoadDataHandle.$boxCustomer.val()) {
+            _form.dataForm['customer_id'] = RecoveryLoadDataHandle.$boxCustomer.val();
+            let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.$boxCustomer, RecoveryLoadDataHandle.$boxCustomer.val());
+            if (data) {
+                _form.dataForm['customer_data'] = data;
             }
         }
-        if (type === '2') {
-            if (RecoveryLoadDataHandle.IASelectEle.val()) {
-                _form.dataForm['inventory_adjustment_id'] = RecoveryLoadDataHandle.IASelectEle.val();
-                let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.IASelectEle, RecoveryLoadDataHandle.IASelectEle.val());
-                if (data) {
-                    _form.dataForm['inventory_adjustment_data'] = data;
-                }
+        if (RecoveryLoadDataHandle.$boxLeaseOrder.val()) {
+            _form.dataForm['lease_order_id'] = RecoveryLoadDataHandle.$boxLeaseOrder.val();
+            let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.$boxLeaseOrder, RecoveryLoadDataHandle.$boxLeaseOrder.val());
+            if (data) {
+                _form.dataForm['lease_order_data'] = data;
             }
         }
-        if (type === '3') {
-            if (RecoveryLoadDataHandle.$boxTypeReport.val()) {
-                _form.dataForm['production_report_type'] = parseInt(RecoveryLoadDataHandle.$boxTypeReport.val());
-                if (RecoveryLoadDataHandle.$boxTypeReport.val() === '0') {
-                    if (RecoveryLoadDataHandle.$boxProductionOrder.val()) {
-                        _form.dataForm['production_order_id'] = RecoveryLoadDataHandle.$boxProductionOrder.val();
-                        let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.$boxProductionOrder, RecoveryLoadDataHandle.$boxProductionOrder.val());
-                        if (data) {
-                            _form.dataForm['production_order_data'] = data;
-                        }
-                    }
-                }
-                if (RecoveryLoadDataHandle.$boxTypeReport.val() === '1') {
-                    if (RecoveryLoadDataHandle.$boxWorkOrder.val()) {
-                        _form.dataForm['work_order_id'] = RecoveryLoadDataHandle.$boxWorkOrder.val();
-                        let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.$boxWorkOrder, RecoveryLoadDataHandle.$boxWorkOrder.val());
-                        if (data) {
-                            _form.dataForm['work_order_data'] = data;
-                        }
-                    }
-                }
-                if (RecoveryLoadDataHandle.$boxProductionReport.val() && RecoveryLoadDataHandle.$boxProductionReport.val().length > 0) {
-                    let dataList = [];
-                    for (let idx of RecoveryLoadDataHandle.$boxProductionReport.val()) {
-                        let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.$boxProductionReport, idx);
-                        if (data) {
-                            dataList.push(data);
-                        }
-                    }
-                    _form.dataForm['production_reports_data'] = dataList;
-                }
-            }
+        if (RecoveryLoadDataHandle.$boxStatus.val()) {
+            _form.dataForm['recovery_status'] = parseInt(RecoveryLoadDataHandle.$boxStatus.val());
         }
-        _form.dataForm['goods_receipt_type'] = (parseInt(type) - 1);
-        if (RecoveryLoadDataHandle.PRDataEle.val()) {
-            _form.dataForm['purchase_requests'] = JSON.parse(RecoveryLoadDataHandle.PRDataEle.val());
-        }
-        let dateVal = $('#good-receipt-date-received').val();
+
+        let dateVal = RecoveryLoadDataHandle.$date.val();
         if (dateVal) {
             _form.dataForm['date_received'] = moment(dateVal,
-                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                'DD/MM/YYYY').format('YYYY-MM-DD')
         }
-        let products_data_setup = GRSubmitHandle.setupDataProduct();
-        if (products_data_setup.length > 0) {
-            _form.dataForm['gr_products_data'] = products_data_setup;
+        let recovery_delivery_data = RecoverySubmitHandle.setupDataDelivery();
+        if (recovery_delivery_data.length > 0) {
+            _form.dataForm['recovery_delivery_data'] = recovery_delivery_data;
         }
-        if (products_data_setup.length <= 0) {
+        if (recovery_delivery_data.length <= 0) {
             $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-required-product')}, 'failure');
             return false;
         }

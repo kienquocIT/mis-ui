@@ -3531,8 +3531,8 @@ class QuotationDataTableHandle {
                             return `<div class="d-flex align-items-center ml-2">
                                         <div class="form-check form-check-lg">
                                             <input type="radio" name="row-check" class="form-check-input table-row-check" id="copy-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}">
-                                            <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
                                             <label class="form-check-label table-row-title" for="copy-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                            <span class="badge badge-light badge-outline">${row?.['code'] ? row?.['code'] : ''}</span>
                                         </div>
                                     </div>`;
                         }
@@ -3543,8 +3543,7 @@ class QuotationDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         if (row?.['opportunity']?.['title'] && row?.['opportunity']?.['code']) {
-                            return `<span class="badge badge-light">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
-                                    <span class="table-row-customer">${row?.['opportunity']?.['title']}</span>`;
+                            return `<span class="table-row-customer mr-1">${row?.['opportunity']?.['title']}</span><span class="badge badge-light badge-outline">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>`;
                         }
                         return ``;
                     },

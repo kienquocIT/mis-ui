@@ -640,8 +640,8 @@ $(async function () {
                                             ${checked}
                                             ${hidden}
                                         >
-                                        <span class="badge badge-soft-success">${row?.['warehouse']?.['code']}</span>
                                         <label class="form-check-label" for="pw-${row?.['id'].replace(/-/g, "")}">${row?.['warehouse']?.['title']}</label>
+                                        <span class="badge badge-light badge-outline">${row?.['warehouse']?.['code']}</span>
                                     </div>`;
                         }
                     },

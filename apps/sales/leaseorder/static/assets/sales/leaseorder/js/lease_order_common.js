@@ -2577,9 +2577,13 @@ class LeaseOrderLoadDataHandle {
             }
         });
         // load table cost
-        tableCost.DataTable().rows.add(costs_data).draw();
+        if (costs_data) {
+            tableCost.DataTable().rows.add(costs_data).draw();
+        }
         // load table expense
-        tableExpense.DataTable().rows.add(expenses_data).draw();
+        if (expenses_data) {
+            tableExpense.DataTable().rows.add(expenses_data).draw();
+        }
         // load table payment stage
         if (data?.['lease_payment_stage']) {
             tablePaymentStage.DataTable().clear().draw();

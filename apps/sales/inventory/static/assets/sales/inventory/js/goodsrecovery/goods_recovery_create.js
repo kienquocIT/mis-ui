@@ -41,7 +41,7 @@ $(function () {
         });
 
         // workflow init
-        WFRTControl.setWFInitialData("goodsreceipt");
+        WFRTControl.setWFInitialData("goodsrecovery");
 
 
         RecoveryLoadDataHandle.$form.on('change', '.validated-number', function () {
@@ -72,18 +72,22 @@ $(function () {
                         }
                     )
                 }
+                RecoveryLoadDataHandle.$modalMain.modal('show');
             }
             return true;
         });
 
         RecoveryDataTableHandle.$tableDelivery.on('click', '.table-row-checkbox', function () {
-            RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().clear().draw();
-            let row = this.closest('tr');
-            if (row) {
-                let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
-                let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
-                let rowData = $row.data();
-                RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows.add(rowData?.['delivery_product']).draw();
+            RecoveryLoadDataHandle.loadCheckDelivery();
+            return true;
+        });
+
+        RecoveryDataTableHandle.$tableDeliveryProduct.on('click', '.table-row-checkbox', function () {
+            let warehouseArea = RecoveryLoadDataHandle.$modalMain[0].querySelector('.dtb-warehouse-area');
+            if (warehouseArea) {
+                RecoveryLoadDataHandle.loadCheckDeliveryProduct();
+
+                warehouseArea.removeAttribute('hidden');
             }
             return true;
         });
@@ -122,6 +126,7 @@ $(function () {
                 }
             }
 
+            RecoveryStoreDataHandle.storeDataProduct();
             return true;
         });
 
@@ -234,11 +239,7 @@ $(function () {
             deleteRowGR(this.closest('tr'), RecoveryDataTableHandle.tableSerial);
         });
 
-        $('#productModalCenter').on('change', '.validated-number', function () {
-            RecoveryValidateHandle.validateNumber(this);
-        });
-
-        $('#productIAModalCenter').on('change', '.validated-number', function () {
+        RecoveryLoadDataHandle.$modalMain.on('change', '.validated-number', function () {
             RecoveryValidateHandle.validateNumber(this);
         });
 

@@ -1020,7 +1020,8 @@ class QuotationLoadDataHandle {
         if (dataIP.length > 0) {
             let listProdID = [];
             let JSonProd = {};
-            let result = [];
+            let quotation_products_data = [];
+            let result = {};
             for (let data of dataIP) {
                 listProdID.push(data?.['product']?.['id']);
                 JSonProd[data?.['product']?.['id']] = data;
@@ -1051,13 +1052,13 @@ class QuotationLoadDataHandle {
                                         dataPush['product_subtotal_price'] = JSonProd[dataProd?.['id']]?.['subtotal_price'];
                                     }
                                     order++;
-                                    result.push(dataPush);
+                                    quotation_products_data.push(dataPush);
                                 }
-                                QuotationDataTableHandle.$tableProduct.DataTable().clear().draw();
-                                // load table product
-                                QuotationDataTableHandle.$tableProduct.DataTable().rows.add(result).draw();
-                                QuotationLoadDataHandle.loadReInitDataTableProduct();
-                                
+
+                                result['quotation_products_data'] = quotation_products_data;
+                                QuotationLoadDataHandle.loadDataTablesAndDropDowns(result);
+                                QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
+
                                 $('#modal-load-datatable-from-excel').modal('hide');
                                 WindowControl.hideLoading();
                             }
@@ -1130,7 +1131,6 @@ class QuotationLoadDataHandle {
         }
         QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let row = this.node();
-            let eleOrder = row.querySelector('.table-row-order');
             let eleGroup = row.querySelector('.table-row-group');
             let eleProduct = row.querySelector('.table-row-item');
             let eleShipping = row.querySelector('.table-row-shipping');
@@ -2474,9 +2474,13 @@ class QuotationLoadDataHandle {
             }
         });
         // load table cost
-        tableCost.DataTable().rows.add(costs_data).draw();
+        if (costs_data) {
+            tableCost.DataTable().rows.add(costs_data).draw();
+        }
         // load table expense
-        tableExpense.DataTable().rows.add(expenses_data).draw();
+        if (expenses_data) {
+            tableExpense.DataTable().rows.add(expenses_data).draw();
+        }
         // payment stage (sale order)
         if (form.classList.contains('sale-order')) {
             if (data?.['sale_order_payment_stage']) {

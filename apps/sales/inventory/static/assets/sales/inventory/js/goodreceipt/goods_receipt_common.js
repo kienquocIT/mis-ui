@@ -1673,8 +1673,8 @@ class GRDataTableHandle {
                                         id="wh-${row?.['warehouse_id'].replace(/-/g, "")}"
                                         data-id="${row?.['warehouse_id']}" 
                                     >
-                                    <span class="badge badge-success badge-outline table-row-code">${row?.['title'] ? row?.['title'] : ''}</span>
                                     <label class="form-check-label table-row-title" for="wh-${row?.['warehouse_id'].replace(/-/g, "")}">${row?.['title'] ? row?.['title'] : ''}</label>
+                                    <span class="badge badge-light badge-outline table-row-code">${row?.['title'] ? row?.['title'] : ''}</span>
                                 </div>`;
                     }
                 },
@@ -2332,11 +2332,15 @@ class GRStoreDataHandle {
             rowData['warehouse_id'] = rowData?.['id'];
             rowData['warehouse_data'] = {'id': rowData?.['id'], 'title': rowData?.['title'], 'code': rowData?.['code']};
             tableWH.DataTable().row(rowIndex).data(rowData);
-            if (checked) {
-                row.querySelector('.table-row-checkbox').checked = true;
-            }
             if (rowData?.['quantity_import'] > 0) {
                 gr_warehouse_data.push(rowData);
+            }
+
+            if (checked) {
+                let checkEle = row.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
             }
         });
 
@@ -2353,10 +2357,14 @@ class GRStoreDataHandle {
                 rowData['quantity_import'] = parseFloat(row.querySelector('.table-row-import').innerHTML);
             }
             tablePR.DataTable().row(rowIndex).data(rowData);
-            if (checked) {
-                row.querySelector('.table-row-checkbox').checked = true;
-            }
             pr_products_data.push(rowData);
+
+            if (checked) {
+                let checkEle = row.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
+            }
         });
 
 
@@ -2375,7 +2383,11 @@ class GRStoreDataHandle {
                 }
                 rowData['quantity_import'] = parseFloat(rowChecked.querySelector('.table-row-import').innerHTML);
                 tablePO.DataTable().row(rowIndex).data(rowData);
-                rowChecked.querySelector('.table-row-checkbox').checked = true;
+
+                let checkEle = rowChecked.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
             }
         }
         return true;

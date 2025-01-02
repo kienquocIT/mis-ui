@@ -6,8 +6,10 @@ class RecoveryLoadDataHandle {
     static $boxCustomer = $('#customer_id');
     static $boxLeaseOrder = $('#lease_order_id');
     static $modalMain = $('#productModalCenter');
+    static $btnSaveModal = $('#btn-save-modal');
 
     static transEle = $('#app-trans-factory');
+    static urlEle = $('#url-factory');
     static dataStatus = [
         {'id': 0, 'title': RecoveryLoadDataHandle.transEle.attr('data-status-1')},
         {'id': 1, 'title': RecoveryLoadDataHandle.transEle.attr('data-status-2')},
@@ -33,7 +35,7 @@ class RecoveryLoadDataHandle {
     static btnAddLot = $('#btn-add-manage-lot');
     static btnAddSerial = $('#btn-add-manage-serial');
 
-    static urlEle = $('#url-factory');
+
     static dataTypeGr = [
         {
             'id': 3,
@@ -391,6 +393,29 @@ class RecoveryLoadDataHandle {
         return true;
     };
 
+    static loadLineDetail() {
+        let dataJSON = {};
+        let result = [];
+        let deliveryData = RecoverySubmitHandle.setupDataDelivery();
+        for (let deliData of deliveryData) {
+            if (deliData?.['delivery_product_data']) {
+                for (let productData of deliData?.['delivery_product_data']) {
+                    if (dataJSON.hasOwnProperty(productData?.['product_id'])) {
+                        dataJSON[productData?.['product_id']]['quantity_recovery'] += productData?.['quantity_recovery'];
+                    } else {
+                        dataJSON[productData?.['product_id']] = productData;
+                    }
+                }
+            }
+        }
+        for (let key in dataJSON) {
+            result.push(dataJSON[key]);
+        }
+        RecoveryDataTableHandle.$tableProduct.DataTable().clear().draw();
+        RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(result).draw();
+        return true;
+    };
+
 
 
 
@@ -684,8 +709,8 @@ class RecoveryDataTableHandle {
                 {
                     targets: 0,
                     width: '1%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-order" data-product-id="${row?.['product_data']?.['id']}">${row?.['order']}</span>`
+                    render: (data, type, row, meta) => {
+                        return `<span class="table-row-order">${(meta.row + 1)}</span>`;
                     }
                 },
                 {
@@ -698,9 +723,8 @@ class RecoveryDataTableHandle {
                                         <select
                                             class="form-select table-row-item"
                                             data-product-id="${row?.['product_data']?.['id']}"
-                                            data-url="${RecoveryDataTableHandle.productInitEle.attr('data-url')}"
-                                            data-link-detail="${RecoveryDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                            data-method="${RecoveryDataTableHandle.productInitEle.attr('data-method')}"
+                                            data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-product')}"
+                                            data-method="GET"
                                             data-keyResp="product_sale_list"
                                             readonly
                                         >
@@ -722,8 +746,8 @@ class RecoveryDataTableHandle {
                     render: () => {
                         return `<select 
                                     class="form-control table-row-uom"
-                                    data-url="${RecoveryDataTableHandle.uomInitEle.attr('data-url')}"
-                                    data-method="${RecoveryDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-uom')}"
+                                    data-method="GET"
                                     data-keyResp="unit_of_measure"
                                     required
                                     disabled
@@ -735,7 +759,7 @@ class RecoveryDataTableHandle {
                     targets: 4,
                     width: '9.11458333333%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" required disabled>`;
+                        return `<input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_recovery']}" required disabled>`;
                     }
                 },
                 {

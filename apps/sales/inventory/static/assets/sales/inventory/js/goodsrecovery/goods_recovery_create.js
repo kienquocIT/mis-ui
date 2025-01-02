@@ -130,6 +130,10 @@ $(function () {
             return true;
         });
 
+        RecoveryLoadDataHandle.$btnSaveModal.on('click', function () {
+            RecoveryLoadDataHandle.loadLineDetail();
+        });
+
 
 
 

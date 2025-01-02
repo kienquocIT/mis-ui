@@ -2647,6 +2647,7 @@ class QuotationLoadDataHandle {
                 if (eleIssueInvoice) {
                     QuotationLoadDataHandle.loadInitS2($(eleIssueInvoice), dataIssue, {}, null, true);
                     $(eleIssueInvoice).val(dataRow?.['issue_invoice']).trigger('change');
+                    QuotationLoadDataHandle.loadChangePSIssueInvoice(eleIssueInvoice);
                 }
             });
         }

@@ -313,7 +313,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-confirm-add-product" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-modal" data-bs-dismiss="modal">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -397,6 +397,7 @@
 
             data-md-bom="{% url 'BOMOrderListAPI' %}"
             data-md-product="{% url 'ProductForSaleListAPI' %}"
+            data-md-uom="{% url "UnitOfMeasureListAPI" %}"
     >
 {% endblock %}
 

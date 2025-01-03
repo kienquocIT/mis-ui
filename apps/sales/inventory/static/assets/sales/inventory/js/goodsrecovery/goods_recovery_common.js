@@ -688,8 +688,6 @@ class RecoveryDataTableHandle {
     static tablePOProduct = $('#datable-good-receipt-po-product');
     static tablePR = $('#datable-good-receipt-purchase-request');
     static tableWH = $('#datable-good-receipt-warehouse');
-    static tableLot = $('#datable-good-receipt-manage-lot');
-    static tableSerial = $('#datable-good-receipt-manage-serial');
 
     static $tableProduct = $('#datable-product');
     static $tableDelivery = $('#datable-delivery');
@@ -750,7 +748,7 @@ class RecoveryDataTableHandle {
                                     data-method="GET"
                                     data-keyResp="unit_of_measure"
                                     required
-                                    disabled
+                                    readonly
                                 >
                                 </select>`;
                     }
@@ -759,7 +757,7 @@ class RecoveryDataTableHandle {
                     targets: 4,
                     width: '9.11458333333%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_recovery']}" required disabled>`;
+                        return `<input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_recovery']}" required readonly>`;
                     }
                 },
                 {
@@ -782,8 +780,8 @@ class RecoveryDataTableHandle {
                         return `<div class="row">
                                 <select 
                                     class="form-control table-row-tax"
-                                    data-url="${RecoveryDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${RecoveryDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                    data-method="GET"
                                     data-keyResp="tax_list"
                                 >
                                 </select>
@@ -826,6 +824,24 @@ class RecoveryDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let uomEle = row.querySelector('.table-row-uom');
+                let taxEle = row.querySelector('.table-row-tax');
+                if (uomEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_data']) {
+                        dataS2 = [data?.['uom_data']];
+                    }
+                    RecoveryLoadDataHandle.loadInitS2($(uomEle), dataS2);
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    RecoveryLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+            },
             drawCallback: function () {
                 RecoveryDataTableHandle.dtbProductHDCustom();
             },
@@ -1029,67 +1045,63 @@ class RecoveryDataTableHandle {
                     }
                 },
             ],
-            drawCallback: function () {
-                // add css to Dtb
-                RecoveryLoadDataHandle.loadCssToDtb(idTbl);
-                // load init data for row
-                $('#' + idTbl).DataTable().rows().every(function () {
-                    let row = this.node();
-                    if (row) {
-                        let serialEle = row.querySelector('.table-row-serial');
-                        if (serialEle) {
-                            let productChecked = RecoveryDataTableHandle.$tableDeliveryProduct[0].querySelector('.table-row-checkbox:checked');
-                            if (productChecked) {
-                                let rowTarget = productChecked.closest('tr');
-                                if (rowTarget) {
-                                    let rowIndex = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowTarget).index();
-                                    let $row = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex);
-                                    let rowData = $row.data();
-                                    if (rowData?.['delivery_data']) {
-                                        let serialData = [{'id': '', 'title': 'Select...',},];
-                                        for (let deli_data of rowData?.['delivery_data']) {
-                                            if (deli_data?.['serial_data']) {
-                                                for (let serial_data of deli_data?.['serial_data']) {
-                                                    if (serial_data?.['product_warehouse_serial_data']) {
-                                                        serialData.push(serial_data?.['product_warehouse_serial_data']);
-                                                    }
-                                                }
+            rowCallback: function (row, data, index) {
+                let serialEle = row.querySelector('.table-row-serial');
+                if (serialEle) {
+                    let productChecked = RecoveryDataTableHandle.$tableDeliveryProduct[0].querySelector('.table-row-checkbox:checked');
+                    if (productChecked) {
+                        let rowTarget = productChecked.closest('tr');
+                        if (rowTarget) {
+                            let rowIndex = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowTarget).index();
+                            let $row = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex);
+                            let rowData = $row.data();
+                            if (rowData?.['delivery_data']) {
+                                let serialData = [{'id': '', 'title': 'Select...',},];
+                                for (let deli_data of rowData?.['delivery_data']) {
+                                    if (deli_data?.['serial_data']) {
+                                        for (let serial_data of deli_data?.['serial_data']) {
+                                            if (serial_data?.['product_warehouse_serial_data']) {
+                                                serialData.push(serial_data?.['product_warehouse_serial_data']);
                                             }
-                                        }
-                                        RecoveryLoadDataHandle.loadInitS2($(serialEle), serialData, {}, RecoveryLoadDataHandle.$modalMain, false, {'res2': 'serial_number'});
-                                        $(serialEle).on('change', function () {
-                                            let rowTarget = this.closest('tr');
-                                            let $ele = $(this);
-                                            let val = $ele.val();
-                                            if (val && rowTarget) {
-                                                let codeTargetEle = rowTarget.querySelector('.table-row-code');
-                                                if (codeTargetEle) {
-                                                    $('#' + idTbl).DataTable().rows().every(function () {
-                                                        let row = this.node();
-                                                        let codeEle = row.querySelector('.table-row-code');
-                                                        let serialEle = row.querySelector('.table-row-serial');
-                                                        if (codeEle && serialEle) {
-                                                            if (codeEle.innerHTML !== codeTargetEle.innerHTML) {
-                                                                if ($(serialEle).val() === val) {
-                                                                    $ele.val('').trigger('change');
-                                                                    $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-unique-serial')}, 'failure');
-                                                                    return false;
-                                                                }
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        });
-                                        if (serialData.length === 0) {
-                                            serialEle.removeAttribute('hidden');
                                         }
                                     }
+                                }
+                                RecoveryLoadDataHandle.loadInitS2($(serialEle), serialData, {}, RecoveryLoadDataHandle.$modalMain, false, {'res2': 'serial_number'});
+                                $(serialEle).on('change', function () {
+                                    let rowTarget = this.closest('tr');
+                                    let $ele = $(this);
+                                    let val = $ele.val();
+                                    if (val && rowTarget) {
+                                        let codeTargetEle = rowTarget.querySelector('.table-row-code');
+                                        if (codeTargetEle) {
+                                            $('#' + idTbl).DataTable().rows().every(function () {
+                                                let row = this.node();
+                                                let codeEle = row.querySelector('.table-row-code');
+                                                let serialEle = row.querySelector('.table-row-serial');
+                                                if (codeEle && serialEle) {
+                                                    if (codeEle.innerHTML !== codeTargetEle.innerHTML) {
+                                                        if ($(serialEle).val() === val) {
+                                                            $ele.val('').trigger('change');
+                                                            $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-unique-serial')}, 'failure');
+                                                            return false;
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                                if (serialData.length === 0) {
+                                    serialEle.removeAttribute('hidden');
                                 }
                             }
                         }
                     }
-                });
+                }
+            },
+            drawCallback: function () {
+                // add css to Dtb
+                RecoveryLoadDataHandle.loadCssToDtb(idTbl);
             },
         });
     };

@@ -2665,109 +2665,18 @@ class LeaseOrderLoadDataHandle {
         if (table[0].id === "datable-quotation-create-product" || table[0].id === "datable-quotation-create-cost") {  // PRODUCT || COST
             table.DataTable().rows().every(function () {
                 let row = this.node();
-                let rowIndex = table.DataTable().row(row).index();
-                let $row = table.DataTable().row(rowIndex);
-                let dataRow = $row.data();
 
                 if (!row.querySelector('.table-row-group')) {
-                    $(row.querySelector('.table-row-item')).empty();
                     if (table[0].id === "datable-quotation-create-product") {  // PRODUCT
-                        if (row.querySelector('.table-row-item')) {
-                            LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
-                            LeaseOrderLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
-                            for (let ele of table[0].querySelectorAll('.btn-select-price')) {
-                                ele.removeAttribute('disabled');
-                            }
-                        }
-                        let eleAssetType = row.querySelector('.table-row-asset-type');
-                        if (eleAssetType) {
-                            LeaseOrderLoadDataHandle.loadInitS2($(eleAssetType), LeaseOrderLoadDataHandle.dataAssetType);
-                            $(eleAssetType).val(dataRow?.['asset_type']).trigger('change');
-                        }
-                        let eleOffset = row.querySelector('.table-row-offset');
-                        if (eleOffset) {
-                            LeaseOrderLoadDataHandle.loadInitS2($(eleOffset), [dataRow?.['offset_data']]);
+                        for (let ele of table[0].querySelectorAll('.btn-select-price')) {
+                            ele.removeAttribute('disabled');
                         }
                     }
                     if (table[0].id === "datable-quotation-create-cost") {  // COST
-                        if (row.querySelector('.table-row-item')) {
-                            LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
-                            LeaseOrderLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
-                        }
-                        if (row.querySelector('.table-row-supplied-by')) {
-                            LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-supplied-by')), LeaseOrderLoadDataHandle.dataSuppliedBy);
-                            $(row.querySelector('.table-row-supplied-by')).val(dataRow?.['supplied_by']).change();
+                        for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
+                            ele.removeAttribute('disabled');
                         }
                     }
-                    let eleUOM = row.querySelector('.table-row-uom');
-                    if (eleUOM) {
-                        let uomGrID = null;
-                        if (dataRow?.['product_data']?.['general_information']?.['uom_group']?.['id']) {
-                            uomGrID = dataRow?.['product_data']?.['general_information']?.['uom_group']?.['id'];
-                        }
-                        LeaseOrderLoadDataHandle.loadInitS2($(eleUOM), [dataRow?.['uom_data']]);
-                    }
-                    let eleTax = row.querySelector('.table-row-tax');
-                    if (eleTax) {
-                        LeaseOrderLoadDataHandle.loadInitS2($(eleTax), [dataRow?.['tax_data']]);
-                    }
-                    let eleUOMTime = row.querySelector('.table-row-uom-time');
-                    if (eleUOMTime) {
-                        LeaseOrderLoadDataHandle.loadInitS2($(eleUOMTime), [dataRow?.['uom_time_data']]);
-                    }
-                }
-            });
-        }
-        if (table[0].id === "datable-quotation-create-expense") {  // EXPENSE
-            table.DataTable().rows().every(function () {
-                let row = this.node();
-                let rowIndex = table.DataTable().row(row).index();
-                let $row = table.DataTable().row(rowIndex);
-                let dataRow = $row.data();
-
-                LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['expense_item_data']]);
-                if (row?.querySelector('.table-row-labor-item') && dataRow?.['is_labor'] === true) {
-                    LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-labor-item')), [dataRow?.['expense_data']]);
-                }
-                LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
-                LeaseOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax_data']]);
-            });
-        }
-        if (table[0].id === "datable-quotation-payment-stage") {  // PAYMENT
-            table.DataTable().rows().every(function () {
-                let row = this.node();
-                let rowIndex = table.DataTable().row(row).index();
-                let $row = table.DataTable().row(rowIndex);
-                let dataRow = $row.data();
-
-                let eleInstallment = row.querySelector('.table-row-installment');
-                if (eleInstallment) {
-                    let term = [];
-                    if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
-                        let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
-                        if (dataSelected) {
-                            term = dataSelected?.['term'];
-                            for (let termData of term) {
-                                let isNum = parseFloat(termData?.['value']);
-                                if (!isNum) {  // balance
-                                    termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
-                                }
-                            }
-                        }
-                    }
-                    LeaseOrderLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
-                    $(eleInstallment).val(dataRow?.['term_id']).trigger('change');
-                }
-                let count = dataRow?.['order'];
-                let dataIssue = [{'id': '', 'title': 'Select...',}];
-                for (let i = 1; i <= count; i++) {
-                    let add = {'id': String(i), 'title': String(i)};
-                    dataIssue.push(add);
-                }
-                let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
-                if (eleIssueInvoice) {
-                    LeaseOrderLoadDataHandle.loadInitS2($(eleIssueInvoice), dataIssue, {}, null, true);
-                    $(eleIssueInvoice).val(dataRow?.['issue_invoice']).trigger('change');
                 }
             });
         }
@@ -2924,7 +2833,6 @@ class LeaseOrderDataTableHandle {
                     targets: 0,
                     width: '1%',
                     render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_group'] === true) {
                             let target = ".group-" + String(row?.['group_order']);
                             return `<button 
@@ -3203,8 +3111,57 @@ class LeaseOrderDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let itemEle = row.querySelector('.table-row-item');
+                let assetTypeEle = row.querySelector('.table-row-asset-type');
+                let offsetEle = row.querySelector('.table-row-offset');
+                let uomEle = row.querySelector('.table-row-uom');
+                let uomTimeEle = row.querySelector('.table-row-uom-time');
+                let taxEle = row.querySelector('.table-row-tax');
+                if (itemEle) {
+                    let dataS2 = [];
+                    if (data?.['product_data']) {
+                        dataS2 = [data?.['product_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(itemEle), dataS2);
+                    LeaseOrderLoadDataHandle.loadPriceProduct(itemEle);
+                }
+                if (assetTypeEle) {
+                    LeaseOrderLoadDataHandle.loadInitS2($(assetTypeEle), LeaseOrderLoadDataHandle.dataAssetType);
+                    if (data?.['asset_type']) {
+                        $(assetTypeEle).val(data?.['asset_type']).trigger('change');
+                    }
+                }
+                if (offsetEle) {
+                    let dataS2 = [];
+                    if (data?.['offset_data']) {
+                        dataS2 = [data?.['offset_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(offsetEle), dataS2);
+                }
+                if (uomEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_data']) {
+                        dataS2 = [data?.['uom_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(uomEle), dataS2);
+                }
+                if (uomTimeEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_time_data']) {
+                        dataS2 = [data?.['uom_time_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(uomTimeEle), dataS2);
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+            },
             drawCallback: function () {
-                // LeaseOrderCalculateCaseHandle.calculateAllRowsTableProduct();
                 if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     LeaseOrderDataTableHandle.dtbProductHDCustom();
                 }
@@ -3223,7 +3180,6 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order">${row?.['order']}</span>`
                     }
                 },
@@ -3401,6 +3357,48 @@ class LeaseOrderDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let itemEle = row.querySelector('.table-row-item');
+                let suppliedByEle = row.querySelector('.table-row-supplied-by');
+                let uomEle = row.querySelector('.table-row-uom');
+                let uomTimeEle = row.querySelector('.table-row-uom-time');
+                let taxEle = row.querySelector('.table-row-tax');
+                if (itemEle) {
+                    let dataS2 = [];
+                    if (data?.['product_data']) {
+                        dataS2 = [data?.['product_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(itemEle), dataS2);
+                    LeaseOrderLoadDataHandle.loadCostProduct(itemEle);
+                }
+                if (suppliedByEle) {
+                    LeaseOrderLoadDataHandle.loadInitS2($(suppliedByEle), LeaseOrderLoadDataHandle.dataSuppliedBy);
+                    if (data?.['supplied_by']) {
+                        $(suppliedByEle).val(data?.['supplied_by']).change();
+                    }
+                }
+                if (uomEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_data']) {
+                        dataS2 = [data?.['uom_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(uomEle), dataS2);
+                }
+                if (uomTimeEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_time_data']) {
+                        dataS2 = [data?.['uom_time_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(uomTimeEle), dataS2);
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+            },
         });
     };
 
@@ -3421,7 +3419,6 @@ class LeaseOrderDataTableHandle {
                     targets: 0,
                     width: '1%',
                     render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order">${row?.['order']}</span>`
                     }
                 },
@@ -3577,6 +3574,40 @@ class LeaseOrderDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let expenseEle = row.querySelector('.table-row-item');
+                let laborEle = row.querySelector('.table-row-labor-item');
+                let uomEle = row.querySelector('.table-row-uom');
+                let taxEle = row.querySelector('.table-row-tax');
+                if (expenseEle) {
+                    let dataS2 = [];
+                    if (data?.['expense_item_data']) {
+                        dataS2 = [data?.['expense_item_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(expenseEle), dataS2);
+                }
+                if (laborEle && data?.['is_labor'] === true) {
+                    let dataS2 = [];
+                    if (data?.['expense_data']) {
+                        dataS2 = [data?.['expense_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(laborEle), dataS2);
+                }
+                if (uomEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_data']) {
+                        dataS2 = [data?.['uom_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(uomEle), dataS2);
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+            },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
@@ -3894,8 +3925,7 @@ class LeaseOrderDataTableHandle {
                     targets: 0,
                     width: '1%',
                     render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order">${row?.['order']}</span>`
+                        return `<span class="table-row-order">${row?.['order']}</span>`;
                     }
                 },
                 {
@@ -3907,14 +3937,14 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '12%',
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ''}</textarea>`;
                     }
                 },
                 {
                     targets: 3,
-                    width: '8%',
+                    width: '10%',
                     render: (data, type, row) => {
                         let value = "";
                         if (row?.['date'] !== "") {
@@ -3992,7 +4022,7 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '8%',
+                    width: '10%',
                     render: (data, type, row) => {
                         let value = "";
                         if (row?.['due_date'] !== "") {
@@ -4012,6 +4042,42 @@ class LeaseOrderDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let installmentEle = row.querySelector('.table-row-installment');
+                let issueInvoiceEle = row.querySelector('.table-row-issue-invoice');
+                if (installmentEle) {
+                    let term = [];
+                    if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                        let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
+                        if (dataSelected) {
+                            term = dataSelected?.['term'];
+                            for (let termData of term) {
+                                let isNum = parseFloat(termData?.['value']);
+                                if (!isNum) {  // balance
+                                    termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
+                                }
+                            }
+                        }
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(installmentEle), term, {}, null, true);
+                    if (data?.['term_id']) {
+                        $(installmentEle).val(data?.['term_id']).trigger('change');
+                    }
+                }
+                if (issueInvoiceEle) {
+                    let count = data?.['order'];
+                    let dataIssue = [{'id': '', 'title': 'Select...',}];
+                    for (let i = 1; i <= count; i++) {
+                        let add = {'id': String(i), 'title': String(i)};
+                        dataIssue.push(add);
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(issueInvoiceEle), dataIssue, {}, null, true);
+                    if (data?.['issue_invoice']) {
+                        $(issueInvoiceEle).val(data?.['issue_invoice']).trigger('change');
+                    }
+                    LeaseOrderLoadDataHandle.loadChangePSIssueInvoice(issueInvoiceEle);
+                }
+            },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {

@@ -2566,94 +2566,18 @@ class QuotationLoadDataHandle {
         if (table[0].id === "datable-quotation-create-product" || table[0].id === "datable-quotation-create-cost") {  // PRODUCT || COST
             table.DataTable().rows().every(function () {
                 let row = this.node();
-                let rowIndex = table.DataTable().row(row).index();
-                let $row = table.DataTable().row(rowIndex);
-                let dataRow = $row.data();
 
                 if (!row.querySelector('.table-row-group')) {
                     if (table[0].id === "datable-quotation-create-product") {  // PRODUCT
-                        if (row.querySelector('.table-row-item')) {
-                            QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
-                            QuotationLoadDataHandle.loadCssS2($(row.querySelector('.table-row-item')), '260px');
-                            QuotationLoadDataHandle.loadPriceProduct(row.querySelector('.table-row-item'));
-                            for (let ele of table[0].querySelectorAll('.btn-select-price')) {
-                                ele.removeAttribute('disabled');
-                            }
+                        for (let ele of table[0].querySelectorAll('.btn-select-price')) {
+                            ele.removeAttribute('disabled');
                         }
                     }
                     if (table[0].id === "datable-quotation-create-cost") {  // COST
-                        if (row.querySelector('.table-row-item')) {
-                            QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product_data']]);
-                            QuotationLoadDataHandle.loadCostProduct(row.querySelector('.table-row-item'));
-                        }
-                        let eleSuppliedBy = row.querySelector('.table-row-supplied-by');
-                        if (eleSuppliedBy) {
-                            QuotationLoadDataHandle.loadInitS2($(eleSuppliedBy), QuotationLoadDataHandle.dataSuppliedBy);
-                            $(eleSuppliedBy).val(dataRow?.['supplied_by']).change();
+                        for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
+                            ele.removeAttribute('disabled');
                         }
                     }
-                    let eleUOM = row.querySelector('.table-row-uom');
-                    if (eleUOM) {
-                        QuotationLoadDataHandle.loadInitS2($(eleUOM), [dataRow?.['uom_data']]);
-                    }
-                    let eleTax = row.querySelector('.table-row-tax');
-                    if (eleTax) {
-                        QuotationLoadDataHandle.loadInitS2($(eleTax), [dataRow?.['tax_data']]);
-                    }
-                }
-            });
-        }
-        if (table[0].id === "datable-quotation-create-expense") {  // EXPENSE
-            table.DataTable().rows().every(function () {
-                let row = this.node();
-                let rowIndex = table.DataTable().row(row).index();
-                let $row = table.DataTable().row(rowIndex);
-                let dataRow = $row.data();
-
-                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['expense_item_data']]);
-                if (row?.querySelector('.table-row-labor-item') && dataRow?.['is_labor'] === true) {
-                    QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-labor-item')), [dataRow?.['expense_data']]);
-                }
-                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataRow?.['uom_data']]);
-                QuotationLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax_data']]);
-            });
-        }
-        if (table[0].id === "datable-quotation-payment-stage") {  // PAYMENT
-            table.DataTable().rows().every(function () {
-                let row = this.node();
-                let rowIndex = table.DataTable().row(row).index();
-                let $row = table.DataTable().row(rowIndex);
-                let dataRow = $row.data();
-
-                let eleInstallment = row.querySelector('.table-row-installment');
-                if (eleInstallment) {
-                    let term = [];
-                    if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                        let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-                        if (dataSelected) {
-                            term = dataSelected?.['term'];
-                            for (let termData of term) {
-                                let isNum = parseFloat(termData?.['value']);
-                                if (!isNum) {  // balance
-                                    termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
-                                }
-                            }
-                        }
-                    }
-                    QuotationLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
-                    $(eleInstallment).val(dataRow?.['term_id']).trigger('change');
-                }
-                let count = dataRow?.['order'];
-                let dataIssue = [{'id': '', 'title': 'Select...',}];
-                for (let i = 1; i <= count; i++) {
-                    let add = {'id': String(i), 'title': String(i)};
-                    dataIssue.push(add);
-                }
-                let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
-                if (eleIssueInvoice) {
-                    QuotationLoadDataHandle.loadInitS2($(eleIssueInvoice), dataIssue, {}, null, true);
-                    $(eleIssueInvoice).val(dataRow?.['issue_invoice']).trigger('change');
-                    QuotationLoadDataHandle.loadChangePSIssueInvoice(eleIssueInvoice);
                 }
             });
         }
@@ -2799,7 +2723,6 @@ class QuotationDataTableHandle {
                     targets: 0,
                     width: '1%',
                     render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         if (row?.['is_group'] === true) {
                             let target = ".group-" + String(row?.['group_order']);
                             return `<button 
@@ -2917,8 +2840,8 @@ class QuotationDataTableHandle {
                         }
                         return `<select 
                                     class="form-select table-row-uom"
-                                    data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-uom')}"
+                                    data-method="GET"
                                     data-keyResp="unit_of_measure"
                                     data-zone="${dataZone}"
                                     required
@@ -3023,8 +2946,8 @@ class QuotationDataTableHandle {
                         }
                         return `<select
                                     class="form-select table-row-tax"
-                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                    data-method="GET"
                                     data-keyResp="tax_list"
                                     data-zone="${dataZone}"
                                  >
@@ -3083,6 +3006,34 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let itemEle = row.querySelector('.table-row-item');
+                let uomEle = row.querySelector('.table-row-uom');
+                let taxEle = row.querySelector('.table-row-tax');
+                if (itemEle) {
+                    let dataS2 = [];
+                    if (data?.['product_data']) {
+                        dataS2 = [data?.['product_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(itemEle), dataS2);
+                    QuotationLoadDataHandle.loadCssS2($(itemEle), '260px');
+                    QuotationLoadDataHandle.loadPriceProduct(itemEle);
+                }
+                if (uomEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_data']) {
+                        dataS2 = [data?.['uom_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(uomEle), dataS2);
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+            },
             drawCallback: function () {
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     QuotationDataTableHandle.dtbProductHDCustom();
@@ -3104,7 +3055,6 @@ class QuotationDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order">${row?.['order']}</span>`
                     }
                 },
@@ -3275,6 +3225,41 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let itemEle = row.querySelector('.table-row-item');
+                let suppliedByEle = row.querySelector('.table-row-supplied-by');
+                let uomEle = row.querySelector('.table-row-uom');
+                let taxEle = row.querySelector('.table-row-tax');
+                if (itemEle) {
+                    let dataS2 = [];
+                    if (data?.['product_data']) {
+                        dataS2 = [data?.['product_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(itemEle), dataS2);
+                    QuotationLoadDataHandle.loadCssS2($(itemEle), '260px');
+                    QuotationLoadDataHandle.loadCostProduct(itemEle);
+                }
+                if (suppliedByEle) {
+                    QuotationLoadDataHandle.loadInitS2($(suppliedByEle), QuotationLoadDataHandle.dataSuppliedBy);
+                    if (data?.['supplied_by']) {
+                        $(suppliedByEle).val(data?.['supplied_by']).change();
+                    }
+                }
+                if (uomEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_data']) {
+                        dataS2 = [data?.['uom_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(uomEle), dataS2);
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+            },
         });
     };
 
@@ -3294,7 +3279,6 @@ class QuotationDataTableHandle {
                     targets: 0,
                     width: '1%',
                     render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order">${row?.['order']}</span>`
                     }
                 },
@@ -3474,6 +3458,40 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let expenseEle = row.querySelector('.table-row-item');
+                let laborEle = row.querySelector('.table-row-labor-item');
+                let uomEle = row.querySelector('.table-row-uom');
+                let taxEle = row.querySelector('.table-row-tax');
+                if (expenseEle) {
+                    let dataS2 = [];
+                    if (data?.['expense_item_data']) {
+                        dataS2 = [data?.['expense_item_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(expenseEle), dataS2);
+                }
+                if (laborEle && data?.['is_labor'] === true) {
+                    let dataS2 = [];
+                    if (data?.['expense_data']) {
+                        dataS2 = [data?.['expense_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(laborEle), dataS2);
+                }
+                if (uomEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_data']) {
+                        dataS2 = [data?.['uom_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(uomEle), dataS2);
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+            },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
@@ -3958,6 +3976,42 @@ class QuotationDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let installmentEle = row.querySelector('.table-row-installment');
+                let issueInvoiceEle = row.querySelector('.table-row-issue-invoice');
+                if (installmentEle) {
+                    let term = [];
+                    if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                        let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+                        if (dataSelected) {
+                            term = dataSelected?.['term'];
+                            for (let termData of term) {
+                                let isNum = parseFloat(termData?.['value']);
+                                if (!isNum) {  // balance
+                                    termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
+                                }
+                            }
+                        }
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(installmentEle), term, {}, null, true);
+                    if (data?.['term_id']) {
+                        $(installmentEle).val(data?.['term_id']).trigger('change');
+                    }
+                }
+                if (issueInvoiceEle) {
+                    let count = data?.['order'];
+                    let dataIssue = [{'id': '', 'title': 'Select...',}];
+                    for (let i = 1; i <= count; i++) {
+                        let add = {'id': String(i), 'title': String(i)};
+                        dataIssue.push(add);
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(issueInvoiceEle), dataIssue, {}, null, true);
+                    if (data?.['issue_invoice']) {
+                        $(issueInvoiceEle).val(data?.['issue_invoice']).trigger('change');
+                    }
+                    QuotationLoadDataHandle.loadChangePSIssueInvoice(issueInvoiceEle);
+                }
+            },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {

@@ -1949,7 +1949,7 @@ class GRDataTableHandle {
                                     data-method="${GRDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
                                     required
-                                    disabled
+                                    readonly
                                 >
                                 </select>`;
                     }
@@ -1958,7 +1958,7 @@ class GRDataTableHandle {
                     targets: 4,
                     width: '9.11458333333%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" required disabled>`;
+                        return `<input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" required readonly>`;
                     }
                 },
                 {

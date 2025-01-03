@@ -1341,8 +1341,8 @@ class PODataTableHandle {
                         }
                         return `<div class="form-check form-check-lg">
                                     <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="pr-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}" ${checked} ${disabled}>
-                                    <span class="badge badge-soft-success table-row-code">${row?.['code']}</span>
                                     <label class="form-check-label table-row-title" for="pr-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                    <span class="badge badge-light badge-outline table-row-code">${row?.['code']}</span>
                                 </div>`;
                     },
                 },

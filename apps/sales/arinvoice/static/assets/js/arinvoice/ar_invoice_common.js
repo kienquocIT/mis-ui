@@ -970,6 +970,7 @@ class ARInvoiceHandle {
         loadTableLineDetail([])
         loadTableLineDetailSimple([])
         loadTableSelectCustomer()
+        invoice_exp.trigger('change')
     }
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle))
@@ -1077,7 +1078,7 @@ function LoadDetailARInvoice(option) {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['ar_invoice_detail'];
-                // console.log(data)
+                console.log(data)
                 $x.fn.renderCodeBreadcrumb(data);
 
                 if (invoice_signs?.['many_vat_sign'] === data?.['invoice_sign']) {
@@ -1127,7 +1128,7 @@ function LoadDetailARInvoice(option) {
 
                 tabLineDetailTable.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
 
-                if (data?.['is_free_input'] && data?.['delivery_mapped'].length === 0) {
+                if (Object.keys(data?.['sale_order_mapped']).length !== 0 && data?.['delivery_mapped'].length === 0) {
                     tabLineDetailTable.closest('.table_space').prop('hidden', true)
                     tabLineDetailTableSimple.closest('.table_space').prop('hidden', false)
                     loadTableLineDetailForDetailPageSimple(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)

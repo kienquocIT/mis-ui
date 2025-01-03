@@ -45,7 +45,7 @@ const detail_payment_value_column_opts = [
     {
         className: 'wrap-text w-10',
         render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<span class="text-muted">${row?.['issue_invoice'] ? row?.['issue_invoice'] : ''}</span>` : '--';
+            return row?.['is_ar_invoice'] ? `<span class="text-muted issue-invoice">${row?.['issue_invoice'] ? row?.['issue_invoice'] : ''}</span>` : '--';
         }
     },
     {
@@ -69,7 +69,7 @@ const detail_payment_value_column_opts = [
     {
         className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<input class="form-control text-right mask-money detail_payment_value" value="0">` : '--';
+            return row?.['is_ar_invoice'] ? `<input disabled readonly class="form-control text-right mask-money detail_payment_value" value="0">` : '--';
         }
     },
     {
@@ -708,6 +708,26 @@ $save_changes_payment_method.on('click', function () {
 })
 
 $(document).on('change', '.selected-detail-payment', function () {
+    let this_issue_invoice = $(this).closest('tr').find('.issue-invoice').text()
+    if ($(this).prop('checked')) {
+        $('.issue-invoice').each(function () {
+            console.log($(this))
+            if ($(this).text() === this_issue_invoice) {
+                $(this).closest('tr').find('.selected-detail-payment').prop('disabled', false)
+            }
+            else {
+                $(this).closest('tr').find('.selected-detail-payment').prop('checked', false).prop('disabled', true)
+            }
+        })
+    }
+    else {
+        if ($('.selected-detail-payment:checked').length === 0) {
+            $('.selected-detail-payment').each(function () {
+                $(this).closest('tr').find('.selected-detail-payment').prop('disabled', false)
+            })
+        }
+    }
+
     $(this).closest('tr').find('.detail_payment_value').attr(
         'value',
         $(this).prop('checked') ? $(this).closest('tr').find('.detail_balance_value').attr('data-init-money') : 0

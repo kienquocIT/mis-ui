@@ -1494,10 +1494,11 @@ class QuotationLoadDataHandle {
     static loadChangePSIssueInvoice(ele) {
         let rowFocus = ele.closest('tr');
         if (rowFocus) {
+            let issueTarget = $(ele).val();
             let eleValueATFocus = rowFocus.querySelector('.table-row-value-after-tax');
             if (eleValueATFocus) {
 
-                if (!$(ele).val()) {
+                if (!issueTarget) {
                     $(eleValueATFocus).attr('hidden', 'true');
                     $(eleValueATFocus).attr('value', String(0));
                     // mask money
@@ -1520,33 +1521,38 @@ class QuotationLoadDataHandle {
                     });
                     return true;
                 }
-
-                if ($(ele).val()) {
-                    $(eleValueATFocus).removeAttr('hidden');
-                    let issueTarget = parseInt($(ele).val());
+                if (issueTarget) {
+                    let countInvoiceIssue = 0;
+                    let countInvoiceVal0 = 0;
                     QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
                         let row = this.node();
-                        let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
-                        if (eleIssueInvoice) {
-                            if (eleIssueInvoice !== ele) {
-                                if ($(eleIssueInvoice).val()) {
-                                    let issue = parseInt($(eleIssueInvoice).val());
-                                    // check other same issue
-                                    if (issue === issueTarget) {
-                                        let eleValueAT = row.querySelector('.table-row-value-after-tax');
-                                        if (eleValueAT) {
-                                            if ($(eleValueAT).valCurrency() === 0) {
-                                                $(ele).val("").trigger('change');
-                                                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-invalid')}, 'failure');
-                                                return false;
-                                            }
-                                            $(eleValueATFocus).attr('hidden', 'true');
-                                        }
-                                    }
+                        let invoiceIssueEle = row.querySelector('.table-row-issue-invoice');
+                        let invoiceValueEle = row.querySelector('.table-row-value-after-tax');
+                        if (invoiceIssueEle && invoiceValueEle) {
+                            let issue = $(invoiceIssueEle).val();
+                            let value = $(invoiceValueEle).valCurrency();
+                            if (issue === issueTarget) {
+                                countInvoiceIssue++;
+                                if (value === 0) {
+                                    $(invoiceValueEle).attr('hidden', 'true');
+                                    countInvoiceVal0++;
+                                }
+                                if (value !== 0) {
+                                    $(invoiceValueEle).removeAttr('hidden');
                                 }
                             }
                         }
                     });
+                    if (countInvoiceIssue === 1) {
+                        $(eleValueATFocus).removeAttr('hidden');
+                    }
+                    if (countInvoiceIssue > 1) {
+                        if (countInvoiceIssue === countInvoiceVal0) {
+                            $(ele).val("").trigger('change');
+                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-invalid')}, 'failure');
+                            return false;
+                        }
+                    }
                 }
             }
         }
@@ -3835,8 +3841,7 @@ class QuotationDataTableHandle {
                     targets: 0,
                     width: '1%',
                     render: (data, type, row) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order">${row?.['order']}</span>`
+                        return `<span class="table-row-order">${row?.['order']}</span>`;
                     }
                 },
                 {
@@ -3848,14 +3853,14 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '12%',
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ''}</textarea>`;
                     }
                 },
                 {
                     targets: 3,
-                    width: '8%',
+                    width: '10%',
                     render: (data, type, row) => {
                         let value = "";
                         if (row?.['date'] !== "") {
@@ -3933,7 +3938,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '8%',
+                    width: '10%',
                     render: (data, type, row) => {
                         let value = "";
                         if (row?.['due_date'] !== "") {

@@ -103,7 +103,7 @@ $(document).ready(function () {
     function loadPeriodsList() {
         TablePeriodsConfig.DataTable().clear().destroy()
         let frm = new SetupFormSubmit(TablePeriodsConfig);
-        let current_year = new Date().getFullYear();
+        let today = new Date();
         TablePeriodsConfig.DataTableDefault(
             {
                 useDataServer: true,
@@ -149,7 +149,8 @@ $(document).ready(function () {
                         className: 'wrap-text',
                         render: (data, type, row) => {
                             let html = ''
-                            if (row?.['fiscal_year'] === current_year) {
+                            let date_end = new Date(row?.['subs'][row?.['subs'].length-1]?.['end_date']);
+                            if (today <= date_end) {
                                 html = `<span class="text-success"><i class="bi bi-caret-right-fill"></i></span>`
                             }
                             return `${html}<span class="fw-bold">${row?.['title']}</span>`
@@ -164,7 +165,7 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text text-center',
                         render: (data, type, row) => {
-                            return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${moment(row?.['subs'][row?.['subs'].length-1]?.['end_date']).format('DD/MM/YYYY')}</span>`
+                            return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${moment(row?.['subs'][row?.['subs'].length-1]?.['end_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
                         }
                     },
                     {
@@ -178,7 +179,7 @@ $(document).ready(function () {
                                     class="btn btn-icon btn-rounded btn-flush-primary edit-periods" type="button" data-bs-toggle="modal" data-bs-target="#modal-periods-update">
                                 <span class="icon"><i class="bi bi-pencil-square"></i></span>
                             </button>`
-                            return `${row?.['fiscal_year'] > current_year ? btn_delete : btn_edit}`
+                            return `${row?.['fiscal_year'] > today.getFullYear() ? btn_delete : btn_edit}`
                         }
                     }
                 ],

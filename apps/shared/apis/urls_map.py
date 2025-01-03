@@ -606,6 +606,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Report
     REPORT_REVENUE_LIST = StringUrl('report/revenue/list')
     REPORT_PRODUCT_LIST = StringUrl('report/product/list')
+    REPORT_PRODUCT_LIST_FOR_DASHBOARD = StringUrl('report/product-for-dashboard/list')
     REPORT_CUSTOMER_LIST = StringUrl('report/customer/list')
     REPORT_PIPELINE_LIST = StringUrl('report/pipeline/list')
     REPORT_CASHFLOW_LIST = StringUrl('report/cashflow/list')

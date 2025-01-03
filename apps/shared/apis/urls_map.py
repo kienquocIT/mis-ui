@@ -810,3 +810,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FINANCIAL_RECON_LIST = StringUrl('financial-reconciliation/list')
     FINANCIAL_RECON_DETAIL = StringUrl('financial-reconciliation/detail/{pk}')
     AR_INVOICE_LIST_FOR_RECON = StringUrl('financial-reconciliation/ar-invoice-for-recon/list')
+    CIF_LIST_FOR_RECON = StringUrl('financial-reconciliation/cash-inflow-for-recon/list')

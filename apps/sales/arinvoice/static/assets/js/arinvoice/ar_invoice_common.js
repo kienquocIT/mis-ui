@@ -91,8 +91,6 @@ selectCustomerBtn.on('click', function () {
         loadSaleOrder()
         $('.for-free-input').prop('readonly', true).prop('disabled', true)
         saleOrderEle.prop('disabled', false)
-        $('#add_row_dropdown').prop('hidden', true)
-        $('#edit_items_btn').prop('hidden', false)
     }
     else {
         $.fn.notifyB({description: 'Nothing selected'}, 'warning');
@@ -169,6 +167,9 @@ function loadTableSelectDelivery() {
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
+        scrollX: '100vw',
+        scrollY: '50vh',
+        scrollCollapse: true,
         ajax: {
             url: scriptUrlEle.attr('data-url-delivery-list') + '?sale_order_id=' + saleOrderEle.val(),
             type: 'GET',
@@ -298,10 +299,13 @@ function SelectDeliveryOnChange() {
 function loadTableSelectDetailProduct(datasource=[]) {
     tableDetailProductEle.DataTable().clear().destroy()
     tableDetailProductEle.DataTableDefault({
-        dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
+        dom: "t",
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
+        scrollX: '100vw',
+        scrollY: '30vh',
+        scrollCollapse: true,
         data: datasource,
         columns: [
             {
@@ -401,10 +405,13 @@ function loadTableLineDetail(datasource=[]) {
 
     tabLineDetailTable.DataTable().clear().destroy()
     tabLineDetailTable.DataTableDefault({
-        dom: "",
+        dom: "t",
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
+        scrollX: '100vw',
+        scrollY: '30vh',
+        scrollCollapse: true,
         data: datasource,
         columns: [
             {
@@ -552,10 +559,13 @@ function loadTableLineDetail(datasource=[]) {
 function loadTableLineDetailSimple(datasource=[]) {
     tabLineDetailTableSimple.DataTable().clear().destroy()
     tabLineDetailTableSimple.DataTableDefault({
-        dom: "",
+        dom: "t",
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
+        scrollX: '100vw',
+        scrollY: '30vh',
+        scrollCollapse: true,
         data: datasource,
         columns: [
             {
@@ -581,7 +591,7 @@ function loadTableLineDetailSimple(datasource=[]) {
                 className: 'wrap-text text-right w-30',
                 render: (data, type, row) => {
                     let product_subtotal_final = row?.['product_subtotal_final'] ? row?.['product_subtotal_final'] : 0
-                    return `<input class="product_subtotal_final mask-money form-control text-right" 
+                    return `<input class="product_subtotal_price_final mask-money form-control text-right" 
                                    value="${product_subtotal_final}">`
                 }
             },
@@ -594,217 +604,196 @@ function loadTableLineDetailSimple(datasource=[]) {
     });
 }
 
-function loadTableLineDetailForDetailPage(datasource=[], option='detail', is_free_input=false) {
+function loadTableLineDetailForDetailPage(datasource=[], option='detail') {
     tabLineDetailTable.DataTable().clear().destroy()
     let input_disabled = ''
     if (option === 'detail') {
         input_disabled = 'disabled readonly'
     }
-    if (is_free_input === false) {
-        tabLineDetailTable.DataTableDefault({
-            dom: "",
-            rowIdx: true,
-            reloadCurrency: true,
-            paging: false,
-            data: datasource,
-            columns: [
-                {
-                    'render': () => {
-                        return ``;
-                    }
-                },
-                {
-                    className: 'wrap-text text-center',
-                    render: () => {
-                        return `<button disabled class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
-                    }
-                },
-                {
-                    className: 'wrap-text text-primary',
-                    render: (data, type, row) => {
-                        return `<select data-id="${row?.['product']?.['id'] ? row?.['product']?.['id'] : ''}"
-                                        data-code="${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}"
-                                        data-title="${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}"
-                                        class="form-select select-2 product-select"></select>`
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<textarea rows="2" disabled readonly class="des small form-control">${row?.['product']?.['des'] ? row?.['product']?.['des'] : ''}</textarea>`
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<select data-id="${row?.['product_uom']?.['id'] ? row?.['product_uom']?.['id'] : ''}"
-                                        data-code="${row?.['product_uom']?.['code'] ? row?.['product_uom']?.['code'] : ''}"
-                                        data-title="${row?.['product_uom']?.['title'] ? row?.['product_uom']?.['title'] : ''}"
-                                        class="form-select select-2 uom-select"></select>`
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<input type="number" disabled readonly value="${row?.['product_quantity']}" class="form-control picked_quantity recalculate-field">`
-                    }
-                },
-                {
-                    className: 'wrap-text text-right',
-                    render: (data, type, row) => {
-                        return `<input ${input_disabled} class="product_unit_price mask-money form-control" value="${row?.['product_unit_price']}">`
-                    }
-                },
-                {
-                    className: 'wrap-text text-right',
-                    render: (data, type, row) => {
-                        return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal']}"></span>`
-                    }
-                },
-                {
-                    className: 'wrap-text text-right',
-                    render: (data, type, row) => {
-                        return `<div class="input-affix-wrapper">
-                                    <input ${input_disabled} type="number" class="form-control product_discount_rate recalculate-field" value="${row?.['product_discount_rate']}">
-                                    <div class="input-suffix"><i class="fas fa-percentage"></i></div>
-                                </div>`
-                    }
-                },
-                {
-                    className: 'wrap-text text-right',
-                    render: (data, type, row) => {
-                        return `<span class="product_discount_value mask-money text-danger" data-init-money="${row?.['product_discount_value']}"></span>`
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<select ${input_disabled}
-                                        data-tax-id="${row?.['product_tax']?.['id'] ? row?.['product_tax']?.['id'] : ''}"
-                                        data-tax-rate="${row?.['product_tax']?.['rate'] ? row?.['product_tax']?.['rate'] : 0}"
-                                        data-tax-title="${row?.['product_tax']?.['title'] ? row?.['product_tax']?.['title'] : ''}"
-                                        class="form-select select2 product_taxes recalculate-field"></select>`
-                    }
-                },
-                {
-                    className: 'wrap-text text-right',
-                    render: (data, type, row) => {
-                        return `<span class="mask-money text-primary product_taxes_value" data-init-money="${row?.['product_tax_value']}"></span>`
-                    }
-                },
-                {
-                    className: 'wrap-text text-right',
-                    render: (data, type, row) => {
-                        return `<span class="product_subtotal_price_final mask-money text-primary" data-init-money="${row?.['product_subtotal_final']}"></span>`
-                    }
-                },
-            ],
-            initComplete: function(settings, json) {
-                if (datasource.length > 0) {
-                    tabLineDetailTable.find('tbody tr').each(function () {
-                        let prd_select = $(this).find('.product-select')
-                        loadRowPrd(prd_select, prd_select.attr('data-id') !== '' ? {
-                            'id': prd_select.attr('data-id'),
-                            'code': prd_select.attr('data-code'),
-                            'title': prd_select.attr('data-title')
-                        } : null)
-
-                        let uom_select = $(this).find('.uom-select')
-                        loadRowUOM(uom_select, uom_select.attr('data-id') !== '' ? {
-                            'id': uom_select.attr('data-id'),
-                            'code': uom_select.attr('data-code'),
-                            'title': uom_select.attr('data-title')
-                        } : null)
-
-                        let tax_select = $(this).find('.product_taxes')
-                        loadRowTax(tax_select, tax_select.attr('data-tax-id') !== '' ? {
-                            'id': tax_select.attr('data-tax-id'),
-                            'title': tax_select.attr('data-tax-title'),
-                            'rate': tax_select.attr('data-tax-rate')
-                        } : null)
-                    })
-                    calculatePrice()
+    tabLineDetailTable.DataTableDefault({
+        dom: "t",
+        rowIdx: true,
+        reloadCurrency: true,
+        paging: false,
+        scrollX: '100vw',
+        scrollY: '30vh',
+        scrollCollapse: true,
+        data: datasource,
+        columns: [
+            {
+                'render': () => {
+                    return ``;
                 }
+            },
+            {
+                className: 'wrap-text text-center',
+                render: () => {
+                    return `<button disabled class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
+                }
+            },
+            {
+                className: 'wrap-text text-primary',
+                render: (data, type, row) => {
+                    return `<select data-id="${row?.['product']?.['id'] ? row?.['product']?.['id'] : ''}"
+                                    data-code="${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}"
+                                    data-title="${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}"
+                                    class="form-select select-2 product-select"></select>`
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<textarea rows="2" disabled readonly class="des small form-control">${row?.['product']?.['des'] ? row?.['product']?.['des'] : ''}</textarea>`
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<select data-id="${row?.['product_uom']?.['id'] ? row?.['product_uom']?.['id'] : ''}"
+                                    data-code="${row?.['product_uom']?.['code'] ? row?.['product_uom']?.['code'] : ''}"
+                                    data-title="${row?.['product_uom']?.['title'] ? row?.['product_uom']?.['title'] : ''}"
+                                    class="form-select select-2 uom-select"></select>`
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<input type="number" disabled readonly value="${row?.['product_quantity']}" class="form-control picked_quantity recalculate-field">`
+                }
+            },
+            {
+                className: 'wrap-text text-right',
+                render: (data, type, row) => {
+                    return `<input ${input_disabled} class="product_unit_price mask-money form-control" value="${row?.['product_unit_price']}">`
+                }
+            },
+            {
+                className: 'wrap-text text-right',
+                render: (data, type, row) => {
+                    return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal']}"></span>`
+                }
+            },
+            {
+                className: 'wrap-text text-right',
+                render: (data, type, row) => {
+                    return `<div class="input-affix-wrapper">
+                                <input ${input_disabled} type="number" class="form-control product_discount_rate recalculate-field" value="${row?.['product_discount_rate']}">
+                                <div class="input-suffix"><i class="fas fa-percentage"></i></div>
+                            </div>`
+                }
+            },
+            {
+                className: 'wrap-text text-right',
+                render: (data, type, row) => {
+                    return `<span class="product_discount_value mask-money text-danger" data-init-money="${row?.['product_discount_value']}"></span>`
+                }
+            },
+            {
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<select ${input_disabled}
+                                    data-tax-id="${row?.['product_tax']?.['id'] ? row?.['product_tax']?.['id'] : ''}"
+                                    data-tax-rate="${row?.['product_tax']?.['rate'] ? row?.['product_tax']?.['rate'] : 0}"
+                                    data-tax-title="${row?.['product_tax']?.['title'] ? row?.['product_tax']?.['title'] : ''}"
+                                    class="form-select select2 product_taxes recalculate-field"></select>`
+                }
+            },
+            {
+                className: 'wrap-text text-right',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary product_taxes_value" data-init-money="${row?.['product_tax_value']}"></span>`
+                }
+            },
+            {
+                className: 'wrap-text text-right',
+                render: (data, type, row) => {
+                    return `<span class="product_subtotal_price_final mask-money text-primary" data-init-money="${row?.['product_subtotal_final']}"></span>`
+                }
+            },
+        ],
+        initComplete: function(settings, json) {
+            if (datasource.length > 0) {
+                tabLineDetailTable.find('tbody tr').each(function () {
+                    let prd_select = $(this).find('.product-select')
+                    loadRowPrd(prd_select, prd_select.attr('data-id') !== '' ? {
+                        'id': prd_select.attr('data-id'),
+                        'code': prd_select.attr('data-code'),
+                        'title': prd_select.attr('data-title')
+                    } : null)
+
+                    let uom_select = $(this).find('.uom-select')
+                    loadRowUOM(uom_select, uom_select.attr('data-id') !== '' ? {
+                        'id': uom_select.attr('data-id'),
+                        'code': uom_select.attr('data-code'),
+                        'title': uom_select.attr('data-title')
+                    } : null)
+
+                    let tax_select = $(this).find('.product_taxes')
+                    loadRowTax(tax_select, tax_select.attr('data-tax-id') !== '' ? {
+                        'id': tax_select.attr('data-tax-id'),
+                        'title': tax_select.attr('data-tax-title'),
+                        'rate': tax_select.attr('data-tax-rate')
+                    } : null)
+                })
+                calculatePrice()
             }
-        });
-    }
-    else {
-        for (const item of datasource) {
-            let index = tabLineDetailTable.find('tbody tr').length + 1
-            let row = $(`
-                <tr>
-                    <td class="wrap-text">${index}</td>
-                    <td class="wrap-text">
-                        <select class="form-select select-2 product-select"></select>
-                    </td>
-                    <td class="wrap-text">
-                        <textarea rows="2" disabled readonly class="des small form-control">${item?.['product']?.['des']}</textarea>
-                    </td>
-                    <td class="wrap-text">
-                        <select class="form-select select-2 uom-select"></select>
-                    </td>
-                    <td class="wrap-text">
-                        <input type="number" class="form-control picked_quantity recalculate-field" value="${item?.['product_quantity']}">
-                    </td>
-                    <td class="wrap-text">
-                        <input class="product_unit_price mask-money form-control recalculate-field" value="${item['product_unit_price']}">
-                    </td>
-                    <td class="wrap-text">
-                        <span class="product_subtotal_price mask-money text-primary" data-init-money="${item?.['product_subtotal']}"></span>
-                    </td>
-                    <td class="wrap-text">
-                        <div class="input-affix-wrapper">
-                            <input type="number" class="form-control product_discount_rate recalculate-field" value="${item?.['product_discount_rate']}">
-                            <div class="input-suffix">
-                                <i class="fas fa-percentage"></i>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="wrap-text">
-                        <span class="product_discount_value mask-money text-danger" data-init-money="${item?.['product_discount_value']}"></span>
-                    </td>
-                    <td class="wrap-text">
-                        <select data-tax-rate="0" class="form-select select2 product_taxes recalculate-field"></select>
-                    </td>
-                    <td class="wrap-text">
-                        <span class="mask-money text-primary product_taxes_value" data-init-money="${item?.['product_tax_value']}"></span>
-                    </td>
-                    <td class="wrap-text">
-                        <span class="product_subtotal_price_final mask-money text-primary" data-init-money="${item?.['product_subtotal_final']}"></span>
-                    </td>
-                    <td class="wrap-text text-center">
-                        <button type='button' class="delete-item-row btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs">
-                            <span class="icon"><i class="fas fa-trash"></i></span>
-                        </button>
-                    </td>
-                </tr>
-            `)
-            tabLineDetailTable.find('tbody').append(row)
-            row.find('.product-select').initSelect2({
-                ajax: {
-                    url: scriptUrlEle.attr('data-url-product-list'),
-                    method: 'GET',
-                },
-                data: item?.['product'],
-                keyResp: 'product_list',
-                keyId: 'id',
-                keyText: 'title',
-            }).on('change', function () {
-                if ($(this).val()) {
-                    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-                    $(this).closest('tr').find('.des').text(selected?.['description'])
-                    loadRowUOM(row.find('.uom-select'), null, selected?.['general_uom_group']?.['id'])
-                    loadRowTax(row.find('.product_taxes'))
-                }
-            })
-            loadRowUOM(row.find('.uom-select'), item?.['product_uom'], item?.['product_uom']?.['group_id'])
-            loadRowTax(row.find('.product_taxes'), item?.['product_tax'])
         }
-        calculatePrice()
-    }
+    });
 }
 
-$(document).on("change", '.product_subtotal_final', function () {
+function loadTableLineDetailForDetailPageSimple(datasource=[], option='detail') {
+    tabLineDetailTableSimple.DataTable().clear().destroy()
+    let input_disabled = ''
+    if (option === 'detail') {
+        input_disabled = 'disabled readonly'
+    }
+    tabLineDetailTableSimple.DataTableDefault({
+        dom: "t",
+        rowIdx: true,
+        reloadCurrency: true,
+        paging: false,
+        scrollX: '100vw',
+        scrollY: '30vh',
+        scrollCollapse: true,
+        data: datasource,
+                columns: [
+            {
+                className: 'wrap-text w-5',
+                'render': () => {
+                    return ``;
+                }
+            },
+            {
+                className: 'wrap-text text-center w-5',
+                render: () => {
+                    return `<button ${input_disabled} type='button' class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
+                }
+            },
+            {
+                className: 'wrap-text w-60',
+                render: (data, type, row) => {
+                    let ar_product_des = row?.['ar_product_des'] ? row?.['ar_product_des'] : ''
+                    return `<textarea ${input_disabled} rows="1" class="ar_product_des form-control">${ar_product_des}</textarea>`
+                }
+            },
+            {
+                className: 'wrap-text text-right w-30',
+                render: (data, type, row) => {
+                    let product_subtotal_final = row?.['product_subtotal_final'] ? row?.['product_subtotal_final'] : 0
+                    return `<input ${input_disabled} class="product_subtotal_price_final mask-money form-control text-right" 
+                                   value="${product_subtotal_final}">`
+                }
+            },
+        ],
+        initComplete: function(settings, json) {
+            if (datasource.length > 0) {
+                calculatePriceSimple()
+            }
+        }
+    });
+}
+
+$(document).on("change", '.product_subtotal_price_final', function () {
     calculatePriceSimple()
 })
 
@@ -891,10 +880,7 @@ function loadSaleOrder(data) {
             method: 'GET',
         },
         templateResult: function(data) {
-            let opp_code = data.data?.['opportunity']?.['code']
-            if (data.data?.['opportunity']?.['code'] === undefined) {
-                opp_code = ''
-            }
+            let opp_code = data.data?.['opportunity']?.['code'] ? data.data?.['opportunity']?.['code'] : ''
             let ele = $('<div class="row"></div>');
             ele.append(`<div class="col-9"><span class="badge badge-soft-primary">${data.data?.['code']}</span>&nbsp;&nbsp;&nbsp;${data.data?.['title']}</div>
                         <div class="col-3 text-right"><span class="badge badge-light" data-bs-toggle="tooltip" title="${data.data?.['opportunity']?.['title']}">${opp_code}</span></div>`);
@@ -967,8 +953,8 @@ function calculatePriceSimple() {
     let product_subtotal_final = 0
 
     tabLineDetailTableSimple.find('tbody tr').each(function () {
-        if ($(this).find('.product_subtotal_final').attr('value')) {
-            product_subtotal_final += parseFloat($(this).find('.product_subtotal_final').attr('value'))
+        if ($(this).find('.product_subtotal_price_final').attr('value')) {
+            product_subtotal_final += parseFloat($(this).find('.product_subtotal_price_final').attr('value'))
         }
     })
     $('#pretax-value').attr('value', product_subtotal_final)
@@ -1074,10 +1060,12 @@ class ARInvoiceHandle {
 
 function Disabled(option) {
     if (option === 'detail') {
-        $('#collapse-area input').prop('readonly', true).prop('disabled', true)
-        $('#collapse-area select').prop('disabled', true)
+        $('input').prop('readonly', true).prop('disabled', true)
+        $('textarea').prop('readonly', true).prop('disabled', true)
+        $('select').prop('disabled', true)
         $('tr input').prop('readonly', true).prop('disabled', true)
-        customerSelectBtn.addClass('disabled')
+        customerSelectBtn.prop('disabled', true)
+        $('#add_row_dropdown').remove()
     }
 }
 
@@ -1089,6 +1077,7 @@ function LoadDetailARInvoice(option) {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['ar_invoice_detail'];
+                // console.log(data)
                 $x.fn.renderCodeBreadcrumb(data);
 
                 if (invoice_signs?.['many_vat_sign'] === data?.['invoice_sign']) {
@@ -1103,7 +1092,7 @@ function LoadDetailARInvoice(option) {
                     invoice_sign.val(invoice_signs?.['sale_invoice_sign'])
                 }
 
-                if (data?.['is_created_einvoice'] === false) {
+                if (!data?.['is_created_einvoice']) {
                     $('#view_invoice_btn').closest('a').remove()
                 }
                 else {
@@ -1111,7 +1100,7 @@ function LoadDetailARInvoice(option) {
                     invoice_action.closest('button').find('.icon').html('<i class="fa-solid fa-retweet"></i>')
                 }
 
-                if (data?.['is_free_input'] === false) {
+                if (!data?.['is_free_input']) {
                     $('.for-free-input').prop('readonly', true).prop('disabled', true)
                     $('#add_row_dropdown').remove()
                 }
@@ -1138,7 +1127,16 @@ function LoadDetailARInvoice(option) {
 
                 tabLineDetailTable.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
 
-                loadTableLineDetailForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option, data?.['is_free_input'])
+                if (data?.['is_free_input'] && data?.['delivery_mapped'].length === 0) {
+                    tabLineDetailTable.closest('.table_space').prop('hidden', true)
+                    tabLineDetailTableSimple.closest('.table_space').prop('hidden', false)
+                    loadTableLineDetailForDetailPageSimple(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                }
+                else {
+                    tabLineDetailTable.closest('.table_space').prop('hidden', false)
+                    tabLineDetailTableSimple.closest('.table_space').prop('hidden', true)
+                    loadTableLineDetailForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                }
 
                 Disabled(option)
 

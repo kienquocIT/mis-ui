@@ -136,22 +136,6 @@ class RecoveryLoadDataHandle {
         return true;
     };
 
-    static loadDatePicker($ele) {
-        $ele.daterangepicker({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: false,
-            minYear: 2023,
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            drops: 'up',
-            autoApply: true,
-        });
-        return true;
-    };
-
     static loadInit() {
         RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxStatus, RecoveryLoadDataHandle.dataStatus);
         RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxCustomer);
@@ -299,7 +283,9 @@ class RecoveryLoadDataHandle {
             let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
             let rowData = $row.data();
             if (rowData?.['lease_generate_data']) {
-                dataDtb = rowData?.['lease_generate_data'];
+                if (rowData?.['lease_generate_data'].length > 0) {
+                    dataDtb = rowData?.['lease_generate_data'];
+                }
             }
 
 
@@ -364,6 +350,10 @@ class RecoveryLoadDataHandle {
 
                 RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().clear().draw();
                 RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows.add(rowData?.['delivery_product_data'] ? rowData?.['delivery_product_data'] : []).draw();
+                let warehouseArea = RecoveryLoadDataHandle.$modalMain[0].querySelector('.dtb-warehouse-area');
+                if (warehouseArea) {
+                    warehouseArea.setAttribute('hidden', 'true');
+                }
             }
         }
         return true;
@@ -378,9 +368,11 @@ class RecoveryLoadDataHandle {
                 let $row = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex);
                 let rowData = $row.data();
 
+                RecoveryDataTableHandle.$tableWarehouse.DataTable().destroy();
                 if (rowData?.['warehouse_data']) {
-                    RecoveryDataTableHandle.$tableWarehouse.DataTable().destroy();
                     RecoveryDataTableHandle.dataTableWareHouse(rowData?.['warehouse_data'] ? rowData?.['warehouse_data'] : []);
+                } else {
+                    RecoveryDataTableHandle.dataTableWareHouse();
                 }
             }
         }
@@ -1433,15 +1425,16 @@ class RecoverySubmitHandle {
                 _form.dataForm['lease_order_data'] = data;
             }
         }
-        if (RecoveryLoadDataHandle.$boxStatus.val()) {
-            _form.dataForm['recovery_status'] = parseInt(RecoveryLoadDataHandle.$boxStatus.val());
-        }
-
         let dateVal = RecoveryLoadDataHandle.$date.val();
         if (dateVal) {
             _form.dataForm['date_received'] = moment(dateVal,
                 'DD/MM/YYYY').format('YYYY-MM-DD')
         }
+        if (RecoveryLoadDataHandle.$boxStatus.val()) {
+            _form.dataForm['recovery_status'] = parseInt(RecoveryLoadDataHandle.$boxStatus.val());
+        }
+
+
         let recovery_delivery_data = RecoverySubmitHandle.setupDataDelivery();
         if (recovery_delivery_data.length > 0) {
             _form.dataForm['recovery_delivery_data'] = recovery_delivery_data;

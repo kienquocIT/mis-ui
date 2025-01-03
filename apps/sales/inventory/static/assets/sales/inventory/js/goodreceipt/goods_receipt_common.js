@@ -1122,12 +1122,11 @@ class GRLoadDataHandle {
         return true;
     };
 
-
     static loadDataRowTable($table) {
-        $table.DataTable().rows().every(function () {
-            let row = this.node();
-            GRLoadDataHandle.loadDataRow(row, $table);
-        });
+        // $table.DataTable().rows().every(function () {
+        //     let row = this.node();
+        //     GRLoadDataHandle.loadDataRow(row, $table);
+        // });
         GRCalculateHandle.calculateTable($table);
         return true;
     };
@@ -2025,6 +2024,9 @@ class GRDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                GRLoadDataHandle.loadDataRow(row, GRDataTableHandle.tableLineDetailPO);
+            },
             drawCallback: function () {
                 GRDataTableHandle.dtbProductHDCustom();
             },

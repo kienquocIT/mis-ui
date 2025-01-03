@@ -26,14 +26,9 @@ class RecoveryLoadDataHandle {
     static POSelectEle = $('#box-good-receipt-purchase-order');
     static supplierSelectEle = $('#box-good-receipt-supplier');
     static IASelectEle = $('#box-good-receipt-inventory-adjustment');
-    static $boxTypeReport = $('#box-report-type');
     static $boxProductionOrder = $('#box-production-order');
     static $boxWorkOrder = $('#box-work-order');
     static $boxProductionReport = $('#box-production-report');
-    static initPOProductEle = $('#data-init-purchase-order-products');
-    static PRDataEle = $('#purchase_requests_data');
-    static btnAddLot = $('#btn-add-manage-lot');
-    static btnAddSerial = $('#btn-add-manage-serial');
 
 
     static dataTypeGr = [
@@ -296,17 +291,16 @@ class RecoveryLoadDataHandle {
                 }
             }
             for (let i = fromRecovery; i <= totalRecovery; i++) {
-                let code = 'LEASE-' + String(i);
-                dataDtb.push({'code': code})
+                dataDtb.push({'code': ''})
             }
 
 
-            // let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(trEle[0]).index();
-            // let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
-            // let rowData = $row.data();
-            // if (rowData?.['lease_generate_data']) {
-            //     dataDtb = rowData?.['lease_generate_data'];
-            // }
+            let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(trEle[0]).index();
+            let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
+            let rowData = $row.data();
+            if (rowData?.['lease_generate_data']) {
+                dataDtb = rowData?.['lease_generate_data'];
+            }
 
 
 
@@ -415,6 +409,11 @@ class RecoveryLoadDataHandle {
         RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(result).draw();
         return true;
     };
+
+
+
+
+
 
 
 
@@ -1015,13 +1014,6 @@ class RecoveryDataTableHandle {
             info: false,
             columns: [
                 {
-                    title: 'Lease number',
-                    width: '25%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-code">${row?.['code']}</span>`;
-                    }
-                },
-                {
                     title: 'Serial',
                     width: '25%',
                     render: (data, type, row) => {
@@ -1030,7 +1022,7 @@ class RecoveryDataTableHandle {
                 },
                 {
                     title: 'Note',
-                    width: '40%',
+                    width: '60%',
                     render: (data, type, row) => {
                         return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ''}</textarea>`;
                     }
@@ -1047,6 +1039,7 @@ class RecoveryDataTableHandle {
             ],
             rowCallback: function (row, data, index) {
                 let serialEle = row.querySelector('.table-row-serial');
+                let remarkEle = row.querySelector('.table-row-remark');
                 if (serialEle) {
                     let productChecked = RecoveryDataTableHandle.$tableDeliveryProduct[0].querySelector('.table-row-checkbox:checked');
                     if (productChecked) {
@@ -1067,36 +1060,51 @@ class RecoveryDataTableHandle {
                                     }
                                 }
                                 RecoveryLoadDataHandle.loadInitS2($(serialEle), serialData, {}, RecoveryLoadDataHandle.$modalMain, false, {'res2': 'serial_number'});
-                                $(serialEle).on('change', function () {
-                                    let rowTarget = this.closest('tr');
-                                    let $ele = $(this);
-                                    let val = $ele.val();
-                                    if (val && rowTarget) {
-                                        let codeTargetEle = rowTarget.querySelector('.table-row-code');
-                                        if (codeTargetEle) {
-                                            $('#' + idTbl).DataTable().rows().every(function () {
-                                                let row = this.node();
-                                                let codeEle = row.querySelector('.table-row-code');
-                                                let serialEle = row.querySelector('.table-row-serial');
-                                                if (codeEle && serialEle) {
-                                                    if (codeEle.innerHTML !== codeTargetEle.innerHTML) {
-                                                        if ($(serialEle).val() === val) {
-                                                            $ele.val('').trigger('change');
-                                                            $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-unique-serial')}, 'failure');
-                                                            return false;
-                                                        }
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
-                                });
+                                if (data?.['serial_id']) {
+                                    $(serialEle).val(data?.['serial_id']).trigger('change');
+                                }
                                 if (serialData.length === 0) {
                                     serialEle.removeAttribute('hidden');
                                 }
+
+
+                                $(serialEle).on('change', function () {
+                                    let $ele = $(this);
+                                    let val = $ele.val();
+                                    if (val) {
+                                        RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
+                                            let rowCheck1 = this.node();
+                                            if (!$(rowCheck1).hasClass('child-workflow-list')) {
+                                                let $child = $(rowCheck1).next();
+                                                if ($child.length > 0) {
+                                                    let tblChild = $child[0].querySelector('.table-child');
+                                                    if (tblChild) {
+                                                        $(tblChild).DataTable().rows().every(function () {
+                                                            let rowCheck2 = this.node();
+                                                            if (row !== rowCheck2) {
+                                                                let serialEle = rowCheck2.querySelector('.table-row-serial');
+                                                                if ($(serialEle).val() === val) {
+                                                                    $ele.val('').trigger('change');
+                                                                    $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-unique-serial')}, 'failure');
+                                                                    return false;
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                    RecoveryStoreDataHandle.storeData();
+                                });
                             }
                         }
                     }
+                }
+                if (remarkEle) {
+                    $(remarkEle).on('change', function () {
+                        RecoveryStoreDataHandle.storeData();
+                    });
                 }
             },
             drawCallback: function () {
@@ -1275,12 +1283,8 @@ class RecoveryStoreDataHandle {
                         $(tblChild).DataTable().rows().every(function () {
                             let row = this.node();
                             let leaseGenData = {};
-                            let codeEle = row.querySelector('.table-row-code');
                             let serialEle = row.querySelector('.table-row-serial');
                             let remarkEle = row.querySelector('.table-row-remark');
-                            if (codeEle) {
-                                leaseGenData['code'] = codeEle.innerHTML;
-                            }
                             if (serialEle) {
                                 if ($(serialEle).val()) {
                                     let data = SelectDDControl.get_data_from_idx($(serialEle), $(serialEle).val());

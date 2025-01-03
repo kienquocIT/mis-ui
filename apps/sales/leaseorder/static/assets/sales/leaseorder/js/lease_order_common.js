@@ -1749,7 +1749,14 @@ class LeaseOrderLoadDataHandle {
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
+                            "product_id": dataProduct?.['id'],
                             "product_data": dataProduct,
+                            "uom_id": dataUOM?.['id'],
+                            "uom_data": dataUOM,
+                            "uom_time_id": dataUOMTime?.['id'],
+                            "uom_time_data": dataUOMTime,
+                            "tax_id": dataTax?.['id'],
+                            "tax_data": dataTax,
                             "product_quantity": valueQuantity,
                             "product_quantity_time": valueQuantityTime,
                             "product_uom_code": "",
@@ -1760,14 +1767,7 @@ class LeaseOrderLoadDataHandle {
                             "product_tax_amount": valueTaxAmount,
                             "product_subtotal_price": valueSubtotal,
                         }
-                        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                        LeaseOrderLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
-                        $(newRow.querySelector('.table-row-item')).attr('data-product-id', dataProduct?.['id']);
-                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom-time')), [dataUOMTime]);
-                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
-                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), LeaseOrderLoadDataHandle.dataSuppliedBy);
-                        $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['supplied_by'] ? dataProduct?.['supplied_by'] : 0).change();
+                        $table.DataTable().row.add(dataAdd).draw().node();
                     }
                     if (data?.['shipping_data']?.['id']) { // SHIPPING
                         let dataShipping = data?.['shipping_data'];
@@ -1793,51 +1793,72 @@ class LeaseOrderLoadDataHandle {
                             "is_shipping": true,
                             "shipping_id": dataShipping?.['id'],
                             "shipping_data": dataShipping,
+                            "uom_id": dataUOM?.['id'],
+                            "uom_data": dataUOM,
+                            "tax_id": dataTax?.['id'],
+                            "tax_data": dataTax,
                         }
-                        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
+                        $table.DataTable().row.add(dataAdd).draw().node();
                     }
                 }
             } else {  // product is not zone hidden
                 $tableProduct.DataTable().rows().every(function () {
                     let row = this.node();
-                    let valueQuantity = 0;
-                    let valueQuantityTime = 0;
                     let valueTaxAmount = 0;
                     let valueSubtotal = 0;
                     let dataProduct = {};
                     let dataUOM = {};
+                    let valueQuantity = 0;
                     let dataUOMTime = {};
+                    let valueQuantityTime = 0;
                     let dataTax = {};
-                    let product = row.querySelector('.table-row-item');
-                    let uom = row.querySelector('.table-row-uom');
-                    let uomTime = row.querySelector('.table-row-uom-time');
-                    let tax = row.querySelector('.table-row-tax');
+                    let itemEle = row.querySelector('.table-row-item');
+                    let uomEle = row.querySelector('.table-row-uom');
+                    let quantityEle = row.querySelector('.table-row-quantity');
+                    let uomTimeEle = row.querySelector('.table-row-uom-time');
+                    let quantityTimeEle = row.querySelector('.table-row-quantity-time');
+                    let taxEle = row.querySelector('.table-row-tax');
                     let shipping = row.querySelector('.table-row-shipping');
-                    if (product) { // PRODUCT
-                        dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
-                        if ($(uom).val()) {
-                            dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
+                    if (itemEle) { // PRODUCT
+                        if ($(itemEle).val()) {
+                            dataProduct = SelectDDControl.get_data_from_idx($(itemEle), $(itemEle).val());
                         }
-                        if ($(uomTime).val()) {
-                            dataUOMTime = SelectDDControl.get_data_from_idx($(uomTime), $(uomTime).val());
+                        if (uomEle) {
+                            if ($(uomEle).val()) {
+                                dataUOM = SelectDDControl.get_data_from_idx($(uomEle), $(uomEle).val());
+                            }
                         }
-                        if ($(tax).val()) {
-                            dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
+                        if (quantityEle) {
+                            if ($(quantityEle).val()) {
+                                valueQuantity = parseFloat($(quantityEle).val());
+                            }
                         }
-                        valueQuantity = 0;
-                        if (row.querySelector('.table-row-quantity').value) {
-                            valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
+                        if (uomTimeEle) {
+                            if ($(uomTimeEle).val()) {
+                                dataUOMTime = SelectDDControl.get_data_from_idx($(uomTimeEle), $(uomTimeEle).val());
+                            }
                         }
-                        valueQuantityTime = 0;
-                        if (row.querySelector('.table-row-quantity-time').value) {
-                            valueQuantityTime = parseFloat(row.querySelector('.table-row-quantity-time').value);
+                        if (quantityTimeEle) {
+                            if ($(quantityTimeEle).val()) {
+                                valueQuantityTime = parseFloat($(quantityTimeEle).val());
+                            }
+                        }
+                        if (taxEle) {
+                            if ($(taxEle).val()) {
+                                dataTax = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
+                            }
                         }
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
+                            "product_id": dataProduct?.['id'],
                             "product_data": dataProduct,
+                            "uom_id": dataUOM?.['id'],
+                            "uom_data": dataUOM,
+                            "uom_time_id": dataUOMTime?.['id'],
+                            "uom_time_data": dataUOMTime,
+                            "tax_id": dataTax?.['id'],
+                            "tax_data": dataTax,
                             "product_quantity": valueQuantity,
                             "product_quantity_time": valueQuantityTime,
                             "product_uom_code": "",
@@ -1848,14 +1869,7 @@ class LeaseOrderLoadDataHandle {
                             "product_tax_amount": valueTaxAmount,
                             "product_subtotal_price": valueSubtotal,
                         }
-                        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                        LeaseOrderLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
-                        $(newRow.querySelector('.table-row-item')).attr('data-product-id', dataProduct?.['id']);
-                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom-time')), [dataUOMTime]);
-                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
-                        LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), LeaseOrderLoadDataHandle.dataSuppliedBy);
-                        $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['supplied_by'] ? dataProduct?.['supplied_by'] : 0).change();
+                        $table.DataTable().row.add(dataAdd).draw().node();
                     }
                     if (shipping) { // SHIPPING
                         if (shipping.getAttribute('data-shipping')) {
@@ -1882,10 +1896,12 @@ class LeaseOrderLoadDataHandle {
                                 "is_shipping": true,
                                 "shipping_id": dataShipping?.['id'],
                                 "shipping_data": dataShipping,
+                                "uom_id": dataUOM?.['id'],
+                                "uom_data": dataUOM,
+                                "tax_id": dataTax?.['id'],
+                                "tax_data": dataTax,
                             }
-                            let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                            LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                            LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
+                            $table.DataTable().row.add(dataAdd).draw().node();
                         }
                     }
                 })
@@ -1897,9 +1913,6 @@ class LeaseOrderLoadDataHandle {
                 let row = this.node();
                 let eleProduct = row.querySelector('.table-row-item');
                 let elePrice = row.querySelector('.table-row-price');
-                // if (eleProduct) {
-                //     QuotationLoadDataHandle.loadCostProduct(eleProduct);
-                // }
                 if ($(eleProduct).val() && elePrice) {
                     let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                     if (dataProduct) {
@@ -3369,7 +3382,7 @@ class LeaseOrderDataTableHandle {
                         dataS2 = [data?.['product_data']];
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(itemEle), dataS2);
-                    LeaseOrderLoadDataHandle.loadCostProduct(itemEle);
+                    $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
                 }
                 if (suppliedByEle) {
                     LeaseOrderLoadDataHandle.loadInitS2($(suppliedByEle), LeaseOrderLoadDataHandle.dataSuppliedBy);

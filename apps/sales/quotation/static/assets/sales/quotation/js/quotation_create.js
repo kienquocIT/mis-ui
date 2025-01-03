@@ -186,9 +186,11 @@ $(function () {
         });
 
         tableProduct.on('click', '.btn-select-price', function () {
-            if (this.closest('tr')) {
-                if (this.closest('tr').querySelector('.table-row-item')) {
-                    QuotationLoadDataHandle.loadPriceProduct(this.closest('tr').querySelector('.table-row-item'));
+            let row = this.closest('tr');
+            if (row) {
+                let itemEle = row.querySelector('.table-row-item');
+                if (itemEle) {
+                    QuotationLoadDataHandle.loadPriceProduct(itemEle);
                 }
             }
          });
@@ -389,9 +391,11 @@ $(function () {
         });
 
         tableCost.on('click', '.btn-select-cost', function () {
-            if (this.closest('tr')) {
-                if (this.closest('tr').querySelector('.table-row-item')) {
-                    QuotationLoadDataHandle.loadCostProduct(this.closest('tr').querySelector('.table-row-item'));
+            let row = this.closest('tr');
+            if (row) {
+                let itemEle = row.querySelector('.table-row-item');
+                if (itemEle) {
+                    QuotationLoadDataHandle.loadCostProduct(itemEle);
                 }
             }
          });

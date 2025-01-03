@@ -1653,7 +1653,12 @@ class QuotationLoadDataHandle {
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
+                            "product_id": dataProduct?.['id'],
                             "product_data": dataProduct,
+                            "uom_id": dataUOM?.['id'],
+                            "uom_data": dataUOM,
+                            "tax_id": dataTax?.['id'],
+                            "tax_data": dataTax,
                             "product_quantity": valueQuantity,
                             "product_uom_code": "",
                             "product_tax_title": "",
@@ -1663,13 +1668,7 @@ class QuotationLoadDataHandle {
                             "product_tax_amount": valueTaxAmount,
                             "product_subtotal_price": valueSubtotal,
                         }
-                        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                        QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
-                        $(newRow.querySelector('.table-row-item')).attr('data-product-id', dataProduct?.['id']);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
-                        $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['supplied_by'] ? dataProduct?.['supplied_by'] : 0).change();
+                        $table.DataTable().row.add(dataAdd).draw().node();
                     }
                     if (data?.['shipping_data']?.['id']) { // SHIPPING
                         let dataShipping = data?.['shipping_data'];
@@ -1695,41 +1694,56 @@ class QuotationLoadDataHandle {
                             "is_shipping": true,
                             "shipping_id": dataShipping?.['id'],
                             "shipping_data": dataShipping,
+                            "uom_id": dataUOM?.['id'],
+                            "uom_data": dataUOM,
+                            "tax_id": dataTax?.['id'],
+                            "tax_data": dataTax,
                         }
-                        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
+                        $table.DataTable().row.add(dataAdd).draw().node();
                     }
                 }
             } else {  // product is not zone hidden
                 $tableProduct.DataTable().rows().every(function () {
                     let row = this.node();
-                    let valueQuantity = 0;
                     let valueTaxAmount = 0;
                     let valueSubtotal = 0;
                     let dataProduct = {};
                     let dataUOM = {};
+                    let valueQuantity = 0;
                     let dataTax = {};
-                    let product = row.querySelector('.table-row-item');
-                    let uom = row.querySelector('.table-row-uom');
-                    let tax = row.querySelector('.table-row-tax');
+                    let itemEle = row.querySelector('.table-row-item');
+                    let uomEle = row.querySelector('.table-row-uom');
+                    let quantityEle = row.querySelector('.table-row-quantity');
+                    let taxEle = row.querySelector('.table-row-tax');
                     let shipping = row.querySelector('.table-row-shipping');
-                    if (product) { // PRODUCT
-                        dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
-                        if ($(uom).val()) {
-                            dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
+                    if (itemEle) { // PRODUCT
+                        if ($(itemEle).val()) {
+                            dataProduct = SelectDDControl.get_data_from_idx($(itemEle), $(itemEle).val());
                         }
-                        if ($(tax).val()) {
-                            dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
+                        if (uomEle) {
+                            if ($(uomEle).val()) {
+                                dataUOM = SelectDDControl.get_data_from_idx($(uomEle), $(uomEle).val());
+                            }
                         }
-                        valueQuantity = 0;
-                        if (row.querySelector('.table-row-quantity').value) {
-                            valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
+                        if (quantityEle) {
+                            if ($(quantityEle).val()) {
+                                valueQuantity = parseFloat($(quantityEle).val());
+                            }
+                        }
+                        if (taxEle) {
+                            if ($(taxEle).val()) {
+                                dataTax = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
+                            }
                         }
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
+                            "product_id": dataProduct?.['id'],
                             "product_data": dataProduct,
+                            "uom_id": dataUOM?.['id'],
+                            "uom_data": dataUOM,
+                            "tax_id": dataTax?.['id'],
+                            "tax_data": dataTax,
                             "product_quantity": valueQuantity,
                             "product_uom_code": "",
                             "product_tax_title": "",
@@ -1739,13 +1753,7 @@ class QuotationLoadDataHandle {
                             "product_tax_amount": valueTaxAmount,
                             "product_subtotal_price": valueSubtotal,
                         }
-                        let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                        QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
-                        $(newRow.querySelector('.table-row-item')).attr('data-product-id', dataProduct?.['id']);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
-                        QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-supplied-by')), QuotationLoadDataHandle.dataSuppliedBy);
-                        $(newRow.querySelector('.table-row-supplied-by')).val(dataProduct?.['supplied_by'] ? dataProduct?.['supplied_by'] : 0).change();
+                        $table.DataTable().row.add(dataAdd).draw().node();
                     }
                     if (shipping) { // SHIPPING
                         if (shipping.getAttribute('data-shipping')) {
@@ -1772,10 +1780,12 @@ class QuotationLoadDataHandle {
                                 "is_shipping": true,
                                 "shipping_id": dataShipping?.['id'],
                                 "shipping_data": dataShipping,
+                                "uom_id": dataUOM?.['id'],
+                                "uom_data": dataUOM,
+                                "tax_id": dataTax?.['id'],
+                                "tax_data": dataTax,
                             }
-                            let newRow = $table.DataTable().row.add(dataAdd).draw().node();
-                            QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')), [dataUOM]);
-                            QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')), [dataTax]);
+                            $table.DataTable().row.add(dataAdd).draw().node();
                         }
                     }
                 })
@@ -1787,9 +1797,6 @@ class QuotationLoadDataHandle {
                 let row = this.node();
                 let eleProduct = row.querySelector('.table-row-item');
                 let elePrice = row.querySelector('.table-row-price');
-                // if (eleProduct) {
-                //     QuotationLoadDataHandle.loadCostProduct(eleProduct);
-                // }
                 if ($(eleProduct).val() && elePrice) {
                     let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                     if (dataProduct) {
@@ -3237,7 +3244,7 @@ class QuotationDataTableHandle {
                     }
                     QuotationLoadDataHandle.loadInitS2($(itemEle), dataS2);
                     QuotationLoadDataHandle.loadCssS2($(itemEle), '260px');
-                    QuotationLoadDataHandle.loadCostProduct(itemEle);
+                    $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
                 }
                 if (suppliedByEle) {
                     QuotationLoadDataHandle.loadInitS2($(suppliedByEle), QuotationLoadDataHandle.dataSuppliedBy);

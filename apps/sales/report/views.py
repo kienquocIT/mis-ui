@@ -81,6 +81,18 @@ class ReportProductListAPI(APIView):
         return resp.auto_return(key_success='report_product_list')
 
 
+class ReportProductListAPIRDashBoard(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_PRODUCT_LIST_FOR_DASHBOARD).get(data)
+        return resp.auto_return(key_success='report_product_list')
+
+
 # REPORT CUSTOMER
 class ReportCustomerList(View):
 

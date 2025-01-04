@@ -61,6 +61,9 @@ $(document).ready(function () {
     }
 
     function LoadPeriod(data) {
+        if (Object.keys(data).length === 0) {
+            data = current_period
+        }
         periodFiscalYearFilterEle.initSelect2({
             ajax: {
                 url: periodFiscalYearFilterEle.attr('data-url'),
@@ -71,11 +74,13 @@ $(document).ready(function () {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
+            $('#revenue-spinner').prop('hidden', false)
+            $('#profit-spinner').prop('hidden', false)
             period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val())
             fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
             space_month_Setting = period_selected_Setting?.['space_month']
-            UpdateRevenueChart()
-            UpdateProfitChart()
+            CallAjaxRevenueChart()
+            CallAjaxProfitChart()
             topSellersTimeEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
             topSellersNumberEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
             topCustomersTimeEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
@@ -439,7 +444,6 @@ $(document).ready(function () {
         )
         revenue_chart = new ApexCharts(document.querySelector("#revenue_chart"), options);
         revenue_chart.render();
-        $('#revenue-spinner').prop('hidden', true)
     }
 
     function UpdateRevenueChart() {
@@ -482,7 +486,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
                     for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
-                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === new Date().getFullYear()) {
+                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === parseInt(fiscal_year_Setting)) {
                             return data?.['revenue_plan_list'][i]
                         }
                     }
@@ -502,10 +506,14 @@ $(document).ready(function () {
                 period_selected_Setting = results[1]?.['period_mapped'] ? results[1]?.['period_mapped'] : {}
                 fiscal_year_Setting = period_selected_Setting ? period_selected_Setting?.['fiscal_year'] : null
                 space_month_Setting = period_selected_Setting ? period_selected_Setting?.['space_month'] : null
-                LoadPeriod(period_selected_Setting)
+                // LoadPeriod(period_selected_Setting)
                 if (is_init) {
                     InitRevenueChart()
                 }
+                else {
+                    UpdateRevenueChart()
+                }
+                $('#revenue-spinner').prop('hidden', true)
             })
     }
 
@@ -514,8 +522,8 @@ $(document).ready(function () {
     })
 
     $('#reload-revenue-data-btn').on('click', function () {
+        $('#revenue-spinner').prop('hidden', false)
         CallAjaxRevenueChart()
-        UpdateRevenueChart()
         $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 
@@ -855,7 +863,6 @@ $(document).ready(function () {
         )
         profit_chart = new ApexCharts(document.querySelector("#profit_chart"), options);
         profit_chart.render();
-        $('#profit-spinner').prop('hidden', true)
     }
 
     function UpdateProfitChart() {
@@ -901,7 +908,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
                     for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
-                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === new Date().getFullYear()) {
+                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === parseInt(fiscal_year_Setting)) {
                             return data?.['revenue_plan_list'][i]
                         }
                     }
@@ -923,10 +930,14 @@ $(document).ready(function () {
                 period_selected_Setting = results[1]?.['period_mapped'] ? results[1]?.['period_mapped'] : {}
                 fiscal_year_Setting = period_selected_Setting ? period_selected_Setting?.['fiscal_year'] : null
                 space_month_Setting = period_selected_Setting ? period_selected_Setting?.['space_month'] : null
-                LoadPeriod(period_selected_Setting)
+                // LoadPeriod(period_selected_Setting)
                 if (is_init) {
                     InitProfitChart()
                 }
+                else {
+                    UpdateProfitChart()
+                }
+                $('#profit-spinner').prop('hidden', true)
             })
     }
 
@@ -939,8 +950,8 @@ $(document).ready(function () {
     })
 
     $('#reload-profit-data-btn').on('click', function () {
+        $('#profit-spinner').prop('hidden', false)
         CallAjaxProfitChart()
-        UpdateProfitChart()
         $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 
@@ -1084,7 +1095,6 @@ $(document).ready(function () {
         let options = CombineTopSellersChartData(
             isBillionChecked
         )
-        $('#top-sellers-spinner').prop('hidden', true)
         top_sellers_chart = new ApexCharts(document.querySelector("#top_sellers_chart"), options);
         top_sellers_chart.render();
     }
@@ -1121,6 +1131,10 @@ $(document).ready(function () {
                 if (is_init) {
                     InitTopSellersChart()
                 }
+                else {
+                    UpdateTopSellersChart()
+                }
+                $('#top-sellers-spinner').prop('hidden', true)
             })
     }
 
@@ -1133,8 +1147,8 @@ $(document).ready(function () {
     })
 
     $('#reload-top-sellers-data-btn').on('click', function () {
+        $('#top-sellers-spinner').prop('hidden', false)
         CallAjaxTopSellersChart()
-        UpdateTopSellersChart()
         $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 
@@ -1276,7 +1290,6 @@ $(document).ready(function () {
         let options = CombineTopCustomersChartData(
             isBillionChecked
         )
-        $('#top-customers-spinner').prop('hidden', true)
         top_customers_chart = new ApexCharts(document.querySelector("#top_customers_chart"), options);
         top_customers_chart.render();
     }
@@ -1313,6 +1326,10 @@ $(document).ready(function () {
                 if (is_init) {
                     InitTopCustomersChart()
                 }
+                else {
+                    UpdateTopCustomersChart()
+                }
+                $('#top-customers-spinner').prop('hidden', true)
             })
     }
 
@@ -1325,8 +1342,8 @@ $(document).ready(function () {
     })
 
     $('#reload-top-customers-data-btn').on('click', function () {
+        $('#top-customers-spinner').prop('hidden', false)
         CallAjaxTopCustomersChart()
-        UpdateTopCustomersChart()
         $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 
@@ -1469,7 +1486,6 @@ $(document).ready(function () {
         let options = CombineTopCategoriesChartData(
             isBillionChecked
         )
-        $('#top-categories-spinner').prop('hidden', true)
         top_categories_chart = new ApexCharts(document.querySelector("#top_categories_chart"), options);
         top_categories_chart.render();
     }
@@ -1506,6 +1522,10 @@ $(document).ready(function () {
                 if (is_init) {
                     InitTopCategoriesChart()
                 }
+                else {
+                    UpdateTopCategoriesChart()
+                }
+                $('#top-categories-spinner').prop('hidden', true)
             })
     }
 
@@ -1518,8 +1538,8 @@ $(document).ready(function () {
     })
 
     $('#reload-top-categories-data-btn').on('click', function () {
+        $('#top-categories-spinner').prop('hidden', false)
         CallAjaxTopCategoriesChart()
-        UpdateTopCategoriesChart()
         $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 
@@ -1662,7 +1682,6 @@ $(document).ready(function () {
         let options = CombineTopProductsChartData(
             isBillionChecked
         )
-        $('#top-products-spinner').prop('hidden', true)
         top_products_chart = new ApexCharts(document.querySelector("#top_products_chart"), options);
         top_products_chart.render();
     }
@@ -1699,6 +1718,10 @@ $(document).ready(function () {
                 if (is_init) {
                     InitTopProductsChart()
                 }
+                else {
+                    UpdateTopProductsChart()
+                }
+                $('#top-products-spinner').prop('hidden', true)
             })
     }
 
@@ -1711,8 +1734,8 @@ $(document).ready(function () {
     })
 
     $('#reload-top-products-data-btn').on('click', function () {
+        $('#top-products-spinner').prop('hidden', false)
         CallAjaxTopProductsChart()
-        UpdateTopProductsChart()
         $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
     })
 

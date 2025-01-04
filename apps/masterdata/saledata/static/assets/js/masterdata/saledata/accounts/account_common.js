@@ -621,14 +621,14 @@ save_billing_address.on('click', function () {
 inputIndividualEle.on('change', function () {
     parentAccountEle.prop('selectedIndex', -1).attr('disabled', true);
     $("#tax-code-label").removeClass("required");
-    $("#total_employees_label").removeClass("required");
+    // $("#total_employees_label").removeClass("required");
     loadParentAccount();
 })
 
 inputOrganizationEle.on('change', function () {
     parentAccountEle.attr('disabled', false);
     $("#tax-code-label").addClass("required");
-    $("#total_employees_label").addClass("required");
+    // $("#total_employees_label").addClass("required");
 })
 
 add_shipping_address_btn.on('click', function () {
@@ -846,7 +846,7 @@ function get_contacts_mapped() {
 }
 
 class AccountHandle {
-     load() {
+    load() {
         loadAccountType();
         loadAccountManager();
         loadIndustry();
@@ -913,12 +913,12 @@ class AccountHandle {
         if (totalEmployeeEle.val()) {
             frm.dataForm['total_employees'] = totalEmployeeEle.val();
         }
-        else {
-            if (inputOrganizationEle.is(':checked')) {
-                $.fn.notifyB({description: 'Total employee is required with Organization Account.'}, 'failure');
-                return false;
-            }
-        }
+        // else {
+            // if (inputOrganizationEle.is(':checked')) {
+            //     $.fn.notifyB({description: 'Total employee is required with Organization Account.'}, 'failure');
+            //     return false;
+            // }
+        // }
         if (accountTaxCode.val()) {
             frm.dataForm['tax_code'] = accountTaxCode.val();
         }

@@ -241,8 +241,8 @@ $(document).ready(function () {
                     }
 
                     // Disable all select elements
-                    $('input').prop('disabled', true).prop('readonly', true)
-                    $('select').prop('disabled', true)
+                    $('form input').prop('disabled', true).prop('readonly', true)
+                    $('form select').prop('disabled', true)
                     $('#btn-auto-update-stage').prop('hidden', true)
                     $('#btn-add-row-line-detail').prop('hidden', true)
                     $('.btn-del-item').prop('hidden', true)

@@ -613,7 +613,7 @@
                                 <tbody>
                                 </tbody>
                             </table>
-                            <div class="form-check" id="copy-quotation-option" hidden>
+                            <div class="form-check form-check-lg" id="copy-quotation-option" hidden>
                                 <input type="checkbox" class="form-check-input check-option" id="customCheck1" checked>
                                 <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation' %}</label>
                             </div>
@@ -790,7 +790,11 @@
         data-md-product="{% url 'ProductForSaleListAPI' %}"
         data-md-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
         data-md-bom="{% url 'BOMOrderListAPI' %}"
+        data-md-uom="{% url "UnitOfMeasureListAPI" %}"
+        data-md-tax="{% url "TaxListAPI" %}"
+
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
+        data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
     >
 
     <input

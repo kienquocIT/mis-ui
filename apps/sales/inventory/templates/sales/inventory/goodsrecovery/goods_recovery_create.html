@@ -69,9 +69,9 @@
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label class="form-label required" for="good-receipt-date-received">{% trans 'Date' %}</label>
+                            <label class="form-label required" for=date_recovery">{% trans 'Date' %}</label>
                             <div class="input-affix-wrapper">
-                                <input type="text" name="date-received" id="good-receipt-date-received"
+                                <input type="text" name="date_recovery" id="date_recovery"
                                        class="form-control date-picker" autocomplete="off" required>
                                 <div class="input-suffix">
                                     <i class="fas fa-calendar-alt"></i>
@@ -81,10 +81,10 @@
                     </div>
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label class="form-label required" for="status">{% trans 'Status' %}</label>
+                            <label class="form-label required" for="recovery_status">{% trans 'Status' %}</label>
                             <select
                                 class="form-select"
-                                id="status"
+                                id="recovery_status"
                                 data-url=""
                                 data-method="GET"
                                 data-link-detail=""
@@ -286,7 +286,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="row mb-2">
-                                        <div data-simplebar class="h-700p nicescroll-bar">
+                                        <div data-simplebar class="h-700p nicescroll-bar dtb-warehouse-area" hidden>
                                             <table
                                                     id="datable-warehouse"
                                                     class="table nowrap w-100 mb-5"
@@ -313,7 +313,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-confirm-add-product" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-modal" data-bs-dismiss="modal">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -355,6 +355,7 @@
             data-asset-type-2="{% trans "Tool" %}"
             data-asset-type-3="{% trans "Fixed asset" %}"
             data-exceed-quantity="{% trans 'Exceed quantity' %}"
+            data-unique-serial="{% trans 'Serial is unique' %}"
     >
     <input
             type="text"
@@ -396,6 +397,8 @@
 
             data-md-bom="{% url 'BOMOrderListAPI' %}"
             data-md-product="{% url 'ProductForSaleListAPI' %}"
+            data-md-uom="{% url "UnitOfMeasureListAPI" %}"
+            data-md-tax="{% url "TaxListAPI" %}"
     >
 {% endblock %}
 

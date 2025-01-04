@@ -41,7 +41,7 @@ $(function () {
         });
 
         // workflow init
-        WFRTControl.setWFInitialData("goodsreceipt");
+        WFRTControl.setWFInitialData("goodsrecovery");
 
 
         RecoveryLoadDataHandle.$form.on('change', '.validated-number', function () {
@@ -72,18 +72,22 @@ $(function () {
                         }
                     )
                 }
+                RecoveryLoadDataHandle.$modalMain.modal('show');
             }
             return true;
         });
 
         RecoveryDataTableHandle.$tableDelivery.on('click', '.table-row-checkbox', function () {
-            RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().clear().draw();
-            let row = this.closest('tr');
-            if (row) {
-                let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
-                let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
-                let rowData = $row.data();
-                RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows.add(rowData?.['delivery_product']).draw();
+            RecoveryLoadDataHandle.loadCheckDelivery();
+            return true;
+        });
+
+        RecoveryDataTableHandle.$tableDeliveryProduct.on('click', '.table-row-checkbox', function () {
+            let warehouseArea = RecoveryLoadDataHandle.$modalMain[0].querySelector('.dtb-warehouse-area');
+            if (warehouseArea) {
+                RecoveryLoadDataHandle.loadCheckDeliveryProduct();
+
+                warehouseArea.removeAttribute('hidden');
             }
             return true;
         });
@@ -122,125 +126,23 @@ $(function () {
                 }
             }
 
+            RecoveryStoreDataHandle.storeData();
             return true;
         });
 
-
-
-
-
-
-
-        // Action on change dropdown PO
-        RecoveryLoadDataHandle.POSelectEle.on('change', function () {
-            RecoveryLoadDataHandle.loadChangePO($(this));
-            RecoveryLoadDataHandle.loadClearModal();
-            RecoveryLoadDataHandle.loadCallAjaxProduct();
-            $('#btn-edit-product-good-receipt').click();
-        });
-
-        btnConfirmAdd.on('click', function () {
-            RecoveryStoreDataHandle.storeDataProduct();
+        RecoveryLoadDataHandle.$btnSaveModal.on('click', function () {
             RecoveryLoadDataHandle.loadLineDetail();
         });
 
-        RecoveryDataTableHandle.tablePOProduct.on('click', '.table-row-checkbox', function () {
-            RecoveryLoadDataHandle.loadCheckPOProduct(this);
-        });
 
-        RecoveryDataTableHandle.tablePOProduct.on('change', '.table-row-import', function () {
-            let remain = parseFloat(this.closest('tr').querySelector('.table-row-gr-remain').innerHTML);
-            let valid_import = RecoveryValidateHandle.validateImportProductNotInventory(this, remain);
-            let eleCheck = this?.closest('tr')?.querySelector('.table-row-checkbox');
-            if (eleCheck) {
-                eleCheck.checked = valid_import;
-            }
-        });
 
-        RecoveryDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {
-            RecoveryLoadDataHandle.loadCheckWH(this);
-        });
 
-        RecoveryDataTableHandle.tableWH.on('change', '.table-row-import', function () {
-            if (this.closest('tr').querySelector('.table-row-checkbox').checked === false) {
-                $(this.closest('tr').querySelector('.table-row-checkbox')).click();
-            }
-            let result = RecoveryLoadDataHandle.loadQuantityImport();
-            if (result === false) {
-                this.value = 0;
-                RecoveryLoadDataHandle.loadQuantityImport();
-            }
-            RecoveryStoreDataHandle.storeDataProduct();
-        });
 
-        RecoveryDataTableHandle.tableWH.on('click', '.table-row-checkbox-additional', function () {
-            RecoveryLoadDataHandle.loadCheckIsAdditional(this);
-        });
 
-        RecoveryLoadDataHandle.btnAddLot.on('click', function () {
-            RecoveryLoadDataHandle.loadAddRowLot();
-        });
 
-        RecoveryDataTableHandle.tableLot.on('click', '.dropdown-item-lot', function () {
-            let row = this.closest('tr');
-            RecoveryLoadDataHandle.loadUnCheckLotDDItem(row);
-            RecoveryLoadDataHandle.loadCheckLotDDItem(this, row);
-        });
 
-        RecoveryDataTableHandle.tableLot.on('change', '.table-row-lot-number', function () {
-            RecoveryLoadDataHandle.loadCheckApplyLot(this);
-        });
 
-        RecoveryDataTableHandle.tableLot.on('change', '.table-row-import', function () {
-            let result = RecoveryLoadDataHandle.loadQuantityImport();
-            if (result === false) {
-                let rowIndex = RecoveryDataTableHandle.tableLot.DataTable().row(this.closest('tr')).index();
-                let row = RecoveryDataTableHandle.tableLot.DataTable().row(rowIndex);
-                row.remove().draw();
-                RecoveryLoadDataHandle.loadQuantityImport();
-            }
-            RecoveryStoreDataHandle.storeDataProduct();
-        });
 
-        RecoveryDataTableHandle.tableLot.on('change', '.table-row-expire-date, .table-row-manufacture-date', function () {
-            let row = this.closest('tr');
-            RecoveryLoadDataHandle.loadDataIfChangeDateLotRow(row);
-        });
-
-        RecoveryLoadDataHandle.btnAddSerial.on('click', function () {
-            RecoveryLoadDataHandle.loadAddRowSerial();
-        });
-
-        RecoveryDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
-            RecoveryLoadDataHandle.loadCheckApplySerial(this);
-        });
-
-        RecoveryDataTableHandle.$tableProduct.on('change', '.table-row-price, .table-row-tax', function () {
-            let row = this.closest('tr');
-            GRCalculateHandle.calculateMain(RecoveryDataTableHandle.$tableProduct, row);
-        });
-
-        RecoveryDataTableHandle.$tableProduct.on('click', '.del-row', function () {
-            deleteRowGR(this.closest('tr'), RecoveryDataTableHandle.$tableProduct);
-            reOrderRowTable(RecoveryDataTableHandle.$tableProduct);
-            GRCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);
-        });
-
-        RecoveryDataTableHandle.tableLot.on('click', '.del-row', function () {
-            deleteRowGR(this.closest('tr'), RecoveryDataTableHandle.tableLot);
-        });
-
-        RecoveryDataTableHandle.tableSerial.on('click', '.del-row', function () {
-            deleteRowGR(this.closest('tr'), RecoveryDataTableHandle.tableSerial);
-        });
-
-        $('#productModalCenter').on('change', '.validated-number', function () {
-            RecoveryValidateHandle.validateNumber(this);
-        });
-
-        $('#productIAModalCenter').on('change', '.validated-number', function () {
-            RecoveryValidateHandle.validateNumber(this);
-        });
 
 // SUBMIT FORM
         SetupFormSubmit.validate(RecoveryLoadDataHandle.$form, {

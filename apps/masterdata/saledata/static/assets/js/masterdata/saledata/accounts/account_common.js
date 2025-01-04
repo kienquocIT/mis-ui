@@ -32,6 +32,7 @@ let tableShippingAddressEle = $('#list-shipping-address')
 let tableBillingAddressEle = $('#list-billing-address')
 let bank_account_table = $('#list-bank-account-information')
 let credit_card_table = $('#list-credit-card-information')
+let contact_list_table = $('#datatable_contact_list');
 let current_owner = {'id': null, 'fullname': null}
 
 function loadAccountType(accountTypeData) {
@@ -252,9 +253,8 @@ function loadTableSelectContact(selected_contact_list=[], selected_contact_list_
 }
 
 function loadTableSelectedContact(data=[], option='') {
-    let tbl = $('#datatable_contact_list');
-    tbl.DataTable().clear().destroy();
-    tbl.DataTableDefault({
+    contact_list_table.DataTable().clear().destroy();
+    contact_list_table.DataTableDefault({
         dom: '',
         styleDom: 'hide-foot',
         rowIdx: true,
@@ -284,7 +284,7 @@ function loadTableSelectedContact(data=[], option='') {
             },
             {
                 data: 'fullname',
-                className: 'w-30',
+                className: 'w-25',
                 render: (data, type, row) => {
                     return `<span class="text-secondary selected_contact_full_name" data-id="${row.id}"><b>${row.fullname}</b></span>`
                 }
@@ -310,6 +310,12 @@ function loadTableSelectedContact(data=[], option='') {
                     return `<span class="text-secondary">${row.email ? row.email : ''}</span>`
                 }
             },
+            {
+                className: 'w-5 text-right',
+                render: (data, type, row) => {
+                    return `<span><a ${option === 'detail' ? 'hidden' : ''} href="#" class="text-muted del-row"><i class="bi bi-trash"></i></a></span>`
+                }
+            }
         ],
     })
 }
@@ -803,10 +809,9 @@ add_contact_btn.on('click', function () {
 })
 
 $(document).on('click', '#btn-add-contact', function () {
-    let selected_contact = [];
     document.querySelectorAll('.selected_contact').forEach(function (element) {
         if (element.checked) {
-            selected_contact.push({
+            AddRow(contact_list_table, {
                 'id': element.getAttribute('data-id'),
                 'job_title': element.getAttribute('data-job-title'),
                 'fullname': element.getAttribute('data-fullname'),
@@ -816,7 +821,6 @@ $(document).on('click', '#btn-add-contact', function () {
             })
         }
     })
-    loadTableSelectedContact(selected_contact);
     checkSelectAll();
 });
 

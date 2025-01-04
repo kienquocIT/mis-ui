@@ -610,6 +610,19 @@ $(document).ready(function () {
                 // for task
                 const $form = $('#formOpportunityTask')
                 Task_in_opps.init(opportunity_detail_data)
+                $('#startDateLogTime, #endDateLogTime').each(function(){
+                    $(this).daterangepicker({
+                        singleDatePicker: true,
+                        timepicker: false,
+                        showDropdowns: false,
+                        minYear: 2023,
+                        autoApply: true,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        },
+                        maxYear: parseInt(moment().format('YYYY'), 10),
+                    }).val("").trigger('change');
+                })
                 $form.validate({
                     errorClass: 'is-invalid cl-red',
                     submitHandler: function (){

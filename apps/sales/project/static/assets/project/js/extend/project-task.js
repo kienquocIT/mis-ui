@@ -1,7 +1,8 @@
 function resetFormTask() {
     // clean html select etc.
     const $taskForm = $('#formOpportunityTask'), $inputAssigner = $('#inputAssigner');
-    $taskForm.trigger('reset').removeClass('task_edit')
+    $taskForm[0].reset()
+    $taskForm.removeClass('task_edit')
     $inputAssigner.val($inputAssigner.attr('data-name'))
     $('#employee_inherit_id').val(null).trigger('change').removeClass('is-invalid');
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
@@ -151,6 +152,7 @@ class checklistHandle {
 }
 
 function TaskSubmitFunc(platform) {
+
     let _form = new SetupFormSubmit(platform);
     let formData = _form.dataForm
     const start_date = new Date(moment(formData.start_date, 'DD/MM/YYYY')).getTime()
@@ -159,6 +161,7 @@ function TaskSubmitFunc(platform) {
         $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
         return false
     }
+    formData.remark = window.editor.getData();
     if (formData.log_time === "")
         delete formData.log_time
     else {
@@ -235,7 +238,7 @@ function logWorkSubmit() {
         // if has task id => log time
         if (taskID && taskID.valid_uuid4()) {
             data.task = taskID
-            let url = $('#url-factory').attr('data-task-logtime')
+            let url = $('#url-factory').attr('data-task-logtime');
             $.fn.callAjax2({
                 'url': url,
                 'method': 'POST',
@@ -351,6 +354,19 @@ class Task_in_project {
         });
     }
 
+    static runDatePick(elm){
+        elm.daterangepicker({
+            minYear: 2023,
+            singleDatePicker: true,
+            timePicker: false,
+            showDropdowns: true,
+            autoApply: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        }).val(null).trigger('change')
+    }
+
     static init(prj_info) {
         let $empElm = $('#employee_inherit_id')
         const $form = $('#formOpportunityTask')
@@ -375,21 +391,14 @@ class Task_in_project {
 
         // run date picker
         $('.date-picker', $form).each(function(){
-            $(this).daterangepicker({
-                minYear: 2023,
-                singleDatePicker: true,
-                timePicker: false,
-                showDropdowns: true,
-                autoApply: true,
-                locale: {
-                    format: 'DD/MM/YYYY'
-                }
-            }).val(null).trigger('change')
+            Task_in_project.runDatePick($(this))
+        })
+        $('.date-picker', $('#logWorkModal')).each(function(){
+            Task_in_project.runDatePick($(this))
         })
 
         // run status select default
         const sttElm = $('#selectStatus');
-        sttElm.attr('data-url')
         $.fn.callAjax2({'url': sttElm.attr('data-url'), 'method': 'get'})
             .then((resp) => {
                 const data = $.fn.switcherResp(resp);
@@ -480,14 +489,8 @@ class Task_in_project {
         window.checklist = checklist;
 
         // reset form create task khi click huỷ bỏ hoặc tạo mới task con
-        $('.cancel-task, [data-drawer-target="#drawer_task_create"]').each((idx, elm) => {
-            $(elm).on('click', function () {
-                if ($(this).hasClass('cancel-task')) {
-                    $(this).closest('.ntt-drawer').toggleClass('open');
-                    $('.hk-wrapper').toggleClass('open');
-                }
-                resetFormTask()
-            });
+        $('#offCanvasRightTask').on('hidden.bs.offcanvas', () => {
+            resetFormTask()
         });
 
         // init attachment file
@@ -534,7 +537,6 @@ class Task_in_project {
     }
 
     static loadTask(task_info) {
-        window.is_load = true
         const $form = $('#formOpportunityTask');
         $('.title-create').addClass('hidden')
         $('.title-detail').removeClass('hidden')
@@ -616,7 +618,6 @@ class Task_in_project {
                     const $btnSub = $('.create-subtask')
                     if (Object.keys(data.parent_n).length > 0) $btnSub.addClass('hidden')
                     else $btnSub.removeClass('hidden')
-                    window.is_load = false
                 }
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
@@ -751,11 +752,8 @@ class Task_in_project {
 }
 
 $(document).on('Task.click.view', function(e, detail){
-    if (!window.is_load){
-        if ($('#drawer_task_create').hasClass('open')) resetFormTask()
-        else $('.btn-show-task_f').trigger('click');
-        Task_in_project.loadTask(detail)
-    }
+    $('#offCanvasRightTask').offcanvas('show')
+    Task_in_project.loadTask(detail)
 });
 
 $(document).on('Task.link.work', function(e, detail){

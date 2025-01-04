@@ -4,18 +4,25 @@
     {% trans 'Project' %} {% trans 'list' %}
 {% endblock %}
 {% block cssHeader %}
-{#    <link href="{% static 'assets/css/eoffice/assettools/list.css' %}" rel="stylesheet" type="text/css"/>#}
+    {#    <link href="{% static 'assets/css/eoffice/assettools/list.css' %}" rel="stylesheet" type="text/css"/>#}
     <style>
         .proj-badge {
-            font-size: .7rem;
+            font-size: .8rem;
             border-radius: 5px;
             font-weight: 400;
-            right: -25px;
-            top: -12px;
+            right: -15px;
+            top: -13px;
         }
 
         .proj-badge img {
             margin-right: 4px;
+        }
+
+        .btn-sh-baseline {
+            font-size: 10px;
+            cursor: pointer;
+            margin-left: 14px;
+            padding: 4px;
         }
 
         .btn-sh-baseline i {
@@ -27,16 +34,7 @@
         }
 
         .baseline_tr > td {
-            padding: 0;
-        }
-        .baseline_tr .wrap-baseline > table tr:last-child td {
-            border-bottom: 0;
-        }
-        .baseline_tr .wrap-baseline > table tr td {
             background-color: rgb(0 0 0 / 5%);
-        }
-        div.dataTables_wrapper .dataTables_scrollBody table{
-            margin-bottom:0!important;
         }
     </style>
 {% endblock %}
@@ -58,35 +56,35 @@
         <div class="row">
             <div class="col-md-12 col-xs-12">
                 <table
-                    class="table nowrap w-100 min-w-1500p"
-                    id="project_tb"
-                    data-method="get"
-                    data-url="{% url 'ProjectListAPI' %}"
-                    data-detail="{% url 'ProjectDetail' 1 %}"
+                        class="table nowrap w-100 min-w-1500p"
+                        id="project_tb"
+                        data-method="get"
+                        data-url="{% url 'ProjectListAPI' %}"
+                        data-detail="{% url 'ProjectDetail' 1 %}"
                 >
                     <thead>
-                        <tr>
-                            <td></td>
-                            <td><span>{% trans 'Code' %}</span></td>
-                            <td><span>{% trans 'Name' %}</span></td>
-                            <td><span>{% trans 'Project Owner' %}</span></td>
-                            <td><span>{% trans 'Start date' %}</span></td>
-                            <td><span>{% trans 'Finish date' %}</span></td>
-                            <td><span>{% trans 'Completion rate' %}</span></td>
-                            <td><span>{% trans 'Project works' %}</span>
-                                <p class="text-blue cursor-pointer">
-                                    <i class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top"
-                                       title="{% trans 'All (Completed)' %}"></i>
-                                </p>
-                            </td>
-                            <td><span>{% trans 'Tasks' %}</span>
-                                <p class="text-blue cursor-pointer">
-                                    <i class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top"
-                                       title="{% trans 'All (Completed)' %}"></i>
-                                </p>
-                            </td>
-                            <td><span>{% trans 'Status' %}</span></td>
-                        </tr>
+                    <tr>
+                        <td></td>
+                        <td><span>{% trans 'Code' %}</span></td>
+                        <td><span>{% trans 'Name' %}</span></td>
+                        <td><span>{% trans 'Project Owner' %}</span></td>
+                        <td><span>{% trans 'Start date' %}</span></td>
+                        <td><span>{% trans 'Finish date' %}</span></td>
+                        <td><span>{% trans 'Completion rate' %}</span></td>
+                        <td><span>{% trans 'Project works' %}</span>
+                            <p class="text-blue cursor-pointer">
+                                <i class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top"
+                                   title="{% trans 'All (Completed)' %}"></i>
+                            </p>
+                        </td>
+                        <td><span>{% trans 'Tasks' %}</span>
+                            <p class="text-blue cursor-pointer">
+                                <i class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top"
+                                   title="{% trans 'All (Completed)' %}"></i>
+                            </p>
+                        </td>
+                        <td><span>{% trans 'Status' %}</span></td>
+                    </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -97,7 +95,7 @@
 
 {% block dataHiddenGroup %}
     <div class="table_btn">
-        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-adjust-row" >
+        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-adjust-row">
             <span class="btn-icon-wrap">
                 <i class="fa-solid fa-window-maximize"></i>
             </span>

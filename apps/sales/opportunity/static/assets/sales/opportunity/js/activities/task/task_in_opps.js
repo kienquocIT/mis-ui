@@ -166,6 +166,7 @@ function TaskSubmitFuncOpps(platform, callBackFunc) {
         $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
         return false
     }
+    formData.remark = window.editor.getData();
     if (formData.log_time === "")
         delete formData.log_time
     else {
@@ -320,8 +321,7 @@ class Task_in_opps {
         )
             .then(newEditor => {
                 // public global scope for clean purpose when reset form.
-                let editor = newEditor;
-                window.editor = editor;
+                window.editor = newEditor;
             })
 
         // run checklist tab

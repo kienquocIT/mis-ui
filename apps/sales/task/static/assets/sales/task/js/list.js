@@ -344,7 +344,7 @@ $(function () {
             let elm = $('.card-title')
             const _this = this
             if (newTaskElm) elm = newTaskElm.find('.card-title')
-            elm.on('click', function (e) {
+            elm.off().on('click', function (e) {
                 e.preventDefault()
                 const taskID = $(this).attr('data-task-id')
                 $.fn.callAjax2({
@@ -355,12 +355,12 @@ $(function () {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
                             resetFormTask()
-                            const drawTaskElm = $('#drawer_task_create')
-                            if (!drawTaskElm.hasClass('open'))
-                                drawTaskElm.trigger('drawer.show');
-                            const titCreate = $('.title-create'), titEdit = $('.title-detail');
-                            titCreate.off().addClass("hidden")
-                            titEdit.off().removeClass("hidden")
+                            const offCanvasTaskElm = $('.btn-create-todo');
+                            offCanvasTaskElm.trigger('click');
+                            const titCreate = $('.title-create');
+                            const titEdit = $('.title-detail');
+                            titCreate.addClass("hidden")
+                            titEdit.removeClass("hidden")
                             const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                             $formElm.append(taskIDElm);
 

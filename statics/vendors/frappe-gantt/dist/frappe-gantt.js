@@ -1170,7 +1170,6 @@ var Gantt = (function () {
 
             // merge 2 list
             let temp2 = temp.concat(this.tasks)
-
             // replace new list merged and render
             this.setup_tasks(temp2)
             this.change_view_mode();
@@ -1980,7 +1979,7 @@ var Gantt = (function () {
                         let is_bom = '';
                         if (item.bom_data)
                             if ('id' in item.bom_data) is_bom = `<i class="fa-brands fa-connectdevelop"></i>`
-                        const htmlBtn2 = jQuery(`<div class="dropdown">${is_bom}<button class="btn btn-sm row-btn${this.options['is_detail'] ? ' disabled' : ''}" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-item-row-delete" type="button">${jQuery.fn.gettext('Delete')}</button></li><li><button class="dropdown-item btn-item-row-assign" type="button">${jQuery.fn.gettext('Assign Task')}</button></li><li><button class="dropdown-item btn-row-task_list" type="button">${jQuery.fn.gettext('Task list')}</button></li></ul></div>`)
+                        const htmlBtn2 = jQuery(`<div class="dropdown">${is_bom}<button class="btn btn-sm row-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-item-row-delete ${this.options['is_detail'] === true ? 'disabled' : ''}" type="button">${jQuery.fn.gettext('Delete')}</button></li><li><button class="dropdown-item btn-item-row-assign" type="button" data-bs-toggle="offcanvas" data-bs-target="#offCanvasRightTask" aria-controls="offcanvasRightTask">${jQuery.fn.gettext('Assign Task')}</button></li><li><button class="dropdown-item btn-row-task_list" type="button">${jQuery.fn.gettext('Task list')}</button></li></ul></div>`)
 
                         item_html.append(htmlBtn2)
 
@@ -2018,7 +2017,6 @@ var Gantt = (function () {
 
                         jQuery('.btn-item-row-assign', htmlBtn2).on('click', function(){
                             const $form = jQuery('#formOpportunityTask')
-                            jQuery('.btn-show-task_f').trigger('click');
                             jQuery('input[name="work_id"]', $form).remove()
                             $form.append(`<input type="hidden" name="work_id" value="${item.id}"/>`);
                             if ('id' in item.bom_data){
@@ -2057,27 +2055,33 @@ var Gantt = (function () {
                 div_wrapper.append(row)
             }else div_wrapper.find('.empty-data').remove()
 
-            div_outerwrap.append(div_wrapper).append(htmlBtn)
+            div_outerwrap.append(div_wrapper)
+            if (this.options['is_detail'] !== true)
+                div_outerwrap.append(htmlBtn)
             jQuery('.gantt-left').append(div_outerwrap)
             let grid_height =
                 this.options.header_height +
                 this.options.padding +
                 (this.options.bar_height + this.options.padding) *
                     tasksList.length;
-            grid_height = grid_height + 27 // 27 là number ngẫu nhiên canh chỉnh để fit vs chiều dài khung bên phải
+            grid_height = grid_height + 37 // 37 là number ngẫu nhiên canh chỉnh để fit vs chiều dài khung bên phải
             div_wrapper.css({"min-width": base_width, "height": grid_height})
             jQuery('.gantt-wrap-title').css({"min-width": base_width})
             if (this.options.hasOwnProperty('init_create_btn')) this.options.init_create_btn()
 
             // handle sortable
-            div_wrapper.sortable({
-                items: ".grid-row",
-                placeholder: 'ui-state-highlight',
-                handle: ".sort-icon",
-                stop: function (event, ui) {
-                    jQuery('.btn-save-sort-idx').removeClass('hidden')
-                },
-            });
+            if (!this.options['is_detail']){
+                const _this = this
+                div_wrapper.sortable({
+                    items: ".grid-row",
+                    placeholder: 'ui-state-highlight',
+                    handle: ".sort-icon",
+                    stop: function (event, ui) {
+                        jQuery('.lazy_loading').addClass('active')
+                        if (_this.options.hasOwnProperty('on_sort_index')) _this.options.on_sort_index()
+                    },
+                });
+            }
         }
     }
 

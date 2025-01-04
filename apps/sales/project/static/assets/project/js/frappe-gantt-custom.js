@@ -68,53 +68,12 @@ class fGanttCustom {
     }
 
     static setup_init_create(){
-        const $wrapElm = $('.gantt-left-outerwrap')
-
         $('.btn-gaw-group').on('click', function(){
             fGanttCustom.addGroup();
         });
         $('.btn-gaw-work').on('click', function(){
             fGanttCustom.addWork();
         })
-        if ($wrapElm.children('.btn-save-sort-idx').length === 0){
-            $wrapElm.append(`<button class="btn hidden btn-save-sort-idx btn-outline-primary btn-sm ml-2" type="button">${$.fn.gettext('Save')}</button>`)
-            $('.btn-save-sort-idx').on('click', function(e) {
-                e.preventDefault();
-                let work_lst = [], group_lst = [];
-                $('.gantt-left-container .grid-row').each(function () {
-                    const temp = {
-                        id: $(this).attr('data-id'),
-                        order: $(this).index() + 1
-                    }
-                    if ($(this).attr('data-group') === undefined)
-                        group_lst.push(temp)
-                    else
-                        work_lst.push(temp)
-                });
-                $.fn.callAjax2({
-                    url: $('#url-factory').attr('data-update-order'),
-                    method: 'put',
-                    data: {
-                        list_update: {
-                            work: work_lst,
-                            group: group_lst
-                        }
-                    },
-                    sweetAlertOpts: {'allowOutsideClick': true},
-                }).then(
-                    (resp) => {
-                        let res = $.fn.switcherResp(resp);
-                        if (res) {
-                            $.fn.notifyB({description: res.message}, 'success')
-                            location.reload()
-                        }
-                    },
-                    (err) => {
-                        $.fn.notifyB({description: err.data.errors}, 'failure')
-                    }
-                )
-            });
-        }
     }
 
     static addGroup(){
@@ -265,5 +224,63 @@ class fGanttCustom {
                 $.fn.notifyB({description: err.data.errors}, 'failure')
             })
 
+    }
+
+    static event_on_sort(){
+        let work_lst = [], group_lst = [];
+        $('.gantt-left-container .grid-row').each(function () {
+            const temp = {
+                id: $(this).attr('data-id'),
+                order: $(this).index() + 1
+            }
+            if ($(this).attr('data-group') === undefined)
+                group_lst.push(temp)
+            else
+                work_lst.push(temp)
+        });
+        $.fn.callAjax2({
+            url: $('#url-factory').attr('data-update-order'),
+            method: 'put',
+            data: {
+                list_update: {
+                    work: work_lst,
+                    group: group_lst
+                }
+            },
+            sweetAlertOpts: {'allowOutsideClick': true},
+        }).then(
+            (resp) => {
+                let res = $.fn.switcherResp(resp);
+                if (res) {
+                    $.fn.notifyB({description: res.message}, 'success')
+                    fGanttCustom.reloadGanttWorkAndGroup()
+                }
+            },
+            (err) => {
+                $.fn.notifyB({description: err.data.errors}, 'failure')
+            }
+        )
+    }
+
+    static reloadGanttWorkAndGroup(){
+        $.fn.callAjax2({
+            url: $('#project_form').attr('data-url-detail'),
+            method: 'get',
+            sweetAlertOpts: {'allowOutsideClick': true, 'showCancelButton': true},
+        }).then(
+            (resp) => {
+                let res = $.fn.switcherResp(resp);
+                if (res) {
+                    const afterData = fGanttCustom.convert_data(res.groups, res?.['works'])
+                    window.new_gantt_init.refresh(afterData)
+                    setTimeout(() => {
+                        $('.lazy_loading').removeClass('active')
+                    }, 500);
+                }
+            },
+            (err) => {
+                $.fn.notifyB({description: err.data.errors}, 'failure')
+            }
+        )
     }
 }

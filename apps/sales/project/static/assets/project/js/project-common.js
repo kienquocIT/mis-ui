@@ -164,7 +164,7 @@ function saveGroup(gantt_obj) {
 
 function saveWork(gantt_obj) {
     const $wModal = $('#work_modal'), $urlFact = $('#url-factory'), $ganttElm = $('.gantt-wrap');
-    $('#btn-work-add').off().on('click', function () {
+    $('#btn-work-add').on('click', function () {
         $(this).prop('disabled', true)
 
         const $tit = $('#workTitle'), $startD = $('#workStartDate'), $startE = $('#workEndDate'),
@@ -307,10 +307,10 @@ function show_task_list() {
             rowCallback: function (row, data) {
                 $('.task_detail_view', row).on('click', function (e) {
                     e.preventDefault();
-                    $('#assign_modal').modal('hide')
                     $('.task_detail_view').trigger('Task.click.view', [{
                         'id': data.id, 'task': data.task.id, 'work_id': workID
-                    }])
+                    }]);
+                    $asModal.modal('hide')
                 })
                 $('.unlink-row', row).on('click', function () {
                     $('.task_detail_view').trigger('Task.link.work', [{

@@ -22,15 +22,20 @@ $(document).ready(function () {
             disable_on_click: true,
             gantt_start: start_D,
             gantt_end: new Date(end_D.getTime() - 1),
-            is_detail: false,
+            is_detail: true,
         };
-
-    if (check_page_version){
+    $('#select_project_group, #select_project_work').each(function () {
+        $(this).prop('disabled', true);
+    });
+    $('#work_modal, #group_modal').each(function () {
+        $(this).find('#btn-group-add, #btn-work-add').prop('disabled', true);
+    });
+    if (!check_page_version){
         opt.init_edit_btn_w = fGanttCustom.load_detail_work
         opt.init_edit_btn_g = fGanttCustom.load_detail_group
-        // hidden delete employee member tab
-        $('.wrap_members .member-item .card-action-wrap .card-action-close').addClass('disabled')
     }
+    // hidden delete employee member tab
+    $('.wrap_members .member-item .card-action-wrap .card-action-close').addClass('disabled')
 
     var new_gantt = new Gantt(
         "#gantt",
@@ -75,8 +80,8 @@ $(document).ready(function () {
                 }
                 const afterData = fGanttCustom.convert_data(group, work);
                 new_gantt.load_more(afterData)
+
                 ProjectTeamsHandle.render(project.members, true)
-                $('.gaw-btn').addClass('hidden')
                 Task_in_project.init(project)
                 ProjectWorkExpenseHandle.init(work)
                 animating_number(project['completion_rate'], $('.completion_rate_block .heading span'))
@@ -104,6 +109,20 @@ $(document).ready(function () {
     // create baseline
     createBaseline.init()
 
+    // change gantt view mode
+    $('#change_view_mode button').on('click', function(){
+        $('#change_view_mode button').removeClass('active')
+        $(this).addClass('active')
+        let mode = $(this).attr('data-value')
+        new_gantt.change_view_mode(mode)
+    })
+
+    // tab human report
     let tabReport = new TaskReport()
 
+    // on submit task form
+    SetupFormSubmit.validate($('#formOpportunityTask'), {
+        errorClass: 'is-invalid cl-red',
+        submitHandler: TaskSubmitFunc
+    })
 });

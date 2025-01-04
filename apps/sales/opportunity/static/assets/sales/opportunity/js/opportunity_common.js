@@ -1004,8 +1004,7 @@ class OpportunityActivity {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         // enable side panel\
-                        if (!$('#drawer_task_create').hasClass('open'))
-                            $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                        $('.current-create-task').trigger('click')
                         resetFormTask()
                         $('.title-create').addClass('hidden')
                         $('.title-detail').removeClass('hidden')

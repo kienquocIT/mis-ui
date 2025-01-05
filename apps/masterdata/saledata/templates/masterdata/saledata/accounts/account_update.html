@@ -33,6 +33,16 @@
 {% block modalData %}
     {% include 'masterdata/saledata/accounts/common/account/modals.html' %}
 {% endblock %}
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-opportunity="{% trans 'Opportunity' %}"
+        data-meeting="{% trans 'Meeting' %}"
+        data-quotation="{% trans 'Quotation' %}"
+        data-sale-order="{% trans 'Sale order' %}"
+    >
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>

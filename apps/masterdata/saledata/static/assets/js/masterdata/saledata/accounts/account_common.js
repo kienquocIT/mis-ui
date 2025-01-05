@@ -547,7 +547,7 @@ function LoadDetail(option) {
             if (data) {
                 $.fn.compareStatusShowPageAction(data);
                 data = data['account_detail'];
-                console.log(data)
+                // console.log(data)
 
                 accountName.val(data.name);
                 accountCode.val(data.code);

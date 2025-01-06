@@ -11,8 +11,8 @@ $(document).ready(function () {
     let current_period = {}
     if (current_period_Ele.text() !== '') {
         current_period = JSON.parse(current_period_Ele.text())
-        getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-        periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+        getMonthOrder(current_period?.['space_month'], current_period?.['fiscal_year'])
+        periodMonthEle.val(current_period?.['current_sub']?.['order']).trigger('change');
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
     let $is_project = false
@@ -43,24 +43,17 @@ $(document).ready(function () {
     let PERIODIC_CLOSED = false
 
     function get_final_date_of_current_month(filter_year, filter_month) {
-        let currentDate = new Date();
-
-        let year = currentDate.getFullYear();
-
-        let nextMonth = currentDate.getMonth() + 1;
-
+        let year = current_period?.['fiscal_year'];
+        let nextMonth = current_period?.['current_sub']?.['current_month'];
         if (filter_year && filter_month) {
             year = filter_year;
             nextMonth = filter_month;
         }
-
-        if (nextMonth > 11) {
+        if (nextMonth > 12) {
             year++;
             nextMonth = 0;
         }
-
         let firstDayOfNextMonth = new Date(year, nextMonth, 0);
-
         return firstDayOfNextMonth.getDate();
     }
 
@@ -91,16 +84,14 @@ $(document).ready(function () {
                 year_temp += 1
             }
 
-            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() + 1) {
-                if (year_temp === new Date().getFullYear()) {
-                    periodMonthEle.append(`<option value="${i + 1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
-                    data.push({
-                        'id': i + 1,
-                        'title': trans_script.attr(`data-trans-m${trans_order}th`),
-                        'month': i + 1,
-                        'year': year_temp
-                    })
-                }
+            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= current_period?.['current_sub']?.['order']) {
+                periodMonthEle.append(`<option value="${i + 1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
+                data.push({
+                    'id': i + 1,
+                    'title': trans_script.attr(`data-trans-m${trans_order}th`),
+                    'month': i + 1,
+                    'year': year_temp
+                })
             }
         }
         data.push({
@@ -120,6 +111,9 @@ $(document).ready(function () {
     }
 
     function LoadPeriod(ele, data) {
+        if (Object.keys(data).length === 0) {
+            data = current_period
+        }
         ele.initSelect2({
             ajax: {
                 url: ele.attr('data-url'),
@@ -128,7 +122,7 @@ $(document).ready(function () {
             callbackDataResp: function (resp, keyResp) {
                 let res = []
                 for (const item of resp.data[keyResp]) {
-                    if (item?.['fiscal_year'] <= new Date().getFullYear()) {
+                    if (item?.['fiscal_year'] <= current_period['fiscal_year']) {
                         res.push(item)
                     }
                 }
@@ -1400,8 +1394,8 @@ $(document).ready(function () {
         let current_period = {}
         if (current_period_Ele.text() !== '') {
             current_period = JSON.parse(current_period_Ele.text())
-            getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-            periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+            getMonthOrder(current_period?.['space_month'], current_period?.['fiscal_year'])
+            periodMonthEle.val(current_period?.['current_sub']?.['order']).trigger('change');
         }
     })
 

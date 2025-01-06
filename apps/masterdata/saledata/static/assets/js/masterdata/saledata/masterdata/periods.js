@@ -114,6 +114,7 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('periods_list')) {
+                            // console.log(resp.data['periods_list'])
                             return resp.data['periods_list'] ? resp.data['periods_list'] : []
                         }
                         throw Error('Call data raise errors.')

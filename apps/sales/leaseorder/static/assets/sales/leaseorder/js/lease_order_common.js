@@ -1057,23 +1057,30 @@ class LeaseOrderLoadDataHandle {
                 }
             }
         } else if (is_cost === true) {
-            let tableCost = document.getElementById('datable-quotation-create-cost');
-            pretax = tableCost.querySelector('.quotation-create-cost-pretax-amount');
-            tax = tableCost.querySelector('.quotation-create-cost-taxes');
-            total = tableCost.querySelector('.quotation-create-cost-total');
-            pretaxRaw = tableCost.querySelector('.quotation-create-cost-pretax-amount-raw');
-            taxRaw = tableCost.querySelector('.quotation-create-cost-taxes-raw');
-            totalRaw = tableCost.querySelector('.quotation-create-cost-total-raw');
+            let tableCostWrapper = document.getElementById('datable-quotation-create-cost_wrapper');
+            if (tableCostWrapper) {
+                let tableCostFt = tableCostWrapper.querySelector('.dataTables_scrollFoot');
+                if (tableCostFt) {
+                    pretax = tableCostFt.querySelector('.quotation-create-cost-pretax-amount');
+                    tax = tableCostFt.querySelector('.quotation-create-cost-taxes');
+                    total = tableCostFt.querySelector('.quotation-create-cost-total');
+                    pretaxRaw = tableCostFt.querySelector('.quotation-create-cost-pretax-amount-raw');
+                    taxRaw = tableCostFt.querySelector('.quotation-create-cost-taxes-raw');
+                    totalRaw = tableCostFt.querySelector('.quotation-create-cost-total-raw');
+                }
+            }
         } else if (is_expense === true) {
             let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
             if (tableExpenseWrapper) {
                 let tableExpenseFt = tableExpenseWrapper.querySelector('.dataTables_scrollFoot');
-                pretax = tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount');
-                tax = tableExpenseFt.querySelector('.quotation-create-expense-taxes');
-                total = tableExpenseFt.querySelector('.quotation-create-expense-total');
-                pretaxRaw = tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount-raw');
-                taxRaw = tableExpenseFt.querySelector('.quotation-create-expense-taxes-raw');
-                totalRaw = tableExpenseFt.querySelector('.quotation-create-expense-total-raw');
+                if (tableExpenseFt) {
+                    pretax = tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount');
+                    tax = tableExpenseFt.querySelector('.quotation-create-expense-taxes');
+                    total = tableExpenseFt.querySelector('.quotation-create-expense-total');
+                    pretaxRaw = tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount-raw');
+                    taxRaw = tableExpenseFt.querySelector('.quotation-create-expense-taxes-raw');
+                    totalRaw = tableExpenseFt.querySelector('.quotation-create-expense-total-raw');
+                }
             }
         }
         if (pretax && pretaxRaw && tax && taxRaw && total && totalRaw) {

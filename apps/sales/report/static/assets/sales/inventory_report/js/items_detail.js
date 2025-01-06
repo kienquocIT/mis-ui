@@ -10,7 +10,7 @@ $(document).ready(function () {
     let current_period = {}
     if (current_period_Ele.text() !== '') {
         current_period = JSON.parse(current_period_Ele.text())
-        getMonthOrder(current_period?.['space_month'], current_period?.['fiscal_year'])
+        getMonthOrder(current_period)
         periodMonthEle.val(current_period?.['current_sub']?.['order']).trigger('change');
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
@@ -19,36 +19,25 @@ $(document).ready(function () {
     }
     let PERIODIC_CLOSED = false
 
-    function getMonthOrder(space_month, fiscal_year) {
+    function getMonthOrder(period_data) {
         periodMonthEle.html(``)
-        let data = []
-        for (let i = 0; i < 12; i++) {
-            let year_temp = fiscal_year
-            let trans_order = i + 1 + space_month
-            if (trans_order > 12) {
-                trans_order -= 12
-                year_temp += 1
-            }
-
-            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= current_period?.['current_sub']?.['order']) {
-                periodMonthEle.append(`<option value="${i + 1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
-                data.push({
-                    'id': i + 1,
-                    'title': trans_script.attr(`data-trans-m${trans_order}th`),
-                    'month': i + 1,
-                    'year': year_temp
-                })
-            }
+        periodMonthEle.empty();
+        let data = period_data?.['subs'] ? period_data?.['subs'] : []
+        let select_data = []
+        for (let i = 0; i < data.length; i++) {
+            let option_month = moment(data[i]?.['start_date']).month() + 1
+            let option_year = moment(data[i]?.['start_date']).year()
+            periodMonthEle.append(`<option value="${data[i]?.['order']}">${trans_script.attr(`data-trans-m${option_month}th`)}</option>`)
+            select_data.push({
+                'id': i + 1,
+                'title': trans_script.attr(`data-trans-m${option_month}th`),
+                'month': i + 1,
+                'year': option_year
+            })
         }
-        data.push({
-            'id': '',
-            'title': 'Select...',
-            'month': 0,
-            'year': 0,
-        })
         periodMonthEle.empty();
         periodMonthEle.initSelect2({
-            data: data,
+            data: select_data,
             templateResult: function (state) {
                 let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
                 return $(`<span>${state.text} ${groupHTML}</span>`);
@@ -81,7 +70,7 @@ $(document).ready(function () {
         }).on('change', function () {
             let selected_option = SelectDDControl.get_data_from_idx(ele, ele.val())
             if (selected_option) {
-                getMonthOrder(selected_option['space_month'], selected_option?.['fiscal_year'])
+                getMonthOrder(selected_option)
             }
         })
     }
@@ -1019,7 +1008,7 @@ $(document).ready(function () {
         let current_period = {}
         if (current_period_Ele.text() !== '') {
             current_period = JSON.parse(current_period_Ele.text())
-            getMonthOrder(current_period?.['space_month'], current_period?.['fiscal_year'])
+            getMonthOrder(current_period)
             periodMonthEle.val(current_period?.['current_sub']?.['order']).trigger('change');
         }
     })

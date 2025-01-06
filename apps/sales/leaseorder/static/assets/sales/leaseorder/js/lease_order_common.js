@@ -4382,7 +4382,6 @@ class LeaseOrderCalculateCaseHandle {
         // *** quotation & sale order have different rules ***
         // Quotation: discount on row apply to subtotal => pretax includes discount on row => discount on total = pretax * %discountTotalRate
         // Sale order: discount on row not apply to subtotal => pretax not includes discount on row => discount on total = (pretax - discountRows) * %discountTotalRate
-        let form = document.getElementById('frm_lease_create');
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
         let pretaxAmount = 0;
@@ -4539,10 +4538,11 @@ class LeaseOrderCalculateCaseHandle {
     };
 
     static calculate(row) {
-        let form = document.getElementById('frm_lease_create');
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         let price = 0;
         let quantity = 0;
+        let quantityTime = 0;
+        let depreciation = 0;
         let elePrice = row.querySelector('.table-row-price');
         if (elePrice) {
             price = $(elePrice).valCurrency();
@@ -4560,7 +4560,6 @@ class LeaseOrderCalculateCaseHandle {
         let subtotal = (price * quantity);
         let eleQuantityTime = row.querySelector('.table-row-quantity-time');
         if (eleQuantityTime) {
-            let quantityTime = 0;
             if (eleQuantityTime.value) {
                 quantityTime = parseFloat(eleQuantityTime.value)
             } else if (!eleQuantityTime.value || eleQuantityTime.value === "0") {
@@ -4625,6 +4624,12 @@ class LeaseOrderCalculateCaseHandle {
                 eleTaxAmountRaw.value = taxAmount;
             }
         }
+        // tab cost
+        let depreciationEle = row.querySelector('.table-row-depreciation');
+        if (depreciationEle) {
+            depreciation = $(depreciationEle).val();
+            subtotal = (price * quantity) / parseFloat(depreciation) * quantityTime;
+        }
         // set subtotal value
         let eleSubtotal = row.querySelector('.table-row-subtotal');
         let eleSubtotalRaw = row.querySelector('.table-row-subtotal-raw');
@@ -4642,21 +4647,19 @@ class LeaseOrderCalculateCaseHandle {
     };
 
     static calculateAllRowsTableProduct() {
-        let $table = $('#datable-quotation-create-product');
-        $table.DataTable().rows().every(function () {
+        LeaseOrderDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let row = this.node();
             if (row.querySelector('.table-row-item')) {
-                LeaseOrderCalculateCaseHandle.commonCalculate($table, row);
+                LeaseOrderCalculateCaseHandle.commonCalculate(LeaseOrderDataTableHandle.$tableProduct, row);
             }
         });
     };
 
     static calculateAllRowsTableCost() {
-        let $table = $('#datable-quotation-create-cost');
-        $table.DataTable().rows().every(function () {
+        LeaseOrderDataTableHandle.$tableCost.DataTable().rows().every(function () {
             let row = this.node();
             if (row.querySelector('.table-row-item')) {
-                LeaseOrderCalculateCaseHandle.commonCalculate($table, row);
+                LeaseOrderCalculateCaseHandle.commonCalculate(LeaseOrderDataTableHandle.$tableCost, row);
             }
         });
     };

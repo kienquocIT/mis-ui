@@ -4220,7 +4220,7 @@ class QuotationCalculateCaseHandle {
         // *** quotation & sale order have different rules ***
         // Quotation: discount on row apply to subtotal => pretax includes discount on row => discount on total = pretax * %discountTotalRate
         // Sale order: discount on row not apply to subtotal => pretax not includes discount on row => discount on total = (pretax - discountRows) * %discountTotalRate
-        let form = document.getElementById('frm_quotation_create');
+        let form = QuotationLoadDataHandle.$form[0];
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
         let pretaxAmount = 0;
@@ -4393,7 +4393,7 @@ class QuotationCalculateCaseHandle {
     };
 
     static calculate(row) {
-        let form = document.getElementById('frm_quotation_create');
+        let form = QuotationLoadDataHandle.$form[0];
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
         let price = 0;
         let quantity = 0;
@@ -4507,21 +4507,19 @@ class QuotationCalculateCaseHandle {
     };
 
     static calculateAllRowsTableProduct() {
-        let $table = $('#datable-quotation-create-product');
-        $table.DataTable().rows().every(function () {
+        QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let row = this.node();
             if (row.querySelector('.table-row-item')) {
-                QuotationCalculateCaseHandle.commonCalculate($table, row);
+                QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableProduct, row);
             }
         });
     };
 
     static calculateAllRowsTableCost() {
-        let $table = $('#datable-quotation-create-cost');
-        $table.DataTable().rows().every(function () {
+        QuotationDataTableHandle.$tableCost.DataTable().rows().every(function () {
             let row = this.node();
             if (row.querySelector('.table-row-item')) {
-                QuotationCalculateCaseHandle.commonCalculate($table, row);
+                QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableCost, row);
             }
         });
     };

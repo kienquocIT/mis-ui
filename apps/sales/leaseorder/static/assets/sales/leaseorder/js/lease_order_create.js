@@ -394,7 +394,7 @@ $(function () {
             }
         });
 
-        tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
+        tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-depreciation', function () {
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 LeaseOrderCalculateCaseHandle.commonCalculate(tableCost, row);

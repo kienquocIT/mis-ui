@@ -27,7 +27,7 @@
     {% csrf_token %}
         <div class="row">
             {% trans 'Select Sale Person' as inherit_title %}
-            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True auto_select_current_employee=True %}
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
@@ -111,6 +111,7 @@
             id="app-data-factory"
             data-detail=""
     >
+    {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}
 
 {% block jsFooter %}

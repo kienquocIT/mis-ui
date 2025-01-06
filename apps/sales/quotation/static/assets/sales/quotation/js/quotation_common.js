@@ -459,21 +459,6 @@ class QuotationLoadDataHandle {
         return {'is_pass': check, 'note_type': note_type};
     };
 
-    static loadBoxQuotationProduct($ele, dataProduct = {}) {
-        let dataDD = []
-        if (QuotationDataTableHandle.productInitEle.val()) {
-            dataDD = JSON.parse(QuotationDataTableHandle.productInitEle.val());
-        }
-        if (Object.keys(dataProduct).length > 0) {
-            dataDD = dataProduct
-        }
-        $ele.initSelect2({
-            data: dataDD,
-        });
-        // add css to select2_rendered
-        QuotationLoadDataHandle.loadCssS2($ele, '260px');
-    };
-
     static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
         let ele = $('#data-init-copy-quotation');
         let formSubmit = $('#frm_quotation_create');

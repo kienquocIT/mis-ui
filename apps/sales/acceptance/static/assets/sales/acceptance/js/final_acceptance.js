@@ -226,7 +226,7 @@ $(function () {
 
                 $.fn.callAjax2({
                         'url': $table.attr('data-url'),
-                        'method': $table.attr('data-method'),
+                        'method': 'GET',
                         'data': dataParams,
                         'isDropdown': true,
                         isLoading: true,
@@ -560,27 +560,36 @@ $(function () {
             return true;
         }
 
+        function loadInitInherit() {
+        let dataStr = $('#employee_current').text();
+        if (dataStr) {
+            loadInitS2($boxEmployee, [JSON.parse(dataStr)]);
+        }
+        return true;
+    }
+
         function loadDataByEmployee() {
             return true;
         }
 
         function loadDataByOpp() {
+            let params = {'is_minimal': true};
             if ($boxOpp.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx($boxOpp, $boxOpp.val());
-                if (dataSelected) {
-                    $boxEmployee[0].setAttribute('readonly', 'true');
-                    $boxEmployee.empty();
-                    $boxEmployee.initSelect2({
-                        data: dataSelected?.['sale_person'],
-                        'allowClear': true,
-                    });
-                    if (dataSelected?.['sale_order']?.['id']) {
-                        $SO.val(dataSelected?.['sale_order']?.['title']);
-                        $SO.attr('data-detail', JSON.stringify(dataSelected?.['sale_order']));
-                    }
+                params['opportunity_id'] = $boxOpp.val();
+            }
+            loadInitS2($boxSO, [], params, null, true);
+            loadInitS2($boxLO, [], params, null, true);
+            return true;
+        }
+
+        function loadDataBySO() {
+            if ($boxSO.val()) {
+                let data = SelectDDControl.get_data_from_idx($boxSO, $boxSO.val());
+                if (data) {
+                    $boxLO.attr('readonly', 'true');
                 }
             } else {
-                $boxEmployee[0].removeAttribute('readonly');
+                $boxLO.removeAttr('readonly');
             }
             return true;
         }
@@ -594,6 +603,7 @@ $(function () {
 
         function loadInit() {
             loadCustomCss();
+            loadInitInherit();
             loadInitS2($boxSO, [], {'is_minimal': true}, null, true);
             loadInitS2($boxLO, [], {'is_minimal': true}, null, true);
             loadDbl();
@@ -623,26 +633,16 @@ $(function () {
 
         $boxOpp.on('change', function () {
             loadDataByOpp();
-            loadFinalAcceptance();
         });
 
         $boxSO.on('change', function () {
+            loadDataBySO();
             loadFinalAcceptance();
         });
 
         $boxLO.on('change', function () {
             loadFinalAcceptance();
         });
-
-        // btnRefresh.on('click', function () {
-        //     if (boxSO.val()) {
-        //         loadFinalAcceptance();
-        //     } else {
-        //         $.fn.notifyB({description: eleTrans.attr('data-select-so')}, 'failure');
-        //         return false
-        //     }
-        //     return true;
-        // });
 
         $table.on('change', '.table-row-actual-value', function () {
             changeActualValue(this);

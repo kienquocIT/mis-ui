@@ -3,7 +3,6 @@ $(function () {
     $(document).ready(function () {
 
         // Elements
-        let formSubmit = $('#frm_quotation_create');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let tabPrice = $('#tab_terms');
         let tableProduct = $('#datable-quotation-create-product');
@@ -33,14 +32,14 @@ $(function () {
         QuotationDataTableHandle.dataTableProduct();
         QuotationDataTableHandle.dataTableCost();
         QuotationDataTableHandle.dataTableExpense();
-        if (!formSubmit[0].classList.contains('sale-order')) {  // quotation
+        if (!QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {  // quotation
             QuotationDataTableHandle.dataTableQuotationIndicator();
         } else {  // sale order
             QuotationDataTableHandle.dataTableSaleOrderIndicator();
             QuotationDataTableHandle.dataTablePaymentStage();
         }
         // init config
-        QuotationLoadDataHandle.loadInitQuotationConfig(formSubmit.attr('data-method'));
+        QuotationLoadDataHandle.loadInitQuotationConfig(QuotationLoadDataHandle.$form.attr('data-method'));
         $('input[name="date_created"]').daterangepicker({
             singleDatePicker: true,
             timePicker: true,
@@ -54,7 +53,7 @@ $(function () {
         $('.daterangepicker').remove();
         // get WF initial zones
         let appCode = 'quotation';
-        if (formSubmit[0].classList.contains('sale-order')) {
+        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
             appCode = 'saleorder';
         }
         WFRTControl.setWFInitialData(appCode);
@@ -229,7 +228,7 @@ $(function () {
         });
 
         tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
-            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
                 if ($(this).hasClass('table-row-item')) {
                     QuotationLoadDataHandle.loadDataProductSelect($(this));
@@ -378,14 +377,14 @@ $(function () {
             QuotationStoreDataHandle.storeDtbData(1);
             QuotationStoreDataHandle.storeDtbData(3);
             QuotationStoreDataHandle.storeDtbData(4);
-            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 QuotationLoadDataHandle.loadDataTableCost();
             }
         });
 
         tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
-            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                let row = $(this)[0].closest('tr');
+            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
+                let row = this.closest('tr');
                 QuotationCalculateCaseHandle.commonCalculate(tableCost, row);
             }
         });
@@ -713,7 +712,7 @@ $(function () {
 
 // INDICATORS
         $('#tab-indicator').on('click', function () {
-            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 indicatorHandle.loadIndicator();
                 QuotationLoadDataHandle.loadSetWFRuntimeZone();
             }
@@ -731,7 +730,7 @@ $(function () {
         });
 
         tablePS.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-issue-invoice, .table-row-value-total, .table-row-due-date', function () {
-            if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order') && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 if ($(this).hasClass('table-row-date')) {
                     let isCheck = true;
@@ -793,7 +792,7 @@ $(function () {
 
 
 // Submit form quotation + sale order
-        SetupFormSubmit.validate(formSubmit, {
+        SetupFormSubmit.validate(QuotationLoadDataHandle.$form, {
             rules: {
                 title: {
                     required: true,
@@ -820,7 +819,7 @@ $(function () {
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal
                 // Submit Form normal
-                submitForm(formSubmit);
+                submitForm();
             }
         }
 
@@ -828,7 +827,7 @@ $(function () {
             let valueCheck = $('#quotation-check-promotion').val();
             if (valueCheck) {
                 if (valueCheck === 'true') {
-                    submitForm(formSubmit);
+                    submitForm();
                 } else if (valueCheck === 'false') {
                     $('#btn-invalid-promotion').click();
                     return false
@@ -838,12 +837,12 @@ $(function () {
             }
         }
 
-         function submitForm(formSubmit) {
+         function submitForm() {
              let is_sale_order = false;
              if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                  is_sale_order = true;
              }
-             let _form = new SetupFormSubmit(formSubmit);
+             let _form = new SetupFormSubmit(QuotationLoadDataHandle.$form);
             // Load again indicator when Submit
             indicatorHandle.loadIndicator();
             let result = QuotationSubmitHandle.setupDataSubmit(_form);

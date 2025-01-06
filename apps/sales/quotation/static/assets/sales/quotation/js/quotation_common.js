@@ -406,8 +406,8 @@ class QuotationLoadDataHandle {
         let fnData = [];
         WindowControl.showLoading();
         $.fn.callAjax2({
-                'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
-                'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
+                'url': QuotationLoadDataHandle.urlEle.attr('data-md-product'),
+                'method': 'GET',
                 'isDropdown': true,
             }
         ).then(
@@ -424,7 +424,6 @@ class QuotationLoadDataHandle {
                         }
                         QuotationDataTableHandle.$tableSProduct.DataTable().clear().draw();
                         QuotationDataTableHandle.$tableSProduct.DataTable().rows.add(fnData).draw();
-                        QuotationDataTableHandle.productInitEle.val(JSON.stringify(fnData));
                         WindowControl.hideLoading();
                     }
                 }
@@ -1014,8 +1013,8 @@ class QuotationLoadDataHandle {
             if (listProdID.length > 0) {
                 WindowControl.showLoading();
                 $.fn.callAjax2({
-                        'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
-                        'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
+                        'url': QuotationLoadDataHandle.urlEle.attr('data-md-product'),
+                        'method': 'GET',
                         'data': {'id__in': listProdID.join(',')},
                         'isDropdown': true,
                     }
@@ -2146,8 +2145,8 @@ class QuotationLoadDataHandle {
         }
         WindowControl.showLoading();
         $.fn.callAjax2({
-                'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
-                'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
+                'url': QuotationLoadDataHandle.urlEle.attr('data-md-product'),
+                'method': 'GET',
                 'data': {'id__in': listProductID.join(','),},
                 'isDropdown': true,
             }
@@ -2687,12 +2686,6 @@ class QuotationLoadDataHandle {
 
 // DataTable
 class QuotationDataTableHandle {
-    static productInitEle = $('#data-init-quotation-create-tables-product');
-    static expenseItemInitEle = $('#data-init-quotation-create-tables-expense-item');
-    static expenseInitEle = $('#data-init-quotation-create-tables-expense');
-    static uomInitEle = $('#data-init-quotation-create-tables-uom');
-    static taxInitEle = $('#data-init-quotation-create-tables-tax');
-
     static $tableSProduct = $('#table-select-product');
     static $tableProduct = $('#datable-quotation-create-product');
     static $tableCost = $('#datable-quotation-create-cost');
@@ -3067,9 +3060,8 @@ class QuotationDataTableHandle {
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select
                                                 class="form-select table-row-item disabled-custom-show zone-readonly"
-                                                data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
-                                                data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                                data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
+                                                data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-product')}"
+                                                data-method="GET"
                                                 data-keyResp="product_sale_list"
                                                 data-product-id="${row?.['product_data']?.['id']}"
                                                 data-zone="${dataZone}"
@@ -3111,8 +3103,8 @@ class QuotationDataTableHandle {
                         }
                         return `<select 
                                     class="form-select table-row-uom disabled-custom-show zone-readonly"
-                                    data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-uom')}"
+                                    data-method="GET"
                                     data-keyResp="unit_of_measure"
                                     data-zone="${dataZone}"
                                     readonly
@@ -3176,8 +3168,8 @@ class QuotationDataTableHandle {
                         }
                         return `<select 
                                     class="form-select table-row-tax"
-                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                    data-method="GET"
                                     data-keyResp="tax_list"
                                     data-zone="${dataZone}"
                                     ${readonly}
@@ -3287,9 +3279,8 @@ class QuotationDataTableHandle {
                         } else {
                             return `<select 
                                     class="form-select table-row-labor-item" 
-                                    data-url="${QuotationDataTableHandle.expenseInitEle.attr('data-url')}"
-                                    data-link-detail="${QuotationDataTableHandle.expenseInitEle.attr('data-link-detail')}"
-                                    data-method="${QuotationDataTableHandle.expenseInitEle.attr('data-method')}"
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-labor')}"
+                                    data-method="GET"
                                     data-keyResp="expense_list"
                                     data-zone="${dataZone}"
                                     required>
@@ -3305,28 +3296,19 @@ class QuotationDataTableHandle {
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
-                        if (row?.['is_labor'] === false) {
-                           return `<select 
-                                    class="form-select table-row-item" 
-                                    data-url="${QuotationDataTableHandle.expenseItemInitEle.attr('data-url')}"
-                                    data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
-                                    data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
-                                    data-keyResp="expense_item_list"
-                                    data-zone="${dataZone}"
-                                    required>
-                                    </select>`;
-                        } else {
-                            return `<select 
-                                    class="form-select table-row-item" 
-                                    data-url="${QuotationDataTableHandle.expenseItemInitEle.attr('data-url')}"
-                                    data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
-                                    data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
-                                    data-keyResp="expense_item_list"
-                                    data-zone="${dataZone}"
-                                    disabled>
-                                    </select>`;
+                        let readonly = "";
+                        if (row?.['is_labor'] === true) {
+                            readonly = "readonly";
                         }
-
+                        return `<select 
+                                    class="form-select table-row-item" 
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-expense')}"
+                                    data-method="GET"
+                                    data-keyResp="expense_item_list"
+                                    data-zone="${dataZone}"
+                                    required
+                                    ${readonly}>
+                                </select>`;
                     }
                 },
                 {
@@ -3337,27 +3319,15 @@ class QuotationDataTableHandle {
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
-                        if (row?.['is_labor'] === false) {
-                           return `<select 
-                                        class="form-select table-row-uom"
-                                        data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                        data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
-                                        data-keyResp="unit_of_measure"
-                                        data-zone="${dataZone}"
-                                        required
-                                    >
-                                    </select>`;
-                        } else {
-                            return `<select 
-                                        class="form-select table-row-uom"
-                                        data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
-                                        data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
-                                        data-keyResp="unit_of_measure"
-                                        data-zone="${dataZone}"
-                                        required
-                                    >
-                                    </select>`;
-                        }
+                        return `<select 
+                                    class="form-select table-row-uom"
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-uom')}"
+                                    data-method="GET"
+                                    data-keyResp="unit_of_measure"
+                                    data-zone="${dataZone}"
+                                    required
+                                >
+                                </select>`;
                     },
                 },
                 {
@@ -3398,8 +3368,8 @@ class QuotationDataTableHandle {
                         }
                         return `<select 
                                     class="form-select table-row-tax"
-                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                    data-method="GET"
                                     data-keyResp="tax_list"
                                     data-zone="${dataZone}"
                                 >
@@ -3407,14 +3377,14 @@ class QuotationDataTableHandle {
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
-                                    value="${row.expense_tax_amount}"
+                                    value="${row?.['expense_tax_amount']}"
                                     data-return-type="number"
                                     hidden
                                 >
                                 <input
                                     type="text"
                                     class="form-control table-row-tax-amount-raw"
-                                    value="${row.expense_tax_amount}"
+                                    value="${row?.['expense_tax_amount']}"
                                     hidden
                                 >`;
                     }
@@ -3432,7 +3402,7 @@ class QuotationDataTableHandle {
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
-                                    value="${row.expense_subtotal_price}"
+                                    value="${row?.['expense_subtotal_price']}"
                                     hidden
                                 >
                             </div>`;
@@ -6189,7 +6159,7 @@ class QuotationSubmitHandle {
                     rowData['promotion_id'] = dataPm?.['id'];
                     rowData['promotion_data'] = dataPm;
                 }
-                let uomData = getDataByProductID(elePromotion.getAttribute('data-id-product'));
+                let uomData = {};
                 if (uomData && Object.keys(uomData).length > 0) {
                     rowData['unit_of_measure'] = uomData?.['id'];
                     rowData['product_uom_title'] = uomData?.['title'];
@@ -6913,22 +6883,6 @@ function filterDataProductNotPromotion(data_products) {
         }
     }
     return finalList
-}
-
-function getDataByProductID(product_id) {
-    let uom_data = {};
-    let eleDataList = document.getElementById('data-init-quotation-create-tables-product');
-    let dataList = JSON.parse(eleDataList.value);
-    for (let i = 0; i < dataList.length; i++) {
-        let data = dataList[i];
-        if (data.id === product_id) {
-            if (data?.['sale_information']) {
-                uom_data = data?.['sale_information']?.['default_uom'];
-                break
-            }
-        }
-    }
-    return uom_data
 }
 
 function getCurrentDate() {

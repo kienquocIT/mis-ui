@@ -931,44 +931,13 @@
         data-md-bom="{% url 'BOMOrderListAPI' %}"
         data-md-uom="{% url "UnitOfMeasureListAPI" %}"
         data-md-tax="{% url "TaxListAPI" %}"
+        data-md-labor="{% url "ExpenseListAPI" %}"
+        data-md-expense="{% url "ExpenseItemListAPI" %}"
 
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
         data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
     >
 
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-product"
-            data-url="{% url "ProductForSaleListAPI" %}"
-            data-link-detail="{% url "ProductDetail" 1 %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-expense"
-            data-url="{% url "ExpenseListAPI" %}"
-            data-link-detail="{% url "ExpenseDetail" 1 %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-expense-item"
-            data-url="{% url "ExpenseItemListAPI" %}"
-            data-link-detail="{% url "ExpenseItemDetailAPI" 1 %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-uom"
-            data-url="{% url "UnitOfMeasureListAPI" %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-tax"
-            data-url="{% url "TaxListAPI" %}"
-            data-method="GET"
-    >
     <input
             type="text"
             id="data-init-quotation-create-request-employee"

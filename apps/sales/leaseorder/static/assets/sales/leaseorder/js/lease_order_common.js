@@ -405,8 +405,8 @@ class LeaseOrderLoadDataHandle {
         let fnData = [];
         WindowControl.showLoading();
         $.fn.callAjax2({
-                'url': LeaseOrderDataTableHandle.productInitEle.attr('data-url'),
-                'method': LeaseOrderDataTableHandle.productInitEle.attr('data-method'),
+                'url': LeaseOrderLoadDataHandle.urlEle.attr('data-md-product'),
+                'method': 'GET',
                 'data': {'general_product_types_mapped__is_service': true},
                 'isDropdown': true,
             }
@@ -424,7 +424,6 @@ class LeaseOrderLoadDataHandle {
                         }
                         LeaseOrderDataTableHandle.$tableSProduct.DataTable().clear().draw();
                         LeaseOrderDataTableHandle.$tableSProduct.DataTable().rows.add(fnData).draw();
-                        LeaseOrderDataTableHandle.productInitEle.val(JSON.stringify(fnData));
                         WindowControl.hideLoading();
                     }
                 }
@@ -452,8 +451,8 @@ class LeaseOrderLoadDataHandle {
                 }
                 WindowControl.showLoading();
                 $.fn.callAjax2({
-                        'url': LeaseOrderDataTableHandle.productInitEle.attr('data-url'),
-                        'method': LeaseOrderDataTableHandle.productInitEle.attr('data-method'),
+                        'url': LeaseOrderLoadDataHandle.urlEle.attr('data-md-product'),
+                        'method': 'GET',
                         'data': params,
                         'isDropdown': true,
                     }
@@ -522,19 +521,6 @@ class LeaseOrderLoadDataHandle {
             }
         }
         return {'is_pass': check, 'note_type': note_type};
-    };
-
-    static loadBoxQuotationProduct($ele, dataProduct = {}) {
-        let dataDD = []
-        if (LeaseOrderDataTableHandle.productInitEle.val()) {
-            dataDD = JSON.parse(LeaseOrderDataTableHandle.productInitEle.val());
-        }
-        if (Object.keys(dataProduct).length > 0) {
-            dataDD = dataProduct
-        }
-        $ele.initSelect2({
-            data: dataDD,
-        });
     };
 
     static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
@@ -1861,6 +1847,7 @@ class LeaseOrderLoadDataHandle {
                             "tax_data": dataTax,
                             "product_quantity": valueQuantity,
                             "product_quantity_time": valueQuantityTime,
+                            "product_quantity_depreciation": 0,
                             "product_uom_code": "",
                             "product_tax_title": "",
                             "product_tax_value": 0,
@@ -2275,8 +2262,8 @@ class LeaseOrderLoadDataHandle {
         }
         WindowControl.showLoading();
         $.fn.callAjax2({
-                'url': LeaseOrderDataTableHandle.productInitEle.attr('data-url'),
-                'method': LeaseOrderDataTableHandle.productInitEle.attr('data-method'),
+                'url': LeaseOrderLoadDataHandle.urlEle.attr('data-md-product'),
+                'method': 'GET',
                 'data': {'id__in': listProductID.join(','),},
                 'isDropdown': true,
             }
@@ -2816,12 +2803,6 @@ class LeaseOrderLoadDataHandle {
 
 // DataTable
 class LeaseOrderDataTableHandle {
-    static productInitEle = $('#data-init-quotation-create-tables-product');
-    static expenseItemInitEle = $('#data-init-quotation-create-tables-expense-item');
-    static expenseInitEle = $('#data-init-quotation-create-tables-expense');
-    static uomInitEle = $('#data-init-quotation-create-tables-uom');
-    static taxInitEle = $('#data-init-quotation-create-tables-tax');
-
     static $tableSProduct = $('#table-select-product');
     static $tableSOffset = $('#table-select-offset');
     static $tableSQuantity = $('#table-select-quantity');
@@ -2972,8 +2953,8 @@ class LeaseOrderDataTableHandle {
                         let dataZone = "lease_products_data";
                         return `<select 
                                     class="form-select table-row-uom"
-                                    data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
-                                    data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-uom')}"
+                                    data-method="GET"
                                     data-keyResp="unit_of_measure"
                                     data-zone="${dataZone}"
                                     required
@@ -3011,8 +2992,8 @@ class LeaseOrderDataTableHandle {
                     render: (data, type, row) => {
                         return `<select 
                                     class="form-select table-row-uom-time"
-                                    data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
-                                    data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-uom')}"
+                                    data-method="GET"
                                     data-keyResp="unit_of_measure"
                                     required
                                     readonly
@@ -3071,8 +3052,8 @@ class LeaseOrderDataTableHandle {
                         let dataZone = "lease_products_data";
                         return `<select
                                     class="form-select table-row-tax"
-                                    data-url="${LeaseOrderDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${LeaseOrderDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                    data-method="GET"
                                     data-keyResp="tax_list"
                                     data-zone="${dataZone}"
                                  >
@@ -3210,9 +3191,8 @@ class LeaseOrderDataTableHandle {
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <select
                                                 class="form-select table-row-item disabled-custom-show zone-readonly"
-                                                data-url="${LeaseOrderDataTableHandle.productInitEle.attr('data-url')}"
-                                                data-link-detail="${LeaseOrderDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                                data-method="${LeaseOrderDataTableHandle.productInitEle.attr('data-method')}"
+                                                data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-product')}"
+                                                data-method="GET"
                                                 data-keyResp="product_sale_list"
                                                 data-product-id="${row?.['product_data']?.['id']}"
                                                 data-zone="${dataZone}"
@@ -3233,23 +3213,12 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 2,
-                    render: (data, type, row) => {
-                        let dataZone = "lease_costs_data";
-                        let readonly = ''  // product
-                        if (row?.['shipping_id']) {
-                            readonly = 'readonly'  // shipping
-                        }
-                        return `<select class="form-select table-row-supplied-by" data-zone="${dataZone}" ${readonly}></select>`;
-                    }
-                },
-                {
-                    targets: 3,
                     render: () => {
                         let dataZone = "lease_costs_data";
                         return `<select 
                                     class="form-select table-row-uom disabled-custom-show zone-readonly"
-                                    data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
-                                    data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-uom')}"
+                                    data-method="GET"
                                     data-keyResp="unit_of_measure"
                                     data-zone="${dataZone}"
                                     readonly
@@ -3258,20 +3227,20 @@ class LeaseOrderDataTableHandle {
                     },
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     render: (data, type, row) => {
                         let dataZone = "lease_costs_data";
                         return `<input type="text" class="form-control table-row-quantity disabled-custom-show zone-readonly" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 4,
                     render: () => {
                         let dataZone = "lease_costs_data";
                         return `<select 
                                     class="form-select table-row-uom-time disabled-custom-show zone-readonly"
-                                    data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
-                                    data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-uom')}"
+                                    data-method="GET"
                                     data-keyResp="unit_of_measure"
                                     data-zone="${dataZone}"
                                     readonly
@@ -3280,14 +3249,14 @@ class LeaseOrderDataTableHandle {
                     },
                 },
                 {
-                    targets: 6,
+                    targets: 5,
                     render: (data, type, row) => {
                         let dataZone = "lease_costs_data";
                         return `<input type="text" class="form-control table-row-quantity-time disabled-custom-show zone-readonly" value="${row?.['product_quantity_time']}" data-zone="${dataZone}" disabled>`;
                     }
                 },
                 {
-                    targets: 7,
+                    targets: 6,
                     render: (data, type, row) => {
                         let dataZone = "lease_costs_data";
                         let disabled = ''  // product
@@ -3295,67 +3264,35 @@ class LeaseOrderDataTableHandle {
                             disabled = 'disabled'  // shipping
                         }
                         return `<div class="row">
-                                        <div class="input-group input-group-price">
+                                    <input 
+                                        type="text" 
+                                        class="form-control mask-money table-row-price disabled-custom-show" 
+                                        value="${row?.['product_cost_price']}"
+                                        data-return-type="number"
+                                        data-zone="${dataZone}"
+                                    >
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 7,
+                    render: (data, type, row) => {
+                        let dataZone = "lease_costs_data";
+                        return `<div class="row">
+                                        <div class="input-group">
                                             <input 
                                                 type="text" 
-                                                class="form-control mask-money table-row-price disabled-custom-show" 
-                                                value="${row?.['product_cost_price']}"
-                                                data-return-type="number"
+                                                class="form-control table-row-depreciation" 
+                                                value="${row?.['product_quantity_depreciation']}"
                                                 data-zone="${dataZone}"
                                             >
-                                            <button
-                                                type="button"
-                                                class="btn btn-icon btn-light btn-select-cost"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#selectCostModal"
-                                                data-zone="${dataZone}"
-                                                ${disabled}
-                                            ><i class="fas fa-ellipsis-h"></i>
-                                            </button>
+                                            <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
                                         </div>
                                 </div>`;
                     }
                 },
                 {
                     targets: 8,
-                    render: (data, type, row) => {
-                        let dataZone = "lease_costs_data";
-                        let itemType = 0  // product
-                        if (row.hasOwnProperty('product') && row.hasOwnProperty('shipping')) {
-                            if (Object.keys(row['shipping']).length > 0) {
-                                itemType = 1  // shipping
-                            }
-                        }
-                        let readonly = ''  // product
-                        if (row?.['shipping_id']) {
-                            readonly = 'readonly'  // shipping
-                        }
-                        return `<select 
-                                    class="form-select table-row-tax"
-                                    data-url="${LeaseOrderDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${LeaseOrderDataTableHandle.taxInitEle.attr('data-method')}"
-                                    data-keyResp="tax_list"
-                                    data-zone="${dataZone}"
-                                    ${readonly}
-                                >
-                                </select>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-tax-amount"
-                                    value="${row?.['product_tax_amount']}"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-tax-amount-raw"
-                                    value="${row?.['product_tax_amount']}"
-                                    hidden
-                                >`;
-                    }
-                },
-                {
-                    targets: 9,
                     render: (data, type, row) => {
                         let dataZone = "lease_costs_data";
                         return `<div class="row subtotal-area">
@@ -3372,10 +3309,8 @@ class LeaseOrderDataTableHandle {
             ],
             rowCallback: function (row, data, index) {
                 let itemEle = row.querySelector('.table-row-item');
-                let suppliedByEle = row.querySelector('.table-row-supplied-by');
                 let uomEle = row.querySelector('.table-row-uom');
                 let uomTimeEle = row.querySelector('.table-row-uom-time');
-                let taxEle = row.querySelector('.table-row-tax');
                 if (itemEle) {
                     let dataS2 = [];
                     if (data?.['product_data']) {
@@ -3383,12 +3318,6 @@ class LeaseOrderDataTableHandle {
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(itemEle), dataS2);
                     $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
-                }
-                if (suppliedByEle) {
-                    LeaseOrderLoadDataHandle.loadInitS2($(suppliedByEle), LeaseOrderLoadDataHandle.dataSuppliedBy);
-                    if (data?.['supplied_by']) {
-                        $(suppliedByEle).val(data?.['supplied_by']).change();
-                    }
                 }
                 if (uomEle) {
                     let dataS2 = [];
@@ -3403,13 +3332,6 @@ class LeaseOrderDataTableHandle {
                         dataS2 = [data?.['uom_time_data']];
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(uomTimeEle), dataS2);
-                }
-                if (taxEle) {
-                    let dataS2 = [];
-                    if (data?.['tax_data']) {
-                        dataS2 = [data?.['tax_data']];
-                    }
-                    LeaseOrderLoadDataHandle.loadInitS2($(taxEle), dataS2);
                 }
             },
         });
@@ -3445,9 +3367,8 @@ class LeaseOrderDataTableHandle {
                         } else {
                             return `<select 
                                     class="form-select table-row-labor-item" 
-                                    data-url="${LeaseOrderDataTableHandle.expenseInitEle.attr('data-url')}"
-                                    data-link-detail="${LeaseOrderDataTableHandle.expenseInitEle.attr('data-link-detail')}"
-                                    data-method="${LeaseOrderDataTableHandle.expenseInitEle.attr('data-method')}"
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-labor')}"
+                                    data-method="GET"
                                     data-keyResp="expense_list"
                                     data-zone="${dataZone}"
                                     required>
@@ -3460,28 +3381,19 @@ class LeaseOrderDataTableHandle {
                     width: '20%',
                     render: (data, type, row) => {
                         let dataZone = "lease_expenses_data";
-                        if (row?.['is_labor'] === false) {
-                           return `<select 
-                                    class="form-select table-row-item" 
-                                    data-url="${LeaseOrderDataTableHandle.expenseItemInitEle.attr('data-url')}"
-                                    data-link-detail="${LeaseOrderDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
-                                    data-method="${LeaseOrderDataTableHandle.expenseItemInitEle.attr('data-method')}"
-                                    data-keyResp="expense_item_list"
-                                    data-zone="${dataZone}"
-                                    required>
-                                    </select>`;
-                        } else {
-                            return `<select 
-                                    class="form-select table-row-item" 
-                                    data-url="${LeaseOrderDataTableHandle.expenseItemInitEle.attr('data-url')}"
-                                    data-link-detail="${LeaseOrderDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
-                                    data-method="${LeaseOrderDataTableHandle.expenseItemInitEle.attr('data-method')}"
-                                    data-keyResp="expense_item_list"
-                                    data-zone="${dataZone}"
-                                    disabled>
-                                    </select>`;
+                        let readonly = "";
+                        if (row?.['is_labor'] === true) {
+                            readonly = "readonly";
                         }
-
+                        return `<select 
+                                    class="form-select table-row-item" 
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-expense')}"
+                                    data-method="GET"
+                                    data-keyResp="expense_item_list"
+                                    data-zone="${dataZone}"
+                                    required
+                                    ${readonly}>
+                                </select>`;
                     }
                 },
                 {
@@ -3489,27 +3401,15 @@ class LeaseOrderDataTableHandle {
                     width: '6.66%',
                     render: (data, type, row) => {
                         let dataZone = "lease_expenses_data";
-                        if (row?.['is_labor'] === false) {
-                           return `<select 
-                                        class="form-select table-row-uom"
-                                        data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
-                                        data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
-                                        data-keyResp="unit_of_measure"
-                                        data-zone="${dataZone}"
-                                        required
-                                    >
-                                    </select>`;
-                        } else {
-                            return `<select 
-                                        class="form-select table-row-uom"
-                                        data-url="${LeaseOrderDataTableHandle.uomInitEle.attr('data-url')}"
-                                        data-method="${LeaseOrderDataTableHandle.uomInitEle.attr('data-method')}"
-                                        data-keyResp="unit_of_measure"
-                                        data-zone="${dataZone}"
-                                        required
-                                    >
-                                    </select>`;
-                        }
+                        return `<select 
+                                    class="form-select table-row-uom"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-uom')}"
+                                    data-method="GET"
+                                    data-keyResp="unit_of_measure"
+                                    data-zone="${dataZone}"
+                                    required
+                                >
+                                </select>`;
                     },
                 },
                 {
@@ -3541,8 +3441,8 @@ class LeaseOrderDataTableHandle {
                         let dataZone = "lease_expenses_data";
                         return `<select 
                                     class="form-select table-row-tax"
-                                    data-url="${LeaseOrderDataTableHandle.taxInitEle.attr('data-url')}"
-                                    data-method="${LeaseOrderDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                    data-method="GET"
                                     data-keyResp="tax_list"
                                     data-zone="${dataZone}"
                                 >
@@ -3550,14 +3450,14 @@ class LeaseOrderDataTableHandle {
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
-                                    value="${row.expense_tax_amount}"
+                                    value="${row?.['expense_tax_amount']}"
                                     data-return-type="number"
                                     hidden
                                 >
                                 <input
                                     type="text"
                                     class="form-control table-row-tax-amount-raw"
-                                    value="${row.expense_tax_amount}"
+                                    value="${row?.['expense_tax_amount']}"
                                     hidden
                                 >`;
                     }
@@ -3572,7 +3472,7 @@ class LeaseOrderDataTableHandle {
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
-                                    value="${row.expense_subtotal_price}"
+                                    value="${row?.['expense_subtotal_price']}"
                                     hidden
                                 >
                             </div>`;
@@ -6265,7 +6165,7 @@ class LeaseOrderSubmitHandle {
                     rowData['promotion_id'] = dataPm?.['id'];
                     rowData['promotion_data'] = dataPm;
                 }
-                let uomData = getDataByProductID(elePromotion.getAttribute('data-id-product'));
+                let uomData = {};
                 if (uomData && Object.keys(uomData).length > 0) {
                     rowData['unit_of_measure'] = uomData?.['id'];
                     rowData['product_uom_title'] = uomData?.['title'];
@@ -6989,22 +6889,6 @@ function filterDataProductNotPromotion(data_products) {
         }
     }
     return finalList
-}
-
-function getDataByProductID(product_id) {
-    let uom_data = {};
-    let eleDataList = document.getElementById('data-init-quotation-create-tables-product');
-    let dataList = JSON.parse(eleDataList.value);
-    for (let i = 0; i < dataList.length; i++) {
-        let data = dataList[i];
-        if (data.id === product_id) {
-            if (data?.['sale_information']) {
-                uom_data = data?.['sale_information']?.['default_uom'];
-                break
-            }
-        }
-    }
-    return uom_data
 }
 
 function getCurrentDate() {

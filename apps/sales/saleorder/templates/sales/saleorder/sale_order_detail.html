@@ -130,7 +130,7 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label class="form-label required" for="payment_term_id">{% trans 'Select Payment Terms' %}</label>
+                                <label class="form-label" for="payment_term_id">{% trans 'Select Payment Terms' %}</label>
                                 <select
                                         class="form-select"
                                         id="payment_term_id"
@@ -581,7 +581,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="sale_order_products_data">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-select-price" data-bs-dismiss="modal" data-zone="sale_order_products_data">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-price" data-bs-dismiss="modal" data-zone="sale_order_products_data" hidden>{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -601,7 +601,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="sale_order_costs_data">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-select-cost" data-bs-dismiss="modal" data-zone="sale_order_costs_data">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-cost" data-bs-dismiss="modal" data-zone="sale_order_costs_data" hidden>{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -633,6 +633,8 @@
         data-required-product-uom="{% trans "Product unit of measure is required" %}"
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
         data-copy-successfully="{% trans "Copy successfully" %}"
+        data-validate-due-date="{% trans "Invalid due date" %}"
+        data-validate-total-ratio-payment="{% trans "Total payment ratio must be 100%" %}"
         data-validate-total-payment="{% trans "Total payment must equal to total after tax" %}"
         data-promotion="{% trans "Promotion" %}"
         data-shipping="{% trans "Shipping fee" %}"
@@ -666,7 +668,11 @@
         data-md-product="{% url 'ProductForSaleListAPI' %}"
         data-md-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
         data-md-bom="{% url 'BOMOrderListAPI' %}"
+        data-md-uom="{% url "UnitOfMeasureListAPI" %}"
+        data-md-tax="{% url "TaxListAPI" %}"
+
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
+        data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
     >
 
     <input

@@ -106,9 +106,11 @@ $(document).ready(function () {
                 }
                 if (task?.['child_of_group']) opt.group = task['child_group_id']
                 enqueueAjaxRequest(opt)
-            }
+            },
+            on_sort_index: fGanttCustom.event_on_sort
         }
     );
+    window.new_gantt_init = new_gantt
 
     // get data
     let $form = $('#project_form')

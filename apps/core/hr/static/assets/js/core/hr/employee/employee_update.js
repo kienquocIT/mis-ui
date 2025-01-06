@@ -1,5 +1,10 @@
 $(function () {
     let avatarFiles = null;
+    const $span_not_verified = $('#span-not-verified')
+    const $span_verified = $('#span-verified')
+    const $email_app_password = $('#email-app-password')
+    const $btn_test_email_connection = $("#btn-test-email-connection")
+    const frmEmployeeUpdate = $('#frm_employee_update')
 
     function renderDetailForUpdate(employeeData) {
         if (employeeData && typeof employeeData === 'object') {
@@ -8,8 +13,8 @@ $(function () {
             EmployeeLoadPage.firstNameEle.val(employeeData.first_name);
             EmployeeLoadPage.lastNameEle.val(employeeData.last_name);
             EmployeeLoadPage.emailEle.val(employeeData.email);
-            $('#span-verified').prop('hidden', !employeeData.email_app_password_status)
-            $('#span-not-verified').prop('hidden', employeeData.email_app_password_status)
+            $span_verified.prop('hidden', !employeeData.email_app_password_status)
+            $span_not_verified.prop('hidden', employeeData.email_app_password_status)
             EmployeeLoadPage.phoneEle.val(employeeData.phone);
             EmployeeLoadPage.loadUserList(employeeData?.user);
             EmployeeLoadPage.loadGroupList(employeeData.group);
@@ -118,7 +123,6 @@ $(function () {
         }
     }
 
-    let frmEmployeeUpdate = $('#frm_employee_update');
     frmEmployeeUpdate.submit(function (event) {
         event.preventDefault();
         let ajaxConfig = EmployeeLoadPage.combinesForm('#frm_employee_update');
@@ -150,10 +154,10 @@ $(function () {
     function combinesDataTestEmailConnection() {
         let data = {}
         data['email'] = $('#employee-email').val();
-        data['email_app_password'] = $('#email-app-password').attr('data-value');
+        data['email_app_password'] = $email_app_password.attr('data-value');
         if (data['email'] && data['email_app_password']) {
             return {
-                url: $("#btn-test-email-connection").attr('data-url'),
+                url: $btn_test_email_connection.attr('data-url'),
                 method: 'GET',
                 data: data,
             };
@@ -163,17 +167,39 @@ $(function () {
         }
     }
 
-    $('#span-verified').on('click', function () {
-        $('#email-app-password').val('')
+    $span_verified.on('click', function () {
+        $email_app_password.val('')
     })
 
-    $('#span-not-verified').on('click', function () {
-        $('#email-app-password').val('')
+    $span_not_verified.on('click', function () {
+        $email_app_password.val('')
     })
 
-    $("#btn-test-email-connection").on('click', function (event) {
-        $('#email-app-password').attr('data-value', $('#email-app-password').val())
+    const $form_update_email_api_key = $('#form-update-email-api-key')
+    function CallAPIUpdateEmailAPIKey() {
+        $.fn.callAjax2({
+            url: $form_update_email_api_key.attr('data-url').replace('/0', `/${$.fn.getPkDetail()}`),
+            method: 'PUT',
+            data: {'email_app_password': $email_app_password.attr('data-value')},
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    WindowControl.hideLoading()
+                    setTimeout(() => window.location.reload(), 1000)
+                }
+            },
+            (errs) => {
+                WindowControl.hideLoading()
+                $.fn.switcherResp(errs)
+            },
+        )
+    }
+
+    $btn_test_email_connection.on('click', function (event) {
+        WindowControl.showLoading()
         event.preventDefault();
+        $email_app_password.attr('data-value', $email_app_password.val())
         let combinesData = combinesDataTestEmailConnection();
         if (combinesData) {
             $.fn.callAjax2(combinesData)
@@ -181,17 +207,33 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyB({description: "Connect successfully"}, 'success')
-                            $('#span-verified').prop('hidden', false)
-                            $('#span-not-verified').prop('hidden', true)
-                            $('#update-emp').trigger('click')
+                            let timerInterval
+                            Swal.fire({
+                                title: '',
+                                html: `<span class="text-success">${$form_update_email_api_key.attr('data-trans-update-success')}</span>`,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                onClose: () => {
+                                    clearInterval(timerInterval)
+                                }
+                            }).then((result) => {
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    window.location.reload()
+                                }
+                            })
+                            CallAPIUpdateEmailAPIKey()
                         }
                     },
                     (errs) => {
-                        $.fn.notifyB({description: 'Can not verify your Email. Check your App password again.'}, 'failure');
-                        $('#span-verified').prop('hidden', true)
-                        $('#span-not-verified').prop('hidden', false)
-                        $('#update-emp').trigger('click')
+                        let timerInterval
+                        Swal.fire({
+                            title: '',
+                            html: `<span class="text-danger">${$form_update_email_api_key.attr('data-trans-update-fail')}</span>`,
+                            onClose: () => {
+                                clearInterval(timerInterval)
+                            }
+                        })
+                        WindowControl.hideLoading()
                     }
                 )
         }

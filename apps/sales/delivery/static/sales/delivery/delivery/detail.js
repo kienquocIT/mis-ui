@@ -131,6 +131,8 @@ $(async function () {
                             sub_delivery_data.push({
                                 'sale_order': item?.['sale_order']?.['id'] ? item?.['sale_order']?.['id'] : null,
                                 'sale_order_data': item?.['sale_order'] ? item?.['sale_order'] : {},
+                                'lease_order': item?.['lease_order']?.['id'] ? item?.['lease_order']?.['id'] : null,
+                                'lease_order_data': item?.['lease_order'] ? item?.['lease_order'] : {},
                                 'warehouse': item?.['warehouse']?.['id'],
                                 'warehouse_data': item?.['warehouse'],
                                 'uom': prod_data?.['uom_data']?.['id'],
@@ -351,8 +353,14 @@ $(async function () {
             }
             if (Object.keys(customRes).length !== 0) {
                 opts['templateResult'] = function (state) {
-                    let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                    let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                    let res1 = ``;
+                    let res2 = ``;
+                    if (customRes?.['res1']) {
+                        res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
+                    }
+                    if (customRes?.['res2']) {
+                        res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
+                    }
                     return $(`<span>${res1} ${res2}</span>`);
                 }
             }
@@ -430,7 +438,6 @@ $(async function () {
         loadEventCheckboxAll($area) {
             $area.on('click', '.table-row-checkbox-all', function () {
                 let checked = this.checked;
-                let stopLoop = false;
                 for (let checkbox of $area[0].querySelectorAll('.table-row-checkbox')) {
                     if (checkbox) {
                         checkbox.checked = checked;
@@ -440,25 +447,13 @@ $(async function () {
                         }
                     }
                 }
-
-                // $area.DataTable().rows().every(function () {
-                //     if (stopLoop) return;
-                //
-                //     let row = this.node();
-                //     let checkbox = row.querySelector('.table-row-checkbox');
-                //     if (checkbox) {
-                //         checkbox.checked = checked;
-                //         let state = prodTable.loadQuantityDeliveryBySerial(checkbox);
-                //         if (state === false) {
-                //             stopLoop = true;
-                //         }
-                //     }
-                // });
             });
             return true;
         };
 
         setupDataPW(dataSrc, prod_data, config, type) {
+            // type: 0 normal | 1: borrow
+
             let finalData = [];
             let baseData = [];
             let soDataJson = {};
@@ -475,7 +470,10 @@ $(async function () {
                             }
                         }
                     }
+                }
+                if (!pwh.hasOwnProperty('lease_order') && type === 0) {
                     if ($eleSO.attr('data-lo')) {
+                        pwh['lease_order'] = JSON.parse($eleSO.attr('data-lo'));
                         for (let deliveryData of prod_data?.['delivery_data']) {
                             if (pwh?.['warehouse']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
                                 pwh['picked'] = deliveryData?.['stock'];
@@ -519,7 +517,8 @@ $(async function () {
                 }
 
                 baseData.push(pwh);
-                if (type === 0) {
+
+                if (type === 0) {  // normal
                     if (pwh?.['sale_order']?.['id']) {
                         if (!soDataJson.hasOwnProperty(String(pwh?.['sale_order']?.['id']))) {
                             soDataJson[String(pwh?.['sale_order']?.['id'])] = {
@@ -534,7 +533,7 @@ $(async function () {
                         }
                     }
                 }
-                if (type === 1) {
+                if (type === 1) {  // borrow
                     if (!commonDataJson.hasOwnProperty('common_warehouse')) {
                         commonDataJson['common_warehouse'] = {
                             'sale_order': pwh?.['sale_order'],
@@ -641,8 +640,8 @@ $(async function () {
                                             ${checked}
                                             ${hidden}
                                         >
-                                        <span class="badge badge-soft-success">${row?.['warehouse']?.['code']}</span>
                                         <label class="form-check-label" for="pw-${row?.['id'].replace(/-/g, "")}">${row?.['warehouse']?.['title']}</label>
+                                        <span class="badge badge-light badge-outline">${row?.['warehouse']?.['code']}</span>
                                     </div>`;
                         }
                     },
@@ -1005,6 +1004,7 @@ $(async function () {
                         if (parseFloat(valueLotInput) > 0 && parseFloat(valueLotInput) <= parseFloat(valueLotInit)) {
                             lotData.push({
                                 'product_warehouse_lot_id': rowLotData?.['id'],
+                                'product_warehouse_lot_data': rowLotData,
                                 'quantity_initial': parseFloat(valueLotInit),
                                 'quantity_delivery': parseFloat(valueLotInput),
                             })
@@ -1258,6 +1258,7 @@ $(async function () {
                                 newQuantity++;
                                 serialData.push({
                                     'product_warehouse_serial_id': rowSerialData?.['id'],
+                                    'product_warehouse_serial_data': rowSerialData,
                                 })
                             }
                         }
@@ -1435,7 +1436,9 @@ $(async function () {
                 prepareHTMLConfig(res?.['config_at_that_point'])
                 $x.fn.renderCodeBreadcrumb(res);
                 $.fn.compareStatusShowPageAction(res);
-                // new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
+                if ($('#delivery_form').attr('data-method') === 'GET') {
+                    new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
+                }
                 let formGroup = $eleSO[0].closest('.form-group');
                 if (formGroup) {
                     if (res?.['sale_order_data']?.['code']) {

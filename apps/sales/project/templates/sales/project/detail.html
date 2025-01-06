@@ -142,6 +142,14 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade show active" id="tab_detail">
+            <label for="change_view_mode" class="label font-weight-bold mr-3">{% trans 'Change view mode' %}: </label>
+            <div class="mx-auto mt-3 btn-group mb-3" role="group" id="change_view_mode">
+                <button type="button" class="btn btn-sm btn-primary" data-value="Quarter Day">{% trans 'Quarter Day' %}</button>
+                <button type="button" class="btn btn-sm btn-primary" data-value="Half Day">{% trans 'Half Day' %}</button>
+                <button type="button" class="btn btn-sm btn-primary active" data-value="Day">{% trans 'Day' %}</button>
+                <button type="button" class="btn btn-sm btn-primary" data-value="Week">{% trans 'Week' %}</button>
+                <button type="button" class="btn btn-sm btn-primary" data-value="Month">{% trans 'Month' %}</button>
+            </div>
             <div class="gantt-wrap">
                 <div class="gantt-block gantt-left">
                 </div>
@@ -278,13 +286,23 @@
     </div>
     <!-- End Tabs -->
 
+{% endblock %}
+{% block modalData %}
+    <!-- modal group -->
+    {% include 'sales/project/extends/group-modal.html' %}
+    <!-- modal work -->
+    {% include 'sales/project/extends/work-modal.html' %}
+    <!-- modal assign task -->
+    {% include 'sales/project/extends/assign-task.html' with prj_id=data.pk %}
     <!-- modal employee list -->
     {% include 'sales/project/extends/employee-list.html' %}
     <!-- modal create task -->
-    {% include 'sales/task/extend/task-form.html' with is_project_page=True%}
+    {% include 'sales/task/extend/task-form.html' with is_project_page=True new_list_from_app='task.opportunitytask.create' %}
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
+           data-group-detail="{% url 'ProjectGroupDetailAPI' 1 %}"
+           data-work-detail="{% url 'ProjectWorkDetailAPI' 1 %}"
            data-work-expense="{% url "ProjectWorkExpenseAPI" %}"
            data-list="{% url 'ProjectList' %}"
            data-baseline="{% url "ProjectListBaselineAPI" %}"

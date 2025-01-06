@@ -114,6 +114,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_ALL_LIST = StringUrl('hr/employees/all')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_DETAIL_PK = StringUrl('hr/employee/{pk}')
+    EMPLOYEE_DETAIL_UPDATE_EMAIL_API_KEY_PK = StringUrl('hr/employee-email-api-key/{pk}')
     EMPLOYEE_DETAIL_APP_LIST = StringUrl('hr/employee/{pk}/app')
     EMPLOYEE_APPLICATION_ALL_LIST = StringUrl('hr/employee/{pk}/app/all')
     EMPLOYEE_APPLICATION_SUMMARY_LIST = StringUrl('hr/employee/{pk}/app/summary')
@@ -142,6 +143,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     COMPANY_OVERVIEW = StringUrl('company/overview/list')
     COMPANY_USER_NOT_MAP_EMPLOYEE = StringUrl('company/user/available')
     COMPANY_USER_COMPANY = StringUrl('company/user-company')
+    COMPANY_BANK_ACCOUNT_LIST = StringUrl('company/company-bank-account/list')
 
     # organization/role
     ROLE_LIST = StringUrl('hr/roles')
@@ -287,6 +289,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # crm/account
     ACCOUNT_LIST = StringUrl('saledata/accounts')
+    CUSTOMER_LIST_FOR_CASHINFLOW = StringUrl('saledata/customer/list')
     ACCOUNT_DETAIL = StringUrl('saledata/account/{pk}')
     ACCOUNTS_MAP_EMPLOYEES = StringUrl('saledata/accounts-map-employees')
     ACCOUNT_SALE_LIST = StringUrl('saledata/accounts-sale')
@@ -448,6 +451,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_LEASEORDER_CALL = StringUrl('delivery/lease-order/{pk}')
     DELIVERY_LIST = StringUrl('delivery')
     DELIVERY_SUB_LIST = StringUrl('delivery/sub')
+    DELIVERY_FOR_RECOVERY_LIST = StringUrl('delivery/for-recovery')
     # Opportunity detail
     OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk}')
     OPPORTUNITY_DETAIL_GET_CREATE_FROM_OPP = StringUrl('opportunity/{pk}/create-from-opp')
@@ -602,6 +606,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Report
     REPORT_REVENUE_LIST = StringUrl('report/revenue/list')
     REPORT_PRODUCT_LIST = StringUrl('report/product/list')
+    REPORT_PRODUCT_LIST_FOR_DASHBOARD = StringUrl('report/product-for-dashboard/list')
     REPORT_CUSTOMER_LIST = StringUrl('report/customer/list')
     REPORT_PIPELINE_LIST = StringUrl('report/pipeline/list')
     REPORT_CASHFLOW_LIST = StringUrl('report/cashflow/list')
@@ -662,6 +667,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # AR Invoice
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
+    SO_LIST_AR_INVOICE = StringUrl('ar-invoice/get-sale-order')
     AR_INVOICE_LIST = StringUrl('ar-invoice/list')
     AR_INVOICE_DETAIL = StringUrl('ar-invoice/detail/{pk}')
     AR_INVOICE_RECURRENCE_LIST = StringUrl('ar-invoice/recurrence/list')
@@ -782,6 +788,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Lease order
     LEASE_ORDER_LIST = StringUrl('leaseorder/list')
     LEASE_ORDER_DETAIL = StringUrl('leaseorder')
+    LEASE_ORDER_RECURRENCE_LIST = StringUrl('leaseorder/lease-order-recurrence/list')
 
     # CONSULTING
     CONSULTING_LIST = StringUrl('consulting/list')
@@ -794,6 +801,17 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # CONTRACT TEMPLATE
     CORE_CONTRACT_TEMPLATE_LIST = StringUrl('contract-template/list')
     CORE_CONTRACT_TEMPLATE_DETAIL = StringUrl('contract-template/detail/{pk}')
+
+    # Cash inflow
+    FINANCIAL_CASHINFLOW_LIST = StringUrl('financial-cashflow/cashinflows')
+    FINANCIAL_CASHINFLOW_DETAIL = StringUrl('financial-cashflow/cashinflow/{pk}')
+    AR_INVOICE_LIST_FOR_CASHINFLOW = StringUrl('financial-cashflow/ar-invoice-for-cashinflow/list')
+
+    # Recon
+    FINANCIAL_RECON_LIST = StringUrl('financial-reconciliation/list')
+    FINANCIAL_RECON_DETAIL = StringUrl('financial-reconciliation/detail/{pk}')
+    AR_INVOICE_LIST_FOR_RECON = StringUrl('financial-reconciliation/ar-invoice-for-recon/list')
+    CIF_LIST_FOR_RECON = StringUrl('financial-reconciliation/cash-inflow-for-recon/list')
 
     #PARTNER CENTER
     #LIST

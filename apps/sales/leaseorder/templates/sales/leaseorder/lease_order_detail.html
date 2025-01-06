@@ -83,7 +83,7 @@
                                         <label class="form-label required" for="lease_from">{% trans 'Lease from' %}</label>
                                         <div class="input-affix-wrapper">
                                             <input type="text" name="lease_from" id="lease_from"
-                                                   class="form-control date-picker" autocomplete="off" disabled>
+                                                   class="form-control date-picker text-black" autocomplete="off" disabled>
                                             <div class="input-suffix">
                                                 <i class="fas fa-calendar-alt"></i>
                                             </div>
@@ -95,7 +95,7 @@
                                         <label class="form-label required" for="lease_to">{% trans 'Lease to' %}</label>
                                         <div class="input-affix-wrapper">
                                             <input type="text" name="lease_to" id="lease_to"
-                                                   class="form-control date-picker" autocomplete="off" disabled>
+                                                   class="form-control date-picker text-black" autocomplete="off" disabled>
                                             <div class="input-suffix">
                                                 <i class="fas fa-calendar-alt"></i>
                                             </div>
@@ -145,7 +145,7 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label class="form-label required" for="payment_term_id">{% trans 'Select Payment Terms' %}</label>
+                                <label class="form-label" for="payment_term_id">{% trans 'Select Payment Terms' %}</label>
                                 <select
                                         class="form-select"
                                         id="payment_term_id"
@@ -663,7 +663,7 @@
                                 <tbody>
                                 </tbody>
                             </table>
-                            <div class="form-check" id="copy-quotation-option" hidden>
+                            <div class="form-check form-check-lg" id="copy-quotation-option" hidden>
                                 <input type="checkbox" class="form-check-input check-option" id="customCheck1" checked>
                                 <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation' %}</label>
                             </div>
@@ -843,7 +843,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-select-price" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-price" data-bs-dismiss="modal" data-zone="lease_products_data" hidden>{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -863,7 +863,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="lease_costs_data">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-select-cost" data-bs-dismiss="modal" data-zone="lease_costs_data">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-cost" data-bs-dismiss="modal" data-zone="lease_costs_data" hidden>{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -890,6 +890,7 @@
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
         data-copy-successfully="{% trans "Copy successfully" %}"
         data-validate-due-date="{% trans "Invalid due date" %}"
+        data-validate-total-ratio-payment="{% trans "Total payment ratio must be 100%" %}"
         data-validate-total-payment="{% trans "Total payment must equal to total after tax" %}"
         data-validate-ss-role="{% trans "Opportunity is disabled because employee in short sales roles" %}"
         data-promotion="{% trans "Promotion" %}"
@@ -931,6 +932,9 @@
         data-md-product="{% url 'ProductForSaleListAPI' %}"
         data-md-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
         data-md-bom="{% url 'BOMOrderListAPI' %}"
+        data-md-uom="{% url "UnitOfMeasureListAPI" %}"
+        data-md-tax="{% url "TaxListAPI" %}"
+
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
         data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
     >

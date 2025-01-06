@@ -1,8 +1,11 @@
 $(function () {
     $(document).ready(function () {
-        let formSubmit = $('#frm_group_create');
         let dataGroupEmployee = $('#data-group_employee');
         GroupLoadDataHandle.loadInit();
+
+        GroupLoadDataHandle.$form.on('input', '.alphanumeric', function () {
+            GroupLoadDataHandle.loadUpperAlphanumeric(this);
+        });
 
         GroupLoadDataHandle.boxGroupLevel.on('change', function () {
             if ($(this).val()) {
@@ -26,7 +29,7 @@ $(function () {
             deleteEmployeeShow(this.id);
         });
 
-        SetupFormSubmit.validate(formSubmit, {
+        SetupFormSubmit.validate(GroupLoadDataHandle.$form, {
             rules: {
                 title: {
                     required: true,
@@ -45,7 +48,7 @@ $(function () {
         });
 
         function submitHandlerFunc() {
-            let _form = new SetupFormSubmit(formSubmit);
+            let _form = new SetupFormSubmit(GroupLoadDataHandle.$form);
             if (dataGroupEmployee.val()) {
                 _form.dataForm['group_employee'] = JSON.parse(dataGroupEmployee.val());
             }

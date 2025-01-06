@@ -103,7 +103,7 @@ $(document).ready(function () {
     function loadPeriodsList() {
         TablePeriodsConfig.DataTable().clear().destroy()
         let frm = new SetupFormSubmit(TablePeriodsConfig);
-        let current_year = new Date().getFullYear();
+        let today = new Date();
         TablePeriodsConfig.DataTableDefault(
             {
                 useDataServer: true,
@@ -139,7 +139,8 @@ $(document).ready(function () {
                         render: (data, type, row) => {
                             return `<a href="#" data-period-id="${row?.['id']}" data-state="hidden" class="expand-sub-rows text-secondary">
                                         <script>${JSON.stringify(row?.['subs'])}</script>
-                                        <b><i class="fas fa-angle-down"></i></b>
+                                        <i class="fas fa-angle-down"></i>
+                                        <span class="small">${TablePeriodsConfig.attr('data-trans-expand')}</span>
                                     </a>`
                         }
                     },
@@ -148,14 +149,11 @@ $(document).ready(function () {
                         className: 'wrap-text',
                         render: (data, type, row) => {
                             let html = ''
-                            if (row?.['fiscal_year'] === current_year) {
-                                html = `<span class="badge badge-success badge-indicator"></span>`
+                            let date_end = new Date(row?.['subs'][row?.['subs'].length-1]?.['end_date']);
+                            if (today <= date_end) {
+                                html = `<span class="text-success"><i class="bi bi-caret-right-fill"></i></span>`
                             }
-                            return `<span class="badge-status">
-                                    <span class="fw-bold text-secondary">${row?.['title']}</span>
-                                    ${html}
-                               </span>
-                            `
+                            return `${html}<span class="fw-bold">${row?.['title']}</span>`
                         }
                     },
                     {
@@ -167,7 +165,7 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text text-center',
                         render: (data, type, row) => {
-                            return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${moment(row?.['subs'][row?.['subs'].length-1]?.['end_date']).format('DD/MM/YYYY')}</span>`
+                            return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${moment(row?.['subs'][row?.['subs'].length-1]?.['end_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
                         }
                     },
                     {
@@ -181,7 +179,7 @@ $(document).ready(function () {
                                     class="btn btn-icon btn-rounded btn-flush-primary edit-periods" type="button" data-bs-toggle="modal" data-bs-target="#modal-periods-update">
                                 <span class="icon"><i class="bi bi-pencil-square"></i></span>
                             </button>`
-                            return `${row?.['fiscal_year'] > current_year ? btn_delete : btn_edit}`
+                            return `${row?.['fiscal_year'] > today.getFullYear() ? btn_delete : btn_edit}`
                         }
                     }
                 ],
@@ -385,7 +383,7 @@ $(document).ready(function () {
             let to_value = `${get_final_date_of_current_month(last_month.split('/')[1], last_month.split('/')[0])}/${last_month}`
 
             generate_period_table.find('thead').append(`
-                <tr class="bg-secondary-light-5 main-row">
+                <tr class="main-row">
                     <td><span class="badge badge-primary">${period_code_Ele.val()}</span></td>
                     <td></td>
                     <td><span class="text-primary">${period_title_Ele.val()}</span></td>
@@ -410,8 +408,8 @@ $(document).ready(function () {
                         <td><span class="code badge badge-soft-primary">${period_code_Ele.val()}/${key_sub}${key_month}/${key_year}</span></td>
                         <td><span class="name text-primary">${period_code_Ele.val()}/${key_sub}${key_month}/${key_year}</span></td>
                         <td></td>
-                        <td class="start_date" data-value="01-${sub_month.replace('/', '-')}"><i class="far fa-calendar"></i> 01/${sub_month}</td>
-                        <td class="end_date" data-value="${get_final_date_of_current_month(key_year, key_month)}-${sub_month.replace('/', '-')}"><i class="far fa-calendar"></i> ${get_final_date_of_current_month(key_year, key_month)}/${sub_month}</td>           
+                        <td class="start_date" data-value="01-${sub_month.replace('/', '-')}"><i class="far fa-calendar-alt"></i> 01/${sub_month}</td>
+                        <td class="end_date" data-value="${get_final_date_of_current_month(key_year, key_month)}-${sub_month.replace('/', '-')}"><i class="far fa-calendar-alt"></i> ${get_final_date_of_current_month(key_year, key_month)}/${sub_month}</td>           
                     </tr>
                 `)
             }
@@ -436,13 +434,13 @@ $(document).ready(function () {
                 let data_subs = JSON.parse($(this).find('script').text())
                 let html = ``
                 for (const item of data_subs) {
-                    html += `<tr class="sub-periods-row bg-secondary-light-5">
+                    html += `<tr class="sub-periods-row">
                                 <td></td>
                                 <td></td>
                                 <td><span class="code badge badge-outline badge-primary">${item?.['code']}</span></td>
                                 <td><span class="name text-primary">${item?.['name']}</span></td>   
-                                <td class="start_date text-primary text-center" data-value="${item?.['start_date']}"><i class="far fa-calendar"></i> ${moment(item?.['start_date']).format('DD/MM/YYYY')}</td>
-                                <td class="end_date text-primary text-center" data-value="${item?.['end_date']}"><i class="far fa-calendar"></i> ${moment(item?.['end_date']).format('DD/MM/YYYY')}</td>
+                                <td class="start_date text-primary text-center" data-value="${item?.['start_date']}"><i class="far fa-calendar-alt"></i> ${moment(item?.['start_date']).format('DD/MM/YYYY')}</td>
+                                <td class="end_date text-primary text-center" data-value="${item?.['end_date']}"><i class="far fa-calendar-alt"></i> ${moment(item?.['end_date']).format('DD/MM/YYYY')}</td>
                                 <td></td>
                             </tr>`
                 }

@@ -49,8 +49,14 @@ class GRLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                let res1 = ``;
+                let res2 = ``;
+                if (customRes?.['res1']) {
+                    res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
+                }
+                if (customRes?.['res2']) {
+                    res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
+                }
                 return $(`<span>${res1} ${res2}</span>`);
             }
         }
@@ -136,9 +142,8 @@ class GRLoadDataHandle {
     };
 
     static loadCustomAreaByType() {
-        let formSubmit = $('#frm_good_receipt_create');
         // Custom Area
-        for (let eleArea of formSubmit[0].querySelectorAll('.custom-area')) {
+        for (let eleArea of GRLoadDataHandle.$form[0].querySelectorAll('.custom-area')) {
             eleArea.setAttribute('hidden', 'true');
         }
         let idAreaShow = 'custom-area-' + String(GRLoadDataHandle.typeSelectEle.val());
@@ -547,7 +552,6 @@ class GRLoadDataHandle {
     };
 
     static loadNewRowsLotOrNewRowsSerial() {
-        let $form = $('#frm_good_receipt_create');
         let tablePO = GRDataTableHandle.tablePOProduct;
         let elePOChecked = tablePO[0].querySelector('.table-row-checkbox:checked');
         if (elePOChecked) {
@@ -556,7 +560,7 @@ class GRLoadDataHandle {
             let $row = tablePO.DataTable().row(rowIndex);
             let dataStore = $row.data();
             if ([1, 2].includes(dataStore?.['product_data']?.['general_traceability_method'])) {
-                if ($form.attr('data-method').toLowerCase() !== 'get') {
+                if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                     let eleWHChecked = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked');
                     if (eleWHChecked) {
                         let isAdditional = eleWHChecked.closest('tr').querySelector('.table-row-checkbox-additional').checked;
@@ -605,7 +609,6 @@ class GRLoadDataHandle {
     };
 
     static loadNewRowsLot() {
-        let $form = $('#frm_good_receipt_create');
         let tablePO = GRDataTableHandle.tablePOProduct;
         let elePOChecked = tablePO[0]?.querySelector('.table-row-checkbox:checked');
         if (elePOChecked) {
@@ -652,7 +655,7 @@ class GRLoadDataHandle {
                         }
                     }
                 }
-                if ($form.attr('data-method').toLowerCase() === 'get') {
+                if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
                     GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLot);
                 }
             }
@@ -701,14 +704,14 @@ class GRLoadDataHandle {
                 if (dataLot?.['expire_date']) {
                     date = moment(dataLot?.['expire_date']).format('DD/MM/YYYY');
                 }
-                eleExpire.value = date;
+                $(eleExpire).val(date);
             }
             if (eleManufacture) {
                 let date = '';
                 if (dataLot?.['manufacture_date']) {
                     date = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY');
                 }
-                eleManufacture.value = date;
+                $(eleManufacture).val(date);
             }
         }
         return true;
@@ -739,7 +742,6 @@ class GRLoadDataHandle {
     }
 
     static loadNewRowsSerial() {
-        let $form = $('#frm_good_receipt_create');
         let tablePO = GRDataTableHandle.tablePOProduct;
         let elePOChecked = tablePO[0]?.querySelector('.table-row-checkbox:checked');
         if (elePOChecked) {
@@ -785,7 +787,7 @@ class GRLoadDataHandle {
                         }
                     }
                 }
-                if ($form.attr('data-method').toLowerCase() === 'get') {
+                if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
                     GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableSerial);
                 }
             }
@@ -1120,12 +1122,11 @@ class GRLoadDataHandle {
         return true;
     };
 
-
     static loadDataRowTable($table) {
-        $table.DataTable().rows().every(function () {
-            let row = this.node();
-            GRLoadDataHandle.loadDataRow(row, $table);
-        });
+        // $table.DataTable().rows().every(function () {
+        //     let row = this.node();
+        //     GRLoadDataHandle.loadDataRow(row, $table);
+        // });
         GRCalculateHandle.calculateTable($table);
         return true;
     };
@@ -1233,7 +1234,6 @@ class GRLoadDataHandle {
 
     // LOAD DETAIL
     static loadDetailPage(data) {
-        let formSubmit = $('#frm_good_receipt_create');
         $('#good-receipt-title').val(data?.['title']);
         $('#good-receipt-note').val(data?.['remarks']);
         if (data?.['date_received']) {
@@ -1274,7 +1274,7 @@ class GRLoadDataHandle {
         }
         GRDataTableHandle.tableLineDetailPO.DataTable().rows.add(data?.['gr_products_data']).draw();
         GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailPO);
-        if (formSubmit.attr('data-method') === 'GET') {
+        if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLineDetailPO);
         }
         GRLoadDataHandle.loadDetailProducts(data);
@@ -1672,8 +1672,8 @@ class GRDataTableHandle {
                                         id="wh-${row?.['warehouse_id'].replace(/-/g, "")}"
                                         data-id="${row?.['warehouse_id']}" 
                                     >
-                                    <span class="badge badge-success badge-outline table-row-code">${row?.['title'] ? row?.['title'] : ''}</span>
                                     <label class="form-check-label table-row-title" for="wh-${row?.['warehouse_id'].replace(/-/g, "")}">${row?.['title'] ? row?.['title'] : ''}</label>
+                                    <span class="badge badge-light badge-outline table-row-code">${row?.['title'] ? row?.['title'] : ''}</span>
                                 </div>`;
                     }
                 },
@@ -1948,7 +1948,7 @@ class GRDataTableHandle {
                                     data-method="${GRDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
                                     required
-                                    disabled
+                                    readonly
                                 >
                                 </select>`;
                     }
@@ -1957,7 +1957,7 @@ class GRDataTableHandle {
                     targets: 4,
                     width: '9.11458333333%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" required disabled>`;
+                        return `<input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" required readonly>`;
                     }
                 },
                 {
@@ -2024,6 +2024,9 @@ class GRDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                GRLoadDataHandle.loadDataRow(row, GRDataTableHandle.tableLineDetailPO);
+            },
             drawCallback: function () {
                 GRDataTableHandle.dtbProductHDCustom();
             },
@@ -2267,7 +2270,7 @@ class GRStoreDataHandle {
                                 'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
                         }
                     }
-                    tableSerial.DataTable().row(rowIndex).data(rowData).draw();
+                    tableSerial.DataTable().row(rowIndex).data(rowData);
                     for (let ele of row.querySelectorAll('.date-picker')) {
                         GRLoadDataHandle.loadDatePicker($(ele));
                     }
@@ -2305,7 +2308,7 @@ class GRStoreDataHandle {
                                 'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
                         }
                     }
-                    tableLot.DataTable().row(rowIndex).data(rowData).draw();
+                    tableLot.DataTable().row(rowIndex).data(rowData);
                     for (let ele of row.querySelectorAll('.date-picker')) {
                         GRLoadDataHandle.loadDatePicker($(ele));
                     }
@@ -2330,12 +2333,16 @@ class GRStoreDataHandle {
             }
             rowData['warehouse_id'] = rowData?.['id'];
             rowData['warehouse_data'] = {'id': rowData?.['id'], 'title': rowData?.['title'], 'code': rowData?.['code']};
-            tableWH.DataTable().row(rowIndex).data(rowData).draw();
-            if (checked) {
-                row.querySelector('.table-row-checkbox').checked = true;
-            }
+            tableWH.DataTable().row(rowIndex).data(rowData);
             if (rowData?.['quantity_import'] > 0) {
                 gr_warehouse_data.push(rowData);
+            }
+
+            if (checked) {
+                let checkEle = row.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
             }
         });
 
@@ -2351,11 +2358,15 @@ class GRStoreDataHandle {
             if (row.querySelector('.table-row-import')) {
                 rowData['quantity_import'] = parseFloat(row.querySelector('.table-row-import').innerHTML);
             }
-            tablePR.DataTable().row(rowIndex).data(rowData).draw();
-            if (checked) {
-                row.querySelector('.table-row-checkbox').checked = true;
-            }
+            tablePR.DataTable().row(rowIndex).data(rowData);
             pr_products_data.push(rowData);
+
+            if (checked) {
+                let checkEle = row.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
+            }
         });
 
 
@@ -2373,8 +2384,12 @@ class GRStoreDataHandle {
                     rowData['gr_warehouse_data'] = [];
                 }
                 rowData['quantity_import'] = parseFloat(rowChecked.querySelector('.table-row-import').innerHTML);
-                tablePO.DataTable().row(rowIndex).data(rowData).draw();
-                rowChecked.querySelector('.table-row-checkbox').checked = true;
+                tablePO.DataTable().row(rowIndex).data(rowData);
+
+                let checkEle = rowChecked.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
             }
         }
         return true;

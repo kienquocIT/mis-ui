@@ -12,29 +12,29 @@ class Conditions {
     }
     static $url = $('#app-url-factory');
     static appMapUrl = {
-        'saledata.Account': {
+        'saledata.account': {
             'url': Conditions.$url.attr('data-md-account'),
             'keyResp': 'account_sale_list',
             'keyText': 'name',
         },
-        'saledata.Industry': {
+        'saledata.industry': {
             'url': Conditions.$url.attr('data-md-industry'),
             'keyResp': 'industry_list',
         },
-        'hr.Employee': {
+        'hr.employee': {
             'url': Conditions.$url.attr('data-md-employee'),
             'keyResp': 'employee_list',
             'keyText': 'full_name',
         },
-        'saledata.Product': {
+        'saledata.product': {
             'url': Conditions.$url.attr('data-md-product'),
             'keyResp': 'product_sale_list',
         },
-        'saledata.ProductType': {
+        'saledata.producttype': {
             'url': Conditions.$url.attr('data-md-product-type'),
             'keyResp': 'product_type_list',
         },
-        'saledata.ProductCategory': {
+        'saledata.productcategory': {
             'url': Conditions.$url.attr('data-md-product-category'),
             'keyResp': 'product_category_list',
         },

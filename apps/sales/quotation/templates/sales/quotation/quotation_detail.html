@@ -127,7 +127,7 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label class="form-label required" for="payment_term_id">{% trans 'Select Payment Terms' %}</label>
+                                <label class="form-label" for="payment_term_id">{% trans 'Select Payment Terms' %}</label>
                                 <select
                                         class="form-select"
                                         id="payment_term_id"
@@ -500,7 +500,7 @@
                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
                         <div class="modal-body">
-                            <div class="form-check" id="copy-quotation-option">
+                            <div class="form-check form-check-lg" id="copy-quotation-option">
                                 <input type="checkbox" class="form-check-input check-option" id="customCheck1" checked>
                                 <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation' %}</label>
                             </div>
@@ -588,7 +588,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-select-price" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-price" data-bs-dismiss="modal" data-zone="quotation_products_data" hidden>{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -608,7 +608,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_costs_data">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-select-cost" data-bs-dismiss="modal" data-zone="quotation_costs_data">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-cost" data-bs-dismiss="modal" data-zone="quotation_costs_data" hidden>{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -676,6 +676,9 @@
         data-md-product="{% url 'ProductForSaleListAPI' %}"
         data-md-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
         data-md-bom="{% url 'BOMOrderListAPI' %}"
+        data-md-uom="{% url "UnitOfMeasureListAPI" %}"
+        data-md-tax="{% url "TaxListAPI" %}"
+
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
     >
 

@@ -1,9 +1,10 @@
 $(function () {
     $(document).ready(function () {
 
-        let boxOpp = $('#opportunity_id');
-        let boxEmployee = $('#employee_inherit_id');
-        let $SO = $('#sale-order');
+        let $boxOpp = $('#opportunity_id');
+        let $boxEmployee = $('#employee_inherit_id');
+        let $boxSO = $('#sale_order_id');
+        let $boxLO = $('#lease_order_id');
         let btnRefresh = $('#btn-refresh-data');
         let eleTrans = $('#app-trans-factory');
         let $table = $('#table_final_acceptance_list');
@@ -11,6 +12,29 @@ $(function () {
         let $form = $('#frm_final_acceptance_update');
         let $btnS = $('#btn-save');
         let $eleDataFact = $('#app-data-factory');
+
+        function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+            let opts = {'allowClear': isClear};
+            $ele.empty();
+            if (data.length > 0) {
+                opts['data'] = data;
+            }
+            if (Object.keys(dataParams).length !== 0) {
+                opts['dataParams'] = dataParams;
+            }
+            if ($modal) {
+                opts['dropdownParent'] = $modal;
+            }
+            if (Object.keys(customRes).length !== 0) {
+                opts['templateResult'] = function (state) {
+                    let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                    let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                    return $(`<span>${res1} ${res2}</span>`);
+                }
+            }
+            $ele.initSelect2(opts);
+            return true;
+        }
 
         function loadCustomCss() {
             $('.accordion-item').css({
@@ -191,12 +215,19 @@ $(function () {
         }
 
         function loadFinalAcceptance() {
-            if ($SO.attr('data-detail')) {
-                let dataSO = JSON.parse($SO.attr('data-detail'));
+            let dataParams = {};
+            if ($boxSO.val() || $boxLO.val()) {
+                if ($boxSO.val()) {
+                    dataParams = {'sale_order_id': $boxSO.val()};
+                }
+                if ($boxLO.val()) {
+                    dataParams = {'lease_order_id': $boxLO.val()};
+                }
+
                 $.fn.callAjax2({
                         'url': $table.attr('data-url'),
                         'method': $table.attr('data-method'),
-                        'data': {'sale_order_id': dataSO?.['id']},
+                        'data': dataParams,
                         'isDropdown': true,
                         isLoading: true,
                     }
@@ -529,54 +560,17 @@ $(function () {
             return true;
         }
 
-        // function loadOpp() {
-        //     boxOpp.empty();
-        //     let dataParams = {};
-        //     if (boxEmployee.val()) {
-        //         dataParams['employee_inherit'] = boxEmployee.val();
-        //     }
-        //     boxOpp.initSelect2({
-        //         'dataParams': dataParams,
-        //         'allowClear': true,
-        //     });
-        // }
-
-        // function loadEmployee(dataEmployee = {}) {
-        //     boxEmployee.empty();
-        //     boxEmployee.initSelect2({
-        //         data: dataEmployee,
-        //         'allowClear': true,
-        //     });
-        // }
-
-        // function loadSO() {
-        //     boxSO.empty();
-        //     let dataParams = {'system_status': 3};
-        //     if (boxOpp.val()) {
-        //         dataParams['opportunity_id'] = boxOpp.val();
-        //     }
-        //     if (boxEmployee.val()) {
-        //         dataParams['employee_inherit_id'] = boxEmployee.val();
-        //     }
-        //     boxSO.initSelect2({
-        //         'dataParams': dataParams,
-        //         'allowClear': true,
-        //     });
-        // }
-
         function loadDataByEmployee() {
-            // loadSO();
-            // loadOpp();
             return true;
         }
 
         function loadDataByOpp() {
-            if (boxOpp.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(boxOpp, boxOpp.val());
+            if ($boxOpp.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx($boxOpp, $boxOpp.val());
                 if (dataSelected) {
-                    boxEmployee[0].setAttribute('readonly', 'true');
-                    boxEmployee.empty();
-                    boxEmployee.initSelect2({
+                    $boxEmployee[0].setAttribute('readonly', 'true');
+                    $boxEmployee.empty();
+                    $boxEmployee.initSelect2({
                         data: dataSelected?.['sale_person'],
                         'allowClear': true,
                     });
@@ -586,34 +580,10 @@ $(function () {
                     }
                 }
             } else {
-                boxEmployee[0].removeAttribute('readonly');
+                $boxEmployee[0].removeAttribute('readonly');
             }
             return true;
         }
-
-        // function loadDataBySO() {
-        //     if (boxSO.val()) {
-        //         let dataSelected = SelectDDControl.get_data_from_idx(boxSO, boxSO.val());
-        //         if (dataSelected) {
-        //             boxEmployee.empty();
-        //             boxEmployee.initSelect2({
-        //                 data: dataSelected?.['sale_person'],
-        //                 'allowClear': true,
-        //             });
-        //             boxEmployee[0].setAttribute('readonly', 'true');
-        //             boxOpp.empty();
-        //             boxOpp.initSelect2({
-        //                 data: dataSelected?.['opportunity'],
-        //                 'allowClear': true,
-        //             });
-        //             boxOpp[0].setAttribute('readonly', 'true');
-        //         }
-        //     } else {
-        //         boxEmployee[0].removeAttribute('readonly');
-        //         boxOpp[0].removeAttribute('readonly');
-        //     }
-        //     return true;
-        // }
 
         function filterFieldList(field_list, data_json) {
             for (let key in data_json) {
@@ -623,10 +593,9 @@ $(function () {
         }
 
         function loadInit() {
-            // loadEmployee();
-            // loadOpp();
-            // loadSO();
             loadCustomCss();
+            loadInitS2($boxSO, [], {'is_minimal': true}, null, true);
+            loadInitS2($boxLO, [], {'is_minimal': true}, null, true);
             loadDbl();
         }
 
@@ -648,18 +617,22 @@ $(function () {
         $.fn.initMaskMoney2();
 
         // Events
-        boxEmployee.on('change', function () {
+        $boxEmployee.on('change', function () {
             loadDataByEmployee();
         });
 
-        boxOpp.on('change', function () {
+        $boxOpp.on('change', function () {
             loadDataByOpp();
             loadFinalAcceptance();
         });
 
-        // boxSO.on('change', function () {
-        //     loadDataBySO();
-        // });
+        $boxSO.on('change', function () {
+            loadFinalAcceptance();
+        });
+
+        $boxLO.on('change', function () {
+            loadFinalAcceptance();
+        });
 
         // btnRefresh.on('click', function () {
         //     if (boxSO.val()) {

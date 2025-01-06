@@ -7,6 +7,7 @@ from typing import Union
 from urllib.parse import urlencode
 
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as trans
 from .utils import RandomGenerate
 
 
@@ -42,6 +43,7 @@ class MenuCommon:
             url += '?' + urlencode(self.params)
         return {
             'name': self.name,
+            'name_i18n': trans(self.name),
             'code': self.code if self.code else RandomGenerate.get_string(length=32),
             'view_name': self.view_name,
             'url': url,
@@ -413,8 +415,8 @@ class MenusCRM:
             ),
         ]
     )
-    CASH_OUTFLOW = MenuCommon(
-        name='Cashflow', code='menu_cash_outflow', view_name='',
+    ACCOUNT_PAYABLE = MenuCommon(
+        name='Account payable', code='menu_account_payable', view_name='',
         icon='<i class="fas fa-coins"></i>',
         child=[
             MenuCommon(
@@ -791,6 +793,34 @@ class MenusPartnerCenter:
         name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fa-solid fa-person"></i>',
     )
 
+class MenusFinancials:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    CASHFLOW = MenuCommon(
+        name='Cashflow', code='menu_cashflow', view_name='', icon='<i class="fas fa-exchange-alt"></i>',
+        child=[
+            MenuCommon(
+                name='Cash inflow', code='menu_cash_inflow', view_name='CashInflowList',
+                icon='<i class="fas fa-share"></i>',
+            ),
+            # MenuCommon(
+            #     name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
+            #     icon='<i class="fas fa-reply"></i>',
+            # ),
+        ],
+    )
+    GENERAL = MenuCommon(
+        name='General', code='menu_general', view_name='', icon='<i class="bi bi-link"></i>',
+        child=[
+            MenuCommon(
+                name='Reconciliation', code='menu_reconciliation', view_name='ReconList',
+                icon='<i class="bi bi-ui-checks"></i>',
+            ),
+        ],
+    )
+
+
 # Space Setup
 class SpaceCommon:
     name: str  # 'Sale'
@@ -856,7 +886,7 @@ class SpaceItem:
                 MenusCRM.PRODUCT,
                 MenusCRM.OPP_BOM,
                 MenusCRM.PRICING,
-                MenusCRM.CASH_OUTFLOW,
+                MenusCRM.ACCOUNT_PAYABLE,
                 MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
             ],
@@ -882,6 +912,16 @@ class SpaceItem:
                 MenuEOffice.ASSET_TOOLS,
                 MenuEOffice.MEETING,
             ],
+        ),
+        'financials': SpaceCommon(
+            'Financials',
+            'financials',
+            icon='<i class="fas fa-balance-scale"></i>',
+            menus=[
+                MenusFinancials.HOME,
+                MenusFinancials.CASHFLOW,
+                MenusFinancials.GENERAL,
+            ]
         ),
         'forms': SpaceCommon(
             'Forms',
@@ -1007,6 +1047,12 @@ class SpaceItem:
             return cls.mapping[space_code].data_menus
         return None
 
+    @classmethod
+    def get_menus(cls):
+        return {
+            key: value.data_menus for key, value in cls.mapping.items()
+        }
+
 
 class SpaceGroup:
     SPACE = SpaceCommon(
@@ -1014,6 +1060,7 @@ class SpaceGroup:
             SpaceItem.mapping['crm'],
             # SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
+            # SpaceItem.mapping['financials'],
             SpaceItem.mapping['forms'],
             SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],

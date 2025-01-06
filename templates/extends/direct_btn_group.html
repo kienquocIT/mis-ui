@@ -1,50 +1,24 @@
 {% load static i18n %}
 
-<div id="btn-group-direct" hidden class="btn-group mr-3" role="group">
-    <button type="button"
-            id="direct-first"
-            class="btn btn-rounded flush-soft-hover btn-flush-primary btn-icon text-primary btn-xs mr-1"
-            data-bs-toggle="tooltip"
-            data-bs-placement="bottom"
-            title="{% trans 'First doc' %}"
-    >
-        <span class="icon"><i class="fas fa-step-backward"></i></span>
+<div id="btn-group-direct" hidden class="btn-group-xs dropstart mr-3">
+    <button class="btn btn-xs btn-link dropdown-toggle" data-bs-toggle="dropdown" data-dropdown-animation aria-haspopup="true" aria-expanded="false">
+        {% trans 'Direct' %}
     </button>
-    <button type="button"
-            id="direct-previous"
-            class="btn btn-rounded flush-soft-hover btn-flush-primary btn-icon text-primary btn-xs mr-1"
-            data-bs-toggle="tooltip"
-            data-bs-placement="bottom"
-            title="{% trans 'Previous doc' %}"
-    >
-        <span class="icon"><i class="fas fa-caret-left"></i></span>
-    </button>
-    <button type="button"
-            id="direct-next"
-            class="btn btn-rounded flush-soft-hover btn-flush-primary btn-icon text-primary btn-xs mr-1"
-            data-bs-toggle="tooltip"
-            data-bs-placement="bottom"
-            title="{% trans 'Next doc' %}"
-    >
-        <span class="icon"><i class="fas fa-caret-right"></i></span>
-    </button>
-    <button type="button"
-            id="direct-last"
-            class="btn btn-rounded flush-soft-hover btn-flush-primary btn-icon text-primary btn-xs mr-1"
-            data-bs-toggle="tooltip"
-            data-bs-placement="bottom"
-            title="{% trans 'Last doc' %}"
-    >
-        <span class="icon"><i class="fas fa-step-forward"></i></span>
-    </button>
-    <button type="button"
-            id="direct-create"
-            class="btn btn-rounded flush-soft-hover btn-flush-primary btn-icon text-primary btn-xs"
-            data-bs-toggle="tooltip"
-            data-bs-placement="bottom"
-            title="{% trans 'Create' %}"
-            {% if not pk %}hidden{% endif %}
-    >
-        <span class="icon"><i class="fas fa-plus"></i></span>
-    </button>
+    <div role="menu" class="dropdown-menu">
+        <a id="direct-first" class="dropdown-item text-primary small" href="#">
+            <i class="dropdown-icon fas fa-step-backward"></i><span>{% trans 'First doc' %}</span>
+        </a>
+        <a id="direct-previous" class="dropdown-item text-primary small" href="#">
+            <i class="dropdown-icon fas fa-caret-left"></i><span>{% trans 'Previous doc' %}</span>
+        </a>
+        <a id="direct-next" class="dropdown-item text-primary small" href="#">
+            <i class="dropdown-icon fas fa-caret-right"></i><span>{% trans 'Next doc' %}</span>
+        </a>
+        <a id="direct-last" class="dropdown-item text-primary small" href="#">
+            <i class="dropdown-icon fas fa-step-forward"></i><span>{% trans 'Last doc' %}</span>
+        </a>
+        <a id="direct-create" class="dropdown-item text-primary small" href="#" {% if not pk %}hidden{% endif %}>
+            <i class="dropdown-icon fas fa-plus"></i><span>{% trans 'Create' %}</span>
+        </a>
+    </div>
 </div>

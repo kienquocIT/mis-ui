@@ -1,6 +1,5 @@
 $(document).ready(function () {
     new CompanyHandle().load();
-    loadFunctionNumberTable(FunctionNumberTableData);
 
     $("#frm-add-company").submit(function (event) {
         event.preventDefault();

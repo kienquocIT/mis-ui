@@ -19,17 +19,17 @@ $(document).ready(function(){
         pageLength: 50,
         autoWidth: false,
         scrollX: true,
+        rowIdx: true,
         columns: [
             {
                 data: 'baseline',
-                width: '3%',
-                render:  (row) => {
-                    return `<button class="btn-sh-baseline btn-flush-primary btn btn-icon btn-rounded flush-soft-hover" ${row.count === 0 ? 'disabled': ''}><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button>`
-                }
+                width: '1%',
+                orderable: false,
+                defaultContent: '',
             },
             {
                 data: 'code',
-                width: '7%',
+                width: '9%',
                 render: (row, type, data) => {
                     const url = $EmTable.attr('data-detail').format_url_with_uuid(data.id)
                     let badge = '';
@@ -38,7 +38,10 @@ $(document).ready(function(){
                         $('#url-factory').attr('data-img-url')}" alt="baseline">${data.baseline.count}</span>`
                     }
                     let html = `<span class="badge badge-primary position-relative">${row}${badge}</span>`
-                    return row ? `<a href="${url}" class="link-primary underline_hover">${html}</a>` : '--'
+                    let htmlCode = `<a href="${url}" class="link-primary underline_hover">${html}</a>`
+                    if(data.baseline.count > 0)
+                        htmlCode += `<span class="btn-sh-baseline"><i class="fas fa-chevron-right"></i></span>`;
+                    return htmlCode
                 }
             },
             {
@@ -128,7 +131,6 @@ $(document).ready(function(){
                 if (row.child.isShown()) row.child.hide();
                 else{
                     row.child(handleBaseline.BaselineFormat(row.data().baseline['project_data'])).show();
-                    tr.next().addClass('baseline_tr');
                 }
             });
         },
@@ -140,10 +142,10 @@ $(document).ready(function(){
             for (let item of d.reverse()){
                 let url = $('#url-factory').attr('data-baseline-url').format_url_with_uuid(item.id)
                 let badge = `<span class="badge-child badge-child-blue justify-content-center">${item.version}</span>`
-                tr += `<tr><td style="width: 3%"><button class="btn-flush-primary btn btn-icon btn-rounded flush-soft-hover"><span class="icon"></span></button></td>`+
-                    `   <td style="width: 7%"><a href="${url}" target="_blank"><span class="badge badge-outline badge-soft-primary position-relative">${item.code}${badge}</span><a/></td>`+
-                    `   <td style="width: 23.5%"><span>${item.title}</span></td>`+
-                    `   <td style="width: 16%;text-align:center"><span>${item['project_pm'].full_name}</span></td>`+
+                tr += `<tr class="baseline_tr"><td style="width: 1%"><span style="user-select: none;color:transparent">1</span></td>`+
+                    `   <td style="width: 9%"><a href="${url}" target="_blank"><span class="badge badge-outline badge-soft-primary position-relative">${item.code}${badge}</span><a/></td>`+
+                    `   <td style="width: 25%;"><p style="white-space: pre-wrap">${ item.title}</p></td>`+
+                    `   <td style="width: 17%;text-align:center"><span>${item['project_pm'].full_name}</span></td>`+
                     `   <td style="width: 10%;text-align:center"><span>${moment(item.start_date).format('DD/MM/YYYY')}</span></td>`+
                     `   <td style="width: 10%;text-align:center"><span>${moment(item.finish_date).format('DD/MM/YYYY')}</span></td>`+
                     `   <td style="width: 10%;text-align:center"><span>${item['completion_rate']}%</span></td>`+
@@ -151,7 +153,7 @@ $(document).ready(function(){
                     `   <td style="width: 5%;text-align:center"><span>${item['tasks']?.['all']} (${item['tasks']?.['completed']})</span></td>`+
                     ` <td style="width: 8%;text-align:center"><span class="badge badge-${status_data[item.system_status]['cls']}">${status_data[item.system_status]['txt']}</span></td></tr>`
             }
-            return `<div class="wrap-baseline"><table class="table nowrap w-100 min-w-1500p">${tr}</table></div>`
+            return $(`${tr}`)
         }
     }
 });

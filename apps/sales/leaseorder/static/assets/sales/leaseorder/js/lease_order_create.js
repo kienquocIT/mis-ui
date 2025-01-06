@@ -99,7 +99,6 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
-            LeaseOrderLoadDataHandle.loadReInitDataTableProduct();
         });
 
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
@@ -333,7 +332,6 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
-            LeaseOrderLoadDataHandle.loadReInitDataTableExpense();
         });
 
         $('#btn-add-expense-quotation-create').on('click', function (e) {
@@ -744,7 +742,6 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
-            LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
         });
 
         $('#btn-add-payment-stage').on('click', function () {
@@ -781,9 +778,6 @@ $(function () {
             }
             if ($(this).hasClass('table-row-issue-invoice')) {
                 LeaseOrderLoadDataHandle.loadChangePSIssueInvoice(this);
-            }
-            if ($(this).hasClass('table-row-value-total')) {
-                LeaseOrderLoadDataHandle.loadChangePSValueTotal(this);
             }
             if ($(this).hasClass('table-row-due-date')) {
                 let row = this.closest('tr');
@@ -880,9 +874,6 @@ $(function () {
                     required: true,
                 },
                 contact_id: {
-                    required: true,
-                },
-                payment_term_id: {
                     required: true,
                 },
             },

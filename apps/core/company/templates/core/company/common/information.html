@@ -1,0 +1,97 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12 col-md-2 col-lg-2">
+        <div class="row">
+            <div class="col-12 col-ms-6 col-lg-6">
+                <div class="form-group">
+                    <label for="company_logo" class="form-label">{% trans 'Logo' %}</label>
+                    <div class="w-100 d-flex justify-content-center align-items-center overflow-hidden">
+                        <input id="company_logo"
+                               class="form-control"
+                               type="file"
+                               data-url="{% url 'CompanyLogoUpload' pk=pk %}"
+                               data-method="PUT"
+                               data-max-file-size="3M"
+                               data-allowed-file-extensions="jpeg jpg png gif"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-ms-6 col-lg-6">
+                <div class="form-group">
+                    <label for="company_icon" class="form-label">{% trans 'Icon' %}</label>
+                    <div class="w-100 d-flex justify-content-center align-items-center overflow-hidden">
+                        <input id="company_icon"
+                               class="form-control"
+                               type="file"
+                               data-url="{% url 'CompanyLogoUpload' pk=pk %}"
+                               data-method="PUT"
+                               data-max-file-size="100K"
+                               data-allowed-file-extensions="jpeg jpg png gif"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-7 col-lg-7">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'Company information' %}</h5>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label required" for="code">{% trans 'Company code' %}</label>
+                    <input type="text" class="form-control" id="code" oninput="this.value=this.value.toUpperCase()" required>
+                </div>
+            </div>
+            <div class="col-12 col-md-8 col-lg-8">
+                <div class="form-group">
+                    <label class="form-label required" for="title">{% trans 'Company name' %}</label>
+                    <input type="text" class="form-control" id="title" required>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="fax">{% trans 'Fax' %}</label>
+                    <input type="text" class="form-control" id="fax">
+                </div>
+            </div>
+            <div class="col-12 col-md-8 col-lg-8">
+                <div class="form-group">
+                    <label class="form-label required" for="address">{% trans 'Address' %}</label>
+                    <input data-bs-toggle="modal"
+                           data-bs-target="#modal-company-address"
+                           class="form-control form-control-line text-primary"
+                           readonly
+                           placeholder="{% trans 'Click to edit' %}"
+                           id="address">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'Company representative' %}</h5>
+            </div>
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label required" for="representative_fullname">{% trans 'Fullname' %}</label>
+                    <input type="text" class="form-control" id="representative_fullname" required/>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label required" for="phone">{% trans 'Phone number' %}</label>
+                    <input type="text" class="form-control" id="phone" required>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label required" for="email">{% trans 'Email' %}</label>
+                    <input type="text" class="form-control" id="email" required>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

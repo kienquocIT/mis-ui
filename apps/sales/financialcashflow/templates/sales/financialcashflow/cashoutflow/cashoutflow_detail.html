@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Cash outflow' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'CashInflowUpdate' pk=pk %}" id="btn-edit">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/financialcashflow/js/cashoutflow/cashoutflow_common.js' %}"></script>
+    <script src="{% static 'assets/sales/financialcashflow/js/cashoutflow/cashoutflow_detail.js' %}"></script>
+{% endblock %}

@@ -11,8 +11,8 @@ $(document).ready(function () {
     let current_period = {}
     if (current_period_Ele.text() !== '') {
         current_period = JSON.parse(current_period_Ele.text())
-        getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-        periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+        getMonthOrder(current_period)
+        periodMonthEle.val(current_period?.['current_sub']?.['order']).trigger('change');
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
     let $is_project = false
@@ -43,24 +43,17 @@ $(document).ready(function () {
     let PERIODIC_CLOSED = false
 
     function get_final_date_of_current_month(filter_year, filter_month) {
-        let currentDate = new Date();
-
-        let year = currentDate.getFullYear();
-
-        let nextMonth = currentDate.getMonth() + 1;
-
+        let year = current_period?.['fiscal_year'];
+        let nextMonth = current_period?.['current_sub']?.['current_month'];
         if (filter_year && filter_month) {
             year = filter_year;
             nextMonth = filter_month;
         }
-
-        if (nextMonth > 11) {
+        if (nextMonth > 12) {
             year++;
             nextMonth = 0;
         }
-
         let firstDayOfNextMonth = new Date(year, nextMonth, 0);
-
         return firstDayOfNextMonth.getDate();
     }
 
@@ -80,38 +73,24 @@ $(document).ready(function () {
         }
     })
 
-    function getMonthOrder(space_month, fiscal_year) {
+    function getMonthOrder(period_data) {
         periodMonthEle.html(``)
-        let data = []
-        for (let i = 0; i < 12; i++) {
-            let year_temp = fiscal_year
-            let trans_order = i + 1 + space_month
-            if (trans_order > 12) {
-                trans_order -= 12
-                year_temp += 1
-            }
-
-            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() + 1) {
-                if (year_temp === new Date().getFullYear()) {
-                    periodMonthEle.append(`<option value="${i + 1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
-                    data.push({
-                        'id': i + 1,
-                        'title': trans_script.attr(`data-trans-m${trans_order}th`),
-                        'month': i + 1,
-                        'year': year_temp
-                    })
-                }
-            }
+        let data = period_data?.['subs'] ? period_data?.['subs'] : []
+        let select_data = []
+        for (let i = 0; i < data.length; i++) {
+            let option_month = moment(data[i]?.['start_date']).month() + 1
+            let option_year = moment(data[i]?.['start_date']).year()
+            periodMonthEle.append(`<option value="${data[i]?.['order']}">${trans_script.attr(`data-trans-m${option_month}th`)}</option>`)
+            select_data.push({
+                'id': i + 1,
+                'title': trans_script.attr(`data-trans-m${option_month}th`),
+                'month': i + 1,
+                'year': option_year
+            })
         }
-        data.push({
-            'id': '',
-            'title': 'Select...',
-            'month': 0,
-            'year': 0,
-        })
         periodMonthEle.empty();
         periodMonthEle.initSelect2({
-            data: data,
+            data: select_data,
             templateResult: function (state) {
                 let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
                 return $(`<span>${state.text} ${groupHTML}</span>`);
@@ -119,7 +98,7 @@ $(document).ready(function () {
         });
     }
 
-    function LoadPeriod(ele, data) {
+    function LoadPeriod(ele, data=null) {
         ele.initSelect2({
             ajax: {
                 url: ele.attr('data-url'),
@@ -128,7 +107,7 @@ $(document).ready(function () {
             callbackDataResp: function (resp, keyResp) {
                 let res = []
                 for (const item of resp.data[keyResp]) {
-                    if (item?.['fiscal_year'] <= new Date().getFullYear()) {
+                    if (item?.['fiscal_year'] <= current_period['fiscal_year']) {
                         res.push(item)
                     }
                 }
@@ -141,7 +120,7 @@ $(document).ready(function () {
         }).on('change', function () {
             let selected_option = SelectDDControl.get_data_from_idx(ele, ele.val())
             if (selected_option) {
-                getMonthOrder(selected_option['space_month'], selected_option?.['fiscal_year'])
+                getMonthOrder(selected_option)
             }
         })
     }
@@ -256,15 +235,14 @@ $(document).ready(function () {
                                     data-bs-toggle="popover"
                                     data-bs-trigger="hover focus"
                                     data-bs-html="true"
-                                    data-bs-content="
-                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-code')}</span>: <span class='badge badge-primary badge-sm'>${row?.['product_code']}</span>
-                                    <br>
-                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-vm')}</span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}<span>
-                                    "
+                                    data-bs-content="<span class='text-decoration-underline'>
+                                                        ${trans_script.attr('data-trans-vm')}
+                                                        </span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}
+                                                    </span>"
                                     class="popover-prd text-secondary">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
-                                <span class="${row?.['type']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
+                                <span data-bs-toggle="tooltip" title="${row?.['product_code']}" class="${row?.['type']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
                             `
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
@@ -1400,8 +1378,8 @@ $(document).ready(function () {
         let current_period = {}
         if (current_period_Ele.text() !== '') {
             current_period = JSON.parse(current_period_Ele.text())
-            getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-            periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+            getMonthOrder(current_period)
+            periodMonthEle.val(current_period?.['current_sub']?.['order']).trigger('change');
         }
     })
 

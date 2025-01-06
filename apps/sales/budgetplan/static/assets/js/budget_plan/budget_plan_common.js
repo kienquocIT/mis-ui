@@ -427,8 +427,8 @@ $(document).on("change", '.belong-q4', function () {
 })
 
 function Disabled() {
-    $('input').prop('readonly', true).prop('disabled', true)
-    $('select').prop('disabled', true)
+    $('form input').prop('readonly', true).prop('disabled', true)
+    $('form select').prop('disabled', true)
 }
 
 function LoadDetailBudgetPlan(option, dataParam={}) {

@@ -372,8 +372,8 @@ class ReconAction {
     // detail
     static DisabledDetailPage(option) {
         if (option === 'detail') {
-            $('input').prop('readonly', true).prop('disabled', true);
-            $('select').prop('readonly', true).prop('disabled', true);
+            $('form input').prop('readonly', true).prop('disabled', true);
+            $('form select').prop('disabled', true);
         }
     }
 }

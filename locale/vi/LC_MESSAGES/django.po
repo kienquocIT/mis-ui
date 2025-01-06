@@ -8326,11 +8326,11 @@ msgstr "Vai trò Nhà cung cấp"
 
 #
 msgid "Bank Account Information"
-msgstr "Thông tin Tài khoản ngân hàng"
+msgstr "Thông tin tài khoản ngân hàng"
 
 #
 msgid "Credit Card Account Information"
-msgstr "Thông tin Tài khoản Credit Card"
+msgstr "Thông tin thẻ tín dụng"
 
 #
 msgid "Add new bank account"
@@ -8338,7 +8338,7 @@ msgstr "Thêm tài khoản ngân hàng"
 
 #
 msgid "Add new credit card"
-msgstr "Thêm Credit card"
+msgstr "Thêm thẻ tín dụng"
 
 #
 msgid "Go to Stage"

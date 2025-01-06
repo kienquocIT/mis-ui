@@ -1168,6 +1168,59 @@ class QuotationLoadDataHandle {
         return true;
     };
 
+    static loadReInitDataTableCost() {
+        let tableData = [];
+        let dataDetail = {};
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            let eleDetail = $('#quotation-detail-data');
+            if (eleDetail && eleDetail.length > 0) {
+                if (eleDetail.val()) {
+                    dataDetail = JSON.parse(eleDetail.val());
+                    if (dataDetail?.['quotation_costs_data']) {
+                        tableData = dataDetail?.['quotation_costs_data'];
+                    }
+                    if (dataDetail?.['sale_order_costs_data']) {
+                        tableData = dataDetail?.['sale_order_costs_data'];
+                    }
+                }
+            }
+        } else {
+            QuotationDataTableHandle.$tableCost.DataTable().rows().every(function () {
+                let row = this.node();
+                let rowIndex = QuotationDataTableHandle.$tableCost.DataTable().row(row).index();
+                let $row = QuotationDataTableHandle.$tableCost.DataTable().row(rowIndex);
+                let dataRow = $row.data();
+
+                tableData.push(dataRow);
+            });
+        }
+        QuotationDataTableHandle.$tableCost.DataTable().destroy();
+        QuotationDataTableHandle.dataTableCost();
+        if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+            let eleDetail = $('#quotation-detail-data');
+            if (eleDetail && eleDetail.length > 0) {
+                if (eleDetail.val()) {
+                    dataDetail = JSON.parse(eleDetail.val());
+                    if (dataDetail?.['quotation_costs_data']) {
+                        tableData = dataDetail?.['quotation_costs_data'];
+                    }
+                    if (dataDetail?.['sale_order_costs_data']) {
+                        tableData = dataDetail?.['sale_order_costs_data'];
+                    }
+                }
+            }
+        }
+        QuotationDataTableHandle.$tableCost.DataTable().rows.add(tableData).draw();
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            QuotationLoadDataHandle.loadTableDisabled(QuotationDataTableHandle.$tableCost);
+        }
+        QuotationLoadDataHandle.loadDropDowns(QuotationDataTableHandle.$tableCost);
+        $.fn.initMaskMoney2();
+        // set again WF runtime
+        QuotationLoadDataHandle.loadSetWFRuntimeZone();
+        return true;
+    };
+
     static loadReInitDataTableExpense() {
         let tableData = [];
         let dataDetail = {};
@@ -3032,10 +3085,14 @@ class QuotationDataTableHandle {
     static dataTableCost(data) {
         // init dataTable
         QuotationDataTableHandle.$tableCost.DataTableDefault({
+            styleDom: 'hide-foot',
             data: data ? data : [],
+            ordering: false,
             paging: false,
             info: false,
             searching: false,
+            autoWidth: true,
+            scrollX: true,
             columns: [
                 {
                     targets: 0,
@@ -4019,8 +4076,8 @@ class QuotationDataTableHandle {
                             return `<div class="d-flex align-items-center ml-2">
                                         <div class="form-check form-check-lg">
                                             <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
-                                            <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
                                             <label class="form-check-label table-row-title" for="s-product-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                            <span class="badge badge-light badge-outline">${row?.['code'] ? row?.['code'] : ''}</span>
                                         </div>
                                     </div>`;
                         }
@@ -4222,6 +4279,7 @@ class QuotationCalculateCaseHandle {
         // Sale order: discount on row not apply to subtotal => pretax not includes discount on row => discount on total = (pretax - discountRows) * %discountTotalRate
         let form = QuotationLoadDataHandle.$form[0];
         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+        let tableCostWrapper = document.getElementById('datable-quotation-create-cost_wrapper');
         let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
         let pretaxAmount = 0;
         let discountAmount = 0;
@@ -4254,13 +4312,17 @@ class QuotationCalculateCaseHandle {
                 }
             }
         } else if (table.id === 'datable-quotation-create-cost') {
-            let tableCost = document.getElementById('datable-quotation-create-cost');
-            elePretaxAmount = tableCost.querySelector('.quotation-create-cost-pretax-amount');
-            eleTaxes = tableCost.querySelector('.quotation-create-cost-taxes');
-            eleTotal = tableCost.querySelector('.quotation-create-cost-total');
-            elePretaxAmountRaw = tableCost.querySelector('.quotation-create-cost-pretax-amount-raw');
-            eleTaxesRaw = tableCost.querySelector('.quotation-create-cost-taxes-raw');
-            eleTotalRaw = tableCost.querySelector('.quotation-create-cost-total-raw');
+            if (tableCostWrapper) {
+                let tableCostFt = tableCostWrapper.querySelector('.dataTables_scrollFoot');
+                if (tableCostFt) {
+                    elePretaxAmount = tableCostFt.querySelector('.quotation-create-cost-pretax-amount');
+                    eleTaxes = tableCostFt.querySelector('.quotation-create-cost-taxes');
+                    eleTotal = tableCostFt.querySelector('.quotation-create-cost-total');
+                    elePretaxAmountRaw = tableCostFt.querySelector('.quotation-create-cost-pretax-amount-raw');
+                    eleTaxesRaw = tableCostFt.querySelector('.quotation-create-cost-taxes-raw');
+                    eleTotalRaw = tableCostFt.querySelector('.quotation-create-cost-total-raw');
+                }
+            }
         } else if (table.id === 'datable-quotation-create-expense') {
             if (tableExpenseWrapper) {
                 let tableExpenseFt = tableExpenseWrapper.querySelector('.dataTables_scrollFoot');
@@ -6005,6 +6067,10 @@ class QuotationStoreDataHandle {
             datas = QuotationSubmitHandle.setupDataProduct();
             $table = QuotationDataTableHandle.$tableProduct;
         }
+        if (type === 2) {
+            datas = QuotationSubmitHandle.setupDataCost();
+            $table = QuotationDataTableHandle.$tableCost;
+        }
         if (type === 3) {
             datas = QuotationSubmitHandle.setupDataExpense();
             $table = QuotationDataTableHandle.$tableExpense;
@@ -6030,6 +6096,9 @@ class QuotationStoreDataHandle {
             });
             if (type === 1) {
                 QuotationLoadDataHandle.loadReInitDataTableProduct();
+            }
+            if (type === 2) {
+                QuotationLoadDataHandle.loadReInitDataTableCost();
             }
             if (type === 3) {
                 QuotationLoadDataHandle.loadReInitDataTableExpense();
@@ -6277,8 +6346,11 @@ class QuotationSubmitHandle {
                     rowData['product_code'] = dataProduct?.['code'];
                     rowData['product_data'] = dataProduct;
                 }
-                if (row.querySelector('.table-row-supplied-by')) {
-                    rowData['supplied_by'] = parseInt(row.querySelector('.table-row-supplied-by').value);
+                let suppliedByEle = row.querySelector('.table-row-supplied-by');
+                if (suppliedByEle) {
+                    if ($(suppliedByEle).val()) {
+                        rowData['supplied_by'] = parseInt($(suppliedByEle).val());
+                    }
                 }
                 let eleUOM = row.querySelector('.table-row-uom');
                 if ($(eleUOM).val()) {
@@ -6655,31 +6727,33 @@ class QuotationSubmitHandle {
             let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
             if (tableProductWrapper) {
                 let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-                _form.dataForm['total_product_pretax_amount'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw').value);
-                if (!_form.dataForm['total_product_pretax_amount']) {
-                    _form.dataForm['total_product_pretax_amount'] = 0;
-                }
-                let totalProductDiscountRate = tableProductFt.querySelector('.quotation-create-product-discount').value;
-                if (totalProductDiscountRate) {
-                    _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
-                } else {
-                    _form.dataForm['total_product_discount_rate'] = 0;
-                }
-                _form.dataForm['total_product_discount'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-discount-amount-raw').value);
-                if (!_form.dataForm['total_product_discount']) {
-                    _form.dataForm['total_product_discount'] = 0;
-                }
-                _form.dataForm['total_product_tax'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-taxes-raw').value);
-                if (!_form.dataForm['total_product_tax']) {
-                    _form.dataForm['total_product_tax'] = 0;
-                }
-                _form.dataForm['total_product'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
-                if (!_form.dataForm['total_product']) {
-                    _form.dataForm['total_product'] = 0;
-                }
-                _form.dataForm['total_product_revenue_before_tax'] = parseFloat(tableProductFt.querySelector('.quotation-final-revenue-before-tax').value);
-                if (!_form.dataForm['total_product_revenue_before_tax']) {
-                    _form.dataForm['total_product_revenue_before_tax'] = 0;
+                if (tableProductFt) {
+                    _form.dataForm['total_product_pretax_amount'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw').value);
+                    if (!_form.dataForm['total_product_pretax_amount']) {
+                        _form.dataForm['total_product_pretax_amount'] = 0;
+                    }
+                    let totalProductDiscountRate = tableProductFt.querySelector('.quotation-create-product-discount').value;
+                    if (totalProductDiscountRate) {
+                        _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
+                    } else {
+                        _form.dataForm['total_product_discount_rate'] = 0;
+                    }
+                    _form.dataForm['total_product_discount'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-discount-amount-raw').value);
+                    if (!_form.dataForm['total_product_discount']) {
+                        _form.dataForm['total_product_discount'] = 0;
+                    }
+                    _form.dataForm['total_product_tax'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-taxes-raw').value);
+                    if (!_form.dataForm['total_product_tax']) {
+                        _form.dataForm['total_product_tax'] = 0;
+                    }
+                    _form.dataForm['total_product'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
+                    if (!_form.dataForm['total_product']) {
+                        _form.dataForm['total_product'] = 0;
+                    }
+                    _form.dataForm['total_product_revenue_before_tax'] = parseFloat(tableProductFt.querySelector('.quotation-final-revenue-before-tax').value);
+                    if (!_form.dataForm['total_product_revenue_before_tax']) {
+                        _form.dataForm['total_product_revenue_before_tax'] = 0;
+                    }
                 }
             }
         }
@@ -6694,18 +6768,23 @@ class QuotationSubmitHandle {
         if (quotation_costs_data_setup.length > 0) {
             _form.dataForm[quotation_costs_data] = quotation_costs_data_setup;
             // total cost
-            let tableCost = document.getElementById('datable-quotation-create-cost');
-            _form.dataForm['total_cost_pretax_amount'] = parseFloat(tableCost.querySelector('.quotation-create-cost-pretax-amount-raw').value);
-            if (!_form.dataForm['total_cost_pretax_amount']) {
-                _form.dataForm['total_cost_pretax_amount'] = 0;
-            }
-            _form.dataForm['total_cost_tax'] = parseFloat(tableCost.querySelector('.quotation-create-cost-taxes-raw').value);
-            if (!_form.dataForm['total_cost_tax']) {
-                _form.dataForm['total_cost_tax'] = 0;
-            }
-            _form.dataForm['total_cost'] = parseFloat(tableCost.querySelector('.quotation-create-cost-total-raw').value);
-            if (!_form.dataForm['total_cost']) {
-                _form.dataForm['total_cost'] = 0;
+            let tableCostWrapper = document.getElementById('datable-quotation-create-cost_wrapper');
+            if (tableCostWrapper) {
+                let tableCostFt = tableCostWrapper.querySelector('.dataTables_scrollFoot');
+                if (tableCostFt) {
+                    _form.dataForm['total_cost_pretax_amount'] = parseFloat(tableCostFt.querySelector('.quotation-create-cost-pretax-amount-raw').value);
+                    if (!_form.dataForm['total_cost_pretax_amount']) {
+                        _form.dataForm['total_cost_pretax_amount'] = 0;
+                    }
+                    _form.dataForm['total_cost_tax'] = parseFloat(tableCostFt.querySelector('.quotation-create-cost-taxes-raw').value);
+                    if (!_form.dataForm['total_cost_tax']) {
+                        _form.dataForm['total_cost_tax'] = 0;
+                    }
+                    _form.dataForm['total_cost'] = parseFloat(tableCostFt.querySelector('.quotation-create-cost-total-raw').value);
+                    if (!_form.dataForm['total_cost']) {
+                        _form.dataForm['total_cost'] = 0;
+                    }
+                }
             }
         }
         // EXPENSE
@@ -6716,17 +6795,19 @@ class QuotationSubmitHandle {
             let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
             if (tableExpenseWrapper) {
                 let tableExpenseFt = tableExpenseWrapper.querySelector('.dataTables_scrollFoot');
-                _form.dataForm['total_expense_pretax_amount'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount-raw').value);
-                if (!_form.dataForm['total_expense_pretax_amount']) {
-                    _form.dataForm['total_expense_pretax_amount'] = 0;
-                }
-                _form.dataForm['total_expense_tax'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-taxes-raw').value);
-                if (!_form.dataForm['total_expense_tax']) {
-                    _form.dataForm['total_expense_tax'] = 0;
-                }
-                _form.dataForm['total_expense'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-total-raw').value);
-                if (!_form.dataForm['total_expense']) {
-                    _form.dataForm['total_expense'] = 0;
+                if (tableExpenseFt) {
+                    _form.dataForm['total_expense_pretax_amount'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount-raw').value);
+                    if (!_form.dataForm['total_expense_pretax_amount']) {
+                        _form.dataForm['total_expense_pretax_amount'] = 0;
+                    }
+                    _form.dataForm['total_expense_tax'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-taxes-raw').value);
+                    if (!_form.dataForm['total_expense_tax']) {
+                        _form.dataForm['total_expense_tax'] = 0;
+                    }
+                    _form.dataForm['total_expense'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-total-raw').value);
+                    if (!_form.dataForm['total_expense']) {
+                        _form.dataForm['total_expense'] = 0;
+                    }
                 }
             }
         }

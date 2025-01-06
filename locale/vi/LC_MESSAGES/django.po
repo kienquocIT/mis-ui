@@ -10162,3 +10162,7 @@ msgstr "Tổng cấn trừ"
 #
 msgid "Reconciliation total must be 0"
 msgstr "Tổng cấn trừ phải bằng 0"
+
+#
+msgid "Upper manager"
+msgstr "Quản lý cấp trên"

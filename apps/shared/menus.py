@@ -789,7 +789,6 @@ class MenusPartnerCenter:
     )
     LISTS = MenuCommon(
         name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fa-solid fa-person"></i>',
-
     )
 
 # Space Setup

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'List' %}{% endblock %}
+{% block pageAction %}
+{#    <a href="{% url 'ListCreate' %}"#}
+{#       data-bs-toggle="tooltip"#}
+{#       data-bs-placement="top"#}
+{#       title="{% trans 'Create List' %}"#}
+{#       id="create_partnercenter_list_btn"#}
+{#       data-bs-original-title="Add List">#}
+{#            <button type="button" class="btn btn-outline-primary">#}
+{#                <span>#}
+{#                    <span>{% trans 'Add' %}</span>#}
+{#                    <span class="icon">#}
+{#                        <i class="fa-solid fa-plus"></i>#}
+{#                    </span>#}
+{#                </span>#}
+{#            </button>#}
+{#    </a>#}
+{% endblock %}
+{% block pageContent %}
+    <table
+            id="table_partnercenter_result_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'ListResultListAPI' pk=pk %}"
+            data-method="get"
+    >
+        <thead>
+            <tr id="table-row-header">
+
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input
+            type="text" id="app-urls-factory"
+    >
+    {{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/partnercenter/list/result_list.js' %}"></script>
+{% endblock %}

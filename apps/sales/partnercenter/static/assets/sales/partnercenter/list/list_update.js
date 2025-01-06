@@ -1,7 +1,7 @@
 $(document).ready(function () {
     partnerCenterListHandlerInstance = new PartnerCenterListHandler()
 
-    partnerCenterListHandlerInstance.fetchDataObject()
+    partnerCenterListHandlerInstance.fetchData(false)
     partnerCenterListHandlerInstance.addEventBinding()
     partnerCenterListHandlerInstance.setUpFormSubmit()
 })

@@ -799,3 +799,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     #LIST
     PARTNER_CENTER_LIST_DATA_OBJ_LIST = StringUrl('partner-center/data-obj-list')
     LIST_LIST = StringUrl('partner-center/list/list')
+    LIST_DETAIL = StringUrl('partner-center/list/detail')
+    LIST_RESULT_LIST = StringUrl('partner-center/list/result-list')
+    LIST_EMPLOYEE_LIST = StringUrl('partner-center/list/employee-list')
+    LIST_CONTACT_LIST = StringUrl('partner-center/list/contact-list')
+    LIST_INDUSTRY_LIST = StringUrl('partner-center/list/industry-list')

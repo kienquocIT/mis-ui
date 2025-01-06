@@ -250,15 +250,14 @@ $(document).ready(function () {
                                     data-bs-toggle="popover"
                                     data-bs-trigger="hover focus"
                                     data-bs-html="true"
-                                    data-bs-content="
-                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-code')}</span>: <span class='badge badge-primary badge-sm'>${row?.['product_code']}</span>
-                                    <br>
-                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-vm')}</span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}<span>
-                                    "
+                                    data-bs-content="<span class='text-decoration-underline'>
+                                                        ${trans_script.attr('data-trans-vm')}
+                                                        </span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}
+                                                    </span>"
                                     class="popover-prd text-secondary">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
-                                <span class="${row?.['type']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
+                                <span data-bs-toggle="tooltip" title="${row?.['product_code']}" class="${row?.['type']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
                             `
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`

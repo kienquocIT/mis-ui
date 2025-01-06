@@ -103,7 +103,6 @@ $(document).ready(function () {
     function loadPeriodsList() {
         TablePeriodsConfig.DataTable().clear().destroy()
         let frm = new SetupFormSubmit(TablePeriodsConfig);
-        let today = new Date();
         TablePeriodsConfig.DataTableDefault(
             {
                 useDataServer: true,
@@ -114,7 +113,7 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('periods_list')) {
-                            // console.log(resp.data['periods_list'])
+                            console.log(resp.data['periods_list'])
                             return resp.data['periods_list'] ? resp.data['periods_list'] : []
                         }
                         throw Error('Call data raise errors.')
@@ -150,8 +149,7 @@ $(document).ready(function () {
                         className: 'wrap-text',
                         render: (data, type, row) => {
                             let html = ''
-                            let date_end = new Date(row?.['subs'][row?.['subs'].length-1]?.['end_date']);
-                            if (today <= date_end) {
+                            if (Object.keys(row?.['current_sub']).length > 0) {
                                 html = `<span class="text-success"><i class="bi bi-caret-right-fill"></i></span>`
                             }
                             return `${html}<span class="fw-bold">${row?.['title']}</span>`
@@ -166,7 +164,7 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text text-center',
                         render: (data, type, row) => {
-                            return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${moment(row?.['subs'][row?.['subs'].length-1]?.['end_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                            return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${moment(row?.['end_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
                         }
                     },
                     {
@@ -180,7 +178,7 @@ $(document).ready(function () {
                                     class="btn btn-icon btn-rounded btn-flush-primary edit-periods" type="button" data-bs-toggle="modal" data-bs-target="#modal-periods-update">
                                 <span class="icon"><i class="bi bi-pencil-square"></i></span>
                             </button>`
-                            return `${row?.['fiscal_year'] > today.getFullYear() ? btn_delete : btn_edit}`
+                            return `${Object.keys(row?.['current_sub']).length === 0 && row?.['fiscal_year'] >= new Date().getFullYear() ? btn_delete : btn_edit}`
                         }
                     }
                 ],

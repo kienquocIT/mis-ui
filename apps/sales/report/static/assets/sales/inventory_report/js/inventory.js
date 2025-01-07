@@ -11,8 +11,8 @@ $(document).ready(function () {
     let current_period = {}
     if (current_period_Ele.text() !== '') {
         current_period = JSON.parse(current_period_Ele.text())
-        getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-        periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+        getMonthOrder(current_period)
+        periodMonthEle.val(current_period?.['current_sub']?.['order']).trigger('change');
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
     let $is_project = false
@@ -43,24 +43,17 @@ $(document).ready(function () {
     let PERIODIC_CLOSED = false
 
     function get_final_date_of_current_month(filter_year, filter_month) {
-        let currentDate = new Date();
-
-        let year = currentDate.getFullYear();
-
-        let nextMonth = currentDate.getMonth() + 1;
-
+        let year = current_period?.['fiscal_year'];
+        let nextMonth = current_period?.['current_sub']?.['current_month'];
         if (filter_year && filter_month) {
             year = filter_year;
             nextMonth = filter_month;
         }
-
-        if (nextMonth > 11) {
+        if (nextMonth > 12) {
             year++;
             nextMonth = 0;
         }
-
         let firstDayOfNextMonth = new Date(year, nextMonth, 0);
-
         return firstDayOfNextMonth.getDate();
     }
 
@@ -80,38 +73,24 @@ $(document).ready(function () {
         }
     })
 
-    function getMonthOrder(space_month, fiscal_year) {
+    function getMonthOrder(period_data) {
         periodMonthEle.html(``)
-        let data = []
-        for (let i = 0; i < 12; i++) {
-            let year_temp = fiscal_year
-            let trans_order = i + 1 + space_month
-            if (trans_order > 12) {
-                trans_order -= 12
-                year_temp += 1
-            }
-
-            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() + 1) {
-                if (year_temp === new Date().getFullYear()) {
-                    periodMonthEle.append(`<option value="${i + 1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
-                    data.push({
-                        'id': i + 1,
-                        'title': trans_script.attr(`data-trans-m${trans_order}th`),
-                        'month': i + 1,
-                        'year': year_temp
-                    })
-                }
-            }
+        let data = period_data?.['subs'] ? period_data?.['subs'] : []
+        let select_data = []
+        for (let i = 0; i < data.length; i++) {
+            let option_month = moment(data[i]?.['start_date']).month() + 1
+            let option_year = moment(data[i]?.['start_date']).year()
+            periodMonthEle.append(`<option value="${data[i]?.['order']}">${trans_script.attr(`data-trans-m${option_month}th`)}</option>`)
+            select_data.push({
+                'id': i + 1,
+                'title': trans_script.attr(`data-trans-m${option_month}th`),
+                'month': i + 1,
+                'year': option_year
+            })
         }
-        data.push({
-            'id': '',
-            'title': 'Select...',
-            'month': 0,
-            'year': 0,
-        })
         periodMonthEle.empty();
         periodMonthEle.initSelect2({
-            data: data,
+            data: select_data,
             templateResult: function (state) {
                 let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
                 return $(`<span>${state.text} ${groupHTML}</span>`);
@@ -119,7 +98,7 @@ $(document).ready(function () {
         });
     }
 
-    function LoadPeriod(ele, data) {
+    function LoadPeriod(ele, data=null) {
         ele.initSelect2({
             ajax: {
                 url: ele.attr('data-url'),
@@ -128,7 +107,7 @@ $(document).ready(function () {
             callbackDataResp: function (resp, keyResp) {
                 let res = []
                 for (const item of resp.data[keyResp]) {
-                    if (item?.['fiscal_year'] <= new Date().getFullYear()) {
+                    if (item?.['fiscal_year'] <= current_period['fiscal_year']) {
                         res.push(item)
                     }
                 }
@@ -141,7 +120,7 @@ $(document).ready(function () {
         }).on('change', function () {
             let selected_option = SelectDDControl.get_data_from_idx(ele, ele.val())
             if (selected_option) {
-                getMonthOrder(selected_option['space_month'], selected_option?.['fiscal_year'])
+                getMonthOrder(selected_option)
             }
         })
     }
@@ -256,15 +235,14 @@ $(document).ready(function () {
                                     data-bs-toggle="popover"
                                     data-bs-trigger="hover focus"
                                     data-bs-html="true"
-                                    data-bs-content="
-                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-code')}</span>: <span class='badge badge-primary badge-sm'>${row?.['product_code']}</span>
-                                    <br>
-                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-vm')}</span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}<span>
-                                    "
+                                    data-bs-content="<span class='text-decoration-underline'>
+                                                        ${trans_script.attr('data-trans-vm')}
+                                                        </span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}
+                                                    </span>"
                                     class="popover-prd text-secondary">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
-                                <span class="${row?.['type']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
+                                <span data-bs-toggle="tooltip" title="${row?.['product_code']}" class="${row?.['type']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
                             `
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
@@ -896,8 +874,11 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods return') {
                                         bg_in = 'badge-soft-blue'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'badge-soft-danger'
+                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                        bg_out = 'badge-soft-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'badge-soft-green'
@@ -960,8 +941,11 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods return') {
                                         bg_in = 'badge-soft-blue'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'badge-soft-danger'
+                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                        bg_out = 'badge-soft-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'badge-soft-green'
@@ -1036,8 +1020,11 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods return') {
                                         bg_in = 'badge-soft-blue'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'badge-soft-danger'
+                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                        bg_out = 'badge-soft-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'badge-soft-green'
@@ -1099,8 +1086,11 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods return') {
                                         bg_in = 'badge-soft-blue'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'badge-soft-danger'
+                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                        bg_out = 'badge-soft-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'badge-soft-green'
@@ -1179,10 +1169,15 @@ $(document).ready(function () {
                 $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-grt'))
             }
-            if ($(this).attr('class').includes('badge-soft-danger')) {
+            if ($(this).attr('class').includes('badge-soft-danger dlvr-sale')) {
                 $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
                 $(this).closest('tr').attr('data-bs-placement', 'top')
-                $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr'))
+                $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr-sale'))
+            }
+            if ($(this).attr('class').includes('badge-soft-danger dlvr-lease')) {
+                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
+                $(this).closest('tr').attr('data-bs-placement', 'top')
+                $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr-lease'))
             }
             if ($(this).attr('class').includes('badge-soft-green')) {
                 $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
@@ -1383,8 +1378,8 @@ $(document).ready(function () {
         let current_period = {}
         if (current_period_Ele.text() !== '') {
             current_period = JSON.parse(current_period_Ele.text())
-            getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-            periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+            getMonthOrder(current_period)
+            periodMonthEle.val(current_period?.['current_sub']?.['order']).trigger('change');
         }
     })
 
@@ -1453,7 +1448,7 @@ $(document).ready(function () {
         }
         static get_products_opening_quantity_gte(threshold) {
             let row_info = ''
-            $('#table-inventory-report').find('tbody tr').each(function () {
+            table_inventory_report.find('tbody tr').each(function () {
                 if (!$(this).hasClass('fixed-row')) {
                     let opening_quantity = $(this).find('td:eq(2) span:eq(0)').text()
                     if (parseFloat(opening_quantity) >= parseFloat(threshold)) {
@@ -1468,7 +1463,7 @@ $(document).ready(function () {
         }
         static get_products_opening_quantity_lte(threshold) {
             let row_info = ''
-            $('#table-inventory-report').find('tbody tr').each(function () {
+            table_inventory_report.find('tbody tr').each(function () {
                 if (!$(this).hasClass('fixed-row')) {
                     let opening_quantity = $(this).find('td:eq(2) span:eq(0)').text()
                     if (parseFloat(opening_quantity) <= parseFloat(threshold)) {
@@ -1483,7 +1478,7 @@ $(document).ready(function () {
         }
         static get_products_ending_quantity_gte(threshold) {
             let row_info = ''
-            $('#table-inventory-report').find('tbody tr').each(function () {
+            table_inventory_report.find('tbody tr').each(function () {
                 if (!$(this).hasClass('fixed-row')) {
                     let ending_quantity = $(this).find('td:eq(5) span:eq(0)').text()
                     if (parseFloat(ending_quantity) >= parseFloat(threshold)) {
@@ -1498,7 +1493,7 @@ $(document).ready(function () {
         }
         static get_products_ending_quantity_lte(threshold) {
             let row_info = ''
-            $('#table-inventory-report').find('tbody tr').each(function () {
+            table_inventory_report.find('tbody tr').each(function () {
                 if (!$(this).hasClass('fixed-row')) {
                     let ending_quantity = $(this).find('td:eq(2) span:eq(0)').text()
                     if (parseFloat(ending_quantity) <= parseFloat(threshold)) {
@@ -1567,7 +1562,7 @@ $(document).ready(function () {
             }
             else {
                 is_filter = false
-                $('#table-inventory-report').find('tbody tr').each(function () {
+                table_inventory_report.find('tbody tr').each(function () {
                     if (!$(this).hasClass('fixed-row')) {
                         contexts += GetContexts.get_product_row_info($(this))
                     } else {
@@ -1581,7 +1576,7 @@ $(document).ready(function () {
             console.log(contexts)
             dataParam['question'] = message
             let chatbot_response_ajax = $.fn.callAjax2({
-                url: $('#url-script').attr('data-url-ask'),
+                url: url_script.attr('data-url-ask'),
                 data: dataParam,
                 method: 'GET'
             }).then(
@@ -1604,7 +1599,7 @@ $(document).ready(function () {
                         for (let i = 0; i < data.length; i++) {
                             let messageResponse = $(`<div class="mt-2">
                                 <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">
-                                    ${data[i] === '' ? $('#trans-script').attr('data-trans-no-response') : data[i]}
+                                    ${data[i] === '' ? trans_script.attr('data-trans-no-response') : data[i]}
                                 </div>
                             </div>`);
                             chatShowSpace.append(messageResponse)
@@ -1612,7 +1607,7 @@ $(document).ready(function () {
                     } else {
                         let messageResponse = $(`<div class="mt-2">
                             <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">
-                                ${results[0] === '' ? $('#trans-script').attr('data-trans-no-response') : results[0]}
+                                ${results[0] === '' ? trans_script.attr('data-trans-no-response') : results[0]}
                             </div>
                         </div>`);
                         chatShowSpace.append(messageResponse)
@@ -1632,7 +1627,7 @@ $(document).ready(function () {
                 chatInput.val('');
 
                 let messageResponse = $(`<div class="mt-2">
-                    <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">${$('#trans-script').attr('data-trans-no-response')}</div>
+                    <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">${trans_script.attr('data-trans-no-response')}</div>
                 </div>`);
                 chatShowSpace.append(messageResponse)
                 chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));

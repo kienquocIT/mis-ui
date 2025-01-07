@@ -460,10 +460,10 @@ class OpportunityLoadDetail {
                         )
                         let ele_stage = ele_first_stage.find('.dropdown-menu').closest('.sub-stage')
                         ele_stage.addClass('stage-selected')
-                        ele_stage.css('background-color', '#5a82b7')
+                        ele_stage.css('background-color', '#0070D2')
                         ele_stage.css('color', 'white')
                         ele_stage.find('.dropdown span').css('color', 'white')
-                        ele_stage.next().css('border-left', '30px solid #5a82b7')
+                        ele_stage.next().css('border-left', '30px solid #0070D2')
                     } else {
                         ele_first_stage.find('.dropdown-menu').append(
                             `<div class="form-check form-switch">
@@ -488,9 +488,9 @@ class OpportunityLoadDetail {
                 if (ele_stage.hasClass('stage-lost')) {
                     if (!is_delivery) {
                         ele_stage.addClass('stage-selected')
-                        ele_stage.css('background-color', 'rgb(255,94,94)')
+                        ele_stage.css('background-color', '#EB2925')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid #EB2925')
                     }
                 } else if (ele_stage.hasClass('stage-close')) {
                     let el_close_deal = $('#input-close-deal');
@@ -498,16 +498,16 @@ class OpportunityLoadDetail {
                     el_close_deal.prop('checked', true);
 
                     ele_stage.addClass('stage-selected')
-                    ele_stage.css('background-color', '#5a82b7')
+                    ele_stage.css('background-color', '#0070D2')
                     ele_stage.css('color', 'white')
                     ele_stage.find('.dropdown span').css('color', 'white')
-                    ele_stage.next().css('border-left', '16px solid #5a82b7')
+                    ele_stage.next().css('border-left', '16px solid #0070D2')
                 } else {
                     ele_stage.addClass('stage-selected')
-                    ele_stage.css('background-color', '#5a82b7')
+                    ele_stage.css('background-color', '#0070D2')
                     ele_stage.css('color', 'white')
                     ele_stage.find('.dropdown span').css('color', 'white')
-                    ele_stage.next().css('border-left', '16px solid #5a82b7')
+                    ele_stage.next().css('border-left', '16px solid #0070D2')
                 }
             })
         }
@@ -1004,8 +1004,7 @@ class OpportunityActivity {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         // enable side panel\
-                        if (!$('#drawer_task_create').hasClass('open'))
-                            $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                        $('.current-create-task').trigger('click')
                         resetFormTask()
                         $('.title-create').addClass('hidden')
                         $('.title-detail').removeClass('hidden')
@@ -1094,6 +1093,9 @@ class OpportunityActivity {
                             'task.opportunitytask': transEle.attr('data-trans-task'),
                             'production.bom': transEle.attr('data-trans-bom'),
                             'bidding.bidding': transEle.attr('data-trans-bidding'),
+                            'consulting.consulting': transEle.attr('data-trans-consulting'),
+                            'leaseorder.leaseorder': transEle.attr('data-trans-lease-order'),
+                            'contract.contractapproval': transEle.attr('data-trans-contract'),
                         }
                         let typeMapActivityIcon = {
                             1: 'fa-solid fa-list-check',
@@ -1107,14 +1109,9 @@ class OpportunityActivity {
                             3: transEle.attr('data-trans-email'),
                             4: transEle.attr('data-trans-meeting'),
                         }
-                        let typeMapIcon = {
-                            0: "fas fa-file-alt",
-                            1: "fas fa-tasks",
-                        }
-
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code']) {
-                                return `<i class="text-primary ${typeMapIcon[row?.['log_type']]}"></i>  <span class="text-primary small">${appMapTrans[row?.['app_code']]}</span>`;
+                                return `<span class="badge badge-light badge-outline">${appMapTrans[row?.['app_code']]}</span>`;
                             }
                         } else {
                             let status = '';
@@ -1123,7 +1120,7 @@ class OpportunityActivity {
                             }
                             return `<i class="text-primary ${typeMapActivityIcon[row?.['log_type']]}"></i>  <span class="text-primary small">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                         }
-                        return `<p></p>`;
+                        return ``;
                     }
                 },
                 {
@@ -1134,7 +1131,7 @@ class OpportunityActivity {
                                 return `<span class="badge badge-primary">${row?.['doc_data']?.['code']}</span>`;
                             }
                         }
-                        return `<p></p>`;
+                        return ``;
                     }
                 },
                 {
@@ -1148,6 +1145,9 @@ class OpportunityActivity {
                             'cashoutflow.returnadvance': urlFactory.attr('data-url-return-detail'),
                             'production.bom': urlFactory.attr('data-url-bom-detail'),
                             'bidding.bidding': urlFactory.attr('data-url-bidding-detail'),
+                            'consulting.consulting': urlFactory.attr('data-url-consulting-detail'),
+                            'leaseorder.leaseorder': urlFactory.attr('data-url-lease-order-detail'),
+                            'contract.contractapproval': urlFactory.attr('data-url-contract-detail'),
                         }
                         let link = '';
                         let title = '';
@@ -1162,7 +1162,7 @@ class OpportunityActivity {
                                 }
                                 return result;
                             } else {
-                                return `<p>--</p>`;
+                                return ``;
                             }
                         }
                         if (row?.['log_type'] === 1) {
@@ -1184,7 +1184,7 @@ class OpportunityActivity {
                     targets: 4,
                     render: (data, type, row) => {
                         if (row?.['app_code'] && [0, 1].includes(row?.['log_type'])) {
-                            if (row?.['log_type'] === 0 && row?.['doc_data']?.['system_status']) {
+                            if (row?.['log_type'] === 0 && (row?.['doc_data']?.['system_status'] || row?.['doc_data']?.['system_status'] === 0)) {
                                 let sttTxt = JSON.parse($('#stt_sys').text());
                                 let sttMapBadge = [
                                     "soft-light",
@@ -1199,7 +1199,7 @@ class OpportunityActivity {
                                 return `<span class="badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span>`;
                             }
                         }
-                        return `<p></p>`;
+                        return ``;
                     }
                 },
                 {
@@ -1231,6 +1231,7 @@ class OpportunityActivity {
             let appMapPerm = {
                 'quotation.quotation': 'quotation.quotation.create',
                 'saleorder.saleorder': 'saleorder.saleorder.create',
+                'leaseorder.leaseorder': 'leaseorder.leaseorder.create',
             };
             if (appMapPerm?.[label] && detail?.['id']) {
                 let tableData = $tableTimeLine.DataTable().rows().data().toArray();
@@ -1246,7 +1247,7 @@ class OpportunityActivity {
                         if (data) {
                             if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                                 if (data.opportunity_list.length === 1) {
-                                    // check opp already has quotation/ sale order
+                                    // Validate: check opp already has quotation/ sale order
                                     for (let tData of tableData) {
                                         if (label === 'quotation.quotation') {
                                             if (tData?.['app_code'] === 'saleorder.saleorder' && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
@@ -1282,7 +1283,7 @@ class OpportunityActivity {
             }
         }
         return true;
-    }
+    };
 }
 
 class LoadConfigAndLoadStage {
@@ -1719,10 +1720,10 @@ class LoadConfigAndLoadStage {
                     if (i <= index) {
                         if (!ele_stage.eq(i).hasClass('stage-lost')) {
                             ele_stage.eq(i).addClass('stage-selected');
-                            ele_stage.eq(i).css('background-color', '#5a82b7')
+                            ele_stage.eq(i).css('background-color', '#0070D2')
                             ele_stage.eq(i).css('color', 'white')
                             ele_stage.eq(i).find('.dropdown span').css('color', 'white')
-                            ele_stage.eq(i).next().css('border-left', '16px solid #5a82b7')
+                            ele_stage.eq(i).next().css('border-left', '16px solid #0070D2')
                         }
                         else {
                             ele_stage.eq(i).removeClass('stage-selected');
@@ -1744,10 +1745,10 @@ class LoadConfigAndLoadStage {
             if (ele_close_deal.is(':checked')) {
                 ele_stage_current = ele_close_deal.closest('.sub-stage');
                 ele_close_deal.closest('.sub-stage').addClass('stage-selected');
-                ele_close_deal.closest('.sub-stage').css('background-color', '#5a82b7')
+                ele_close_deal.closest('.sub-stage').css('background-color', '#0070D2')
                 ele_close_deal.closest('.sub-stage').css('color', 'white')
                 ele_close_deal.closest('.sub-stage').find('.dropdown span').css('color', 'white')
-                ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #5a82b7')
+                ele_close_deal.closest('.sub-stage').next().css('border-left', '16px solid #0070D2')
                 $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
                 if (!config_is_input_rate) {
                     input_rate_ele.prop('disabled', true);
@@ -2326,11 +2327,30 @@ class OpportunityLoadPage {
                 console.log(errs);
             }
         )
-
+        const consulting_check_perm = $.fn.callAjax2({
+            url: urlFactory.attr('data-url-opp-list'),
+            data: {
+                'list_from_app': 'consulting.consulting.create', 'id': $.fn.getPkDetail()
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                        return data?.['opportunity_list'][0];
+                    }
+                    return null
+                }
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
         let create_return_sc = $('#create-return-advance-shortcut')
         create_return_sc.attr('href', create_return_sc.attr('data-url'))
 
-        Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm]).then(
+        Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm, consulting_check_perm]).then(
             (results_perm_app) => {
                 if (results_perm_app[0]) {
                     let create_quotation_sc = $('#create-quotation-shortcut')
@@ -2392,6 +2412,19 @@ class OpportunityLoadPage {
                         'customer': encodeURIComponent(JSON.stringify(results_perm_app[5]?.['customer'])),
                     })
                     create_bidding_sc.attr('href', param_url)
+                }
+                if (results_perm_app[6]) {
+                    let create_consulting_sc = $('#create-consulting-shortcut')
+                    create_consulting_sc.removeClass('disabled');
+                    let param_url = this.push_param_to_url(create_consulting_sc.attr('data-url'), {
+                        'opp_id': results_perm_app[6]?.['id'],
+                        'opp_code': results_perm_app[6]?.['code'],
+                        'opp_title': results_perm_app[6]?.['title'],
+                        'inherit_id': results_perm_app[6]?.['sale_person']?.['id'],
+                        'inherit_title': results_perm_app[6]?.['sale_person']?.['full_name'],
+                        'customer': encodeURIComponent(JSON.stringify(results_perm_app[6]?.['customer'])),
+                    })
+                    create_consulting_sc.attr('href', param_url)
                 }
                 $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
             })

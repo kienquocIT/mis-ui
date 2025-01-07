@@ -1,0 +1,1504 @@
+// LoadData
+class RecoveryLoadDataHandle {
+    static $form = $('#frm_goods_recovery');
+    static $date = $('#date_recovery');
+    static $boxStatus = $('#recovery_status');
+    static $boxCustomer = $('#customer_id');
+    static $boxLeaseOrder = $('#lease_order_id');
+    static $modalMain = $('#productModalCenter');
+    static $btnSaveModal = $('#btn-save-modal');
+
+    static transEle = $('#app-trans-factory');
+    static urlEle = $('#url-factory');
+    static dataStatus = [
+        {'id': 0, 'title': RecoveryLoadDataHandle.transEle.attr('data-status-1')},
+        {'id': 1, 'title': RecoveryLoadDataHandle.transEle.attr('data-status-2')},
+        {'id': 2, 'title': RecoveryLoadDataHandle.transEle.attr('data-status-3')},
+    ];
+    static dataAssetType = {
+        1: RecoveryLoadDataHandle.transEle.attr('data-asset-type-1'),
+        2: RecoveryLoadDataHandle.transEle.attr('data-asset-type-2'),
+        3: RecoveryLoadDataHandle.transEle.attr('data-asset-type-3'),
+    }
+
+
+    static typeSelectEle = $('#box-good-receipt-type');
+    static POSelectEle = $('#box-good-receipt-purchase-order');
+    static supplierSelectEle = $('#box-good-receipt-supplier');
+    static IASelectEle = $('#box-good-receipt-inventory-adjustment');
+    static $boxProductionOrder = $('#box-production-order');
+    static $boxWorkOrder = $('#box-work-order');
+    static $boxProductionReport = $('#box-production-report');
+
+
+    static dataTypeGr = [
+        {
+            'id': 3,
+            'title': RecoveryLoadDataHandle.transEle.attr('data-for-production')
+        },
+        {
+            'id': 2,
+            'title': RecoveryLoadDataHandle.transEle.attr('data-for-ia')
+        },
+        {
+            'id': 1,
+            'title': RecoveryLoadDataHandle.transEle.attr('data-for-po')
+        },
+    ];
+
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = ``;
+                let res2 = ``;
+                if (customRes?.['res1']) {
+                    res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
+                }
+                if (customRes?.['res2']) {
+                    res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
+                }
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
+    };
+
+    static loadEventCheckbox($area, trigger = false) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function (event) {
+            // Prevent handling if the direct checkbox is clicked
+            if (event.target.classList.contains('form-check-input')) {
+                return; // Let the checkbox handler handle this
+            }
+
+            // Find the checkbox inside the clicked element
+            let checkbox = this.querySelector('.form-check-input[type="checkbox"]');
+            if (checkbox) {
+                // Check if the checkbox is disabled
+                if (checkbox.disabled) {
+                    return; // Exit early if the checkbox is disabled
+                }
+                // Prevent the default behavior
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                // Toggle the checkbox state manually
+                checkbox.checked = !checkbox.checked;
+                // Optional: Trigger a change event if needed
+                if (trigger === true) {
+                    $(checkbox).trigger('change');
+                }
+            }
+        });
+
+        // Handle direct clicks on the checkbox itself
+        $area.on('click', '.form-check-input', function (event) {
+            // Prevent the default behavior to avoid double-triggering
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            // Checkbox state is toggled naturally, so no need to modify it
+            if (trigger === true) {
+                $(this).trigger('change'); // Optional: Trigger change event explicitly
+            }
+        });
+
+        return true;
+    };
+
+    static loadEventRadio($area) {
+        // Use event delegation for dynamically added elements
+        $area.on('click', '.form-check', function () {
+            // Find and mark the radio button inside this group as checked
+            let radio = this.querySelector('.form-check-input');
+            if (radio) {
+                let checkboxes = $area[0].querySelectorAll('.form-check-input[type="radio"]');
+                // Uncheck all radio buttons and reset row styles
+                for (let eleCheck of checkboxes) {
+                    eleCheck.checked = false;
+                }
+                // Set the current radio button as checked and apply style
+                radio.checked = true;
+            }
+        });
+        return true;
+    };
+
+    static loadInit() {
+        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxStatus, RecoveryLoadDataHandle.dataStatus);
+        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxCustomer);
+        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxLeaseOrder);
+        // dtb
+        RecoveryDataTableHandle.dataTableProduct();
+        RecoveryDataTableHandle.dataTableDelivery();
+        RecoveryDataTableHandle.dataTableDeliveryProduct();
+        RecoveryDataTableHandle.dataTableWareHouse();
+        return true;
+    };
+
+    static loadDataRowTable($table) {
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            RecoveryLoadDataHandle.loadDataRow(row, $table);
+        });
+        RecoveryCalculateHandle.calculateTable($table);
+        return true;
+    };
+
+    static loadDataRow(row, $table) {
+        // mask money
+        $.fn.initMaskMoney2();
+        let rowIndex = $table.DataTable().row(row).index();
+        let $row = $table.DataTable().row(rowIndex);
+        let dataStore = $row.data();
+        if (row.querySelector('.table-row-item')) {
+            if (dataStore?.['product_data']?.['id']) {
+                RecoveryLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataStore?.['product_data']]);
+                if (RecoveryLoadDataHandle.typeSelectEle.val() === '3') {
+                    if (row.querySelector('.table-row-price')) {
+                        // call ajax check BOM
+                        $.fn.callAjax2({
+                                'url': RecoveryLoadDataHandle.urlEle.attr('data-md-bom'),
+                                'method': 'GET',
+                                'data': {
+                                    'product_id': dataStore?.['product_data']?.['id'],
+                                },
+                                'isDropdown': true,
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
+                                        let elePrice = row.querySelector('.table-row-price');
+                                        if (data.bom_order_list.length > 0) {
+                                            if (elePrice) {
+                                                elePrice.setAttribute('disabled', 'true');
+                                                $(elePrice).attr('value', String(data.bom_order_list[0]?.['sum_price']));
+                                                $.fn.initMaskMoney2();
+                                                RecoveryCalculateHandle.calculateMain(RecoveryDataTableHandle.$tableProduct, row);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        if (row.querySelector('.table-row-uom')) {
+            RecoveryLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataStore?.['uom_data']], {'group': dataStore?.['uom_data']?.['uom_group']?.['id']});
+        }
+        if (row.querySelector('.table-row-tax')) {
+            RecoveryLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataStore?.['tax_data']]);
+        }
+        if (row.querySelector('.table-row-warehouse')) {
+            RecoveryLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataStore?.['warehouse_data']]);
+        }
+        return true;
+    };
+
+    static loadClearModal() {
+        RecoveryDataTableHandle.tablePOProduct.DataTable().clear().draw();
+        RecoveryDataTableHandle.tablePR.DataTable().clear().draw();
+        $('#scroll-table-pr')[0].setAttribute('hidden', 'true');
+        RecoveryDataTableHandle.tableWH.DataTable().clear().draw();
+        $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
+        return true;
+    };
+
+    static loadCssToDtb(tableID) {
+        let tableIDWrapper = tableID + '_wrapper';
+        let tableWrapper = document.getElementById(tableIDWrapper);
+        if (tableWrapper) {
+            let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+            if (headerToolbar) {
+                headerToolbar.classList.add('hidden');
+            }
+        }
+    };
+
+    static loadGenerateLease(ele) {
+        let idTbl = UtilControl.generateRandomString(12);
+        let trEle = $(ele).closest('tr');
+        let iconEle = $(ele).find('.icon-collapse-app-wf');
+
+        iconEle.toggleClass('fa-caret-right').toggleClass('fa-caret-down');
+
+        if (iconEle.hasClass('fa-caret-right')) {
+            trEle.removeClass('bg-grey-light-5');
+            iconEle.removeClass('text-dark').addClass('text-secondary');
+            trEle.next().find('.child-workflow-group').slideToggle({
+                complete: function () {
+                    trEle.next().addClass('hidden');
+                }
+            });
+        }
+
+        if (iconEle.hasClass('fa-caret-down')) {
+            trEle.addClass('bg-grey-light-5');
+            iconEle.removeClass('text-secondary').addClass('text-dark');
+
+            let dataDtb = [];
+            let inputRecovery = 0;
+            let fromRecovery = 0;
+            let totalRecovery = 0;
+            RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
+                let row = this.node();
+                if (!$(row).hasClass('child-workflow-list')) {
+                    let recoveryEle = row.querySelector('.table-row-quantity-recovery');
+                    if (recoveryEle) {
+                        if ($(recoveryEle).val()) {
+                            totalRecovery += parseFloat($(recoveryEle).val());
+                        }
+                    }
+                }
+            });
+            let inputEle = trEle[0].querySelector('.table-row-quantity-recovery');
+            if (inputEle) {
+                if ($(inputEle).val()) {
+                    inputRecovery = parseFloat($(inputEle).val());
+                    fromRecovery = totalRecovery - inputRecovery + 1;
+                }
+            }
+            for (let i = fromRecovery; i <= totalRecovery; i++) {
+                dataDtb.push({'code': ''})
+            }
+
+
+            let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(trEle[0]).index();
+            let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
+            let rowData = $row.data();
+            if (rowData?.['lease_generate_data']) {
+                if (rowData?.['lease_generate_data'].length > 0) {
+                    dataDtb = rowData?.['lease_generate_data'];
+                }
+            }
+
+
+
+            if (!trEle.next().hasClass('child-workflow-list')) {
+                let dtlSub = `<table id="${idTbl}" class="table table-child nowrap w-100 mb-5"><thead></thead><tbody></tbody></table>`
+                $(ele).closest('tr').after(
+                    `<tr class="child-workflow-list"><td colspan="4"><div class="child-workflow-group pt-3 pb-3 ml-3 pl-5 pr-5 hidden-simple">${dtlSub}</div></td></tr>`
+                );
+                RecoveryDataTableHandle.dataTableLeaseGenerate(idTbl, dataDtb);
+            } else {
+                let $child = trEle.next();
+                if ($child.length > 0) {
+                    let tblChild = $child[0].querySelector('.table-child');
+                    if (tblChild) {
+                        let count = $(tblChild).DataTable().data().count();
+                        if (count !== inputRecovery) {
+                            $(tblChild).DataTable().clear().draw();
+                            $(tblChild).DataTable().rows.add(dataDtb).draw();
+                        }
+                    }
+                }
+            }
+            trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
+        }
+        return true;
+    };
+
+    static loadQuantityRecovery() {
+        let productChecked = RecoveryDataTableHandle.$tableDeliveryProduct[0].querySelector('.table-row-checkbox:checked');
+        if (productChecked) {
+            let rowTarget = productChecked.closest('tr');
+            if (rowTarget) {
+                let recoveryEle = rowTarget.querySelector('.table-row-quantity-recovery');
+                let deliveryEle = rowTarget.querySelector('.table-row-quantity-delivered');
+                if (recoveryEle && deliveryEle) {
+                    let fnRecovery = 0;
+                    for (let eleRec of RecoveryDataTableHandle.$tableWarehouse[0].querySelectorAll('.table-row-quantity-recovery')) {
+                        fnRecovery += parseFloat($(eleRec).val());
+                    }
+                    if (deliveryEle.innerHTML) {
+                        if (fnRecovery > parseFloat(deliveryEle.innerHTML)) {
+                            $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-exceed-quantity')}, 'failure');
+                            return false;
+                        }
+                    }
+                    recoveryEle.innerHTML = String(fnRecovery);
+                }
+            }
+        }
+        return true;
+    };
+
+    static loadCheckDelivery() {
+        let checkedEle = RecoveryDataTableHandle.$tableDelivery[0].querySelector('.table-row-checkbox:checked');
+        if (checkedEle) {
+            let row = checkedEle.closest('tr');
+            if (row) {
+                let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
+                let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
+                let rowData = $row.data();
+
+                RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().clear().draw();
+                RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows.add(rowData?.['delivery_product_data'] ? rowData?.['delivery_product_data'] : []).draw();
+                let warehouseArea = RecoveryLoadDataHandle.$modalMain[0].querySelector('.dtb-warehouse-area');
+                if (warehouseArea) {
+                    warehouseArea.setAttribute('hidden', 'true');
+                }
+            }
+        }
+        return true;
+    };
+
+    static loadCheckDeliveryProduct() {
+        let checkedEle = RecoveryDataTableHandle.$tableDeliveryProduct[0].querySelector('.table-row-checkbox:checked');
+        if (checkedEle) {
+            let row = checkedEle.closest('tr');
+            if (row) {
+                let rowIndex = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(row).index();
+                let $row = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex);
+                let rowData = $row.data();
+
+                RecoveryDataTableHandle.$tableWarehouse.DataTable().destroy();
+                if (rowData?.['warehouse_data']) {
+                    RecoveryDataTableHandle.dataTableWareHouse(rowData?.['warehouse_data'] ? rowData?.['warehouse_data'] : []);
+                } else {
+                    RecoveryDataTableHandle.dataTableWareHouse();
+                }
+            }
+        }
+        return true;
+    };
+
+    static loadLineDetail() {
+        let dataJSON = {};
+        let result = [];
+        let deliveryData = RecoverySubmitHandle.setupDataDelivery();
+        for (let deliData of deliveryData) {
+            if (deliData?.['delivery_product_data']) {
+                for (let productData of deliData?.['delivery_product_data']) {
+                    if (dataJSON.hasOwnProperty(productData?.['product_id'])) {
+                        dataJSON[productData?.['product_id']]['quantity_recovery'] += productData?.['quantity_recovery'];
+                    } else {
+                        dataJSON[productData?.['product_id']] = productData;
+                    }
+                }
+            }
+        }
+        for (let key in dataJSON) {
+            result.push(dataJSON[key]);
+        }
+        RecoveryDataTableHandle.$tableProduct.DataTable().clear().draw();
+        RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(result).draw();
+        return true;
+    };
+
+
+
+
+
+
+
+
+
+    // LOAD DETAIL
+    static loadDetailPage(data) {
+        $('#good-receipt-title').val(data?.['title']);
+        $('#good-receipt-note').val(data?.['remarks']);
+        if (data?.['date_received']) {
+            $('#good-receipt-date-received').val(moment(data?.['date_received']).format('DD/MM/YYYY'));
+        } else {
+            $('#good-receipt-date-received').val('');
+        }
+        let type_data = {
+            '1': RecoveryLoadDataHandle.transEle.attr('data-for-po'),
+            '2': RecoveryLoadDataHandle.transEle.attr('data-for-ia'),
+            '3': RecoveryLoadDataHandle.transEle.attr('data-for-production'),
+        }
+        let idAreaShow = String(data?.['goods_receipt_type'] + 1);
+        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.typeSelectEle, RecoveryLoadDataHandle.dataTypeGr);
+        RecoveryLoadDataHandle.typeSelectEle.val(idAreaShow);
+        let boxRender = $('#good-receipt-type-area')[0]?.querySelector('.select2-selection__rendered');
+        if (boxRender) {
+            boxRender.innerHTML = type_data[idAreaShow];
+            boxRender.setAttribute('title', type_data[idAreaShow]);
+        }
+        RecoveryLoadDataHandle.loadCustomAreaByType();
+        if (idAreaShow === '1') {  // GR for PO
+            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.POSelectEle, [data?.['purchase_order_data']], {'receipt_status__in': [0, 1, 2].join(','), 'system_status': 3});
+            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.supplierSelectEle, [data?.['supplier_data']]);
+            RecoveryLoadDataHandle.loadDataShowPR(data?.['purchase_requests']);
+        }
+        if (idAreaShow === '2') {  // GR for IA
+            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.IASelectEle, [data?.['inventory_adjustment_data']], {'state': 2});
+        }
+        if (idAreaShow === '3') {  // GR for Production
+            if (data?.['production_report_type'] === 0) {
+                RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxProductionOrder, [data?.['production_order_data']], {'system_status': 3});
+            }
+            if (data?.['production_report_type'] === 1) {
+                RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxWorkOrder, [data?.['work_order_data']], {'system_status': 3});
+            }
+            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxProductionReport, data?.['production_reports_data']);
+        }
+        RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(data?.['gr_products_data']).draw();
+        RecoveryLoadDataHandle.loadDataRowTable(RecoveryDataTableHandle.$tableProduct);
+        if (RecoveryLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            RecoveryLoadDataHandle.loadTableDisabled(RecoveryDataTableHandle.$tableProduct);
+        }
+        RecoveryLoadDataHandle.loadDetailProducts(data);
+        return true;
+    };
+
+    static loadDetailProducts(dataDetail) {
+        let dataProducts = dataDetail?.['gr_products_data'];
+        let typeGR = RecoveryLoadDataHandle.typeSelectEle.val();
+        let frm = new SetupFormSubmit(RecoveryDataTableHandle.tablePOProduct);
+        if (typeGR === '1' && RecoveryLoadDataHandle.POSelectEle.val()) {
+            $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': frm.dataMethod,
+                    'data': {'purchase_order_id': RecoveryLoadDataHandle.POSelectEle.val()},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('purchase_order_product_gr') && Array.isArray(data.purchase_order_product_gr)) {
+                            RecoveryLoadDataHandle.loadTotal(dataDetail);
+                            for (let dataPOPro of data.purchase_order_product_gr) {
+                                let isDetail = false;
+                                for (let dataProduct of dataProducts) {
+                                    if (dataProduct?.['purchase_order_product_id'] === dataPOPro?.['purchase_order_product_id']) {
+                                        dataProduct['gr_completed_quantity'] = dataPOPro?.['gr_completed_quantity'];
+                                        dataProduct['gr_remain_quantity'] = dataPOPro?.['gr_remain_quantity'];
+                                        for (let dataPOPRPro of dataPOPro?.['pr_products_data']) {
+                                            for (let dataPRProduct of dataProduct?.['pr_products_data']) {
+                                                if (dataPRProduct?.['purchase_order_request_product_id'] === dataPOPRPro?.['purchase_order_request_product_id']) {
+                                                    dataPRProduct['gr_completed_quantity'] = dataPOPRPro?.['gr_completed_quantity'];
+                                                    dataPRProduct['gr_remain_quantity'] = dataPOPRPro?.['gr_remain_quantity'];
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        isDetail = true;
+                                        break;
+                                    }
+                                }
+                                if (isDetail === false) {
+                                    dataProducts.push(dataPOPro);
+                                }
+                            }
+                            RecoveryDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                            RecoveryDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
+                        }
+                    }
+                }
+            )
+        }
+        if (typeGR === '2' && RecoveryLoadDataHandle.IASelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.IASelectEle, $(this).val());
+            for (let dataIAPro of dataSelected?.['gr_products_data']) {
+                let isDetail = false;
+                for (let dataProduct of dataProducts) {
+                    if (dataProduct?.['ia_item_id'] === dataIAPro?.['ia_item_id']) {
+                        dataProduct['gr_completed_quantity'] = dataIAPro?.['gr_completed_quantity'];
+                        dataProduct['gr_remain_quantity'] = dataIAPro?.['gr_remain_quantity'];
+                        isDetail = true;
+                        break;
+                    }
+                }
+                if (isDetail === false) {
+                    dataProducts.push(dataIAPro);
+                }
+            }
+            RecoveryDataTableHandle.tablePOProduct.DataTable().clear().draw();
+            RecoveryDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
+        }
+        if (typeGR === '3' && (RecoveryLoadDataHandle.$boxProductionOrder.val() || RecoveryLoadDataHandle.$boxWorkOrder.val())) {
+            let idList = [];
+            if (dataProducts.length > 0) {
+                for (let report of dataProducts[0]?.['pr_products_data']) {
+                    idList.push(report?.['production_report_id']);
+                }
+            }
+
+            $.fn.callAjax2({
+                    'url': RecoveryLoadDataHandle.$boxProductionReport.attr('data-url'),
+                    'method': 'GET',
+                    'data': {'id__in': idList.join(',')},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('production_report_gr') && Array.isArray(data.production_report_gr)) {
+                            RecoveryLoadDataHandle.loadTotal(dataDetail);
+                            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxProductionReport, data.production_report_gr, {'production_order_id': RecoveryLoadDataHandle.$boxProductionOrder.val()});
+                            if (RecoveryLoadDataHandle.$boxProductionReport.val().length > 0) {
+                                let dataProductionPro = RecoveryLoadDataHandle.loadSetupProduction();
+                                let isDetail = false;
+                                for (let dataProduct of dataProducts) {
+                                    if (dataProduct?.['production_order_id'] === dataProductionPro?.['production_order_id']) {
+                                        dataProduct['gr_completed_quantity'] = dataProductionPro?.['gr_completed_quantity'];
+                                        dataProduct['gr_remain_quantity'] = dataProductionPro?.['gr_remain_quantity'];
+                                        for (let dataPOPRPro of dataProductionPro?.['pr_products_data']) {
+                                            for (let dataPRProduct of dataProduct?.['pr_products_data']) {
+                                                if (dataPRProduct?.['production_report_id'] === dataPOPRPro?.['production_report_id']) {
+                                                    dataPRProduct['gr_completed_quantity'] = dataPOPRPro?.['gr_completed_quantity'];
+                                                    dataPRProduct['gr_remain_quantity'] = dataPOPRPro?.['gr_remain_quantity'];
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        isDetail = true;
+                                        break;
+                                    }
+                                }
+                                if (isDetail === false) {
+                                    dataProducts.push(dataProductionPro);
+                                }
+                                RecoveryDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                                RecoveryDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
+                            }
+                        }
+                    }
+                }
+            )
+        }
+        return true;
+    };
+
+    static loadTableDisabled(table) {
+        for (let ele of table[0].querySelectorAll('.table-row-item')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-description')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-uom')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-price')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-tax')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-import')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.del-row')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-lot-number')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-import')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-vendor-serial-number')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-serial-number')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-expire-date')) {
+            ele.setAttribute('disabled', 'true');
+            ele.classList.add('text-black');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-manufacture-date')) {
+            ele.setAttribute('disabled', 'true');
+            ele.classList.add('text-black');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-warranty-start')) {
+            ele.setAttribute('disabled', 'true');
+            ele.classList.add('text-black');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-warranty-end')) {
+            ele.setAttribute('disabled', 'true');
+            ele.classList.add('text-black');
+        }
+    };
+
+    static loadTotal(data) {
+        let tableWrapper = document.getElementById('datable-product_wrapper');
+        if (tableWrapper) {
+            let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
+            if (tableFt) {
+                let elePretaxAmount = tableFt.querySelector('.good-receipt-product-pretax-amount');
+                let elePretaxAmountRaw = tableFt.querySelector('.good-receipt-product-pretax-amount-raw');
+                if (elePretaxAmount && elePretaxAmountRaw) {
+                    $(elePretaxAmount).attr('data-init-money', String(data?.['total_pretax']));
+                    elePretaxAmountRaw.value = data?.['total_pretax'];
+                }
+                let eleTaxes = tableFt.querySelector('.good-receipt-product-taxes');
+                let eleTaxesRaw = tableFt.querySelector('.good-receipt-product-taxes-raw');
+                if (eleTaxes && eleTaxesRaw) {
+                    $(eleTaxes).attr('data-init-money', String(data?.['total_tax']));
+                    eleTaxesRaw.value = data?.['total_tax'];
+                }
+                let eleTotal = tableFt.querySelector('.good-receipt-product-total');
+                let eleTotalRaw = tableFt.querySelector('.good-receipt-product-total-raw');
+                if (eleTotal && eleTotalRaw) {
+                    $(eleTotal).attr('data-init-money', String(data?.['total']));
+                    eleTotalRaw.value = data?.['total'];
+                }
+                let finalRevenueBeforeTax = tableFt.querySelector('.good-receipt-final-revenue-before-tax');
+                let finalRevenueBeforeTaxRaw = tableFt.querySelector('.good-receipt-final-revenue-before-tax-raw');
+                if (finalRevenueBeforeTax && finalRevenueBeforeTaxRaw) {
+                    $(finalRevenueBeforeTax).attr('data-init-money', String(data?.['total_revenue_before_tax']));
+                    finalRevenueBeforeTaxRaw.value = data?.['total_revenue_before_tax'];
+                }
+            }
+        }
+        $.fn.initMaskMoney2();
+        return true;
+    };
+
+
+}
+
+// DataTable
+class RecoveryDataTableHandle {
+    static productInitEle = $('#data-init-product');
+    static uomInitEle = $('#data-init-uom');
+    static taxInitEle = $('#data-init-tax');
+
+    static tablePOProduct = $('#datable-good-receipt-po-product');
+    static tablePR = $('#datable-good-receipt-purchase-request');
+    static tableWH = $('#datable-good-receipt-warehouse');
+
+    static $tableProduct = $('#datable-product');
+    static $tableDelivery = $('#datable-delivery');
+    static $tableDeliveryProduct = $('#datable-deli-product');
+    static $tableWarehouse = $('#datable-warehouse');
+
+    static dataTableProduct(data) {
+        RecoveryDataTableHandle.$tableProduct.not('.dataTable').DataTableDefault({
+            styleDom: 'hide-foot',
+            data: data ? data : [],
+            ordering: false,
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            columns: [  // 25,325,325,150,175,325,150,270,25 (1920p)
+                {
+                    targets: 0,
+                    width: '1%',
+                    render: (data, type, row, meta) => {
+                        return `<span class="table-row-order">${(meta.row + 1)}</span>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '18%',
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" readonly>${row?.['product_data']?.['title']}</textarea>
+                                <div class="row table-row-item-area hidden">
+                                    <div class="col-12 col-md-12 col-lg-12">
+                                        <select
+                                            class="form-select table-row-item"
+                                            data-product-id="${row?.['product_data']?.['id']}"
+                                            data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-product')}"
+                                            data-method="GET"
+                                            data-keyResp="product_sale_list"
+                                            readonly
+                                        >
+                                        </select>
+                                    </div>
+                                </div>`;
+                    },
+                },
+                {
+                    targets: 2,
+                    width: '15%',
+                    render: (data, type, row) => {
+                        return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : ''}</textarea></div>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '7.8125%',
+                    render: () => {
+                        return `<select 
+                                    class="form-control table-row-uom"
+                                    data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-uom')}"
+                                    data-method="GET"
+                                    data-keyResp="unit_of_measure"
+                                    required
+                                    readonly
+                                >
+                                </select>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '9.11458333333%',
+                    render: (data, type, row) => {
+                        return `<input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_recovery']}" required readonly>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    width: '16.9270833333%',
+                    render: (data, type, row) => {
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-price" 
+                                    value="${row?.['product_unit_price'] ? row?.['product_unit_price'] : 0}"
+                                    data-return-type="number"
+                                    readonly
+                                >`;
+                    }
+                },
+                {
+                    targets: 6,
+                    width: '7.8125%',
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                <select 
+                                    class="form-control table-row-tax"
+                                    data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                    data-method="GET"
+                                    data-keyResp="tax_list"
+                                >
+                                </select>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    value="${row?.['product_tax_amount']}"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row?.['product_tax_amount']}"
+                                    hidden
+                                >
+                            </div>`;
+                    }
+                },
+                {
+                    targets: 7,
+                    width: '14.0625%',
+                    render: (data, type, row) => {
+                        return `<div class="row subtotal-area">
+                                    <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
+                                    <input
+                                        type="text"
+                                        class="form-control table-row-subtotal-raw"
+                                        value="${row?.['product_subtotal_price']}"
+                                        hidden
+                                    >
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 8,
+                    width: '1.30208333333%',
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+                let uomEle = row.querySelector('.table-row-uom');
+                let taxEle = row.querySelector('.table-row-tax');
+                if (uomEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_data']) {
+                        dataS2 = [data?.['uom_data']];
+                    }
+                    RecoveryLoadDataHandle.loadInitS2($(uomEle), dataS2);
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    RecoveryLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+            },
+            drawCallback: function () {
+                RecoveryDataTableHandle.dtbProductHDCustom();
+            },
+        });
+    };
+
+    static dataTableDelivery(data) {
+        RecoveryDataTableHandle.$tableDelivery.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        return `<div class="form-check form-check-lg">
+                                    <input 
+                                        type="radio" 
+                                        class="form-check-input table-row-checkbox" 
+                                        id="delivery-${row?.['id'].replace(/-/g, "")}"
+                                        data-id="${row?.['id']}"
+                                    >
+                                    <label class="form-check-label table-row-item" for="delivery-${row?.['id'].replace(/-/g, "")}">${row?.['code']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        let date = '';
+                        if (row?.['date_created']) {
+                            date = moment(row?.['date_created']).format('DD/MM/YYYY');
+                        }
+                        return `<span type="text" class="table-row-date">${date}</span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                // add css to Dtb
+                RecoveryLoadDataHandle.loadCssToDtb('datable-delivery');
+                RecoveryLoadDataHandle.loadEventRadio(RecoveryDataTableHandle.$tableDelivery);
+            },
+        });
+    };
+
+    static dataTableDeliveryProduct(data) {
+        RecoveryDataTableHandle.$tableDeliveryProduct.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    width: '80%',
+                    render: (data, type, row) => {
+                        return `<div class="form-check form-check-lg">
+                                    <input 
+                                        type="radio" 
+                                        class="form-check-input table-row-checkbox" 
+                                        id="deli-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}"
+                                        data-id="${row?.['offset_data']?.['id']}"
+                                    >
+                                    <label class="form-check-label table-row-item" for="deli-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}">${row?.['offset_data']?.['title']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-asset-type">${RecoveryLoadDataHandle.dataAssetType?.[row?.['asset_type']] ? RecoveryLoadDataHandle.dataAssetType?.[row?.['asset_type']] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-uom">${row?.['offset_data']?.['sale_information']?.['default_uom']?.['title'] ? row?.['offset_data']?.['sale_information']?.['default_uom']?.['title'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-ordered">${row?.['quantity_ordered'] ? row?.['quantity_ordered'] : '0'}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-delivered">${row?.['quantity_delivered'] ? row?.['quantity_delivered'] : '0'}</span>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-recovered">${row?.['quantity_recovered'] ? row?.['quantity_recovered'] : '0'}</span>`;
+                    }
+                },
+                {
+                    targets: 6,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-recovery">${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : '0'}</span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                // add css to Dtb
+                RecoveryLoadDataHandle.loadCssToDtb('datable-deli-product');
+                RecoveryLoadDataHandle.loadEventRadio(RecoveryDataTableHandle.$tableDeliveryProduct);
+            },
+        });
+    };
+
+    static dataTableWareHouse(data) {
+        RecoveryDataTableHandle.$tableWarehouse.DataTableDefault({
+            ajax: {
+                url: RecoveryLoadDataHandle.urlEle.attr('data-warehouse'),
+                type: "GET",
+                dataSrc: function (resp) {
+                    let dataAjax = $.fn.switcherResp(resp);
+                    if (data) {
+                        return data;
+                    }
+                    if (dataAjax && dataAjax.hasOwnProperty('warehouse_list')) return dataAjax['warehouse_list'];
+                    return [];
+                },
+            },
+            paging: false,
+            info: false,
+            columns: [
+                {
+                    targets: 0,
+                    width: "20%",
+                    render: (data, type, row) => {
+                        return `<button class="btn-collapse-app-wf btn btn-icon btn-rounded mr-1"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>`;
+                    }
+                },
+                {
+                    targets: 0,
+                    width: "20%",
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-delivered">${row?.['quantity_delivered'] ? row?.['quantity_delivered'] : '0'}</span>`;
+                    }
+                },
+                {
+                    targets: 0,
+                    width: "20%",
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-recovered">${row?.['quantity_recovered'] ? row?.['quantity_recovered'] : '0'}</span>`;
+                    }
+                },
+                {
+                    targets: 0,
+                    width: "20%",
+                    render: (data, type, row) => {
+                        return `<input type="text" class="form-control table-row-quantity-recovery validated-number" value="${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : 0}">`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                // add css to Dtb
+                RecoveryLoadDataHandle.loadCssToDtb('datable-warehouse');
+            },
+        }, false);
+    };
+
+    static dataTableLeaseGenerate(idTbl, data) {
+        $('#' + idTbl).DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columns: [
+                {
+                    title: 'Serial',
+                    width: '25%',
+                    render: (data, type, row) => {
+                        return `<select class="form-select table-row-serial" data-keyText="serial_number" hidden></select>`;
+                    }
+                },
+                {
+                    title: 'Note',
+                    width: '60%',
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ''}</textarea>`;
+                    }
+                },
+                {
+                    title: 'Get',
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<div class="form-check form-check-lg">
+                                    <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" checked disabled>
+                                </div>`;
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+                let serialEle = row.querySelector('.table-row-serial');
+                let remarkEle = row.querySelector('.table-row-remark');
+                if (serialEle) {
+                    let productChecked = RecoveryDataTableHandle.$tableDeliveryProduct[0].querySelector('.table-row-checkbox:checked');
+                    if (productChecked) {
+                        let rowTarget = productChecked.closest('tr');
+                        if (rowTarget) {
+                            let rowIndex = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowTarget).index();
+                            let $row = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex);
+                            let rowData = $row.data();
+                            if (rowData?.['delivery_data']) {
+                                let serialData = [{'id': '', 'title': 'Select...',},];
+                                for (let deli_data of rowData?.['delivery_data']) {
+                                    if (deli_data?.['serial_data']) {
+                                        for (let serial_data of deli_data?.['serial_data']) {
+                                            if (serial_data?.['product_warehouse_serial_data']) {
+                                                serialData.push(serial_data?.['product_warehouse_serial_data']);
+                                            }
+                                        }
+                                    }
+                                }
+                                RecoveryLoadDataHandle.loadInitS2($(serialEle), serialData, {}, RecoveryLoadDataHandle.$modalMain, false, {'res2': 'serial_number'});
+                                if (data?.['serial_id']) {
+                                    $(serialEle).val(data?.['serial_id']).trigger('change');
+                                }
+                                if (serialData.length === 0) {
+                                    serialEle.removeAttribute('hidden');
+                                }
+
+
+                                $(serialEle).on('change', function () {
+                                    let $ele = $(this);
+                                    let val = $ele.val();
+                                    if (val) {
+                                        RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
+                                            let rowCheck1 = this.node();
+                                            if (!$(rowCheck1).hasClass('child-workflow-list')) {
+                                                let $child = $(rowCheck1).next();
+                                                if ($child.length > 0) {
+                                                    let tblChild = $child[0].querySelector('.table-child');
+                                                    if (tblChild) {
+                                                        $(tblChild).DataTable().rows().every(function () {
+                                                            let rowCheck2 = this.node();
+                                                            if (row !== rowCheck2) {
+                                                                let serialEle = rowCheck2.querySelector('.table-row-serial');
+                                                                if ($(serialEle).val() === val) {
+                                                                    $ele.val('').trigger('change');
+                                                                    $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-unique-serial')}, 'failure');
+                                                                    return false;
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                    RecoveryStoreDataHandle.storeData();
+                                });
+                            }
+                        }
+                    }
+                }
+                if (remarkEle) {
+                    $(remarkEle).on('change', function () {
+                        RecoveryStoreDataHandle.storeData();
+                    });
+                }
+            },
+            drawCallback: function () {
+                // add css to Dtb
+                RecoveryLoadDataHandle.loadCssToDtb(idTbl);
+            },
+        });
+    };
+
+    // Custom dtb
+    static dtbProductHDCustom() {
+        let $table = RecoveryDataTableHandle.$tableProduct;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-edit-product-good-receipt').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-edit-product-good-receipt" data-bs-toggle="modal" data-bs-target="#productModalCenter">
+                                    <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>${RecoveryLoadDataHandle.transEle.attr('data-edit')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+            }
+        }
+    };
+
+}
+
+// Calculate
+class RecoveryCalculateHandle {
+    static calculateTotal(table) {
+        let tableWrapper = document.getElementById('datable-product_wrapper');
+        if (tableWrapper) {
+            let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
+            let pretaxAmount = 0;
+            let taxAmount = 0;
+            let elePretaxAmount = tableFt.querySelector('.good-receipt-product-pretax-amount');
+            let eleTaxes = tableFt.querySelector('.good-receipt-product-taxes');
+            let eleTotal = tableFt.querySelector('.good-receipt-product-total');
+            let elePretaxAmountRaw = tableFt.querySelector('.good-receipt-product-pretax-amount-raw');
+            let eleTaxesRaw = tableFt.querySelector('.good-receipt-product-taxes-raw');
+            let eleTotalRaw = tableFt.querySelector('.good-receipt-product-total-raw');
+            let finalRevenueBeforeTax = tableFt.querySelector('.good-receipt-final-revenue-before-tax');
+            if (!table.querySelector('.dataTables_empty')) {
+                if (elePretaxAmount && eleTaxes && eleTotal) {
+                    let tableLen = table.tBodies[0].rows.length;
+                    for (let i = 0; i < tableLen; i++) {
+                        let row = table.tBodies[0].rows[i];
+                        // calculate Pretax Amount
+                        let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
+                        if (subtotalRaw) {
+                            if (subtotalRaw.value) {
+                                pretaxAmount += parseFloat(subtotalRaw.value)
+                            }
+                        }
+                        // calculate Tax Amount
+                        let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
+                        if (subTaxAmountRaw) {
+                            if (subTaxAmountRaw.value) {
+                                taxAmount += parseFloat(subTaxAmountRaw.value)
+                            }
+                        }
+                    }
+                    let totalFinal = (pretaxAmount + taxAmount);
+                    $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
+                    elePretaxAmountRaw.value = pretaxAmount;
+                    finalRevenueBeforeTax.value = pretaxAmount;
+                    $(eleTaxes).attr('data-init-money', String(taxAmount));
+                    eleTaxesRaw.value = taxAmount;
+                    $(eleTotal).attr('data-init-money', String(totalFinal));
+                    eleTotalRaw.value = totalFinal;
+                }
+            } else {
+                $(elePretaxAmount).attr('data-init-money', String(0));
+                elePretaxAmountRaw.value = '0';
+                finalRevenueBeforeTax.value = '0';
+                $(eleTaxes).attr('data-init-money', String(0));
+                eleTaxesRaw.value = '0';
+                $(eleTotal).attr('data-init-money', String(0));
+                eleTotalRaw.value = '0';
+            }
+            $.fn.initMaskMoney2();
+        }
+        $.fn.initMaskMoney2();
+        return true;
+    };
+
+    static calculateRow(row) {
+        let price = 0;
+        let quantity = 0;
+        let elePrice = row.querySelector('.table-row-price');
+        if (elePrice) {
+            price = $(elePrice).valCurrency();
+        }
+        let eleQuantity = row.querySelector('.table-row-import');
+        if (eleQuantity) {
+            if (eleQuantity.value) {
+                quantity = parseFloat(eleQuantity.value)
+            } else if (!eleQuantity.value || eleQuantity.value === "0") {
+                quantity = 0
+            }
+        }
+        let tax = 0;
+        let subtotal = (price * quantity);
+        let eleTax = row.querySelector('.table-row-tax');
+        if (eleTax) {
+            if ($(eleTax).val()) {
+                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                if (dataTax.hasOwnProperty('rate')) {
+                    tax = parseInt(dataTax.rate);
+                }
+            }
+        }
+        let eleTaxAmount = row.querySelector('.table-row-tax-amount');
+        let eleTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
+        // calculate tax
+        if (eleTaxAmount) {
+            let taxAmount = ((subtotal * tax) / 100);
+            $(eleTaxAmount).attr('value', String(taxAmount));
+            eleTaxAmountRaw.value = taxAmount;
+        }
+        // set subtotal value
+        let eleSubtotal = row.querySelector('.table-row-subtotal');
+        let eleSubtotalRaw = row.querySelector('.table-row-subtotal-raw');
+        if (eleSubtotal) {
+            $(eleSubtotal).attr('data-init-money', String(subtotal));
+            eleSubtotalRaw.value = subtotal;
+        }
+        $.fn.initMaskMoney2();
+        return true;
+    };
+
+    static calculateMain(table, row) {
+        RecoveryCalculateHandle.calculateRow(row);
+        // calculate total
+        RecoveryCalculateHandle.calculateTotal(table[0]);
+        return true;
+    };
+
+    static calculateTable(table) {
+        table.DataTable().rows().every(function () {
+            let row = this.node();
+            RecoveryCalculateHandle.calculateMain(table, row);
+        });
+    };
+}
+
+// Store data
+class RecoveryStoreDataHandle {
+    static storeData() {
+        let warehouse_data = [];
+        let delivery_product_data = [];
+
+        RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
+            let row = this.node();
+            if (!$(row).hasClass('child-workflow-list')) {
+                let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(row).index();
+                let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
+                let rowData = $row.data();
+
+                let recoveryEle = row.querySelector('.table-row-quantity-recovery');
+                if (recoveryEle) {
+                    rowData['quantity_recovery'] = parseFloat($(recoveryEle).val());
+                }
+
+                let lease_generate_data = [];
+                let $child = $(row).next();
+                if ($child.length > 0) {
+                    let tblChild = $child[0].querySelector('.table-child');
+                    if (tblChild) {
+                        $(tblChild).DataTable().rows().every(function () {
+                            let row = this.node();
+                            let leaseGenData = {};
+                            let serialEle = row.querySelector('.table-row-serial');
+                            let remarkEle = row.querySelector('.table-row-remark');
+                            if (serialEle) {
+                                if ($(serialEle).val()) {
+                                    let data = SelectDDControl.get_data_from_idx($(serialEle), $(serialEle).val());
+                                    if (data) {
+                                        leaseGenData['serial_id'] = $(serialEle).val();
+                                        leaseGenData['serial_data'] = data;
+                                    }
+                                }
+                            }
+                            if (remarkEle) {
+                                leaseGenData['remark'] = $(remarkEle).val();
+                            }
+                            lease_generate_data.push(leaseGenData);
+                        });
+                    }
+                }
+                rowData['lease_generate_data'] = lease_generate_data;
+
+
+                let iconEle = $(row).find('.icon-collapse-app-wf');
+                let right_or_down = '';
+                if (iconEle.hasClass('fa-caret-right')) {
+                    right_or_down = 'right';
+                }
+                if (iconEle.hasClass('fa-caret-down')) {
+                    right_or_down = 'down';
+                }
+
+                RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData);
+                warehouse_data.push(rowData);
+
+                iconEle = $(row).find('.icon-collapse-app-wf');
+                if (right_or_down === 'right') {
+                    iconEle.removeClass('fa-caret-down').addClass('fa-caret-right');
+                }
+                if (right_or_down === 'down') {
+                    iconEle.removeClass('fa-caret-right').addClass('fa-caret-down');
+                }
+
+            }
+        });
+
+        RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(row).index();
+            let $row = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex);
+            let rowData = $row.data();
+
+            let checked = row.querySelector('.table-row-checkbox:checked');
+            if (checked) {
+                rowData['warehouse_data'] = warehouse_data;
+            }
+            let recoveryEle = row.querySelector('.table-row-quantity-recovery');
+            if (recoveryEle) {
+                rowData['quantity_recovery'] = parseFloat(recoveryEle.innerHTML);
+            }
+
+            RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex).data(rowData);
+            delivery_product_data.push(rowData);
+
+            if (checked) {
+                let checkEle = row.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
+            }
+        });
+
+        RecoveryDataTableHandle.$tableDelivery.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
+            let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
+            let rowData = $row.data();
+
+            let checked = row.querySelector('.table-row-checkbox:checked');
+            if (checked) {
+                rowData['delivery_product_data'] = delivery_product_data;
+            }
+
+            RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex).data(rowData);
+
+            if (checked) {
+                let checkEle = row.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
+            }
+        });
+
+        return true;
+    };
+
+}
+
+// Validate
+class RecoveryValidateHandle {
+
+    static validateImportProductNotInventory(ele, remain) {
+        if (parseFloat(ele.value) > remain) {
+            ele.value = '0';
+            $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
+            return false;
+        }
+        return true;
+    };
+
+    static validateNumber(ele) {
+        let value = ele.value;
+        // Replace non-digit characters with an empty string
+        value = value.replace(/[^0-9.]/g, '');
+        // Remove unnecessary zeros from the integer part
+        value = value.replace("-", "").replace(/^0+(?=\d)/, '');
+        // Update value of input
+        ele.value = value;
+    };
+
+}
+
+// Submit Form
+class RecoverySubmitHandle {
+
+    static setupDataDelivery() {
+        let result = [];
+        RecoveryDataTableHandle.$tableDelivery.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
+            let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
+            let rowData = $row.data();
+            result.push(rowData);
+        });
+        return result;
+    };
+
+    static setupDataSubmit(_form) {
+        if (RecoveryLoadDataHandle.$boxCustomer.val()) {
+            _form.dataForm['customer_id'] = RecoveryLoadDataHandle.$boxCustomer.val();
+            let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.$boxCustomer, RecoveryLoadDataHandle.$boxCustomer.val());
+            if (data) {
+                _form.dataForm['customer_data'] = data;
+            }
+        }
+        if (RecoveryLoadDataHandle.$boxLeaseOrder.val()) {
+            _form.dataForm['lease_order_id'] = RecoveryLoadDataHandle.$boxLeaseOrder.val();
+            let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.$boxLeaseOrder, RecoveryLoadDataHandle.$boxLeaseOrder.val());
+            if (data) {
+                _form.dataForm['lease_order_data'] = data;
+            }
+        }
+        let dateVal = RecoveryLoadDataHandle.$date.val();
+        if (dateVal) {
+            _form.dataForm['date_received'] = moment(dateVal,
+                'DD/MM/YYYY').format('YYYY-MM-DD')
+        }
+        if (RecoveryLoadDataHandle.$boxStatus.val()) {
+            _form.dataForm['recovery_status'] = parseInt(RecoveryLoadDataHandle.$boxStatus.val());
+        }
+
+
+        let recovery_delivery_data = RecoverySubmitHandle.setupDataDelivery();
+        if (recovery_delivery_data.length > 0) {
+            _form.dataForm['recovery_delivery_data'] = recovery_delivery_data;
+        }
+        if (recovery_delivery_data.length <= 0) {
+            $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-required-product')}, 'failure');
+            return false;
+        }
+        let tableWrapper = document.getElementById('datable-product_wrapper');
+        if (tableWrapper) {
+            let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
+            if (tableFt) {
+                let elePretaxAmountRaw = tableFt.querySelector('.good-receipt-product-pretax-amount-raw');
+                if ($(elePretaxAmountRaw).val()) {
+                    _form.dataForm['total_pretax'] = parseFloat($(elePretaxAmountRaw).val());
+                }
+                let eleTaxesRaw = tableFt.querySelector('.good-receipt-product-taxes-raw');
+                if ($(eleTaxesRaw).val()) {
+                    _form.dataForm['total_tax'] = parseFloat($(eleTaxesRaw).val());
+                }
+                let eleTotalRaw = tableFt.querySelector('.good-receipt-product-total-raw');
+                if ($(eleTotalRaw).val()) {
+                    _form.dataForm['total'] = parseFloat($(eleTotalRaw).val());
+                }
+                let finalRevenueBeforeTax = tableFt.querySelector('.good-receipt-final-revenue-before-tax');
+                if (finalRevenueBeforeTax.value) {
+                    _form.dataForm['total_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
+                }
+            }
+        }
+        // attachment
+        if (_form.dataForm.hasOwnProperty('attachment')) {
+          _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);
+        }
+        return _form.dataForm;
+    };
+}
+
+// COMMON FUNCTION
+class RecoveryCommonHandle {
+    static filterFieldList(field_list, data_json) {
+        for (let key in data_json) {
+            if (!field_list.includes(key)) delete data_json[key]
+        }
+        return data_json;
+    }
+
+    static reOrderRowTable($table) {
+        for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
+            let row = $table[0].tBodies[0].rows[i];
+            let dataRowRaw = row?.querySelector('.table-row-order')?.getAttribute('data-row');
+            if (dataRowRaw) {
+                let dataRow = JSON.parse(dataRowRaw);
+                dataRow['order'] = (i + 1);
+                row?.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
+            }
+        }
+    }
+
+    static deleteRowGR(currentRow, $table) {
+        let rowIndex = $table.DataTable().row(currentRow).index();
+        let row = $table.DataTable().row(rowIndex);
+        row.remove().draw();
+    }
+}
+
+

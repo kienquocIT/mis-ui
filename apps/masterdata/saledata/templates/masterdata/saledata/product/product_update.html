@@ -1,21 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Product Update' %}{% endblock %}
+{% block title %}{% trans 'Product' %}{% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'assets/css/masterdata/saledata/accounts/account_create.css' %}" rel="stylesheet"
-          type="text/css"/>
-    <link
-            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
-            rel="stylesheet"
-            type="text/css"
-    />
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/dropify/dist/css/dropify.min.css' %}" rel="stylesheet" type="text/css"/>
-    <style>
-        select, input, textarea {
-            margin-bottom: 10px;
-        }
-    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}

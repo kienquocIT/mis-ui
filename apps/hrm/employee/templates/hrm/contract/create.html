@@ -75,18 +75,7 @@
             {% if edit %}
                 <div class="col-md-12 col-lg-6 hidden sign_check">
                     <div class="title">{% trans 'Signature status' %}</div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sign_status" id="sign_0" value="0">
-                        <label class="form-check-label" for="sign_0">
-                            {% trans 'Unsigned' %}
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sign_status" id="sign_1" value="1">
-                        <label class="form-check-label" for="sign_1">
-                            {% trans 'Signed' %}
-                        </label>
-                    </div>
+                    <span class="badge"></span>
                 </div>
             {% endif %}
         <div class="clearfix mt-4"></div>

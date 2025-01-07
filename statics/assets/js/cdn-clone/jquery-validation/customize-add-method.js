@@ -96,7 +96,6 @@
         return checkBase.bind(this)(value, element, function (rules) {
             if (rules.hasOwnProperty('datetime')) {
                 let regexDefault = /^(0?[1-9]|[12][0-9]|3[01])[\-](0?[1-9]|1[012])[\-]\d{4}\s(0?[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/gm; // format DD-MM-YYYY HH:mm:ss
-                let valueMethod = rules['datetime'];
                 let format = $(element).data('date-format');
                 if (format){
                     format = '^' + format
@@ -111,6 +110,7 @@
                         + '$';
                     regexDefault = format;
                 }
+                let valueMethod = rules['datetime'];
                 let regexStr = valueMethod && valueMethod !== 'true' ? valueMethod : regexDefault;
                 let regex = new RegExp(regexStr);
                 return regex.test(value);

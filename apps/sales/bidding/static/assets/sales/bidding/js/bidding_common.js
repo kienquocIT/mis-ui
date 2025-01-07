@@ -40,7 +40,7 @@ class BiddingLoadDataHandle {
             let TotalOrder = BiddingDataTableHandle.$tableDocument[0].querySelectorAll('.table-row-order').length;
             dataRow.order = TotalOrder + 1;
             BiddingDataTableHandle.$tableDocument.DataTable().row.add(dataRow).draw().node();
-            if(dataDocList.isManual){
+            if(dataRow.isManual){
                 if (!dataDocList.find(item => item?.['id'] === dataRow.id)){
                     dataDocList.push(dataRow);
                 }
@@ -471,6 +471,7 @@ class BiddingDataTableHandle {
             ajax: {
                 url: BiddingDataTableHandle.$url.attr('data-md-document'),
                 type: "GET",
+                data: {doc_type_category: 'bidding'},
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('document_masterdata_bidding_list')) {

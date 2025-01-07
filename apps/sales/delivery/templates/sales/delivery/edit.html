@@ -61,8 +61,9 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label for="inputSaleOrder" class="form-label">{% trans 'Sale Order' %}</label>
-                            <p class="mt-2 border-bottom" id="inputSaleOrder">{% trans 'None' %}</p>
+                            <label for="inputSaleOrder" class="form-label deli-for sale-order">{% trans 'Sale Order' %}</label>
+                            <label for="inputSaleOrder" class="form-label deli-for lease-order" hidden>{% trans 'Lease order' %}</label>
+                            <input type="text" class="form-control form-control-line mt-1" id="inputSaleOrder" value="{% trans 'None' %}" readonly>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
@@ -270,7 +271,7 @@
 {#                                        <input type="checkbox" class="form-check-input" id="self-input">#}
 {#                                        <label class="form-check-label" for="self-input">{% trans 'Self input' %}</label>#}
 {#                                    </div>#}
-                                    <div data-simplebar class="nicescroll-bar" id="scroll-table-lot" hidden>
+                                    <div data-simplebar class="h-350p nicescroll-bar" id="scroll-table-lot" hidden>
                                         <table
                                             id="datable-delivery-wh-lot"
                                             class="table nowrap w-100"
@@ -292,7 +293,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div data-simplebar class="nicescroll-bar" id="scroll-table-serial" hidden>
+                                    <div data-simplebar class="h-350p nicescroll-bar" id="scroll-table-serial" hidden>
                                         <table
                                             id="datable-delivery-wh-serial"
                                             class="table nowrap min-w-800p w-100"
@@ -324,12 +325,30 @@
                                         </table>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div data-simplebar class="nicescroll-bar" id="scroll-table-lease" hidden>
+                                        <table
+                                                id="datable-delivery-wh-lease"
+                                                class="table nowrap w-100 mb-5"
+                                        >
+                                            <thead>
+                                            <tr class="bg-light">
+                                                <th class="w-40">{% trans 'Lease code' %}</th>
+                                                <th class="w-30">{% trans 'Original code' %}</th>
+                                                <th class="w-30">{% trans 'Leased time before' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="products">{% trans 'Close' %}</button>
                         <button type="button" class="btn btn-primary" id="save-stock" data-zone="products">{% trans 'Get' %}</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="products">{% trans 'Cancel' %}</button>
                     </div>
                 </div>
             </div>

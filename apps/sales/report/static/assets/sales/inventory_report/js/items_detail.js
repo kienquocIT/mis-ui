@@ -10,8 +10,8 @@ $(document).ready(function () {
     let current_period = {}
     if (current_period_Ele.text() !== '') {
         current_period = JSON.parse(current_period_Ele.text())
-        getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-        periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+        getMonthOrder(current_period)
+        periodMonthEle.val(current_period?.['current_sub']?.['order']).trigger('change');
     }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
     if ($definition_inventory_valuation === '0') {
@@ -19,38 +19,25 @@ $(document).ready(function () {
     }
     let PERIODIC_CLOSED = false
 
-    function getMonthOrder(space_month, fiscal_year) {
+    function getMonthOrder(period_data) {
         periodMonthEle.html(``)
-        let data = []
-        for (let i = 0; i < 12; i++) {
-            let year_temp = fiscal_year
-            let trans_order = i + 1 + space_month
-            if (trans_order > 12) {
-                trans_order -= 12
-                year_temp += 1
-            }
-
-            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() + 1) {
-                if (year_temp === new Date().getFullYear()) {
-                    periodMonthEle.append(`<option value="${i + 1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
-                    data.push({
-                        'id': i + 1,
-                        'title': trans_script.attr(`data-trans-m${trans_order}th`),
-                        'month': i + 1,
-                        'year': year_temp
-                    })
-                }
-            }
+        periodMonthEle.empty();
+        let data = period_data?.['subs'] ? period_data?.['subs'] : []
+        let select_data = []
+        for (let i = 0; i < data.length; i++) {
+            let option_month = moment(data[i]?.['start_date']).month() + 1
+            let option_year = moment(data[i]?.['start_date']).year()
+            periodMonthEle.append(`<option value="${data[i]?.['order']}">${trans_script.attr(`data-trans-m${option_month}th`)}</option>`)
+            select_data.push({
+                'id': i + 1,
+                'title': trans_script.attr(`data-trans-m${option_month}th`),
+                'month': i + 1,
+                'year': option_year
+            })
         }
-        data.push({
-            'id': '',
-            'title': 'Select...',
-            'month': 0,
-            'year': 0,
-        })
         periodMonthEle.empty();
         periodMonthEle.initSelect2({
-            data: data,
+            data: select_data,
             templateResult: function (state) {
                 let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
                 return $(`<span>${state.text} ${groupHTML}</span>`);
@@ -59,10 +46,22 @@ $(document).ready(function () {
     }
 
     function LoadPeriod(ele, data) {
+        if (Object.keys(data).length === 0) {
+            data = current_period
+        }
         ele.initSelect2({
             ajax: {
                 url: ele.attr('data-url'),
                 method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                let res = []
+                for (const item of resp.data[keyResp]) {
+                    if (item?.['fiscal_year'] <= current_period['fiscal_year']) {
+                        res.push(item)
+                    }
+                }
+                return res
             },
             data: (data ? data : null),
             keyResp: 'periods_list',
@@ -71,7 +70,7 @@ $(document).ready(function () {
         }).on('change', function () {
             let selected_option = SelectDDControl.get_data_from_idx(ele, ele.val())
             if (selected_option) {
-                getMonthOrder(selected_option['space_month'], selected_option?.['fiscal_year'])
+                getMonthOrder(selected_option)
             }
         })
     }
@@ -346,7 +345,6 @@ $(document).ready(function () {
 
             Promise.all([inventory_detail_list_ajax]).then(
                 (results) => {
-                    // console.log(results[0])
                     items_detail_report_table_Ele.DataTable().clear().destroy()
                     items_detail_report_table_Ele.find('tbody').html('')
                     let table_inventory_report_data = []
@@ -399,7 +397,7 @@ $(document).ready(function () {
                                         if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                             text_color = 'purple'
                                         }
-                                        if (activity?.['trans_title'] === 'Delivery') {
+                                        if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)') {
                                             text_color = 'danger'
                                         }
                                         if (activity?.['trans_title'] === 'Goods issue') {
@@ -416,7 +414,8 @@ $(document).ready(function () {
                                             'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                             'Goods return': trans_script.attr('data-trans-grt'),
                                             'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
-                                            'Delivery': trans_script.attr('data-trans-dlvr'),
+                                            'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
+                                            'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
                                             'Goods issue': trans_script.attr('data-trans-gis'),
                                             'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         }
@@ -475,7 +474,7 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
                                         text_color = 'purple'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
+                                    if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)') {
                                         text_color = 'danger'
                                     }
                                     if (activity?.['trans_title'] === 'Goods issue') {
@@ -492,7 +491,8 @@ $(document).ready(function () {
                                         'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
                                         'Goods return': trans_script.attr('data-trans-grt'),
                                         'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
-                                        'Delivery': trans_script.attr('data-trans-dlvr'),
+                                        'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
+                                        'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
                                         'Goods issue': trans_script.attr('data-trans-gis'),
                                         'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                         'Balance init input': trans_script.attr('data-trans-bii'),
@@ -739,7 +739,7 @@ $(document).ready(function () {
                                                     )
                                                 } else {
                                                     let text_color = ''
-                                                    if (activity?.['trans_title'] === 'Delivery') {
+                                                    if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)') {
                                                         text_color = 'danger'
                                                     }
                                                     if (activity?.['trans_title'] === 'Goods issue') {
@@ -749,7 +749,8 @@ $(document).ready(function () {
                                                         text_color = 'purple'
                                                     }
                                                     let trans_title_sub = {
-                                                        'Delivery': trans_script.attr('data-trans-dlvr'),
+                                                        'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
+                                                        'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
                                                         'Goods issue': trans_script.attr('data-trans-gis'),
                                                         'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                                     }
@@ -894,7 +895,7 @@ $(document).ready(function () {
                                                 )
                                             } else {
                                                 let text_color = ''
-                                                if (activity?.['trans_title'] === 'Delivery') {
+                                                if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)') {
                                                     text_color = 'danger'
                                                 }
                                                 if (activity?.['trans_title'] === 'Goods issue') {
@@ -904,7 +905,8 @@ $(document).ready(function () {
                                                     text_color = 'purple'
                                                 }
                                                 let trans_title_sub = {
-                                                    'Delivery': trans_script.attr('data-trans-dlvr'),
+                                                    'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
+                                                    'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
                                                     'Goods issue': trans_script.attr('data-trans-gis'),
                                                     'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
                                                 }
@@ -1005,8 +1007,8 @@ $(document).ready(function () {
         let current_period = {}
         if (current_period_Ele.text() !== '') {
             current_period = JSON.parse(current_period_Ele.text())
-            getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-            periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
+            getMonthOrder(current_period)
+            periodMonthEle.val(current_period?.['current_sub']?.['order']).trigger('change');
         }
     })
 

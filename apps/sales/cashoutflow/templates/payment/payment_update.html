@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Payment Detail' %}{% endblock %}
+{% block title %}{% trans 'Payment' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
@@ -68,7 +68,7 @@
 
         <div class="offcanvas offcanvas-end w-85" tabindex="-1" id="offcanvasSelectDetailAP" aria-labelledby="offcanvasTopLabel">
             <div class="offcanvas-header mt-10">
-                <h5 id="offcanvasRightLabel" data-text-1="{% trans 'Select Advance Payment' %}" data-text-2="{% trans 'Select Expense Item' %}">{% trans 'Select Advance Payment' %}</h5>
+                <h5 id="offcanvasRightLabel" data-text-1="{% trans 'Select Advance' %}" data-text-2="{% trans 'Select Expense Item' %}">{% trans 'Select Advance' %}</h5>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">

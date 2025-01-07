@@ -89,7 +89,7 @@ $(function () {
                             let sttData = [
                                 "light badge-outline",
                                 "warning badge-outline",
-                                "blue badge-outline",
+                                "orange badge-outline",
                                 "success badge-outline",
                             ]
                             return `<span class="badge badge-${sttData[row?.['receipt_status']]}">${sttTxt[row?.['receipt_status']][1]}</span>`;

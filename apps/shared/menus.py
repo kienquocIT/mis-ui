@@ -264,6 +264,10 @@ class MenusCoreConfigurations:
                 name='Import Data', code='menu_import_data', view_name='FImportCreateView',
                 icon='<i class="fa-solid fa-file-import"></i>'
             ),
+            MenuCommon(
+                name='Contract Template', code='menu_contract_template', view_name='ContractTemplateList',
+                icon='<i class="fa-solid fa-file-contract"></i>'
+            ),
         ]
     )
     INVENTORY_DATA_CONFIG = MenuCommon(
@@ -411,8 +415,8 @@ class MenusCRM:
             ),
         ]
     )
-    CASH_OUTFLOW = MenuCommon(
-        name='Cashflow', code='menu_cash_outflow', view_name='',
+    ACCOUNT_PAYABLE = MenuCommon(
+        name='Account payable', code='menu_account_payable', view_name='',
         icon='<i class="fas fa-coins"></i>',
         child=[
             MenuCommon(
@@ -457,6 +461,10 @@ class MenusCRM:
         name='Task', code='menu_opportunity_task', view_name='OpportunityTaskList',
         icon='<i class="fa-solid fa-list-check"></i>',
         child=[],
+    )
+    CONSULTING = MenuCommon(
+        name='Consulting', code='menu_consulting_list', view_name='ConsultingList',
+        icon='<i class="fa-solid fa-briefcase"></i>',
     )
 
 
@@ -778,6 +786,34 @@ class MenusHRM:
     )
 
 
+class MenusFinancials:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    CASHFLOW = MenuCommon(
+        name='Cashflow', code='menu_cashflow', view_name='', icon='<i class="fas fa-exchange-alt"></i>',
+        child=[
+            MenuCommon(
+                name='Cash inflow', code='menu_cash_inflow', view_name='CashInflowList',
+                icon='<i class="fas fa-share"></i>',
+            ),
+            # MenuCommon(
+            #     name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
+            #     icon='<i class="fas fa-reply"></i>',
+            # ),
+        ],
+    )
+    GENERAL = MenuCommon(
+        name='General', code='menu_general', view_name='', icon='<i class="bi bi-link"></i>',
+        child=[
+            MenuCommon(
+                name='Reconciliation', code='menu_reconciliation', view_name='ReconList',
+                icon='<i class="bi bi-ui-checks"></i>',
+            ),
+        ],
+    )
+
+
 # Space Setup
 class SpaceCommon:
     name: str  # 'Sale'
@@ -831,6 +867,7 @@ class SpaceItem:
                 MenusCRM.ACCOUNT,
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
+                MenusCRM.CONSULTING,
                 MenusCRM.BIDDING,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,
@@ -842,7 +879,7 @@ class SpaceItem:
                 MenusCRM.PRODUCT,
                 MenusCRM.OPP_BOM,
                 MenusCRM.PRICING,
-                MenusCRM.CASH_OUTFLOW,
+                MenusCRM.ACCOUNT_PAYABLE,
                 MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
             ],
@@ -868,6 +905,16 @@ class SpaceItem:
                 MenuEOffice.ASSET_TOOLS,
                 MenuEOffice.MEETING,
             ],
+        ),
+        'financials': SpaceCommon(
+            'Financials',
+            'financials',
+            icon='<i class="fas fa-balance-scale"></i>',
+            menus=[
+                MenusFinancials.HOME,
+                MenusFinancials.CASHFLOW,
+                MenusFinancials.GENERAL,
+            ]
         ),
         'forms': SpaceCommon(
             'Forms',
@@ -997,6 +1044,7 @@ class SpaceGroup:
             SpaceItem.mapping['crm'],
             # SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
+            # SpaceItem.mapping['financials'],
             SpaceItem.mapping['forms'],
             SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],

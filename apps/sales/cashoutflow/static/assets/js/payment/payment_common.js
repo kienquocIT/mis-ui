@@ -25,14 +25,16 @@ class PaymentLoadPage {
     static LoadCreatedDate() {
         $('#created_date_id').daterangepicker({
             singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: false,
-            minYear: 1901,
+            timePicker: false,
+            showDropdowns: true,
+            autoApply: true,
+            minYear: parseInt(moment().format('YYYY')),
+            minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM'))-1, parseInt(moment().format('DD'))),
             locale: {
-                format: 'YYYY-MM-DD'
+                format: 'DD/MM/YYYY'
             },
             "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY'), 10)
+            maxYear: parseInt(moment().format('YYYY')) + 100,
         }).prop('disabled', true);
     }
     static LoadCreator(data) {
@@ -429,8 +431,7 @@ class PaymentAction {
     static DisabledDetailPage(option) {
         if (option === 'detail') {
             $('form input').prop('disabled', true).prop('readonly', true)
-            $('select').prop('disabled', true).prop('readonly', true)
-            $('.select2').prop('disabled', true);
+            $('form select').prop('disabled', true)
             $('#btn-add-row-line-detail').prop('disabled', true);
         }
     }
@@ -2069,7 +2070,7 @@ class PaymentHandle {
 
                     $('#title').val(data?.['title']);
 
-                    $('#created_date_id').val(data?.['date_created'].split(' ')[0]).prop('readonly', true);
+                    $('#created_date_id').val(moment(data.date_created.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
 
                     PaymentLoadPage.LoadCreator(data?.['employee_created'])
 

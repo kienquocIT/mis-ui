@@ -2,12 +2,11 @@ $(function () {
 
     $(document).ready(function () {
 
-        let formSubmit = $('#frm_good_receipt_create');
         // Elements Case PO
         let btnConfirmAdd = $('#btn-confirm-add-product');
 
         // Load init
-        if (formSubmit.attr('data-method') === 'POST') {
+        if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
             GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
             GRLoadDataHandle.loadCustomAreaByType();
         }
@@ -32,7 +31,7 @@ $(function () {
         });
 
         // file
-        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
+        if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
             new $x.cls.file($('#attachment')).init({
                 name: 'attachment',
                 enable_edit: true,
@@ -75,10 +74,6 @@ $(function () {
             if (eleCheck) {
                 eleCheck.checked = valid_import;
             }
-        });
-
-        GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
-            GRLoadDataHandle.loadCheckPR();
         });
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {
@@ -126,9 +121,10 @@ $(function () {
             GRStoreDataHandle.storeDataProduct();
         });
 
-        GRDataTableHandle.tableLot.on('change', '.table-row-expire-date, .table-row-manufacture-date', function () {
+        GRDataTableHandle.tableLot.on('change', '.date-picker', function () {
             let row = this.closest('tr');
             GRLoadDataHandle.loadDataIfChangeDateLotRow(row);
+            GRStoreDataHandle.storeDataProduct();
         });
 
         GRLoadDataHandle.btnAddSerial.on('click', function () {
@@ -137,6 +133,10 @@ $(function () {
 
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
             GRLoadDataHandle.loadCheckApplySerial(this);
+        });
+
+        GRDataTableHandle.tableSerial.on('change', '.date-picker', function () {
+            GRStoreDataHandle.storeDataProduct();
         });
 
         GRDataTableHandle.tableLineDetailPO.on('change', '.table-row-price, .table-row-tax', function () {
@@ -217,7 +217,7 @@ $(function () {
         });
 
 // SUBMIT FORM
-        SetupFormSubmit.validate(formSubmit, {
+        SetupFormSubmit.validate(GRLoadDataHandle.$form, {
             rules: {
                 title: {
                     required: true,
@@ -229,7 +229,7 @@ $(function () {
         });
 
         function submitHandlerFunc() {
-            let _form = new SetupFormSubmit(formSubmit);
+            let _form = new SetupFormSubmit(GRLoadDataHandle.$form);
             let result = GRSubmitHandle.setupDataSubmit(_form);
             if (result === false) {
                 return false;

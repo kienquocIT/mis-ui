@@ -86,6 +86,7 @@ INSTALLED_APPS = \
         'apps.core.form',
         'apps.core.recurrence',
         'apps.core.online_sign',
+        'apps.core.contract_template',
     ] + [  # Another Application
         'apps.masterdata.saledata',
         'apps.masterdata.promotion',
@@ -112,6 +113,7 @@ INSTALLED_APPS = \
         'apps.sales.production',
         'apps.sales.bidding',
         'apps.sales.leaseorder',
+        'apps.sales.consulting',
     ] + [  # e-office Application
         'apps.eoffice.leave',
         'apps.eoffice.businesstrip',
@@ -121,6 +123,9 @@ INSTALLED_APPS = \
         'apps.web_builder',
     ] + [  # HRM
         'apps.hrm.employee'
+    ] + [
+        'apps.sales.financialcashflow',
+        'apps.sales.reconciliation'
     ]
 
 INSTALLED_APPS += [

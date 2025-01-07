@@ -200,31 +200,39 @@ $(document).ready(function () {
             let selectedRow = $(this).closest("tr");
             let document_type = $(this).data('id');
             let attachmentData =[]
-            if (dataDocList.find(item => item?.['document_type'] === document_type)){
-                attachmentData = dataDocList.find(item => item?.['document_type'] === document_type ).attachment_data
+            let dataDocListRowData = dataDocList.find(item => item?.['document_type'] === document_type)
+            if(dataDocListRowData){
+                data.push({
+                    ...dataDocListRowData
+                })
+            } else {
+                data.push({
+                    "document_type": document_type,
+                    "title": selectedRow.find(".table-row-title").text(),
+                    "attachment_data": attachmentData,
+                    "isManual": false
+                })
             }
 
-            data.push({
-                "document_type": document_type,
-                "title": selectedRow.find(".table-row-title").text(),
-                "attachment_data": attachmentData,
-                "isManual": false
-            })
         })
         $("#document-modal-table-manual .form-check-checkbox:checked").each(function (e) {
             let selectedRow = $(this).closest("tr");
             let id = $(this).data('row-id');
             let attachmentData =[]
-            if (dataDocList.find(item => item?.['id'] === id)){
-                attachmentData = dataDocList.find(item => item?.['id'] === id).attachment_data
-            }
 
-            data.push({
-                "id": id,
-                "title": selectedRow.find(".table-row-title").val(),
-                "attachment_data": attachmentData,
-                "isManual": true
-            })
+            let dataDocListRowData = dataDocList.find(item => item?.['id'] === id)
+            if(dataDocListRowData){
+                data.push({
+                    ...dataDocListRowData
+                })
+            } else {
+                data.push({
+                    "id": id,
+                    "title": selectedRow.find(".table-row-title").val(),
+                    "attachment_data": attachmentData,
+                    "isManual": true
+                })
+            }
         })
 
         BiddingLoadDataHandle.$fileArea.attr('doc-id',null);

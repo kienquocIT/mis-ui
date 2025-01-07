@@ -366,8 +366,8 @@ class DistributionPlanHandle {
 
 function Disable(option) {
     if (option === 'detail') {
-        $('input').prop('readonly', true).prop('disabled', true)
-        $('select').prop('disabled', true)
+        $('form input').prop('readonly', true).prop('disabled', true)
+        $('form select').prop('disabled', true)
         add_new_fixed_expense_btn.prop('disabled', true)
         add_new_variable_expense_btn.prop('disabled', true)
     }

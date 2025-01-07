@@ -13,6 +13,9 @@ function loadOpportunityCallLogList() {
         let frm = new SetupFormSubmit(dtb);
         dtb.DataTableDefault({
             rowIdx: true,
+            scrollX: '100vw',
+            scrollY: '75vh',
+            scrollCollapse: true,
             useDataServer: true,
             ajax: {
                 url: frm.dataUrl,
@@ -51,14 +54,14 @@ function loadOpportunityCallLogList() {
                     data: 'opportunity',
                     className: 'wrap-text text-center w-20',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue badge-outline">${row?.['opportunity']?.['code']}</span>`
+                        return `${row?.['opportunity']?.['code']}`
                     }
                 },
                 {
                     data: 'employee_inherit',
                     className: 'wrap-text w-30',
                     render: (data, type, row) => {
-                        return `<span class="text-primary">${row?.['employee_inherit']?.['full_name']}</span><span class="text-primary"> --- <i class="fas fa-phone-volume"></i> --- </span><a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="text-primary underline_hover">${row?.['contact']?.['fullname']}</span></a>`
+                        return `<span class="text-blue">${row?.['employee_inherit']?.['full_name']}</span><span class="text-primary"> --- <i class="fas fa-phone-volume"></i> --- </span><a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="text-primary underline_hover">${row?.['contact']?.['fullname']}</span></a>`
                     }
                 },
                 {

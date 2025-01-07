@@ -253,6 +253,7 @@
         type="text"
         id="app-urls-factory"
         data-so-recurrence="{% url 'SORecurrenceListAPI' %}"
+        data-lo-recurrence="{% url 'LORecurrenceListAPI' %}"
         data-ar-recurrence="{% url 'ARInvoiceRecurrenceListAPI' %}"
     >
     {{ data.employee_current|json_script:'employee_current' }}

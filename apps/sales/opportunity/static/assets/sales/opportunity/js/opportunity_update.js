@@ -185,6 +185,18 @@ $(document).ready(function () {
                 }
 
                 loadDetail(opportunity_detail_data).then(function () {
+                    // load tabs first time
+                    OpportunityLoadDetail.loadDetailTableProduct(opportunity_detail_data);
+                    $('#input-product-pretax-amount').attr('value', opportunity_detail_data.total_product_pretax_amount);
+                    $('#input-product-taxes').attr('value', opportunity_detail_data.total_product_tax);
+                    $('#input-product-total').attr('value', opportunity_detail_data.total_product);
+                    $('#estimated-gross-profit-percent').val(opportunity_detail_data?.['estimated_gross_profit_percent'])
+                    $('#estimated-gross-profit-value').attr('value', opportunity_detail_data?.['estimated_gross_profit_value'])
+                    OpportunityLoadDetail.loadDetailTableCompetitor(opportunity_detail_data)
+                    OpportunityLoadDetail.loadDetailTableContactRole(opportunity_detail_data)
+                    OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail_data.customer_decision_factor)
+                    OpportunityLoadPage.loadLeadList()
+
                     let is_lost = LoadConfigAndLoadStage.autoLoadStage(
                         true,
                         false,
@@ -199,14 +211,15 @@ $(document).ready(function () {
                     if (is_lost) {
                         let ele_stage = $('.stage-lost')
                         ele_stage.addClass('stage-selected');
-                        ele_stage.css('background-color', 'rgb(255,94,94)')
+                        ele_stage.css('background-color', '#EB2925')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid #EB2925')
                     } else {
-                        $('.stage-lost').removeClass('stage-selected');
-                        $('.stage-lost').css('background-color', '#e7e7e7')
-                        $('.stage-lost').css('color', '#6f6f6f')
-                        $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
+                        let ele_stage = $('.stage-lost')
+                        ele_stage.removeClass('stage-selected');
+                        ele_stage.css('background-color', '#e7e7e7')
+                        ele_stage.css('color', '#6f6f6f')
+                        ele_stage.next().css('border-left', '16px solid #e7e7e7')
                     }
 
                     let data_opp_detail = $dataDetail.text() ? JSON.parse($dataDetail.text()) : null
@@ -256,17 +269,6 @@ $(document).ready(function () {
                 OpportunityActivity.loadDblActivityLogs();
 
                 // even in tab product
-                $('#tab_details_btn').on('click', function () {
-                    if ($(this).attr('data-is-loaded') !== 'true') {
-                        OpportunityLoadDetail.loadDetailTableProduct(opportunity_detail_data);
-                        $('#input-product-pretax-amount').attr('value', opportunity_detail_data.total_product_pretax_amount);
-                        $('#input-product-taxes').attr('value', opportunity_detail_data.total_product_tax);
-                        $('#input-product-total').attr('value', opportunity_detail_data.total_product);
-                        $('#estimated-gross-profit-percent').val(opportunity_detail_data?.['estimated_gross_profit_percent'])
-                        $('#estimated-gross-profit-value').attr('value', opportunity_detail_data?.['estimated_gross_profit_value'])
-                        $(this).attr('data-is-loaded', 'true')
-                    }
-                })
                 $('#btn-add-select-product').on('click', function () {
                     OpportunityLoadDetail.addRowSelectProduct();
                 })
@@ -393,24 +395,11 @@ $(document).ready(function () {
                 })
 
                 // event in tab competitor
-                $('#tab_competitor_btn').on('click', function () {
-                    if ($(this).attr('data-is-loaded') !== 'true') {
-                        OpportunityLoadDetail.loadDetailTableCompetitor(opportunity_detail_data)
-                        $(this).attr('data-is-loaded', 'true')
-                    }
-                })
                 $('#btn-add-competitor').on('click', function () {
                     OpportunityLoadDetail.addRowCompetitor()
                 })
 
                 // event in tab contact role
-                $('#tab_contact_role_btn').on('click', function () {
-                    if ($(this).attr('data-is-loaded') !== 'true') {
-                        OpportunityLoadDetail.loadDetailTableContactRole(opportunity_detail_data);
-                        OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail_data.customer_decision_factor);
-                        $(this).attr('data-is-loaded', 'true')
-                    }
-                })
                 $('#btn-add-contact').on('click', function () {
                     OpportunityLoadDetail.addRowContactRole();
                 })
@@ -455,14 +444,6 @@ $(document).ready(function () {
 
                 // even in tab Lead sale team
                 OpportunityLoadDetail.loadSaleTeam(opportunity_detail_data.members, true, opportunity_detail_data?.['sale_person'] || {});
-
-                // even in tab Lead
-                $('#tab_lead_btn').on('click', function () {
-                    if ($(this).attr('data-is-loaded') !== 'true') {
-                        OpportunityLoadPage.loadLeadList();
-                        $(this).attr('data-is-loaded', 'true')
-                    }
-                })
 
                 // event general
                 $(document).on('change', 'select, input', function () {
@@ -573,10 +554,10 @@ $(document).ready(function () {
                                     if (i <= index) {
                                         if (!ele_stage.eq(i).hasClass('stage-lost')) {
                                             ele_stage.eq(i).addClass('stage-selected');
-                                            ele_stage.eq(i).css('background-color', '#5a82b7')
+                                            ele_stage.eq(i).css('background-color', '#0070D2')
                                             ele_stage.eq(i).css('color', 'white')
                                             ele_stage.eq(i).find('.dropdown span').css('color', 'white')
-                                            ele_stage.eq(i).next().css('border-left', '16px solid #5a82b7')
+                                            ele_stage.eq(i).next().css('border-left', '16px solid #0070D2')
                                         }
                                     } else {
                                         ele_stage.eq(i).removeClass('stage-selected');
@@ -609,24 +590,25 @@ $(document).ready(function () {
                     if (is_lost) {
                         let ele_stage = $('.stage-lost')
                         ele_stage.addClass('stage-selected');
-                        ele_stage.css('background-color', 'rgb(255,94,94)')
+                        ele_stage.css('background-color', '#EB2925')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid #EB2925')
                     } else {
-                        $('.stage-lost').removeClass('stage-selected');
-                        $('.stage-lost').css('background-color', '#e7e7e7')
-                        $('.stage-lost').css('color', '#6f6f6f')
-                        $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
+                        let ele_stage = $('.stage-lost')
+                        ele_stage.removeClass('stage-selected');
+                        ele_stage.css('background-color', '#e7e7e7')
+                        ele_stage.css('color', '#6f6f6f')
+                        ele_stage.next().css('border-left', '16px solid #e7e7e7')
                     }
                     $.fn.notifyB({description: "Stage has just updated!"}, 'success')
                 })
                 $(document).on('change', '#input-close-deal', function () {
                     if ($(this).is(':checked')) {
                         $(this).closest('.sub-stage').addClass('stage-selected');
-                        $(this).closest('.sub-stage').css('background-color', '#5a82b7')
+                        $(this).closest('.sub-stage').css('background-color', '#0070D2')
                         $(this).closest('.sub-stage').css('color', 'white')
                         $(this).closest('.sub-stage').find('.dropdown span').css('color', 'white')
-                        $(this).closest('.sub-stage').next().css('border-left', '16px solid #5a82b7')
+                        $(this).closest('.sub-stage').next().css('border-left', '16px solid #0070D2')
                         $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
                     } else {
                         $(this).closest('.sub-stage').removeClass('stage-selected');

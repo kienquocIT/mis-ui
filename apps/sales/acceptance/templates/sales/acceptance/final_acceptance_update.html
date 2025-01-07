@@ -31,8 +31,30 @@
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label class="form-label" for="sale-order">{% trans 'Sale order' %}</label>
-                        <input type="text" class="form-control form-control-line mt-1" id="sale-order" data-detail="" readonly>
+                        <label class="form-label required" for="sale_order_id">{% trans 'Sale order' %}</label>
+                        <select
+                                class="form-select"
+                                id="sale_order_id"
+                                data-url="{% url "SaleOrderListAPI" %}"
+                                data-method="GET"
+                                name="sale_order_id"
+                                data-keyResp="sale_order_list"
+                                required
+                        ></select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required" for="lease_order_id">{% trans 'Lease order' %}</label>
+                        <select
+                                class="form-select"
+                                id="lease_order_id"
+                                data-url="{% url "LeaseOrderListAPI" %}"
+                                data-method="GET"
+                                name="lease_order_id"
+                                data-keyResp="lease_order_list"
+                                required
+                        ></select>
                     </div>
                 </div>
             </div>

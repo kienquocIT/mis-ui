@@ -1240,7 +1240,7 @@ msgstr "Nhóm"
 
 #
 msgid "Industry"
-msgstr "Lĩnh vực"
+msgstr "Ngành nghề"
 
 #
 msgid "Size"
@@ -1324,7 +1324,7 @@ msgstr "Không khả dụng"
 
 #
 msgid "Invalid"
-msgstr "Không khả dụng"
+msgstr "Không hợp lệ"
 
 #
 msgid "Expired"
@@ -1560,11 +1560,11 @@ msgstr "Quốc gia"
 
 #
 msgid "Bank name"
-msgstr "Tên NH"
+msgstr "Tên ngân hàng"
 
 #
 msgid "Bank code"
-msgstr "Mã NH"
+msgstr "Mã ngân hàng"
 
 #
 msgid "Account number"
@@ -8085,8 +8085,8 @@ msgid "Received money"
 msgstr "Đã nhận tiền"
 
 #
-msgid "Google app password"
-msgstr "Mật khẩu ứng dụng Google"
+msgid "Google API Key"
+msgstr "API Key của Google"
 
 #
 msgid "include space"
@@ -8326,11 +8326,11 @@ msgstr "Vai trò Nhà cung cấp"
 
 #
 msgid "Bank Account Information"
-msgstr "Thông tin Tài khoản ngân hàng"
+msgstr "Thông tin tài khoản ngân hàng"
 
 #
 msgid "Credit Card Account Information"
-msgstr "Thông tin Tài khoản Credit Card"
+msgstr "Thông tin thẻ tín dụng"
 
 #
 msgid "Add new bank account"
@@ -8338,7 +8338,7 @@ msgstr "Thêm tài khoản ngân hàng"
 
 #
 msgid "Add new credit card"
-msgstr "Thêm Credit card"
+msgstr "Thêm thẻ tín dụng"
 
 #
 msgid "Go to Stage"
@@ -9558,7 +9558,7 @@ msgstr "Kết quả"
 
 #
 msgid "Required Documents"
-msgstr "Tài liệu dự thầu"
+msgstr "Tài liệu bắt buộc"
 
 #
 msgid "Document Name"
@@ -9790,7 +9790,7 @@ msgstr "Bắt đầu nhập bây giờ?"
 
 #
 msgid "Please wait until the import has finished!"
-msgstr "Làm ơn đợi cho đến khi nhập liệu hoàn tất! 😀"
+msgstr "Vui lòng đợi cho đến khi nhập liệu hoàn tất!"
 
 #
 msgid "Bidding Result Config"
@@ -9857,8 +9857,8 @@ msgid "Data Import Limit"
 msgstr "Giới hạn nhập dữ liệu"
 
 #
-msgid "To ensure system performance and stability, row number is limited to 500 rows. If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
-msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 500 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
+msgid "To ensure system performance and stability, row number is limited to 150 rows. If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
+msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 150 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
 
 #
 msgid "Lease order"
@@ -9923,3 +9923,278 @@ msgstr "Thuê từ"
 #
 msgid "Lease to"
 msgstr "Thuê đến"
+
+#
+msgid "Consulting"
+msgstr "Tư vấn"
+
+#
+msgid "Due Date"
+msgstr "Thời hạn"
+
+#
+msgid "Consulting list"
+msgstr "Danh sách tư vấn"
+
+#
+msgid "Consulting create"
+msgstr "Tạo tư vấn"
+
+#
+msgid "Related Product Categories"
+msgstr "Danh sách loại sản phẩm liên quan"
+
+#
+msgid "Consulting name"
+msgstr "Tên tư vấn"
+
+#
+msgid "Bidding create successfully"
+msgstr "Tạo thầu thành công"
+
+#
+msgid "Bidding update successfully"
+msgstr "Sửa thầu thành công"
+
+#
+msgid "Consulting create successfully"
+msgstr "Tạo tư vấn thành công"
+
+#
+msgid "Consulting update successfully"
+msgstr "Sửa tư vấn thành công"
+
+#
+msgid "Bidding Document Type"
+msgstr "Loại tài liệu thầu"
+
+#
+msgid "Consulting Document Type"
+msgstr "Loại tài liệu tư vấn"
+
+#
+msgid "This product category has already been selected."
+msgstr "Loại sản phẩm này đã được chọn"
+
+#
+msgid "Masterdata Documents"
+msgstr "Tài liệu dùng chung"
+
+#
+msgid "Manual Documents"
+msgstr "Tài liệu nhập tay"
+
+#
+msgid "Term date type"
+msgstr "Loại ngày thanh toán"
+
+#
+msgid "Issue invoice"
+msgstr "Phát hành hóa đơn"
+
+#
+msgid "Total payment"
+msgstr "Tổng thanh toán"
+
+#
+msgid "Total payment must equal to total after tax"
+msgstr "Tổng số tiền thanh toán phải bằng tổng số tiền sau thuế"
+
+#
+msgid "Value invoice after tax"
+msgstr "GT hóa đơn sau thuế"
+
+#
+msgid "Example"
+msgstr "Ví dụ"
+
+#
+msgid "Installment"
+msgstr "Khoản thanh toán"
+
+#
+msgid "Total payment ratio must be 100%"
+msgstr "Tổng tỉ lệ thanh toán phải đủ 100%"
+#
+msgid "Account payable"
+msgstr "Các khoản phải trả"
+
+#
+msgid "Cash inflow"
+msgstr "Phiếu thu"
+
+#
+msgid "Cash outflow"
+msgstr "Phiếu chi"
+
+#
+msgid "Cash inflow list"
+msgstr "Danh sách phiếu thu"
+
+#
+msgid "Cash outflow list"
+msgstr "Danh sách phiếu chi"
+
+#
+msgid "Customer pays by invoice"
+msgstr "Khách hàng thanh toán theo hóa đơn"
+
+#
+msgid "Payment discount"
+msgstr "Chiết khấu thanh toán"
+
+#
+msgid "Document type"
+msgstr "Loại tài liệu"
+
+#
+msgid "Document date"
+msgstr "Ngày chứng từ"
+
+#
+msgid "Posting date"
+msgstr "Ngày ghi sổ"
+
+#
+msgid "Balance value"
+msgstr "Giá trị cân đối"
+
+#
+msgid "Customer prepay for purchase"
+msgstr "Khách hàng ứng trước tiền mua hàng"
+
+#
+msgid "Payment method"
+msgstr "Phương thức thanh toán"
+
+#
+msgid "Company information"
+msgstr "Thông tin công ty"
+
+#
+msgid "Company representative"
+msgstr "Người đại diện công ty"
+
+#
+msgid "Inventory management"
+msgstr "Quản lý tồn kho"
+
+#
+msgid "Bank account"
+msgstr "Tài khoản ngân hàng"
+
+#
+msgid "Bank account owner"
+msgstr "Chủ tài khoản"
+
+#
+msgid "Customer advance payment according to contract"
+msgstr "Khách hàng tạm ứng theo hợp đồng"
+
+#
+msgid "Add Company Bank Account"
+msgstr "Thêm tài khoản ngân hàng Công ty"
+
+#
+msgid "Invoice value"
+msgstr "Giá trị hóa đơn"
+
+#
+msgid "Detail payment value by invoice"
+msgstr "Chi tiết thanh toán theo hóa đơn"
+
+#
+msgid "Cash value"
+msgstr "Giá trị tiền mặt"
+
+#
+msgid "Bank value"
+msgstr "Giá trị chuyển khoản"
+
+#
+msgid "Select company bank account"
+msgstr "Chọn tài khoản ngân hàng công ty"
+
+#
+msgid "Related leads:"
+msgstr "Lead liên quan:"
+
+#
+msgid "Direct"
+msgstr "Điều hướng"
+
+#
+msgid "Connect successfully. Updating API Key..."
+msgstr "Kết nối thành công. Đang cập nhập API Key..."
+
+#
+msgid "Can not verify your Email. Check your API Key again"
+msgstr "Không thể xác tực Email của bạn. Kiểm tra lại API Key"
+
+#
+msgid "Delivery (sale)"
+msgstr "Giao hàng (bán)"
+
+#
+msgid "Delivery (lease)"
+msgstr "Giao hàng (cho thuê)"
+
+#
+msgid "Reconciliation"
+msgstr "Cấn trừ"
+
+#
+msgid "Reconciliation list"
+msgstr "Danh sách phiếu cấn trừ"
+
+#
+msgid "Reconciliation create"
+msgstr "Tạo phiếu cấn trừ"
+
+#
+msgid "Reconciliation amount"
+msgstr "Giá trị cấn trừ"
+
+#
+msgid "Reconciliation total"
+msgstr "Tổng cấn trừ"
+
+#
+msgid "Reconciliation total must be 0"
+msgstr "Tổng cấn trừ phải bằng 0"
+
+#
+msgid "Click the button to select or input here"
+msgstr "Nhấn nút để lựa chọn hoặc nhập tại đây"
+
+#
+msgid "View payment term information"
+msgstr "Xem thông tin điều khoản thanh toán"
+
+#
+msgid "Check tax number information"
+msgstr "Kiểm tra thông tin mã số thuế"
+
+#
+msgid "Select customer"
+msgstr "Chọn khách hàng"
+
+#
+msgid "Add new product row"
+msgstr "Thêm dòng sản phẩm"
+
+#
+msgid "Add new description row"
+msgstr "Thêm dòng mô tả"
+
+#
+msgid "Expand to view detail"
+msgstr "Mở rộng để xem chi tiết"
+
+#
+msgid "Already"
+msgstr "Đã xong"
+
+#
+msgid "Select Delivery"
+msgstr "Chọn phiếu giao hàng"

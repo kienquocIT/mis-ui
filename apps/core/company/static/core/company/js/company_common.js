@@ -1,18 +1,15 @@
-let companyCityEle = $('#company-address-city')
-let companyDistrictEle = $('#company-address-district')
-let companyWardEle = $('#company-address-ward')
+const companyCityEle = $('#company-address-city')
+const companyDistrictEle = $('#company-address-district')
+const companyWardEle = $('#company-address-ward')
+const trans_script_ele = $('#trans-script')
+const company_config = $('#company-config')
 let VND_currency = {}
 const VND_currency_text = $('#VND_currency').text()
 if (VND_currency_text) {
     VND_currency = JSON.parse(VND_currency_text)
 }
-
-let company_current_id = $('#company-current-id').attr('data-id')
-let pk = $.fn.getPkDetail();
-// if (pk !== company_current_id) {
-//     $('#btn-collapse').remove()
-//     $('#tabs').remove()
-// }
+const company_current_id = $('#company-current-id').attr('data-id')
+const pk = $.fn.getPkDetail();
 
 function loadCompanyCities(cityData) {
     companyCityEle.initSelect2({
@@ -70,14 +67,13 @@ $('#save-changes-modal-company-address').on('click', function () {
     }
 })
 
-let schema_item_list = $('#schema-item-list');
-let first_number_ele = $('#first-number');
-let last_number_ele = $('#last-number');
-let reset_frequency_ele = $('#reset-frequency');
-let min_num_char_ele = $('#min_num_char');
-let min_num_char_checkbox_ele = $('#min_num_char_checkbox');
+const schema_item_list = $('#schema-item-list');
+const first_number_ele = $('#first-number');
+const last_number_ele = $('#last-number');
+const reset_frequency_ele = $('#reset-frequency');
+const min_num_char_ele = $('#min_num_char');
+const min_num_char_checkbox_ele = $('#min_num_char_checkbox');
 let current_schema_row = null;
-
 const schema_item_list_value = [
     '{Number}',
     '{Short year}',
@@ -118,6 +114,39 @@ const schema_item_preview = [
     dayOfYear.toString(),
     dayOfMonth.toString(),
     dayOfWeek.toString()
+]
+
+const FunctionNumberTableData = [
+    {
+        'function': trans_script_ele.attr('data-trans-opp')
+    },
+    {
+        'function': trans_script_ele.attr('data-trans-quo')
+    },
+    {
+        'function': trans_script_ele.attr('data-trans-so')
+    },
+    {
+        'function': trans_script_ele.attr('data-trans-picking')
+    },
+    {
+        'function': trans_script_ele.attr('data-trans-delivery')
+    },
+    {
+        'function': trans_script_ele.attr('data-trans-task')
+    },
+    {
+        'function': trans_script_ele.attr('data-trans-ap')
+    },
+    {
+        'function': trans_script_ele.attr('data-trans-payment')
+    },
+    {
+        'function': trans_script_ele.attr('data-trans-rp')
+    },
+    {
+        'function': trans_script_ele.attr('data-trans-pr')
+    }
 ]
 
 min_num_char_checkbox_ele.on('change', function () {
@@ -270,97 +299,14 @@ $('#save-changes-modal-function-number').on('click', function () {
     }
 })
 
-let trans_script_ele = $('#trans-script')
-
-const FunctionNumberTableData = [
-    {
-        'function': trans_script_ele.attr('data-trans-opp')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-quo')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-so')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-picking')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-delivery')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-task')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-ap')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-payment')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-rp')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-pr')
-    }
-]
-
-function loadFunctionNumberTable(table_data = []) {
-    $('#function_number_table').DataTableDefault({
-        rowIdx: true,
-        scrollX: '100vw',
-        scrollY: '50vh',
-        scrollCollapse: true,
-        paging: false,
-        data: table_data,
-        columns: [
-            {
-                className: 'wrap-text',
-                render: () => {
-                    return ``;
-                }
-            }, {
-                data: 'function',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="text-primary">${row.function}</span>`;
-                }
-            }, {
-                data: '',
-                className: 'wrap-text',
-                render: () => {
-                    let system = trans_script_ele.attr('data-trans-numbering0');
-                    let user_defined = trans_script_ele.attr('data-trans-numbering1');
-                    return `<select class="form-select numbering-by-selection">
-                        <option value="0" selected>${system}</option>
-                        <option value="1">${user_defined}</option>
-                    </select>`;
-                }
-            }, {
-                data: '',
-                className: 'wrap-text',
-                render: () => {
-                    return `<span class="schema-show text-primary"></span>`;
-                }
-            }, {
-                data: '',
-                className: 'wrap-text text-center',
-                render: () => {
-                    return `<span class="text-primary schema-custom" hidden data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
-                }
-            }
-        ],
-    })
-}
-
-function loadFunctionNumberTableDetail(option = 'detail', table_detail_data = []) {
+function loadFunctionNumberTable(option='detail', table_detail_data = []) {
     table_detail_data.sort(function (a, b) {
         return a.function - b.function;
     });
     $('#function_number_table').DataTableDefault({
         rowIdx: true,
         scrollX: '100vw',
-        scrollY: '50vh',
+        scrollY: '40vh',
         scrollCollapse: true,
         paging: false,
         data: table_detail_data,
@@ -426,14 +372,123 @@ function loadFunctionNumberTableDetail(option = 'detail', table_detail_data = []
     })
 }
 
+function loadCompanyBankAccountTable(option='detail', call_ajax=false, table_data = [], data_param={}) {
+    let dtb = $('#table-company-bank-account')
+    let col_cfg = [
+        {
+            className: 'wrap-text w-5',
+            render: () => {
+                return ``;
+            }
+        }, {
+            data: 'function',
+            className: 'wrap-text w-15',
+            render: (data, type, row) => {
+                return `<span class="badge badge-secondary">${row?.['bank_code']}</span>`;
+            }
+        }, {
+            data: 'function',
+            className: 'wrap-text w-25',
+            render: (data, type, row) => {
+                return `<span class="text-muted">${row?.['bank_name']}</span>${row?.['is_default'] ? `<span class="ml-1 badge badge-sm badge-blue">${trans_script_ele.attr('data-trans-default')}</span>` : ''}`;
+            }
+        }, {
+            data: 'function',
+            className: 'wrap-text w-20',
+            render: (data, type, row) => {
+                return `<span class="text-muted">${row?.['bank_account_name']}</span>`;
+            }
+        }, {
+            data: 'function',
+            className: 'wrap-text w-25',
+            render: (data, type, row) => {
+                return `<span class="text-muted">${row?.['bank_account_number']}</span>`;
+            }
+        }, {
+            data: 'function',
+            className: 'wrap-text w-10',
+            render: (data, type, row) => {
+                return `<div class="form-check form-switch">
+                    <input data-id="${row?.['id']}" ${option === 'detail' ? 'disabled' : ''} ${row?.['is_active'] ? 'checked' : ''} type="checkbox" class="form-check-input activate_bank_account">
+                    <label class="form-check-label"></label>
+                </div>`;
+            }
+        },
+    ]
+    dtb.DataTable().clear().destroy()
+    if (call_ajax === false) {
+        dtb.DataTableDefault({
+            styleDom: 'hide-foot',
+            rowIdx: true,
+            scrollX: '100vw',
+            scrollY: '40h',
+            scrollCollapse: true,
+            paging: false,
+            data: table_data,
+            columns: col_cfg
+        })
+    }
+    else {
+        dtb.DataTableDefault({
+            styleDom: 'hide-foot',
+            rowIdx: true,
+            scrollX: '100vw',
+            scrollY: '40h',
+            scrollCollapse: true,
+            paging: false,
+            ajax: {
+                url: dtb.attr('data-url'),
+                type: 'GET',
+                data: data_param,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && data.hasOwnProperty('company_bank_account_list')) {
+                        return resp.data['company_bank_account_list'] ? resp.data['company_bank_account_list'] : [];
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: col_cfg
+        })
+    }
+}
+
+function LoadCountry(ele, data) {
+    ele.initSelect2({
+        ajax: {
+            url: ele.attr('data-url'),
+            method: 'GET',
+        },
+        data: (data ? data : null),
+        keyResp: 'countries',
+        keyId: 'id',
+        keyText: 'title',
+    })
+}
+
+function LoadCurrency(data) {
+    $('#idxCurrencyDefault').initSelect2({
+        ajax: {
+            url: company_config.attr('data-url-currency-list'),
+            method: 'GET',
+        },
+        data: (data ? data : null),
+        keyResp: 'currency_list',
+        keyId: 'code',
+        keyText: 'title',
+    })
+}
+
 class CompanyHandle {
     load() {
         loadCompanyCities();
         loadCompanyDistrict();
         loadCompanyWard();
+        LoadCurrency();
+        LoadCountry($('#country-select-box-id'));
     }
 
-    combinesData(frmEle, for_update = false) {
+    combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['title'] = $('#title').val();
@@ -486,6 +541,33 @@ class CompanyHandle {
             };
         }
     }
+
+    combinesDataCompanyBankAccount(frmEle, for_update=false) {
+        let frm = new SetupFormSubmit($(frmEle));
+
+        frm.dataForm['country'] = $('#country-select-box-id').val();
+        frm.dataForm['bank_name'] = $('#bank-name-id').val();
+        frm.dataForm['bank_code'] = $('#bank-code-id').val();
+        frm.dataForm['bank_account_name'] = $('#bank-account-name-id').val();
+        frm.dataForm['bank_account_number'] = $('#bank-account-number-id').val();
+        frm.dataForm['bic_swift_code'] = $('#bic-swift-code-id').val();
+        frm.dataForm['is_default'] = $('#make-default-bank-account').prop('checked');
+        if (for_update) {
+            return {
+                url: frmEle.attr('data-url-detail').format_url_with_uuid(pk),
+                method: frm.dataMethod,
+                data: frm.dataForm,
+                urlRedirect: frm.dataUrlRedirect,
+            };
+        } else {
+            return {
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: frm.dataForm,
+                urlRedirect: frm.dataUrlRedirect,
+            };
+        }
+    }
 }
 
 function Disable(option) {
@@ -494,105 +576,82 @@ function Disable(option) {
         $('.blog-body .form-select').prop('disabled', true).css({color: 'black'});
         $('.blog-body .select2').prop('disabled', true);
         $('.blog-body input').prop('disabled', true);
+        $('#cost-per-warehouse').prop('disabled', true);
+        $('#cost-per-lot').prop('disabled', true);
+        $('#cost-per-prj').prop('disabled', true);
+        $('#btn-add-bank').prop('hidden', true);
     }
 }
 
 function LoadDetailCompany(frm, option) {
-    let pk = $.fn.getPkDetail()
-    let url_loaded = frm.attr('data-url-detail').replace(0, pk);
-
-    $.fn.callAjax(url_loaded, 'GET').then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                WFRTControl.setWFRuntimeID(data['company_detail']?.['workflow_runtime_id']);
-                data = data['company_detail'];
-                $.fn.compareStatusShowPageAction(data);
-                $x.fn.renderCodeBreadcrumb(data);
-
-                $('#title').val(data.title);
-                $('#code').val(data.code);
-                $('#representative_fullname').val(data.representative_fullname);
-                $('#address').val(data.address);
-                $('#email').val(data.email);
-                $('#phone').val(data.phone);
-                $('#fax').val(data.fax);
-
-                const eleInputLogo = $('#company_logo');
-                const eleInputIcon = $('#company_icon');
-                if (option === 'update') {
-                    if (data.logo) {
-                        eleInputLogo.attr('data-default-file', data.logo);
-                    }
-                    eleInputLogo.dropify({
-                        messages: {
-                            'default': '',
-                        }
-                    });
-
-                    if (data.icon){
-                        eleInputIcon.attr('data-default-file', data.icon);
-                    }
-                    eleInputIcon.dropify({
-                        messages: {
-                            'default': '',
-                        }
-                    })
-                } else {
-                    if (data.logo) {
-                        $(`
-                            <img src="${data.logo}" style="width: 90%; max-height: 100px; object-fit: contain;"/>
-                        `).insertAfter(eleInputLogo);
-                    }
-                    eleInputLogo.attr('disabled', 'disabled').remove();
-                    if (data.icon) {
-                        $(`
-                            <img src="${data.icon}" style="width: 90%; max-height: 100px; object-fit: contain;"/>
-                        `).insertAfter(eleInputIcon);
-                    }
-                    eleInputIcon.attr('disabled', 'disabled').remove();
-                }
-
-                loadFunctionNumberTableDetail(option, data?.['company_function_number'])
-
-                $.fn.initMaskMoney2();
-
-                Disable(option);
-            }
-        })
-
-    let company_config = $('#company-config');
     Promise.all([
+        $.fn.callAjax2({
+            'url': frm.attr('data-url-detail').replace(0, pk),
+            'method': 'GET',
+        }),
         $.fn.callAjax2({
             'url': company_config.attr('data-url-detail'),
             'data': {'company_id': pk},
             'method': 'GET',
-        }),
-        $.fn.callAjax2({
-            'url': company_config.attr('data-url-currency-list'),
-            'method': 'GET',
         })
-    ]).then(([result1, result2]) => {
-        let data1 = $.fn.switcherResp(result1);
-        let data2 = $.fn.switcherResp(result2);
-        let myCurrency = $('#idxCurrencyDefault');
-        myCurrency.closest('.modal').find('.modal-title').text(
-            DTBControl.getRowData($(this))?.['title']
-        )
-        if (data2['currency_list']) {
-            myCurrency.empty();
-            for (let i = 0; i < data2['currency_list'].length; i++) {
-                let option = $('<option>').val(
-                    data2['currency_list'][i]['currency'].code
-                ).text(
-                    data2['currency_list'][i]['currency'].code +
-                    ' - ' +
-                    data2['currency_list'][i]['currency'].title
-                );
-                myCurrency.append(option);
+    ]).then(([result0, result1, result2]) => {
+        let data0 = $.fn.switcherResp(result0); // detail data
+        let data1 = $.fn.switcherResp(result1); // config
+
+        WFRTControl.setWFRuntimeID(data0['company_detail']?.['workflow_runtime_id']);
+        data0 = data0['company_detail'];
+        $.fn.compareStatusShowPageAction(data0);
+        $x.fn.renderCodeBreadcrumb(data0);
+
+        $('#title').val(data0.title);
+        $('#code').val(data0.code);
+        $('#representative_fullname').val(data0.representative_fullname);
+        $('#address').val(data0.address);
+        $('#email').val(data0.email);
+        $('#phone').val(data0.phone);
+        $('#fax').val(data0.fax);
+
+        const eleInputLogo = $('#company_logo');
+        const eleInputIcon = $('#company_icon');
+        if (option === 'update') {
+            if (data0.logo) {
+                eleInputLogo.attr('data-default-file', data0.logo);
             }
-            myCurrency.trigger('change');
+            eleInputLogo.dropify({
+                messages: {
+                    'default': '',
+                }
+            });
+
+            if (data0.icon){
+                eleInputIcon.attr('data-default-file', data0.icon);
+            }
+            eleInputIcon.dropify({
+                messages: {
+                    'default': '',
+                }
+            })
         }
+        else {
+            if (data0.logo) {
+                $(`
+                    <img src="${data0.logo}" style="width: 90%; max-height: 100px; object-fit: contain;"/>
+                `).insertAfter(eleInputLogo);
+            }
+            eleInputLogo.attr('disabled', 'disabled').remove();
+            if (data0.icon) {
+                $(`
+                    <img src="${data0.icon}" style="width: 90%; max-height: 100px; object-fit: contain;"/>
+                `).insertAfter(eleInputIcon);
+            }
+            eleInputIcon.attr('disabled', 'disabled').remove();
+        }
+
+        loadFunctionNumberTable(option, data0?.['company_function_number'])
+        loadCompanyBankAccountTable(option, false, data0?.['company_bank_data'])
+
+        $.fn.initMaskMoney2();
+
         if (data1['config']) {
             if (!data1['config']?.['definition_inventory_valuation']) {
                 $('#perpetual-selection').prop('checked', true);
@@ -616,7 +675,7 @@ function LoadDetailCompany(frm, option) {
             }
 
             $('#idxLanguage').val(data1['config']['language']).trigger('change.select2');
-            myCurrency.val(data1['config']['currency']['code']).trigger('change.select2');
+            LoadCurrency(data1['config']['currency'])
             $('#idxCurrencyMaskPrefix').val(data1['config']['currency_rule'].prefix);
             $('#idxCurrencyMaskSuffix').val(data1['config']['currency_rule'].suffix);
             $('#idxCurrencyMaskThousand').val(data1['config']['currency_rule'].thousands);
@@ -624,6 +683,8 @@ function LoadDetailCompany(frm, option) {
             $('#idxCurrencyMaskPrecision').val(data1['config']['currency_rule'].precision);
             $('#idxSubdomain').val(data1['config']['sub_domain']);
         }
+
+        Disable(option);
     })
 }
 

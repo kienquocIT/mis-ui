@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Reconciliation' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "ReconCreate" %}">
+        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+            <table id="table-recon-list"
+                   class="table nowrap w-100"
+                   data-url="{% url 'ReconListAPI' %}"
+                   data-url-detail="{% url 'ReconDetail' pk=0 %}"
+                   data-method="GET"
+            >
+                <thead>
+                    <tr>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 80px">{% trans 'Code' %}</th>
+                        <th style="min-width: 200px">{% trans 'Name' %}</th>
+                        <th style="min-width: 200px">{% trans 'Customer' %}</th>
+                        <th style="min-width: 100px">{% trans 'Status' %}</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/reconciliation/js/reconciliation_list.js' %}"></script>
+{% endblock %}

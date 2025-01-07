@@ -393,17 +393,6 @@ class AccountListAPI(APIView):
         return resp.auto_return(key_success='account_list')
 
 
-class CustomerListAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.CUSTOMER_LIST_FOR_CASHINFLOW).get(data)
-        return resp.auto_return(key_success='customer_list')
-
-
 class AccountCreate(View):
     @mask_view(
         auth_require=True,
@@ -432,7 +421,7 @@ class AccountDetail(View):
         perm_check=PermCheck(url=ApiURL.ACCOUNT_LIST, method='get'),
     )
     def get(self, request, *args, **kwargs):
-        return {'company_size': COMPANY_SIZE, 'customer_revenue': CUSTOMER_REVENUE}, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class AccountUpdate(View):
@@ -446,11 +435,8 @@ class AccountUpdate(View):
     def get(self, request, *args, pk, **kwargs):
         input_mapping_properties = InputMappingProperties.SALE_DATA_ACCOUNT
         return {
-            'company_size': COMPANY_SIZE,
-            'customer_revenue': CUSTOMER_REVENUE,
-            'input_mapping_properties': input_mapping_properties,
-            'form_id': 'form-detail-update-account'
-        }, status.HTTP_200_OK
+                   'input_mapping_properties': input_mapping_properties, 'form_id': 'form-detail-update-account'
+               }, status.HTTP_200_OK
 
 
 class AccountDetailAPI(APIView):

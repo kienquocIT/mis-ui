@@ -5,9 +5,6 @@ $(document).ready(function () {
         useDataServer: true,
         reloadCurrency: true,
         rowIdx: true,
-        scrollX: '100vw',
-        scrollY: '75vh',
-        scrollCollapse: true,
         ajax: {
             url: tbl.attr('data-url'),
             type: tbl.attr('data-method'),
@@ -22,7 +19,6 @@ $(document).ready(function () {
         },
         columns: [
             {
-                className: 'wrap-text w-5',
                 'render': () => {
                     return ``;
                 }
@@ -31,48 +27,48 @@ $(document).ready(function () {
                 className: 'wrap-text w-10',
                 render: (data, type, row) => {
                     const link = url_detail.replace(0, row?.['id']);
-                    return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`
+                    return `<a href="${link}"><span class="w-70 badge badge-primary">${row?.['code']}</span></a> ${$x.fn.buttonLinkBlank(link)}`
                 }
             }, {
                 data: 'title',
-                className: 'wrap-text w-25',
+                className: 'wrap-text w-20',
                 render: (data, type, row) => {
-                    const link = url_detail.replace(0, row?.['id']);
+                    const link = url_detail.replace(0, row.id);
                     return `<a href="${link}" class="text-primary"><span><b>${row?.['title']}</b></span></a>`
                 }
             }, {
                 data: 'general_product_types_mapped',
-                className: 'wrap-text w-10',
+                className: 'wrap-text w-20 text-center',
                 render: (data, type, row) => {
                     let html = ``;
                     for (let i = 0; i < row?.['general_product_types_mapped'].length; i++) {
-                        html += `<span class="badge badge-light span-product-type ml-1 mb-1">${row?.['general_product_types_mapped'][i]?.['title']}</span>`
+                        html += `<span class="badge badge-outline badge-soft-blue span-product-type ml-1 mb-1" style="min-width: max-content; width: 50%">${row?.['general_product_types_mapped'][i]?.['title']}</span>`
                     }
                     return html;
                 }
             }, {
                 data: 'general_product_category',
-                className: 'wrap-text w-10',
+                className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    return `<span class="text-muted span-product-category">${row?.['general_product_category']?.['title']}</span>`
+                    return `<span class="badge-status"><span class="badge badge-secondary badge-indicator"></span>&nbsp;<span class="text-secondary span-product-category">${row?.['general_product_category']?.['title']}</span></span>`
                 }
             }, {
-                className: 'wrap-text w-10',
+                className: 'wrap-text w-15',
                 render: (data, type, row) => {
                     let trans_valuation_method = ['FIFO', 'Weighted average', ''][row?.['valuation_method']]
-                    return `<span class="text-muted span-product-category">${trans_valuation_method}</span>`
+                    return `<span class="text-secondary span-product-category">${trans_valuation_method}</span>`
                 }
             }, {
                 data: 'general_price',
-                className: 'wrap-text w-10',
+                className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    return `<span class="mask-money text-muted" data-init-money="${row?.['general_price']}"></span>`
+                    return `<span class="mask-money text-primary" data-init-money="${row?.['general_price']}"></span>`
                 }
             }, {
                 className: 'wrap-text text-right w-10',
                 render: (data, type, row) => {
                     if (row?.['inventory_uom']?.['id']) {
-                        return `<span class="text-muted">${row?.['stock_amount'] ? parseFloat(row?.['stock_amount']) / parseFloat(row?.['inventory_uom']?.['ratio']) : 0} ${row?.['inventory_uom']?.['title']}</span>`;
+                        return `<span class="text-secondary">${row?.['stock_amount'] ? parseFloat(row?.['stock_amount']) / parseFloat(row?.['inventory_uom']?.['ratio']) : 0}</span>&nbsp;<span class="badge badge-soft-primary">${row?.['inventory_uom']?.['title']}</span>`;
                     }
                     return '--'
                 }
@@ -80,7 +76,7 @@ $(document).ready(function () {
                 className: 'wrap-text text-right w-10',
                 render: (data, type, row) => {
                     if (row?.['inventory_uom']?.['id']) {
-                        return `<span class="text-muted">${row?.['available_amount'] ? parseFloat(row?.['available_amount']) / parseFloat(row?.['inventory_uom']?.['ratio']) : 0} ${row?.['inventory_uom']?.['title']}</span>`;
+                        return `<span class="text-primary">${row?.['available_amount'] ? parseFloat(row?.['available_amount']) / parseFloat(row?.['inventory_uom']?.['ratio']) : 0}</span>&nbsp;<span class="badge badge-soft-primary">${row?.['inventory_uom']?.['title']}</span>`;
                     }
                     return '--'
                 }

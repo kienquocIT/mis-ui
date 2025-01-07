@@ -1,0 +1,152 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12 col-md-8 col-lg-8">
+        <div class="row">
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label required" for="title">{% trans "Title" %}</label>
+                    <input class="form-control" id="title">
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="customer-code">{% trans "Customer code" %}</label>
+                    <input class="form-control for-free-input" id="customer-code">
+                </div>
+            </div>
+            <div class="col-12 col-md-8 col-lg-8">
+                <div class="form-group">
+                    <label class="form-label" for="customer-name">{% trans "Customer" %}</label>
+                    <div class="input-group">
+                        <span class="input-affix-wrapper">
+                            <input type="text" placeholder="{% trans 'Click the button to select or input here' %}" class="form-control for-free-input" id="customer-name">
+                        </span>
+                        <button type="button" class="btn btn-outline-secondary rounded" id="customer-select-btn" data-bs-toggle="modal" data-bs-target="#customer-select-modal">
+                            <i class="bi bi-check2-circle" data-bs-toggle="tooltip" title="{% trans 'Select customer' %}"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="buyer-name">{% trans "Buyer name" %}</label>
+                    <input class="form-control" id="buyer-name">
+                </div>
+            </div>
+            <div class="col-12 col-md-8 col-lg-8">
+                <div class="form-group">
+                    <label class="form-label" for="mst">{% trans "Tax number" %}</label>
+                    <div class="input-group">
+                        <span class="input-affix-wrapper">
+                            <input class="form-control for-free-input" id="mst">
+                        </span>
+                        <button type="button" class="btn btn-outline-secondary rounded" id="get-vat-number-info-btn">
+                            <i class="bi bi-search" data-bs-toggle="tooltip" title="{% trans 'Check tax number information' %}"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label" for="billing-address">{% trans "Billing address" %}</label>
+                    <textarea rows="1" class="form-control for-free-input" id="billing-address"></textarea>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="bank-code">{% trans "Bank code" %}</label>
+                    <input class="form-control for-free-input" id="bank-code">
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="bank-number">{% trans "Bank number" %}</label>
+                    <input class="form-control for-free-input" id="bank-number">
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="bank-code">{% trans "Method" %}</label>
+                    <select class="form-select" id="bank-code" readonly disabled>
+                        <option value="3">{% trans 'Cash' %}/{% trans 'Bank transfer' %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label" for="sale-order">{% trans "Sale order" %}</label>
+                    <div class="input-group">
+                        <select disabled class="select2 form-select" id="sale-order" data-method="GET" data-url="{% url 'SaleOrderListForARInvoiceAPI' %}"></select>
+                        <button class="btn btn-outline-secondary rounded" type="button" data-bs-toggle="modal" data-bs-target="#view-payment-term-modal">
+                            <i class="bi bi-info-circle" data-bs-toggle="tooltip" title="{% trans 'View payment term information' %}"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="row">
+            <div class="col-12 col-md-12 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label" for="posting-date">{% trans "Posting date" %}</label>
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <input class="form-control" id="posting-date">
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label" for="document-date">{% trans "Document date" %}</label>
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <input class="form-control" id="document-date">
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label required" for="invoice-exp">{% trans "Mẫu hoá đơn" %}</label>
+                    <select class="form-select" id="invoice-exp" disabled>
+                        <option disabled value="0">01GTKT0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn giá trị gia tăng (hoá đơn điện tử)</option>
+                        <option disabled value="1">01GTKT3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn giá trị gia tăng</option>
+                        <option value="2">02GTTT0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn bán hàng (hoá đơn điện tử)</option>
+                        <option disabled value="3">02GTTT3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn bán hàng</option>
+                        <option disabled value="4">03XKNB3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Phiếu xuất kho kiêm vận chuyển hàng hoá nội bộ</option>
+                        <option disabled value="5">04HGDL3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Phiếu xuất kho gửi bán hàng đại lí</option>
+                        <option disabled value="6">07KPTQ3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn bán hàng (dành cho tổ chức, cá nhân trong khu phi thuế quan)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label required" for="invoice-sign">{% trans "Kí hiệu hoá đơn" %}</label>
+                    <input disabled readonly class="form-control" id="invoice-sign">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label" for="invoice-number">{% trans "Invoice number" %}</label>
+                    <input class="form-control" id="invoice-number" disabled readonly placeholder="{% trans '<No invoice number>' %}">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required" for="invoice-date">{% trans "Invoice date" %}</label>
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <input class="form-control" id="invoice-date">
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

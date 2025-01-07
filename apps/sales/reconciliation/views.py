@@ -100,3 +100,14 @@ class ARInvoiceListForReconAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.AR_INVOICE_LIST_FOR_RECON).get(data)
         return resp.auto_return(key_success='ar_invoice_list')
+
+
+class CashInflowListForReconAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.CIF_LIST_FOR_RECON).get(data)
+        return resp.auto_return(key_success='cash_inflow_list')

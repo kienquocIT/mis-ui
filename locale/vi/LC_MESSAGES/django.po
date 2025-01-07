@@ -8326,11 +8326,11 @@ msgstr "Vai trò Nhà cung cấp"
 
 #
 msgid "Bank Account Information"
-msgstr "Thông tin Tài khoản ngân hàng"
+msgstr "Thông tin tài khoản ngân hàng"
 
 #
 msgid "Credit Card Account Information"
-msgstr "Thông tin Tài khoản Credit Card"
+msgstr "Thông tin thẻ tín dụng"
 
 #
 msgid "Add new bank account"
@@ -8338,7 +8338,7 @@ msgstr "Thêm tài khoản ngân hàng"
 
 #
 msgid "Add new credit card"
-msgstr "Thêm Credit card"
+msgstr "Thêm thẻ tín dụng"
 
 #
 msgid "Go to Stage"
@@ -10162,6 +10162,42 @@ msgstr "Tổng cấn trừ"
 #
 msgid "Reconciliation total must be 0"
 msgstr "Tổng cấn trừ phải bằng 0"
+
+#
+msgid "Click the button to select or input here"
+msgstr "Nhấn nút để lựa chọn hoặc nhập tại đây"
+
+#
+msgid "View payment term information"
+msgstr "Xem thông tin điều khoản thanh toán"
+
+#
+msgid "Check tax number information"
+msgstr "Kiểm tra thông tin mã số thuế"
+
+#
+msgid "Select customer"
+msgstr "Chọn khách hàng"
+
+#
+msgid "Add new product row"
+msgstr "Thêm dòng sản phẩm"
+
+#
+msgid "Add new description row"
+msgstr "Thêm dòng mô tả"
+
+#
+msgid "Expand to view detail"
+msgstr "Mở rộng để xem chi tiết"
+
+#
+msgid "Already"
+msgstr "Đã xong"
+
+#
+msgid "Select Delivery"
+msgstr "Chọn phiếu giao hàng"
 
 #
 msgid "Upper manager"

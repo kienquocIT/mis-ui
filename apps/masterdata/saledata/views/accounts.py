@@ -432,7 +432,7 @@ class AccountDetail(View):
         perm_check=PermCheck(url=ApiURL.ACCOUNT_LIST, method='get'),
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {'company_size': COMPANY_SIZE, 'customer_revenue': CUSTOMER_REVENUE}, status.HTTP_200_OK
 
 
 class AccountUpdate(View):
@@ -446,8 +446,11 @@ class AccountUpdate(View):
     def get(self, request, *args, pk, **kwargs):
         input_mapping_properties = InputMappingProperties.SALE_DATA_ACCOUNT
         return {
-                   'input_mapping_properties': input_mapping_properties, 'form_id': 'form-detail-update-account'
-               }, status.HTTP_200_OK
+            'company_size': COMPANY_SIZE,
+            'customer_revenue': CUSTOMER_REVENUE,
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'form-detail-update-account'
+        }, status.HTTP_200_OK
 
 
 class AccountDetailAPI(APIView):

@@ -606,6 +606,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Report
     REPORT_REVENUE_LIST = StringUrl('report/revenue/list')
     REPORT_PRODUCT_LIST = StringUrl('report/product/list')
+    REPORT_PRODUCT_LIST_FOR_DASHBOARD = StringUrl('report/product-for-dashboard/list')
     REPORT_CUSTOMER_LIST = StringUrl('report/customer/list')
     REPORT_PIPELINE_LIST = StringUrl('report/pipeline/list')
     REPORT_CASHFLOW_LIST = StringUrl('report/cashflow/list')
@@ -666,6 +667,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # AR Invoice
     DELIVERY_LIST_AR_INVOICE = StringUrl('ar-invoice/get-deliveries')
+    SO_LIST_AR_INVOICE = StringUrl('ar-invoice/get-sale-order')
     AR_INVOICE_LIST = StringUrl('ar-invoice/list')
     AR_INVOICE_DETAIL = StringUrl('ar-invoice/detail/{pk}')
     AR_INVOICE_RECURRENCE_LIST = StringUrl('ar-invoice/recurrence/list')
@@ -809,3 +811,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FINANCIAL_RECON_LIST = StringUrl('financial-reconciliation/list')
     FINANCIAL_RECON_DETAIL = StringUrl('financial-reconciliation/detail/{pk}')
     AR_INVOICE_LIST_FOR_RECON = StringUrl('financial-reconciliation/ar-invoice-for-recon/list')
+    CIF_LIST_FOR_RECON = StringUrl('financial-reconciliation/cash-inflow-for-recon/list')

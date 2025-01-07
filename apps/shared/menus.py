@@ -1044,7 +1044,7 @@ class SpaceGroup:
             SpaceItem.mapping['crm'],
             # SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
-            SpaceItem.mapping['financials'],
+            # SpaceItem.mapping['financials'],
             SpaceItem.mapping['forms'],
             SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],

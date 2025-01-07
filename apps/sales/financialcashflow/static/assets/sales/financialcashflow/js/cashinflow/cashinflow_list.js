@@ -46,9 +46,16 @@ $(document).ready(function () {
                     },
                     {
                         data: 'customer_data',
-                        className: 'wrap-text w-45',
+                        className: 'wrap-text w-30',
                         render: (data, type, row) => {
                             return `<span class="text-muted">${row?.['customer_data']?.['name']}</span>`
+                        }
+                    },
+                    {
+                        data: 'total_value',
+                        className: 'wrap-text w-15',
+                        render: (data, type, row) => {
+                            return `<span class="text-muted mask-money" data-init-money="${row?.['total_value'] ? row?.['total_value'] : '0'}"></span>`
                         }
                     },
                     {

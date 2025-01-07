@@ -281,7 +281,7 @@ $(document).ready(function () {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'product_row') {
-                            return `<span class="text-secondary">${row?.['uom_title']}</span>`
+                            return `<span class="text-secondary">${row?.['uom_title'] ? row?.['uom_title'] : '--'}</span>`
                         }
                         return ``
                     }
@@ -290,7 +290,7 @@ $(document).ready(function () {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
-                            return `<span>${row?.['date']}</span>`
+                            return `<span>${row?.['date'] ? row?.['date'] : ''}</span>`
                         }
                         return ``
                     }

@@ -3,31 +3,31 @@ let [priceSelectEle, currencySelectEle, canDeleteCheckBoxEle, autoUpdateCheckBox
 
 let columns = [
     {
-        className: 'wrap-text min-w-100p',
+        className: 'wrap-text w-5',
         render: () => {
             return '';
         }
     }, {
         data: 'code',
-        className: 'wrap-text min-w-100p',
+        className: 'wrap-text w-10',
         render: (data, type, row, meta) => {
             return `<span class="badge badge-outline badge-soft-primary span-product w-100" data-auto-update="${row.is_auto_update}" data-id="${row.id}">${row.code}</span>`
         }
     }, {
         data: 'title',
-        className: 'wrap-text min-w-250p',
+        className: 'wrap-text w-55',
         render: (data, type, row, meta) => {
             return `<span class="text-muted fw-bold">${row.title}</span>`
         }
     }, {
         data: 'uom_group',
-        className: 'wrap-text min-w-100p',
+        className: 'wrap-text w-15',
         render: (data, type, row, meta) => {
             return `<span class="text-primary span-uom-group" data-id="${row.uom_group.id}">${row.uom_group.title}</span>`
         }
     }, {
         data: 'uom',
-        className: 'wrap-text min-w-100p',
+        className: 'wrap-text w-15',
         render: (data, type, row, meta) => {
             return `<span class="text-blue span-uom" data-id="${row.uom.id}">${row.uom.title}</span>`
         }
@@ -76,8 +76,8 @@ class PriceListAction {
             reloadCurrency: true,
             data: data,
             paging: false,
+            scrollX: '100vw',
             scrollY: '55vh',
-            scrollX: true,
             scrollCollapse: true,
             columns: columns,
             initComplete: function () {
@@ -229,9 +229,8 @@ class PriceListLoadPage {
                     } else {
                         if (price_list_detail.auto_update) {
                             $('#price_list_name').html(`${price_list_detail.title}
-                        <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title='${transEle.data('trans-source-price')} ${price_list_detail.price_list_mapped.title}'>
-                        </i>`
-                            )
+                                <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title='${transEle.data('trans-source-price')} ${price_list_detail.price_list_mapped.title}'>
+                            </i>`)
                         } else {
                             $('#price_list_name').text(price_list_detail.title)
                         }

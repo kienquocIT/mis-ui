@@ -30,6 +30,9 @@ let roleForCustomerEle = $('#role-for-customer')
 let roleForSupplierEle = $('#role-for-supplier')
 let tableShippingAddressEle = $('#list-shipping-address')
 let tableBillingAddressEle = $('#list-billing-address')
+let bank_account_table = $('#list-bank-account-information')
+let credit_card_table = $('#list-credit-card-information')
+let contact_list_table = $('#datatable_contact_list');
 let current_owner = {'id': null, 'fullname': null}
 
 function loadAccountType(accountTypeData) {
@@ -170,53 +173,102 @@ function loadContactOwner(contactOwnerData) {
 
 function loadTableSelectContact(selected_contact_list=[], selected_contact_list_detail=[]) {
     let tbl = $('#datatable-add-contact');
-    $.fn.callAjax(tbl.attr('data-url'), 'GET').then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                data = data['contact_list_not_map_account'].concat(selected_contact_list_detail);
-                if (data.length > 0) {
-                    tbl.find('tbody').html('')
-                    for (let i = 0; i < data.length; i++) {
-                        let checked = '';
-                        if (selected_contact_list.includes(data[i].id)) {
-                            checked = 'checked';
-                        }
-                        tbl.find('tbody').append(`<tr>
-                            <td>${i+1}</td>
-                            <td><span class="text-primary"><b>${data[i].fullname}</b></span></td>
-                            <td>${data[i].job_title}</td>
-                            <td>${data[i].owner.fullname ? data[i].owner.fullname : ''}</td>
-                            <td>${data[i].mobile ? data[i].mobile : ''}</td>
-                            <td>${data[i].email ? data[i].email : ''}</td>
-                            <td>
-                                <span class="form-check">
-                                    <input type="checkbox" class="form-check-input selected_contact"
-                                    data-id="${data[i].id}" ${checked}
-                                    data-fullname="${data[i].fullname}"
-                                    data-mobile="${data[i].mobile}"
-                                    data-email="${data[i].email}"
-                                    data-job-title="${data[i].job_title}">
-                                    <label class="form-check-label"></label>
-                                </span>
-                            </td>
-                        </tr>`)
-                    }
-                }
-            }
-        })
-}
-
-function loadTableSelectedContact(data, option='') {
-    let tbl = $('#datatable_contact_list');
     tbl.DataTable().clear().destroy();
     tbl.DataTableDefault({
+        styleDom: 'hide-foot',
+        useDataServer: true,
+        rowIdx: true,
+        paging: false,
+        scrollX: '100vw',
+        scrollY: '70vh',
+        scrollCollapse: true,
+        ajax: {
+            url: tbl.attr('data-url'),
+            type: 'GET',
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data && data.hasOwnProperty('contact_list_not_map_account')) {
+                    let data_list = data?.['contact_list_not_map_account'].concat(selected_contact_list_detail);
+                    for (let i = 0; i < data_list.length; i++) {
+                        data_list[i]['is_checked'] = selected_contact_list.includes(data_list[i]?.['id']) ? 'checked' : '';
+                    }
+                    return data_list
+                }
+            },
+        },
+        columns: [
+            {
+                className: 'w-5',
+                render: (data, type, row) => {
+                    return ''
+                }
+            },
+            {
+                className: 'w-30',
+                render: (data, type, row) => {
+                    return `<span class="badge badge-soft-primary mr-1">${row?.['code'] ? row?.['code'] : ''}</span><span class="text-primary">${row?.['fullname'] ? row?.['fullname'] : ''}</span>`
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `${row?.['job_title'] ? row?.['job_title'] : ''}`
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `${row?.['mobile'] ? row?.['mobile'] : ''}`
+                }
+            },
+            {
+                className: 'w-15',
+                render: (data, type, row) => {
+                    return `${row?.['email'] ? row?.['email'] : ''}`
+                }
+            },
+            {
+                className: 'w-25',
+                render: (data, type, row) => {
+                    return `<span class="badge badge-soft-blue mr-1">${row?.['owner']?.['code'] ? row?.['owner']?.['code'] : ''}</span><span class="text-blue">${row?.['owner']?.['fullname'] ? row?.['owner']?.['fullname'] : ''}</span>`
+                }
+            },
+            {
+                className: 'w-5 text-right',
+                render: (data, type, row) => {
+                    return `<span class="form-check">
+                                <input type="checkbox" class="form-check-input selected_contact"
+                                data-id="${row?.['id']}"
+                                ${row?.['is_checked']}
+                                data-fullname="${row?.['fullname']}"
+                                data-mobile="${row?.['mobile']}"
+                                data-email="${row?.['email']}"
+                                data-job-title="${row?.['job_title']}">
+                                <label class="form-check-label"></label>
+                            </span>`
+                }
+            },
+        ],
+    })
+}
+
+function loadTableSelectedContact(data=[], option='') {
+    contact_list_table.DataTable().clear().destroy();
+    contact_list_table.DataTableDefault({
         dom: '',
+        styleDom: 'hide-foot',
+        rowIdx: true,
         paging: false,
         data: data,
         columns: [
             {
                 className: 'w-5',
+                render: (data, type, row) => {
+                    return ''
+                }
+            },
+            {
+                className: 'w-20',
                 render: (data, type, row) => {
                     let disabled = '';
                     if (option === 'detail') {
@@ -232,32 +284,233 @@ function loadTableSelectedContact(data, option='') {
             },
             {
                 data: 'fullname',
-                className: 'w-30',
+                className: 'w-25',
                 render: (data, type, row) => {
                     return `<span class="text-secondary selected_contact_full_name" data-id="${row.id}"><b>${row.fullname}</b></span>`
                 }
             },
             {
                 data: 'job_title',
-                className: 'w-20',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<span class="text-secondary">${row.job_title ? row.job_title : ''}</span>`
                 }
             },
             {
                 data: 'mobile',
-                className: 'w-25',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<span class="text-secondary">${row.mobile ? row.mobile : ''}</span>`
                 }
             },
             {
                 data: 'email',
-                className: 'w-20',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<span class="text-secondary">${row.email ? row.email : ''}</span>`
                 }
             },
+            {
+                className: 'w-5 text-right',
+                render: (data, type, row) => {
+                    return `<span><a ${option === 'detail' ? 'hidden' : ''} href="#" class="text-muted del-row"><i class="bi bi-trash"></i></a></span>`
+                }
+            }
+        ],
+    })
+}
+
+function loadTableShippingAddress(data=[], option='') {
+    tableShippingAddressEle.DataTable().clear().destroy()
+    tableShippingAddressEle.DataTableDefault({
+        dom: '',
+        styleDom: 'hide-foot',
+        rowIdx: true,
+        paging: false,
+        data: data,
+        columns: [
+            {
+                className: 'w-5',
+                render: (data, type, row) => {
+                    return ''
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<span class="form-check">
+                                <input ${option === 'detail' ? 'disabled' : ''} type="radio" class="form-check-input" name="shippingaddressRadio" ${row?.['is_default'] ? 'checked' : ''}>
+                            </span>
+                            <span hidden class="shipping_address_country_id">${row?.['country_id']}</span>
+                            <span hidden class="shipping_address_city_id">${row?.['city_id']}</span>
+                            <span hidden class="shipping_address_district_id">${row?.['district_id']}</span>
+                            <span hidden class="shipping_address_ward_id">${row?.['ward_id']}</span>
+                            <span hidden class="shipping_address_detail_address">${row?.['detail_address']}</span>`
+                }
+            },
+            {
+                className: 'w-80',
+                render: (data, type, row) => {
+                    return `<span class="shipping_address_full_address">${row?.['full_address']}</span>`
+                }
+            },
+            {
+                className: 'w-5 text-right',
+                render: (data, type, row) => {
+                    return `<span><a href="#" ${option === 'detail' ? 'hidden' : ''} class="text-muted del-row"><i class="bi bi-trash"></i></a></span>`
+                }
+            }
+        ],
+    })
+}
+
+function loadTableBillingAddress(data=[], option='') {
+    tableBillingAddressEle.DataTable().clear().destroy()
+    tableBillingAddressEle.DataTableDefault({
+        dom: '',
+        styleDom: 'hide-foot',
+        rowIdx: true,
+        paging: false,
+        data: data,
+        columns: [
+            {
+                className: 'w-5',
+                render: (data, type, row) => {
+                    return ''
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<span class="form-check"><input ${option === 'detail' ? 'disabled' : ''} type="radio" class="form-check-input" name="billingaddressRadio" ${row?.['is_default'] ? 'checked' : ''}></span>
+                            <span hidden class="billing_address_account_name">${row?.['account_name']}</span>
+                            <span hidden class="billing_address_email">${row?.['email']}</span>
+                            <span hidden class="billing_address_tax_code">${row?.['tax_code']}</span>
+                            <span hidden class="billing_address_account_address">${row?.['account_address']}</span>`
+                }
+            },
+            {
+                className: 'w-80',
+                render: (data, type, row) => {
+                    return `<span class="billing_address_full_address">${row?.['full_address']}</span>`
+                }
+            },
+            {
+                className: 'w-5 text-right',
+                render: (data, type, row) => {
+                    return `<span><a ${option === 'detail' ? 'hidden' : ''} href="#" class="text-muted del-row"><i class="bi bi-trash"></i></a></span>`
+                }
+            }
+        ],
+    })
+}
+
+function loadTableBankAccount(data=[], option='') {
+    bank_account_table.DataTable().clear().destroy()
+    bank_account_table.DataTableDefault({
+        dom: '',
+        styleDom: 'hide-foot',
+        rowIdx: true,
+        paging: false,
+        data: data,
+        columns: [
+            {
+                className: 'w-5',
+                render: (data, type, row) => {
+                    return ''
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<span class="form-check"><input ${option === 'detail' ? 'disabled' : ''} class="radio_select_default_bank_account form-check-input" name="bank_account_default" type="radio" ${row?.['is_default'] ? 'checked' : ''}></span>
+                            <span hidden class="bank_country_id">${row?.['bank_country_id']}</span>
+                            <span hidden class="bank_code">${row?.['bank_code']}</span>
+                            <span hidden class="bic_swift_code">${row?.['bic_swift_code']}</span>`
+                }
+            },
+            {
+                className: 'w-35',
+                render: (data, type, row) => {
+                    return `<span class="bank_name">${row?.['bank_name']}</span>`
+                }
+            },
+            {
+                className: 'w-20',
+                render: (data, type, row) => {
+                    return `<span class="bank_account_name">${row?.['bank_account_name']}</span>`
+                }
+            },
+            {
+                className: 'w-25',
+                render: (data, type, row) => {
+                    return `<span class="bank_account_number">${row?.['bank_account_number']}</span>`
+                }
+            },
+            {
+                className: 'w-5 text-right',
+                render: (data, type, row) => {
+                    return `<span><a ${option === 'detail' ? 'hidden' : ''} href="#" class="text-muted del-row"><i class="bi bi-trash"></i></a></span>`
+                }
+            }
+        ],
+    })
+}
+
+function loadTableCreditCard(data=[], option='') {
+    credit_card_table.DataTable().clear().destroy()
+    credit_card_table.DataTableDefault({
+        dom: '',
+        styleDom: 'hide-foot',
+        rowIdx: true,
+        paging: false,
+        data: data,
+        columns: [
+            {
+                className: 'w-5',
+                render: (data, type, row) => {
+                    return ''
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<span class="form-check"><input ${option === 'detail' ? 'disabled' : ''} class="radio_select_default_credit_card form-check-input" name="credit_card_default" type="radio" ${row?.['is_default'] ? 'checked' : ''}></span>
+                            <span hidden class="bank_country_id">${row?.['bank_country_id']}</span>
+                            <span hidden class="bank_code">${row?.['bank_code']}</span>
+                            <span hidden class="bic_swift_code">${row?.['bic_swift_code']}</span>`
+                }
+            },
+            {
+                className: 'w-20',
+                render: (data, type, row) => {
+                    return `<span class="credit_card_type">${row?.['credit_card_type']}</span>`
+                }
+            },
+            {
+                className: 'w-20',
+                render: (data, type, row) => {
+                    return `<span class="credit_card_name">${row?.['credit_card_name']}</span>`
+                }
+            },
+            {
+                className: 'w-20',
+                render: (data, type, row) => {
+                    return `<span class="credit_card_number">${row?.['credit_card_number']}</span>`
+                }
+            },
+            {
+                className: 'w-20',
+                render: (data, type, row) => {
+                    return `<span class="card_expired_date">${row?.['card_expired_date']}</span>`
+                }
+            },
+            {
+                className: 'w-5 text-right',
+                render: (data, type, row) => {
+                    return `<span><a ${option === 'detail' ? 'hidden' : ''} href="#" class="text-muted del-row"><i class="bi bi-trash"></i></a></span>`
+                }
+            }
         ],
     })
 }
@@ -268,153 +521,21 @@ function checkSelectAll() {
 
 function Disable(option) {
     if (option === 'detail') {
-        $('.form-control').prop('disabled', true).css({color: 'black'});
-        $('.form-select').prop('disabled', true).css({color: 'black'});
-        $('.select2').prop('disabled', true);
-        $('form input').prop('disabled', true);
-        $('.del-address-item').prop('hidden', true);
-        add_shipping_address_btn.addClass('disabled').prop('hidden', true);
-        add_billing_address_btn.addClass('disabled').prop('hidden', true);
-        add_contact_btn_detail.addClass('disabled').prop('hidden', true);
-        addBankAccountEle.addClass('disabled').prop('hidden', true);
-        addCreditCardEle.addClass('disabled').prop('hidden', true);
-        $('.card-close').addClass('disabled').prop('hidden', true);
+        $('form select').prop('disabled', true);
+        $('form input').prop('disabled', true).prop('readonly', true);
+        $('form button').addClass('disabled').prop('hidden', true)
     }
 }
 
-function load_shipping_address_mapped(data) {
-    let list_shipping_address = ``;
-    for (let i = 0; i < data.shipping_address.length; i++) {
-        let shipping_address = data.shipping_address[i];
-        let is_default = '';
-        if (shipping_address.is_default === true) {
-            is_default = 'checked';
-        }
-        list_shipping_address +=
-            `<tr>
-                <td><span class="form-check"><input type="radio" class="form-check-input" name="shippingaddressRadio" ${is_default}></span></td>
-                <td><span class="shipping_address_full_address">${shipping_address?.['full_address']}</span></td>
-                <td><span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span></td>
-                <td hidden class="shipping_address_country_id">${shipping_address?.['country_id']}</td>
-                <td hidden class="shipping_address_city_id">${shipping_address?.['city_id']}</td>
-                <td hidden class="shipping_address_district_id">${shipping_address?.['district_id']}</td>
-                <td hidden class="shipping_address_ward_id">${shipping_address?.['ward_id']}</td>
-                <td hidden class="shipping_address_detail_address">${shipping_address?.['detail_address']}</td>
-            </tr>`
-    }
-    tableShippingAddressEle.find('tbody').append(list_shipping_address)
+function AddRow(table, data) {
+    table.DataTable().row.add(data).draw();
 }
 
-function load_billing_address_mapped(data) {
-    let list_billing_address = ``
-    for (let i = 0; i < data.billing_address.length; i++) {
-        let billing_address = data.billing_address[i];
-        let is_default = '';
-        if (billing_address.is_default === true) {
-            is_default = 'checked';
-        }
-        list_billing_address +=
-            `<tr>
-                <td><span class="form-check"><input type="radio" class="form-check-input" name="billingaddressRadio" ${is_default}></span></td>
-                <td><span class="billing_address_full_address">${billing_address.full_address}</span></td>
-                <td><span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span></td>
-                <td hidden class="billing_address_account_name">${billing_address.account_name}</td>
-                <td hidden class="billing_address_email">${billing_address.email}</td>
-                <td hidden class="billing_address_tax_code">${billing_address.tax_code}</td>
-                <td hidden class="billing_address_account_address">${billing_address.account_address}</td>
-            </tr>`
-    }
-    tableBillingAddressEle.find('tbody').append(list_billing_address)
-}
-
-function load_bank_accounts_mapped(data) {
-    for (let i = 0; i < data.length; i++) {
-        let bank_account = data[i];
-        let default_card_color = '';
-        let checked = '';
-        if (bank_account?.['is_default'] === true) {
-            default_card_color = 'bg-primary text-dark bg-opacity-10';
-            checked = 'checked';
-        }
-        $('#list-bank-account-information').append(
-            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
-                <div class="card-body">
-                    <button type="button" class="card-close btn-close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="row">
-                        <div class="col-1">
-                            <div class="card-text">
-                                <input class="radio_select_default_bank_account" name="bank_account_default" type="radio" ${checked}>                 
-                            </div>
-                        </div>
-                        <div class="col-11">
-                            <div class="card-text">
-                                Bank account name: <span class="bank_account_name"><b>${bank_account?.['bank_account_name']}</b></span>
-                            </div>
-                            <div class="card-text">
-                                Bank name: <span class="bank_name"><b>${bank_account?.['bank_name']}</b></span>
-                            </div>
-                            <div class="card-text">
-                                Account number: <span class="bank_account_number"><b>${bank_account?.['bank_account_number']}</b></span>
-                            </div>
-                            <div class="card-text" hidden>
-                                Country ID: <span class="bank_country_id"><b>${bank_account?.['bank_country_id']}</b></span>
-                            </div>
-                            <div class="card-text" hidden>
-                                Bank code: <span class="bank_code"><b>${bank_account?.['bank_code']}</b></span>
-                            </div>
-                            <div class="card-text" hidden>
-                                BIC/SWIFT code: <span class="bic_swift_code"><b>${bank_account?.['bic_swift_code']}</b></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>`
-        )
-    }
-}
-
-function load_credit_cards_mapped(data) {
-    for (let i = 0; i < data.length; i++) {
-        let credit_card = data[i];
-        let default_card_color = '';
-        let checked = '';
-        if (credit_card?.['is_default'] === true) {
-            default_card_color = 'bg-primary text-dark bg-opacity-10';
-            checked = 'checked';
-        }
-        $('#list-credit-card-information').append(
-            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
-                <div class="card-body">
-                    <button type="button" class="card-close btn-close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="row">
-                        <div class="col-1">
-                            <div class="card-text">
-                                <input class="radio_select_default_credit_card" name="credit_card_default" type="radio" ${checked}>
-                            </div>
-                        </div>
-                        <div class="col-11">
-                            <div class="card-text">
-                                Card Type: <span class="credit_card_type"><b>${credit_card?.['credit_card_type']}</b></span>
-                            </div>
-                            <div class="card-text">
-                                Card Number: <span class="credit_card_number"><b>${credit_card?.['credit_card_number']}</b></span>
-                            </div>
-                            <div class="card-text">
-                                Card Exp: <span class="credit_expired_date"><b>${credit_card?.['card_expired_date']}</b></span>
-                            </div>
-                            <div class="card-text">
-                                Card Name: <span class="credit_card_name"><b>${credit_card?.['credit_card_name']}</b></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>`
-        )
-    }
+function DeleteRow(table, currentRow) {
+    currentRow = parseInt(currentRow) - 1
+    let rowIndex = table.DataTable().row(currentRow).index();
+    let row = table.DataTable().row(rowIndex);
+    row.remove().draw();
 }
 
 function LoadDetail(option) {
@@ -426,6 +547,7 @@ function LoadDetail(option) {
             if (data) {
                 $.fn.compareStatusShowPageAction(data);
                 data = data['account_detail'];
+                // console.log(data)
 
                 accountName.val(data.name);
                 accountCode.val(data.code);
@@ -442,13 +564,6 @@ function LoadDetail(option) {
                 inputIndividualEle.trigger('change')
                 inputOrganizationEle.trigger('change')
 
-                load_shipping_address_mapped(data);
-                load_billing_address_mapped(data);
-
-                $('.del-address-item').on('click', function () {
-                    $(this).closest('tr').remove();
-                })
-
                 totalEmployeeEle.val(data.total_employees)
                 annualRevenueEle.val(data.annual_revenue)
 
@@ -459,7 +574,7 @@ function LoadDetail(option) {
                     {
                         roleForCustomerEle.prop('hidden', false);
                     }
-                    if (data.account_type[i].title === 'AT002')
+                    if (data.account_type[i].code === 'AT002')
                     {
                         roleForSupplierEle.prop('hidden', false);
                     }
@@ -487,9 +602,14 @@ function LoadDetail(option) {
                     loadTableSelectContact(contact_mapped_list, data.contact_mapped);
                 })
 
-                loadTableSelectedContact(data.contact_mapped, option);
-
                 // For Detail
+                $('#revenue-ytd').attr('data-init-money', data?.['revenue_information']?.['revenue_ytd'])
+                $('#no-order').text(data?.['revenue_information']?.['order_number'])
+                $('#revenue-avg').attr('data-init-money', data?.['revenue_information']?.['revenue_average'])
+                loadTableSelectedContact(data?.['contact_mapped'], option);
+                loadTableShippingAddress(data?.['shipping_address'], option);
+                loadTableBillingAddress(data?.['billing_address'], option);
+
                 loadCurrency(data.currency)
                 loadPaymentTermForCustomer(data?.['payment_term_customer_mapped'])
                 loadPaymentTermForSupplier(data?.['payment_term_supplier_mapped'])
@@ -497,8 +617,8 @@ function LoadDetail(option) {
                 $('#credit-limit-id-customer').attr('value', data?.['credit_limit_customer']);
                 $('#credit-limit-id-supplier').attr('value', data?.['credit_limit_supplier']);
                 loadCountries();
-                load_bank_accounts_mapped(data?.['bank_accounts_mapped']);
-                load_credit_cards_mapped(data?.['credit_cards_mapped']);
+                loadTableBankAccount(data?.['bank_accounts_mapped'], option);
+                loadTableCreditCard(data?.['credit_cards_mapped'], option);
 
                 $.fn.initMaskMoney2();
 
@@ -529,13 +649,13 @@ save_shipping_address.on('click', function () {
         let district_id = shipping_district.find(`option:selected`).attr('value');
         let ward_id = shipping_ward.find(`option:selected`).attr('value');
 
-        let shipping_address = '';
+        let full_address = '';
         if (city !== '' && district !== '' && detail_shipping_address !== '') {
 
             if (ward === '') {
-                shipping_address = detail_shipping_address + ', ' + district + ', ' + city;
+                full_address = detail_shipping_address + ', ' + district + ', ' + city;
             } else {
-                shipping_address = detail_shipping_address + ', ' + ward + ', ' + district + ', ' + city;
+                full_address = detail_shipping_address + ', ' + ward + ', ' + district + ', ' + city;
             }
             // console.log(detail_shipping_address, ward, district, city)
 
@@ -545,26 +665,15 @@ save_shipping_address.on('click', function () {
             $.fn.notifyB({description: "Missing address information!"}, 'failure');
         }
 
-        if (shipping_address !== '') {
-            let is_default = '';
-            if (make_default_shipping_address.prop('checked') === true) {
-                is_default = 'checked';
-            }
-            tableShippingAddressEle.find('tbody').append(
-                `<tr>
-                    <td><span class="form-check"><input class="form-check-input" type="radio" name="shippingaddressRadio" ${is_default}></span></td>
-                    <td><span class="shipping_address_full_address">${shipping_address}</span></td>
-                    <td><span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span></td>
-                    <td hidden class="shipping_address_country_id">${country_id}</td>
-                    <td hidden class="shipping_address_city_id">${city_id}</td>
-                    <td hidden class="shipping_address_district_id">${district_id}</td>
-                    <td hidden class="shipping_address_ward_id">${ward_id}</td>
-                    <td hidden class="shipping_address_detail_address">${detail_shipping_address}</td>
-                </tr>`
-            )
-
-            $('.del-address-item').on('click', function () {
-                $(this).closest('tr').remove();
+        if (full_address !== '') {
+            AddRow(tableShippingAddressEle, {
+                'is_default': make_default_shipping_address.prop('checked'),
+                'country_id': country_id,
+                'city_id': city_id,
+                'district_id': district_id,
+                'ward_id': ward_id,
+                'detail_address': detail_shipping_address,
+                'full_address': full_address
             })
         }
     } catch (error) {
@@ -584,33 +693,22 @@ save_billing_address.on('click', function () {
             account_address = $('#edited-billing-address').val()
         }
 
-        let billing_address = '';
+        let full_address = '';
         if (email_address !== '' && tax_code !== '' && account_address !== '0') {
-            billing_address = acc_name + ', ' + account_address + ' (email: ' + email_address + ', tax code: ' + tax_code + ')';
+            full_address = acc_name + ', ' + account_address + ' (email: ' + email_address + ', tax code: ' + tax_code + ')';
             $('#modal-billing-address').modal('hide');
         } else {
             $.fn.notifyB({description: "Missing address information!"}, 'failure');
         }
 
-        if (billing_address !== '') {
-            let is_default = '';
-            if (make_default_billing_address.prop('checked') === true) {
-                is_default = 'checked';
-            }
-            tableBillingAddressEle.find('tbody').append(
-                `<tr>
-                    <td><span class="form-check"><input type="radio" class="form-check-input" name="billingaddressRadio" ${is_default}></span></td>
-                    <td><span class="billing_address_full_address">${billing_address}</span></td>
-                    <td><span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span></td>
-                    <td hidden class="billing_address_account_name">${acc_name}</td>
-                    <td hidden class="billing_address_email">${email_address}</td>
-                    <td hidden class="billing_address_tax_code">${tax_code}</td>
-                    <td hidden class="billing_address_account_address">${account_address}</td>
-                </tr>`
-            )
-
-            $('.del-address-item').on('click', function () {
-                $(this).closest('tr').remove();
+        if (full_address !== '') {
+            AddRow(tableBillingAddressEle, {
+                'is_default': make_default_billing_address.prop('checked'),
+                'account_name': acc_name,
+                'email': email_address,
+                'tax_code': tax_code,
+                'account_address': account_address,
+                'full_address': full_address
             })
         }
     } catch (error) {
@@ -621,14 +719,14 @@ save_billing_address.on('click', function () {
 inputIndividualEle.on('change', function () {
     parentAccountEle.prop('selectedIndex', -1).attr('disabled', true);
     $("#tax-code-label").removeClass("required");
-    $("#total_employees_label").removeClass("required");
+    // $("#total_employees_label").removeClass("required");
     loadParentAccount();
 })
 
 inputOrganizationEle.on('change', function () {
     parentAccountEle.attr('disabled', false);
     $("#tax-code-label").addClass("required");
-    $("#total_employees_label").addClass("required");
+    // $("#total_employees_label").addClass("required");
 })
 
 add_shipping_address_btn.on('click', function () {
@@ -711,10 +809,9 @@ add_contact_btn.on('click', function () {
 })
 
 $(document).on('click', '#btn-add-contact', function () {
-    let selected_contact = [];
     document.querySelectorAll('.selected_contact').forEach(function (element) {
         if (element.checked) {
-            selected_contact.push({
+            AddRow(contact_list_table, {
                 'id': element.getAttribute('data-id'),
                 'job_title': element.getAttribute('data-job-title'),
                 'fullname': element.getAttribute('data-fullname'),
@@ -724,7 +821,6 @@ $(document).on('click', '#btn-add-contact', function () {
             })
         }
     })
-    loadTableSelectedContact(selected_contact);
     checkSelectAll();
 });
 
@@ -745,6 +841,10 @@ $(document).on('click', '#check-select-all', function () {
     }
 });
 
+$(document).on('click', '.del-row', function () {
+    DeleteRow($(this).closest('table'), parseInt($(this).closest('tr').find('td:first-child').text()))
+});
+
 let currencyEle = $('#currency')
 let paymentTermCustomerEle = $('#payment-terms-id-customer')
 let creditLimitCustomerEle = $('#credit-limit-id-customer')
@@ -759,94 +859,102 @@ let frm_create_contact = $('#frm-create-new-contact')
 
 function get_bank_accounts_information() {
     let bank_accounts_information = [];
-    let list_bank_account = $('#list-bank-account-information').children();
-    for (let i = 0; i < list_bank_account.length; i++) {
-        let country_id = $(list_bank_account[i]).find('span.bank_country_id').text();
-        let bank_name = $(list_bank_account[i]).find('span.bank_name').text();
-        let bank_code = $(list_bank_account[i]).find('span.bank_code').text();
-        let bank_account_name = $(list_bank_account[i]).find('span.bank_account_name').text();
-        let bank_account_number = $(list_bank_account[i]).find('span.bank_account_number').text();
-        let bic_swift_code = $(list_bank_account[i]).find('span.bic_swift_code').text();
-        let is_default = $(list_bank_account[i]).find('input[type=radio]').is(':checked');
+    bank_account_table.find('tbody tr').each(function () {
+        let country_id = $(this).find('.bank_country_id').text();
+        let bank_name = $(this).find('.bank_name').text();
+        let bank_code = $(this).find('.bank_code').text();
+        let bank_account_name = $(this).find('.bank_account_name').text();
+        let bank_account_number = $(this).find('.bank_account_number').text();
+        let bic_swift_code = $(this).find('.bic_swift_code').text();
+        let is_default = $(this).find('.radio_select_default_bank_account').prop('checked');
 
-        bank_accounts_information.push({
-            'country_id': country_id,
-            'bank_name': bank_name,
-            'bank_code': bank_code,
-            'bank_account_name': bank_account_name,
-            'bank_account_number': bank_account_number,
-            'bic_swift_code': bic_swift_code,
-            'is_default': is_default
-        })
-    }
+        if (country_id) {
+            bank_accounts_information.push({
+                'country_id': country_id,
+                'bank_name': bank_name,
+                'bank_code': bank_code,
+                'bank_account_name': bank_account_name,
+                'bank_account_number': bank_account_number,
+                'bic_swift_code': bic_swift_code,
+                'is_default': is_default
+            })
+        }
+    })
     return bank_accounts_information;
 }
 
 function get_credit_cards_information() {
     let credit_cards_information = [];
-    let list_card = $('#list-credit-card-information').children();
-    for (let i = 0; i < list_card.length; i++) {
-        let credit_card_type = $(list_card[i]).find('span.credit_card_type').text();
-        let credit_card_number = $(list_card[i]).find('span.credit_card_number').text();
-        let credit_card_name = $(list_card[i]).find('span.credit_card_name').text();
-        let expired_date = $(list_card[i]).find('span.credit_expired_date').text();
-        let is_default = $(list_card[i]).find('input[type=radio]').is(':checked');
+    credit_card_table.find('tbody tr').each(function () {
+        let credit_card_type = $(this).find('.credit_card_type').text();
+        let credit_card_number = $(this).find('.credit_card_number').text();
+        let credit_card_name = $(this).find('.credit_card_name').text();
+        let card_expired_date = $(this).find('.card_expired_date').text();
+        let is_default = $(this).find('.radio_select_default_credit_card').prop('checked');
 
-        credit_cards_information.push({
-            'credit_card_type': credit_card_type,
-            'credit_card_number': credit_card_number,
-            'credit_card_name': credit_card_name,
-            'expired_date': expired_date,
-            'is_default': is_default
-        })
-    }
+        if (credit_card_type) {
+            credit_cards_information.push({
+                'credit_card_type': credit_card_type,
+                'credit_card_number': credit_card_number,
+                'credit_card_name': credit_card_name,
+                'expired_date': card_expired_date,
+                'is_default': is_default
+            })
+        }
+    })
     return credit_cards_information;
 }
 
 function get_shipping_address() {
     let shipping_address = [];
-    $('#list-shipping-address tbody').find('tr').each(function () {
-        shipping_address.push({
-            'country_id': $(this).find('.shipping_address_country_id').text(),
-            'city_id': $(this).find('.shipping_address_city_id').text(),
-            'district_id': $(this).find('.shipping_address_district_id').text(),
-            'ward_id': $(this).find('.shipping_address_ward_id').text(),
-            'detail_address': $(this).find('.shipping_address_detail_address').text(),
-            'full_address': $(this).find('.shipping_address_full_address').text(),
-            'is_default': $(this).find('input[type="radio"]').is(':checked'),
-        })
+    $('#list-shipping-address tbody tr').each(function () {
+        if ($(this).find('.shipping_address_country_id').text()) {
+            shipping_address.push({
+                'country_id': $(this).find('.shipping_address_country_id').text(),
+                'city_id': $(this).find('.shipping_address_city_id').text(),
+                'district_id': $(this).find('.shipping_address_district_id').text(),
+                'ward_id': $(this).find('.shipping_address_ward_id').text(),
+                'detail_address': $(this).find('.shipping_address_detail_address').text(),
+                'full_address': $(this).find('.shipping_address_full_address').text(),
+                'is_default': $(this).find('input[type="radio"]').is(':checked'),
+            })
+        }
     })
     return shipping_address;
 }
 
 function get_billing_address() {
     let billing_address = [];
-    $('#list-billing-address tbody').find('tr').each(function () {
-        billing_address.push({
-            'account_name': $(this).find('.billing_address_account_name').text(),
-            'email': $(this).find('.billing_address_email').text(),
-            'tax_code': $(this).find('.billing_address_tax_code').text(),
-            'account_address': $(this).find('.billing_address_account_address').text(),
-            'full_address': $(this).find('.billing_address_full_address').text(),
-            'is_default': $(this).find('input[type="radio"]').is(':checked')
-        })
+    $('#list-billing-address tbody tr').each(function () {
+        if ($(this).find('.billing_address_account_name').text()) {
+            billing_address.push({
+                'account_name': $(this).find('.billing_address_account_name').text(),
+                'email': $(this).find('.billing_address_email').text(),
+                'tax_code': $(this).find('.billing_address_tax_code').text(),
+                'account_address': $(this).find('.billing_address_account_address').text(),
+                'full_address': $(this).find('.billing_address_full_address').text(),
+                'is_default': $(this).find('input[type="radio"]').is(':checked')
+            })
+        }
     })
     return billing_address;
 }
 
 function get_contacts_mapped() {
     let contact_mapped_list = [];
-    $('#datatable_contact_list tbody').find('.is_account_owner').each(function () {
-        contact_mapped_list.push({
-            'id': $(this).attr('data-id'),
-            'is_account_owner': $(this).is(':checked')
-        })
+    $('#datatable_contact_list tbody .is_account_owner').each(function () {
+        if ($(this).attr('data-id')) {
+            contact_mapped_list.push({
+                'id': $(this).attr('data-id'),
+                'is_account_owner': $(this).is(':checked')
+            })
+        }
     })
     return contact_mapped_list;
 }
 
 class AccountHandle {
-     load() {
+    load() {
         loadAccountType();
         loadAccountManager();
         loadIndustry();
@@ -858,6 +966,11 @@ class AccountHandle {
         loadContactOwner();
         inputIndividualEle.trigger('change')
         inputOrganizationEle.trigger('change')
+
+        loadTableSelectedContact()
+        loadTableShippingAddress()
+        loadTableBillingAddress()
+        loadTableBankAccount()
     }
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle));
@@ -913,12 +1026,12 @@ class AccountHandle {
         if (totalEmployeeEle.val()) {
             frm.dataForm['total_employees'] = totalEmployeeEle.val();
         }
-        else {
-            if (inputOrganizationEle.is(':checked')) {
-                $.fn.notifyB({description: 'Total employee is required with Organization Account.'}, 'failure');
-                return false;
-            }
-        }
+        // else {
+            // if (inputOrganizationEle.is(':checked')) {
+            //     $.fn.notifyB({description: 'Total employee is required with Organization Account.'}, 'failure');
+            //     return false;
+            // }
+        // }
         if (accountTaxCode.val()) {
             frm.dataForm['tax_code'] = accountTaxCode.val();
         }
@@ -941,6 +1054,9 @@ class AccountHandle {
         if (inputEmail.val()) {
             frm.dataForm['email'] = inputEmail.val();
         }
+        if (currencyEle.val()) {
+            frm.dataForm['currency'] = currencyEle.val();
+        }
 
         frm.dataForm['contact_mapped'] = get_contacts_mapped();
         frm.dataForm['shipping_address_dict'] = get_shipping_address();
@@ -953,9 +1069,6 @@ class AccountHandle {
             frm.dataForm['bank_accounts_information'] = get_bank_accounts_information();
             frm.dataForm['credit_cards_information'] = get_credit_cards_information();
 
-            if (currencyEle.val()) {
-                frm.dataForm['currency'] = currencyEle.val();
-            }
             if (paymentTermCustomerEle.val()) {
                 frm.dataForm['payment_term_customer_mapped'] = paymentTermCustomerEle.val();
             }
@@ -1067,9 +1180,16 @@ function dataTableActivity(data) {
     let transEle = $('#app-trans-factory');
     $tables.DataTableDefault({
         data: data ? data : [],
+        rowIdx: true,
         columns: [
             {
                 targets: 0,
+                render: (data, type, row) => {
+                    return ``;
+                }
+            },
+            {
+                targets: 1,
                 render: (data, type, row) => {
                     let appMapTrans = {
                         'opportunity.opportunity': transEle.attr('data-opportunity'),
@@ -1098,13 +1218,13 @@ function dataTableActivity(data) {
                 }
             },
             {
-                targets: 1,
+                targets: 2,
                 render: (data, type, row) => {
                     return `<p class="text-primary">${row?.['title']}</p>`;
                 },
             },
             {
-                targets: 2,
+                targets: 3,
                 render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['date_activity'], {
                         'outputFormat': 'DD-MM-YYYY',
@@ -1112,7 +1232,7 @@ function dataTableActivity(data) {
                 }
             },
             {
-                targets: 3,
+                targets: 4,
                 render: (data, type, row) => {
                     if (['opportunity.opportunity', 'opportunity.opportunitymeeting'].includes(row?.['app_code'])) {
                         return `<span>--</span>`;
@@ -1129,7 +1249,6 @@ function dataTableActivity(data) {
 }
 
 
-
 $(document).on('click', '#save-changes-modal-bank-account', function () {
     let bank_country_id = $('#country-select-box-id').val();
     let bank_name = $('#bank-name-id').val();
@@ -1139,48 +1258,15 @@ $(document).on('click', '#save-changes-modal-bank-account', function () {
     let bic_swift_code = $('#bic-swift-code-id').val();
 
     if (bank_country_id !== '' && bank_name !== '' && bank_code !== '' && bank_account_name !== '' && bank_account_number !== '') {
-        let is_default = '';
-        let default_card_color = '';
-        if ($('#make-default-bank-account').is(':checked')) {
-            is_default = 'checked';
-            default_card_color = 'bg-primary text-dark bg-opacity-10';
-        }
-        $('#list-bank-account-information').append(
-            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
-                <div class="card-body">
-                    <button type="button" class="card-close btn-close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="row">
-                        <div class="col-1">
-                            <div class="card-text">
-                                <input class="radio_select_default_bank_account" name="bank_account_default" type="radio" ` + is_default + `>                 
-                            </div>
-                        </div>
-                        <div class="col-11">
-                            <div class="card-text">
-                                Bank account name: <span class="bank_account_name"><b>` + bank_account_name + `</b></span>
-                            </div>
-                            <div class="card-text">
-                                Bank name: <span class="bank_name"><b>` + bank_name + `</b></span>
-                            </div>
-                            <div class="card-text">
-                                Account number: <span class="bank_account_number"><b>` + bank_account_number + `</b></span>
-                            </div>
-                            <div class="card-text" hidden>
-                                Country ID: <span class="bank_country_id"><b>` + bank_country_id + `</b></span>
-                            </div>
-                            <div class="card-text" hidden>
-                                Bank code: <span class="bank_code"><b>` + bank_code + `</b></span>
-                            </div>
-                            <div class="card-text" hidden>
-                                BIC/SWIFT code: <span class="bic_swift_code"><b>` + bic_swift_code + `</b></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>`
-        )
+        AddRow(bank_account_table, {
+            'is_default': $('#make-default-bank-account').prop('checked'),
+            'bank_account_name': bank_account_name,
+            'bank_name': bank_name,
+            'bank_account_number': bank_account_number,
+            'bank_country_id': bank_country_id,
+            'bank_code': bank_code,
+            'bic_swift_code': bic_swift_code,
+        })
         $('#modal-bank-account-information').hide();
     } else {
         $.fn.notifyB({description: "Missing value Banking Account."}, 'failure');
@@ -1190,46 +1276,17 @@ $(document).on('click', '#save-changes-modal-bank-account', function () {
 $(document).on('click', '#save-changes-modal-credit-card', function () {
     let credit_card_type = $('#credit-card-type-select-box-id').val();
     let credit_card_number = $('#credit-card-number-id').val();
-    let credit_card_exp_date = $('#credit-card-exp-date').val();
+    let card_expired_date = $('#credit-card-exp-date').val();
     let credit_card_name = $('#credit-card-name-id').val();
 
-    if (credit_card_type !== '' && credit_card_number !== '' && credit_card_exp_date !== '' && credit_card_name !== '') {
-        let is_default = '';
-        let default_card_color = '';
-        if ($('#make-default-credit-card').is(':checked')) {
-            is_default = 'checked';
-            default_card_color = 'bg-primary text-dark bg-opacity-10';
-        }
-        $('#list-credit-card-information').append(
-            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
-                <div class="card-body">
-                    <button type="button" class="card-close btn-close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="row">
-                        <div class="col-1">
-                            <div class="card-text">
-                                <input class="radio_select_default_credit_card" name="credit_card_default" type="radio" ` + is_default + `>
-                            </div>
-                        </div>
-                        <div class="col-11">
-                            <div class="card-text">
-                                Card Type: <span class="credit_card_type"><b>` + credit_card_type + `</b></span>
-                            </div>
-                            <div class="card-text">
-                                Card Number: <span class="credit_card_number"><b>` + credit_card_number + `</b></span>
-                            </div>
-                            <div class="card-text">
-                                Card Exp: <span class="credit_expired_date"><b>` + credit_card_exp_date + `</b></span>
-                            </div>
-                            <div class="card-text">
-                                Card Name: <span class="credit_card_name"><b>` + credit_card_name + `</b></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>`
-        )
+    if (credit_card_type !== '' && credit_card_number !== '' && card_expired_date !== '' && credit_card_name !== '') {
+        AddRow(credit_card_table, {
+            'is_default': $('#make-default-credit-card').prop('checked'),
+            'credit_card_type': credit_card_type,
+            'credit_card_number': credit_card_number,
+            'card_expired_date': card_expired_date,
+            'credit_card_name': credit_card_name,
+        })
         $('#modal-credit-card-information').hide();
     } else {
         $.fn.notifyB({description: "Missing value Credit Card."}, 'failure');

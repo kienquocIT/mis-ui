@@ -77,17 +77,18 @@ $(document).ready(function () {
                                             data-bs-toggle="tooltip" 
                                             data-bs-placement="bottom" 
                                         >
-                                            <span class="icon"><i class="fas fa-eye"></i></span>
+                                            <span class="icon"><i class="fas fa-search"></i></span>
                                         </button>
                                     </a>
-<!--                                    <button -->
-<!--                                        type="button" -->
-<!--                                        class="btn btn-icon btn-rounded btn-soft-primary attach-file" -->
-<!--                                        data-bs-toggle="tooltip" -->
-<!--                                        data-bs-placement="bottom" -->
-<!--                                    >-->
-<!--                                            <span class="icon"><i class="fa-regular fa-copy"></i></span>-->
-<!--                                    </button>-->
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-icon btn-rounded btn-soft-primary del-row" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="bottom" 
+                                        disabled
+                                    >
+                                            <span class="icon"><i class="fas fa-trash-can"></i></span>
+                                    </button>
                                 </div>`
                         }
                     },
@@ -95,7 +96,6 @@ $(document).ready(function () {
                 ],
             });
         }
-
         loadDbl();
 
     });

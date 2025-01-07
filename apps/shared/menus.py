@@ -790,7 +790,7 @@ class MenusPartnerCenter:
         name='Home', code='id_menu_partner_center_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     LISTS = MenuCommon(
-        name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fa-solid fa-person"></i>',
+        name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fa-solid fa-search"></i>',
     )
 
 class MenusFinancials:

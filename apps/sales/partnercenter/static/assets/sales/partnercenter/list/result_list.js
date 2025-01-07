@@ -101,9 +101,12 @@ $(document).ready(function () {
             },
             {
                 targets: 1,
-                width: '4%',
+                width: '10%',
                 render: (data, type, row, meta) => {
-                    return `${row.code}`
+                    const urlContactDetail = $url.data('contact-detail-view-url')
+                    const link = urlContactDetail.replace('0', row.id);
+                    const code = row?.['code'] ? row['code'] : '_'
+                    return `<a href=${link} class="badge badge-primary w-7">${code}</a> ${$x.fn.buttonLinkBlank(link)}`
                 }
             },
             {

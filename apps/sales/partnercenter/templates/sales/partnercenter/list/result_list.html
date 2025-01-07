@@ -23,6 +23,7 @@
     <input
             type="text" id="app-urls-factory"
             data-account-detail-view-url="{% url 'AccountDetail' pk=0 %}"
+            data-contact-detail-view-url="{% url 'ContactDetail' pk=0 %}"
     >
     {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}

@@ -64,6 +64,7 @@ class PartnerCenterListHandler {
         this.delRowEventBinding()
         this.checkDataObjCheckboxEventBinding()
         this.changePropSelectValueEventBinding()
+        this.changeOperatorSelectValueEventBinding()
     }
 
     fetchData(isDetail) {
@@ -273,7 +274,7 @@ class PartnerCenterListHandler {
         });
     }
 
-    checkDataObjCheckboxEventBinding() {
+    checkDataObjCheckboxEventBinding()  {
         $(document).on('click', '.data-obj-checkbox', (e) => {
             const $clickedCheckbox = $(e.currentTarget);
 
@@ -339,6 +340,21 @@ class PartnerCenterListHandler {
                         $formGroup.append(html)
                     }
                 }
+                $('.select-operator').trigger('change')
+            }
+        })
+    }
+
+    changeOperatorSelectValueEventBinding(){
+        $(document).on('change', '.select-operator', (e) => {
+            let $currEle = $(e.currentTarget)
+            if($currEle.val()==='exactnull' || $currEle.val()==='notexactnull'){
+                let rightEle = $currEle.closest('.row').find('[name="right"]')
+                rightEle.val(null).trigger('change')
+                rightEle.attr('disabled', true)
+            } else{
+                let rightEle = $currEle.closest('.row').find('[name="right"]')
+                rightEle.attr('disabled', false)
             }
         })
     }
@@ -545,20 +561,34 @@ class PartnerCenterListHandler {
                         if (selectedData) {
                             $leftSelectEle.attr('data-prop-type', selectedData); // Update `data-type` on the select element
                         }
+
                         if (filterItemData['left']?.['content_type']){
                             const $rightSelectEle = $filterCardBody.find(`select[name="right"][data-filter-row-id="${filterItemId}"]`)
                             let content_type = filterItemData?.['left']?.['content_type'].toLowerCase()
                             $rightSelectEle.attr('data-url', this.CONTENT_TYPE_MAPPING_URL[content_type]?.['url']);
                             $rightSelectEle.attr('data-keyResp', this.CONTENT_TYPE_MAPPING_URL[content_type]?.['keyResp']);
                             $rightSelectEle.attr('data-keyText', this.CONTENT_TYPE_MAPPING_URL[content_type]?.['keyText']);
-                            this.loadInitS2(
-                                $rightSelectEle,
-                                [filterItemData?.['right']],
-                                {},
-                                null,
-                                false,
-                                {res1: "code", res2: "title"}
-                            )
+                            if(filterItemData['operator']!=='notexactnull' && filterItemData['operator']!=='exactnull'){
+                                this.loadInitS2(
+                                    $rightSelectEle,
+                                    [filterItemData?.['right']],
+                                    {},
+                                    null,
+                                    false,
+                                    {res1: "code", res2: "title"}
+                                )
+                            } else {
+                                this.loadInitS2(
+                                    $rightSelectEle,
+                                    [],
+                                    {},
+                                    null,
+                                    false,
+                                    {res1: "code", res2: "title"}
+                                )
+                                $rightSelectEle.attr('disabled', true)
+                            }
+
                         } else {
                             let $formGroup= $filterCardBody.find(`select[name="right"][data-filter-row-id="${filterItemId}"]`).closest('.form-group')
                             $formGroup.empty()

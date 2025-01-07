@@ -456,7 +456,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Partnercenter
     PARTNER_CENTER = BreadcrumbChildren(_('Partner Center'), 'HomeView')
-    PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('List'), 'ListList')
+    PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('Lists'), 'ListList')
 
 class BreadcrumbView:
     """menu vertical item view"""

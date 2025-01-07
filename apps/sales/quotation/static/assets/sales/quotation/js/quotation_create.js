@@ -241,8 +241,6 @@ $(function () {
                     $(this).removeClass('text-primary');
                 }
                 if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-uom') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
-                    // load again table cost
-                    // QuotationLoadDataHandle.loadDataTableCost();
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                     if ($(this).hasClass('table-row-uom')) {
                         let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
@@ -707,8 +705,6 @@ $(function () {
                 QuotationLoadDataHandle.loadRowDisabled(newRow);
                 // ReOrder STT
                 reOrderSTT(tableProduct);
-                // load again table cost
-                // QuotationLoadDataHandle.loadDataTableCost();
                 QuotationLoadDataHandle.loadSetWFRuntimeZone();
             }
         });

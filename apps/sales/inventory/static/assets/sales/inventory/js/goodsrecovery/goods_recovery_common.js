@@ -672,10 +672,6 @@ class RecoveryLoadDataHandle {
 
 // DataTable
 class RecoveryDataTableHandle {
-    static productInitEle = $('#data-init-product');
-    static uomInitEle = $('#data-init-uom');
-    static taxInitEle = $('#data-init-tax');
-
     static tablePOProduct = $('#datable-good-receipt-po-product');
     static tablePR = $('#datable-good-receipt-purchase-request');
     static tableWH = $('#datable-good-receipt-warehouse');
@@ -758,7 +754,7 @@ class RecoveryDataTableHandle {
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-price" 
-                                    value="${row?.['product_unit_price'] ? row?.['product_unit_price'] : 0}"
+                                    value="${row?.['product_depreciation_price'] ? row?.['product_depreciation_price'] : 0}"
                                     data-return-type="number"
                                     readonly
                                 >`;
@@ -835,6 +831,7 @@ class RecoveryDataTableHandle {
             },
             drawCallback: function () {
                 RecoveryDataTableHandle.dtbProductHDCustom();
+                $.fn.initMaskMoney2();
             },
         });
     };

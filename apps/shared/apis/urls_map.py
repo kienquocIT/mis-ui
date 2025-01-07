@@ -822,3 +822,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LIST_EMPLOYEE_LIST = StringUrl('partner-center/list/employee-list')
     LIST_CONTACT_LIST = StringUrl('partner-center/list/contact-list')
     LIST_INDUSTRY_LIST = StringUrl('partner-center/list/industry-list')
+    LIST_OPP_CONFIG_STAGE_LIST = StringUrl('partner-center/list/opp-config-stage-list')

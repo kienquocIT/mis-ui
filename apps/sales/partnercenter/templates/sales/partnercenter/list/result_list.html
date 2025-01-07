@@ -2,21 +2,6 @@
 {% load static i18n %}
 {% block title %}{% trans 'List' %}{% endblock %}
 {% block pageAction %}
-{#    <a href="{% url 'ListCreate' %}"#}
-{#       data-bs-toggle="tooltip"#}
-{#       data-bs-placement="top"#}
-{#       title="{% trans 'Create List' %}"#}
-{#       id="create_partnercenter_list_btn"#}
-{#       data-bs-original-title="Add List">#}
-{#            <button type="button" class="btn btn-outline-primary">#}
-{#                <span>#}
-{#                    <span>{% trans 'Add' %}</span>#}
-{#                    <span class="icon">#}
-{#                        <i class="fa-solid fa-plus"></i>#}
-{#                    </span>#}
-{#                </span>#}
-{#            </button>#}
-{#    </a>#}
 {% endblock %}
 {% block pageContent %}
     <table
@@ -37,6 +22,7 @@
 {% block dataHiddenGroup %}
     <input
             type="text" id="app-urls-factory"
+            data-account-detail-view-url="{% url 'AccountDetail' pk=0 %}"
     >
     {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}

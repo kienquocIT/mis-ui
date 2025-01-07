@@ -1,5 +1,6 @@
 $(document).ready(function () {
     let table = $('#table_partnercenter_result_list');
+    let $url = $('#app-urls-factory')
     const COLUMNS = {
         'account': [
             {
@@ -11,9 +12,12 @@ $(document).ready(function () {
             },
             {
                 targets: 1,
-                width: '4%',
+                width: '10%',
                 render: (data, type, row, meta) => {
-                    return `${row.code}`
+                    const urlAccountDetail = $url.data('account-detail-view-url')
+                    const link = urlAccountDetail.replace('0', row.id);
+                    const code = row?.['code'] ? row['code'] : '_'
+                    return `<a href=${link} class="badge badge-primary w-7">${code}</a> ${$x.fn.buttonLinkBlank(link)}`
                 }
             },
             {
@@ -189,7 +193,6 @@ $(document).ready(function () {
                             authWidth: false,
                             scrollX: true,
                             paging: true,
-
                             data: data['list_result'],
                             columns: COLUMNS[data['data_object'].toLowerCase()]
                         })

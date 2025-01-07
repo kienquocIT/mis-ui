@@ -29,29 +29,36 @@ $(document).ready(function () {
                     },
                     {
                         targets: 1,
-                        width: '10%',
+                        width: '25%',
                         render: (data, type, row) => {
-                            const link = urlResultList.replace('0', row.id);
+                            const link = urlDetail.replace('0', row.id);
                             return `<a href=${link} class="text-primary fw-bold">${row?.['title']}</a> ${$x.fn.buttonLinkBlank(link)}`
                         }
                     },
                     {
                         targets: 2,
-                        width: '20%',
+                        width: '10%',
                         render: (data, type, row) => {
-                            return `${row.date_created}`
+                            let date = row.date_created
+                            date = $x.fn.reformatData(
+                                date,
+                                $x.cls.datetime.defaultFormatDate,
+                                'DD-MM-YYYY',
+                                moment().format('DD-MM-YYYY')
+                            );
+                            return `${date}`
                         }
                     },
                     {
                         targets: 3,
-                        width: '20%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `${row.data_object.title}`
                         }
                     },
                     {
                         targets: 4,
-                        width: '20%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `${row.num_of_records}`
                         }
@@ -60,28 +67,27 @@ $(document).ready(function () {
                         targets: 5,
                         width: '10%',
                         render: (data, type, row) => {
-                            const link = urlDetail.replace('0', row.id);
+                            const link = urlResultList.replace('0', row.id);
                             return `
                             <div class="d-flex gap-2 align-items-center">
                                     <a href=${link}>
-                                        
-                                    <button 
-                                        type="button" 
-                                        class="btn btn-icon btn-rounded btn-soft-primary attach-file" 
-                                        data-bs-toggle="tooltip" 
-                                        data-bs-placement="bottom" 
-                                    >
-                                            <span class="icon"><i class="fas fa-pencil"></i></span>
-                                    </button>
+                                        <button 
+                                            type="button" 
+                                            class="btn btn-icon btn-rounded btn-soft-primary attach-file" 
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="bottom" 
+                                        >
+                                            <span class="icon"><i class="fas fa-eye"></i></span>
+                                        </button>
                                     </a>
-                                    <button 
-                                        type="button" 
-                                        class="btn btn-icon btn-rounded btn-soft-primary attach-file" 
-                                        data-bs-toggle="tooltip" 
-                                        data-bs-placement="bottom" 
-                                    >
-                                            <span class="icon"><i class="fa-regular fa-copy"></i></span>
-                                    </button>
+<!--                                    <button -->
+<!--                                        type="button" -->
+<!--                                        class="btn btn-icon btn-rounded btn-soft-primary attach-file" -->
+<!--                                        data-bs-toggle="tooltip" -->
+<!--                                        data-bs-placement="bottom" -->
+<!--                                    >-->
+<!--                                            <span class="icon"><i class="fa-regular fa-copy"></i></span>-->
+<!--                                    </button>-->
                                 </div>`
                         }
                     },

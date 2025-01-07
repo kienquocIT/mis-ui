@@ -43,6 +43,11 @@ class PartnerCenterListHandler {
                 "keyResp": "industry_list",
                 "keyText": "title"
             },
+            "opportunity.opportunityconfigstage": {
+                "url": $('#app-url-factory').data('md-opp-config-stage'),
+                "keyResp": "opp_config_stage_list",
+                "keyText": "title"
+            },
         }
 
         this.$formSubmit = $('#form_partnercenter_list')

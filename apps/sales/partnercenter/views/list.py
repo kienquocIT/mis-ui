@@ -40,10 +40,7 @@ class ListCreate(View):
     )
     def get(self, request, *args, **kwargs):
         ctx = {
-            # "list_from_app": 'consulting.consulting.create',
-            # 'input_mapping_properties': InputMappingProperties.CONSULTING_DATA_MAP,
             'form_id': 'form_partnercenter_list',
-            # 'app_id': '3a369ba582a04c4da4473794b67d1d02'
         }
         return ctx, status.HTTP_200_OK
 
@@ -58,10 +55,7 @@ class ListDetail(View):
     )
     def get(self, request, pk, *args, **kwargs):
         return {
-            # 'data': {'doc_id': pk},
-            # 'input_mapping_properties': InputMappingProperties.CONSULTING_DATA_MAP,
             'form_id': 'form_partnercenter_list',
-            # 'employee_current': request.user.employee_current_data,
         }, status.HTTP_200_OK
 
 class ListUpdate(View):
@@ -75,10 +69,7 @@ class ListUpdate(View):
     )
     def get(self, request, pk, *args, **kwargs):
         return {
-            # 'data': {'doc_id': pk},
-            # 'input_mapping_properties': InputMappingProperties.CONSULTING_DATA_MAP,
             'form_id': 'form_partnercenter_list',
-            # 'employee_current': request.user.employee_current_data,
         }, status.HTTP_200_OK
 
 class ResultList(View):
@@ -92,10 +83,6 @@ class ResultList(View):
     )
     def get(self, request, pk, *args, **kwargs):
         return {
-            # 'data': {'doc_id': pk},
-            # 'input_mapping_properties': InputMappingProperties.BIDDING_DATA_MAP,
-            # 'form_id': 'frm_bidding_create',
-            # 'employee_current': request.user.employee_current_data,
         }, status.HTTP_200_OK
 
 class ListListAPI(APIView):
@@ -116,7 +103,7 @@ class ListListAPI(APIView):
         return create(
             request=request,
             url=ApiURL.LIST_LIST,
-            msg="PPLPPKKAKEWGWSGBSRBHJDRF BIKRB"
+            msg="Success"
         )
 
 class ListDetailAPI(APIView):
@@ -137,7 +124,7 @@ class ListDetailAPI(APIView):
             request=request,
             url=ApiURL.LIST_DETAIL,
             pk=pk,
-            msg='asfaeybfgaeuysbfyeiafa'
+            msg='Success'
         )
 
 class ListResultListAPI(APIView):

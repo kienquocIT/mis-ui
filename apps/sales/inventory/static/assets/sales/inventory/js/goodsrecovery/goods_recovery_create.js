@@ -132,9 +132,15 @@ $(function () {
 
         RecoveryLoadDataHandle.$btnSaveModal.on('click', function () {
             RecoveryLoadDataHandle.loadLineDetail();
+            RecoveryCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);
         });
 
-
+        RecoveryDataTableHandle.$tableProduct.on('change', '.table-row-tax', function () {
+            let row = this.closest('tr');
+            if (row) {
+                RecoveryCalculateHandle.calculateMain(RecoveryDataTableHandle.$tableProduct, row);
+            }
+        });
 
 
 

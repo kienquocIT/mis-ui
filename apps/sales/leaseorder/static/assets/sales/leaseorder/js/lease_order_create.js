@@ -865,11 +865,13 @@ $(function () {
                 if (keyHidden.length > 0) {
                     // special case: loadCost if products is not in hidden zones
                     if (!keyHidden.includes('lease_products_data')) {
+                        LeaseOrderStoreDataHandle.storeDtbData(2);
                         LeaseOrderLoadDataHandle.loadDataTableCost();
                         LeaseOrderSubmitHandle.setupDataSubmit(_form);
                         LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
                     }
                 } else {
+                    LeaseOrderStoreDataHandle.storeDtbData(2);
                     LeaseOrderLoadDataHandle.loadDataTableCost();
                     LeaseOrderSubmitHandle.setupDataSubmit(_form);
                 }

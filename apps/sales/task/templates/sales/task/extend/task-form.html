@@ -15,6 +15,7 @@
             width: 768px!important;
         }
     }
+    .task_loading{display: none}
 </style>
 <!--Offcanvas Wrapper-->
 <div class="offcanvas offcanvas-xl offcanvas-end" tabindex="-1" id="offCanvasRightTask" aria-hidden="true">
@@ -284,6 +285,11 @@
                         id="btn-open-comment-task">{% trans 'Comments' %}</button>
             </div>
         </form>
+        <div class="task_loading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
 	</div>
 </div>
 <!--/ Offcanvas Wrapper-->

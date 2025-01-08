@@ -9050,7 +9050,7 @@ msgstr "Nhập dữ liệu từ excel"
 
 #
 msgid "The table in excel file must have the column order below: "
-msgstr "Bảng trong file excel phải có thứ cột như sau: "
+msgstr "Bảng trong excel phải có thứ tự các cột như sau: "
 
 #
 msgid "From row"

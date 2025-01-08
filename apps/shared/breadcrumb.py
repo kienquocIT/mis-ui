@@ -454,6 +454,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Lease order
     LEASE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Lease order'), 'LeaseOrderList')
 
+    # Partnercenter
+    PARTNER_CENTER = BreadcrumbChildren(_('Partner Center'), 'HomeView')
+    PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('Lists'), 'ListList')
+
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -1191,3 +1195,13 @@ class BreadcrumbView:
     CONTRACT_TEMPLATE_CREATE_PAGE = CONTRACT_TEMPLATE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     CONTRACT_TEMPLATE_DETAIL_PAGE = CONTRACT_TEMPLATE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     CONTRACT_TEMPLATE_UPDATE_PAGE = CONTRACT_TEMPLATE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Consulting
+    PARTNER_CENTER_LIST = [
+        BreadcrumbItem.PARTNER_CENTER,
+        BreadcrumbItem.PARTNER_CENTER_LIST_PAGE
+    ]
+    PARTNER_CENTER_LIST_LIST_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_LIST]
+    PARTNER_CENTER_LIST_CREATE_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_CREATE]
+    PARTNER_CENTER_LIST_DETAIL_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    PARTNER_CENTER_LIST_UPDATE_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_UPDATE]

@@ -785,6 +785,13 @@ class MenusHRM:
         ]
     )
 
+class MenusPartnerCenter:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_partner_center_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    LISTS = MenuCommon(
+        name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fa-solid fa-search"></i>',
+    )
 
 class MenusFinancials:
     HOME = MenuCommon(
@@ -1016,7 +1023,16 @@ class SpaceItem:
                 MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,
                 MenusCoreConfigurations.INVENTORY_DATA_CONFIG
             ],
-        )
+        ),
+        'partner-center': SpaceCommon(
+            'Partner Center',
+            'partner-center',
+            icon='<i class="fa-solid fa-user-tag"></i>',
+            menus=[
+                MenusPartnerCenter.HOME,
+                MenusPartnerCenter.LISTS,
+            ],
+        ),
     }
 
     @classmethod
@@ -1053,6 +1069,7 @@ class SpaceGroup:
             SpaceItem.mapping['project'],
             SpaceItem.mapping['report'],
             SpaceItem.mapping['definition'],
+            SpaceItem.mapping['partner-center'],
         ]
     )
     CORE_SETTINGS = SpaceCommon(

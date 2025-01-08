@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    const trans_script = $('#trans-script')
+
     function loadProductType() {
         let tbl = $('#datatable-product-type-list');
         let frm = new SetupFormSubmit(tbl);
@@ -55,18 +57,27 @@ $(document).ready(function () {
                 {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
+                        let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-product-type"
+                           data-id="${row?.['id']}"
+                           data-code="${row?.['code']}"
+                           data-title="${row?.['title']}"
+                           data-description="${row?.['description']}"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modal-update-product-type"
+                           data-bs-placement="top" title=""
+                           >
+                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                        </a>`
+                        let delete_btn = `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete"
+                                data-id="${row?.['id']}">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon text-danger">
+                                    <i class="bi bi-trash"></i>
+                                </span>
+                            </span>
+                        </a>`
                         if (!row?.['is_default']) {
-                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-product-type"
-                                       data-id="${row?.['id']}"
-                                       data-code="${row?.['code']}"
-                                       data-title="${row?.['title']}"
-                                       data-description="${row?.['description']}"
-                                       data-bs-toggle="modal"
-                                       data-bs-target="#modal-update-product-type"
-                                       data-bs-placement="top" title=""
-                                       >
-                                       <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
-                                    </a>`
+                            return `${edit_btn}${delete_btn}`
                         }
                         return ``
                     }
@@ -130,18 +141,27 @@ $(document).ready(function () {
                 {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
+                        let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-product-category"
+                           data-id="${row?.['id']}"
+                           data-code="${row?.['code']}"
+                           data-title="${row?.['title']}"
+                           data-description="${row?.['description']}"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modal-update-product-category"
+                           data-bs-placement="top" title=""
+                           >
+                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                        </a>`
+                        let delete_btn = `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete"
+                                data-id="${row?.['id']}">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon text-danger">
+                                    <i class="bi bi-trash"></i>
+                                </span>
+                            </span>
+                        </a>`
                         if (!row?.['is_default']) {
-                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-product-category"
-                                       data-id="${row?.['id']}"
-                                       data-code="${row?.['code']}"
-                                       data-title="${row?.['title']}"
-                                       data-description="${row?.['description']}"
-                                       data-bs-toggle="modal"
-                                       data-bs-target="#modal-update-product-category"
-                                       data-bs-placement="top" title=""
-                                       >
-                                       <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
-                                    </a>`
+                            return `${edit_btn}${delete_btn}`
                         }
                         return ``
                     }
@@ -199,23 +219,36 @@ $(document).ready(function () {
                 {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
+                        let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-uom-group"
+                           data-id="${row?.['id']}"
+                           data-code="${row?.['code']}"
+                           data-title="${row?.['title']}"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modal-update-uom-group"
+                           data-bs-placement="top" title="" 
+                           >
+                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                        </a>`
+                        let delete_btn = `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete"
+                                data-id="${row?.['id']}">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon text-danger">
+                                    <i class="bi bi-trash"></i>
+                                </span>
+                            </span>
+                        </a>`
                         if (!row?.['is_default']) {
-                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-uom-group"
-                                       data-id="${row?.['id']}"
-                                       data-code="${row?.['code']}"
-                                       data-title="${row?.['title']}"
-                                       data-bs-toggle="modal"
-                                       data-bs-target="#modal-update-uom-group"
-                                       data-bs-placement="top" title="" 
-                                       >
-                                       <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
-                                    </a>`
+                            return `${edit_btn}${delete_btn}`
                         }
                         return ``
                     }
                 }
             ],
         });
+    }
+    function loadSelectBoxUnitMeasureGroup(ele, data) {
+        ele.empty()
+        ele.initSelect2({data: data})
     }
     function loadUnitOfMeasure() {
         let tbl = $('#datatable-unit-measure-list');
@@ -300,31 +333,87 @@ $(document).ready(function () {
                 {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
-                        return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-uom"
-                                    data-id="${row?.['id']}"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modal-update-uom"
-                                    data-bs-placement="top" title="">
-                                <span class="btn-icon-wrap">
-                                    <span class="feather-icon text-primary">
-                                        <i data-feather="edit"></i>
-                                    </span>
+                        let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-uom"
+                                data-id="${row?.['id']}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-update-uom"
+                                data-bs-placement="top" title="">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon text-primary">
+                                    <i data-feather="edit"></i>
                                 </span>
-                            </a>`
+                            </span>
+                        </a>`
+                        let delete_btn = `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete"
+                                data-id="${row?.['id']}">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon text-danger">
+                                    <i class="bi bi-trash"></i>
+                                </span>
+                            </span>
+                        </a>`
+                        if (!row?.['is_default']) {
+                            return `${edit_btn}${delete_btn}`
+                        }
+                        return ``
                     }
                 }
             ],
         })
-    }
-    function loadSelectBoxUnitMeasureGroup(ele, data) {
-        ele.empty()
-        ele.initSelect2({data: data})
     }
 
     loadProductType()
     loadProductCategory()
     loadUnitOfMeasureGroup()
     loadUnitOfMeasure()
+
+    $(document).on('click', '.btn-delete', function () {
+        const tableCurrent = $(this).closest('table')
+        Swal.fire({
+            html:
+            `<div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div><h5 class="text-danger">${trans_script.attr('data-trans-confirm-delete')}</h5><p>${trans_script.attr('data-trans-notify')}</p>`,
+            customClass: {
+                confirmButton: 'btn btn-outline-secondary text-danger',
+                cancelButton: 'btn btn-outline-secondary text-gray',
+                container:'swal2-has-bg',
+                actions:'w-100'
+            },
+            showCancelButton: true,
+            buttonsStyling: false,
+            confirmButtonText: trans_script.attr('data-trans-delete'),
+            cancelButtonText: trans_script.attr('data-trans-cancel'),
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                let delete_url = tableCurrent.attr('data-url-detail').replace('/0', `/${$(this).attr('data-id')}`)
+                $.fn.callAjax2({
+                    url: delete_url,
+                    data: {},
+                    method: 'DELETE',
+                }).then(
+                    (resp) => {
+                        $.fn.switcherResp(resp);
+                        $.fn.notifyB({'description': 'Delete successfully!'}, 'success');
+                        if (tableCurrent.attr('id') === 'datatable-product-type-list') {
+                            loadProductType()
+                        }
+                        else if (tableCurrent.attr('id') === 'datatable-product-category-list') {
+                            loadProductCategory()
+                        }
+                        else if (tableCurrent.attr('id') === 'datatable-unit-measure-group-list') {
+                            loadUnitOfMeasureGroup()
+                        }
+                        else if (tableCurrent.attr('id') === 'datatable-unit-measure-list') {
+                            loadUnitOfMeasure()
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({'description': errs.data.errors.detail}, 'failure');
+                    }
+                )
+            }
+        })
+    })
 
     let frm_create_product_type = $('#form-create-product-type')
     let frm_update_product_type = $('#form-update-product-type')

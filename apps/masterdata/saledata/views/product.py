@@ -57,6 +57,14 @@ class ProductTypeDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='product_type')
 
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PRODUCT_TYPE_DETAIL.fill_key(pk=pk)).delete(request.data)
+        return resp.auto_return(key_success='product_type')
+
 
 class ProductCategoryListAPI(APIView):
     permission_classes = [IsAuthenticated]
@@ -94,6 +102,14 @@ class ProductCategoryDetailAPI(APIView):
     )
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='product_category')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL.fill_key(pk=pk)).delete(request.data)
         return resp.auto_return(key_success='product_category')
 
 
@@ -148,6 +164,14 @@ class UnitOfMeasureDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='unit_of_measure')
 
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.UNIT_OF_MEASURE_DETAIL.fill_key(pk=pk)).delete(request.data)
+        return resp.auto_return(key_success='unit_of_measure')
+
 
 class UnitOfMeasureGroupListAPI(APIView):
     permission_classes = [IsAuthenticated]
@@ -185,6 +209,14 @@ class UnitOfMeasureGroupDetailAPI(APIView):
     )
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='uom_group')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP_DETAIL.fill_key(pk=pk)).delete(request.data)
         return resp.auto_return(key_success='uom_group')
 
 

@@ -10198,3 +10198,15 @@ msgstr "Đã xong"
 #
 msgid "Select Delivery"
 msgstr "Chọn phiếu giao hàng"
+
+#
+msgid "UOM Group"
+msgstr "Nhóm đơn vị tính"
+
+#
+msgid "Confirm delete ?"
+msgstr "Xác nhận xoá dữ liệu này ?"
+
+#
+msgid "Related leads"
+msgstr "Lead liên quan"

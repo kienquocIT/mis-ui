@@ -1061,9 +1061,9 @@ class ARInvoiceHandle {
 
 function Disabled(option) {
     if (option === 'detail') {
-        $('input').prop('readonly', true).prop('disabled', true)
-        $('textarea').prop('readonly', true).prop('disabled', true)
-        $('select').prop('disabled', true)
+        $('form input').prop('readonly', true).prop('disabled', true)
+        $('form textarea').prop('readonly', true).prop('disabled', true)
+        $('form select').prop('disabled', true)
         $('tr input').prop('readonly', true).prop('disabled', true)
         customerSelectBtn.prop('disabled', true)
         $('#add_row_dropdown').remove()

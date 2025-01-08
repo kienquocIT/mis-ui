@@ -26,6 +26,15 @@ $(document).ready(function () {
         return list_month_period.includes(month.toString() + year.toString());
     }
 
+    function GetCurrentSub(date) {
+        let subs = current_period?.['subs'] ? current_period?.['subs'] : []
+        for (let i = current_period?.['subs'].length - 1; i >= 0; i--) {
+            if (new Date(date) >= new Date(subs[i]?.['start_date'])) {
+                return subs[i]?.['order']
+            }
+        }
+    }
+
     moneyDisplayEle.on('change', function () {
         UpdateOptionTotalPipelineChart()
         UpdateOptionTopSaleByTotalPipelineChart(TOP_FROM, TOP_TO)
@@ -99,7 +108,9 @@ $(document).ready(function () {
                 && item.opp_stage_winrate !== 100
                 && item.employee_group_id === group_filter
                 && Check_in_period(item.opp_open_date)
-                && new Date(item.opp_open_date).getFullYear() === fiscal_year_Setting
+                && (
+                    new Date(item.opp_open_date).getFullYear() === new Date(current_period?.['end_date']).getFullYear() || new Date(item.opp_open_date).getFullYear() === new Date(current_period?.['start_date']).getFullYear()
+                )
             ) {
                 if (!data_stage_value_dict[oppStageId]) {
                     data_stage_value_dict[oppStageId] = {
@@ -567,28 +578,14 @@ $(document).ready(function () {
             data_process = data_process.filter(item => item.group_id === group_filter)
         }
 
+        // let winrate_100_list = data_process.filter(item => item?.['opp_stage_winrate'] === 100)
+        let winrate_70s_list = data_process.filter(item => item?.['opp_stage_winrate'] <= 70 && item?.['opp_stage_winrate'] !== 0)
+        let winrate_70g_list = data_process.filter(item => item?.['opp_stage_winrate'] > 70 && item?.['opp_stage_winrate'] !== 100)
         let all_data_year = {}
         for (let i = 0; i < 12; i++) {
-            let winrate_100 = 0
-            let winrate_70s = 0
-            let winrate_70g = 0
-            for (const item of data_process) {
-                if (
-                    new Date(item.opp_close_date).getMonth() === i
-                    && new Date(item.opp_close_date).getFullYear() === fiscal_year_Setting
-                ) {
-                    if (item?.['opp_stage_winrate'] === 100) {
-                        winrate_100 += item.forecast_value
-                    } else if (item?.['opp_stage_winrate'] <= 70 && item?.['opp_stage_winrate'] !== 0) {
-                        winrate_70s += item.forecast_value
-                    } else if (item?.['opp_stage_winrate'] > 70 && item?.['opp_stage_winrate'] !== 100) {
-                        winrate_70g += item.forecast_value
-                    }
-                }
-            }
-            all_data_year[`${i+1+current_period?.['space_month']}`] = {
-                'group_1': winrate_70s / cast_billion,
-                'group_2': winrate_70g / cast_billion,
+            all_data_year[i+1+current_period?.['space_month']] = {
+                'group_1': winrate_70s_list.filter(item => GetCurrentSub(item?.['opp_close_date']) - 1 === i).reduce((acc, item) => acc + item?.['forecast_value'], 0) / cast_billion,
+                'group_2': winrate_70g_list.filter(item => GetCurrentSub(item?.['opp_close_date']) - 1 === i).reduce((acc, item) => acc + item?.['forecast_value'], 0) / cast_billion,
                 // 'group_3': winrate_100 / cast_billion
             }
         }

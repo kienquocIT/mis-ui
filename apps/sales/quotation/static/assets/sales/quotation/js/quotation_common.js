@@ -678,9 +678,22 @@ class QuotationLoadDataHandle {
         let TotalOrder = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-order').length;
         let TotalGroup = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-group').length;
         let order = (TotalOrder - TotalGroup) + 1;
+        let dataUOM = {};
+        let dataTax = {};
+        if (data?.['sale_information']?.['default_uom']?.['id']) {
+            dataUOM = data?.['sale_information']?.['default_uom'];
+        }
+        if (data?.['sale_information']?.['tax_code']?.['id']) {
+            dataTax = data?.['sale_information']?.['tax_code'];
+        }
         let dataAdd = {
             "order": order,
+            "product_id": data?.['id'],
             "product_data": data,
+            "uom_id": dataUOM?.['id'],
+            "uom_data": dataUOM,
+            "tax_id": dataTax?.['id'],
+            "tax_data": dataTax,
             "product_quantity": 0,
             "product_uom_code": "",
             "product_tax_title": "",
@@ -700,24 +713,12 @@ class QuotationLoadDataHandle {
         QuotationCheckConfigHandle.checkConfig(1, newRow);
         // load data dropdown
         let eleProduct = newRow.querySelector('.table-row-item');
-        let eleUOM = newRow.querySelector('.table-row-uom');
-        let eleTax = newRow.querySelector('.table-row-tax');
-
         if (eleProduct) {
-            QuotationLoadDataHandle.loadInitS2($(eleProduct), [data]);
+            // QuotationLoadDataHandle.loadInitS2($(eleProduct), [data]);
             QuotationLoadDataHandle.loadCssS2($(eleProduct), '260px');
             $(eleProduct).attr('data-product-id', data?.['id']);
         }
-        if (eleUOM) {
-            QuotationLoadDataHandle.loadInitS2($(eleUOM));
-        }
-        if (eleTax) {
-            QuotationLoadDataHandle.loadInitS2($(eleTax));
-        }
-
         $(eleProduct).trigger('change');
-        // load again table cost
-        // QuotationLoadDataHandle.loadDataTableCost();
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
         // add classes for collapse
         let eleGroups = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-group');

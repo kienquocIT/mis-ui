@@ -431,8 +431,7 @@ class PaymentAction {
     static DisabledDetailPage(option) {
         if (option === 'detail') {
             $('form input').prop('disabled', true).prop('readonly', true)
-            $('select').prop('disabled', true).prop('readonly', true)
-            $('.select2').prop('disabled', true);
+            $('form select').prop('disabled', true)
             $('#btn-add-row-line-detail').prop('disabled', true);
         }
     }

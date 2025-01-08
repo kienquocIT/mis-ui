@@ -115,6 +115,16 @@ $(document).ready(function () {
         return list_month_period.includes(month.toString() + year.toString());
     }
 
+    function GetCurrentSub(date) {
+        let period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val())
+        let subs = period_selected_Setting?.['subs'] ? period_selected_Setting?.['subs'] : []
+        for (let i=subs.length - 1; i >= 0; i--) {
+            if (new Date(date) >= new Date(subs[i]?.['start_date'])) {
+                return subs[i]?.['order']
+            }
+        }
+    }
+
     $('.large-view-btn').on('click', function () {
         $('.view-space').each(function () {
             $(this).attr('class', 'view-space col-12 col-md-6 col-lg-4 mt-3')
@@ -157,13 +167,12 @@ $(document).ready(function () {
         for (const item of revenue_DF) {
             const group_id = item?.['group_inherit_id']
             const dateApproved = new Date(item?.['date_approved'])
-            const month = dateApproved.getMonth()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
-                    revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+                    revenue_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+                        revenue_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                     }
                 }
             }
@@ -202,7 +211,7 @@ $(document).ready(function () {
             ]
         }
 
-        COMPANY_CURRENT_REVENUE = COMPANY_CURRENT_REVENUE === null ? (revenue_chart_data[new Date().getMonth() - space_month_Setting] * cast_billion) : COMPANY_CURRENT_REVENUE
+        COMPANY_CURRENT_REVENUE = COMPANY_CURRENT_REVENUE === null ? (revenue_chart_data[GetCurrentSub(new Date().toString()) - 1] * cast_billion) : COMPANY_CURRENT_REVENUE
         $('#current-revenue').attr('data-init-money', COMPANY_CURRENT_REVENUE)
         $.fn.initMaskMoney2()
 
@@ -291,13 +300,12 @@ $(document).ready(function () {
         for (const item of revenue_DF) {
             const group_id = item?.['group_inherit_id']
             const dateApproved = new Date(item?.['date_approved']);
-            const month = dateApproved.getMonth();
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
-                    revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+                    revenue_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        revenue_chart_data[month - space_month_Setting] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+                        revenue_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
                     }
                 }
             }
@@ -563,13 +571,12 @@ $(document).ready(function () {
         for (const item of profit_chart_DF) {
             const group_id = item?.['group_inherit_id']
             const dateApproved = new Date(item?.['date_approved'])
-            const month = dateApproved.getMonth()
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
-                    profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                    profit_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                        profit_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                     }
                 }
             }
@@ -612,7 +619,7 @@ $(document).ready(function () {
             ]
         }
 
-        COMPANY_CURRENT_PROFIT = COMPANY_CURRENT_PROFIT === null ? (profit_chart_data[new Date().getMonth() - space_month_Setting] * cast_billion) : COMPANY_CURRENT_PROFIT
+        COMPANY_CURRENT_PROFIT = COMPANY_CURRENT_PROFIT === null ? (profit_chart_data[GetCurrentSub(new Date().toString()) - 1] * cast_billion) : COMPANY_CURRENT_PROFIT
         $('#current-profit').attr('data-init-money', COMPANY_CURRENT_PROFIT)
         $.fn.initMaskMoney2()
 
@@ -704,13 +711,12 @@ $(document).ready(function () {
         for (const item of profit_chart_DF) {
             const group_id = item?.['group_inherit_id']
             const dateApproved = new Date(item?.['date_approved']);
-            const month = dateApproved.getMonth();
             if (Check_in_period(dateApproved, period_selected_Setting)) {
                 if (!group_filter) {
-                    profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                    profit_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                 } else {
                     if (group_id === group_filter) {
-                        profit_chart_data[month - space_month_Setting] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                        profit_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
                     }
                 }
             }

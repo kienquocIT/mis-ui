@@ -242,7 +242,7 @@ $(document).ready(function () {
                                     class="popover-prd text-secondary">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
-                                <span data-bs-toggle="tooltip" title="${row?.['product_code']}" class="${row?.['type']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
+                                <span class="${row?.['type']}" data-product-code="${row?.['product_code']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
                             `
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
@@ -259,7 +259,7 @@ $(document).ready(function () {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'product_row') {
-                            return `<span class="text-secondary">${row?.['uom_title']}</span>`
+                            return `<span class="text-secondary">${row?.['uom_title'] ? row?.['uom_title'] : '--'}</span>`
                         }
                         return ``
                     }
@@ -268,7 +268,7 @@ $(document).ready(function () {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
-                            return `<span>${row?.['date']}</span>`
+                            return `<span>${row?.['date'] ? row?.['date'] : ''}</span>`
                         }
                         return ``
                     }
@@ -398,6 +398,10 @@ $(document).ready(function () {
                     if ($(this).find('.prd-wh-view').length > 0) {
                         $(this).addClass('bg-primary-light-5')
                         $(this).addClass('fixed-row')
+                    }
+                    if ($(this).find('.product_row').length > 0) {
+                        $(this).attr('data-bs-toggle', 'tooltip')
+                        $(this).attr('title', $(this).find('.product_row').attr('data-product-code') + ' - ' + $(this).find('.product_row').text())
                     }
                 })
 

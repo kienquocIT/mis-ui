@@ -4025,6 +4025,7 @@ class LeaseOrderDataTableHandle {
                             }
                         }
                     }
+                    term.unshift({'id': '', 'title': 'Select...',});
                     LeaseOrderLoadDataHandle.loadInitS2($(installmentEle), term, {}, null, true);
                     if (data?.['term_id']) {
                         $(installmentEle).val(data?.['term_id']).trigger('change');

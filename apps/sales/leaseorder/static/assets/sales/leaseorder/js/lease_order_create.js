@@ -58,11 +58,7 @@ $(function () {
         })
 
         // get WF initial zones
-        let appCode = 'quotation';
-        if (LeaseOrderLoadDataHandle.$form[0].classList.contains('sale-order')) {
-            appCode = 'saleorder';
-        }
-        WFRTControl.setWFInitialData(appCode);
+        WFRTControl.setWFInitialData('leaseorder');
 
         LeaseOrderLoadDataHandle.opportunitySelectEle.on('change', function () {
             let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.opportunitySelectEle, LeaseOrderLoadDataHandle.opportunitySelectEle.val());

@@ -854,11 +854,13 @@ $(function () {
                 if (keyHidden.length > 0) {
                     // special case: loadCost if products is not in hidden zones
                     if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
+                        QuotationStoreDataHandle.storeDtbData(2);
                         QuotationLoadDataHandle.loadDataTableCost();
                         QuotationSubmitHandle.setupDataSubmit(_form);
                         QuotationLoadDataHandle.loadSetWFRuntimeZone();
                     }
                 } else {
+                    QuotationStoreDataHandle.storeDtbData(2);
                     QuotationLoadDataHandle.loadDataTableCost();
                     QuotationSubmitHandle.setupDataSubmit(_form);
                 }

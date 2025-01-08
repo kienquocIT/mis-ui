@@ -206,7 +206,7 @@ class RecoveryLoadDataHandle {
             RecoveryLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataStore?.['tax_data']]);
         }
         if (row.querySelector('.table-row-warehouse')) {
-            RecoveryLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataStore?.['warehouse_data']]);
+            RecoveryLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataStore?.['product_warehouse_data']]);
         }
         return true;
     };
@@ -369,8 +369,8 @@ class RecoveryLoadDataHandle {
                 let rowData = $row.data();
 
                 RecoveryDataTableHandle.$tableWarehouse.DataTable().destroy();
-                if (rowData?.['warehouse_data']) {
-                    RecoveryDataTableHandle.dataTableWareHouse(rowData?.['warehouse_data'] ? rowData?.['warehouse_data'] : []);
+                if (rowData?.['product_warehouse_data']) {
+                    RecoveryDataTableHandle.dataTableWareHouse(rowData?.['product_warehouse_data'] ? rowData?.['product_warehouse_data'] : []);
                 } else {
                     RecoveryDataTableHandle.dataTableWareHouse();
                 }
@@ -1249,7 +1249,7 @@ class RecoveryCalculateHandle {
 // Store data
 class RecoveryStoreDataHandle {
     static storeData() {
-        let warehouse_data = [];
+        let product_warehouse_data = [];
         let delivery_product_data = [];
 
         RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
@@ -1258,6 +1258,13 @@ class RecoveryStoreDataHandle {
                 let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(row).index();
                 let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
                 let rowData = $row.data();
+
+                rowData['warehouse_id'] = rowData?.['id'];
+                rowData['warehouse_data'] = {
+                    'id': rowData?.['id'],
+                    'title': rowData?.['title'],
+                    'code': rowData?.['code']
+                };
 
                 let recoveryEle = row.querySelector('.table-row-quantity-recovery');
                 if (recoveryEle) {
@@ -1303,7 +1310,7 @@ class RecoveryStoreDataHandle {
                 }
 
                 RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData);
-                warehouse_data.push(rowData);
+                product_warehouse_data.push(rowData);
 
                 iconEle = $(row).find('.icon-collapse-app-wf');
                 if (right_or_down === 'right') {
@@ -1324,7 +1331,7 @@ class RecoveryStoreDataHandle {
 
             let checked = row.querySelector('.table-row-checkbox:checked');
             if (checked) {
-                rowData['warehouse_data'] = warehouse_data;
+                rowData['product_warehouse_data'] = product_warehouse_data;
             }
             let recoveryEle = row.querySelector('.table-row-quantity-recovery');
             if (recoveryEle) {
@@ -1347,6 +1354,12 @@ class RecoveryStoreDataHandle {
             let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
             let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
             let rowData = $row.data();
+
+            rowData['delivery_id'] = rowData?.['id'];
+            rowData['delivery_data'] = {
+                'id': rowData?.['id'],
+                'code': rowData?.['code']
+            };
 
             let checked = row.querySelector('.table-row-checkbox:checked');
             if (checked) {
@@ -1424,11 +1437,11 @@ class RecoverySubmitHandle {
         }
         let dateVal = RecoveryLoadDataHandle.$date.val();
         if (dateVal) {
-            _form.dataForm['date_received'] = moment(dateVal,
+            _form.dataForm['date_recovery'] = moment(dateVal,
                 'DD/MM/YYYY').format('YYYY-MM-DD')
         }
         if (RecoveryLoadDataHandle.$boxStatus.val()) {
-            _form.dataForm['recovery_status'] = parseInt(RecoveryLoadDataHandle.$boxStatus.val());
+            _form.dataForm['status_recovery'] = parseInt(RecoveryLoadDataHandle.$boxStatus.val());
         }
 
 

@@ -4014,6 +4014,7 @@ class QuotationDataTableHandle {
                             }
                         }
                     }
+                    term.unshift({'id': '', 'title': 'Select...',});
                     QuotationLoadDataHandle.loadInitS2($(installmentEle), term, {}, null, true);
                     if (data?.['term_id']) {
                         $(installmentEle).val(data?.['term_id']).trigger('change');

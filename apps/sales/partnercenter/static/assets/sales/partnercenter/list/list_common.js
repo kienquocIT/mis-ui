@@ -361,6 +361,7 @@ class PartnerCenterListHandler {
 
     setUpFormData(form) {
         let filterCondition = []
+        let isError = false
         $('.filter-group-body').each((id, filterBodyEle) => {
             let filterRow = []
             $(filterBodyEle).find('.filter-row').each((id, filterRowEle) => {
@@ -371,17 +372,23 @@ class PartnerCenterListHandler {
                 } else if ($right.is('input')) {
                     rightData = $right.val()
                 }
+                let type =$(filterRowEle).find("select[name='left']").data('prop-type');
+
+                if (Number(type) === 6 && isNaN(rightData)) {
+                    isError = true
+                }
                 filterRow.push({
                     'left': $(filterRowEle).find("select[name='left']").val(),
                     'operator': $(filterRowEle).find("select[name='operator']").val(),
                     'right': rightData,
-                    'type': $(filterRowEle).find("select[name='left']").data('prop-type'),
+                    'type': type,
                 })
             })
             filterCondition.push(filterRow)
         })
         form.dataForm['filter_condition'] = filterCondition
         form.dataForm['data_object'] = $("#data-object-area input[name='data_object']:checked").data('id')
+        form.dataForm['isError'] = isError
     }
 
     setUpFormSubmit() {
@@ -390,7 +397,10 @@ class PartnerCenterListHandler {
             submitHandler: (form, event) => {
                 let _form = new SetupFormSubmit(this.$formSubmit);
                 this.setUpFormData(_form)
-                console.log(_form)
+                if (_form.dataForm['isError']){
+                    $.fn.notifyB({title: 'Right Value: ', description: 'Must be number'}, 'failure');
+                    return
+                }
                 $.fn.callAjax2({
                     url: _form.dataUrl,
                     method: _form.dataMethod,

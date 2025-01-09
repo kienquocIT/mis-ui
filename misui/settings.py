@@ -66,6 +66,7 @@ INSTALLED_APPS = \
         'django_celery_results',  # Listen celery task and record it to database.
         'apps.core.chatbot',  # chatbot AI
         'django_celery_beat',  # celery crontab
+        'apps.core.chat3rd',  # Chat Third party: Messenger, Zalo, WhatsApp
     ] + [  # Core Application
         'apps.core.account',
         'apps.core.auths',

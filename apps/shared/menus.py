@@ -466,6 +466,10 @@ class MenusCRM:
         name='Consulting', code='menu_consulting_list', view_name='ConsultingList',
         icon='<i class="fa-solid fa-briefcase"></i>',
     )
+    CHAT_3RD = MenuCommon(
+        name='Chat Third party', code='menu_chat_third_party', view_name='ChatMessengerView',
+        icon='<i class="fa-solid fa-comments"></i>',
+    )
 
 
 class MenusPurchase:
@@ -882,6 +886,7 @@ class SpaceItem:
                 MenusCRM.ACCOUNT_PAYABLE,
                 MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
+                MenusCRM.CHAT_3RD,
             ],
         ),
         'kms': SpaceCommon(

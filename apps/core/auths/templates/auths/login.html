@@ -87,18 +87,32 @@
                                         <h4 class="text-center">{% trans 'login' %}</h4>
                                     </div>
                                     <div class="row gx-3">
-                                        <div class="form-group d-none">
-                                            <div class="form-label-group">
-                                                <label>Tenant</label>
+                                        <div class="form-group">
+                                            <div class="form-label-group d-none">
+                                                <label class="form-label" for="inp-tenant-code">Tenant</label>
                                             </div>
-                                            <select
-                                                    class="form-select" id="tenant-select" required
-                                                    data-url="{% url 'TenantLoginChoice' %}"
-                                                    data-method="GET"
+{#                                            <select#}
+{#                                                    class="form-select" id="tenant-select"#}
+{#                                                    data-url="{% url 'TenantLoginChoice' %}"#}
+{#                                                    data-method="GET"#}
+{#                                                    name="tenant_code"#}
+{#                                                    value=""#}
+{#                                            >#}
+{#                                                <option selected value="">{% trans 'Choose...' %}</option>#}
+{#                                            </select>#}
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fa-solid fa-globe"></i>    </span>
+                                                <label for="inp-username"></label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
                                                     name="tenant_code"
-                                            >
-                                                <option selected value="">{% trans 'Choose...' %}</option>
-                                            </select>
+                                                    id="inp-tenant-code"
+                                                    placeholder="{% trans 'Tenant' %}"
+                                                    tabindex="1"
+                                                    required
+                                                />
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="input-group">
@@ -111,6 +125,7 @@
                                                         id="inp-username"
                                                         placeholder="{% trans 'User name' %}"
                                                         tabindex="1"
+                                                        required
                                                         autofocus
                                                 >
                                             </div>
@@ -125,7 +140,7 @@
                                                     <i class="fa-solid fa-eye-slash d-none"></i>
                                                 </span>
                                                 <label for="inp-password"></label>
-                                                <input type="password" class="form-control" name="password" id="inp-password" placeholder="{% trans 'password' %}" tabindex="2">
+                                                <input type="password" class="form-control" name="password" id="inp-password" placeholder="{% trans 'password' %}" tabindex="2" required>
                                             </div>
                                         </div>
                                     </div>
@@ -254,6 +269,14 @@
             let autoTenant = '{{allow_auto_tenant}}';
             let tenantSelEle = $('#tenant-select');
             let frmLoginEle = $('#form-login');
+
+            if (hostData.endsWith(mainDomain)) {
+                let tenantCode = hostData.split(mainDomain)[0];
+                if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
+                if (tenantCode){
+                    $(':input[name=tenant_code]').val(tenantCode).attr('readonly', 'readonly');
+                }
+            }
 
             frmLoginEle.submit(function (event) {
                 event.preventDefault();

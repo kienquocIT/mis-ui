@@ -2923,19 +2923,30 @@ class LeaseOrderDataTableHandle {
                                         </div>
                                     </div>`;
                         } else if (itemType === 1) { // PROMOTION
-                            let link = "";
-                            let linkDetail = $('#data-init-quotation-create-promotion').data('link-detail');
-                            if (linkDetail) {
-                                link = linkDetail.format_url_with_uuid(row?.['promotion_id']);
-                            }
-                            return `<div class="table-row-promotion" data-promotion="${JSON.stringify(row?.['promotion_data']).replace(/"/g, "&quot;")}" data-id-product="${row?.['promotion_data']?.['product_data']?.['id']}"><i class="fas fa-tags mr-2"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-promotion')}</span></div>`;
+                            return `<textarea class="form-control table-row-promotion-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${LeaseOrderLoadDataHandle.transEle.attr('data-promotion')}</textarea>
+                                    <div class="row hidden">
+                                        <div class="col-12 col-md-12 col-lg-12">
+                                            <select 
+                                                class="form-select table-row-promotion zone-readonly"
+                                                id="promotion-${row?.['order']}"
+                                                data-id-product="${row?.['promotion_data']?.['product_data']?.['id']}"
+                                                data-zone="${dataZone}"
+                                                readonly>
+                                            </select>
+                                        </div>
+                                    </div>`;
                         } else if (itemType === 2) { // SHIPPING
-                            let link = "";
-                            let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
-                            if (linkDetail) {
-                                link = linkDetail.format_url_with_uuid(row?.['shipping_id']);
-                            }
-                            return `<div class="table-row-shipping" data-shipping="${JSON.stringify(row?.['shipping_data']).replace(/"/g, "&quot;")}"><i class="fas fa-shipping-fast mr-2"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-shipping')}</span></div>`;
+                            return `<textarea class="form-control table-row-shipping-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${LeaseOrderLoadDataHandle.transEle.attr('data-shipping')}</textarea>
+                                    <div class="row hidden">
+                                        <div class="col-12 col-md-12 col-lg-12">
+                                            <select 
+                                                class="form-select table-row-shipping zone-readonly"
+                                                id="shipping-${row?.['order']}"
+                                                data-zone="${dataZone}"
+                                                readonly>
+                                            </select>
+                                        </div>
+                                    </div>`;
                         }
                     }
                 },
@@ -3147,6 +3158,8 @@ class LeaseOrderDataTableHandle {
             ],
             rowCallback: function (row, data, index) {
                 let itemEle = row.querySelector('.table-row-item');
+                let promotionEle = row.querySelector('.table-row-promotion');
+                let shippingEle = row.querySelector('.table-row-shipping');
                 let assetTypeEle = row.querySelector('.table-row-asset-type');
                 let offsetEle = row.querySelector('.table-row-offset');
                 let uomEle = row.querySelector('.table-row-uom');
@@ -3159,6 +3172,20 @@ class LeaseOrderDataTableHandle {
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(itemEle), dataS2);
                     LeaseOrderLoadDataHandle.loadPriceProduct(itemEle);
+                }
+                if (promotionEle) {
+                    let dataS2 = [];
+                    if (data?.['promotion_data']) {
+                        dataS2 = [data?.['promotion_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(promotionEle), dataS2);
+                }
+                if (shippingEle) {
+                    let dataS2 = [];
+                    if (data?.['shipping_data']) {
+                        dataS2 = [data?.['shipping_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(shippingEle), dataS2);
                 }
                 if (assetTypeEle) {
                     LeaseOrderLoadDataHandle.loadInitS2($(assetTypeEle), LeaseOrderLoadDataHandle.dataAssetType);
@@ -6229,10 +6256,12 @@ class LeaseOrderSubmitHandle {
             } else if (elePromotion) { // PROMOTION
                 rowData['is_group'] = false;
                 rowData['is_promotion'] = true;
-                if (elePromotion.getAttribute('data-promotion')) {
-                    let dataPm = JSON.parse(elePromotion.getAttribute('data-promotion'));
-                    rowData['promotion_id'] = dataPm?.['id'];
-                    rowData['promotion_data'] = dataPm;
+                if ($(elePromotion).val()) {
+                    let dataPromotion = SelectDDControl.get_data_from_idx($(elePromotion), $(elePromotion).val());
+                    if (dataPromotion) {
+                        rowData['promotion_id'] = dataPromotion?.['id'];
+                        rowData['promotion_data'] = dataPromotion;
+                    }
                 }
                 let uomData = {};
                 if (uomData && Object.keys(uomData).length > 0) {
@@ -6284,10 +6313,12 @@ class LeaseOrderSubmitHandle {
             } else if (eleShipping) { // SHIPPING
                 rowData['is_group'] = false;
                 rowData['is_shipping'] = true;
-                if (eleShipping.getAttribute('data-shipping')) {
-                    let dataShipping = JSON.parse(eleShipping.getAttribute('data-shipping'));
-                    rowData['shipping_id'] = dataShipping?.['id'];
-                    rowData['shipping_data'] = dataShipping;
+                if ($(eleShipping).val()) {
+                    let dataShipping = SelectDDControl.get_data_from_idx($(eleShipping), $(eleShipping).val());
+                    if (dataShipping) {
+                        rowData['shipping_id'] = dataShipping?.['id'];
+                        rowData['shipping_data'] = dataShipping;
+                    }
                 }
                 let eleTax = row.querySelector('.table-row-tax');
                 if (eleTax) {

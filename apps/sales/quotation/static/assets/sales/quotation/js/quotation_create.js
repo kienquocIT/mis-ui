@@ -813,7 +813,7 @@ $(function () {
         });
 
         function submitHandlerFunc() {
-            if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method').toLowerCase() === "post") { // HAS PROMOTION => Check condition again
+            if (tableProduct[0].querySelector('.table-row-promotion') && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === "post") { // HAS PROMOTION => Check condition again
                 QuotationPromotionHandle.callPromotion(1);
                 // Check promotion then Submit Form
                 submitCheckPromotion();

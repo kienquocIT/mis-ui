@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'List' %}{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <table
+            id="table_partnercenter_result_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'ListResultListAPI' pk=pk %}"
+            data-method="get"
+    >
+        <thead>
+            <tr id="table-row-header">
+
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input
+            type="text" id="app-urls-factory"
+            data-account-detail-view-url="{% url 'AccountDetail' pk=0 %}"
+            data-contact-detail-view-url="{% url 'ContactDetail' pk=0 %}"
+    >
+    {{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/partnercenter/list/result_list.js' %}"></script>
+{% endblock %}

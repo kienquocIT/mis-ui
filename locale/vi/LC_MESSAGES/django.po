@@ -9050,7 +9050,7 @@ msgstr "Nhập dữ liệu từ excel"
 
 #
 msgid "The table in excel file must have the column order below: "
-msgstr "Bảng trong file excel phải có thứ cột như sau: "
+msgstr "Bảng trong excel phải có thứ tự các cột như sau: "
 
 #
 msgid "From row"
@@ -10198,6 +10198,18 @@ msgstr "Đã xong"
 #
 msgid "Select Delivery"
 msgstr "Chọn phiếu giao hàng"
+
+#
+msgid "UOM Group"
+msgstr "Nhóm đơn vị tính"
+
+#
+msgid "Confirm delete ?"
+msgstr "Xác nhận xoá dữ liệu này ?"
+
+#
+msgid "Related leads"
+msgstr "Lead liên quan"
 
 #
 msgid "Upper manager"

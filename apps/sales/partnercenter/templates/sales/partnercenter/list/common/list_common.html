@@ -1,0 +1,96 @@
+{% load i18n %}
+
+<div class="pb-10">
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 col-lg-1">
+                    <div class="title mt-3 fs-4"><span>{% trans 'Data Object' %}</span></div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="row" id="data-object-area">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-12 col-lg-1">
+
+                        <div class="title mt-3 fs-4"><span>{% trans 'List Name' %}</span></div>
+                    </div>
+                    <div class="col-12 col-lg-5">
+                        <label class="form-label" hidden></label>
+                        <input type="text" class="form-control" name="title" id="list-name" required >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-12">
+                        <label class="form-label fs-3" for="list-name">{% trans 'Filter conditions' %}</label>
+                        <div class="separator fs-2"></div>
+                    </div>
+                    <div class="col-12">
+                        <div id="filter-cond-area">
+                            <div class="filter-card">
+                                <div class="card">
+                                <div class="card-header">
+                                    {% trans 'Filter group' %}
+                                </div>
+                                <div class="card-body filter-group-body" >
+                                    <div class="filter-row">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <div class="form-group">
+                                                    <select name="left" class="form-select select2 select-prop" data-method="GET" required></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="form-group">
+                                                    <select name="operator" class="form-select select2 select-operator" required></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="form-group">
+                                                    <select name="right" class="form-select select2 select-prop-data" data-method="GET" required></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="d-flex justify-content-center">
+                                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title=""><span class="icon"><i class="far fa-trash-alt"></i></span></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-outline-primary btn-add-new-cond">
+                                        <span>
+                                            <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                                            <span>{% trans 'And' %}</span>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary" id="btn-add-new-cond-grp">
+                            <span>
+                                <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                                <span>{% trans 'Add Group' %}</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

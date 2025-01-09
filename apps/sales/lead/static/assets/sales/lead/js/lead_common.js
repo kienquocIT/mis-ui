@@ -265,9 +265,9 @@ $btn_add_note.on('click', function () {
 
 function Disable(option) {
     if (option === 'detail') {
-        $('form input').prop('readonly', true).prop('disabled', true)
-        $('form select').prop('readonly', true).prop('disabled', true)
-        $('form textarea').prop('readonly', true).prop('disabled', true)
+        $('#main-space input').prop('readonly', true).prop('disabled', true)
+        $('#main-space select').prop('readonly', true).prop('disabled', true)
+        $('#main-space textarea').prop('readonly', true).prop('disabled', true)
         $btn_add_note.prop('disabled', true)
     }
 }

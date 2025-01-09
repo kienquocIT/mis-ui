@@ -95,7 +95,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-12">
+        <div class="col-12" {% if not pk %}hidden{% endif %}>
             <div class="form-group">
                 <label for="currency" class="form-label required">{% trans "Currency" %}</label>
                 <select id="currency"

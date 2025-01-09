@@ -10,6 +10,12 @@
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
+    <script id="trans-script"
+            data-trans-confirm-delete="{% trans 'Confirm delete ?' %}"
+            data-trans-notify="{% trans 'This action can not be undo!' %}"
+            data-trans-delete="{% trans 'Delete' %}"
+            data-trans-cancel="{% trans 'Cancel' %}"
+    ></script>
     <div class="row">
         <div class="col-12 col-lg-2 col-md-2">
             <ul class="nav nav-pills nav-light flex-column">
@@ -36,7 +42,7 @@
             </ul>
         </div>
         <div class="col-12 col-md-10 col-lg-10">
-            <div class="tab-content m-0">
+            <div class="tab-content">
                 <div class="tab-pane fade show active" id="section_product_type">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#modal-new-product-type">
                         <button class="btn btn-sm btn-outline-primary btn-modal">
@@ -411,7 +417,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="select-box-uom-group" class="form-label required">{% trans "Select Group" %}</label>
+                                    <label for="select-box-uom-group" class="form-label required">{% trans "UOM Group" %}</label>
                                     <select id="select-box-uom-group" class="select2 form-select" data-method="GET"
                                             data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"
                                             data-keyResp="unit_of_measure_group"
@@ -496,7 +502,8 @@
                         <div class="row">
                             <div class="col-6" id="select-group-div">
                                 <div class="form-group">
-                                    <label for="select-box-edit-uom-group" class="form-label required">{% trans "Select Group" %}</label>
+                                    <label for="select-box-edit-uom-group" class="form-label required">{% trans "UOM Group" %}</label>
+                                    <label for="group-id" class="form-label" hidden></label>
                                     <input id="group-id" disabled hidden>
                                     <select class="select2 form-select"
                                             data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"

@@ -812,3 +812,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FINANCIAL_RECON_DETAIL = StringUrl('financial-reconciliation/detail/{pk}')
     AR_INVOICE_LIST_FOR_RECON = StringUrl('financial-reconciliation/ar-invoice-for-recon/list')
     CIF_LIST_FOR_RECON = StringUrl('financial-reconciliation/cash-inflow-for-recon/list')
+
+    #PARTNER CENTER
+    #LIST
+    PARTNER_CENTER_LIST_DATA_OBJ_LIST = StringUrl('partner-center/data-obj-list')
+    LIST_LIST = StringUrl('partner-center/list/list')
+    LIST_DETAIL = StringUrl('partner-center/list/detail')
+    LIST_RESULT_LIST = StringUrl('partner-center/list/result-list')
+    LIST_EMPLOYEE_LIST = StringUrl('partner-center/list/employee-list')
+    LIST_CONTACT_LIST = StringUrl('partner-center/list/contact-list')
+    LIST_INDUSTRY_LIST = StringUrl('partner-center/list/industry-list')
+    LIST_OPP_CONFIG_STAGE_LIST = StringUrl('partner-center/list/opp-config-stage-list')

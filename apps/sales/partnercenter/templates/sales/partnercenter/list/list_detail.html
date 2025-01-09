@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'ListUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon"><i class="fa-regular fa-pen-to-square"></i></span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            data-url="{% url 'ListDetailAPI' pk=pk %}"
+            data-url-redirect="{% url 'ListList' %}"
+            data-method="POST"
+            id="form_partnercenter_list"
+    >
+        {% csrf_token %}
+        {% include 'sales/partnercenter/list/common/list_common.html' %}
+    </form>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-url-factory"
+        data-md-data-obj = "{% url 'ListDataObjectListAPI' %}"
+        data-md-prop-list = "{% url 'ApplicationPropertyListAPI' %}"
+        data-md-employee = "{% url 'ListEmployeeListAPI' %}"
+        data-md-contact = "{% url 'ListContactListAPI' %}"
+        data-md-industry = "{% url 'ListIndustryListAPI' %}"
+        data-md-opp-config-stage = "{% url 'ListOpportunityConfigStageListAPI' %}"
+    >
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'assets/sales/partnercenter/list/list_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/partnercenter/list/list_common.js' %}"></script>
+{% endblock %}

@@ -27,7 +27,7 @@ from apps.sales.inventory.views import (
     WorkOrderListAPIForGIS, WorkOrderDetailAPIForGIS, GoodsIssueProductListAPI,
     GoodsDetailListImportDBAPI, GoodsDetailSerialDataAPI
 )
-from apps.sales.inventory.views.goods_recovery import GoodsRecoveryCreate
+from apps.sales.inventory.views.goods_recovery import GoodsRecoveryCreate, GoodsRecoveryList, GoodsRecoveryListAPI
 
 urlpatterns = [
     # good receipt
@@ -37,6 +37,14 @@ urlpatterns = [
     path('goods-receipt/detail/<str:pk>', GoodsReceiptDetail.as_view(), name='GoodsReceiptDetail'),
     path('goods-receipt/detail-api/<str:pk>', GoodsReceiptDetailAPI.as_view(), name='GoodsReceiptDetailAPI'),
     path('goods-receipt/update/<str:pk>', GoodsReceiptUpdate.as_view(), name='GoodsReceiptUpdate'),
+    # good recovery
+    path('goods-recovery/list', GoodsRecoveryList.as_view(), name='GoodsRecoveryList'),
+    path('goods-recovery/api/list', GoodsRecoveryListAPI.as_view(), name='GoodsRecoveryListAPI'),
+    path('goods-recovery/create', GoodsRecoveryCreate.as_view(), name='GoodsRecoveryCreate'),
+    # path('goods-recovery/detail/<str:pk>', GoodsReceiptDetail.as_view(), name='GoodsReceiptDetail'),
+    # path('goods-recovery/detail-api/<str:pk>', GoodsReceiptDetailAPI.as_view(), name='GoodsReceiptDetailAPI'),
+    # path('goods-recovery/update/<str:pk>', GoodsReceiptUpdate.as_view(), name='GoodsReceiptUpdate'),
+
     # inventory adjustment
     path('inventory-adjustment/list', InventoryAdjustmentList.as_view(), name='InventoryAdjustmentList'),
     path('inventory-adjustment/create', InventoryAdjustmentCreate.as_view(), name='InventoryAdjustmentCreate'),
@@ -172,12 +180,4 @@ urlpatterns += [
     path('none-gre-item-available-quantity/list/api', NoneGReItemAvailableQuantityAPI.as_view(),
          name='NoneGReItemAvailableQuantityAPI'),
     path('goods-regis-borrow/api/list', GoodsRegisBorrowListAPI.as_view(), name='GoodsRegisBorrowListAPI'),
-
-    # goods recovery
-    # path('goods-receipt/list', GoodsReceiptList.as_view(), name='GoodsReceiptList'),
-    # path('goods-receipt/api/list', GoodsReceiptListAPI.as_view(), name='GoodsReceiptListAPI'),
-    path('goods-recovery/create', GoodsRecoveryCreate.as_view(), name='GoodsRecoveryCreate'),
-    # path('goods-receipt/detail/<str:pk>', GoodsReceiptDetail.as_view(), name='GoodsReceiptDetail'),
-    # path('goods-receipt/detail-api/<str:pk>', GoodsReceiptDetailAPI.as_view(), name='GoodsReceiptDetailAPI'),
-    # path('goods-receipt/update/<str:pk>', GoodsReceiptUpdate.as_view(), name='GoodsReceiptUpdate'),
 ]

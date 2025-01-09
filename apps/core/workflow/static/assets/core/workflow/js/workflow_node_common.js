@@ -58,8 +58,8 @@ class NodeLoadDataHandle {
     };
     static dataSource = [
         {'id': '', 'title': 'Select...',},
-        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-3')},
         {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-2')},
+        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-3')},
     ];
     static dataSourceNote = {
         '1': NodeLoadDataHandle.transEle.attr('data-type-src-2-note'),
@@ -67,14 +67,15 @@ class NodeLoadDataHandle {
     }
     static dataInWFOption = [
         {'id': '', 'title': 'Select...',},
-        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-employee')},
         {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-position')},
+        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-employee')},
     ];
     static dataInWFPosition = [
         {'id': '', 'title': 'Select...',},
-        {'id': 3, 'title': NodeLoadDataHandle.transEle.attr('data-select-beneficiary')},
-        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-2nd-manager')},
-        {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-1st-manager')},
+        {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-beneficiary')},
+        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-1st-manager')},
+        {'id': 3, 'title': NodeLoadDataHandle.transEle.attr('data-select-2nd-manager')},
+        {'id': 4, 'title': NodeLoadDataHandle.transEle.attr('data-select-upper-manager')},
     ];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {

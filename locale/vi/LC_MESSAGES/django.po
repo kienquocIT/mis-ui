@@ -10214,3 +10214,7 @@ msgstr "Lead liên quan"
 #
 msgid "Check all ratio in this group again when referenced uom is changed"
 msgstr "Kiểm tra lại các tỉ lệ trong nhóm này khi Đơn vị tham chiếu thay đổi"
+
+#
+msgid "Upper manager"
+msgstr "Quản lý cấp trên"

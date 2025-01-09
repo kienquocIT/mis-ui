@@ -132,9 +132,15 @@ $(function () {
 
         RecoveryLoadDataHandle.$btnSaveModal.on('click', function () {
             RecoveryLoadDataHandle.loadLineDetail();
+            RecoveryCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);
         });
 
-
+        RecoveryDataTableHandle.$tableProduct.on('change', '.table-row-tax', function () {
+            let row = this.closest('tr');
+            if (row) {
+                RecoveryCalculateHandle.calculateMain(RecoveryDataTableHandle.$tableProduct, row);
+            }
+        });
 
 
 
@@ -163,32 +169,17 @@ $(function () {
                 return false;
             }
             let submitFields = [
-                'goods_receipt_type',
                 'title',
-                'purchase_order_id',
-                'purchase_order_data',
-                'inventory_adjustment_id',
-                'inventory_adjustment_data',
-                'production_report_type',
-                'production_order_id',
-                'production_order_data',
-                'work_order_id',
-                'work_order_data',
-                'supplier_id',
-                'supplier_data',
-                'purchase_requests',
-                'production_reports_data',
-                'remarks',
-                'date_received',
-                // tab product
-                'gr_products_data',
-                // total
-                'total_pretax',
-                'total_tax',
-                'total',
-                'total_revenue_before_tax',
+                'code',
+                'date_recovery',
+                'status_recovery',
+                'customer_id',
+                'customer_data',
+                'lease_order_id',
+                'lease_order_data',
+                'recovery_delivery_data',
                 // attachment
-                'attachment',
+                // 'attachment',
                 // abstract
                 'system_status',
                 'next_node_collab_id',
@@ -197,7 +188,7 @@ $(function () {
                 'document_change_order',
             ]
             if (_form.dataForm) {
-                filterFieldList(submitFields, _form.dataForm);
+                RecoveryCommonHandle.filterFieldList(submitFields, _form.dataForm);
             }
             WFRTControl.callWFSubmitForm(_form);
         }

@@ -1936,12 +1936,12 @@ msgid "Unit Of Measure Group"
 msgstr "Nhóm Đơn vị tính"
 
 #
-msgid "Is referenced unit"
-msgstr "Là đơn vị tham chiếu"
+msgid "set as referenced unit"
+msgstr "đặt làm đơn vị tham chiếu"
 
 #
-msgid "is referenced for ratio from other unit"
-msgstr "Được tham chiếu cho tỉ lệ từ đơn vị khác"
+msgid "Referenced unit"
+msgstr "Đơn vị tham chiếu"
 
 #
 msgid "Ratio"
@@ -10210,6 +10210,10 @@ msgstr "Xác nhận xoá dữ liệu này ?"
 #
 msgid "Related leads"
 msgstr "Lead liên quan"
+
+#
+msgid "Check all ratio in this group again when referenced uom is changed"
+msgstr "Kiểm tra lại các tỉ lệ trong nhóm này khi Đơn vị tham chiếu thay đổi"
 
 #
 msgid "Upper manager"

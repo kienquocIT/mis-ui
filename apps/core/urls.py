@@ -36,4 +36,5 @@ urlpatterns = [
     path('recurrence/', include('apps.core.recurrence.urls')),
     path('contract-template-config/', include('apps.core.contract_template.urls')),
     path('menu-finder', MenuFinder.as_view(), name='MenuFinder'),
+    path('chat3rd/', include('apps.core.chat3rd.urls')),
 ]

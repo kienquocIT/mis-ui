@@ -41,9 +41,11 @@
     <form id="form-detail-lead" data-url="{% url 'LeadDetailAPI' pk=pk %}" data-method="GET">
         {% csrf_token %}
         {% include 'sales/lead/common/config.html' %}
-        {% include 'sales/lead/common/stage.html' %}
-        {% include 'sales/lead/common/information.html' %}
-        {% include 'sales/lead/common/comments.html' %}
+        <div id="main-space">
+            {% include 'sales/lead/common/stage.html' %}
+            {% include 'sales/lead/common/information.html' %}
+            {% include 'sales/lead/common/comments.html' %}
+        </div>
     </form>
 {% endblock %}
 {% block dataHiddenGroup %}

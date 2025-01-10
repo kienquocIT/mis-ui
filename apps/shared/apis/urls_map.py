@@ -651,6 +651,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEAD_CHART = StringUrl('lead/chart-data')
     LEAD_DETAIL = StringUrl('lead/detail/{pk}')
     LEAD_STAGE_LIST = StringUrl('lead/list-lead-stage')
+    LEAD_CALL_LIST = StringUrl('lead/call/list')
 
     # Distribution plan
     DISTRIBUTION_PLAN_LIST = StringUrl('distribution-plans/list')

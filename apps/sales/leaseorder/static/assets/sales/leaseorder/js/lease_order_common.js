@@ -3178,14 +3178,14 @@ class LeaseOrderDataTableHandle {
                     if (data?.['promotion_data']) {
                         dataS2 = [data?.['promotion_data']];
                     }
-                    QuotationLoadDataHandle.loadInitS2($(promotionEle), dataS2);
+                    LeaseOrderLoadDataHandle.loadInitS2($(promotionEle), dataS2);
                 }
                 if (shippingEle) {
                     let dataS2 = [];
                     if (data?.['shipping_data']) {
                         dataS2 = [data?.['shipping_data']];
                     }
-                    QuotationLoadDataHandle.loadInitS2($(shippingEle), dataS2);
+                    LeaseOrderLoadDataHandle.loadInitS2($(shippingEle), dataS2);
                 }
                 if (assetTypeEle) {
                     LeaseOrderLoadDataHandle.loadInitS2($(assetTypeEle), LeaseOrderLoadDataHandle.dataAssetType);
@@ -3447,7 +3447,7 @@ class LeaseOrderDataTableHandle {
                         } else {
                             return `<select 
                                     class="form-select table-row-labor-item" 
-                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-labor')}"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-labor')}"
                                     data-method="GET"
                                     data-keyResp="expense_list"
                                     data-zone="${dataZone}"
@@ -3467,7 +3467,7 @@ class LeaseOrderDataTableHandle {
                         }
                         return `<select 
                                     class="form-select table-row-item" 
-                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-expense')}"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-expense')}"
                                     data-method="GET"
                                     data-keyResp="expense_item_list"
                                     data-zone="${dataZone}"

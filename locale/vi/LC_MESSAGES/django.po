@@ -1384,7 +1384,7 @@ msgstr "Tài khoản cha"
 
 #
 msgid "Tax Code"
-msgstr "Thuế"
+msgstr "Mã số thuế"
 
 #
 msgid "Annual Revenue"
@@ -10218,3 +10218,7 @@ msgstr "Kiểm tra lại các tỉ lệ trong nhóm này khi Đơn vị tham chi
 #
 msgid "Upper manager"
 msgstr "Quản lý cấp trên"
+
+#
+msgid "Date range"
+msgstr "Khoảng ngày"

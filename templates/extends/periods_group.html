@@ -1,0 +1,47 @@
+{% load static i18n %}
+
+<script id="trans-script-periods"
+        data-trans-m1th="{% trans 'January' %}"
+        data-trans-m2th="{% trans 'February' %}"
+        data-trans-m3th="{% trans 'March' %}"
+        data-trans-m4th="{% trans 'April' %}"
+        data-trans-m5th="{% trans 'May' %}"
+        data-trans-m6th="{% trans 'June' %}"
+        data-trans-m7th="{% trans 'July' %}"
+        data-trans-m8th="{% trans 'August' %}"
+        data-trans-m9th="{% trans 'September' %}"
+        data-trans-m10th="{% trans 'October' %}"
+        data-trans-m11th="{% trans 'November' %}"
+        data-trans-m12th="{% trans 'December' %}"
+></script>
+
+<div class="row">
+    <div class="col-12 col-lg-12 col-md-12">
+        <div class="form-group">
+            <label class="form-label {% if period_req == True %}required{% endif %}">{% trans 'Fiscal year' %}</label>
+            <div class="input-group">
+                <label class="input-group-text" for="period-select"><i class="bi bi-clock-fill"></i></label>
+                <select class="form-select select2" id="period-select"
+                        data-url="{% url 'PeriodsConfigListAPI' %}"
+                        {% if period_req == True %}required{% endif %}
+                        data-method="GET"
+                ></select>
+                <label class="input-group-text" for="period-month"><i class="bi bi-calendar-month-fill"></i></label>
+                <select id="period-month" class="form-select" {% if month_req == True %}required{% endif %}></select>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-12 col-md-12">
+        {% if date_req == True %}
+            <div class="form-group">
+                <label class="form-label required">{% trans 'Date range' %}</label>
+                <div class="input-group">
+                    <label class="input-group-text" for="period-day-from"><i class="bi bi-calendar-date-fill"></i></label>
+                    <input type="number" min="1" max="31" id="period-day-from" class="form-control" placeholder="{% trans 'From date' %}" required>
+                    <label class="input-group-text" for="period-day-to"><i class="bi bi-calendar-date-fill"></i></label>
+                    <input type="number" min="1" max="31" id="period-day-to" class="form-control" placeholder="{% trans 'To date' %}" required>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>

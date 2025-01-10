@@ -224,10 +224,10 @@ def mask_view(**parent_kwargs):
             if settings.IS_SERVER_MAINTAINING is True:
                 return OutLayoutRender(request=request).render_503()
 
-            if settings.UI_ALLOW_AUTO_TENANT:
-                state_http = HttpRequestControl(request=request).check()
-                if not state_http:
-                    return OutLayoutRender(request=request).render_404()
+            # if settings.UI_ALLOW_AUTO_TENANT:
+            #     state_http = HttpRequestControl(request=request).check()
+            #     if not state_http:
+            #         return OutLayoutRender(request=request).render_404()
 
             ctx = {}
             pk = kwargs.get('pk', None)

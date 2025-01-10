@@ -4391,9 +4391,11 @@ class LeaseOrderDataTableHandle {
                 );
                 // Select the appended button from the DOM and attach the event listener
                 $('#btn-add-expense-quotation-create').on('click', function () {
+                    LeaseOrderStoreDataHandle.storeDtbData(3);
                     LeaseOrderLoadDataHandle.loadAddRowExpense();
                 });
                 $('#btn-add-labor-quotation-create').on('click', function () {
+                    LeaseOrderStoreDataHandle.storeDtbData(3);
                     LeaseOrderLoadDataHandle.loadAddRowLabor();
                 });
             }

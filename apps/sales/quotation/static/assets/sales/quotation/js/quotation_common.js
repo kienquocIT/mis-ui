@@ -3291,6 +3291,7 @@ class QuotationDataTableHandle {
                 let itemEle = row.querySelector('.table-row-item');
                 let suppliedByEle = row.querySelector('.table-row-supplied-by');
                 let uomEle = row.querySelector('.table-row-uom');
+                let priceGrEle = row.querySelector('.input-group-price');
                 let priceEle = row.querySelector('.table-row-price');
                 let taxEle = row.querySelector('.table-row-tax');
                 if (itemEle) {
@@ -3317,9 +3318,14 @@ class QuotationDataTableHandle {
                     }
                     QuotationLoadDataHandle.loadInitS2($(uomEle), dataS2);
                 }
+                if (priceGrEle) {
+                    if (data?.['warehouse_data']) {
+                        $(priceGrEle).attr('data-cost-wh-id', data?.['warehouse_data']?.['id']);
+                    }
+                }
                 if (priceEle) {
                     if (data?.['warehouse_data']) {
-                        $(priceEle).attr('data-wh', data?.['warehouse_data']);
+                        $(priceEle).attr('data-wh', JSON.stringify(data?.['warehouse_data']));
                     }
                 }
                 if (taxEle) {
@@ -4238,9 +4244,11 @@ class QuotationDataTableHandle {
                 );
                 // Select the appended button from the DOM and attach the event listener
                 $('#btn-add-expense-quotation-create').on('click', function () {
+                    QuotationStoreDataHandle.storeDtbData(3);
                     QuotationLoadDataHandle.loadAddRowExpense();
                 });
                 $('#btn-add-labor-quotation-create').on('click', function () {
+                    QuotationStoreDataHandle.storeDtbData(3);
                     QuotationLoadDataHandle.loadAddRowLabor();
                 });
             }

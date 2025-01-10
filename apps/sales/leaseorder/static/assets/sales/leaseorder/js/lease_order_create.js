@@ -331,14 +331,6 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(4);
         });
 
-        $('#btn-add-expense-quotation-create').on('click', function (e) {
-            LeaseOrderLoadDataHandle.loadAddRowExpense();
-        });
-
-        $('#btn-add-labor-quotation-create').on('click', function (e) {
-            LeaseOrderLoadDataHandle.loadAddRowLabor();
-        });
-
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();

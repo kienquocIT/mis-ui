@@ -492,30 +492,40 @@ $(async function () {
                         }
                     }
                 }
-                if (!config?.['is_picking'] && config?.['is_partial_ship']) { // TH config 2: none_picking_many_delivery
+                if (pwh?.['lease_order']) {
+
+                }
+                if (!$eleSO.attr('data-lo')) {  // Nếu không phải leaseorder thì check có picking hay không picking
+                    if (!config?.['is_picking'] && config?.['is_partial_ship']) { // Trường hợp none_picking_many_delivery
+                        pwh['stock_amount'] = pwh?.['stock_amount'] * finalRate;
+                        pwh['available_stock'] = pwh?.['available_stock'] * finalRate;
+                        if (prod_data?.['delivery_data']) {
+                            prodTable.loadProductWHModal(pwh, prod_data);
+                        }
+                    }
+                    if ((config?.['is_picking'] && config?.['is_partial_ship']) && prod_data?.['delivery_data']) { // Trường hợp has_picking_many_delivery
+                        // nếu ready quantity > 0 => có hàng để giao
+                        // lấy delivery
+                        pwh['stock_amount'] = pwh?.['picked_ready'] * finalRate;
+                        pwh['available_stock'] = pwh?.['available_picked'] * finalRate;
+                        if (prod_data?.['ready_quantity'] > 0) {
+                            prodTable.loadProductWHModal(pwh, prod_data);
+                        }
+                        // change column name stock -> picked
+                        if (!$table.hasClass('dataTable')) {
+                            let columnStock = $table[0]?.querySelector('.stock-picked-exchange');
+                            if (columnStock) {
+                                columnStock.innerHTML = $trans.attr('data-picked-ready');
+                            }
+                        }
+                    }
+                } else {  // Nếu là lease order thì luôn không có picking
                     pwh['stock_amount'] = pwh?.['stock_amount'] * finalRate;
                     pwh['available_stock'] = pwh?.['available_stock'] * finalRate;
                     if (prod_data?.['delivery_data']) {
                         prodTable.loadProductWHModal(pwh, prod_data);
                     }
                 }
-                if ((config?.['is_picking'] && config?.['is_partial_ship']) && prod_data?.['delivery_data']) { // TH config 4: has_picking_many_delivery
-                    // nếu ready quantity > 0 => có hàng để giao
-                    // lấy delivery
-                    pwh['stock_amount'] = pwh?.['picked_ready'] * finalRate;
-                    pwh['available_stock'] = pwh?.['available_picked'] * finalRate;
-                    if (prod_data?.['ready_quantity'] > 0) {
-                        prodTable.loadProductWHModal(pwh, prod_data);
-                    }
-                    // change column name stock -> picked
-                    if (!$table.hasClass('dataTable')) {
-                        let columnStock = $table[0]?.querySelector('.stock-picked-exchange');
-                        if (columnStock) {
-                            columnStock.innerHTML = $trans.attr('data-picked-ready');
-                        }
-                    }
-                }
-
                 baseData.push(pwh);
 
                 if (type === 0) {  // normal

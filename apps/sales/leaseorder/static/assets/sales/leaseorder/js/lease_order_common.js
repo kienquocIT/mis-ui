@@ -1807,6 +1807,10 @@ class LeaseOrderLoadDataHandle {
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                            dataAdd['product_quantity'] = valueQuantity;
+                            dataAdd['product_quantity_time'] = valueQuantityTime;
+                            dataAdd['uom_id'] = dataUOM?.['id'];
+                            dataAdd['uom_data'] = dataUOM;
                         }
                         $table.DataTable().row.add(dataAdd).draw().node();
                     }
@@ -1913,6 +1917,10 @@ class LeaseOrderLoadDataHandle {
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                            dataAdd['product_quantity'] = valueQuantity;
+                            dataAdd['product_quantity_time'] = valueQuantityTime;
+                            dataAdd['uom_id'] = dataUOM?.['id'];
+                            dataAdd['uom_data'] = dataUOM;
                         }
                         $table.DataTable().row.add(dataAdd).draw().node();
                     }
@@ -1951,8 +1959,6 @@ class LeaseOrderLoadDataHandle {
                     }
                 })
             }
-            // Re calculate
-            LeaseOrderCalculateCaseHandle.calculateAllRowsTableCost();
             LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
         }
         return true;
@@ -3413,6 +3419,8 @@ class LeaseOrderDataTableHandle {
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(uomTimeEle), dataS2);
                 }
+                // re calculate
+                LeaseOrderCalculateCaseHandle.commonCalculate(LeaseOrderDataTableHandle.$tableCost, row);
             },
         });
     };

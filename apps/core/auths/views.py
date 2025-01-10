@@ -19,7 +19,10 @@ import jwt
 from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, TypeCheck, CustomizeEncoder, CacheController
 from apps.core.account.models import User
 
-from .forms import AuthLoginForm, ForgotPasswordForm, ForgotPasswordValidOTPForm, ForgotPasswordResendOTP
+from .forms import (
+    AuthLoginForm, ForgotPasswordForm, ForgotPasswordValidOTPForm, ForgotPasswordResendOTP,
+    AuthLoginSerializer,
+)
 from apps.shared.csrf import CSRFCheckSessionAuthentication, APIAllowAny
 from apps.shared.decorators import OutLayoutRender, session_flush, MyJWTClient
 
@@ -84,13 +87,16 @@ class AuthLogin(APIView):
         if is_oauth2 == 'true' or is_oauth2 == '1':
             is_oauth2 = True
 
-        frm = AuthLoginForm(data=request.data)
-        frm.is_valid()
-        resp = ServerAPI(request=request, user=None, url=ApiURL.login).post(frm.cleaned_data)
+        frm = AuthLoginSerializer(data=request.data)
+        frm.is_valid(raise_exception=False)
+        if frm.errors:
+            return frm.errors, status.HTTP_400_BAD_REQUEST
+
+        resp = ServerAPI(request=request, user=None, url=ApiURL.login).post(frm.validated_data)
         if resp.state is True:
             user = User.regis_with_api_result(api_result=resp.result, random_passwd=True)
             if user:
-                if not frm.cleaned_data.get('remember'):
+                if not frm.validated_data.get('remember'):
                     request.session.set_expiry(0)
                 # random DEVICE_ID
                 request.session.update(

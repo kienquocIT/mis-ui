@@ -29,7 +29,7 @@
     </style>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_good_receipt_create">
+    <button class="btn btn-outline-primary" type="submit" form="frm_goods_recovery">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -47,8 +47,8 @@
         data-key-return="goods_receipt_list"
     ></script>
     <form
-            data-url="{% url 'GoodsReceiptListAPI' %}"
-            data-url-redirect="{% url 'GoodsReceiptList' %}"
+            data-url="{% url 'GoodsRecoveryListAPI' %}"
+            data-url-redirect="{% url 'GoodsRecoveryList' %}"
             data-method="POST"
             id="frm_goods_recovery"
             method="post"
@@ -164,7 +164,7 @@
                             <div class="row">
                                 <table
                                     id="datable-product"
-                                    class="table nowrap min-w-1600p w-100 mb-5"
+                                    class="table nowrap min-w-1366p w-100 mb-5"
                                     data-url=""
                                     data-method="get"
                                 >

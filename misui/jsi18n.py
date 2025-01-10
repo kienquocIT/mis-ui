@@ -40,4 +40,5 @@ I18N_JS_MATCH_APP = {
     'process': 'apps.core.process',
     'delivery': 'apps.sales.delivery',
     'hrm': 'apps.hrm.employee',
+    'chat3rd': 'apps.core.chat3rd',
 }

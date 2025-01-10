@@ -1,0 +1,49 @@
+{% load i18n %}
+
+<div
+        class="chat-inbox-site"
+        id="chat-site"
+        data-url-connected-data="{% url 'MessengerConnectedAPI' %}"
+>
+    <div class="mb-3">
+        <div class="w-100 p-2 d-flex" style="justify-content: space-between">
+            <div class="site-label">
+                <p>Messenger <span class="badge badge-primary badge-sm ml-1">BETA</span></p>
+                <p class="mt-1">
+                    <span class="messenger-limit-title" style="font-size: 0.8rem;">{% trans 'Limit per hour' %}:</span>
+                    <span class="messenger-limit">
+                        <span class="messenger-limit-used">0</span> / <span class="messenger-limit-max">200</span>
+                    </span>
+                </p>
+            </div>
+            <div
+                    id="chat-site-actions"
+                    data-url-sync="{% url 'MessengerAccountSyncAPI' pk='__pk__' %}"
+                    class="d-flex"
+            >
+                <div class="site-actions-advance mr-2">
+                    <i class="fa-solid fa-spinner fa-spin-pulse text-primary" data-code="loading"></i>
+                    <a
+                            class="btn btn-icon btn-rounded btn-flush-primary btn-xs d-none"
+                            href="{% url 'MessengerConfigView' %}"
+                    >
+                        <span class="icon">
+                            <i class="fa-solid fa-gear"></i>
+                        </span>
+                    </a>
+                </div>
+                <button
+                        id="btn-collapse-site"
+                        class="btn btn-primary btn-rounded btn-icon btn-xs"
+                >
+                    <span>
+                        <span class="icon">
+                            <i class="fa-solid fa-angles-left"></i>
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div id="messenger-chat-list"></div>
+    </div>
+</div>

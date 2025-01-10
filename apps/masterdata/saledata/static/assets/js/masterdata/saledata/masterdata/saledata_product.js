@@ -207,7 +207,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-70',
+                    className: 'wrap-text w-45',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<b>${data}</b>`
@@ -217,12 +217,25 @@ $(document).ready(function () {
                     }
                 },
                 {
+                    data: 'referenced_unit',
+                    className: 'wrap-text w-25',
+                    render: (data, type, row) => {
+                        if (row?.['referenced_unit']?.['id']) {
+                            return `<span class="badge badge-soft-success w-30 mr-1">${row?.['referenced_unit']?.['code']}</span>${row?.['referenced_unit']?.['title']}`
+                        }
+                        return ''
+                    }
+                },
+                {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
                         let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-uom-group"
                            data-id="${row?.['id']}"
                            data-code="${row?.['code']}"
                            data-title="${row?.['title']}"
+                           data-referenced-id="${row?.['referenced_unit']?.['id'] ? row?.['referenced_unit']?.['id'] : ''}"
+                           data-referenced-code="${row?.['referenced_unit']?.['code'] ? row?.['referenced_unit']?.['code'] : ''}"
+                           data-referenced-title="${row?.['referenced_unit']?.['title'] ? row?.['referenced_unit']?.['title'] : ''}"
                            data-bs-toggle="modal"
                            data-bs-target="#modal-update-uom-group"
                            data-bs-placement="top" title="" 
@@ -247,8 +260,27 @@ $(document).ready(function () {
         });
     }
     function loadSelectBoxUnitMeasureGroup(ele, data) {
-        ele.empty()
-        ele.initSelect2({data: data})
+        ele.initSelect2({
+            ajax: {
+                url: ele.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : {}),
+            keyResp: 'unit_of_measure_group',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            let obj = SelectDDControl.get_data_from_idx($(this), $(this).val());
+            let data_referenced = obj?.['referenced_unit']?.['title'];
+            // create
+            $('#referenced-unit').val(data_referenced)
+            $('#inp-rounding').val('1');
+            $('#ratio-unit').val('');
+            // update
+            $('#referenced-unit-edit').val(data_referenced)
+            $('#inp-rounding-edit').val('1');
+            $('#ratio-unit-edit').val('');
+        })
     }
     function loadUnitOfMeasure() {
         let tbl = $('#datatable-unit-measure-list');
@@ -361,9 +393,24 @@ $(document).ready(function () {
             ],
         })
     }
+    function loadSelectBoxUnitMeasure(ele, data, group_id) {
+        ele.empty()
+        ele.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: ele.attr('data-url')+`?group=${group_id}`,
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'unit_of_measure',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
 
     loadProductType()
     loadProductCategory()
+    loadSelectBoxUnitMeasureGroup($('#select-box-uom-group'))
     loadUnitOfMeasureGroup()
     loadUnitOfMeasure()
 
@@ -563,6 +610,15 @@ $(document).ready(function () {
     let frm_update_uom_group = $('#form-update-uom-group')
 
     $(document).on("click", '.btn-update-uom-group', function () {
+        loadSelectBoxUnitMeasure(
+            $('#select-referenced-unit'),
+            $(this).attr('data-referenced-id') ? {
+                'id': $(this).attr('data-referenced-id'),
+                'code': $(this).attr('data-referenced-code'),
+                'title': $(this).attr('data-referenced-title'),
+            } : null,
+            $(this).attr('data-id')
+        )
         let modal = $('#modal-update-uom-group')
         modal.find('#inp-edit-code-uom-group').val($(this).attr('data-code'))
         modal.find('#inp-edit-name-uom-group').val($(this).attr('data-title'))
@@ -621,129 +677,13 @@ $(document).ready(function () {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-uom-group').modal('hide')
                         loadUnitOfMeasureGroup()
+                        loadUnitOfMeasure()
                     }
                 },
                 (errs) => {
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
-        }
-    })
-
-    $('#select-box-uom-group').on('change', function () {
-        let obj = SelectDDControl.get_data_from_idx($(this), $(this).val());
-        let data_referenced = obj?.['referenced_unit']?.['title'];
-        let group_name = $(this).find('option:selected').attr('group-name');
-
-        let input_rounding_ele = $('#inp-rounding')
-        input_rounding_ele.val('1');
-
-        let name_unit_ele = $('#name-unit')
-        let name = name_unit_ele.val();
-
-        let ratio_ele = $('#ratio-unit');
-        let label_ele = $('#label-referenced-unit');
-        let checkbox_ele = $('#check-referenced-unit');
-        if (!data_referenced) {
-            $('#inp-code').prop('readonly', false);
-            name_unit_ele.prop('readonly', false);
-
-            ratio_ele.val(1);
-            ratio_ele.prop('readonly', true);
-            $('#ratio-area').prop('hidden', true);
-            input_rounding_ele.prop('readonly', false);
-
-            if (name) {
-                label_ele.text('* ' + name);
-                label_ele.prop('hidden', false);
-            } else {
-                label_ele.text('');
-                label_ele.prop('hidden', true);
-            }
-            checkbox_ele.prop('checked', true);
-            checkbox_ele.prop('disabled', true);
-            $('#notify-area-label').text('');
-            $('#notify-area').prop('hidden', true);
-        } else {
-            $('#inp-code').prop('readonly', false);
-            name_unit_ele.prop('readonly', false);
-
-            ratio_ele.val('');
-            ratio_ele.prop('readonly', false);
-            $('#ratio-area').prop('hidden', false);
-
-            input_rounding_ele.prop('readonly', false);
-            label_ele.text(`* ` + data_referenced);
-            label_ele.prop('hidden', false);
-            checkbox_ele.prop('checked', false);
-            checkbox_ele.prop('disabled', true);
-            $('#notify-area-label').text('* Group ' + group_name + ' had referenced unit.');
-            $('#notify-area').prop('hidden', true);
-        }
-    })
-
-    $('#select-box-edit-uom-group').on('change', function () {
-        $('#ratio-edit-area').prop('hidden', false);
-        let groupIdEle = $('#group-id');
-        let ratioEle = $('#inp-ratio-unit');
-        let checkReferenceUnit = $('#check-edit-unit');
-
-        ratioEle.val('');
-        if ($(this).val() === groupIdEle.val()) {
-            ratioEle.val($('#group-referenced-unit-name').text());
-        }
-
-        let data_referenced = $(this).find('option:selected').attr('data-referenced');
-
-        if (data_referenced) {
-            if (data_referenced === 'undefined') {
-                $('#label-edit-referenced-unit').text('')
-                checkReferenceUnit.prop('checked', true);
-                checkReferenceUnit.prop('disabled', true);
-                $('#notify-area-edit-label').text('');
-                $('#notify-area-edit').prop('hidden', true);
-            } else {
-                if ($(this).find('option:selected').val() !== groupIdEle.text()) {
-                    $('#label-edit-referenced-unit').text(`* ` + data_referenced)
-                    checkReferenceUnit.prop('checked', false);
-                    checkReferenceUnit.prop('disabled', true);
-                    $('#notify-area-edit-label').text('* Can not set referenced unit from another group.');
-                    $('#notify-area-edit').prop('hidden', false);
-                } else {
-                    $('#label-edit-referenced-unit').text(`* ` + data_referenced)
-                    checkReferenceUnit.prop('checked', false);
-                    checkReferenceUnit.prop('disabled', false);
-                    $('#notify-area-edit-label').text('');
-                    $('#notify-area-edit').prop('hidden', true);
-                }
-            }
-        } else {
-            $('#label-edit-referenced-unit').text('')
-            checkReferenceUnit.prop('checked', false);
-            checkReferenceUnit.prop('disabled', true);
-        }
-    })
-
-    $('#check-referenced-unit').on('change', function () {
-        let data_referenced = $('#select-box-uom-group').find('option:selected').attr('data-referenced');
-        $('#label-referenced-unit').text(`* ` + data_referenced);
-        let ratioEle = $('#ratio-unit');
-        if (this.checked) {
-            ratioEle.val('1');
-            ratioEle.prop('readonly', true);
-        } else {
-            ratioEle.val('');
-            ratioEle.prop('readonly', false);
-        }
-    })
-
-    $('#check-edit-unit').on('click', function () {
-        if (this.checked) {
-            $('#inp-ratio-unit').val('1');
-            $('#ratio-edit-area').prop('hidden', true);
-        } else {
-            $('#inp-ratio-unit').val($('#group-referenced-unit-name').text());
-            $('#ratio-edit-area').prop('hidden', false);
         }
     })
 
@@ -769,7 +709,6 @@ $(document).ready(function () {
         },
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
-            frm.dataForm['is_referenced_unit'] = $('#check-referenced-unit').prop('checked');
             $.fn.callAjax2({
                 'url': frm.dataUrl,
                 'method': frm.dataMethod,
@@ -781,6 +720,8 @@ $(document).ready(function () {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-new-uom').modal('hide');
                         $('#modal-new-uom form')[0].reset()
+                        $('#select-box-uom-group').empty()
+                        $('#select-box-uom-group-edit').empty()
                         loadUnitOfMeasure()
                     }
                 },
@@ -804,7 +745,6 @@ $(document).ready(function () {
         },
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
-            frm.dataForm['is_referenced_unit'] =$('#check-edit-unit').prop('checked');
             frm.dataForm['group'] = $('#select-box-edit-uom-group').find('option:selected').val();
             $.fn.callAjax2({
                 'url': frm.dataUrl,
@@ -853,16 +793,9 @@ $(document).ready(function () {
                 $('#inp-code-uom-update').val(data?.['code']);
                 $('#inp-edit-name-unit').val(data?.['title']);
                 $('#inp-rounding-edit').val(data?.['rounding']);
-                $('#inp-ratio-unit').val(data?.['ratio']);
-                $('#label-edit-referenced-unit').text(`* ` + data?.['group']?.['referenced_unit_title']);
+                $('#ratio-unit-edit').val(data?.['ratio']);
                 loadSelectBoxUnitMeasureGroup($('#select-box-edit-uom-group'), data?.['group']);
-                $('#group-referenced-unit-name').text(data?.['ratio']);
-                $('#group-id').val(data?.['group']?.['id']);
-
-                let check_reference_unit = $('#check-edit-unit')
-                let is_unit = data?.['group']?.['is_referenced_unit']
-                $('#ratio-edit-area').prop('hidden', is_unit);
-                check_reference_unit.prop('disabled', is_unit).prop('checked', is_unit)
+                $('#referenced-unit-edit').val(data?.['group']?.['title'])
             })
     })
 })

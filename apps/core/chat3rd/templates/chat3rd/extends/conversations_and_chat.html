@@ -1,0 +1,154 @@
+{% load i18n %}
+
+<div
+        class="chat-inbox-list"
+        id="chat-conversation"
+        data-url-person="{% url 'MessengerPersonAPI' page_id='__pk__' %}"
+>
+    <div class="w-100 h-100" style="display: flex;">
+        <div style="flex: 3; max-width: 400px;">
+            <div class="inbox-head p-3">
+                <div>{% trans 'Conversations' %}</div>
+                <div>
+                    <button
+                        id="btn-page-config"
+                        class="btn btn-icon btn-rounded btn-flush-primary d-none"
+                        data-bs-toggle="modal" data-bs-target="#modalPageConfig"
+                    >
+                        <span class="icon">
+                            <i class="fa-solid fa-gear"></i>
+                        </span>
+                    </button>
+                    <button
+                            id="btn-collapse-conversation"
+                            class="btn btn-primary btn-rounded btn-icon btn-xs d-none"
+                    >
+                        <span>
+                            <span class="icon">
+                                <i class="fa-solid fa-angles-left"></i>
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <div class="inbox-body" id="inbox-body">
+                <p class="w-100 text-center my-3 text-muted" style="font-style: italic;">{% trans 'Select the page on the left to get started!' %}</p>
+            </div>
+        </div>
+        <div class="h-100 overflow-hidden" id="inbox-chat" style="flex: 7;border-left: 1px solid #dcdcdc;">
+            <div class="inbox-head p-3" style="border-bottom: 1px solid #dcdcdc;">
+                <div>
+                    <a
+                        class="person-link"
+                        target="_blank"
+                        href="#"
+                        data-href="https://facebook.com/profile.php?id=__person_id__"
+                        data-bs-toggle="tooltip"
+                        title="{% trans 'Open profile in new tab of Facebook' %}"
+                    >
+                        <i class="fa-brands fa-facebook"></i>
+                        <span class="person-title ml-1"></span>
+                        <i id="icon-person-loading" style="display: none;margin-left: 5px;" class="fa-solid fa-spinner fa-spin-pulse"></i>
+                    </a>
+                </div>
+                <div>
+{#                    <button#}
+{#                            id="btn-chat-scroll-top"#}
+{#                            class="btn btn-icon btn-rounded btn-flush-primary btn-xs"#}
+{#                            data-bs-toggle="tooltip"#}
+{#                            title="{% trans 'Scroll to down' %}"#}
+{#                    >#}
+{#                        <span class="icon">#}
+{#                            <i class="fa-solid fa-arrows-down-to-line"></i>#}
+{#                        </span>#}
+{#                    </button>#}
+{#                    <button#}
+{#                            id="btn-chat-scroll-bottom"#}
+{#                            class="btn btn-icon btn-rounded btn-flush-primary btn-xs"#}
+{#                            data-bs-toggle="tooltip"#}
+{#                            title="{% trans 'Scroll to top' %}"#}
+{#                    >#}
+{#                        <span class="icon">#}
+{#                            <i class="fa-solid fa-arrows-up-to-line"></i>#}
+{#                        </span>#}
+{#                    </button>#}
+                    <a
+                            class="btn btn-icon btn-rounded btn-flush-primary person-inbox-link"
+                            href="#"
+                            data-href="https://facebook.com/__page_id__/inbox/__person_id__/?section=messages"
+                            data-bs-toggle="tooltip"
+                            title="{% trans 'Open inbox in new tab of Messenger' %}"
+                    >
+                        <span class="icon">
+                            <i class="fa-brands fa-facebook-messenger"></i>
+                        </span>
+                    </a>
+                    <button
+                            id="btn-collapse-person-info"
+                            class="btn btn-icon btn-rounded btn-flush-primary btn-xs"
+                            data-bs-toggle="tooltip"
+                            title="{% trans 'Collapse user information area and advanced operations.' %}"
+                    >
+                        <span class="icon">
+                            <i class="fa-solid fa-eye" style="display: none;"></i>
+                            <i class="fa-solid fa-eye-low-vision"></i>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <div class="inbox-body">
+                <div
+                        class="body-chat"
+                        id="body-chat"
+                        data-url-chats="{% url 'MessengerPersonChatAPI' page_id='__page_id__' person_id='__person_id__' %}"
+                >
+                    <p class="w-100 h-100 text-muted d-flex justify-content-center align-items-center" style="font-style: italic;">{% trans 'Select the conversation on the left to get started!' %}</p>
+                </div>
+                <div class="chat-msg-input-group">
+                    <div class="masker-improvement">
+                        <div>
+                            <p style="color: #4b4b4b;margin-bottom: 5px;">{% trans 'The direct messaging feature on the platform is currently under development and will be available soon.' %}</p>
+                            <p style="color: #4b4b4b;margin-bottom: 5px;">{% trans 'It is currently not possible to track messages in real time.' %}</p>
+                            <p style="color: #7c7c7c;">{% trans "Use Messenger redirects to interact directly with users through the Messenger platform." %}</p>
+                            <p style="color: #7c7c7c;">{% trans "Chat recordings are still available even if you don't interact through Bflow." %}</p>
+                        </div>
+                    </div>
+                    <div class="w-100">
+                        <div
+                                id="editable"
+                                contenteditable="true"
+                                class="p-3"
+                                style="overflow-y: auto;height: 100px;"
+                        >
+                            <p>Nhập nội dung tại đây...</p>
+                        </div>
+                    </div>
+                    <div
+                            class="w-100 d-flex p-3"
+                            style="height: 50px; justify-content: space-between; align-items: center;"
+                    >
+                        <div>
+                            <button class="btn btn-icon btn-flush-primary">
+                                <span class="icon">
+                                    <i class="fa-solid fa-paperclip"></i>
+                                </span>
+                            </button>
+                            <button class="btn btn-icon btn-flush-primary">
+                                <span class="icon">
+                                    <i class="fa-regular fa-face-smile"></i>
+                                </span>
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-icon btn-primary">
+                                <span class="icon">
+                                    <i class="fa-regular fa-paper-plane"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

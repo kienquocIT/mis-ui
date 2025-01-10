@@ -46,3 +46,25 @@ class GoodsRecoveryCreate(View):
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class GoodsRecoveryListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RECOVERY_LIST).get(data)
+        return resp.auto_return(key_success='goods_recovery_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_goods_recovery(
+            request=request,
+            url=ApiURL.GOODS_RECOVERY_LIST,
+            msg=SaleMsg.GOODS_RECOVERY_CREATE
+        )

@@ -1713,6 +1713,11 @@ class QuotationLoadDataHandle {
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                            dataAdd['product_quantity'] = valueQuantity;
+                            dataAdd['uom_id'] = dataUOM?.['id'];
+                            dataAdd['uom_data'] = dataUOM;
+                            dataAdd['tax_id'] = dataTax?.['id'];
+                            dataAdd['tax_data'] = dataTax;
                         }
                         $table.DataTable().row.add(dataAdd).draw().node();
                     }
@@ -1801,6 +1806,11 @@ class QuotationLoadDataHandle {
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                            dataAdd['product_quantity'] = valueQuantity;
+                            dataAdd['uom_id'] = dataUOM?.['id'];
+                            dataAdd['uom_data'] = dataUOM;
+                            dataAdd['tax_id'] = dataTax?.['id'];
+                            dataAdd['tax_data'] = dataTax;
                         }
                         $table.DataTable().row.add(dataAdd).draw().node();
                     }
@@ -1839,8 +1849,6 @@ class QuotationLoadDataHandle {
                     }
                 })
             }
-            // Re calculate
-            QuotationCalculateCaseHandle.calculateAllRowsTableCost();
             QuotationLoadDataHandle.loadSetWFRuntimeZone();
         }
         return true;
@@ -3335,6 +3343,8 @@ class QuotationDataTableHandle {
                     }
                     QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
                 }
+                // re calculate
+                QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableCost, row);
             },
         });
     };

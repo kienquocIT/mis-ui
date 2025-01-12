@@ -442,12 +442,12 @@ class LeaseOrderLoadDataHandle {
                     $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-required-asset-type')}, 'info');
                     return false;
                 }
-                let params = {};
+                let params = {'lease_source_id__isnull': true};
                 if ($(eleType).val() === "1") {
-                    params = {'general_product_types_mapped__is_goods': true};
+                    params['general_product_types_mapped__is_goods'] = true;
                 }
                 if ($(eleType).val() === "2") {
-                    params = {'general_product_types_mapped__is_asset_tool': true};
+                    params['general_product_types_mapped__is_asset_tool'] = true;
                 }
                 WindowControl.showLoading();
                 $.fn.callAjax2({
@@ -491,6 +491,27 @@ class LeaseOrderLoadDataHandle {
                     $(eleNew).val(parseFloat(eleRowNew.value));
                     $(eleLeased).val(parseFloat(eleRowLeased.value));
                 }
+            }
+            let offsetEle = row.querySelector('.table-row-offset');
+            if (offsetEle) {
+                WindowControl.showLoading();
+                $.fn.callAjax2({
+                        'url': LeaseOrderLoadDataHandle.urlEle.attr('data-md-product'),
+                        'method': 'GET',
+                        'data': {'lease_source_id': $(offsetEle).val()},
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                                LeaseOrderDataTableHandle.$tableSLeasedProduct.DataTable().rows.add(data.product_sale_list).draw();
+                                WindowControl.hideLoading();
+                            }
+                        }
+                    }
+                )
             }
         }
         return true;
@@ -2851,7 +2872,7 @@ class LeaseOrderLoadDataHandle {
 class LeaseOrderDataTableHandle {
     static $tableSProduct = $('#table-select-product');
     static $tableSOffset = $('#table-select-offset');
-    static $tableSQuantity = $('#table-select-quantity');
+    static $tableSLeasedProduct = $('#table-select-leased-product');
     static $tableProduct = $('#datable-quotation-create-product');
     static $tableCost = $('#datable-quotation-create-cost');
     static $tableExpense = $('#datable-quotation-create-expense');
@@ -3308,7 +3329,7 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '10%',
+                    width: '6%',
                     render: (data, type, row) => {
                         let dataZone = "lease_costs_data";
                         return `<input type="text" class="form-control table-row-quantity disabled-custom-show zone-readonly" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
@@ -3332,7 +3353,7 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '10%',
+                    width: '6%',
                     render: (data, type, row) => {
                         let dataZone = "lease_costs_data";
                         return `<input type="text" class="form-control table-row-quantity-time disabled-custom-show zone-readonly" value="${row?.['product_quantity_time']}" data-zone="${dataZone}" disabled>`;
@@ -3378,11 +3399,20 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '10%',
+                    width: '20%',
                     render: (data, type, row) => {
                         let dataZone = "lease_costs_data";
                         return `<div class="row subtotal-area">
-                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}" data-zone="${dataZone}"></span></p>
+                                <div class="d-flex align-items-center">
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-detail-depreciation"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#detailDepreciation"
+                                        data-zone="${dataZone}"
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button><p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}" data-zone="${dataZone}"></span></p>
+                                </div>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -4263,8 +4293,8 @@ class LeaseOrderDataTableHandle {
         });
     };
 
-    static dataTableSelectQuantity(data) {
-        LeaseOrderDataTableHandle.$tableSQuantity.not('.dataTable').DataTableDefault({
+    static dataTableSelectLeasedProduct(data) {
+        LeaseOrderDataTableHandle.$tableSLeasedProduct.not('.dataTable').DataTableDefault({
             data: data ? data : [],
             pageLength: 5,
             columnDefs: [],
@@ -4279,9 +4309,9 @@ class LeaseOrderDataTableHandle {
                         if (row?.['title'] && row?.['code']) {
                             return `<div class="d-flex align-items-center ml-2">
                                         <div class="form-check form-check-lg">
-                                            <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-quantity-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
-                                            <span class="badge badge-soft-success">${row?.['code'] ? row?.['code'] : ''}</span>
-                                            <label class="form-check-label table-row-title" for="s-quantity-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                            <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-leased-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
+                                            <label class="form-check-label table-row-title" for="s-leased-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                            <span class="badge badge-light badge-outline">${row?.['lease_code'] ? row?.['lease_code'] : ''}</span>
                                         </div>
                                     </div>`;
                         }
@@ -4291,7 +4321,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span></span>`;
+                        return `<span class="badge badge-light badge-outline">${row?.['code'] ? row?.['code'] : ''}</span>`;
                     }
                 },
                 {
@@ -4328,7 +4358,7 @@ class LeaseOrderDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableSQuantity);
+                LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableSLeasedProduct);
             },
         });
     };

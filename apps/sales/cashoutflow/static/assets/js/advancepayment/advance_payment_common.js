@@ -1352,10 +1352,8 @@ class APAction {
     }
     static DisabledDetailPage(option) {
         if (option === 'detail') {
-            $('.form-control').prop('readonly', true);
-            $('.form-select').prop('disabled', true);
-            $('.select2').prop('disabled', true);
-            $('form input').prop('disabled', true);
+            $('form input').prop('readonly', true).prop('disabled', true);
+            $('form select').prop('disabled', true);
             $('.del-address-item').prop('hidden', true);
             $('.card-close').addClass('disabled').prop('hidden', true);
             $('#btn-add-row-line-detail').prop('disabled', true);
@@ -1613,7 +1611,7 @@ class APHandle {
                     }
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    // console.log(data)
+                    console.log(data)
 
                     opp_mapped_select.prop('disabled', true)
                     quotation_mapped_select.prop('disabled', true)

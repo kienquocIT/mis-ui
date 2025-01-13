@@ -46,25 +46,28 @@ $(document).ready(function () {
 
     function getMonthOrder(period_data) {
         periodMonthEle.html(``)
-        let data = period_data?.['subs'] ? period_data?.['subs'] : []
+        let subs = period_data?.['subs'] ? period_data?.['subs'] : []
         let select_data = []
-        for (let i = 0; i < data.length; i++) {
-            let option_month = moment(data[i]?.['start_date']).month() + 1
-            let option_year = moment(data[i]?.['start_date']).year()
-            periodMonthEle.append(`<option value="${data[i]?.['order']}">${trans_script_periods.attr(`data-trans-m${option_month}th`)}</option>`)
-            select_data.push({
-                'id': i + 1,
-                'title': trans_script_periods.attr(`data-trans-m${option_month}th`),
-                'month': i + 1,
-                'year': option_year
-            })
+        for (let i = 0; i < subs.length; i++) {
+            if (moment(subs[i]?.['start_date'], 'YYYY-MM-DD') <= moment()) {
+                let option_month = moment(subs[i]?.['start_date']).month() + 1
+                let option_year = moment(subs[i]?.['start_date']).year()
+                periodMonthEle.append(`<option value="${subs[i]?.['order']}">${trans_script_periods.attr(`data-trans-m${option_month}th`)}</option>`)
+                select_data.push({
+                    'id': i + 1,
+                    'title': trans_script_periods.attr(`data-trans-m${option_month}th`),
+                    'month': i + 1,
+                    'year': option_year
+                })
+            }
         }
         periodMonthEle.empty();
         periodMonthEle.initSelect2({
             data: select_data,
             templateResult: function (state) {
-                let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
-                return $(`<span>${state.text} ${groupHTML}</span>`);
+                let monthHTML = `<div class="col-6">${state?.['text'] ? state?.['text'] : "_"}</div>`
+                let yearHTML = `<div class="col-6 text-right"><span class="badge badge-outline badge-soft-danger">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span></div>`
+                return $(`<div class="row">${monthHTML}${yearHTML}</div>`);
             },
         });
     }

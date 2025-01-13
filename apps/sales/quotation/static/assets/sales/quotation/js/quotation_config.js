@@ -51,6 +51,10 @@ $(function () {
                 "url": $eleUrlFact.attr('data-md-type'),
                 "keyResp": "product_type_list"
             },
+            "saledata.productcategory": {
+                "url": $eleUrlFact.attr('data-md-category'),
+                "keyResp": "product_category_list"
+            },
             "saledata.expense": {
                 "url": $eleUrlFact.attr('data-md-labor'),
                 "keyResp": "expense_list"

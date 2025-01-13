@@ -1713,6 +1713,11 @@ class QuotationLoadDataHandle {
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                            dataAdd['product_quantity'] = valueQuantity;
+                            dataAdd['uom_id'] = dataUOM?.['id'];
+                            dataAdd['uom_data'] = dataUOM;
+                            dataAdd['tax_id'] = dataTax?.['id'];
+                            dataAdd['tax_data'] = dataTax;
                         }
                         $table.DataTable().row.add(dataAdd).draw().node();
                     }
@@ -1801,6 +1806,11 @@ class QuotationLoadDataHandle {
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                            dataAdd['product_quantity'] = valueQuantity;
+                            dataAdd['uom_id'] = dataUOM?.['id'];
+                            dataAdd['uom_data'] = dataUOM;
+                            dataAdd['tax_id'] = dataTax?.['id'];
+                            dataAdd['tax_data'] = dataTax;
                         }
                         $table.DataTable().row.add(dataAdd).draw().node();
                     }
@@ -1839,8 +1849,6 @@ class QuotationLoadDataHandle {
                     }
                 })
             }
-            // Re calculate
-            QuotationCalculateCaseHandle.calculateAllRowsTableCost();
             QuotationLoadDataHandle.loadSetWFRuntimeZone();
         }
         return true;
@@ -3291,6 +3299,7 @@ class QuotationDataTableHandle {
                 let itemEle = row.querySelector('.table-row-item');
                 let suppliedByEle = row.querySelector('.table-row-supplied-by');
                 let uomEle = row.querySelector('.table-row-uom');
+                let priceGrEle = row.querySelector('.input-group-price');
                 let priceEle = row.querySelector('.table-row-price');
                 let taxEle = row.querySelector('.table-row-tax');
                 if (itemEle) {
@@ -3317,9 +3326,14 @@ class QuotationDataTableHandle {
                     }
                     QuotationLoadDataHandle.loadInitS2($(uomEle), dataS2);
                 }
+                if (priceGrEle) {
+                    if (data?.['warehouse_data']) {
+                        $(priceGrEle).attr('data-cost-wh-id', data?.['warehouse_data']?.['id']);
+                    }
+                }
                 if (priceEle) {
                     if (data?.['warehouse_data']) {
-                        $(priceEle).attr('data-wh', data?.['warehouse_data']);
+                        $(priceEle).attr('data-wh', JSON.stringify(data?.['warehouse_data']));
                     }
                 }
                 if (taxEle) {
@@ -3329,6 +3343,8 @@ class QuotationDataTableHandle {
                     }
                     QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
                 }
+                // re calculate
+                QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableCost, row);
             },
         });
     };
@@ -4238,9 +4254,11 @@ class QuotationDataTableHandle {
                 );
                 // Select the appended button from the DOM and attach the event listener
                 $('#btn-add-expense-quotation-create').on('click', function () {
+                    QuotationStoreDataHandle.storeDtbData(3);
                     QuotationLoadDataHandle.loadAddRowExpense();
                 });
                 $('#btn-add-labor-quotation-create').on('click', function () {
+                    QuotationStoreDataHandle.storeDtbData(3);
                     QuotationLoadDataHandle.loadAddRowLabor();
                 });
             }

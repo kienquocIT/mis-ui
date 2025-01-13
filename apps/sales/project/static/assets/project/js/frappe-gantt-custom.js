@@ -95,6 +95,7 @@ class fGanttCustom {
     static load_detail_group(group_ID){
         const $prjForm = $('#project_form');
         const $pjElm = $('#id'), check_page_version = $prjForm.hasClass('baseline_version');
+        const _is_detail = $prjForm.hasClass('form-detail')
         if (!$pjElm.val() && !check_page_version) return false
 
         function loadGroupDetail(data){
@@ -103,8 +104,13 @@ class fGanttCustom {
             if (date_end === undefined) date_end = data['date_end']
             $('#group_modal #group_id').remove()
             $('#groupTitle').val(data.title)
-            $('#groupStartDate').val(moment(date_from, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
-            $('#groupEndDate').val(moment(date_end, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+            if (_is_detail){
+                $('#groupStartDate').val(moment(date_from, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+                $('#groupEndDate').val(moment(date_end, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+            }else{
+                $('#groupStartDate')[0]._flatpickr.setDate(date_from)
+                $('#groupEndDate')[0]._flatpickr.setDate(date_end)
+            }
             let $gID = $('<input id="group_id" type="hidden"/>')
             $gID.val(data.id)
             $('#groupWeight').val(data?.gr_weight | data.weight)
@@ -138,6 +144,7 @@ class fGanttCustom {
 
     static load_detail_work(work_ID){
         const $prjElm = $('#project_form'), check_page_version = $prjElm.hasClass('baseline_version');
+        const _is_detail = $prjElm.hasClass('form-detail')
 
         function loadWorkDetail(res){
             let date_from = res?.w_start_date, date_end = res?.w_end_date, depen_type = res?.work_dependencies_type,
@@ -157,8 +164,13 @@ class fGanttCustom {
                 $BorBtnElm.addClass('is_selected')
                 $('#bor_select_data').data('bor_data', res.bom_data)
             }
-            $('#workStartDate').val(moment(date_from, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
-            $('#workEndDate').val(moment(date_end, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+            if (_is_detail) {
+                $('#workStartDate').val(moment(date_from, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+                $('#workEndDate').val(moment(date_end, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+            } else {
+                $('#workStartDate')[0]._flatpickr.setDate(date_from)
+                $('#workEndDate')[0]._flatpickr.setDate(date_end)
+            }
             let $wID = $('<input id="work_id" type="hidden"/>'), $wSTT = $('<input id="work_status" type="hidden"/>'),
                 $wORDER = $('<input id="work_order" type="hidden"/>');
             $wID.val(res.id)

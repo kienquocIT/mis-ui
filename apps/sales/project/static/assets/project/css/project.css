@@ -589,3 +589,16 @@
     background-color: #F0552D;
     color: white;
 }
+
+form#project_form:not(.form-detail) #permit_lock_fd{
+    cursor: pointer;
+}
+.edited#permit_lock_fd .fa-lock-open{
+    color:#7fd420;
+}
+.edited#permit_lock_fd .fa-lock{
+    color:red;
+}
+.input-affix-wrapper .form-control:not(:first-child){
+    padding-left: .75rem!important;
+}

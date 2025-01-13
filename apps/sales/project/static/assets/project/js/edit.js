@@ -1,17 +1,5 @@
 $(document).ready(function () {
     'use strict';
-    // run date-pick
-    $('.date-picker').daterangepicker({
-        singleDatePicker: true,
-        timepicker: false,
-        showDropdowns: false,
-        minYear: 2023,
-        autoApply: true,
-        locale: {
-            format: 'DD/MM/YYYY'
-        },
-        maxYear: parseInt(moment().format('YYYY'), 10),
-    });
 
     // run select employee choice
     $('#selectEmployeeInherit, #select_project_pm').each(function () {
@@ -26,6 +14,10 @@ $(document).ready(function () {
     $('#select_project_group, #select_project_work').each(function () {
         $(this).initSelect2()
     });
+
+    $('.date-picker').each(function(){
+        loadDate($(this))
+    })
 
     // init gantt
     const LEFT_TITLE = [
@@ -76,7 +68,9 @@ $(document).ready(function () {
                     $('.lazy_loading').removeClass('active')
                 }
             )
-        } else $('.lazy_loading').removeClass('active')
+        } else {
+            reGetDetail(window.new_gantt_init)
+        }
     }
 
     var new_gantt = new Gantt(
@@ -113,7 +107,8 @@ $(document).ready(function () {
     window.new_gantt_init = new_gantt
 
     // get data
-    let $form = $('#project_form')
+    let $form = $('#project_form');
+    const $finishDateElm = $('#dateFinish');
     $.fn.callAjax2({
         'url': $form.attr('data-url-detail'),
         'method': 'get',
@@ -128,8 +123,13 @@ $(document).ready(function () {
                 let opt1 = new Option(data['project_pm']['full_name'], data['project_pm']['id'], true, true);
                 $('#select_project_pm').attr('data-onload', JSON.stringify(data['project_pm'])).append(opt1).trigger('change');
                 $('#employeeInheritInput').attr('data-value', data['employee_inherit'].id).val(data['employee_inherit'].full_name);
-                $('#dateStart').val(moment(data.start_date).format('DD/MM/YYYY'))
-                $('#dateFinish').val(moment(data.finish_date).format('DD/MM/YYYY'))
+                $('#dateStart')[0]._flatpickr.setDate(data.start_date)
+                $finishDateElm[0]._flatpickr.setDate(data.finish_date)
+                if (data?.['finish_date_lock']){
+                    $finishDateElm.next().prop('disabled', true)
+                    $('#permit_lock_fd i').removeClass('fa-lock-open').addClass('fa-lock')
+                }
+
                 if(data['date_close'])
                     $('#dateClose').val(moment(data['date_close']).format('DD/MM/YYYY'))
                         .closest('.form-group').removeClass('hidden')
@@ -168,7 +168,7 @@ $(document).ready(function () {
     saveWork(new_gantt)
     show_task_list()
 
-    // validate form
+    // validate form submit
     let $TaskFrom = $('#formOpportunityTask');
     SetupFormSubmit.validate($TaskFrom, {
         errorClass: 'is-invalid cl-red',
@@ -232,4 +232,11 @@ $(document).ready(function () {
 
     // init tabs report
     let tabReport = new TaskReport()
+
+    // click lock finish date
+    $('#permit_lock_fd').on('click', function (){
+        $(this).addClass('edited')
+        $(this).find('i').toggleClass('fa-lock').toggleClass('fa-lock-open')
+        $finishDateElm.next().prop('disabled', !$finishDateElm.next().prop('disabled'))
+    })
 });

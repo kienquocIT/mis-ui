@@ -75,6 +75,7 @@ class OpportunityDetail(View):
                    'type_customer': TYPE_CUSTOMER,
                    'role_customer': ROLE_CUSTOMER,
                    'list_from_app': 'task.opportunitytask.create',
+                   'list_from_app_id': 'e66cfb5a-b3ce-4694-a4da-47618f53de4c',
                    'stt_sys': SYSTEM_STATUS,
                }, status.HTTP_200_OK
 
@@ -96,6 +97,7 @@ class OpportunityUpdate(View):
             'type_customer': TYPE_CUSTOMER,
             'role_customer': ROLE_CUSTOMER,
             'list_from_app': 'task.opportunitytask.create',
+            'list_from_app_id': 'e66cfb5a-b3ce-4694-a4da-47618f53de4c',
             'stt_sys': SYSTEM_STATUS,
         }
         return result, status.HTTP_200_OK

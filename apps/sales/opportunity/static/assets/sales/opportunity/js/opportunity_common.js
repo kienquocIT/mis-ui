@@ -1003,12 +1003,15 @@ class OpportunityActivity {
                 .then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        // enable side panel\
-                        $('.current-create-task').trigger('click')
+                        // enable side panel
+                        const $formElm = $('#formOpportunityTask');
+                        $('#offCanvasRightTask').offcanvas('show');
                         resetFormTask()
                         $('.title-create').addClass('hidden')
                         $('.title-detail').removeClass('hidden')
                         $('#inputTextTitle').val(data.title)
+                        $formElm.find(`input[name="id"]`).remove()
+                        $formElm.append(`<input type="hidden" name="id" value="${data.id}">`)
                         $('#inputTextCode').val(data.code)
                         $('#rangeValue').text(data['percent_completed'])
                         $('#percent_completed').val(data['percent_completed'])
@@ -1023,7 +1026,6 @@ class OpportunityActivity {
                         )
                         $('#inputTextEstimate').val(data.estimate)
                         $('#selectPriority').val(data.priority).trigger('change')
-                        $('.btn-log_work').addClass('disabled')
                         // render label
                         let htmlElm = $('.label-mark')
                         htmlElm.html('')
@@ -1031,21 +1033,35 @@ class OpportunityActivity {
                             htmlElm.append($(`<span class="item-tag"><span>${item}</span></span>`))
                         $('#inputAssigner').val(data.employee_created.full_name)
                             .attr('value', data.employee_created.id)
-                        if (data?.employee_inherit.hasOwnProperty("id"))
-                            $('#employee_inherit_id').attr('data-onload', JSON.stringify(data.employee_inherit))
-                                .append(`<option value="${data.employee_inherit.id}" selected>${
-                                    data.employee_inherit.full_name}</option>`).trigger("change")
+
+                        const runComponent = (elm, data) => {
+                            data.selected = true;
+                            elm.attr('data-onload', JSON.stringify(data))
+                                .html(`<option value="${data.id}" selected>${data.title}</option>`)
+                                .trigger('change')
+                        }
+                        if (data?.process && data?.['process']?.['id']){
+                            runComponent($('#process_id'), data.process)
+                        }
+                        else if (data?.opportunity && data?.opportunity?.id){
+                            runComponent($('#opportunity_id'), data.opportunity)
+                        }
+                        if (data?.employee_inherit.hasOwnProperty("id")){
+                            data.employee_inherit.title = data.employee_inherit.full_name
+                            runComponent($('#employee_inherit_id'), data.employee_inherit)
+                        }
                         window.editor.setData(data.remark)
                         window.checklist.setDataList = data.checklist
                         window.checklist.render()
-                        $('.create-subtask, .create-checklist').addClass('hidden')
                         if (data?.['task_log_work'].length) OpportunityActivity.tabLogWork(data['task_log_work'])
                         if (data?.['sub_task_list']) OpportunityActivity.tabSubtask(data.id)
                         if (data.attach) {
                             const fileDetail = data.attach[0]?.['files']
                             FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
                         }
-                        $('.create-task').attr('disabled', true)
+                        const $btnSub = $('.create-subtask')
+                        if (Object.keys(data.parent_n).length > 0) $btnSub.addClass('hidden')
+                        else $btnSub.removeClass('hidden')
                     }
                 })
     };

@@ -130,7 +130,7 @@ $(document).ready(function () {
                     $('#permit_lock_fd i').removeClass('fa-lock-open').addClass('fa-lock')
                 }
 
-                if(data['date_close'] )
+                if(data['date_close'])
                     $('#dateClose').val(moment(data['date_close']).format('DD/MM/YYYY'))
                         .closest('.form-group').removeClass('hidden')
 
@@ -234,10 +234,9 @@ $(document).ready(function () {
     let tabReport = new TaskReport()
 
     // click lock finish date
-    const FDateElm = $('#dateFinish')
     $('#permit_lock_fd').on('click', function (){
         $(this).addClass('edited')
         $(this).find('i').toggleClass('fa-lock').toggleClass('fa-lock-open')
-        FDateElm.next().prop('disabled', !FDateElm.next().prop('disabled'))
+        $finishDateElm.next().prop('disabled', !$finishDateElm.next().prop('disabled'))
     })
 });

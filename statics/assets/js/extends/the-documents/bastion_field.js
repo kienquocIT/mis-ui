@@ -454,7 +454,7 @@ class BastionFieldControl {
 
             const configSelect2 = this.configInheritSelect(opts);
 
-            if (this.allOppConfig('not_change') === true) {
+            if (this.allInheritConfig('not_change') === true) {
                 this.empInheritEle.attr('readonly', 'readonly').closest('.form-group').css('cursor', 'not-allowed');
                 const clsSelect2 = new SelectDDControl(this.empInheritEle, configSelect2);
                 clsSelect2.renderDataOnload(clsSelect2.config());
@@ -598,12 +598,17 @@ class BastionFieldControl {
                 'html': $.fn.gettext('Retrieving Opportunity Data that has been linked to Process') + '...',
             },
         }).then(resp => {
-            const data = $.fn.switcherResp(resp);
-            if (data) {
-                const linkedData = data?.['opp_process_stage_app'];
-                clsThis.selectedFillAllData(linkedData);
-            }
-        })
+                const data = $.fn.switcherResp(resp);
+                if (data) {
+                    const linkedData = data?.['opp_process_stage_app'];
+                    clsThis.selectedFillAllData(linkedData);
+                }
+            },
+            (error) => {
+                if (error.status === 403)
+                    clsThis.processEle.val(null).trigger("change", BastionFieldControl.skipBastionChange);
+                else console.log('error permission denied')
+            })
     }
 
     callLinkedData(from_app) {
@@ -654,15 +659,18 @@ class BastionFieldControl {
             'process_stage_app': {}, ...linkedData
         };
 
-        clsThis.oppEle.destroySelect2();
-        clsThis.oppEle.empty().initSelect2(clsThis.configOppSelect({
-            data: resolveData?.['opp'] ? [
-                {
-                    ...resolveData['opp'],
-                    'selected': true,
-                }
-            ] : []
-        }));
+        // opportunity
+        if (!clsThis.globalOpts?.['oppFlagData']?.['readonly']){
+            clsThis.oppEle.destroySelect2();
+            clsThis.oppEle.empty().initSelect2(clsThis.configOppSelect({
+                data: resolveData?.['opp'] ? [
+                    {
+                        ...resolveData['opp'],
+                        'selected': true,
+                    }
+                ] : []
+            }));
+        }
 
         // process
         clsThis.processEle.destroySelect2();

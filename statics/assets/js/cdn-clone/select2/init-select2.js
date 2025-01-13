@@ -157,7 +157,9 @@ class SelectDDControl {
         //  3. null
         let ajaxData = this.opts?.['ajax'];
         if (ajaxData) return ajaxData;
+        if (ajaxData === null) return null;  // without ajax!
 
+        // case: opts.ajax === undefined
         let url = this.ele.attr('data-url');
         let method = this.ele.attr('data-method') || 'GET';
         if (url && method) {

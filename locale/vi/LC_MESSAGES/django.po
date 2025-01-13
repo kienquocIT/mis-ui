@@ -10246,3 +10246,19 @@ msgstr "Tỉ lệ sẽ tự động = 1 nếu UOM này trở thành đơn vị t
 #
 msgid "Select reference unit (if null) for this group to apply the ratio"
 msgstr "Gán đơn vị tham chiếu (nếu chưa có) để áp dụng tỉ lệ"
+
+#
+msgid "Just log"
+msgstr "Chỉ ghi nhận"
+
+#
+msgid "If checked, just log, not send email"
+msgstr "Nếu chọn, chỉ ghi nhận, không gửi email"
+
+#
+msgid "Send email notification now"
+msgstr "Gửi email thông báo ngay"
+
+#
+msgid "If not checked, just log this meeting"
+msgstr "Nếu không chọn, chỉ ghi nhận cuộc họp này"

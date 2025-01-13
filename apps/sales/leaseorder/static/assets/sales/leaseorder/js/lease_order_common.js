@@ -1807,6 +1807,10 @@ class LeaseOrderLoadDataHandle {
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                            dataAdd['product_quantity'] = valueQuantity;
+                            dataAdd['product_quantity_time'] = valueQuantityTime;
+                            dataAdd['uom_id'] = dataUOM?.['id'];
+                            dataAdd['uom_data'] = dataUOM;
                         }
                         $table.DataTable().row.add(dataAdd).draw().node();
                     }
@@ -1913,6 +1917,10 @@ class LeaseOrderLoadDataHandle {
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                            dataAdd['product_quantity'] = valueQuantity;
+                            dataAdd['product_quantity_time'] = valueQuantityTime;
+                            dataAdd['uom_id'] = dataUOM?.['id'];
+                            dataAdd['uom_data'] = dataUOM;
                         }
                         $table.DataTable().row.add(dataAdd).draw().node();
                     }
@@ -1951,8 +1959,6 @@ class LeaseOrderLoadDataHandle {
                     }
                 })
             }
-            // Re calculate
-            LeaseOrderCalculateCaseHandle.calculateAllRowsTableCost();
             LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
         }
         return true;
@@ -3178,14 +3184,14 @@ class LeaseOrderDataTableHandle {
                     if (data?.['promotion_data']) {
                         dataS2 = [data?.['promotion_data']];
                     }
-                    QuotationLoadDataHandle.loadInitS2($(promotionEle), dataS2);
+                    LeaseOrderLoadDataHandle.loadInitS2($(promotionEle), dataS2);
                 }
                 if (shippingEle) {
                     let dataS2 = [];
                     if (data?.['shipping_data']) {
                         dataS2 = [data?.['shipping_data']];
                     }
-                    QuotationLoadDataHandle.loadInitS2($(shippingEle), dataS2);
+                    LeaseOrderLoadDataHandle.loadInitS2($(shippingEle), dataS2);
                 }
                 if (assetTypeEle) {
                     LeaseOrderLoadDataHandle.loadInitS2($(assetTypeEle), LeaseOrderLoadDataHandle.dataAssetType);
@@ -3413,6 +3419,8 @@ class LeaseOrderDataTableHandle {
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(uomTimeEle), dataS2);
                 }
+                // re calculate
+                LeaseOrderCalculateCaseHandle.commonCalculate(LeaseOrderDataTableHandle.$tableCost, row);
             },
         });
     };
@@ -3447,7 +3455,7 @@ class LeaseOrderDataTableHandle {
                         } else {
                             return `<select 
                                     class="form-select table-row-labor-item" 
-                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-labor')}"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-labor')}"
                                     data-method="GET"
                                     data-keyResp="expense_list"
                                     data-zone="${dataZone}"
@@ -3467,7 +3475,7 @@ class LeaseOrderDataTableHandle {
                         }
                         return `<select 
                                     class="form-select table-row-item" 
-                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-expense')}"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-expense')}"
                                     data-method="GET"
                                     data-keyResp="expense_item_list"
                                     data-zone="${dataZone}"
@@ -4391,9 +4399,11 @@ class LeaseOrderDataTableHandle {
                 );
                 // Select the appended button from the DOM and attach the event listener
                 $('#btn-add-expense-quotation-create').on('click', function () {
+                    LeaseOrderStoreDataHandle.storeDtbData(3);
                     LeaseOrderLoadDataHandle.loadAddRowExpense();
                 });
                 $('#btn-add-labor-quotation-create').on('click', function () {
+                    LeaseOrderStoreDataHandle.storeDtbData(3);
                     LeaseOrderLoadDataHandle.loadAddRowLabor();
                 });
             }

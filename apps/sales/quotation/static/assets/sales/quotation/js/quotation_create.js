@@ -321,14 +321,6 @@ $(function () {
             QuotationStoreDataHandle.storeDtbData(4);
         });
 
-        $('#btn-add-expense-quotation-create').on('click', function (e) {
-            QuotationLoadDataHandle.loadAddRowExpense();
-        });
-
-        $('#btn-add-labor-quotation-create').on('click', function (e) {
-            QuotationLoadDataHandle.loadAddRowLabor();
-        });
-
         tableExpense.on('click', '.del-row', function (e) {
             e.stopPropagation();
             e.stopImmediatePropagation();

@@ -73,15 +73,16 @@ $(document).ready(function () {
         if ($(this)[0].getAttribute("id") === 'open_project')
             data = {'system_status': 2}
         $.fn.callAjax2({
-            'url': $FormElm.attr('data-url'),
+            'url': $('#url-factory').attr('data-update-status'),
             'method': 'put',
             'data': data,
         }).then(
             (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && (data['status'] === 201 || data['status'] === 200))
-                    $.fn.notifyB({description: data.message}, 'success');
-                window.location.href = $('#url-factory').attr('data-list');
+                let res = $.fn.switcherResp(resp);
+                if (res && (res['status'] === 201 || res['status'] === 200))
+                    $.fn.notifyB({description: res.message}, 'success');
+                if (data?.system_status === 2) window.location.reload()
+                else window.location.href = $('#url-factory').attr('data-list');
             })
     });
 

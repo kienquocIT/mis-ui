@@ -10234,3 +10234,7 @@ msgstr "Lọc theo tháng"
 #
 msgid "All group (Company)"
 msgstr "Tất cả phòng ban (Công ty)"
+
+#
+msgid "Uncheck all filters to view full year plan"
+msgstr "Bỏ chọn tất cả bộ lọc để xem kế hoạch cả năm"

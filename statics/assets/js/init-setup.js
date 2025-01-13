@@ -540,16 +540,27 @@ class NotifyController {
         this.btnClearAll = $('#btnNotifyClearAll');
     }
 
+    handleBellCount(count=0){
+        if (typeof count !== 'number') {
+            count = 0;
+        }
+        this.bellCount.data('notify.count', count);
+        if (count > 0){
+            this.bellCount.text(count);
+            this.bellIdxIcon.addClass('my-bell-ring');
+        } else {
+            this.bellCount.text('');
+            this.bellIdxIcon.removeClass('my-bell-ring');
+        }
+    }
+
     checkNotifyCount() {
         $.fn.callAjax2({
             url: this.notifyCountUrl,
             method: 'GET',
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
-            if (data && data.hasOwnProperty('count') && data['count'] > 0) {
-                this.bellCount.text(data['count']);
-                this.bellIdxIcon.addClass('my-bell-ring');
-            }
+            this.handleBellCount(data['count'] || 0);
         });
     }
 
@@ -587,10 +598,21 @@ class NotifyController {
         }
     }
 
+    onEvents(){
+        const clsThis = this;
+        this.bellIdx.on('data.newOne', function (){
+            const count = clsThis.bellCount.data('notify.count');
+            clsThis.handleBellCount(count + 1);
+        });
+    }
+
     // main
     active() {
         new NotifyPopup().cleanChildNotifyBlock();
         let realThis = this;
+
+        realThis.onEvents();
+
         if (realThis.notifyCountUrl) realThis.checkNotifyCount();
 
         let notifyData = [];

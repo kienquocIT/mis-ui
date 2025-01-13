@@ -276,7 +276,6 @@
                         } else {
                             star$ = $(`<span class="text-light mr-3"><i class="fa-regular fa-star"></i></span>`);
                             star$.on('click', function () {
-                                console.log('item xx:', item);
                                 MenuFavorite.setFavorite(item);
                                 MenuFavorite.render();
                                 renderMenus(menusData);

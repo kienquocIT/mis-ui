@@ -64,7 +64,8 @@ class AuthLogin(APIView):
         if request.user and not isinstance(request.user, AnonymousUser):
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp.state is True:
-                return redirect(request.query_params.get('next', reverse('HomeView')))
+                home_path = reverse('HomeView')
+                return redirect(request.query_params.get('next', '') or home_path)
         session_flush(request=request)
         if check_home_domain(request) is True:
             return redirect(reverse('AuthLoginSelectTenant'))

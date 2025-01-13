@@ -1,7 +1,10 @@
 $(document).ready(function () {
     const trans_script_periods = $('#trans-script-periods')
     const periodEle = $('#period-select')
-    const periodMonthEle = $('#period-month')
+    let quarterFilterEle = $('#quarter-filter')
+    let monthFilterEle = $('#month-filter')
+    let periodQuarterEle = $('#period-quarter')
+    let periodMonthEle = $('#period-month')
     const current_period_Ele = $('#current_period')
     let current_period = {}
     if (current_period_Ele.text() !== '') {
@@ -35,7 +38,6 @@ $(document).ready(function () {
             keyText: 'title',
         }).on('change', function () {
             let selected_option = SelectDDControl.get_data_from_idx(periodEle, periodEle.val())
-            console.log(selected_option)
             if (selected_option) {
                 getMonthOrder(selected_option)
             }
@@ -85,7 +87,6 @@ $(document).ready(function () {
     $(document).on('change', '#period-month', function () {
         let selected_option = SelectDDControl.get_data_from_idx(periodEle, periodEle.val())
         if (selected_option) {
-            console.log(parseInt(periodMonthEle.val()) + selected_option['space_month'])
             $('#period-day-from').val(1);
             $('#period-day-to').val(
                 get_final_date_of_current_month(
@@ -93,6 +94,22 @@ $(document).ready(function () {
                 )
             );
         }
+    })
+
+    $(document).on('change', '#month-filter', function () {
+        if ($(this).prop('checked')) {
+            quarterFilterEle.prop('checked', !$(this).prop('checked'))
+            periodQuarterEle.prop('disabled', $(this).prop('checked'))
+        }
+        periodMonthEle.prop('disabled', !$(this).prop('checked'))
+    })
+
+    $(document).on('change', '#quarter-filter', function () {
+        if ($(this).prop('checked')) {
+            monthFilterEle.prop('checked', !$(this).prop('checked'))
+            periodMonthEle.prop('disabled', $(this).prop('checked'))
+        }
+        periodQuarterEle.prop('disabled', !$(this).prop('checked'))
     })
 
     LoadPeriod(current_period)

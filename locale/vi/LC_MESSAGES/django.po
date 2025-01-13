@@ -8189,8 +8189,8 @@ msgid "Budget report"
 msgstr "Báo cáo ngân sách"
 
 #
-msgid "Get by Budget plan config permission"
-msgstr "Lấy theo quyền trong Cấu hình KHNS"
+msgid "By granted permission in 'Budget plan config'"
+msgstr "Theo quyền được gán trong 'Cấu hình KHNS'"
 
 #
 msgid "Red lines are the expenses out of plan."
@@ -10222,3 +10222,15 @@ msgstr "Quản lý cấp trên"
 #
 msgid "Date range"
 msgstr "Khoảng ngày"
+
+#
+msgid "Filter by quarter"
+msgstr "Lọc theo quý"
+
+#
+msgid "Filter by month"
+msgstr "Lọc theo tháng"
+
+#
+msgid "All group (Company)"
+msgstr "Tất cả phòng ban (Công ty)"

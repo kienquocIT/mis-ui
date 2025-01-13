@@ -77,9 +77,7 @@
                                 data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
                     </div>
                 </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-12">
+                <div class="col-12 col-lg-12 col-md-12 mt-3">
                     <button type="button" class="btn btn-social btn-social-facebook btn-sm w-100" id="btn-view">
                         {% trans 'Apply' %}
                     </button>
@@ -124,7 +122,7 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
 
-    {#    phải để theo thứ tự này để load mặc định#}
+    {#    phải để theo thứ tự này để load dữ liệu báo cáo mặc định#}
     <script src="{% static 'assets/js/periods_group.js' %}"></script>
     <script src="{% static 'assets/sales/inventory_report/js/items_detail.js' %}"></script>
 {% endblock %}

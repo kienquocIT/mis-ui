@@ -10,32 +10,7 @@
     {{ data.data.current_period | json_script:"current_period" }}
 
     <script id="trans-script"
-            data-trans-m1th="{% trans 'January' %}"
-            data-trans-m2th="{% trans 'February' %}"
-            data-trans-m3th="{% trans 'March' %}"
-            data-trans-m4th="{% trans 'April' %}"
-            data-trans-m5th="{% trans 'May' %}"
-            data-trans-m6th="{% trans 'June' %}"
-            data-trans-m7th="{% trans 'July' %}"
-            data-trans-m8th="{% trans 'August' %}"
-            data-trans-m9th="{% trans 'September' %}"
-            data-trans-m10th="{% trans 'October' %}"
-            data-trans-m11th="{% trans 'November' %}"
-            data-trans-m12th="{% trans 'December' %}"
-            data-trans-revenue="{% trans 'Revenue' %}"
-            data-trans-net-profit="{% trans 'Net income' %}"
-            data-trans-gross-profit="{% trans 'Gross profit' %}"
-            data-trans-we="{% trans 'Weighted average' %}"
-            data-trans-ob="{% trans 'Opening balance' %}"
-            data-trans-grc="{% trans 'Goods receipt' %}"
-            data-trans-grt="{% trans 'Goods return' %}"
-            data-trans-dlvr="{% trans 'Delivery' %}"
-            data-trans-gis="{% trans 'Goods issue' %}"
-            data-trans-gtf="{% trans 'Goods transfer' %}"
-            data-trans-no-info="{% trans 'Have not done. Please finish in Goods Detail.' %}"
-            data-trans-all="{% trans 'Default all' %}"
-            data-trans-all-group="{% trans 'Company' %}"
-            data-trans-get-by-config="{% trans 'Get by Budget plan config permission' %}"
+            data-trans-all-group="{% trans 'All group (Company)' %}"
             data-trans-total-in-plan="{% trans 'Total in plan' %}"
             data-trans-total-out-plan="{% trans 'Total out plan' %}"
     ></script>
@@ -46,75 +21,48 @@
             data-url-payment-list="{% url 'PaymentListForBudgetReportAPI' %}"
     ></script>
 
-    <div class="row">
-        <div class="col-12 col-lg-4 col-md-8">
-            <div class="form-group">
-                <label for="group-select" class="form-label required">{% trans 'Group' %}</label>
-                <select class="form-select select2" id="group-select" data-method="GET" data-url="{% url 'BudgetPlanConfigListAPI' %}"></select>
-            </div>
+    <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilter">
+        <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
+    </button>
+    <div class="offcanvas offcanvas-end" style="min-width: 30vw; max-width: 75vw" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasFilter">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">{% trans 'Filter' %}</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <div class="col-12 col-lg-2 col-md-4">
-            <div class="form-group">
-                <label for="period-select" class="form-label required">{% trans 'Fiscal year' %}</label>
-                <select class="form-select select2" id="period-select" data-method="GET" data-url="{% url 'PeriodsConfigListAPI' %}"></select>
-            </div>
-        </div>
-        <div class="col-12 col-lg-2 col-md-4">
-            <div class="form-group">
-                <div class="row">
-                    <div class='col-12'>
-                        <input type="checkbox" id="quarter-filter">
-                        <label for="quarter-select" class="form-label">{% trans 'Quarter' %}</label>
+        <div class="offcanvas-body">
+            {% include 'extends/periods_group.html' with period_req=True quarter_active=True month_req=True date_req=False %}
+            <div class="row">
+                <div class="col-12 col-lg-12 col-md-12">
+                    <div class="form-group">
+                        <label for="group-select" class="form-label required">{% trans 'Department' %}</label>
+                        <select class="form-select select2" id="group-select" data-method="GET" data-url="{% url 'BudgetPlanConfigListAPI' %}"></select>
+                        <span class="small text-danger">{% trans "By granted permission in 'Budget plan config'" %}</span>
                     </div>
                 </div>
-                <select disabled class="form-select select2" id="quarter-select">
-                    <option value="1">{% trans 'Quarter' %} 1</option>
-                    <option value="2">{% trans 'Quarter' %} 2</option>
-                    <option value="3">{% trans 'Quarter' %} 3</option>
-                    <option value="4">{% trans 'Quarter' %} 4</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-12 col-lg-2 col-md-4">
-            <div class="form-group">
-                <div class="row">
-                    <div class='col-12'>
-                        <input type="checkbox" id="month-filter" checked>
-                        <label for="month-select" class="form-label">{% trans 'Month' %}</label>
+                <div class="col-12 col-lg-12 col-md-12">
+                    <div class="form-group">
+                        <label for="view-mode-select" class="form-label">{% trans 'View mode' %}</label>
+                        <select class="form-select select2" id="view-mode-select">
+                            <option value="0" selected>{% trans 'Periodic result' %}</option>
+                            <option value="1">{% trans 'Cumulative result' %}</option>
+                        </select>
                     </div>
                 </div>
-                <select class="form-select select2" id="month-select"></select>
+                <div class="col-12 col-lg-12 col-md-12 mt-3">
+                    <button type="button" class="btn btn-social btn-social-facebook btn-sm rounded w-100" id="btn-view">
+                        {% trans 'Apply' %}
+                    </button>
+                </div>
             </div>
-        </div>
-        <div class="col-12 col-lg-2 col-md-4">
-            <div class="form-group">
-                <label for="view-mode-select" class="form-label">{% trans 'View mode' %}</label>
-                <select class="form-select select2" id="view-mode-select">
-                    <option value="0" selected>{% trans 'Periodic result' %}</option>
-                    <option value="1">{% trans 'Cumulative result' %}</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-12 col-lg-12 col-md-12">
-            <button type="button" class="btn btn-primary" id="btn-view">
-                <span>
-                    <span>{% trans 'View' %}</span>
-                    <span class="icon">
-                        <span class="feather-icon">
-                            <i class="fas fa-eye"></i>
-                        </span>
-                    </span>
-                </span>
-            </button>
         </div>
     </div>
 
     <div class="row">
         <div class="col-12">
             <table id="main-table" class="w-100 table-hover table nowrap">
-                <thead class="bg-gradient-primary">
+                <thead class="bg-primary">
                 <tr>
-                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 50px; border-top-left-radius: calc(0.5rem - 1px);"></th>
                     <th class="text-white" style="min-width: 300px">{% trans 'Expense item' %}</th>
                     <th class="text-white" style="min-width: 200px">
                         {% trans 'Plan' %}
@@ -127,7 +75,7 @@
                     </th>
                     <th class="text-white" style="min-width: 200px">{% trans 'Actual' %}</th>
                     <th class="text-white" style="min-width: 200px">{% trans 'Difference' %}</th>
-                    <th class="text-white" style="min-width: 150px">{% trans 'Rate' %}</th>
+                    <th class="text-white" style="min-width: 150px; border-top-right-radius: calc(0.5rem - 1px);">{% trans 'Rate' %}</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -142,5 +90,7 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 
+    {#    phải để theo thứ tự này để load dữ liệu báo cáo mặc định#}
+    <script src="{% static 'assets/js/periods_group.js' %}"></script>
     <script src="{% static 'assets/sales/budget_report/js/budget_report.js' %}"></script>
 {% endblock %}

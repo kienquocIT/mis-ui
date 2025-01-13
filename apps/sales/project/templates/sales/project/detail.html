@@ -45,7 +45,7 @@
                         </span>
                     </a>
                     {% if data.can_close %}
-                        <a href="#" class="btn btn-outline-primary mr-5" id="complete_project">
+                        <a href="#" class="btn btn-outline-primary mr-5" id="complete_project" hidden>
                             <span>
                                 <span class="icon">
                                     <i class="fa-solid fa-flag-checkered"></i>
@@ -318,6 +318,7 @@
            data-list="{% url 'ProjectList' %}"
            data-baseline="{% url "ProjectListBaselineAPI" %}"
            data-task-list="{% url 'ProjectTaskListAllAPI' %}"
+           data-update-status="{% url 'ProjectUpdateStatusAPI' data.pk %}"
     >
 {% endblock %}
 {% block jsFooter %}

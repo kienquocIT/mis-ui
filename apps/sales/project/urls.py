@@ -7,7 +7,7 @@ from apps.sales.project.views import ProjectList, ProjectCreate, ProjectCreateAP
     ProjectListBaselineAPI, ProjectBaselineDetail, ProjectBaselineDetailAPI, ProjectHome, ProjectConfig, \
     ProjectConfigAPI, ProjectExpenseListAPI, ProjectWorkList, ProjectActivities, \
     ProjectActivitiesListAPI, ProjectCommentListAPI, ProjectActivitiesCommentDetail, ProjectCommentDetailFlowsAPI, \
-    ProjectTaskList, ProjectTaskListAllAPI
+    ProjectTaskList, ProjectTaskListAllAPI, ProjectUpdateStatusAPI
 
 urlpatterns = [
     # project
@@ -73,6 +73,11 @@ urlpatterns = [
     path('activities/comment-api', ProjectCommentListAPI.as_view(), name='ProjectCommentListAPI'),
     path(
         'activities/comment/detail-api/<str:pk>', ProjectCommentDetailFlowsAPI.as_view(), name='ProjectCommentDetailAPI'
+    ),
+
+    # project close or re-open project
+    path(
+        'complete-or-re-open/<str:pk>', ProjectUpdateStatusAPI.as_view(), name='ProjectUpdateStatusAPI'
     ),
 
 ]

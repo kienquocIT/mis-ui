@@ -6,75 +6,11 @@ $(document).ready(function () {
     const periodMonthEle = $('#period-month')
     const trans_script = $('#trans-script')
     const url_script = $('#url-script')
-    const current_period_Ele = $('#current_period')
-    let current_period = {}
-    if (current_period_Ele.text() !== '') {
-        current_period = JSON.parse(current_period_Ele.text())
-        getMonthOrder(current_period)
-        periodMonthEle.val(current_period?.['current_sub']?.['order']).trigger('change');
-    }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
     if ($definition_inventory_valuation === '0') {
         $('#btn-calculate').remove()
     }
     let PERIODIC_CLOSED = false
-
-    function getMonthOrder(period_data) {
-        periodMonthEle.html(``)
-        periodMonthEle.empty();
-        let data = period_data?.['subs'] ? period_data?.['subs'] : []
-        let select_data = []
-        for (let i = 0; i < data.length; i++) {
-            let option_month = moment(data[i]?.['start_date']).month() + 1
-            let option_year = moment(data[i]?.['start_date']).year()
-            periodMonthEle.append(`<option value="${data[i]?.['order']}">${trans_script.attr(`data-trans-m${option_month}th`)}</option>`)
-            select_data.push({
-                'id': i + 1,
-                'title': trans_script.attr(`data-trans-m${option_month}th`),
-                'month': i + 1,
-                'year': option_year
-            })
-        }
-        periodMonthEle.empty();
-        periodMonthEle.initSelect2({
-            data: select_data,
-            templateResult: function (state) {
-                let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
-                return $(`<span>${state.text} ${groupHTML}</span>`);
-            },
-        });
-    }
-
-    function LoadPeriod(ele, data) {
-        if (Object.keys(data).length === 0) {
-            data = current_period
-        }
-        ele.initSelect2({
-            ajax: {
-                url: ele.attr('data-url'),
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                let res = []
-                for (const item of resp.data[keyResp]) {
-                    if (item?.['fiscal_year'] <= current_period['fiscal_year']) {
-                        res.push(item)
-                    }
-                }
-                return res
-            },
-            data: (data ? data : null),
-            keyResp: 'periods_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            let selected_option = SelectDDControl.get_data_from_idx(ele, ele.val())
-            if (selected_option) {
-                getMonthOrder(selected_option)
-            }
-        })
-    }
-    LoadPeriod(periodEle, current_period)
 
     function LoadItemsSelectBox(ele, data) {
         ele.initSelect2({
@@ -161,8 +97,7 @@ $(document).ready(function () {
                             return `<span class="text-muted">${row?.['system_date']}</span>`
                         }
                         else if (row?.['row_type'] === 'open') {
-                            let month = parseInt(periodMonthEle.val()) + current_period['space_month']
-                            return `01/${month < 10 ? `0${month}` : month}/${new Date().getFullYear()}`
+                            return `--`
                         }
                         return `***`
                     }
@@ -299,21 +234,6 @@ $(document).ready(function () {
                 const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
                 const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
                 $('.popover-prd:first-child').trigger('hover')
-
-                let wrapper$ = table.closest('.dataTables_wrapper');
-                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-                headerToolbar$.prepend(textFilter$);
-                if (textFilter$.length > 0) {
-                    textFilter$.css('display', 'flex');
-                    textFilter$.append(
-                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append(`
-                            <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                <i class="fas fa-sliders-h"></i>&nbsp;${trans_script.attr('data-trans-filter')}
-                            </button>
-                        `)
-                    )
-                }
             },
         });
     }
@@ -998,18 +918,6 @@ $(document).ready(function () {
                 }
             }
         })
-    })
-
-    $('#btn-reset').on('click', function () {
-        items_select_Ele.empty()
-        warehouses_select_Ele.empty()
-        periodMonthEle.empty()
-        let current_period = {}
-        if (current_period_Ele.text() !== '') {
-            current_period = JSON.parse(current_period_Ele.text())
-            getMonthOrder(current_period)
-            periodMonthEle.val(current_period?.['current_sub']?.['order']).trigger('change');
-        }
     })
 
     $(document).on("click", '#btn-filter', function () {

@@ -1049,26 +1049,28 @@ class HandlePlanAppNew {
                 )
             }
             else {
-                elePermit.newRowAppEle.initSelect2({
-                    'callbackDataResp': function (resp, keyResp) {
-                        let result = SelectDDControl.get_data_from_resp(resp, keyResp);
-                        if (result && Array.isArray(result) && result.length > 0){
-                            result.sort(
-                                (a, b) => {
-                                    let aAppDataTitle = a?.['title_i18n'] || null;
-                                    let bAppDataTitle = b?.['title_i18n'] || null;
-                                    if (aAppDataTitle && bAppDataTitle && typeof aAppDataTitle === 'string' && typeof bAppDataTitle === 'string') {
-                                        return aAppDataTitle.localeCompare(bAppDataTitle);
-                                    } else if (aAppDataTitle) return true;
-                                    else if (bAppDataTitle) return false;
-                                    return true;
-                                }
-                            )
-                            return result;
+                $.fn.callAjax2({
+                    url: elePermit.newRowAppEle.data('url'),
+                    method: 'GET',
+                    data: {
+                        'pageSize': -1,
+                    },
+                }).then(
+                    resp => {
+                        const data = $.fn.switcherResp(resp);
+                        if (data && data.hasOwnProperty('app_list')){
+                            const app_list = data['app_list'].sort(function (a, b) {
+                                return a.title_i18n.localeCompare(b.title_i18n)
+                            });
+                            elePermit.newRowAppEle.initSelect2({
+                                ajax: null,
+                                data: app_list,
+                                keyId: 'id',
+                                keyText: 'title_i18n',
+                            }).val("");
                         }
-                        return [];
-                    }
-                });
+                    },
+                );
                 clsThis.renderTablePermissionSelected(instance_id);
             }
         } else {

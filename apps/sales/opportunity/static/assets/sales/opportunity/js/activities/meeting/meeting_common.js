@@ -387,6 +387,7 @@ class MeetingHandle {
         frm.dataForm['input_result'] = $('#meeting-result-text-area').val();
 
         frm.dataForm['repeat'] = $('#repeat-activity').is(':checked') ? 1 : 0;
+        frm.dataForm['email_notify'] = $('#send_notify_email').prop('checked');
 
         let employee_attended_list = [];
         $('#meeting-employee-attended-select-box option:selected').each(function () {

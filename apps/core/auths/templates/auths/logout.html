@@ -14,5 +14,19 @@
             </div>
         </div>
     </div>
+{% endblock %}
 
+{% block jsFooterUnCompress %}
+    <script>
+        async function unregisterServiceWorkers() {
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (let registration of registrations) {
+                    await registration.unregister();
+                }
+            }
+        }
+        unregisterServiceWorkers();
+        localStorage.removeItem('fcmClean');  // flag clean of FCM
+    </script>
 {% endblock %}

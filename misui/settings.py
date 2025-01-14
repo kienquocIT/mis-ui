@@ -67,6 +67,7 @@ INSTALLED_APPS = \
         'apps.core.chatbot',  # chatbot AI
         'django_celery_beat',  # celery crontab
         'apps.core.chat3rd',  # Chat Third party: Messenger, Zalo, WhatsApp
+        'apps.core.firebase',  # Firebase
     ] + [  # Core Application
         'apps.core.account',
         'apps.core.auths',

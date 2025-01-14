@@ -260,3 +260,35 @@ msgstr "Không có hoạt động nào"
 #
 msgid "Hour"
 msgstr "Giờ"
+
+#
+msgid "Warning: The finish date was changed."
+msgstr "Cảnh báo: Ngày hoàn thành sẽ bị thay đổi"
+
+#
+msgid "The project's finish date was affected by the current end date"
+msgstr "Ngày hoàn thành của dự án sẽ bị ảnh hưởng bởi ngày kết thúc này"
+
+#
+msgid "Sure, I understand"
+msgstr "Xác nhận, tôi hiểu"
+
+#
+msgid "No, I will edit it"
+msgstr "Không, tôi sẽ chỉnh sửa"
+
+#
+msgid "Start date or finish date not in range of project date"
+msgstr "Ngày bắt đầu, ngày kết thức không khớp với ngày của dự án"
+
+#
+msgid "End date not in range of project date"
+msgstr "Ngày kết thúc không khớp với ngày của dự án"
+
+#
+msgid "Warning: The group end date was changed."
+msgstr "Cảnh báo: Ngày kết thúc của nhóm sẽ bị thay đổi"
+
+#
+msgid "The group end date was affected by the current end date"
+msgstr "Ngày kết thúc của nhóm công việc phụ thuộc, sẽ bị ảnh hưởng bởi ngày kết thúc này"

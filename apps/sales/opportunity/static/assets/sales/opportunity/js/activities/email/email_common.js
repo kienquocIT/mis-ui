@@ -298,6 +298,7 @@ class EmailHandle {
         frm.dataForm['email_to_list'] = email_to_slb.val();
         frm.dataForm['email_cc_list'] = email_cc_slb.val();
         frm.dataForm['content'] = $('#form-new-email .ck-content').html();
+        frm.dataForm['just_log'] = $('#form-new-email #just_log').prop('checked');
 
         return {
             url: frm.dataUrl,

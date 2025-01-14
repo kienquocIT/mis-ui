@@ -12,7 +12,7 @@
               id="form-new-email"
               method="post">
             {% csrf_token %}
-            <div class="row">
+            <div class="row" style="overflow: auto; max-height: 85vh">
                 {% if page == 'lead' %}
                     <div class="col-12">
                         <div class="form-group">
@@ -25,33 +25,40 @@
                     {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
                 {% endif %}
 
-                <div class="col-12">
+                <div class="col-12 col-md-12 col-lg-12">
                     <div class="form-group">
                         <label for="email-to-select-box" class="form-label required">{% trans 'To' %}</label>
-                        <select disabled id="email-to-select-box" class="form-select" multiple="multiple"></select>
+                        <select disabled id="email-to-select-box" class="select2 form-select" multiple></select>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-group">
                         <label for="email-cc-select-box" class="form-label">{% trans 'Cc' %}</label>
-                        <select disabled id="email-cc-select-box" class="select2 form-select" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                        <select disabled id="email-cc-select-box" class="select2 form-select" multiple data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                     </div>
                 </div>
-                <div class="col-12">
+                <div class="col-12 col-md-12 col-lg-12">
                     <div class="form-group">
                         <label for="email-subject-input" class="form-label required">{% trans 'Subject' %}</label>
                         <input id="email-subject-input" class="form-control required">
                     </div>
                 </div>
-                <div class="col-12">
+                <div class="col-12 col-md-12 col-lg-12">
                     <div class="form-group">
                         <label for="email-content-area" class="form-label">{% trans 'Content' %}</label>
                         <textarea id="email-content-area"></textarea>
                     </div>
                 </div>
+                <div class="col-12 col-md-12 col-lg-12">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="just_log">
+                        <label for="just_log" class="form-check-label">{% trans 'Just log' %}</label>
+                        <span class="small text-primary">({% trans 'If checked, just log, not send email' %})</span>
+                    </div>
+                </div>
             </div>
         </form>
-        <button type="submit" class="btn btn-primary mt-3" form="form-new-email" id="btn-offcanvas-send-email">{% trans 'Send' %}</button>
+        <button type="submit" class="btn btn-primary mt-3" form="form-new-email" id="btn-offcanvas-send-email">{% trans 'Save' %}</button>
 	</div>
 </div>
 

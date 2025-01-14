@@ -1,5 +1,8 @@
 """system module"""
+import os
+
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
@@ -7,6 +10,40 @@ from apps.shared import BreadcrumbView
 from misui import media_proxy
 
 from .jsi18n import JavaScriptCatalogCustomize
+
+
+def showFirebaseJS(request):
+    data = """
+        importScripts('https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js');
+        importScripts('https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js');
+        importScripts('/static/firebase/handle_message.js');
+    """ + f"""
+        firebase.initializeApp({os.getenv("FCM_CONFIG", "")});
+    """ + """
+        const messaging = firebase.messaging();
+        messaging.onBackgroundMessage(function(payload) {
+            console.log('[firebase-messaging-sw.js] Received background message ', payload);
+            fcm_handle_message(payload, 'background');
+        });
+        self.addEventListener("notificationclick", (event) => {
+          event.notification.close();
+          event.waitUntil(
+            clients
+              .matchAll({
+                type: "window",
+              })
+              .then((clientList) => {
+                for (const client of clientList) {
+                  if (client.url === "/" && "focus" in client) return client.focus();
+                }
+                if (clients.openWindow) return clients.openWindow("/");
+              }),
+          );
+        });
+    """
+
+    return HttpResponse(data, content_type="text/javascript")
+
 
 urlpatterns = \
     [
@@ -20,6 +57,7 @@ urlpatterns = \
         path('site/', include('apps.web_builder.urls.viewer')),
         path('site-config/', include('apps.web_builder.urls.config')),
         path("jsi18n/<str:packages>", JavaScriptCatalogCustomize.as_view(), name="javascript-catalog"),
+        path('firebase-messaging-sw.js', showFirebaseJS, name="show_firebase_js"),
     ]
 
 urlpatterns += static('django-admin-media/', document_root=settings.MEDIA_ROOT)

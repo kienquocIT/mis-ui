@@ -2139,8 +2139,8 @@ class LeaseOrderLoadDataHandle {
             let depreciationMethodEle = row.querySelector('.table-row-depreciation-method');
             let $methodEle = $('#depreciation_method');
             if (depreciationMethodEle && $methodEle.length > 0) {
+                LeaseOrderLoadDataHandle.loadInitS2($methodEle, LeaseOrderLoadDataHandle.dataDepreciationMethod, {}, LeaseOrderLoadDataHandle.$depreciationModal);
                 if ($(depreciationMethodEle).val()) {
-                    LeaseOrderLoadDataHandle.loadInitS2($methodEle, LeaseOrderLoadDataHandle.dataDepreciationMethod);
                     $methodEle.val(parseInt($(depreciationMethodEle).val())).trigger('change');
                 }
             }
@@ -2188,7 +2188,7 @@ class LeaseOrderLoadDataHandle {
             let $adjustEle = $('#depreciation_adjustment');
             if (depreciationAdjustEle && $adjustEle.length > 0) {
                 if ($(depreciationAdjustEle).val()) {
-                    $adjustEle.val(parseInt($(depreciationAdjustEle).val()));
+                    $adjustEle.val(parseFloat($(depreciationAdjustEle).val()));
                 }
             }
         }
@@ -2204,7 +2204,7 @@ class LeaseOrderLoadDataHandle {
         let $costEle = $('#cost_price');
         let $adjustEle = $('#depreciation_adjustment');
         if ($methodEle.length > 0 && $timeEle.length > 0 && $startEle.length > 0 && $endEle.length > 0 && $costEle.length > 0 && $adjustEle.length > 0) {
-            if ($timeEle.val() && $startEle.val() && $endEle.val() && $costEle.valCurrency()) {
+            if ($methodEle.val() && $timeEle.val() && $startEle.val() && $endEle.val() && $costEle.valCurrency()) {
                 let data = LeaseOrderLoadDataHandle.generateDateRangeWithDepreciation(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
                 LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
                 LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(data).draw();
@@ -2260,7 +2260,7 @@ class LeaseOrderLoadDataHandle {
         // const totalMonths = LeaseOrderLoadDataHandle.calculateMonthsBetween(start_date, end_date);
         let totalMonths = months;
         let depreciationValue = Math.floor(price / totalMonths); // Depreciation per month
-        let depreciationBaseValue = Math.floor(price / totalMonths); // Depreciation (no adjust) per month
+        let accumulativeValue = 0;
 
         let currentStartDate = start_date;
         let currentMonth = parseInt(start_date.split('/')[1]);
@@ -2274,23 +2274,32 @@ class LeaseOrderLoadDataHandle {
 
             if (method === 1 && adjust) {
                 let depreciationAdjustValue = Math.floor(price / totalMonths * adjust); // Depreciation (adjust) per month
+                depreciationValue = depreciationAdjustValue;
+
                 if (result.length > 0) {
                     let last = result[result.length - 1];
                     depreciationAdjustValue = Math.floor(last?.['end_value'] / totalMonths * adjust);
-                }
-                if (depreciationAdjustValue > depreciationBaseValue) {
-                    depreciationValue = depreciationAdjustValue;
+
+                    let monthsRemain = totalMonths - last?.['month'];
+                    let depreciationValueCompare = last?.['end_value'] / monthsRemain;
+                    if (depreciationAdjustValue > depreciationValueCompare) {
+                        depreciationValue = depreciationAdjustValue;
+                    } else {
+                        depreciationValue = depreciationValueCompare;
+                    }
                 }
             }
+            accumulativeValue += depreciationValue;
+
 
             if (currentEndDateObj > endDateObj) {
                 // result.push({
                 //     month: currentMonth.toString(),
-                //     start_date: currentStartDate,
-                //     end_date: end_date,
+                //     start_date: end_date,
+                //     end_date: currentEndDate,
                 //     start_value: currentValue,
                 //     depreciation_value: depreciationValue,
-                //     accumulative_value: depreciationValue,
+                //     accumulative_value: accumulativeValue,
                 //     end_value: Math.max(currentValue - depreciationValue, 0),
                 // });
                 break;
@@ -2301,7 +2310,7 @@ class LeaseOrderLoadDataHandle {
                     end_date: currentEndDate,
                     start_value: currentValue,
                     depreciation_value: depreciationValue,
-                    accumulative_value: depreciationValue,
+                    accumulative_value: accumulativeValue,
                     end_value: Math.max(currentValue - depreciationValue, 0),
                 });
             }
@@ -2326,11 +2335,13 @@ class LeaseOrderLoadDataHandle {
                 let $methodEle = $('#depreciation_method');
                 let $startEle = $('#depreciation_start_date');
                 let $endEle = $('#depreciation_end_date');
-                if ($methodEle.length > 0 && $startEle.length > 0 && $endEle.length > 0) {
+                let $adjust = $('#depreciation_adjustment')
+                if ($methodEle.length > 0 && $startEle.length > 0 && $endEle.length > 0 && $adjust.length > 0) {
                     let depreciationMethodEle = targetRow.querySelector('.table-row-depreciation-method');
                     let depreciationStartDEle = targetRow.querySelector('.table-row-depreciation-start-date');
                     let depreciationEndDEle = targetRow.querySelector('.table-row-depreciation-end-date');
-                    if (depreciationMethodEle && depreciationStartDEle && depreciationEndDEle) {
+                    let depreciationAdjustEle = targetRow.querySelector('.table-row-depreciation-adjustment');
+                    if (depreciationMethodEle && depreciationStartDEle && depreciationEndDEle && depreciationAdjustEle) {
                         if ($methodEle.val()) {
                             $(depreciationMethodEle).val(parseInt($methodEle.val()));
                         }
@@ -2341,6 +2352,9 @@ class LeaseOrderLoadDataHandle {
                         if ($endEle.val()) {
                             $(depreciationEndDEle).val(moment($endEle.val(),
                                 'DD/MM/YYYY').format('YYYY-MM-DD'));
+                        }
+                        if ($adjust.val()) {
+                            $(depreciationAdjustEle).val(parseFloat($adjust.val()))
                         }
                     }
                 }
@@ -2354,9 +2368,10 @@ class LeaseOrderLoadDataHandle {
                     let fnCostEle = targetRow.querySelector('.table-row-subtotal');
                     let fnCostRawEle = targetRow.querySelector('.table-row-subtotal-raw');
                     if (depreciationSubtotalEle && quantityTimeEle && fnCostEle && fnCostRawEle) {
-                        $(depreciationSubtotalEle).val(parseFloat($(quantityTimeEle).val()));
+                        let fnCost = lastRowData?.['accumulative_value'];
+                        $(depreciationSubtotalEle).val(fnCost);
                         if ($(quantityTimeEle).val()) {
-                            let fnCost = parseFloat($(quantityTimeEle).val()) * lastRowData?.['accumulative_value'];
+                            // let fnCost = parseFloat($(quantityTimeEle).val()) * lastRowData?.['accumulative_value'];
                             $(fnCostEle).attr('data-init-money', String(fnCost));
                             $(fnCostRawEle).val(String(fnCost));
                             $.fn.initMaskMoney2();
@@ -2366,7 +2381,7 @@ class LeaseOrderLoadDataHandle {
             }
         }
         return true;
-    }
+    };
 
 
 
@@ -4695,7 +4710,7 @@ class LeaseOrderDataTableHandle {
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 LeaseOrderLoadDataHandle.loadCssToDtb("table-depreciation-detail");
-                LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableDepreciationDetail);
+
                 let lastRow = LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().row(':last');
                 if (lastRow) {
                     let lastRowNode = lastRow.node();
@@ -5036,7 +5051,6 @@ class LeaseOrderCalculateCaseHandle {
         let price = 0;
         let quantity = 0;
         let quantityTime = 0;
-        let depreciation = 0;
         let elePrice = row.querySelector('.table-row-price');
         if (elePrice) {
             price = $(elePrice).valCurrency();
@@ -5119,17 +5133,16 @@ class LeaseOrderCalculateCaseHandle {
             }
         }
         // tab cost
-        let depreciationTimeEle = row.querySelector('.table-row-depreciation-time');
         let depreciationSubtotalEle = row.querySelector('.table-row-depreciation-subtotal');
-        if (depreciationTimeEle && depreciationSubtotalEle) {
-            if ($(depreciationTimeEle).val() && $(depreciationSubtotalEle).val()) {
-                subtotal = parseFloat($(depreciationSubtotalEle).val()) * parseFloat($(depreciationTimeEle).val());
+        if (depreciationSubtotalEle) {
+            if ($(depreciationSubtotalEle).val()) {
+                subtotal = parseFloat($(depreciationSubtotalEle).val());
             }
         }
         // set subtotal value
         let eleSubtotal = row.querySelector('.table-row-subtotal');
         let eleSubtotalRaw = row.querySelector('.table-row-subtotal-raw');
-        if (eleSubtotal) {
+        if (eleSubtotal && eleSubtotalRaw) {
             $(eleSubtotal).attr('data-init-money', String(subtotal));
             eleSubtotalRaw.value = subtotal;
         }
@@ -6892,7 +6905,7 @@ class LeaseOrderSubmitHandle {
                 let depreciationAdjustEle = row.querySelector('.table-row-depreciation-adjustment');
                 if (depreciationAdjustEle) {
                     if ($(depreciationAdjustEle).val()) {
-                        rowData['product_depreciation_adjustment'] = parseInt($(depreciationAdjustEle).val());
+                        rowData['product_depreciation_adjustment'] = parseFloat($(depreciationAdjustEle).val());
                     }
                 }
 

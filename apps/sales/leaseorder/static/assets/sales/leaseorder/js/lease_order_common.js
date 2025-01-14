@@ -31,6 +31,10 @@ class LeaseOrderLoadDataHandle {
         {'id': 2, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-2')},
         {'id': 3, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-3')},
     ];
+    static dataDepreciationMethod = [
+        {'id': 0, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-depreciation-method-1')},
+        {'id': 1, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-depreciation-method-2')},
+    ];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
@@ -2117,15 +2121,91 @@ class LeaseOrderLoadDataHandle {
 
 
 
+    static loadShowModalDepreciation(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let productEle = row.querySelector('.table-row-item');
+            if (productEle) {
+                if ($(productEle).val()) {
+                    let dataProduct = SelectDDControl.get_data_from_idx($(productEle), $(productEle).val());
+                    if (dataProduct) {
+                        LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id', dataProduct?.['id']);
+                    }
+                }
+            }
+
+
+
+            let depreciationMethodEle = row.querySelector('.table-row-depreciation-method');
+            let $methodEle = $('#depreciation_method');
+            if (depreciationMethodEle && $methodEle.length > 0) {
+                if ($(depreciationMethodEle).val()) {
+                    LeaseOrderLoadDataHandle.loadInitS2($methodEle, LeaseOrderLoadDataHandle.dataDepreciationMethod);
+                    $methodEle.val(parseInt($(depreciationMethodEle).val())).trigger('change');
+                }
+            }
+            let depreciationTimeEle = row.querySelector('.table-row-depreciation-time');
+            let $timeEle = $('#depreciation_time');
+            if (depreciationTimeEle && $timeEle.length > 0) {
+                if ($(depreciationTimeEle).val()) {
+                    $timeEle.val(parseFloat($(depreciationTimeEle).val()));
+                }
+            }
+            let priceEle = row.querySelector('.table-row-price');
+            let quantityEle = row.querySelector('.table-row-quantity');
+            let $priceEle = $('#cost_price');
+            if (priceEle && quantityEle && $priceEle.length > 0) {
+                if ($(priceEle).valCurrency() && $(quantityEle).val()) {
+                    let total = parseFloat($(priceEle).valCurrency()) * parseFloat($(quantityEle).val())
+                    $($priceEle).attr('value', String(total));
+                    // mask money
+                    $.fn.initMaskMoney2();
+                }
+            }
+            let uomTimeEle = row.querySelector('.table-row-uom-time');
+            let $uomEle = $('#depreciation_uom');
+            if (uomTimeEle && $uomEle.length > 0) {
+                let dataUOMTime = SelectDDControl.get_data_from_idx($(uomTimeEle), $(uomTimeEle).val());
+                if (dataUOMTime) {
+                    $uomEle[0].innerHTML = dataUOMTime?.['title'];
+                }
+            }
+            let depreciationStartDEle = row.querySelector('.table-row-depreciation-start-date');
+            let $startDateEle = $('#depreciation_start_date');
+            if (depreciationStartDEle && $startDateEle.length > 0) {
+                if ($(depreciationStartDEle).val()) {
+                    $startDateEle.val(moment($(depreciationStartDEle).val()).format('DD/MM/YYYY'));
+                }
+            }
+            let depreciationEndDEle = row.querySelector('.table-row-depreciation-end-date');
+            let $endDateEle = $('#depreciation_end_date');
+            if (depreciationEndDEle && $endDateEle.length > 0) {
+                if ($(depreciationEndDEle).val()) {
+                    $endDateEle.val(moment($(depreciationEndDEle).val()).format('DD/MM/YYYY'));
+                }
+            }
+            let depreciationAdjustEle = row.querySelector('.table-row-depreciation-adjustment');
+            let $adjustEle = $('#depreciation_adjustment');
+            if (depreciationAdjustEle && $adjustEle.length > 0) {
+                if ($(depreciationAdjustEle).val()) {
+                    $adjustEle.val(parseInt($(depreciationAdjustEle).val()));
+                }
+            }
+        }
+        LeaseOrderLoadDataHandle.loadDataTableDepreciation();
+        return true;
+    };
 
     static loadDataTableDepreciation() {
+        let $methodEle = $('#depreciation_method');
         let $timeEle = $('#depreciation_time');
-        let $startEle = $('#depreciation_start');
-        let $endEle = $('#depreciation_end');
+        let $startEle = $('#depreciation_start_date');
+        let $endEle = $('#depreciation_end_date');
         let $costEle = $('#cost_price');
-        if ($timeEle.length > 0 && $startEle.length > 0 && $endEle.length > 0 && $costEle.length > 0) {
+        let $adjustEle = $('#depreciation_adjustment');
+        if ($methodEle.length > 0 && $timeEle.length > 0 && $startEle.length > 0 && $endEle.length > 0 && $costEle.length > 0 && $adjustEle.length > 0) {
             if ($timeEle.val() && $startEle.val() && $endEle.val() && $costEle.valCurrency()) {
-                let data = LeaseOrderLoadDataHandle.generateDateRangeWithDepreciation(parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()));
+                let data = LeaseOrderLoadDataHandle.generateDateRangeWithDepreciation(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
                 LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
                 LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(data).draw();
             }
@@ -2173,11 +2253,15 @@ class LeaseOrderLoadDataHandle {
         );
     };
 
-    static generateDateRangeWithDepreciation(months, start_date, end_date, price) {
+    static generateDateRangeWithDepreciation(method, months, start_date, end_date, price, adjust = null) {
+        // method: 0: line method || 1: adjust method
+
         let result = [];
         // const totalMonths = LeaseOrderLoadDataHandle.calculateMonthsBetween(start_date, end_date);
         let totalMonths = months;
         let depreciationValue = Math.floor(price / totalMonths); // Depreciation per month
+        let depreciationBaseValue = Math.floor(price / totalMonths); // Depreciation (no adjust) per month
+
         let currentStartDate = start_date;
         let currentMonth = parseInt(start_date.split('/')[1]);
         let currentValue = price;
@@ -2188,16 +2272,27 @@ class LeaseOrderLoadDataHandle {
             let currentEndDate = LeaseOrderLoadDataHandle.addOneMonth(currentStartDate);
             let currentEndDateObj = LeaseOrderLoadDataHandle.parseToDateObj(currentEndDate);
 
+            if (method === 1 && adjust) {
+                let depreciationAdjustValue = Math.floor(price / totalMonths * adjust); // Depreciation (adjust) per month
+                if (result.length > 0) {
+                    let last = result[result.length - 1];
+                    depreciationAdjustValue = Math.floor(last?.['end_value'] / totalMonths * adjust);
+                }
+                if (depreciationAdjustValue > depreciationBaseValue) {
+                    depreciationValue = depreciationAdjustValue;
+                }
+            }
+
             if (currentEndDateObj > endDateObj) {
-                result.push({
-                    month: currentMonth.toString(),
-                    start_date: currentStartDate,
-                    end_date: end_date,
-                    start_value: currentValue,
-                    depreciation_value: depreciationValue,
-                    accumulative_value: depreciationValue,
-                    end_value: Math.max(currentValue - depreciationValue, 0),
-                });
+                // result.push({
+                //     month: currentMonth.toString(),
+                //     start_date: currentStartDate,
+                //     end_date: end_date,
+                //     start_value: currentValue,
+                //     depreciation_value: depreciationValue,
+                //     accumulative_value: depreciationValue,
+                //     end_value: Math.max(currentValue - depreciationValue, 0),
+                // });
                 break;
             } else {
                 result.push({
@@ -2220,7 +2315,58 @@ class LeaseOrderLoadDataHandle {
         return result;
     };
 
+    static loadSaveDepreciation() {
+        let target = LeaseOrderDataTableHandle.$tableCost[0].querySelector(`.table-row-item[data-product-id="${LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
+        if (target) {
+            let targetRow = target.closest('tr');
 
+            if (targetRow) {
+
+                //
+                let $methodEle = $('#depreciation_method');
+                let $startEle = $('#depreciation_start_date');
+                let $endEle = $('#depreciation_end_date');
+                if ($methodEle.length > 0 && $startEle.length > 0 && $endEle.length > 0) {
+                    let depreciationMethodEle = targetRow.querySelector('.table-row-depreciation-method');
+                    let depreciationStartDEle = targetRow.querySelector('.table-row-depreciation-start-date');
+                    let depreciationEndDEle = targetRow.querySelector('.table-row-depreciation-end-date');
+                    if (depreciationMethodEle && depreciationStartDEle && depreciationEndDEle) {
+                        if ($methodEle.val()) {
+                            $(depreciationMethodEle).val(parseInt($methodEle.val()));
+                        }
+                        if ($startEle.val()) {
+                            $(depreciationStartDEle).val(moment($startEle.val(),
+                                'DD/MM/YYYY').format('YYYY-MM-DD'));
+                        }
+                        if ($endEle.val()) {
+                            $(depreciationEndDEle).val(moment($endEle.val(),
+                                'DD/MM/YYYY').format('YYYY-MM-DD'));
+                        }
+                    }
+                }
+
+
+                //
+                let lastRowData = LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().row(':last').data();
+                if (lastRowData) {
+                    let depreciationSubtotalEle = targetRow.querySelector('.table-row-depreciation-subtotal');
+                    let quantityTimeEle = targetRow.querySelector('.table-row-quantity-time');
+                    let fnCostEle = targetRow.querySelector('.table-row-subtotal');
+                    let fnCostRawEle = targetRow.querySelector('.table-row-subtotal-raw');
+                    if (depreciationSubtotalEle && quantityTimeEle && fnCostEle && fnCostRawEle) {
+                        $(depreciationSubtotalEle).val(parseFloat($(quantityTimeEle).val()));
+                        if ($(quantityTimeEle).val()) {
+                            let fnCost = parseFloat($(quantityTimeEle).val()) * lastRowData?.['accumulative_value'];
+                            $(fnCostEle).attr('data-init-money', String(fnCost));
+                            $(fnCostRawEle).val(String(fnCost));
+                            $.fn.initMaskMoney2();
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
 
 
@@ -3520,7 +3666,6 @@ class LeaseOrderDataTableHandle {
                                             >
                                             <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
                                         </div>
-                                        <input type="text" class="form-control table-row-depreciation-subtotal" value="0" hidden>
                                 </div>`;
                     }
                 },
@@ -3546,6 +3691,12 @@ class LeaseOrderDataTableHandle {
                                     value="${row?.['product_subtotal_price']}"
                                     hidden
                                 >
+                                
+                                <input type="text" class="form-control table-row-depreciation-subtotal" value="${row?.['product_depreciation_subtotal'] ? row?.['product_depreciation_subtotal'] : 0}" hidden>
+                                <input type="text" class="form-control table-row-depreciation-method" value="${row?.['product_depreciation_method'] ? row?.['product_depreciation_method'] : 0}" hidden>
+                                <input type="text" class="form-control table-row-depreciation-start-date" value="${row?.['product_depreciation_start_date'] ? row?.['product_depreciation_start_date'] : ''}" hidden>
+                                <input type="text" class="form-control table-row-depreciation-end-date" value="${row?.['product_depreciation_end_date'] ? row?.['product_depreciation_end_date'] : ''}" hidden>
+                                <input type="text" class="form-control table-row-depreciation-adjustment" value="${row?.['product_depreciation_adjustment'] ? row?.['product_depreciation_adjustment'] : 1}" hidden>
                             </div>`;
                     }
                 },
@@ -3578,6 +3729,9 @@ class LeaseOrderDataTableHandle {
                 }
                 // re calculate
                 LeaseOrderCalculateCaseHandle.commonCalculate(LeaseOrderDataTableHandle.$tableCost, row);
+            },
+            drawCallback: function () {
+                LeaseOrderDataTableHandle.dtbCostHDCustom();
             },
         });
     };
@@ -4542,6 +4696,18 @@ class LeaseOrderDataTableHandle {
                 $.fn.initMaskMoney2();
                 LeaseOrderLoadDataHandle.loadCssToDtb("table-depreciation-detail");
                 LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableDepreciationDetail);
+                let lastRow = LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().row(':last');
+                if (lastRow) {
+                    let lastRowNode = lastRow.node();
+                    if (lastRowNode) {
+                        let lastTd = lastRowNode.querySelector('td:last-child');
+                        if (lastTd) {
+                            $(lastTd).css({
+                                'background': '#d0e6ff'
+                            })
+                        }
+                    }
+                }
             },
         });
     };
@@ -4585,6 +4751,25 @@ class LeaseOrderDataTableHandle {
                 $('#btn-check-promotion').on('click', function () {
                     LeaseOrderPromotionHandle.callPromotion(0);
                 });
+            }
+        }
+    };
+
+    static dtbCostHDCustom() {
+        let $table = LeaseOrderDataTableHandle.$tableCost;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#label-new-product').length) {
+                let $group = $(`<b id="label-new-product">New products</b>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
             }
         }
     };
@@ -4934,10 +5119,12 @@ class LeaseOrderCalculateCaseHandle {
             }
         }
         // tab cost
-        let depreciationEle = row.querySelector('.table-row-depreciation-time');
-        if (depreciationEle) {
-            depreciation = $(depreciationEle).val();
-            subtotal = (price * quantity) / parseFloat(depreciation) * quantityTime;
+        let depreciationTimeEle = row.querySelector('.table-row-depreciation-time');
+        let depreciationSubtotalEle = row.querySelector('.table-row-depreciation-subtotal');
+        if (depreciationTimeEle && depreciationSubtotalEle) {
+            if ($(depreciationTimeEle).val() && $(depreciationSubtotalEle).val()) {
+                subtotal = parseFloat($(depreciationSubtotalEle).val()) * parseFloat($(depreciationTimeEle).val());
+            }
         }
         // set subtotal value
         let eleSubtotal = row.querySelector('.table-row-subtotal');
@@ -6668,12 +6855,6 @@ class LeaseOrderSubmitHandle {
                         rowData['product_quantity_depreciation'] = parseFloat($(depreciationTimeEle).val());
                     }
                 }
-                let depreciationSubtotalEle = row.querySelector('.table-row-depreciation-subtotal');
-                if (depreciationSubtotalEle) {
-                    if ($(depreciationSubtotalEle).val()) {
-                        rowData['product_depreciation_subtotal'] = parseFloat($(depreciationSubtotalEle).val());
-                    }
-                }
                 let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
                 if (eleSubtotal) {
                     rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
@@ -6681,9 +6862,40 @@ class LeaseOrderSubmitHandle {
                 if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
                     rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount']
                 }
-                // if (rowData?.['product_quantity'] && rowData?.['product_subtotal_price']) {
-                //     rowData['product_depreciation_price'] = rowData?.['product_subtotal_price'] / rowData?.['product_quantity'];
-                // }
+
+                let depreciationSubtotalEle = row.querySelector('.table-row-depreciation-subtotal');
+                if (depreciationSubtotalEle) {
+                    if ($(depreciationSubtotalEle).val()) {
+                        rowData['product_depreciation_subtotal'] = parseFloat($(depreciationSubtotalEle).val());
+                    }
+                }
+                let depreciationMethodEle = row.querySelector('.table-row-depreciation-method');
+                if (depreciationMethodEle) {
+                    if ($(depreciationMethodEle).val()) {
+                        rowData['product_depreciation_method'] = parseInt($(depreciationMethodEle).val());
+                    }
+                }
+                let depreciationStartDEle = row.querySelector('.table-row-depreciation-start-date');
+                if (depreciationStartDEle) {
+                    if ($(depreciationStartDEle).val()) {
+                        rowData['product_depreciation_start_date'] = moment($(depreciationStartDEle).val(),
+                            'DD/MM/YYYY').format('YYYY-MM-DD')
+                    }
+                }
+                let depreciationEndDEle = row.querySelector('.table-row-depreciation-end-date');
+                if (depreciationEndDEle) {
+                    if ($(depreciationEndDEle).val()) {
+                        rowData['product_depreciation_end_date'] = moment($(depreciationEndDEle).val(),
+                            'DD/MM/YYYY').format('YYYY-MM-DD')
+                    }
+                }
+                let depreciationAdjustEle = row.querySelector('.table-row-depreciation-adjustment');
+                if (depreciationAdjustEle) {
+                    if ($(depreciationAdjustEle).val()) {
+                        rowData['product_depreciation_adjustment'] = parseInt($(depreciationAdjustEle).val());
+                    }
+                }
+
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);

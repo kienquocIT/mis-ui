@@ -435,75 +435,32 @@ $(function () {
 
 
 
+
+
         tableCost.on('click', '.btn-depreciation-detail', function () {
-            let row = this.closest('tr');
-            if (row) {
-                let productEle = row.querySelector('.table-row-item');
-                if (productEle) {
-                    if ($(productEle).val()) {
-                        let dataProduct = SelectDDControl.get_data_from_idx($(productEle), $(productEle).val());
-                        if (dataProduct) {
-                            LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id', dataProduct?.['id']);
-                        }
-                    }
-                }
+            LeaseOrderLoadDataHandle.loadShowModalDepreciation(this);
+        });
 
-
-
-                let depreciationTimeEle = row.querySelector('.table-row-depreciation-time');
-                let $timeEle = $('#depreciation_time');
-                if (depreciationTimeEle && $timeEle.length > 0) {
-                    if ($(depreciationTimeEle).val()) {
-                        $timeEle.val($(depreciationTimeEle).val());
-                    }
-                }
-                let priceEle = row.querySelector('.table-row-price');
-                let quantityEle = row.querySelector('.table-row-quantity');
-                let $priceEle = $('#cost_price');
-                if (priceEle && quantityEle && $priceEle.length > 0) {
-                    if ($(priceEle).valCurrency() && $(quantityEle).val()) {
-                        let total = parseFloat($(priceEle).valCurrency()) * parseFloat($(quantityEle).val())
-                        $($priceEle).attr('value', String(total));
-                        // mask money
-                        $.fn.initMaskMoney2();
-                    }
-                }
-                let uomTimeEle = row.querySelector('.table-row-uom-time');
-                let $uomEle = $('#depreciation_uom');
-                if (uomTimeEle && $uomEle.length > 0) {
-                    let dataUOMTime = SelectDDControl.get_data_from_idx($(uomTimeEle), $(uomTimeEle).val());
-                    if (dataUOMTime) {
-                        $uomEle[0].innerHTML = dataUOMTime?.['title'];
+        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment', function () {
+            if (this.classList.contains('depreciation-method')) {
+                let $adjustEle = $('#depreciation_adjustment');
+                if ($adjustEle.length > 0) {
+                    $adjustEle.attr('readonly', 'true');
+                    if ($(this).val() === '1') {
+                        $adjustEle.removeAttr('readonly');
                     }
                 }
             }
-        });
 
-        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-start, .depreciation-end', function () {
             LeaseOrderLoadDataHandle.loadDataTableDepreciation();
         });
 
         LeaseOrderLoadDataHandle.$btnSaveDepreciation.on('click', function () {
-            let target = LeaseOrderDataTableHandle.$tableCost[0].querySelector(`.table-row-item[data-product-id="${LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
-            if (target) {
-                let targetRow = target.closest('tr');
-                let lastRowData = LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().row(':last').data();
-                if (targetRow && lastRowData) {
-                    let quantityTimeEle = targetRow.querySelector('.table-row-quantity-time');
-                    let fnCostEle = targetRow.querySelector('.table-row-subtotal');
-                    let fnCostRawEle = targetRow.querySelector('.table-row-subtotal-raw');
-                    if (quantityTimeEle && fnCostEle && fnCostRawEle) {
-                        if ($(quantityTimeEle).val()) {
-                            let fnCost = parseFloat($(quantityTimeEle).val()) * lastRowData?.['accumulative_value'];
-                            $(fnCostEle).attr('data-init-money', String(fnCost));
-                            $(fnCostRawEle).val(String(fnCost));
-                            $.fn.initMaskMoney2();
-                        }
-                    }
-                }
-            }
-
+            LeaseOrderLoadDataHandle.loadSaveDepreciation();
         });
+
+
+
 
 
 

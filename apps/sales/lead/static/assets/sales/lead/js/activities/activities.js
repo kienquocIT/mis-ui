@@ -172,7 +172,8 @@ class LeadActivitiesHandler{
                             $.fn.notifyB({
                                 'description': 'Success',
                             }, 'success');
-                            this.fetchActivityListData()
+                            // this.fetchActivityListData()
+                            this.clearCreateFormFields()
                         }
                     },
                     (errs) => {
@@ -290,6 +291,10 @@ class LeadActivitiesHandler{
         $('#detail-meeting-text-area').html('');
         $('#offcanvas-detail-send-email #detail-date-input').html('');
     }
+
+    clearCreateFormFields(){
+
+    }
 }
 
 class LeadCallActivitiesHandler extends LeadActivitiesHandler{
@@ -319,8 +324,8 @@ class LeadCallActivitiesHandler extends LeadActivitiesHandler{
         let call_date = this.$callDate.val()
         call_date = $x.fn.reformatData(call_date, 'DD/MM/YYYY', 'YYYY-MM-DD');
         this.form.dataForm['call_date'] = call_date
-        this.form.dataForm['title'] = this.$titleInput.val()
-        this.form.dataForm['detail'] = this.$contentTextArea.val()
+        this.form.dataForm['subject'] = this.$titleInput.val()
+        this.form.dataForm['input_result'] = this.$contentTextArea.val()
         this.form.dataForm['contact'] = this.$callContactSelect.val()
 
         this.form.dataUrl = this.$urlScript.attr('data-call-url')
@@ -339,6 +344,12 @@ class LeadCallActivitiesHandler extends LeadActivitiesHandler{
             const contactData = detailLeadData['config_data']?.['contact_mapped']
             this.loadInitS2(this.$callContactSelect, [contactData])
         }
+    }
+
+    clearCreateFormFields() {
+        this.$callDate.val('').trigger('change')
+        this.$titleInput.val('')
+        this.$contentTextArea.val('')
     }
 }
 
@@ -377,6 +388,13 @@ class LeadEmailActivitiesHandler extends LeadActivitiesHandler{
 
     setUpFormSubmit(){
         super.setUpFormSubmit(this.$formSubmit)
+    }
+
+    clearCreateFormFields() {
+        this.$emailToSelect.val('').trigger('change')
+        this.$emailCCSelect.val('').trigger('change')
+        this.$titleInput.val('')
+        this.$contentTextArea.val('')
     }
 }
 
@@ -423,7 +441,6 @@ class LeadMeetingActivitiesHandler extends LeadActivitiesHandler{
         });
     }
 
-
     init() {
         this.initTimeInputField()
         this.initSelectKeyData(this.$meetingEmployeeSelect, this.$meetingEmployeeSelect.data('url'), 'employee_list', 'full_name')
@@ -441,11 +458,25 @@ class LeadMeetingActivitiesHandler extends LeadActivitiesHandler{
         let meeting_date = this.$dateInput.val()
         meeting_date = $x.fn.reformatData(meeting_date, 'DD/MM/YYYY', 'YYYY-MM-DD');
         this.form.dataForm['meeting_date'] = meeting_date
-        this.form.dataForm['title'] = this.$titleInput.val()
-        this.form.dataForm['detail'] = this.$contentTextArea.val()
+        this.form.dataForm['subject'] = this.$titleInput.val()
+        this.form.dataForm['input_result'] = this.$contentTextArea.val()
         this.form.dataForm['room_location'] = this.$meetingRoomLocation.val()
-        this.form.dataForm['employee_member_list'] = this.$meetingEmployeeSelect.val()
-        this.form.dataForm['customer_member_list'] = this.$meetingCustomerSelect.val()
+        this.form.dataForm['employee_attended_list'] = []
+        const employeeList = this.$meetingEmployeeSelect.val()
+        for (const employee of employeeList){
+            this.form.dataForm['employee_attended_list'].push({
+                'employee_attended_mapped': employee
+            })
+        }
+        this.form.dataForm['customer_member_list'] = []
+        const customerList = this.$meetingCustomerSelect.val()
+        for (const customer of customerList){
+            this.form.dataForm['customer_member_list'].push({
+                'customer_member_mapped': customer
+            })
+        }
+
+
         this.form.dataUrl = this.$urlScript.attr('data-meeting-url')
     }
 
@@ -457,7 +488,7 @@ class LeadMeetingActivitiesHandler extends LeadActivitiesHandler{
 
 $(document).ready(function () {
     const leadActivitiesHandlerObj = new LeadActivitiesHandler()
-    leadActivitiesHandlerObj.fetchActivityListData()
+    // leadActivitiesHandlerObj.fetchActivityListData()
     leadActivitiesHandlerObj.clickReloadEventBiding()
     leadActivitiesHandlerObj.openActivityDetailEventBiding()
 

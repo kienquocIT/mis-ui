@@ -148,3 +148,38 @@ class LeadCallListAPI(APIView):
             return resp.result, status.HTTP_201_CREATED
         return resp.auto_return()
 
+
+class LeadEmailListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_EMAIL_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = BaseMsg.SUCCESS
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
+
+
+class LeadMeetingListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_MEETING_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = BaseMsg.SUCCESS
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
+
+
+class LeadActivityListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_ACTIVITY_LIST.push_id(pk)).get()
+        return resp.auto_return()

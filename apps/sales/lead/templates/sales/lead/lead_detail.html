@@ -53,19 +53,35 @@
 {% block modalData %}
     <div id="lead-activities-area">
         {% include 'sales/opportunity/activities/extends/call_log_modals.html' with page='lead'%}
-{#        {% include 'sales/lead/activities/call.html' %}#}
-        {% include 'sales/lead/activities/email.html' %}
-        {% include 'sales/lead/activities/meeting.html' %}
+        {% include 'sales/opportunity/activities/extends/email_modals.html' with page='lead'%}
+        {% include 'sales/opportunity/activities/extends/meeting_modals.html' with page='lead'%}
     </div>
 {% endblock %}
 
 {% block dataHiddenGroup %}
+    <script id="detail-data-script"
+        data-lead-detail=""
+        data-lead-activity-list=""
+    ></script>
+    <script id="data-url-script"
+        data-lead-list-url = "{% url 'LeadListAPI' %}"
+        data-call-url = "{% url 'LeadCallListAPI' %}"
+        data-email-url = "{% url 'LeadEmailListAPI' %}"
+        data-meeting-url = "{% url 'LeadMeetingListAPI' %}"
+        data-contact-list-url="{% url 'ContactListAPI' %}"
+        data-activity-list-url= "{% url 'LeadActivityListAPI' pk=pk %}"
+    ></script>
 {% endblock %}
+
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
     <script src="{% static 'assets/sales/lead/js/lead_common.js' %}"></script>
     <script src="{% static 'assets/sales/lead/js/lead_detail.js' %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
-{#    <script src="{% static 'assets/sales/lead/js/activities/activities.js' %}"></script>#}
+    <script src="{% static 'assets/sales/lead/js/activities/activities.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/activities/call_log/call_log_common.js'%}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/activities/email/email_common.js'%}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/activities/meeting/meeting_common.js'%}"></script>
+
 {% endblock %}

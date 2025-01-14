@@ -1,7 +1,8 @@
 from django.urls import path
 from apps.sales.lead.views import (
     LeadList, LeadCreate, LeadDetail, LeadUpdate, LeadListAPI, LeadDetailAPI,
-    LeadChartDataAPI, LeadListForOpportunityAPI, LeadCallListAPI
+    LeadChartDataAPI, LeadListForOpportunityAPI, LeadCallListAPI, LeadActivityListAPI, LeadEmailListAPI,
+    LeadMeetingListAPI
 )
 
 urlpatterns = [
@@ -13,6 +14,8 @@ urlpatterns = [
     path('update/<str:pk>', LeadUpdate.as_view(), name='LeadUpdate'),
     path('api', LeadListAPI.as_view(), name='LeadListAPI'),
     path('api/<str:pk>', LeadDetailAPI.as_view(), name='LeadDetailAPI'),
-    path('api/call/list', LeadCallListAPI.as_view(), name='LeadCallListAPI')
-
+    path('api/call/list', LeadCallListAPI.as_view(), name='LeadCallListAPI'),
+    path('api/email/list', LeadEmailListAPI.as_view(), name='LeadEmailListAPI'),
+    path('api/meeting/list', LeadMeetingListAPI.as_view(), name='LeadMeetingListAPI'),
+    path('api/activity/list/<str:pk>', LeadActivityListAPI.as_view(), name='LeadActivityListAPI')
 ]

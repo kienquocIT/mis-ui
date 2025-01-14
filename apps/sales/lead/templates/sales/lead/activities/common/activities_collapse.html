@@ -5,17 +5,17 @@
         <div class="row">
             <div class="col-12 mb-5">
                 <div class="btn-group" role="group">
-                    <span class="ml-1" data-url="{% url 'OpportunityCallLogList' %}" data-bs-toggle="tooltip" title="{% trans 'Call' %}">
+                    <span class="ml-1" data-bs-toggle="tooltip" title="{% trans 'Call' %}">
                         <button class="btn btn-xs btn-light btn-rounded open-canvas-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-call-log" aria-controls="offcanvas-call-log">
                             <i class="dropdown-icon fas fa-phone-volume"></i>
                         </button>
                     </span>
-                    <span class="ml-1" data-url="{% url 'OpportunityCallLogList' %}" data-bs-toggle="tooltip" title="{% trans 'Email' %}">
-                        <button class="btn btn-xs btn-light btn-rounded open-canvas-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-email" aria-controls="offcanvas-email">
+                    <span class="ml-1" data-bs-toggle="tooltip" title="{% trans 'Email' %}">
+                        <button class="btn btn-xs btn-light btn-rounded open-canvas-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-send-email" aria-controls="offcanvas-send-email">
                             <i class="dropdown-icon bi bi-envelope-fill"></i>
                         </button>
                     </span>
-                    <span class="ml-1" data-url="{% url 'OpportunityCallLogList' %}" data-bs-toggle="tooltip" title="{% trans 'Meeting' %}">
+                    <span class="ml-1" data-bs-toggle="tooltip" title="{% trans 'Meeting' %}">
                         <button class="btn btn-xs btn-light btn-rounded open-canvas-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-meeting" aria-controls="offcanvas-meeting">
                             <i class="dropdown-icon bi bi-person-workspace"></i>
                         </button>
@@ -39,7 +39,6 @@
                                 </button>
                             </th>
                             <th>{% trans "Activity" %}</th>
-                            <th>{% trans "Code" %}</th>
                             <th>
                                 {% trans 'Subject' %}
                                 <i class="fas fa-info-circle icon-info"
@@ -48,8 +47,9 @@
                                     title="{% trans 'sssssssssssssssssssss' %}">
                                 </i>
                             </th>
-                            <th>{% trans "Status" %}</th>
-                            <th>{% trans "Date" %}</th>
+                            <th>{% trans "Employee Created" %}</th>
+                            <th>{% trans "Date Created" %}</th>
+                            <th>{% trans "Date For Activity" %}</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

@@ -13,8 +13,18 @@
               method="post">
             {% csrf_token %}
             <div class="row">
-                {% trans 'Select Sale Person' as inherit_title %}
-                {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                {% if page == 'lead' %}
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="email-lead-select" class="form-label required">{% trans 'Lead' %}</label>
+                            <select required name="lead" disabled id="email-lead-select" class="select2 form-select" data-url="{% url 'LeadListAPI' %}" data-method="GET" data-keyResp="lead_list"></select>
+                        </div>
+                    </div>
+                {% else %}
+                    {% trans 'Select Sale Person' as inherit_title %}
+                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                {% endif %}
+
                 <div class="col-12">
                     <div class="form-group">
                         <label for="email-to-select-box" class="form-label required">{% trans 'To' %}</label>
@@ -51,40 +61,43 @@
 		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 	</div>
 	<div class="offcanvas-body">
-        <button class="btn btn-light btn-sm w-100" type="button" data-bs-toggle="collapse" data-bs-target="#detail-opp-process-inherit">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-        <div class="collapse multi-collapse" id="detail-opp-process-inherit">
-            <div class="card card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="detail-opp" class="form-label required">{% trans 'Opportunity' %}</label>
-                            <input disabled readonly id="detail-opp" class="form-control text-primary fw-bold form-control-line">
+        {% if page == 'lead' %}
+        {% else %}
+            <button class="btn btn-light btn-sm w-100" type="button" data-bs-toggle="collapse" data-bs-target="#detail-opp-process-inherit">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="collapse multi-collapse mb-5" id="detail-opp-process-inherit">
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="detail-opp" class="form-label required">{% trans 'Opportunity' %}</label>
+                                <input disabled readonly id="detail-opp" class="form-control text-primary fw-bold form-control-line">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12 col-lg-6 col-md-6">
-                        <div class="form-group">
-                            <label for="detail-process" class="form-label">{% trans 'Process' %}</label>
-                            <input disabled readonly id="detail-process" class="form-control text-primary fw-bold form-control-line">
+                        <div class="col-12 col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label for="detail-process" class="form-label">{% trans 'Process' %}</label>
+                                <input disabled readonly id="detail-process" class="form-control text-primary fw-bold form-control-line">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12 col-lg-6 col-md-6">
-                        <div class="form-group">
-                            <label for="detail-stage" class="form-label">{% trans 'Stage' %}</label>
-                            <input disabled readonly id="detail-stage" class="form-control text-primary fw-bold form-control-line">
+                        <div class="col-12 col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label for="detail-stage" class="form-label">{% trans 'Stage' %}</label>
+                                <input disabled readonly id="detail-stage" class="form-control text-primary fw-bold form-control-line">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="detail-inheritor" class="form-label required">{% trans 'Inheritor' %}</label>
-                            <input disabled readonly id="detail-inheritor" class="form-control text-primary fw-bold form-control-line">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="detail-inheritor" class="form-label required">{% trans 'Inheritor' %}</label>
+                                <input disabled readonly id="detail-inheritor" class="form-control text-primary fw-bold form-control-line">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row mt-5">
+        {% endif %}
+        <div class="row">
             <div class="col-12">
                 <span id="detail-email-subject-input" class="fs-3 fw-bold text-muted"></span>
                 <span id="detail-date-input" class="ml-2 text-muted small"></span>
@@ -99,9 +112,17 @@
                     <div class="dropdown-menu" id="detail-email-cc"></div>
                 </div>
             </div>
-            <div class="col-12 mt-3">
-                <div id="detail-email-content-area" class="border rounded p-2"></div>
-            </div>
+            {% if page == 'lead' %}
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Contents' %}</span>
+                    <p id="detail-meeting-text-area"></p>
+                </div>
+            {% else %}
+                <div class="col-12 mt-3">
+                    <div id="detail-email-content-area" class="border rounded p-2"></div>
+                </div>
+            {% endif %}
+
         </div>
 	</div>
 </div>

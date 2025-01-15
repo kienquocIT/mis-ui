@@ -1001,7 +1001,7 @@ class RecoveryDataTableHandle {
                     targets: 4,
                     width: '9.11458333333%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_recovery']}" required readonly>`;
+                        return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['quantity_recovery']}" required readonly>`;
                     }
                 },
                 {
@@ -1071,6 +1071,9 @@ class RecoveryDataTableHandle {
                                     <input type="text" class="form-control table-row-depreciation-start-date" value="${row?.['product_depreciation_start_date'] ? row?.['product_depreciation_start_date'] : ''}" hidden>
                                     <input type="text" class="form-control table-row-depreciation-end-date" value="${row?.['product_depreciation_end_date'] ? row?.['product_depreciation_end_date'] : ''}" hidden>
                                     <input type="text" class="form-control table-row-depreciation-adjustment" value="${row?.['product_depreciation_adjustment'] ? row?.['product_depreciation_adjustment'] : 1}" hidden>
+                                    
+                                    <input type="text" class="form-control table-row-depreciation-time" value="${row?.['product_quantity_depreciation'] ? row?.['product_quantity_depreciation'] : 0}" hidden>
+<!--                                    <input type="text" class="form-control table-row-uom-time" value="${row?.['product_depreciation_adjustment'] ? row?.['product_depreciation_adjustment'] : 1}" hidden>-->
                                 </div>`;
                     }
                 },

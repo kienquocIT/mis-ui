@@ -1,9 +1,7 @@
 function resetFormTask() {
     // clean html select etc.
     $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
-    $('#selectAssignTo').val(null).trigger('change');
-    if ($('.current-create-task').length <= 0)
-        $('#selectOpportunity').val(null).trigger('change').attr('disabled', false);
+    $('#employee_inherit_id').val(null).trigger('change');
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
     $('#rangeValue').text(0)
@@ -12,10 +10,11 @@ function resetFormTask() {
     const $inputAssigner = $('#inputAssigner');
     $inputAssigner.val($inputAssigner.attr('data-name'))
     $('.create-subtask').addClass('hidden')
-    $('[name="parent_n"]').remove();
+    $('input[name="parent_n"], input[name="id"]').remove();
     window.editor.setData('')
     $('.create-task').attr('disabled', false)
     $('.btn-log_work').removeClass('.disabled')
+    $('#process_id').val(null).trigger('change', BastionFieldControl.skipBastionChange)
 }
 
 function isValidString(inputString) {
@@ -74,9 +73,8 @@ class labelHandle {
         $('.form-tags-input-wrap .btn-add-tag').on('click', function () {
             const $elmInputLabel = $('#inputLabelName')
             const newTxt = $elmInputLabel.val()
-            let labelList = $taskLabelElm.val()
-            if (labelList !== undefined && labelList !== '') labelList = JSON.parse(labelList)
-            if (!labelList.length) labelList = []
+            let labelList = $taskLabelElm.val();
+            labelList = labelList && labelList.trim() ? (JSON.parse(labelList) || []) : [];
             labelList.push(newTxt)
             $taskLabelElm.attr('value', JSON.stringify(labelList))
             const labelHTML = $(`<span class="item-tag"><span>${newTxt}</span><span class="tag-delete">x</span></span>`)
@@ -205,9 +203,14 @@ function TaskSubmitFuncOpps(platform, callBackFunc) {
         formData.attach = list
     }
     let url = _form.dataUrl
+    let method = 'post';
+    if (formData?.['id']){
+        method = 'put'
+        url = $('#url-factory').attr('data-task_detail').format_url_with_uuid(formData.id)
+    }
     $.fn.callAjax2({
         'url': url,
-        'method': 'POST',
+        'method': method,
         'data': formData,
         'sweetAlertOpts': { 'allowOutsideClick': true}
     }).then(
@@ -258,7 +261,6 @@ class Task_in_opps {
         $empElm.parents('.form-group').append($assignBtnElm)
         let getParams = JSON.parse($empElm.attr('data-params'))
         $empElm.attr('data-params', JSON.stringify({...getParams, list_from_opp: opps_info.id}))
-        $empElm.initSelect2()
         $assignBtnElm.off().on('click', function () {
             if ($(this).hasClass('disabled')) return false
             const infoObj = {
@@ -291,16 +293,41 @@ class Task_in_opps {
         // run init label function
         let formLabel = new labelHandle()
         formLabel.init()
+
         // auto load opp if in page opp
-        const $selectElm = $('#opportunity_id')
-        let data = {}
-        if (opps_info) data = {
+        const { process, process_stage_app } = opps_info
+        const opportunity = {
             "id": opps_info.id,
+            "title": opps_info.title,
             "code": opps_info.code,
-            "selected": true,
+            "selected": true
         }
-        $selectElm.attr('data-onload', JSON.stringify(data)).attr('disabled', true)
-        $selectElm.initSelect2()
+
+        new $x.cls.bastionField({
+            has_process: true,
+            data_process: $x.fn.checkUUID4(process?.id) ? [
+                {
+                    "id": process.id,
+                    "title": process.title,
+                    "selected": true,
+                }
+            ] : [],
+            has_opp: true,
+            data_opp: [
+                opportunity
+            ],
+            data_process_stage_app: $x.fn.checkUUID4(process_stage_app?.id) ? [
+                {
+                    "id": process_stage_app.id,
+                    "title": process_stage_app.title,
+                    "selected": true,
+                }
+            ]: [],
+            // has_inherit: true,
+            data_inherit: [],
+            "oppFlagData": {"readonly": true},
+            "inheritFlagData": {"disabled": false, "readonly": false},
+        }).init();
 
         // click to log-work
         $('.btn-log_work').on('click', function() {
@@ -330,19 +357,30 @@ class Task_in_opps {
         // public global scope with name checklist
         window.checklist = checklist;
 
-        // reset form create task khi click huỷ bỏ hoặc tạo mới task con
-        $('.cancel-task, [data-drawer-target="#drawer_task_create"]').each((idx, elm) => {
-            $(elm).on('click', function () {
-                if ($(this).hasClass('cancel-task')) {
-                    $(this).closest('.ntt-drawer').toggleClass('open');
-                    $('.hk-wrapper').toggleClass('open');
-                }
+        // create sub task
+        const $btnCreateSub = $('.create-subtask');
+        $btnCreateSub.off().on('click', function () {
+            // call form create-task.js
+            const taskID = $(this).closest('form').find('[name="id"]').val()
+            const taskTxt = $(this).closest('form').find('[name="title"]').val()
+            $('#offCanvasRightTask .offcanvas-body').animate({ scrollTop: 0}, "fast");
+            if (taskID) {
                 resetFormTask()
-            });
-        });
+                $('.title-create').removeClass("hidden")
+                $('.title-detail').addClass("hidden")
+                $('.btn-assign').removeClass('disabled')
+                $('.parents-block').removeClass('hidden')
+                // after reset
+                $('[name="parent"]', $form).val(taskTxt)
+                $form.append(`<input type="hidden" name="parent_n" value="${taskID}"/>`)
+            }
+        })
 
         // init attachment
         new $x.cls.file($('#attachment')).init({'name': 'attach'});
+
+        // reset form create task khi click huỷ bỏ hoặc tạo mới task con
+        $('#offCanvasRightTask').on('hidden.bs.offcanvas', () => resetFormTask())
 
     }
 }

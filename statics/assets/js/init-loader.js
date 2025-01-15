@@ -162,7 +162,7 @@ $.fn.extend({
             delay: 2500,
             ...alertConfig
         }
-        switch (typeAlert) {
+        switch (typeAlert.trim()) {
             case 'success':
                 alert_config['type'] = prefixType + "success";
                 data['icon'] = 'bi bi-check2-circle';
@@ -178,6 +178,10 @@ $.fn.extend({
             case 'info':
                 alert_config['type'] = prefixType + "info";
                 data['icon'] = 'bi bi-info-circle-fill';
+                break
+            case 'alert':
+                alert_config['type'] = prefixType + "primary";
+                data['icon'] = 'bi bi-bell-fill';
                 break
         }
         $.notify(data, alert_config);

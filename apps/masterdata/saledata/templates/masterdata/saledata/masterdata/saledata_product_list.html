@@ -443,6 +443,7 @@
                                 <div class="form-group">
                                     <label for="referenced-unit" class="form-label">{% trans "Referenced unit" %}</label>
                                     <input readonly disabled class="form-control form-control-line" type="text" name="referenced-unit" id="referenced-unit">
+                                    <span class="small text-danger">{% trans 'Select reference unit (if null) for this group to apply the ratio' %}</span>
                                 </div>
                             </div>
                         </div>
@@ -457,6 +458,7 @@
                                 <div class="form-group">
                                     <label for="ratio-unit" class="form-label required">{% trans "Ratio" %}</label>
                                     <input class="form-control" type="number" name="ratio" id="ratio-unit">
+                                    <span class="small text-muted">{% trans 'The ratio will be automatically = 1 if this UOM becomes the reference unit' %}</span>
                                 </div>
                             </div>
                         </div>

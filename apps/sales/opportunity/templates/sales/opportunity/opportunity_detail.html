@@ -121,14 +121,11 @@
         </form>
     </div>
 
-{#    {% include 'sales/opportunity/activities/extends/call_log_modals.html' %}#}
-{#    {% include 'sales/opportunity/activities/extends/meeting_modals.html' %}#}
-{#    {% include 'sales/opportunity/activities/extends/email_modals.html' %}#}
-    {% include 'sales/task/extend/task-form.html' with has_prj=False%}
-
     {{ data.type_customer|json_script:'data_type_customer' }}
     {{ data.role_customer|json_script:'data_role_customer' }}
-
+{% endblock %}
+{% block modalData %}
+    {% include 'sales/task/extend/task-form.html' with has_prj=False%}
     <div class="modal fade" id="modalEditMember" tabindex="-1" role="dialog" aria-labelledby="modalEditMember" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -150,7 +147,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="modalProcess" tabindex="-1" role="dialog" aria-labelledby="modalProcess" aria-hidden="true">
         <div class="modal-dialog modal-lg" style="min-width: 80%" role="document">
             <div class="modal-content">

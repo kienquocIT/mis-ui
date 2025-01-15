@@ -5961,6 +5961,10 @@ msgid "Lead time"
 msgstr "Thời gian chuẩn bị"
 
 #
+msgid "from"
+msgstr "từ"
+
+#
 msgid "to"
 msgstr "đến"
 

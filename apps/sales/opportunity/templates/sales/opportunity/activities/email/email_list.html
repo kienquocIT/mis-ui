@@ -24,8 +24,10 @@
 {% endblock %}
 {% block pageContent %}
     <script id="trans-script"
-            data-trans-to="{% trans 'To' %}"
-            data-trans-cc="{% trans 'Cc' %}"
+            data-trans-from="{% trans 'from' %}"
+            data-trans-to="{% trans 'to' %}"
+            data-trans-cc="{% trans 'cc' %}"
+            data-trans-bcc="{% trans 'bcc' %}"
             data-just-log="{% trans 'Logged' %}"
             data-sent="{% trans 'Sent successfully' %}"
             data-err="{% trans 'Send failed' %}"

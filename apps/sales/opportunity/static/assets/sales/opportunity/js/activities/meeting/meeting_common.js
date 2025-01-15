@@ -171,10 +171,15 @@ $(document).on('click', '#table_opportunity_meeting_list .offcanvas-meeting-butt
     })[0]
     cancel_activity_btn.attr('data-id', meeting_obj.id)
 
-    $('#detail-opp').val(meeting_obj?.['opportunity']?.['code'] + ' - ' + meeting_obj?.['opportunity']?.['title']);
-    $('#detail-process').val(meeting_obj?.['process']?.['title'] ? meeting_obj?.['process']?.['title'] : '--');
-    $('#detail-stage').val(meeting_obj?.['process_stage_app']?.['title'] ? meeting_obj?.['process_stage_app']?.['title'] : '--');
-    $('#detail-inheritor').val(meeting_obj?.['employee_inherit']?.['full_name']);
+    $('#detail-opp').text(meeting_obj?.['opportunity']?.['code'] + ' - ' + meeting_obj?.['opportunity']?.['title']);
+    $('#detail-process').text(meeting_obj?.['process']?.['title'] ? meeting_obj?.['process']?.['title'] : '');
+    $('#detail-stage').text(meeting_obj?.['process_stage_app']?.['title'] ? meeting_obj?.['process_stage_app']?.['title'] : '');
+    let creator_fullname = meeting_obj?.['employee_created']?.['full_name']
+    let creator_group = meeting_obj?.['employee_created']?.['group']?.['title']
+    let inherit_fullname = meeting_obj?.['employee_inherit']?.['full_name']
+    let inherit_group = meeting_obj?.['employee_inherit']?.['group']?.['title']
+    $('#detail-creator').text(`${creator_fullname} ${creator_group ? ' - ' + creator_group : ''}`);
+    $('#detail-inheritor').text(`${inherit_fullname} ${inherit_group ? ' - ' + inherit_group : ''}`);
 
     $('#detail-subject-input').text(meeting_obj?.['subject']);
     $('#is-cancelled').prop('hidden', !meeting_obj?.['is_cancelled'])

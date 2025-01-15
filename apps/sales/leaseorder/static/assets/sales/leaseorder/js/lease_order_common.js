@@ -2120,7 +2120,7 @@ class LeaseOrderLoadDataHandle {
 
 
 
-
+    // TABLE COST-DEPRECIATION
     static loadShowModalDepreciation(ele) {
         let row = ele.closest('tr');
         if (row) {
@@ -2248,21 +2248,10 @@ class LeaseOrderLoadDataHandle {
         return timeDifference / (1000 * 60 * 60 * 24);
     };
 
-    static calculateMonthsBetween(start_date, end_date) {
-        const start = parseDate(start_date);
-        const end = parseDate(end_date);
-        return (
-            (end.getFullYear() - start.getFullYear()) * 12 +
-            (end.getMonth() - start.getMonth()) +
-            1
-        );
-    };
-
     static generateDateRangeWithDepreciation(method, months, start_date, end_date, price, adjust = null) {
         // method: 0: line method || 1: adjust method
 
         let result = [];
-        // const totalMonths = LeaseOrderLoadDataHandle.calculateMonthsBetween(start_date, end_date);
         let totalMonths = months;
         let depreciationValue = Math.floor(price / totalMonths); // Depreciation per month
         let accumulativeValue = 0;
@@ -2279,7 +2268,7 @@ class LeaseOrderLoadDataHandle {
             let currentEndDate = LeaseOrderLoadDataHandle.addOneMonth(currentStartDate);
             let currentEndDateObj = LeaseOrderLoadDataHandle.parseToDateObj(currentEndDate);
 
-            let daysBetween = LeaseOrderLoadDataHandle.calculateDaysBetween(currentStartDateObj, currentEndDateObj);
+            let daysEven = LeaseOrderLoadDataHandle.calculateDaysBetween(currentStartDateObj, currentEndDateObj);
 
             if (method === 1 && adjust) {
                 let depreciationAdjustValue = Math.floor(price / totalMonths * adjust); // Depreciation (adjust) per month
@@ -2303,14 +2292,15 @@ class LeaseOrderLoadDataHandle {
 
             if (currentEndDateObj > endDateObj) {
                 if (currentStartDateObj < endDateObj) {
-                    let depreciationPerDay = depreciationValue / daysBetween;
-                    let daysRedundant = LeaseOrderLoadDataHandle.calculateDaysBetween(currentStartDateObj, endDateObj);
+                    let daysOdd = LeaseOrderLoadDataHandle.calculateDaysBetween(currentStartDateObj, endDateObj);
+                    depreciationValue = depreciationValue * (daysOdd + 1) / (daysEven + 1)
+
                     result.push({
                         month: currentMonth.toString(),
                         start_date: currentStartDate,
                         end_date: end_date,
                         start_value: currentValue,
-                        depreciation_value: depreciationPerDay * daysRedundant,
+                        depreciation_value: depreciationValue,
                         accumulative_value: accumulativeValue,
                         end_value: Math.max(currentValue - depreciationValue, 0),
                     });
@@ -2343,8 +2333,6 @@ class LeaseOrderLoadDataHandle {
             let targetRow = target.closest('tr');
 
             if (targetRow) {
-
-                //
                 let $methodEle = $('#depreciation_method');
                 let $startEle = $('#depreciation_start_date');
                 let $endEle = $('#depreciation_end_date');
@@ -2371,9 +2359,6 @@ class LeaseOrderLoadDataHandle {
                         }
                     }
                 }
-
-
-                //
                 let lastRowData = LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().row(':last').data();
                 if (lastRowData) {
                     let depreciationSubtotalEle = targetRow.querySelector('.table-row-depreciation-subtotal');
@@ -2384,7 +2369,6 @@ class LeaseOrderLoadDataHandle {
                         let fnCost = lastRowData?.['accumulative_value'];
                         $(depreciationSubtotalEle).val(fnCost);
                         if ($(quantityTimeEle).val()) {
-                            // let fnCost = parseFloat($(quantityTimeEle).val()) * lastRowData?.['accumulative_value'];
                             $(fnCostEle).attr('data-init-money', String(fnCost));
                             $(fnCostRawEle).val(String(fnCost));
                             $.fn.initMaskMoney2();
@@ -2395,6 +2379,9 @@ class LeaseOrderLoadDataHandle {
         }
         return true;
     };
+
+
+
 
 
 
@@ -6907,15 +6894,13 @@ class LeaseOrderSubmitHandle {
                 let depreciationStartDEle = row.querySelector('.table-row-depreciation-start-date');
                 if (depreciationStartDEle) {
                     if ($(depreciationStartDEle).val()) {
-                        rowData['product_depreciation_start_date'] = moment($(depreciationStartDEle).val(),
-                            'DD/MM/YYYY').format('YYYY-MM-DD')
+                        rowData['product_depreciation_start_date'] = $(depreciationStartDEle).val();
                     }
                 }
                 let depreciationEndDEle = row.querySelector('.table-row-depreciation-end-date');
                 if (depreciationEndDEle) {
                     if ($(depreciationEndDEle).val()) {
-                        rowData['product_depreciation_end_date'] = moment($(depreciationEndDEle).val(),
-                            'DD/MM/YYYY').format('YYYY-MM-DD')
+                        rowData['product_depreciation_end_date'] = $(depreciationEndDEle).val();
                     }
                 }
                 let depreciationAdjustEle = row.querySelector('.table-row-depreciation-adjustment');

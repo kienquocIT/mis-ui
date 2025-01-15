@@ -26,6 +26,9 @@
     <script id="trans-script"
             data-trans-to="{% trans 'To' %}"
             data-trans-cc="{% trans 'Cc' %}"
+            data-just-log="{% trans 'Logged' %}"
+            data-sent="{% trans 'Sent successfully' %}"
+            data-err="{% trans 'Send failed' %}"
     ></script>
     <table id="table_opportunity_email_list" class="table nowrap w-100 mb-5"
            data-url="{% url 'OpportunityEmailListAPI' %}"
@@ -39,11 +42,14 @@
             <th style="min-width: 200px">{% trans 'Subject' %}</th>
             <th style="min-width: 100px">{% trans 'Sale Code' %}</th>
             <th style="min-width: 150px">{% trans 'Employee inherit' %}</th>
+            <th style="min-width: 100px">{% trans 'Status' %}</th>
             <th style="min-width: 100px">{% trans 'Date' %}</th>
         </tr>
         </thead>
         <tbody></tbody>
     </table>
+{% endblock %}
+{% block modalData %}
     {% include 'sales/opportunity/activities/extends/email_modals.html' %}
 {% endblock %}
 {% block jsFooter %}

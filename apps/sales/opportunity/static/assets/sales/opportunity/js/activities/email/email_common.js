@@ -85,7 +85,7 @@ function loadOpportunityEmailList() {
                 },
                 {
                     data: 'subject',
-                    className: 'wrap-text w-50',
+                    className: 'wrap-text w-40',
                     render: (data, type, row) => {
                         return `<a class="text-primary fw-bold detail-email-button" href="" data-bs-toggle="offcanvas" data-id="${row?.['id']}"
                                     data-bs-target="#offcanvas-detail-send-email"><span>${row?.['subject']}</span>
@@ -110,6 +110,20 @@ function loadOpportunityEmailList() {
                     }
                 },
                 {
+                    className: 'wrap-text w-10',
+                    render: (data, type, row) => {
+                        let default_state = `<span class="text-primary">${$('#trans-script').attr('data-just-log')}</span>`
+                        if (!row?.['just_log']) {
+                            if (row?.['send_success']) {
+                                return `${default_state} - <span class="text-success">${$('#trans-script').attr('data-sent')}</span>`
+                            } else {
+                                return `${default_state} - <span class="text-danger">${$('#trans-script').attr('data-err')}</span>`
+                            }
+                        }
+                        return `${default_state}`
+                    }
+                },
+                {
                     data: 'date_created',
                     className: 'wrap-text text-center w-15',
                     render: (data, type, row) => {
@@ -128,11 +142,15 @@ $(document).on('click', '#table_opportunity_email_list .detail-email-button', fu
     let email_obj = EMAIL_LIST.filter(function(item) {
         return item.id === email_id;
     })[0]
+    if (email_obj?.['just_log'] || !email_obj?.['send_success']) {
+        $('#btn-offcanvas-resend-email').attr('data-id', email_id)
+        $('#btn-offcanvas-resend-email').prop('hidden', false)
+    }
 
-    $('#detail-opp').val(email_obj?.['opportunity']?.['code'] + ' - ' + email_obj?.['opportunity']?.['title']);
-    $('#detail-process').val(email_obj?.['process']?.['title'] ? email_obj?.['process']?.['title'] : '--');
-    $('#detail-stage').val(email_obj?.['process_stage_app']?.['title'] ? email_obj?.['process_stage_app']?.['title'] : '--');
-    $('#detail-inheritor').val(email_obj?.['employee_inherit']?.['full_name']);
+    $('#detail-opp').text(email_obj?.['opportunity']?.['code'] + ' - ' + email_obj?.['opportunity']?.['title']);
+    $('#detail-process').text(email_obj?.['process']?.['title'] ? email_obj?.['process']?.['title'] : '-');
+    $('#detail-stage').text(email_obj?.['process_stage_app']?.['title'] ? email_obj?.['process_stage_app']?.['title'] : '-');
+    $('#detail-inheritor').text(email_obj?.['employee_inherit']?.['full_name']);
 
     $('#detail-email-subject-input').text(email_obj.subject);
     $('#detail-date-input').text(moment(email_obj.date_created.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'));
@@ -158,6 +176,17 @@ $('#opportunity_id').on('change', function () {
         loadEmailToList(contact_mapped ? contact_mapped : [])
         loadEmailCcList(contact_mapped ? contact_mapped : [])
     }
+})
+
+$('#btn-offcanvas-resend-email').on('click', function () {
+    let url_loaded = $(this).attr('data-url').replace('/0', `/${$(this).attr('data-id')}`);
+    $.fn.callAjax(url_loaded, 'GET', {'resend_email': true}).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                loadOpportunityEmailList()
+            }
+        })
 })
 
 ClassicEditor

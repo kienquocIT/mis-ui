@@ -10286,3 +10286,7 @@ msgstr "Nếu không chọn, chỉ ghi lại cuộc họp này"
 #
 msgid "Resend"
 msgstr "Gửi lại"
+
+#
+msgid "Send email notification this cancel"
+msgstr "Gửi email thông báo huỷ bỏ"

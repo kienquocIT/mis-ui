@@ -218,14 +218,10 @@ $('#btn-offcanvas-resend-email').on('click', function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                $.fn.notifyB({'description': 'Resend successfully!'}, 'success');
+                $.fn.notifyB({'description': 'Send email successfully!'}, 'success');
                 $('#offcanvas-detail-send-email').offcanvas('hide')
                 loadOpportunityEmailList()
             }
-        },
-        (errs) => {
-            $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
-            console.log(errs);
         })
 })
 

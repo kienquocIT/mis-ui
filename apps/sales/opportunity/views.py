@@ -463,7 +463,8 @@ class OpportunityMeetingDetailAPI(APIView):
         auth_require=True
     )
     def get(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DETAIL.fill_key(pk=pk)).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DETAIL.fill_key(pk=pk)).get(params)
         return resp.auto_return(key_success='opportunity_meeting_detail')
 
     @mask_view(auth_require=True, is_api=True)

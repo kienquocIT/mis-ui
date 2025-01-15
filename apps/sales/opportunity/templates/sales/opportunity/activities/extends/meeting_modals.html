@@ -134,19 +134,19 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label">{% trans 'Process' %}:</label>
-                    <span id="detail-process" class="text-primary fw-bold"></span>
+                    <span id="detail-process" class="text-primary"></span>
                 </div>
                 <div class="col-12">
                     <label class="form-label">{% trans 'Stage' %}:</label>
-                    <span id="detail-stage" class="text-primary fw-bold"></span>
+                    <span id="detail-stage" class="text-primary"></span>
                 </div>
                 <div class="col-12">
                     <label class="form-label">{% trans 'Creator' %}:</label>
-                    <span id="detail-creator" class="text-primary fw-bold"></span>
+                    <span id="detail-creator" class="text-primary"></span>
                 </div>
                 <div class="col-12">
                     <label class="form-label">{% trans 'Beneficiary' %}:</label>
-                    <span id="detail-inheritor" class="text-primary fw-bold"></span>
+                    <span id="detail-inheritor" class="text-primary"></span>
                 </div>
             </div>
             <div class="row mt-5">
@@ -182,14 +182,15 @@
                     <span class="text-muted text-decoration-underline">{% trans 'Content' %}</span>
                     <p id="detail-result" class="text-primary"></p>
                 </div>
-                <div class="col-12" hidden>
+                <div class="col-12 mt-3" hidden>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="detail-repeat-activity">
                         <label class="form-check-label" for="detail-repeat-activity">{% trans 'Need to repeat activity' %}</label>
                     </div>
                 </div>
-                <div class="col-12 mt-5">
-                    <button type="button" id="cancel-activity" class="btn btn-sm btn-danger">{% trans 'Cancel' %}</button>
+                <div class="col-12 mt-5 d-flex">
+                    <button type="button" id="cancel-activity" class="btn btn-sm btn-danger mr-1">{% trans 'Cancel' %}</button>
+                    <button hidden type="button" class="btn btn-sm btn-gradient-primary" data-url="{% url 'OpportunityMeetingDetailAPI' '0' %}" id="btn-offcanvas-resend-email">{% trans 'Send email notification now' %}</button>
                 </div>
             </div>
         </form>

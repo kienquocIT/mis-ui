@@ -2120,7 +2120,7 @@ class LeaseOrderLoadDataHandle {
 
 
 
-    // TABLE COST-DEPRECIATION
+    // TABLE COST-DEPRECIATION (SALE)
     static loadShowModalDepreciation(ele) {
         let row = ele.closest('tr');
         if (row) {
@@ -2205,7 +2205,8 @@ class LeaseOrderLoadDataHandle {
         let $adjustEle = $('#depreciation_adjustment');
         if ($methodEle.length > 0 && $timeEle.length > 0 && $startEle.length > 0 && $endEle.length > 0 && $costEle.length > 0 && $adjustEle.length > 0) {
             if ($methodEle.val() && $timeEle.val() && $startEle.val() && $endEle.val() && $costEle.valCurrency()) {
-                let data = LeaseOrderLoadDataHandle.generateDateRangeWithDepreciation(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
+                // let data = LeaseOrderLoadDataHandle.generateDateRangeWithDepreciation(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
+                let data = LeaseOrderLoadDataHandle.generateDateRangeWithDepreciationFinance(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
                 LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
                 LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(data).draw();
             }
@@ -2277,7 +2278,7 @@ class LeaseOrderLoadDataHandle {
                 if (result.length > 0) {
                     let last = result[result.length - 1];
                     depreciationAdjustValue = Math.floor(last?.['end_value'] / totalMonths * adjust);
-                    // Kiểm tra nếu khâu hao theo hệ số mà lớn hơn khấu hao chia đều số tháng còn lại thì lấy theo khấu hao hệ số còn ngược lại thì lấy theo khấu hao chia đều.
+                    // Kiểm tra nếu khấu hao theo hệ số mà lớn hơn khấu hao chia đều số tháng còn lại thì lấy theo khấu hao hệ số còn ngược lại thì lấy theo khấu hao chia đều.
                     let monthsRemain = totalMonths - last?.['month'];
                     let depreciationValueCompare = last?.['end_value'] / monthsRemain;
                     if (depreciationAdjustValue > depreciationValueCompare) {
@@ -2382,6 +2383,119 @@ class LeaseOrderLoadDataHandle {
 
 
 
+    // TABLE COST-DEPRECIATION (FINANCE)
+    static addOneMonthToLast(date_current, alignToEndOfMonth = false) {
+        const [day, month, year] = date_current.split('/').map(num => parseInt(num));
+        const date = new Date(year, month - 1, day);
+
+        if (alignToEndOfMonth) {
+            // Move to the last day of the current month
+            date.setMonth(date.getMonth() + 1, 0);
+        } else {
+            // Move to the same day next month
+            date.setMonth(date.getMonth() + 1);
+        }
+
+        const newDay = String(date.getDate()).padStart(2, '0');
+        const newMonth = String(date.getMonth() + 1).padStart(2, '0');
+        const newYear = date.getFullYear();
+
+        return `${newDay}/${newMonth}/${newYear}`;
+    }
+
+    static generateDateRangeWithDepreciationFinance(method, months, start_date, end_date, price, adjust = null) {
+        // method: 0: line method || 1: adjust method
+
+        let result = [];
+        let totalMonths = months;
+        let depreciationValue = Math.floor(price / totalMonths); // Depreciation per month
+        let accumulativeValue = 0;
+
+        let currentStartDate = start_date;
+        let currentMonth = parseInt(start_date.split('/')[1]);
+        let currentValue = price;
+
+        let endDateObj = LeaseOrderLoadDataHandle.parseToDateObj(end_date);
+
+        while (true) {
+            let currentStartDateObj = LeaseOrderLoadDataHandle.parseToDateObj(currentStartDate);
+
+            // Determine the end date for the current range
+            let currentEndDate;
+            if (result.length === 0) {
+                // First range: ends at the last day of the starting month
+                currentEndDate = LeaseOrderLoadDataHandle.addOneMonthToLast(currentStartDate, true);
+            } else {
+                // Other ranges: align to calendar months
+                currentStartDate = `01/${String(currentStartDateObj.getMonth() + 1).padStart(2, '0')}/${currentStartDateObj.getFullYear()}`;
+                currentEndDate = LeaseOrderLoadDataHandle.addOneMonthToLast(currentStartDate, true);
+            }
+            let currentEndDateObj = LeaseOrderLoadDataHandle.parseToDateObj(currentEndDate);
+
+            let daysEven = LeaseOrderLoadDataHandle.calculateDaysBetween(currentStartDateObj, currentEndDateObj);
+
+            if (method === 1 && adjust) {
+                let depreciationAdjustValue = Math.floor(price / totalMonths * adjust); // Depreciation (adjust) per month
+                depreciationValue = depreciationAdjustValue;
+
+                if (result.length > 0) {
+                    let last = result[result.length - 1];
+                    depreciationAdjustValue = Math.floor(last?.['end_value'] / totalMonths * adjust);
+                    // Kiểm tra nếu khấu hao theo hệ số mà lớn hơn khấu hao chia đều số tháng còn lại thì lấy theo khấu hao hệ số còn ngược lại thì lấy theo khấu hao chia đều.
+                    let monthsRemain = totalMonths - last?.['month'];
+                    let depreciationValueCompare = last?.['end_value'] / monthsRemain;
+                    if (depreciationAdjustValue > depreciationValueCompare) {
+                        depreciationValue = depreciationAdjustValue;
+                    } else {
+                        depreciationValue = depreciationValueCompare;
+                    }
+                }
+            }
+            accumulativeValue += depreciationValue;
+
+
+            if (currentEndDateObj > endDateObj) {
+                if (currentStartDateObj < endDateObj) {
+                    let daysOdd = LeaseOrderLoadDataHandle.calculateDaysBetween(currentStartDateObj, endDateObj);
+                    depreciationValue = depreciationValue * (daysOdd + 1) / (daysEven + 1);
+
+                    result.push({
+                        month: currentMonth.toString(),
+                        start_date: currentStartDate,
+                        end_date: end_date,
+                        start_value: currentValue,
+                        depreciation_value: depreciationValue,
+                        accumulative_value: accumulativeValue,
+                        end_value: Math.max(currentValue - depreciationValue, 0),
+                    });
+                }
+                break;
+            } else {
+                if (currentStartDateObj.getDate() !== 1) {
+                    let daysOdd = LeaseOrderLoadDataHandle.calculateDaysBetween(currentStartDateObj, currentEndDateObj);
+                    depreciationValue = depreciationValue * (daysOdd + 1) / (30 + 1);
+                }
+                result.push({
+                    month: currentMonth.toString(),
+                    start_date: currentStartDate,
+                    end_date: currentEndDate,
+                    start_value: currentValue,
+                    depreciation_value: depreciationValue,
+                    accumulative_value: accumulativeValue,
+                    end_value: Math.max(currentValue - depreciationValue, 0),
+                });
+            }
+
+            if (currentStartDateObj.getDate() !== 1) {
+                depreciationValue = Math.floor(price / totalMonths);
+            }
+            currentStartDate = LeaseOrderLoadDataHandle.addOneDay(currentEndDate);
+            currentMonth++;
+            currentValue = Math.max(currentValue - depreciationValue, 0);
+        }
+
+        return result;
+    };
 
 
 

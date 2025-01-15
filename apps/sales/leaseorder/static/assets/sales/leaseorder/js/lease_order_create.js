@@ -27,6 +27,7 @@ $(function () {
         LeaseOrderLoadDataHandle.loadBoxQuotationContact();
         LeaseOrderLoadDataHandle.loadBoxQuotationPaymentTerm();
         LeaseOrderLoadDataHandle.loadInitDate();
+        LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderLoadDataHandle.$depreciationModal);
         // init dataTable
         LeaseOrderDataTableHandle.dataTableSelectProduct();
         LeaseOrderDataTableHandle.dataTableSelectOffset();
@@ -56,7 +57,7 @@ $(function () {
                 $(this).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
             });
             $(this).val('').trigger('change');
-        })
+        });
 
         // get WF initial zones
         WFRTControl.setWFInitialData('leaseorder');
@@ -441,7 +442,7 @@ $(function () {
             LeaseOrderLoadDataHandle.loadShowModalDepreciation(this);
         });
 
-        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment', function () {
+        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .depreciation-for-sale, .depreciation-for-finance', function () {
             if (this.classList.contains('depreciation-method')) {
                 let $adjustEle = $('#depreciation_adjustment');
                 if ($adjustEle.length > 0) {

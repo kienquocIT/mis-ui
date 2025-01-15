@@ -40,17 +40,25 @@ $(function () {
         }
         // init config
         QuotationLoadDataHandle.loadInitQuotationConfig(QuotationLoadDataHandle.$form.attr('data-method'));
-        $('input[name="date_created"]').daterangepicker({
-            singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: false,
-            minYear: 1901,
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
+        // date picker
+        $('.date-picker').each(function () {
+            $(this).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                autoApply: true,
+                autoUpdateInput: false,
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
+            });
+            $(this).val('').trigger('change');
         });
-        $('.daterangepicker').remove();
+
         // get WF initial zones
         let appCode = 'quotation';
         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {

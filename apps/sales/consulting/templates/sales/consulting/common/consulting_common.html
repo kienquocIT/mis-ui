@@ -4,7 +4,7 @@
     <div class="col-12 col-lg-8 border-right" id="content-area">
         <!-- consulting data -->
         <div>
-            {% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
+            {% trans 'Select Sale Person' as inherit_title %}
             {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
             <div class="row">
                 <div class="col-12">

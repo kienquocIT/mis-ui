@@ -13,7 +13,7 @@
               method="post">
             {% csrf_token %}
             <div class="row" style="overflow: auto; max-height: 85vh">
-                {% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
+                {% trans 'Select Sale Person' as inherit_title %}
                 {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
                 <div class="col-12 col-md-12 col-lg-12">
                     <div class="form-group">

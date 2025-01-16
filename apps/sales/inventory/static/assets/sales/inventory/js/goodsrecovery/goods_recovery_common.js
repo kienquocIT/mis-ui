@@ -483,6 +483,14 @@ class RecoveryLoadDataHandle {
         if ($methodEle.length > 0 && $timeEle.length > 0 && $startEle.length > 0 && $endEle.length > 0 && $costEle.length > 0 && $adjustEle.length > 0) {
             if ($methodEle.val() && $timeEle.val() && $startEle.val() && $endEle.val() && $costEle.valCurrency()) {
                 let data = RecoveryLoadDataHandle.generateDateRangeWithDepreciation(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
+
+                $('#depreciation_spinner').removeAttr('hidden');
+                RecoveryDataTableHandle.$tableDepreciationDetail.attr('hidden', 'true');
+                setTimeout(function () {
+                    $('#depreciation_spinner').attr('hidden', true);
+                    RecoveryDataTableHandle.$tableDepreciationDetail.removeAttr('hidden');
+                }, 300);
+
                 RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
                 RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(data).draw();
             }
@@ -1434,7 +1442,7 @@ class RecoveryDataTableHandle {
                         let lastTd = lastRowNode.querySelector('td:last-child');
                         if (lastTd) {
                             $(lastTd).css({
-                                'background': '#d0e6ff'
+                                'background': '#ebfcf5'
                             })
                         }
                     }

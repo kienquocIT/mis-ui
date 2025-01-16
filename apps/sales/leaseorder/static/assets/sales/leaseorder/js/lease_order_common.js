@@ -2150,6 +2150,14 @@ class LeaseOrderLoadDataHandle {
                 if ($radioFinanceEle[0].checked === true) {
                     data = LeaseOrderLoadDataHandle.generateDateRangeWithDepreciationFinance(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
                 }
+
+                $('#depreciation_spinner').removeAttr('hidden');
+                LeaseOrderDataTableHandle.$tableDepreciationDetail.attr('hidden', 'true');
+                setTimeout(function () {
+                    $('#depreciation_spinner').attr('hidden', true);
+                    LeaseOrderDataTableHandle.$tableDepreciationDetail.removeAttr('hidden');
+                }, 300);
+
                 LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
                 LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(data).draw();
             }
@@ -4810,7 +4818,7 @@ class LeaseOrderDataTableHandle {
                         let lastTd = lastRowNode.querySelector('td:last-child');
                         if (lastTd) {
                             $(lastTd).css({
-                                'background': '#d0e6ff'
+                                'background': '#ebfcf5'
                             })
                         }
                     }

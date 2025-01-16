@@ -546,6 +546,7 @@ class LeadMeetingActivitiesHandler extends LeadActivitiesHandler{
             })
         }
 
+        this.form.dataForm['email_notify'] = $('#send_notify_email').is(':checked')
 
         this.form.dataUrl = this.$urlScript.attr('data-meeting-url')
     }

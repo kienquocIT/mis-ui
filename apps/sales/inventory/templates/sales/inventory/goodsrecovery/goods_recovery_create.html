@@ -318,6 +318,98 @@
                     </div>
                 </div>
             </div>
+
+            <div
+                    class="modal fade" id="viewDepreciationDetail" tabindex="-1"
+                    role="dialog" aria-labelledby="viewDepreciationDetail"
+                    aria-hidden="true"
+            >
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Depreciation detail' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12 col-md-2 col-lg-2">
+                                    <div class="form-group">
+                                        <label class="form-label" for="depreciation_method">{% trans 'Select method' %}</label>
+                                        <select class="form-select depreciation-method" id="depreciation_method" readonly></select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-2 col-lg-2">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="cost_price">{% trans 'unit cost' %}</label>
+                                        <input type="text" class="form-control mask-money" id="cost_price" value="0" data-return-type="number" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-2 col-lg-2">
+                                    <label class="form-label" for="depreciation_time">{% trans 'Depreciation time' %}</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control validated-number" id="depreciation_time" value="0" readonly>
+                                        <span class="input-group-text" id="depreciation_uom"></span>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-2 col-lg-2">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="depreciation_start_date">{% trans 'Start date' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" id="depreciation_start_date"
+                                                   class="form-control depreciation-start-date date-picker" autocomplete="off" readonly>
+                                            <div class="input-suffix">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-2 col-lg-2">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="depreciation_end_date">{% trans 'End date' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" id="depreciation_end_date"
+                                                   class="form-control depreciation-end-date date-picker" autocomplete="off" readonly>
+                                            <div class="input-suffix">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-2 col-lg-2">
+                                    <div class="form-group">
+                                        <label class="form-label" for="depreciation_adjustment">{% trans 'Adjustment factor' %}</label>
+                                        <input type="text" class="form-control depreciation-adjustment" id="depreciation_adjustment" value="1" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <table
+                                    id="table-depreciation-detail"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th>{% trans 'Month' %}</th>
+                                    <th>{% trans 'Start date' %}</th>
+                                    <th>{% trans 'End date' %}</th>
+                                    <th>{% trans 'Start net value' %}</th>
+                                    <th>{% trans 'Depreciation value' %}</th>
+                                    <th>{% trans 'End net value' %}</th>
+                                    <th>{% trans 'Accumulative depreciation' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="lease_costs_data">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-depreciation-detail" data-bs-dismiss="modal" data-zone="lease_costs_data">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </form>
@@ -356,6 +448,8 @@
             data-asset-type-3="{% trans "Fixed asset" %}"
             data-exceed-quantity="{% trans 'Exceed quantity' %}"
             data-unique-serial="{% trans 'Serial is unique' %}"
+            data-depreciation-method-1="{% trans 'Line method' %}"
+            data-depreciation-method-2="{% trans 'Adjustment method' %}"
     >
     <input
             type="text"

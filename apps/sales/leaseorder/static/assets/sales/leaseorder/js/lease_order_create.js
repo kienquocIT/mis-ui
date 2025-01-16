@@ -5,10 +5,10 @@ $(function () {
         // Elements
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let tabPrice = $('#tab_terms');
-        let tableProduct = $('#datable-quotation-create-product');
-        let tableCost = $('#datable-quotation-create-cost');
-        let tableExpense = $('#datable-quotation-create-expense');
-        let tablePS = $('#datable-quotation-payment-stage');
+        let tableProduct = LeaseOrderDataTableHandle.$tableProduct;
+        let tableCost = LeaseOrderDataTableHandle.$tableCost;
+        let tableExpense = LeaseOrderDataTableHandle.$tableExpense;
+        let tablePS = LeaseOrderDataTableHandle.$tablePayment;
         let tablePromotion = $('#datable-quotation-create-promotion');
         let tableShipping = $('#datable-quotation-create-shipping');
         let tableCopyQuotation = $('#datable-copy-quotation');
@@ -27,12 +27,14 @@ $(function () {
         LeaseOrderLoadDataHandle.loadBoxQuotationContact();
         LeaseOrderLoadDataHandle.loadBoxQuotationPaymentTerm();
         LeaseOrderLoadDataHandle.loadInitDate();
+        LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderLoadDataHandle.$depreciationModal);
         // init dataTable
         LeaseOrderDataTableHandle.dataTableSelectProduct();
         LeaseOrderDataTableHandle.dataTableSelectOffset();
         LeaseOrderDataTableHandle.dataTableSelectLeasedProduct();
         LeaseOrderDataTableHandle.dataTableProduct();
         LeaseOrderDataTableHandle.dataTableCost();
+        LeaseOrderDataTableHandle.dataTableDepreciationDetail();
         LeaseOrderDataTableHandle.dataTableExpense();
         LeaseOrderDataTableHandle.dataTableSaleOrderIndicator();
         LeaseOrderDataTableHandle.dataTablePaymentStage();
@@ -52,10 +54,10 @@ $(function () {
                 autoApply: true,
                 autoUpdateInput: false,
             }).on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                $(this).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
             });
             $(this).val('').trigger('change');
-        })
+        });
 
         // get WF initial zones
         WFRTControl.setWFInitialData('leaseorder');
@@ -430,6 +432,38 @@ $(function () {
                 }
             }
         });
+
+
+
+
+
+
+        tableCost.on('click', '.btn-depreciation-detail', function () {
+            LeaseOrderLoadDataHandle.loadShowModalDepreciation(this);
+        });
+
+        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .depreciation-for-sale, .depreciation-for-finance', function () {
+            if (this.classList.contains('depreciation-method')) {
+                let $adjustEle = $('#depreciation_adjustment');
+                if ($adjustEle.length > 0) {
+                    $adjustEle.attr('readonly', 'true');
+                    if ($(this).val() === '1') {
+                        $adjustEle.removeAttr('readonly');
+                    }
+                }
+            }
+
+            LeaseOrderLoadDataHandle.loadDataTableDepreciation();
+        });
+
+        LeaseOrderLoadDataHandle.$btnSaveDepreciation.on('click', function () {
+            LeaseOrderLoadDataHandle.loadSaveDepreciation();
+        });
+
+
+
+
+
 
         $('#btn-collapse').click(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');

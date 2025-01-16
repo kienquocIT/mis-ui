@@ -146,6 +146,13 @@ function saveGroup(gantt_obj) {
             $.fn.notifyB({description: $.fn.gettext('Title is required')}, 'failure');
             return false
         }
+        let defaultOrder = parseInt($('.gantt-wrap').data('detail-index')) + 1
+        let $typeCreateElm = $('#form_create_info')
+        if ($typeCreateElm.attr('data-id')){
+            defaultOrder = $(`.grid-row[data-id="${$typeCreateElm.attr('data-id')}"]`).index()
+            if ($('#form_create_info').attr('data-menu_on_create') === 'work_after')
+                defaultOrder++
+        }
         const data = {
             'project': $('#id').val(),
             'title': $tit.val(),
@@ -153,7 +160,8 @@ function saveGroup(gantt_obj) {
             'gr_weight': $('#groupWeight').val() || 0,
             'gr_start_date': $startD.val(),
             'gr_end_date': $startE.val(),
-            'order': parseInt($('.gantt-wrap').data('detail-index')) + 1
+            'order': defaultOrder,
+            'sort_style': !!$typeCreateElm.attr('data-id')
         };
         let url = $urlFact.attr('data-group'),
             method = 'post';
@@ -260,17 +268,25 @@ function saveWork(gantt_obj) {
             $(this).prop('disabled', false)
             return false
         }
-        let workType = $('#select_relationships_type').val(),
-            childIdx = parseInt($('.gantt-wrap').data('detail-index')) + 1,
-            data = {
-                'project': $('#id').val(),
-                'title': $tit.val(),
-                'employee_inherit': $('#selectEmployeeInherit').val(),
-                'w_weight': $('#workWeight').val() || 0,
-                'w_start_date': $startD.val(),
-                'w_end_date': $startE.val(),
-                'order': childIdx
-            };
+        let workType = $('#select_relationships_type').val();
+        let defaultOrder = parseInt($('.gantt-wrap').data('detail-index')) + 1;
+        let $typeCreateElm = $('#form_create_info');
+
+        if ($typeCreateElm.attr('data-id')){
+            defaultOrder = $(`.grid-row[data-id="${$typeCreateElm.attr('data-id')}"]`).index()
+            if ($('#form_create_info').attr('data-menu_on_create') === 'work_after')
+                defaultOrder++
+        }
+        let data = {
+            'project': $('#id').val(),
+            'title': $tit.val(),
+            'employee_inherit': $('#selectEmployeeInherit').val(),
+            'w_weight': $('#workWeight').val() || 0,
+            'w_start_date': $startD.val(),
+            'w_end_date': $startE.val(),
+            'order': defaultOrder,
+            'sort_style': !!$typeCreateElm.attr('data-id')
+        };
         const bom_data = $('#bor_select_data').data('bor_data')
         if (bom_data) data.bom_service = bom_data
 

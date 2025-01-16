@@ -7,6 +7,8 @@ class RecoveryLoadDataHandle {
     static $boxLeaseOrder = $('#lease_order_id');
     static $modalMain = $('#productModalCenter');
     static $btnSaveModal = $('#btn-save-modal');
+    static $depreciationModal = $('#viewDepreciationDetail');
+    static $btnSaveDepreciation = $('#btn-save-depreciation-detail');
 
     static transEle = $('#app-trans-factory');
     static urlEle = $('#url-factory');
@@ -20,17 +22,6 @@ class RecoveryLoadDataHandle {
         2: RecoveryLoadDataHandle.transEle.attr('data-asset-type-2'),
         3: RecoveryLoadDataHandle.transEle.attr('data-asset-type-3'),
     }
-
-
-    static typeSelectEle = $('#box-good-receipt-type');
-    static POSelectEle = $('#box-good-receipt-purchase-order');
-    static supplierSelectEle = $('#box-good-receipt-supplier');
-    static IASelectEle = $('#box-good-receipt-inventory-adjustment');
-    static $boxProductionOrder = $('#box-production-order');
-    static $boxWorkOrder = $('#box-work-order');
-    static $boxProductionReport = $('#box-production-report');
-
-
     static dataTypeGr = [
         {
             'id': 3,
@@ -44,6 +35,10 @@ class RecoveryLoadDataHandle {
             'id': 1,
             'title': RecoveryLoadDataHandle.transEle.attr('data-for-po')
         },
+    ];
+    static dataDepreciationMethod = [
+        {'id': 0, 'title': RecoveryLoadDataHandle.transEle.attr('data-depreciation-method-1')},
+        {'id': 1, 'title': RecoveryLoadDataHandle.transEle.attr('data-depreciation-method-2')},
     ];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -145,6 +140,7 @@ class RecoveryLoadDataHandle {
         RecoveryDataTableHandle.dataTableDelivery();
         RecoveryDataTableHandle.dataTableDeliveryProduct();
         RecoveryDataTableHandle.dataTableWareHouse();
+        RecoveryDataTableHandle.dataTableDepreciationDetail();
         return true;
     };
 
@@ -399,6 +395,262 @@ class RecoveryLoadDataHandle {
         }
         RecoveryDataTableHandle.$tableProduct.DataTable().clear().draw();
         RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(result).draw();
+        return true;
+    };
+
+    // TABLE COST-DEPRECIATION
+    static loadShowModalDepreciation(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let productEle = row.querySelector('.table-row-item');
+            if (productEle) {
+                if ($(productEle).val()) {
+                    let dataProduct = SelectDDControl.get_data_from_idx($(productEle), $(productEle).val());
+                    if (dataProduct) {
+                        RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id', dataProduct?.['id']);
+                    }
+                }
+            }
+
+
+
+            let depreciationMethodEle = row.querySelector('.table-row-depreciation-method');
+            let $methodEle = $('#depreciation_method');
+            if (depreciationMethodEle && $methodEle.length > 0) {
+                RecoveryLoadDataHandle.loadInitS2($methodEle, RecoveryLoadDataHandle.dataDepreciationMethod, {}, RecoveryLoadDataHandle.$depreciationModal);
+                if ($(depreciationMethodEle).val()) {
+                    $methodEle.val(parseInt($(depreciationMethodEle).val())).trigger('change');
+                }
+            }
+            let depreciationTimeEle = row.querySelector('.table-row-depreciation-time');
+            let $timeEle = $('#depreciation_time');
+            if (depreciationTimeEle && $timeEle.length > 0) {
+                if ($(depreciationTimeEle).val()) {
+                    $timeEle.val(parseFloat($(depreciationTimeEle).val()));
+                }
+            }
+            let priceEle = row.querySelector('.table-row-price');
+            let quantityEle = row.querySelector('.table-row-quantity');
+            let $priceEle = $('#cost_price');
+            if (priceEle && quantityEle && $priceEle.length > 0) {
+                if ($(priceEle).valCurrency() && $(quantityEle).val()) {
+                    let total = parseFloat($(priceEle).valCurrency()) * parseFloat($(quantityEle).val())
+                    $($priceEle).attr('value', String(total));
+                    // mask money
+                    $.fn.initMaskMoney2();
+                }
+            }
+            let uomTimeEle = row.querySelector('.table-row-uom-time');
+            let $uomEle = $('#depreciation_uom');
+            if (uomTimeEle && $uomEle.length > 0) {
+                let dataUOMTime = SelectDDControl.get_data_from_idx($(uomTimeEle), $(uomTimeEle).val());
+                if (dataUOMTime) {
+                    $uomEle[0].innerHTML = dataUOMTime?.['title'];
+                }
+            }
+            let depreciationStartDEle = row.querySelector('.table-row-depreciation-start-date');
+            let $startDateEle = $('#depreciation_start_date');
+            if (depreciationStartDEle && $startDateEle.length > 0) {
+                if ($(depreciationStartDEle).val()) {
+                    $startDateEle.val(moment($(depreciationStartDEle).val()).format('DD/MM/YYYY'));
+                }
+            }
+            let $endDateEle = $('#depreciation_end_date');
+            if ($endDateEle.length > 0) {
+                if (RecoveryLoadDataHandle.$date.val()) {
+                    $endDateEle.val(RecoveryLoadDataHandle.$date.val());
+                }
+            }
+            let depreciationAdjustEle = row.querySelector('.table-row-depreciation-adjustment');
+            let $adjustEle = $('#depreciation_adjustment');
+            if (depreciationAdjustEle && $adjustEle.length > 0) {
+                if ($(depreciationAdjustEle).val()) {
+                    $adjustEle.val(parseFloat($(depreciationAdjustEle).val()));
+                }
+            }
+        }
+        RecoveryLoadDataHandle.loadDataTableDepreciation();
+        return true;
+    };
+
+    static loadDataTableDepreciation() {
+        let $methodEle = $('#depreciation_method');
+        let $timeEle = $('#depreciation_time');
+        let $startEle = $('#depreciation_start_date');
+        let $endEle = $('#depreciation_end_date');
+        let $costEle = $('#cost_price');
+        let $adjustEle = $('#depreciation_adjustment');
+        if ($methodEle.length > 0 && $timeEle.length > 0 && $startEle.length > 0 && $endEle.length > 0 && $costEle.length > 0 && $adjustEle.length > 0) {
+            if ($methodEle.val() && $timeEle.val() && $startEle.val() && $endEle.val() && $costEle.valCurrency()) {
+                let data = RecoveryLoadDataHandle.generateDateRangeWithDepreciation(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
+                RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
+                RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(data).draw();
+            }
+        }
+        return true;
+    };
+
+    static addOneMonth(date_current) {
+        const [day, month, year] = date_current.split('/').map(num => parseInt(num));
+        const date = new Date(year, month - 1, day);
+        date.setMonth(date.getMonth() + 1);
+        date.setDate(date.getDate() - 1);
+
+        const newDay = String(date.getDate()).padStart(2, '0');
+        const newMonth = String(date.getMonth() + 1).padStart(2, '0');
+        const newYear = date.getFullYear();
+
+        return `${newDay}/${newMonth}/${newYear}`;
+    };
+
+    static addOneDay(date_current) {
+        const [day, month, year] = date_current.split('/').map(num => parseInt(num));
+        const date = new Date(year, month - 1, day);
+        date.setDate(date.getDate() + 1);
+
+        const newDay = String(date.getDate()).padStart(2, '0');
+        const newMonth = String(date.getMonth() + 1).padStart(2, '0');
+        const newYear = date.getFullYear();
+
+        return `${newDay}/${newMonth}/${newYear}`;
+    };
+
+    static parseToDateObj(dateStr) {
+        const [day, month, year] = dateStr.split('/').map(num => parseInt(num));
+        return new Date(year, month - 1, day); // Convert to Date object
+    };
+
+    static calculateDaysBetween(startDateObj, endDateObj) {
+        let timeDifference = endDateObj - startDateObj;
+        return timeDifference / (1000 * 60 * 60 * 24);
+    };
+
+    static generateDateRangeWithDepreciation(method, months, start_date, end_date, price, adjust = null) {
+        // method: 0: line method || 1: adjust method
+
+        let result = [];
+        let totalMonths = months;
+        let depreciationValue = Math.floor(price / totalMonths); // Depreciation per month
+        let accumulativeValue = 0;
+
+        let currentStartDate = start_date;
+        let currentMonth = parseInt(start_date.split('/')[1]);
+        let currentValue = price;
+
+        let endDateObj = RecoveryLoadDataHandle.parseToDateObj(end_date);
+
+        while (true) {
+            let currentStartDateObj = RecoveryLoadDataHandle.parseToDateObj(currentStartDate);
+
+            let currentEndDate = RecoveryLoadDataHandle.addOneMonth(currentStartDate);
+            let currentEndDateObj = RecoveryLoadDataHandle.parseToDateObj(currentEndDate);
+
+            let daysEven = RecoveryLoadDataHandle.calculateDaysBetween(currentStartDateObj, currentEndDateObj);
+
+            if (method === 1 && adjust) {
+                let depreciationAdjustValue = Math.floor(price / totalMonths * adjust); // Depreciation (adjust) per month
+                depreciationValue = depreciationAdjustValue;
+
+                if (result.length > 0) {
+                    let last = result[result.length - 1];
+                    depreciationAdjustValue = Math.floor(last?.['end_value'] / totalMonths * adjust);
+                    // Kiểm tra nếu khâu hao theo hệ số mà lớn hơn khấu hao chia đều số tháng còn lại thì lấy theo khấu hao hệ số còn ngược lại thì lấy theo khấu hao chia đều.
+                    let monthsRemain = totalMonths - last?.['month'];
+                    let depreciationValueCompare = last?.['end_value'] / monthsRemain;
+                    if (depreciationAdjustValue > depreciationValueCompare) {
+                        depreciationValue = depreciationAdjustValue;
+                    } else {
+                        depreciationValue = depreciationValueCompare;
+                    }
+                }
+            }
+            accumulativeValue += depreciationValue;
+
+
+            if (currentEndDateObj > endDateObj) {
+                if (currentStartDateObj < endDateObj) {
+                    let daysOdd = RecoveryLoadDataHandle.calculateDaysBetween(currentStartDateObj, endDateObj);
+                    depreciationValue = depreciationValue * (daysOdd + 1) / (daysEven + 1)
+
+                    result.push({
+                        month: currentMonth.toString(),
+                        start_date: currentStartDate,
+                        end_date: end_date,
+                        start_value: currentValue,
+                        depreciation_value: depreciationValue,
+                        accumulative_value: accumulativeValue,
+                        end_value: Math.max(currentValue - depreciationValue, 0),
+                    });
+                }
+                break;
+            } else {
+                result.push({
+                    month: currentMonth.toString(),
+                    start_date: currentStartDate,
+                    end_date: currentEndDate,
+                    start_value: currentValue,
+                    depreciation_value: depreciationValue,
+                    accumulative_value: accumulativeValue,
+                    end_value: Math.max(currentValue - depreciationValue, 0),
+                });
+            }
+
+            currentStartDate = currentEndDate;
+            currentStartDate = RecoveryLoadDataHandle.addOneDay(currentStartDate);
+            currentMonth++;
+            currentValue = Math.max(currentValue - depreciationValue, 0);
+        }
+
+        return result;
+    };
+
+    static loadSaveDepreciation() {
+        let target = RecoveryDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
+        if (target) {
+            let targetRow = target.closest('tr');
+
+            if (targetRow) {
+                let $methodEle = $('#depreciation_method');
+                let $startEle = $('#depreciation_start_date');
+                let $endEle = $('#depreciation_end_date');
+                let $adjust = $('#depreciation_adjustment')
+                if ($methodEle.length > 0 && $startEle.length > 0 && $endEle.length > 0 && $adjust.length > 0) {
+                    let depreciationMethodEle = targetRow.querySelector('.table-row-depreciation-method');
+                    let depreciationStartDEle = targetRow.querySelector('.table-row-depreciation-start-date');
+                    let depreciationEndDEle = targetRow.querySelector('.table-row-depreciation-end-date');
+                    let depreciationAdjustEle = targetRow.querySelector('.table-row-depreciation-adjustment');
+                    if (depreciationMethodEle && depreciationStartDEle && depreciationEndDEle && depreciationAdjustEle) {
+                        if ($methodEle.val()) {
+                            $(depreciationMethodEle).val(parseInt($methodEle.val()));
+                        }
+                        if ($startEle.val()) {
+                            $(depreciationStartDEle).val(moment($startEle.val(),
+                                'DD/MM/YYYY').format('YYYY-MM-DD'));
+                        }
+                        if ($endEle.val()) {
+                            $(depreciationEndDEle).val(moment($endEle.val(),
+                                'DD/MM/YYYY').format('YYYY-MM-DD'));
+                        }
+                        if ($adjust.val()) {
+                            $(depreciationAdjustEle).val(parseFloat($adjust.val()))
+                        }
+                    }
+                }
+                let lastRowData = RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().row(':last').data();
+                if (lastRowData) {
+                    let depreciationSubtotalEle = targetRow.querySelector('.table-row-depreciation-subtotal');
+                    let fnCostEle = targetRow.querySelector('.table-row-subtotal');
+                    let fnCostRawEle = targetRow.querySelector('.table-row-subtotal-raw');
+                    if (depreciationSubtotalEle && fnCostEle && fnCostRawEle) {
+                        let fnCost = lastRowData?.['accumulative_value'];
+                        $(depreciationSubtotalEle).val(fnCost);
+                        $(fnCostEle).attr('data-init-money', String(fnCost));
+                        $(fnCostRawEle).val(String(fnCost));
+                        $.fn.initMaskMoney2();
+                    }
+                }
+            }
+        }
         return true;
     };
 
@@ -680,6 +932,7 @@ class RecoveryDataTableHandle {
     static $tableDelivery = $('#datable-delivery');
     static $tableDeliveryProduct = $('#datable-deli-product');
     static $tableWarehouse = $('#datable-warehouse');
+    static $tableDepreciationDetail = $('#table-depreciation-detail');
 
     static dataTableProduct(data) {
         RecoveryDataTableHandle.$tableProduct.not('.dataTable').DataTableDefault({
@@ -744,7 +997,7 @@ class RecoveryDataTableHandle {
                     targets: 4,
                     width: '9.11458333333%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_recovery']}" required readonly>`;
+                        return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['quantity_recovery']}" required readonly>`;
                     }
                 },
                 {
@@ -793,13 +1046,30 @@ class RecoveryDataTableHandle {
                     width: '14.0625%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
-                                    <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
+                                    <div class="d-flex align-items-center">
+                                        <button
+                                            type="button"
+                                            class="btn btn-icon btn-depreciation-detail"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#viewDepreciationDetail"
+                                        ><i class="fas fa-ellipsis-h"></i>
+                                        </button><p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
+                                    </div>
                                     <input
                                         type="text"
                                         class="form-control table-row-subtotal-raw"
                                         value="${row?.['product_subtotal_price']}"
                                         hidden
                                     >
+                                    
+                                    <input type="text" class="form-control table-row-depreciation-subtotal" value="${row?.['product_depreciation_subtotal'] ? row?.['product_depreciation_subtotal'] : 0}" hidden>
+                                    <input type="text" class="form-control table-row-depreciation-method" value="${row?.['product_depreciation_method'] ? row?.['product_depreciation_method'] : 0}" hidden>
+                                    <input type="text" class="form-control table-row-depreciation-start-date" value="${row?.['product_depreciation_start_date'] ? row?.['product_depreciation_start_date'] : ''}" hidden>
+                                    <input type="text" class="form-control table-row-depreciation-end-date" value="${row?.['product_depreciation_end_date'] ? row?.['product_depreciation_end_date'] : ''}" hidden>
+                                    <input type="text" class="form-control table-row-depreciation-adjustment" value="${row?.['product_depreciation_adjustment'] ? row?.['product_depreciation_adjustment'] : 1}" hidden>
+                                    
+                                    <input type="text" class="form-control table-row-depreciation-time" value="${row?.['product_quantity_depreciation'] ? row?.['product_quantity_depreciation'] : 0}" hidden>
+<!--                                    <input type="text" class="form-control table-row-uom-time" value="${row?.['product_depreciation_adjustment'] ? row?.['product_depreciation_adjustment'] : 1}" hidden>-->
                                 </div>`;
                     }
                 },
@@ -1099,6 +1369,76 @@ class RecoveryDataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 RecoveryLoadDataHandle.loadCssToDtb(idTbl);
+            },
+        });
+    };
+
+    static dataTableDepreciationDetail(data) {
+        RecoveryDataTableHandle.$tableDepreciationDetail.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-month">${row?.['month']}</span>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-start-date">${row?.['start_date'] ? row?.['start_date'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-end-date">${row?.['end_date'] ? row?.['end_date'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money table-row-start-net-value" data-init-money="${parseFloat(row?.['start_value'] ? row?.['start_value'] : '0')}"></span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money table-row-depreciation-value" data-init-money="${parseFloat(row?.['depreciation_value'] ? row?.['depreciation_value'] : '0')}"></span>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money table-row-end-net-value" data-init-money="${parseFloat(row?.['end_value'] ? row?.['end_value'] : '0')}"></span>`;
+                    }
+                },
+                {
+                    targets: 6,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money table-row-accumulative" data-init-money="${parseFloat(row?.['accumulative_value'] ? row?.['accumulative_value'] : '0')}"></span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                RecoveryLoadDataHandle.loadCssToDtb("table-depreciation-detail");
+
+                let lastRow = RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().row(':last');
+                if (lastRow) {
+                    let lastRowNode = lastRow.node();
+                    if (lastRowNode) {
+                        let lastTd = lastRowNode.querySelector('td:last-child');
+                        if (lastTd) {
+                            $(lastTd).css({
+                                'background': '#d0e6ff'
+                            })
+                        }
+                    }
+                }
             },
         });
     };

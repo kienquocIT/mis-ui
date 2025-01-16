@@ -541,9 +541,11 @@ class LeadMeetingActivitiesHandler extends LeadActivitiesHandler{
         this.form.dataForm['customer_member_list'] = []
         const customerList = this.$meetingCustomerSelect.val()
         for (const customer of customerList){
-            this.form.dataForm['customer_member_list'].push({
-                'customer_member_mapped': customer
-            })
+            if (customer){
+                 this.form.dataForm['customer_member_list'].push({
+                    'customer_member_mapped': customer
+                })
+            }
         }
 
         this.form.dataForm['email_notify'] = $('#send_notify_email').is(':checked')

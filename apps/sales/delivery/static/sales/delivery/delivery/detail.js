@@ -131,6 +131,8 @@ $(async function () {
                             sub_delivery_data.push({
                                 'sale_order': item?.['sale_order']?.['id'] ? item?.['sale_order']?.['id'] : null,
                                 'sale_order_data': item?.['sale_order'] ? item?.['sale_order'] : {},
+                                'lease_order': item?.['lease_order']?.['id'] ? item?.['lease_order']?.['id'] : null,
+                                'lease_order_data': item?.['lease_order'] ? item?.['lease_order'] : {},
                                 'warehouse': item?.['warehouse']?.['id'],
                                 'warehouse_data': item?.['warehouse'],
                                 'uom': prod_data?.['uom_data']?.['id'],
@@ -158,19 +160,31 @@ $(async function () {
 
         loadProductWHModal(pwh, prod_data) {
             for (let val of prod_data?.['delivery_data']) {
-                if (val?.['warehouse'] === pwh?.['warehouse']?.['id'] && val?.['sale_order'] === pwh?.['sale_order']?.['id']) {
-                    if (val?.['stock'] && prod_data?.['picked_quantity']) {
-                        if (prod_data?.['picked_quantity'] > 0) {
-                            pwh['picked'] = val?.['stock'];
+                let check = false;
+                if (val?.['warehouse'] === pwh?.['warehouse']?.['id']) {
+                    if (($eleSO.attr('data-so'))) {
+                        if (val?.['sale_order'] === pwh?.['sale_order']?.['id']) {
+                            check = true;
                         }
                     }
-                    if (val?.['lot_data']) {
-                        pwh['lot_data'] = val?.['lot_data'];
+                    if (($eleSO.attr('data-lo'))) {
+                        check = true;
                     }
-                    if (val?.['serial_data']) {
-                        pwh['serial_data'] = val?.['serial_data'];
+
+                    if (check === true) {
+                        if (val?.['stock'] && prod_data?.['picked_quantity']) {
+                            if (prod_data?.['picked_quantity'] > 0) {
+                                pwh['picked'] = val?.['stock'];
+                            }
+                        }
+                        if (val?.['lot_data']) {
+                            pwh['lot_data'] = val?.['lot_data'];
+                        }
+                        if (val?.['serial_data']) {
+                            pwh['serial_data'] = val?.['serial_data'];
+                        }
+                        break;
                     }
-                    break;
                 }
             }
             return true;
@@ -339,8 +353,14 @@ $(async function () {
             }
             if (Object.keys(customRes).length !== 0) {
                 opts['templateResult'] = function (state) {
-                    let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                    let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                    let res1 = ``;
+                    let res2 = ``;
+                    if (customRes?.['res1']) {
+                        res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
+                    }
+                    if (customRes?.['res2']) {
+                        res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
+                    }
                     return $(`<span>${res1} ${res2}</span>`);
                 }
             }
@@ -418,7 +438,6 @@ $(async function () {
         loadEventCheckboxAll($area) {
             $area.on('click', '.table-row-checkbox-all', function () {
                 let checked = this.checked;
-                let stopLoop = false;
                 for (let checkbox of $area[0].querySelectorAll('.table-row-checkbox')) {
                     if (checkbox) {
                         checkbox.checked = checked;
@@ -428,25 +447,13 @@ $(async function () {
                         }
                     }
                 }
-
-                // $area.DataTable().rows().every(function () {
-                //     if (stopLoop) return;
-                //
-                //     let row = this.node();
-                //     let checkbox = row.querySelector('.table-row-checkbox');
-                //     if (checkbox) {
-                //         checkbox.checked = checked;
-                //         let state = prodTable.loadQuantityDeliveryBySerial(checkbox);
-                //         if (state === false) {
-                //             stopLoop = true;
-                //         }
-                //     }
-                // });
             });
             return true;
         };
 
         setupDataPW(dataSrc, prod_data, config, type) {
+            // type: 0 normal | 1: borrow
+
             let finalData = [];
             let baseData = [];
             let soDataJson = {};
@@ -457,13 +464,24 @@ $(async function () {
                 if (!pwh.hasOwnProperty('sale_order') && type === 0) {
                     if ($eleSO.attr('data-so')) {
                         pwh['sale_order'] = JSON.parse($eleSO.attr('data-so'));
+                        for (let deliveryData of prod_data?.['delivery_data']) {
+                            if (pwh?.['sale_order']?.['id'] === deliveryData?.['sale_order'] && pwh?.['warehouse']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
+                                pwh['picked'] = deliveryData?.['stock'];
+                            }
+                        }
                     }
                 }
-                for (let deliveryData of prod_data?.['delivery_data']) {
-                    if (pwh?.['sale_order']?.['id'] === deliveryData?.['sale_order'] && pwh?.['warehouse']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
-                        pwh['picked'] = deliveryData?.['stock'];
+                if (!pwh.hasOwnProperty('lease_order') && type === 0) {
+                    if ($eleSO.attr('data-lo')) {
+                        pwh['lease_order'] = JSON.parse($eleSO.attr('data-lo'));
+                        for (let deliveryData of prod_data?.['delivery_data']) {
+                            if (pwh?.['warehouse']?.['id'] === deliveryData?.['warehouse_data']?.['id']) {
+                                pwh['picked'] = deliveryData?.['stock'];
+                            }
+                        }
                     }
                 }
+
                 let finalRate = 1;
                 if (pwh?.['uom'] && prod_data?.['uom_data']) {
                     pwh['uom_stock'] = pwh?.['uom'];
@@ -474,32 +492,43 @@ $(async function () {
                         }
                     }
                 }
-                if (!config?.['is_picking'] && config?.['is_partial_ship']) { // TH config 2: none_picking_many_delivery
+                if (pwh?.['lease_order']) {
+
+                }
+                if (!$eleSO.attr('data-lo')) {  // Nếu không phải leaseorder thì check có picking hay không picking
+                    if (!config?.['is_picking'] && config?.['is_partial_ship']) { // Trường hợp none_picking_many_delivery
+                        pwh['stock_amount'] = pwh?.['stock_amount'] * finalRate;
+                        pwh['available_stock'] = pwh?.['available_stock'] * finalRate;
+                        if (prod_data?.['delivery_data']) {
+                            prodTable.loadProductWHModal(pwh, prod_data);
+                        }
+                    }
+                    if ((config?.['is_picking'] && config?.['is_partial_ship']) && prod_data?.['delivery_data']) { // Trường hợp has_picking_many_delivery
+                        // nếu ready quantity > 0 => có hàng để giao
+                        // lấy delivery
+                        pwh['stock_amount'] = pwh?.['picked_ready'] * finalRate;
+                        pwh['available_stock'] = pwh?.['available_picked'] * finalRate;
+                        if (prod_data?.['ready_quantity'] > 0) {
+                            prodTable.loadProductWHModal(pwh, prod_data);
+                        }
+                        // change column name stock -> picked
+                        if (!$table.hasClass('dataTable')) {
+                            let columnStock = $table[0]?.querySelector('.stock-picked-exchange');
+                            if (columnStock) {
+                                columnStock.innerHTML = $trans.attr('data-picked-ready');
+                            }
+                        }
+                    }
+                } else {  // Nếu là lease order thì luôn không có picking
                     pwh['stock_amount'] = pwh?.['stock_amount'] * finalRate;
                     pwh['available_stock'] = pwh?.['available_stock'] * finalRate;
                     if (prod_data?.['delivery_data']) {
                         prodTable.loadProductWHModal(pwh, prod_data);
                     }
                 }
-                if ((config?.['is_picking'] && config?.['is_partial_ship']) && prod_data?.['delivery_data']) { // TH config 4: has_picking_many_delivery
-                    // nếu ready quantity > 0 => có hàng để giao
-                    // lấy delivery
-                    pwh['stock_amount'] = pwh?.['picked_ready'] * finalRate;
-                    pwh['available_stock'] = pwh?.['available_picked'] * finalRate;
-                    if (prod_data?.['ready_quantity'] > 0) {
-                        prodTable.loadProductWHModal(pwh, prod_data);
-                    }
-                    // change column name stock -> picked
-                    if (!$table.hasClass('dataTable')) {
-                        let columnStock = $table[0]?.querySelector('.stock-picked-exchange');
-                        if (columnStock) {
-                            columnStock.innerHTML = $trans.attr('data-picked-ready');
-                        }
-                    }
-                }
-
                 baseData.push(pwh);
-                if (type === 0) {
+
+                if (type === 0) {  // normal
                     if (pwh?.['sale_order']?.['id']) {
                         if (!soDataJson.hasOwnProperty(String(pwh?.['sale_order']?.['id']))) {
                             soDataJson[String(pwh?.['sale_order']?.['id'])] = {
@@ -514,7 +543,7 @@ $(async function () {
                         }
                     }
                 }
-                if (type === 1) {
+                if (type === 1) {  // borrow
                     if (!commonDataJson.hasOwnProperty('common_warehouse')) {
                         commonDataJson['common_warehouse'] = {
                             'sale_order': pwh?.['sale_order'],
@@ -621,8 +650,8 @@ $(async function () {
                                             ${checked}
                                             ${hidden}
                                         >
-                                        <span class="badge badge-soft-success">${row?.['warehouse']?.['code']}</span>
                                         <label class="form-check-label" for="pw-${row?.['id'].replace(/-/g, "")}">${row?.['warehouse']?.['title']}</label>
+                                        <span class="badge badge-light badge-outline">${row?.['warehouse']?.['code']}</span>
                                     </div>`;
                         }
                     },
@@ -985,6 +1014,7 @@ $(async function () {
                         if (parseFloat(valueLotInput) > 0 && parseFloat(valueLotInput) <= parseFloat(valueLotInit)) {
                             lotData.push({
                                 'product_warehouse_lot_id': rowLotData?.['id'],
+                                'product_warehouse_lot_data': rowLotData,
                                 'quantity_initial': parseFloat(valueLotInit),
                                 'quantity_delivery': parseFloat(valueLotInput),
                             })
@@ -1238,6 +1268,7 @@ $(async function () {
                                 newQuantity++;
                                 serialData.push({
                                     'product_warehouse_serial_id': rowSerialData?.['id'],
+                                    'product_warehouse_serial_data': rowSerialData,
                                 })
                             }
                         }
@@ -1415,7 +1446,9 @@ $(async function () {
                 prepareHTMLConfig(res?.['config_at_that_point'])
                 $x.fn.renderCodeBreadcrumb(res);
                 $.fn.compareStatusShowPageAction(res);
-                // new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
+                if ($('#delivery_form').attr('data-method') === 'GET') {
+                    new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
+                }
                 let formGroup = $eleSO[0].closest('.form-group');
                 if (formGroup) {
                     if (res?.['sale_order_data']?.['code']) {
@@ -1487,7 +1520,7 @@ $(async function () {
                 $('#textareaRemarks').val(res.remarks)
 
                 // reset data stock
-                if ($form.attr('data-method').toLowerCase() === 'put') {
+                if ($form.attr('data-method').toLowerCase() === 'put' && res?.['system_status'] !== 0) {
                     if (res.hasOwnProperty('products') && Array.isArray(res?.['products'])) {
                         for (let product of res?.['products']) {
                             if (product.hasOwnProperty('delivery_data') && Array.isArray(product?.['delivery_data'])) {
@@ -1524,7 +1557,7 @@ $(async function () {
                 // after prepare HTML run event click button done
                 btnDoneClick()
                 // reset data for edit page
-                if ($form.attr('data-method').toLowerCase() === 'put') {
+                if ($form.attr('data-method').toLowerCase() === 'put' && res?.['system_status'] !== 0) {
                     for (let productData of res?.['products']) {
                         for (let deliveryData of productData?.['delivery_data']) {
                             deliveryData['lot_data'] = [];

@@ -7,6 +7,7 @@ from typing import Union
 from urllib.parse import urlencode
 
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as trans
 from .utils import RandomGenerate
 
 
@@ -42,6 +43,7 @@ class MenuCommon:
             url += '?' + urlencode(self.params)
         return {
             'name': self.name,
+            'name_i18n': trans(self.name),
             'code': self.code if self.code else RandomGenerate.get_string(length=32),
             'view_name': self.view_name,
             'url': url,
@@ -413,8 +415,8 @@ class MenusCRM:
             ),
         ]
     )
-    CASH_OUTFLOW = MenuCommon(
-        name='Cashflow', code='menu_cash_outflow', view_name='',
+    ACCOUNT_PAYABLE = MenuCommon(
+        name='Account payable', code='menu_account_payable', view_name='',
         icon='<i class="fas fa-coins"></i>',
         child=[
             MenuCommon(
@@ -463,6 +465,10 @@ class MenusCRM:
     CONSULTING = MenuCommon(
         name='Consulting', code='menu_consulting_list', view_name='ConsultingList',
         icon='<i class="fa-solid fa-briefcase"></i>',
+    )
+    CHAT_3RD = MenuCommon(
+        name='Chat Third party', code='menu_chat_third_party', view_name='ChatMessengerView',
+        icon='<i class="fa-solid fa-comments"></i>',
     )
 
 
@@ -783,6 +789,41 @@ class MenusHRM:
         ]
     )
 
+class MenusPartnerCenter:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_partner_center_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    LISTS = MenuCommon(
+        name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fa-solid fa-search"></i>',
+    )
+
+class MenusFinancials:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    CASHFLOW = MenuCommon(
+        name='Cashflow', code='menu_cashflow', view_name='', icon='<i class="fas fa-exchange-alt"></i>',
+        child=[
+            MenuCommon(
+                name='Cash inflow', code='menu_cash_inflow', view_name='CashInflowList',
+                icon='<i class="fas fa-share"></i>',
+            ),
+            # MenuCommon(
+            #     name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
+            #     icon='<i class="fas fa-reply"></i>',
+            # ),
+        ],
+    )
+    GENERAL = MenuCommon(
+        name='General', code='menu_general', view_name='', icon='<i class="bi bi-link"></i>',
+        child=[
+            MenuCommon(
+                name='Reconciliation', code='menu_reconciliation', view_name='ReconList',
+                icon='<i class="bi bi-ui-checks"></i>',
+            ),
+        ],
+    )
+
 
 # Space Setup
 class SpaceCommon:
@@ -839,8 +880,8 @@ class SpaceItem:
                 MenusCRM.QUOTATION,
                 MenusCRM.CONSULTING,
                 MenusCRM.BIDDING,
-                MenusCRM.AR_INVOICE,
                 MenusCRM.SALE_ORDER,
+                MenusCRM.AR_INVOICE,
                 MenusCRM.LEASE_ORDER,
                 MenusCRM.RECURRENCE,
                 MenusCRM.WORK_ORDER,
@@ -849,9 +890,10 @@ class SpaceItem:
                 MenusCRM.PRODUCT,
                 MenusCRM.OPP_BOM,
                 MenusCRM.PRICING,
-                MenusCRM.CASH_OUTFLOW,
+                MenusCRM.ACCOUNT_PAYABLE,
                 MenusCRM.SALE_ACTIVITIES,
                 MenusCRM.TASK,
+                MenusCRM.CHAT_3RD,
             ],
         ),
         'kms': SpaceCommon(
@@ -875,6 +917,16 @@ class SpaceItem:
                 MenuEOffice.ASSET_TOOLS,
                 MenuEOffice.MEETING,
             ],
+        ),
+        'financials': SpaceCommon(
+            'Financials',
+            'financials',
+            icon='<i class="fas fa-balance-scale"></i>',
+            menus=[
+                MenusFinancials.HOME,
+                MenusFinancials.CASHFLOW,
+                MenusFinancials.GENERAL,
+            ]
         ),
         'forms': SpaceCommon(
             'Forms',
@@ -976,7 +1028,16 @@ class SpaceItem:
                 MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,
                 MenusCoreConfigurations.INVENTORY_DATA_CONFIG
             ],
-        )
+        ),
+        'partner-center': SpaceCommon(
+            'Partner Center',
+            'partner-center',
+            icon='<i class="fa-solid fa-user-tag"></i>',
+            menus=[
+                MenusPartnerCenter.HOME,
+                MenusPartnerCenter.LISTS,
+            ],
+        ),
     }
 
     @classmethod
@@ -991,6 +1052,12 @@ class SpaceItem:
             return cls.mapping[space_code].data_menus
         return None
 
+    @classmethod
+    def get_menus(cls):
+        return {
+            key: value.data_menus for key, value in cls.mapping.items()
+        }
+
 
 class SpaceGroup:
     SPACE = SpaceCommon(
@@ -998,6 +1065,7 @@ class SpaceGroup:
             SpaceItem.mapping['crm'],
             # SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
+            # SpaceItem.mapping['financials'],
             SpaceItem.mapping['forms'],
             SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],
@@ -1006,6 +1074,7 @@ class SpaceGroup:
             SpaceItem.mapping['project'],
             SpaceItem.mapping['report'],
             SpaceItem.mapping['definition'],
+            SpaceItem.mapping['partner-center'],
         ]
     )
     CORE_SETTINGS = SpaceCommon(

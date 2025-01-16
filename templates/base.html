@@ -171,17 +171,20 @@
                                             {% include 'extends/breadcrumb.html' %}
                                         </div>
                                     </div>
-                                    <div class="blog-options-wrap" id="idxPageAction" style="display: flex; align-items: center;">
+                                    <div
+                                            class="blog-options-wrap" id="idxPageAction"
+                                            style="display: flex; align-items: center;"
+                                    >
                                         {% include 'extends/direct_btn_group.html' %}
                                         <div class="{% if pk %}hidden{% endif %} mr-1" id="idxRealAction">
                                             {% block pageAction %}{% endblock %}
                                         </div>
                                         <button
-                                            type="submit"
-                                            class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                            form=""
-                                            data-value=""
-                                            id="idxSaveInZoneWF"
+                                                type="submit"
+                                                class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                form=""
+                                                data-value=""
+                                                id="idxSaveInZoneWF"
                                         >
                                         <span
                                                 class="icon"
@@ -718,6 +721,12 @@
 <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
 <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
 <!-- // TinyMCE -->
+
+<!-- Firebase -->
+<script src="{% static 'firebase/handle_message.js' %}"></script>
+{{ fcm|json_script:"fcm" }}
+<script src="{% static 'firebase/foreground.js' %}" type="module"></script>
+<!-- // Firebase -->
 
 {% block jsFooterUnCompress %}{% endblock %}
 

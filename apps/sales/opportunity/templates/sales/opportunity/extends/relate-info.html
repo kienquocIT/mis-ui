@@ -17,10 +17,10 @@
         <div class="row">
             <div class="col-12 d-flex">
                 <div class="dropdown mr-3">
-                    <button type="button" id="btn-create-related-feature" class="btn btn-light dropdown-toggle btn-xs" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
+                    <button type="button" id="btn-create-related-feature" class="btn btn-secondary btn-xs dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
                         {% trans 'Related features' %}
                     </button>
-                    <div class="dropdown-menu dropdown-bordered dropdown-menu-dark" style="min-width: max-content" id="dropdown-menu-relate-app">
+                    <div class="dropdown-menu dropdown-bordered dropdown-menu-dark" style="min-width: max-content; opacity: 0.9;" id="dropdown-menu-relate-app">
                         <div class="row">
                             <div class="col-6">
                                 <a id="create-quotation-shortcut" data-label="quotation.quotation" class="disabled dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-file-alt"></i><span class="small">{% trans 'Quotation' %}</span></a>
@@ -42,14 +42,14 @@
                         <a id="create-return-advance-shortcut" class="dropdown-item" data-url="{% url 'ReturnAdvanceCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-hand-holding-usd fa-flip-horizontal"></i><span class="small">{% trans 'Return Advance' %}</span></a>
                         <a id="create-project-bom-shortcut" class="disabled dropdown-item" data-url="{% url 'OpportunityBOMCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-dice"></i><span class="small">{% trans 'Opportunity BOM' %}</span></a>
                         <a id="create-bidding-shortcut" class="disabled dropdown-item" data-url="{% url 'BiddingCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-gavel"></i><span class="small">{% trans 'Bidding' %}</span></a>
-                        <a id="create-consulting-shortcut" class="disabled dropdown-item" data-url="{% url 'ConsultingCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-gavel"></i><span class="small">{% trans 'Consulting' %}</span></a>
+                        <a id="create-consulting-shortcut" class="disabled dropdown-item" data-url="{% url 'ConsultingCreate' %}" href="#" target="_blank"><i class="dropdown-icon fa-solid fa-briefcase"></i><span class="small">{% trans 'Consulting' %}</span></a>
                     </div>
                 </div>
                 <div class="btn-group" role="group">
                     <a class="ml-1" id="goto-call-log" data-url="{% url 'OpportunityCallLogList' %}" href="#"  data-bs-toggle="tooltip" title="{% trans 'Call to customer' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon fas fa-phone-volume"></i></button></a>
                     <a class="ml-1" id="goto-email" data-url="{% url 'OpportunityEmailList' %}" href="#" target="_blank" data-bs-toggle="tooltip" title="{% trans 'Email to customer' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon bi bi-envelope-fill"></i></button></a>
                     <a class="ml-1" id="goto-meeting" data-url="{% url 'OpportunityMeetingList' %}" href="#" target="_blank" data-bs-toggle="tooltip" title="{% trans 'Meeting with customer' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon bi bi-person-workspace"></i></button></a>
-                    <a class="ml-1 ntt-drawer-toggle-link current-create-task" data-drawer-target="#drawer_task_create" data-drawer-active="false" href="#" data-bs-toggle="tooltip" title="{% trans 'Task' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon fa-solid fa-list-check"></i></button></a>
+                    <a class="ml-1 current-create-task" data-bs-toggle="offcanvas" data-bs-target="#offCanvasRightTask" href="#" title="{% trans 'Task' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon fa-solid fa-list-check"></i></button></a>
                 </div>
             </div>
             <div class="col-2 col-md-3 col-lg-3 text-right" hidden>

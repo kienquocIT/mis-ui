@@ -13,13 +13,9 @@
 
 {% block pageAction %}
     <a href="#">
-        <button class="btn btn-outline-primary ntt-drawer-toggle-link btn-create-todo"
-                type="button"
-                data-drawer-target="#drawer_task_create"
-                data-drawer-active="false"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                data-bs-original-title="{% trans 'Create' %}">
+        <button class="btn btn-outline-primary btn-create-todo"
+                type="button" data-bs-toggle="offcanvas" data-bs-target="#offCanvasRightTask"
+                title="{% trans 'Create' %}">
         <span>
             <span>{% trans 'Create' %}</span>
             <span class="icon">
@@ -268,7 +264,6 @@
 
     <script src="{% static 'assets/sales/task/js/extend/common_task.js' %}"></script>
 
-    <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/extend/create-task.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/list.js' %}"></script>
     <script>

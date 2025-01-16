@@ -38,7 +38,7 @@ $(document).ready(function () {
                         url = tbl.attr('data-url-lease-order-detail');
                     }
                     if (target && target.hasOwnProperty('id') && target.hasOwnProperty('code')) {
-                        return `<a href="{0}" class="link-primary underline_hover"><span class="badge badge-soft-success">{2}</span><span>{1}</span></a>`.format_by_idx(
+                        return `<a href="{0}" class="link-primary underline_hover"><span class="mr-2">{1}</span><span class="badge badge-light badge-outline">{2}</span></a>`.format_by_idx(
                             SetupFormSubmit.getUrlDetailWithID(
                                 url,
                                 target['id']

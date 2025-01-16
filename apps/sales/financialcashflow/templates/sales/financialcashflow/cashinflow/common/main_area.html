@@ -1,0 +1,78 @@
+{% load i18n %}
+
+<div class="row mt-5">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="purchase_advance_value" class="form-label fw-bold">{% trans "Customer prepay for purchase" %}</label>
+            <input name="purchase_advance_value" class="form-control mask-money" value="0" id="purchase_advance_value">
+        </div>
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="dropdown">
+            <label data-value="0" id="cif_type_label" data-bs-toggle="dropdown" class="form-label fw-bold dropdown-toggle m-0">{% trans 'Customer advance payment according to contract' %}</label>
+            <div id="cif_type" role="menu" class="dropdown-menu">
+                <a class="dropdown-item" href="#" data-value="0">{% trans 'Customer advance payment according to contract' %}</a>
+                <a class="dropdown-item" href="#" data-value="1">{% trans 'Customer pays by invoice' %}</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div id="area-table-select-so">
+            <table id="table-select-so" class="table nowrap w-100" data-method="GET">
+                <thead>
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 80px">{% trans 'Code' %}</th>
+                    <th style="min-width: 100px">{% trans 'Installment' %}</th>
+                    <th style="min-width: 100px">{% trans 'Description' %}</th>
+                    <th style="min-width: 150px">{% trans 'Total' %}</th>
+                    <th style="min-width: 150px">{% trans 'Balance value' %}</th>
+                    <th style="min-width: 200px">{% trans 'Payment value' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div hidden id="area-table-select-ar">
+            <table id="table-select-ar-invoice" class="table nowrap w-100" data-method="GET" data-url="{% url 'ARInvoiceListForCashInflowAPI' %}">
+                <thead>
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 80px">{% trans 'Code' %}</th>
+                    <th style="min-width: 100px">{% trans 'Document type' %}</th>
+                    <th style="min-width: 100px">{% trans 'Document date' %}</th>
+                    <th style="min-width: 150px">{% trans 'Total' %}</th>
+                    <th style="min-width: 150px">{% trans 'Balance value' %}</th>
+                    <th style="min-width: 200px">{% trans 'Payment value' %}</th>
+                    <th style="min-width: 150px">{% trans 'Payment discount' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row mt-5 mb-5">
+    <div class="col-12 col-md-7 col-lg-7">
+        <div class="form-group">
+            <label for="total_payment" class="form-label text-muted fw-bold">{% trans "Total payment" %}</label>
+            <div class="row">
+                <div class="col-12 col-md-10 col-lg-10">
+                    <input disabled readonly name="total_payment" class="form-control mask-money" value="0" id="total_payment">
+                </div>
+                <div class="col-12 col-md-2 col-lg-2 mt-1 mt-md-0 mt-lg-0">
+                    <button id="btn-modal-payment-method" data-payment-method='' disabled type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#payment-method-modal">
+                        <span>
+                            <span class="icon"><span class="feather-icon"><i class="fas fa-bars"></i></span></span>
+                            <span>{% trans 'Payment method' %} <i hidden id="icon-done-payment-method" class="bi bi-check2-all"></i></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

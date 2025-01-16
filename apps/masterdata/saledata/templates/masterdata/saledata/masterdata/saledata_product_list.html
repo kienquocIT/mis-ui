@@ -10,6 +10,12 @@
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
+    <script id="trans-script"
+            data-trans-confirm-delete="{% trans 'Confirm delete ?' %}"
+            data-trans-notify="{% trans 'This action can not be undo!' %}"
+            data-trans-delete="{% trans 'Delete' %}"
+            data-trans-cancel="{% trans 'Cancel' %}"
+    ></script>
     <div class="row">
         <div class="col-12 col-lg-2 col-md-2">
             <ul class="nav nav-pills nav-light flex-column">
@@ -36,7 +42,7 @@
             </ul>
         </div>
         <div class="col-12 col-md-10 col-lg-10">
-            <div class="tab-content m-0">
+            <div class="tab-content">
                 <div class="tab-pane fade show active" id="section_product_type">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#modal-new-product-type">
                         <button class="btn btn-sm btn-outline-primary btn-modal">
@@ -109,6 +115,7 @@
                                 <th></th>
                                 <th>{% trans "Code" %}</th>
                                 <th>{% trans "Name" %}</th>
+                                <th>{% trans "Referenced unit" %}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -135,7 +142,7 @@
                                 <th>{% trans "Code" %}</th>
                                 <th>{% trans "Name" %}</th>
                                 <th>{% trans "UoM Group" %}</th>
-                                <th>{% trans "Is referenced unit" %}</th>
+                                <th>{% trans "set as referenced unit" %}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -290,9 +297,21 @@
                                 </div>
                             </div>
                             <div class="col-9">
-                                <div class="form-group" id="inp-edit-name-uom-group-div">
+                                <div class="form-group">
                                     <label for="inp-edit-name-uom-group" class="form-label required">{% trans "Name" %}</label>
                                     <input required class="form-control" type="text" name="title" id="inp-edit-name-uom-group">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="select-referenced-unit" class="form-label">{% trans "Referenced unit" %}</label>
+                                    <select class="form-select select2"
+                                            data-method="GET"
+                                            data-url="{% url 'UnitOfMeasureListAPI' %}"
+                                            name="uom_reference"
+                                            id="select-referenced-unit"
+                                    ></select>
+                                    <span class="small text-danger">{% trans 'Check all ratio in this group again when referenced uom is changed' %}</span>
                                 </div>
                             </div>
                         </div>
@@ -411,19 +430,20 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="select-box-uom-group" class="form-label required">{% trans "Select Group" %}</label>
-                                    <select id="select-box-uom-group" class="select2 form-select" data-method="GET"
-                                            data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"
-                                            data-keyResp="unit_of_measure_group"
+                                    <label for="select-box-uom-group" class="form-label required">{% trans "UOM Group" %}</label>
+                                    <select id="select-box-uom-group"
+                                            class="select2 form-select"
+                                            data-method="GET"
+                                            data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
+                                            name="group"
                                     ></select>
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="form-check mt-5">
-                                    <input class="form-check-input mt-1" type="checkbox" id="check-referenced-unit" name="is_referenced_unit" disabled>
-                                    <label class="form-check-label" for="check-referenced-unit">
-                                        {% trans "is referenced for ratio from other unit" %}
-                                    </label>
+                                <div class="form-group">
+                                    <label for="referenced-unit" class="form-label">{% trans "Referenced unit" %}</label>
+                                    <input readonly disabled class="form-control form-control-line" type="text" name="referenced-unit" id="referenced-unit">
+                                    <span class="small text-danger">{% trans 'Select reference unit (if null) for this group to apply the ratio' %}</span>
                                 </div>
                             </div>
                         </div>
@@ -435,16 +455,10 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="row" id="ratio-area">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label for="ratio-unit" class="form-label required">{% trans "Ratio" %}</label>
-                                            <input class="form-control" type="text" name="ratio" readonly id="ratio-unit">
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label mt-6" id="label-referenced-unit" hidden>* {% trans 'Reference Unit' %}</label>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="ratio-unit" class="form-label required">{% trans "Ratio" %}</label>
+                                    <input class="form-control" type="number" name="ratio" id="ratio-unit">
+                                    <span class="small text-muted">{% trans 'The ratio will be automatically = 1 if this UOM becomes the reference unit' %}</span>
                                 </div>
                             </div>
                         </div>
@@ -455,16 +469,11 @@
                                     <input required class="form-control" type="text" name="title" id="name-unit">
                                 </div>
                             </div>
-                            <div class="col-3">
+                            <div class="col-6">
                                 <div class="form-group">
                                     <label for="inp-rounding" class="form-label required">{% trans "Rounding" %}</label>
                                     <input class="form-control" type="number" name="rounding" id="inp-rounding" min="0" step="0.001" value="5">
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row" id="notify-area" hidden>
-                            <div class="col-12">
-                                <label class="small text-red" id="notify-area-label"></label>
                             </div>
                         </div>
                     </form>
@@ -496,21 +505,19 @@
                         <div class="row">
                             <div class="col-6" id="select-group-div">
                                 <div class="form-group">
-                                    <label for="select-box-edit-uom-group" class="form-label required">{% trans "Select Group" %}</label>
-                                    <input id="group-id" disabled hidden>
+                                    <label for="select-box-edit-uom-group" class="form-label required">{% trans "UOM Group" %}</label>
                                     <select class="select2 form-select"
-                                            data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
+                                            data-method="GET"
+                                            data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
                                             id="select-box-edit-uom-group"
-                                            name="group" data-keyResp="unit_of_measure_group">
+                                            name="group">
                                     </select>
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="form-check mt-5">
-                                    <input class="form-check-input mt-1" type="checkbox" id="check-edit-unit" name="is_referenced_unit" disabled>
-                                    <label class="form-check-label" for="check-edit-unit">
-                                        {% trans "is referenced for ratio from other unit" %}
-                                    </label>
+                                <div class="form-group">
+                                    <label for="referenced-unit-edit" class="form-label">{% trans "Referenced unit" %}</label>
+                                    <input readonly disabled class="form-control form-control-line" type="text" name="referenced-unit" id="referenced-unit-edit">
                                 </div>
                             </div>
                         </div>
@@ -522,17 +529,9 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="row" id="ratio-edit-area">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label for="inp-ratio-unit" class="form-label required">{% trans "Ratio" %}</label>
-                                            <script id="group-referenced-unit-name" disabled hidden></script>
-                                            <input class="form-control" type="text" name="ratio" id="inp-ratio-unit">
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label mt-6" id="label-edit-referenced-unit">* {% trans 'Reference Unit' %}</label>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="ratio-unit-edit" class="form-label required">{% trans "Ratio" %}</label>
+                                    <input class="form-control" type="number" name="ratio" id="ratio-unit-edit">
                                 </div>
                             </div>
                         </div>
@@ -543,7 +542,7 @@
                                     <input required class="form-control" type="text" name="title" id="inp-edit-name-unit">
                                 </div>
                             </div>
-                            <div class="col-3">
+                            <div class="col-6">
                                 <div class="form-group">
                                     <label for="inp-rounding-edit" class="form-label required">{% trans "Rounding" %}</label>
                                     <input class="form-control" type="number" name="rounding" id="inp-rounding-edit" min="0" step="0.001">

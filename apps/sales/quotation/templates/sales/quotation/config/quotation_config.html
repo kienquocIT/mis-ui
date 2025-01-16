@@ -108,13 +108,21 @@
             data-invoice="{% trans 'Invoice' %}"
             data-project="{% trans 'Project' %}"
             data-zone-required="{% trans 'Employee and zones are required' %}"
+            data-add="{% trans 'Add new' %}"
+            data-restore="{% trans 'Restore default' %}"
+            data-syntax="{% trans 'Syntax' %}"
+            data-example="{% trans 'Example' %}"
     >
     <input
             type="text"
             id="app-url-factory"
-            data-url-labor="{% url "ExpenseListAPI" %}"
-            data-url-expense-item="{% url "ExpenseItemListAPI" %}"
             data-url-app-emp-config="{% url "AppEmpConfigListAPI" %}"
+
+            data-md-labor="{% url "ExpenseListAPI" %}"
+            data-md-expense-item="{% url "ExpenseItemListAPI" %}"
+            data-md-product="{% url "ProductForSaleListAPI" %}"
+            data-md-type="{% url "ProductTypeListAPI" %}"
+            data-md-category="{% url "ProductCategoryListAPI" %}"
     >
 {% endblock %}
 

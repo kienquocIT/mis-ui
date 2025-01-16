@@ -66,6 +66,8 @@ INSTALLED_APPS = \
         'django_celery_results',  # Listen celery task and record it to database.
         'apps.core.chatbot',  # chatbot AI
         'django_celery_beat',  # celery crontab
+        'apps.core.chat3rd',  # Chat Third party: Messenger, Zalo, WhatsApp
+        'apps.core.firebase',  # Firebase
     ] + [  # Core Application
         'apps.core.account',
         'apps.core.auths',
@@ -113,6 +115,7 @@ INSTALLED_APPS = \
         'apps.sales.bidding',
         'apps.sales.leaseorder',
         'apps.sales.consulting',
+        'apps.sales.partnercenter'
     ] + [  # e-office Application
         'apps.eoffice.leave',
         'apps.eoffice.businesstrip',
@@ -122,6 +125,9 @@ INSTALLED_APPS = \
         'apps.web_builder',
     ] + [  # HRM
         'apps.hrm.employee'
+    ] + [
+        'apps.sales.financialcashflow',
+        'apps.sales.reconciliation'
     ]
 
 INSTALLED_APPS += [

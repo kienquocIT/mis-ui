@@ -4,7 +4,7 @@ from .views import (
     DeliveryConfigDetail, DeliveryConfigDetailAPI,
     OrderPickingList, OrderPickingListAPI, OrderPickingDetail, OrderPickingDetailAPI, OrderDeliveryList,
     OrderDeliveryListAPI, OrderDeliveryDetail, OrderDeliveryDetailAPI, OrderDeliveryEdit, OrderPickingEdit,
-    OrderDeliveryCreate,
+    OrderDeliveryCreate, DeliveryForRecoveryListAPI,
 )
 
 urlpatterns = [
@@ -23,4 +23,6 @@ urlpatterns = [
     path('detail/<str:pk>', OrderDeliveryDetail.as_view(), name='OrderDeliveryDetail'),
     path('update/<str:pk>', OrderDeliveryEdit.as_view(), name='OrderDeliveryEdit'),
     path('<str:pk>/api', OrderDeliveryDetailAPI.as_view(), name='OrderDeliveryDetailAPI'),
+
+    path('for-recovery/list/api', DeliveryForRecoveryListAPI.as_view(), name='DeliveryForRecoveryListAPI'),
 ]

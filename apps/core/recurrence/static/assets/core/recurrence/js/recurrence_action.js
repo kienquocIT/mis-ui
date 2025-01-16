@@ -22,6 +22,9 @@ $(function () {
             'saleorder.saleorder': {
                 "create": $urls.attr('data-so-create'),
             },
+            'leaseorder.leaseorder': {
+                "create": $urls.attr('data-lo-create'),
+            },
         }
 
         function getCurrentDate() {

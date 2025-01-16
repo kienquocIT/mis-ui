@@ -360,7 +360,6 @@ $(document).on("change", '.month-target', function () {
         sum_year_target_company += parseFloat(sum_year)
     })
 
-
     for (let i = 0; i < 12; i++) {
         revenuePlanTable.find(`thead .sum-company-m${i+1}`).attr('value', sum_month_target_company[i])
     }
@@ -592,8 +591,8 @@ function UpdateTablePlan(group_employee_list, group_selected) {
             revenuePlanTable.find('.ytarget-td').each(function () {
                 if ($(this).html() === '') {
                     $(this).append(`
-                        <input class="mb-1 mask-money form-control text-primary yeartargetvalue" value="0">
-                        <input class="mask-money form-control text-secondary yeartargetvalue-profit" value="0">
+                        <input readonly disabled class="mb-1 mask-money form-control text-primary yeartargetvalue" value="0">
+                        <input readonly disabled class="mask-money form-control text-secondary yeartargetvalue-profit" value="0">
                     `)
                 }
             })
@@ -966,8 +965,8 @@ class RevenuePlanHandle {
 
 function Disabled(option) {
     if (option === 'detail') {
-        $('input').prop('readonly', true).prop('disabled', true)
-        $('select').prop('disabled', true)
+        $('form input').prop('readonly', true).prop('disabled', true)
+        $('form select').prop('disabled', true)
         $('#add-group-plan').addClass('disabled')
     }
     else {

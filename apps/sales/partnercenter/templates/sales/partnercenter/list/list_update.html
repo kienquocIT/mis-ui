@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form_partnercenter_list">
+        <span>
+            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            data-url="{% url 'ListDetailAPI' pk=pk %}"
+            data-url-redirect="{% url 'ListList' %}"
+            data-method="PUT"
+            id="form_partnercenter_list"
+    >
+        {% csrf_token %}
+        {% include 'sales/partnercenter/list/common/list_common.html' %}
+    </form>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-url-factory"
+        data-md-data-obj = "{% url 'ListDataObjectListAPI' %}"
+        data-md-prop-list = "{% url 'ApplicationPropertyListAPI' %}"
+        data-md-employee = "{% url 'ListEmployeeListAPI' %}"
+        data-md-contact = "{% url 'ListContactListAPI' %}"
+        data-md-industry = "{% url 'ListIndustryListAPI' %}"
+        data-md-opp-config-stage = "{% url 'ListOpportunityConfigStageListAPI' %}"
+    >
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'assets/sales/partnercenter/list/list_update.js' %}"></script>
+    <script src="{% static 'assets/sales/partnercenter/list/list_common.js' %}"></script>
+{% endblock %}

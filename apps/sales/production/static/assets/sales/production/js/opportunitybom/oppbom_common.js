@@ -881,9 +881,9 @@ class OpportunityBOMAction {
     }
     static DisableDetailPage(option) {
         if (option === 'detail') {
-            $('input').prop('readonly', true).prop('disabled', true)
-            $('textarea').prop('readonly', true).prop('disabled', true)
-            $('select').prop('readonly', true).prop('disabled', true)
+            $('form input').prop('readonly', true).prop('disabled', true)
+            $('form textarea').prop('readonly', true).prop('disabled', true)
+            $('form select').prop('disabled', true)
             add_new_process_description.prop('disabled', true)
             $('.del-row-material').prop('disabled', true)
             $('.add-new-material').prop('disabled', true)

@@ -24,8 +24,13 @@
 {% endblock %}
 {% block pageContent %}
     <script id="trans-script"
-            data-trans-to="{% trans 'To' %}"
-            data-trans-cc="{% trans 'Cc' %}"
+            data-trans-from="{% trans 'from' %}"
+            data-trans-to="{% trans 'to' %}"
+            data-trans-cc="{% trans 'cc' %}"
+            data-trans-bcc="{% trans 'bcc' %}"
+            data-just-log="{% trans 'Logged' %}"
+            data-sent="{% trans 'Sent successfully' %}"
+            data-err="{% trans 'Send failed' %}"
     ></script>
     <table id="table_opportunity_email_list" class="table nowrap w-100 mb-5"
            data-url="{% url 'OpportunityEmailListAPI' %}"
@@ -36,150 +41,22 @@
         <thead>
         <tr>
             <th style="min-width: 30px"></th>
-            <th style="min-width: 200px">{% trans 'Subject' %}=</th>
+            <th style="min-width: 200px">{% trans 'Subject' %}</th>
             <th style="min-width: 100px">{% trans 'Sale Code' %}</th>
             <th style="min-width: 150px">{% trans 'Employee inherit' %}</th>
+            <th style="min-width: 100px">{% trans 'Status' %}</th>
             <th style="min-width: 100px">{% trans 'Date' %}</th>
         </tr>
         </thead>
         <tbody></tbody>
     </table>
+{% endblock %}
+{% block modalData %}
     {% include 'sales/opportunity/activities/extends/email_modals.html' %}
-
-{#    <form id="test-send-mail"#}
-{#          data-method="GET"#}
-{#          data-url="{% url 'OpportunityEmailListAPI' %}"#}
-{#          data-url-redirect="{% url 'OpportunityEmailList' %}"#}
-{#          class="mt-5"#}
-{#    >#}
-{#        {% csrf_token %}#}
-{#        <div class="row">#}
-{#            <div class="col-12">#}
-{#                <label>From: </label><span>nguyenduonghai07@gmail.com</span><br>#}
-{#                <label>To: </label><span>19521464@gm.uit.edu.vn</span>#}
-{#            </div>#}
-{#            <div class="col-12">#}
-{#                <button class="btn btn-primary w-10" type="submit" form="test-send-mail">Send</button>#}
-{#            </div>#}
-{#        </div>#}
-{#    </form>#}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/activities/email/email_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/activities/email/email_list.js' %}"></script>
-{#    <script>#}
-{#        function combinesDataTest(frmEle) {#}
-{#            let frm = new SetupFormSubmit($(frmEle));#}
-{##}
-{#            frm.dataForm['test_send_mail'] = true;#}
-{##}
-{#            return {#}
-{#                url: frm.dataUrl,#}
-{#                method: frm.dataMethod,#}
-{#                data: frm.dataForm,#}
-{#                urlRedirect: frm.dataUrlRedirect,#}
-{#            };#}
-{#        }#}
-{##}
-{#        SetupFormSubmit.validate($('#test-send-mail'), {#}
-{#            submitHandler: function (form, event) {#}
-{#                event.preventDefault();#}
-{#                let combinesData = combinesDataTest($(form));#}
-{#                if (combinesData) {#}
-{#                    WindowControl.showLoading();#}
-{#                    $.fn.callAjax2(combinesData)#}
-{#                        .then(#}
-{#                            (resp) => {#}
-{#                                let data = $.fn.switcherResp(resp);#}
-{#                                if (data) {#}
-{#                                    $.fn.notifyB({description: "Successfully"}, 'success')#}
-{#                                    setTimeout(() => {#}
-{#                                        window.location.href = $(form).attr('data-url-redirect');#}
-{#                                    }, 1000);#}
-{#                                }#}
-{#                            },#}
-{#                            (errs) => {#}
-{#                                setTimeout(#}
-{#                                    () => {#}
-{#                                        WindowControl.hideLoading();#}
-{#                                    },#}
-{#                                    1000#}
-{#                                )#}
-{#                                $.fn.notifyB({description: errs.data.errors}, 'failure');#}
-{#                            }#}
-{#                        )#}
-{#                }#}
-{#            },#}
-{#        })#}
-{#    </script>#}
-{#    <script>#}
-{#        $(document).ready(function(){#}
-{#            const modal$ = $("#offcanvas-send-email");#}
-{#            const create_open = $x.fn.getUrlParameter('create_open', '') === 'true';#}
-{#            let processData = [];#}
-{#            let processStageApp = [];#}
-{#            if (create_open === true){#}
-{#                modal$.modal('show');#}
-{#                const {#}
-{#                    process_id,#}
-{#                    process_title,#}
-{#                    process_stage_app_id,#}
-{#                    process_stage_app_title,#}
-{#                } = $x.fn.getManyUrlParameters(['process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title']);#}
-{#                if (process_id){#}
-{#                    processData.push({#}
-{#                        'id': process_id,#}
-{#                        'title': process_title,#}
-{#                        'selected': true,#}
-{#                    });#}
-{#                }#}
-{#                if (process_stage_app_id){#}
-{#                    processStageApp.push({#}
-{#                        'id': process_stage_app_id,#}
-{#                        'title': process_stage_app_title,#}
-{#                        'selected': true,#}
-{#                    })#}
-{#                }#}
-{#            }#}
-{##}
-{#            const inpProcess$ = modal$.find(':input[name=process]');#}
-{#            const inpStageApp$ = modal$.find(':input[name=process_stage_app]');#}
-{##}
-{#            function reinitProcessStageApp(data=[], process_id=null){#}
-{#                inpStageApp$.destroySelect2();#}
-{#                let dataParams = {"application_id": inpStageApp$.data('app-id')};#}
-{#                if (process_id && $x.fn.checkUUID4(process_id)) dataParams['process_id'] = process_id;#}
-{#                inpStageApp$.initSelect2({#}
-{#                    allowClear: true,#}
-{#                    dataParams: dataParams,#}
-{#                    data: data#}
-{#                })#}
-{#            }#}
-{##}
-{#            function reinitProcess(data=[], opp_id=null){#}
-{#                inpProcess$.destroySelect2();#}
-{#                let dataParams = {};#}
-{#                if (opp_id && $x.fn.checkUUID4(opp_id)) dataParams['opp_id'] = opp_id;#}
-{#                inpProcess$.initSelect2({#}
-{#                    allowClear: true,#}
-{#                    dataParams: dataParams,#}
-{#                    data: data#}
-{#                }).on('change', function(){#}
-{#                    const selectedVal = $(this).val();#}
-{#                    reinitProcessStageApp([], selectedVal ? selectedVal : null);#}
-{#                })#}
-{#            }#}
-{##}
-{#            modal$.find('#email-sale-code-select-box').on('change', function(){#}
-{#                const selectedVal = $(this).val();#}
-{#                reinitProcess([], selectedVal ? selectedVal : null);#}
-{#                inpProcess$.trigger('change');#}
-{#            })#}
-{##}
-{#            reinitProcess(processData);#}
-{#            reinitProcessStageApp(processStageApp);#}
-{#        })#}
-{#    </script>#}
 {% endblock %}

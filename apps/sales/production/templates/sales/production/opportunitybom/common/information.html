@@ -10,14 +10,11 @@
     }
 </style>
 
-{% trans 'Select Sale Person' as inherit_title %}
+{% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
 {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=False show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True inherit_disabled=True %}
 
-<div class="row mt-3">
-    <div class="col-8 mb-2">
-        <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'General Information' %}</h5>
-    </div>
-    <div class="col-4 text-right">
+<div class="row">
+    <div class="col-12 text-right">
         <button type="button" id="btn-copy-bom" class="btn btn-outline-blue btn-xs" data-bs-toggle="modal" data-bs-target="#modal-select-BOM"><i class="fas fa-copy"></i> {% trans 'Copy BOM' %}</button>
     </div>
     <div class="col-12 col-md-12 col-lg-6">
@@ -45,10 +42,8 @@
 
 <div id="normal-production-space" class="mb-20">
     <div class="row mt-5">
-        <div class="col-12 mb-2">
-            <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'Process description' %}</h5>
-        </div>
         <div class="col-12">
+            <h5 class="text-muted fw-bold">{% trans 'Process description' %}</h5>
             <table class="table nowrap w-100" id="process-description-table">
                 <thead class="bg-light">
                 <tr>
@@ -66,23 +61,23 @@
                 <tbody></tbody>
             </table>
             <button type="button" class="mt-2 btn btn-outline-primary btn-xs" id="add-new-process-description">
-    <span>
-        <span class="icon">
-            <span class="feather-icon">
-                <i class="far fa-plus-square"></i>
-            </span>
-        </span>
-        <span>{% trans 'Add new row' %}</span>
-    </span>
-</button>
+                <span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i class="far fa-plus-square"></i>
+                        </span>
+                    </span>
+                    <span>{% trans 'Add new row' %}</span>
+                </span>
+            </button>
         </div>
-        <div class="col-12 col-md-12 col-lg-6 mt-5">
-            <div class="border rounded p-2">
+        <div class="col-12 col-md-12 col-lg-6 mt-2">
+            <div class="border rounded">
                 <table class="table nowrap w-100" id="labor-summary-table">
                     <thead>
                         <tr>
-                            <th class="w-20 fw-bold text-primary">{% trans 'Labor' %}</th>
-                            <th class="w-20 fw-bold text-primary">{% trans 'Quantity' %}</th>
+                            <th class="w-30 fw-bold text-primary">{% trans 'Labor' %}</th>
+                            <th class="w-10 fw-bold text-primary">{% trans 'Quantity' %}</th>
                             <th class="w-20 fw-bold text-primary">{% trans 'UOM' %}</th>
                             <th class="w-20 fw-bold text-primary">{% trans 'Unit price' %}</th>
                             <th class="w-20 fw-bold text-primary">{% trans 'Subtotal price' %}</th>
@@ -94,10 +89,8 @@
         </div>
     </div>
     <div class="row mt-5">
-        <div class="col-12 mb-2">
-            <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'Materials/Components' %}</h5>
-        </div>
         <div class="col-12">
+            <h5 class="text-muted fw-bold">{% trans 'Materials/Components' %}</h5>
             <div class="table-responsive-x-100-y-max">
                 <table class="table nowrap w-100" id="material-table">
                     <thead class="bg-light">
@@ -120,10 +113,8 @@
         </div>
     </div>
     <div class="row mt-5">
-        <div class="col-12 mb-2">
-            <h5 class="text-primary text-decoration-underline fw-bold">{% trans 'Tools' %}</h5>
-        </div>
         <div class="col-12">
+            <h5 class="text-muted fw-bold">{% trans 'Tools' %}</h5>
             <div class="table-responsive-x-100-y-max">
                 <table class="table nowrap w-100" id="tools-table">
                     <thead class="bg-light">

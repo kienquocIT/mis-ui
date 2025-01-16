@@ -169,6 +169,18 @@ $(document).ready(function () {
                 }
 
                 loadDetail(opportunity_detail_data).then(function () {
+                    // load tabs first time
+                    OpportunityLoadDetail.loadDetailTableProduct(opportunity_detail_data, true);
+                    $('#input-product-pretax-amount').attr('value', opportunity_detail_data.total_product_pretax_amount);
+                    $('#input-product-taxes').attr('value', opportunity_detail_data.total_product_tax);
+                    $('#input-product-total').attr('value', opportunity_detail_data.total_product);
+                    $('#estimated-gross-profit-percent').val(opportunity_detail_data?.['estimated_gross_profit_percent'])
+                    $('#estimated-gross-profit-value').attr('value', opportunity_detail_data?.['estimated_gross_profit_value'])
+                    OpportunityLoadDetail.loadDetailTableCompetitor(opportunity_detail_data, true)
+                    OpportunityLoadDetail.loadDetailTableContactRole(opportunity_detail_data, true)
+                    OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail_data.customer_decision_factor, true)
+                    OpportunityLoadPage.loadLeadList()
+
                     let is_lost = LoadConfigAndLoadStage.autoLoadStage(
                         true,
                         false,
@@ -183,14 +195,15 @@ $(document).ready(function () {
                     if (is_lost) {
                         let ele_stage = $('.stage-lost')
                         ele_stage.addClass('stage-selected');
-                        ele_stage.css('background-color', 'rgb(255,94,94)')
+                        ele_stage.css('background-color', '#EB2925')
                         ele_stage.css('color', 'white')
-                        ele_stage.next().css('border-left', '16px solid rgb(255,94,94)')
+                        ele_stage.next().css('border-left', '16px solid #EB2925')
                     } else {
-                        $('.stage-lost').removeClass('stage-selected');
-                        $('.stage-lost').css('background-color', '#e7e7e7')
-                        $('.stage-lost').css('color', '#6f6f6f')
-                        $('.stage-lost').next().css('border-left', '16px solid #e7e7e7')
+                        let ele_stage = $('.stage-lost')
+                        ele_stage.removeClass('stage-selected');
+                        ele_stage.css('background-color', '#e7e7e7')
+                        ele_stage.css('color', '#6f6f6f')
+                        ele_stage.next().css('border-left', '16px solid #e7e7e7')
                     }
 
                     let data_opp_detail = $dataDetail.text() ? JSON.parse($dataDetail.text()) : null
@@ -228,6 +241,9 @@ $(document).ready(function () {
                     }
 
                     // Disable all select elements
+                    const $pageContentElm = $('.page-content')
+                    $('input', $pageContentElm).prop('disabled', true).prop('readonly', true)
+                    $('select', $pageContentElm).prop('disabled', true)
                     $('#btn-auto-update-stage').prop('hidden', true)
                     $('#btn-add-row-line-detail').prop('hidden', true)
                     $('.btn-del-item').prop('hidden', true)
@@ -254,17 +270,6 @@ $(document).ready(function () {
                 OpportunityActivity.loadDblActivityLogs();
 
                 // even in tab product
-                $('#tab_details_btn').on('click', function () {
-                    if ($(this).attr('data-is-loaded') !== 'true') {
-                        OpportunityLoadDetail.loadDetailTableProduct(opportunity_detail_data, true);
-                        $('#input-product-pretax-amount').attr('value', opportunity_detail_data.total_product_pretax_amount);
-                        $('#input-product-taxes').attr('value', opportunity_detail_data.total_product_tax);
-                        $('#input-product-total').attr('value', opportunity_detail_data.total_product);
-                        $('#estimated-gross-profit-percent').val(opportunity_detail_data?.['estimated_gross_profit_percent'])
-                        $('#estimated-gross-profit-value').attr('value', opportunity_detail_data?.['estimated_gross_profit_value'])
-                        $(this).attr('data-is-loaded', 'true')
-                    }
-                })
                 $('#btn-add-select-product').on('click', function () {
                     OpportunityLoadDetail.addRowSelectProduct();
                 })
@@ -378,24 +383,11 @@ $(document).ready(function () {
                 })
 
                 // event in tab competitor
-                $('#tab_competitor_btn').on('click', function () {
-                    if ($(this).attr('data-is-loaded') !== 'true') {
-                        OpportunityLoadDetail.loadDetailTableCompetitor(opportunity_detail_data, true)
-                        $(this).attr('data-is-loaded', 'true')
-                    }
-                })
                 $('#btn-add-competitor').on('click', function () {
                     OpportunityLoadDetail.addRowCompetitor()
                 })
 
                 // event in tab contact role
-                $('#tab_contact_role_btn').on('click', function () {
-                    if ($(this).attr('data-is-loaded') !== 'true') {
-                        OpportunityLoadDetail.loadDetailTableContactRole(opportunity_detail_data, true);
-                        OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail_data.customer_decision_factor, true);
-                        $(this).attr('data-is-loaded', 'true')
-                    }
-                })
                 $('#btn-add-contact').on('click', function () {
                     OpportunityLoadDetail.addRowContactRole();
                 })
@@ -440,14 +432,6 @@ $(document).ready(function () {
 
                 // even in tab Lead sale team
                 OpportunityLoadDetail.loadSaleTeam(opportunity_detail_data.members, true, opportunity_detail_data?.['sale_person'] || {});
-
-                // even in tab Lead
-                $('#tab_lead_btn').on('click', function () {
-                    if ($(this).attr('data-is-loaded') !== 'true') {
-                        OpportunityLoadPage.loadLeadList();
-                        $(this).attr('data-is-loaded', 'true')
-                    }
-                })
 
                 // event general
                 $(document).on('change', 'select, input', function () {
@@ -627,6 +611,19 @@ $(document).ready(function () {
                 // for task
                 const $form = $('#formOpportunityTask')
                 Task_in_opps.init(opportunity_detail_data)
+                $('#startDateLogTime, #endDateLogTime').each(function(){
+                    $(this).daterangepicker({
+                        singleDatePicker: true,
+                        timepicker: false,
+                        showDropdowns: false,
+                        minYear: 2023,
+                        autoApply: true,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        },
+                        maxYear: parseInt(moment().format('YYYY'), 10),
+                    }).val("").trigger('change');
+                })
                 $form.validate({
                     errorClass: 'is-invalid cl-red',
                     submitHandler: function (){

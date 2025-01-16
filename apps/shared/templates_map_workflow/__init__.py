@@ -20,6 +20,8 @@ from .eoffice_asset_tools import *
 from .distribution_plan_distributionplan import DISTRIBUTION_PLAN_DATA_MAP
 from .contract_contract_approval import CONTRACT_APPROVAL_DATA_MAP
 from .leaseorder_lease_order import LEASE_ORDER_DATA_MAP
+from .financial_cashinflow import CASHINFLOW_DATA_MAP
+from .reconciliation import RECON_DATA_MAP
 
 __all__ = [
     'InputMappingProperties',
@@ -51,4 +53,6 @@ class InputMappingProperties:
     BIDDING_DATA_MAP = BIDDING_DATA_MAP
     LEASE_ORDER_LEASE_ORDER = LEASE_ORDER_DATA_MAP
     CONSULTING_DATA_MAP = CONSULTING_DATA_MAP
+    CASHINFLOW_DATA_MAP = CASHINFLOW_DATA_MAP
+    RECON_DATA_MAP = RECON_DATA_MAP
 

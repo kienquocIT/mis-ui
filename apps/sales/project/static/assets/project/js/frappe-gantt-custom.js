@@ -68,74 +68,39 @@ class fGanttCustom {
     }
 
     static setup_init_create(){
-        const $wrapElm = $('.gantt-left-outerwrap')
-
-        $('.btn-gaw-group').on('click', function(){
-            fGanttCustom.addGroup();
-        });
-        $('.btn-gaw-work').on('click', function(){
-            fGanttCustom.addWork();
-        })
-        if ($wrapElm.children('.btn-save-sort-idx').length === 0){
-            $wrapElm.append(`<button class="btn hidden btn-save-sort-idx btn-outline-primary btn-sm ml-2" type="button">${$.fn.gettext('Save')}</button>`)
-            $('.btn-save-sort-idx').on('click', function(e) {
-                e.preventDefault();
-                let work_lst = [], group_lst = [];
-                $('.gantt-left-container .grid-row').each(function () {
-                    const temp = {
-                        id: $(this).attr('data-id'),
-                        order: $(this).index() + 1
-                    }
-                    if ($(this).attr('data-group') === undefined)
-                        group_lst.push(temp)
-                    else
-                        work_lst.push(temp)
-                });
-                $.fn.callAjax2({
-                    url: $('#url-factory').attr('data-update-order'),
-                    method: 'put',
-                    data: {
-                        list_update: {
-                            work: work_lst,
-                            group: group_lst
-                        }
-                    },
-                    sweetAlertOpts: {'allowOutsideClick': true},
-                }).then(
-                    (resp) => {
-                        let res = $.fn.switcherResp(resp);
-                        if (res) {
-                            $.fn.notifyB({description: res.message}, 'success')
-                            location.reload()
-                        }
-                    },
-                    (err) => {
-                        $.fn.notifyB({description: err.data.errors}, 'failure')
-                    }
-                )
-            });
-        }
+        fGanttCustom.addGroup();
+        fGanttCustom.addWork();
     }
 
     static addGroup(){
-        $('#groupTitle, #groupStartDate, #groupEndDate, #groupWeight, #groupRate').val('');
-        $('#group_id').remove()
-        $('#btn-group-add').text($.fn.gettext('Add'))
-        $('#group_modal').modal('show');
+        const $groupElm = $('#group_modal');
+        $groupElm.on('hidden.bs.modal', () => {
+            const groupFields = $('#groupTitle, #groupStartDate, #groupEndDate, #groupWeight, #groupRate');
+            groupFields.val('');
+            $('#groupStartDate')[0]._flatpickr.clear()
+            $('#groupEndDate')[0]._flatpickr.clear()
+            $('#group_id, #form_create_info').remove();
+            $('#btn-group-add').text($.fn.gettext('Add'));
+        });
     }
 
     static addWork(){
-        $('#workTitle, #workStartDate, #workEndDate, #workWeight, #workRate, #select_project_group,' +
-            '#select_relationships_type, #select_project_work').val('').trigger('change').attr('readonly', false);
-        $('#btn-work-add').text($.fn.gettext('Add'))
-        $('#work_id').remove()
-        $('.choice-bor').removeClass('is_selected')
-        $('#work_modal').modal('show')
+        const $workElm = $('#work_modal');
+        $workElm.on('hidden.bs.modal', ()=>{
+            $('#workTitle, #workStartDate, #workEndDate, #workWeight, #workRate, #select_project_group,' +
+                '#select_relationships_type, #select_project_work').val('').trigger('change').attr('readonly', false);
+            $('#workStartDate')[0]._flatpickr.clear()
+            $('#workEndDate')[0]._flatpickr.clear()
+            $('#btn-work-add').text($.fn.gettext('Add'))
+            $('#work_id, #form_create_info').remove()
+            $('.choice-bor').removeClass('is_selected')
+        });
     }
 
     static load_detail_group(group_ID){
         const $prjForm = $('#project_form');
         const $pjElm = $('#id'), check_page_version = $prjForm.hasClass('baseline_version');
+        const _is_detail = $prjForm.hasClass('form-detail')
         if (!$pjElm.val() && !check_page_version) return false
 
         function loadGroupDetail(data){
@@ -144,8 +109,13 @@ class fGanttCustom {
             if (date_end === undefined) date_end = data['date_end']
             $('#group_modal #group_id').remove()
             $('#groupTitle').val(data.title)
-            $('#groupStartDate').val(moment(date_from, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
-            $('#groupEndDate').val(moment(date_end, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+            if (_is_detail){
+                $('#groupStartDate').val(moment(date_from, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+                $('#groupEndDate').val(moment(date_end, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+            }else{
+                $('#groupStartDate')[0]._flatpickr.setDate(date_from)
+                $('#groupEndDate')[0]._flatpickr.setDate(date_end)
+            }
             let $gID = $('<input id="group_id" type="hidden"/>')
             $gID.val(data.id)
             $('#groupWeight').val(data?.gr_weight | data.weight)
@@ -179,6 +149,7 @@ class fGanttCustom {
 
     static load_detail_work(work_ID){
         const $prjElm = $('#project_form'), check_page_version = $prjElm.hasClass('baseline_version');
+        const _is_detail = $prjElm.hasClass('form-detail')
 
         function loadWorkDetail(res){
             let date_from = res?.w_start_date, date_end = res?.w_end_date, depen_type = res?.work_dependencies_type,
@@ -198,8 +169,13 @@ class fGanttCustom {
                 $BorBtnElm.addClass('is_selected')
                 $('#bor_select_data').data('bor_data', res.bom_data)
             }
-            $('#workStartDate').val(moment(date_from, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
-            $('#workEndDate').val(moment(date_end, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+            if (_is_detail) {
+                $('#workStartDate').val(moment(date_from, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+                $('#workEndDate').val(moment(date_end, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+            } else {
+                $('#workStartDate')[0]._flatpickr.setDate(date_from)
+                $('#workEndDate')[0]._flatpickr.setDate(date_end)
+            }
             let $wID = $('<input id="work_id" type="hidden"/>'), $wSTT = $('<input id="work_status" type="hidden"/>'),
                 $wORDER = $('<input id="work_order" type="hidden"/>');
             $wID.val(res.id)
@@ -265,5 +241,155 @@ class fGanttCustom {
                 $.fn.notifyB({description: err.data.errors}, 'failure')
             })
 
+    }
+
+    static event_on_sort(){
+        let work_lst = [], group_lst = [];
+        $('.gantt-left-container .grid-row').each(function () {
+            const temp = {
+                id: $(this).attr('data-id'),
+                order: $(this).index() + 1
+            }
+            if ($(this).attr('data-group') === undefined)
+                group_lst.push(temp)
+            else
+                work_lst.push(temp)
+        });
+        $.fn.callAjax2({
+            url: $('#url-factory').attr('data-update-order'),
+            method: 'put',
+            data: {
+                list_update: {
+                    work: work_lst,
+                    group: group_lst
+                }
+            },
+            sweetAlertOpts: {'allowOutsideClick': true},
+        }).then(
+            (resp) => {
+                let res = $.fn.switcherResp(resp);
+                if (res) {
+                    $.fn.notifyB({description: res.message}, 'success')
+                    fGanttCustom.reloadGanttWorkAndGroup()
+                }
+            },
+            (err) => {
+                $.fn.notifyB({description: err.data.errors}, 'failure')
+            }
+        )
+    }
+
+    static reloadGanttWorkAndGroup(){
+        $.fn.callAjax2({
+            url: $('#project_form').attr('data-url-detail'),
+            method: 'get',
+            sweetAlertOpts: {'allowOutsideClick': true, 'showCancelButton': true},
+        }).then(
+            (resp) => {
+                let res = $.fn.switcherResp(resp);
+                if (res) {
+                    const afterData = fGanttCustom.convert_data(res.groups, res?.['works'])
+                    window.new_gantt_init.refresh(afterData)
+                    setTimeout(() => {
+                        $('.lazy_loading').removeClass('active')
+                    }, 500);
+                }
+            },
+            (err) => {
+                $.fn.notifyB({description: err.data.errors}, 'failure')
+            }
+        )
+    }
+
+    static initRClickContextMenu(){
+        const $groupModal = $('#group_modal');
+        const $workModal = $('#work_modal');
+
+        // menu on row
+        let opts = {
+            selector: '.gantt-left-container .grid-row',
+            items: {
+                groupCommand: {
+                    name: $.fn.gettext("Insert group"),
+                    icon: "fa-solid fa-layer-group",
+                    items: {
+                        groupBefore: {
+                            name: $.fn.gettext("Insert before"),
+                            icon: "fa-solid fa-plus",
+                            callback: function (key, opt) {
+                                const $liElm = $(opt.$trigger[0]);
+                                $groupModal.modal('show')
+                                $groupModal.find('.modal-body')
+                                    .append(`<input type="hidden" id="form_create_info" data-menu_on_create="group_before" data-id="${$liElm.attr('data-id')}">`)
+                            }
+                        },
+                        groupAfter:{
+                            name: $.fn.gettext("Insert after"),
+                            icon: "fa-solid fa-plus",
+                            callback: function (key, opt) {
+                                const $liElm = $(opt.$trigger[0]);
+                                $groupModal.modal('show')
+                                $groupModal.find('.modal-body')
+                                    .append(`<input type="hidden" id="form_create_info" data-menu_on_create="group_after" data-id="${$liElm.attr('data-id')}">`)
+                            },
+                            disabled: function (key, opt) {
+                                const $liElm = $(opt.$trigger[0]);
+                                // Disable this item if the menu was triggered on a work has group parent
+                                if ($liElm.next().attr('data-group')) return true;
+                            }
+                        }
+                    },
+                    disabled: function (key, opt) {
+                        const $liElm = $(opt.$trigger[0]);
+                        // Disable this item if the menu was triggered on a work has group parent
+                        if ($liElm.attr('data-group')) return true;
+                    }
+                },
+                workCommand: {
+                    name: $.fn.gettext("Insert work"),
+                    icon: "fa-solid fa-book",
+                    items: {
+                        groupBefore: {
+                            name: $.fn.gettext("Insert before"),
+                            icon: "fa-solid fa-plus",
+                            callback: function (key, opt) {
+                                const $liElm = $(opt.$trigger[0]);
+                                 $workModal.modal('show')
+                                $workModal.find('.modal-body')
+                                    .append(`<input type="hidden" id="form_create_info" data-menu_on_create="work_before" data-id="${$liElm.attr('data-id')}">`)
+                            }
+                        },
+                        groupAfter:{
+                            name: $.fn.gettext("Insert after"),
+                            icon: "fa-solid fa-plus",
+                            callback: function (key, opt) {
+                                const $liElm = $(opt.$trigger[0]);
+                                $workModal.modal('show')
+                                $workModal.find('.modal-body')
+                                    .append(`<input type="hidden" id="form_create_info" data-menu_on_create="work_after" data-id="${$liElm.attr('data-id')}">`)
+                            }
+                        }
+                    },
+                }
+            }
+        };
+        $.contextMenu(opts)
+
+        let opts02 = {
+            selector: '.gantt-left-container',
+            items: {
+                groupCreate: {
+                    name: $.fn.gettext("Create group"),
+                    icon: "fa-solid fa-plus",
+                    callback: () => $groupModal.modal('show')
+                },
+                workCreate: {
+                    name: $.fn.gettext("Create work"),
+                    icon: "fa-solid fa-plus",
+                    callback: () => $workModal.modal('show')
+                }
+            }
+        }
+        $.contextMenu(opts02)
     }
 }

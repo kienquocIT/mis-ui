@@ -344,7 +344,7 @@ $(function () {
             let elm = $('.card-title')
             const _this = this
             if (newTaskElm) elm = newTaskElm.find('.card-title')
-            elm.on('click', function (e) {
+            elm.off().on('click', function (e) {
                 e.preventDefault()
                 const taskID = $(this).attr('data-task-id')
                 $.fn.callAjax2({
@@ -355,12 +355,12 @@ $(function () {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
                             resetFormTask()
-                            const drawTaskElm = $('#drawer_task_create')
-                            if (!drawTaskElm.hasClass('open'))
-                                drawTaskElm.trigger('drawer.show');
-                            const titCreate = $('.title-create'), titEdit = $('.title-detail');
-                            titCreate.off().addClass("hidden")
-                            titEdit.off().removeClass("hidden")
+                            const offCanvasTaskElm = $('.btn-create-todo');
+                            offCanvasTaskElm.trigger('click');
+                            const titCreate = $('.title-create');
+                            const titEdit = $('.title-detail');
+                            titCreate.addClass("hidden")
+                            titEdit.removeClass("hidden")
                             const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                             $formElm.append(taskIDElm);
 
@@ -385,33 +385,31 @@ $(function () {
                             window.formLabel.renderLabel(data.label)
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
 
-                            $('#inputAssigner').val(data.employee_created.last_name + ' ' + data.employee_created.first_name)
-                                .attr(
-                                    'data-name', data.employee_created.last_name + ' ' + data.employee_created.first_name
-                                )
-                                .attr(
-                                    'value', data.employee_created.id
-                                )
-                                .attr(
-                                    'data-value-id', data.employee_created.id
-                                )
-                            if (data['opportunity'] && Object.keys(data["opportunity"]).length > 0) {
-                                $prjElm.attr('disabled', true)
-                                $oppElm.attr('disabled', true).attr('data-onload', JSON.stringify({...data['opportunity'], selected: true}))
-                                let isCheck = $(`option[value="${data['opportunity'].id}"]`, $oppElm)
-                                if (isCheck.length <= 0)
-                                    $oppElm.append(`<option value="${data['opportunity'].id}" selected>${
-                                        data['opportunity'].code}</option>`
-                                    )
-                                else $oppElm.val(data['opportunity']["id"]).trigger("change")
+                            $('#inputAssigner')
+                                .val(data.employee_created.full_name)
+                                .attr('data-name', data.employee_created.full_name)
+                                .attr('value', data.employee_created.id)
+                                .attr('data-value-id', data.employee_created.id)
 
+                            const runComponent = (elm, data) => {
+                                data.selected = true;
+                                elm.attr('data-onload', JSON.stringify(data))
+                                    .html(`<option value="${data.id}" selected>${data.title}</option>`)
+                                    .trigger('change')
                             }
-                            if (data['project'] && Object.keys(data["project"]).length > 0) {
-                                $oppElm.attr('disabled', true)
-                                $prjElm.attr('disabled', true).attr('data-onload', JSON.stringify({...data['project'], selected: true}))
-                                let isCheck = $(`option[value="${data['project'].id}"]`, $oppElm)
-                                if (isCheck.length <= 0) $prjElm.append(`<option value="${data['project'].id}" selected>${data['project'].code}</option>`)
-                                else $prjElm.val(data['project']["id"]).trigger("change")
+                            if (data?.['process'] && data?.['process']?.['id']){
+                                const { process } = data;
+                                runComponent($('#process_id'), process)
+                            }
+                            else if (data['opportunity'] && Object.keys(data["opportunity"]).length > 0) {
+                                const { opportunity } = data
+                                $prjElm.attr('disabled', true)
+                                runComponent($oppElm, opportunity)
+                            }
+                            else if (data['project'] && Object.keys(data["project"]).length > 0) {
+                                const { project } = data;
+                                $oppElm.attr('disabled', true);
+                                runComponent($prjElm, project)
                             }
                             if (data.employee_inherit) {
                                 data.employee_inherit.selected = true
@@ -930,8 +928,7 @@ $(function () {
                         item.edited = false
                     }
                 )
-                if (!$('.hk-wrapper').hasClass('open'))
-                    $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                $('#offCanvasRightTask').offcanvas('show')
                 allData[index].edited = true
                 cls.setTaskList = allData
                 if (typeof infoOld === 'number') // case click task khác mà chưa đóng task cũ
@@ -1187,8 +1184,7 @@ $(function () {
         }
 
         static loadTaskInfo(dataID){
-            if (!$('.hk-wrapper').hasClass('open'))
-                    $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+            $('#offCanvasRightTask').offcanvas('show')
             $.fn.callAjax2({
                 url: $urlFact.attr('data-task-detail').format_url_with_uuid(dataID),
                 method: "get"

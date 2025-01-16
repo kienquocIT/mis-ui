@@ -8,8 +8,8 @@ $(document).ready(function () {
         const frm = new SetupFormSubmit($FormElm);
         let formData = frm.dataForm, $elmExpenseLst = $('#work_expense_tbl');
         formData.employee_inherit = $('#employeeInheritInput').attr('data-value')
-        formData.start_date = moment(formData['start_date'], 'DD/MM/YYYY').format('YYYY-MM-DD')
-        formData.finish_date = moment(formData['finish_date'], 'DD/MM/YYYY').format('YYYY-MM-DD')
+        if (frm.dataMethod === 'post') formData.start_date = formData['start_date']
+        formData.finish_date = formData['finish_date']
 
         if ($elmExpenseLst.length) { // data edit
             formData.work_expense_data = {}
@@ -19,7 +19,8 @@ $(document).ready(function () {
                 if (item?.expense_data) formData.work_expense_data[item.id] = item.expense_data
             }
         }
-
+        if ($('#permit_lock_fd').hasClass('edited'))
+            formData.finish_date_lock = $('#dateFinish').next().prop('disabled')
         frm.dataForm = formData
 
         $.fn.callAjax2({
@@ -72,15 +73,16 @@ $(document).ready(function () {
         if ($(this)[0].getAttribute("id") === 'open_project')
             data = {'system_status': 2}
         $.fn.callAjax2({
-            'url': $FormElm.attr('data-url'),
+            'url': $('#url-factory').attr('data-update-status'),
             'method': 'put',
             'data': data,
         }).then(
             (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && (data['status'] === 201 || data['status'] === 200))
-                    $.fn.notifyB({description: data.message}, 'success');
-                window.location.href = $('#url-factory').attr('data-list');
+                let res = $.fn.switcherResp(resp);
+                if (res && (res['status'] === 201 || res['status'] === 200))
+                    $.fn.notifyB({description: res.message}, 'success');
+                if (data?.system_status === 2) window.location.reload()
+                else window.location.href = $('#url-factory').attr('data-list');
             })
     });
 
@@ -115,39 +117,15 @@ function reGetDetail(gantt_obj) {
 
 function saveGroup(gantt_obj) {
     const $gModal = $('#group_modal'), $urlFact = $('#url-factory');
-    $('#btn-group-add').off().on('click', function () {
-        const $gIDElm = $('#group_id'), $tit = $('#groupTitle'), $startD = $('#groupStartDate'),
-            $startE = $('#groupEndDate');
-        if (!$tit.val()) {
-            $.fn.notifyB({description: $.fn.gettext('Title is required')}, 'failure');
-            return false
-        }
-        const data = {
-            'project': $('#id').val(),
-            'title': $tit.val(),
-            'employee_inherit': $('#selectEmployeeInherit').val(),
-            'gr_weight': $('#groupWeight').val() || 0,
-            'gr_start_date': moment($startD.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
-            'gr_end_date': moment($startE.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
-            'order': parseInt($('.gantt-wrap').data('detail-index')) + 1
-        };
-        let url = $urlFact.attr('data-group'),
-            method = 'post';
-        if ($gIDElm.val()) {
-            url = $urlFact.attr('data-group-detail').format_url_with_uuid($gIDElm.val())
-            method = 'put'
-            delete data['order']
-        }
-        $.fn.callAjax2({
-            'url': url,
-            'method': method,
-            'data': data
-        }).then(
+
+    function ajaxSubmit(opt){
+        $.fn.callAjax2(opt).then(
             (resp) => {
                 let res = $.fn.switcherResp(resp);
                 if (res && (res['status'] === 201 || res['status'] === 200)) {
                     $.fn.notifyB({description: res.message}, 'success');
                     const $ganttElm = $('.gantt-wrap'), crtIdx = $ganttElm.data('detail-index');
+                    const $gIDElm = $('#group_id');
                     if (!$gIDElm.length) $ganttElm.data('detail-index', crtIdx + 1)
                     else $gIDElm.remove();
                     // get detail and reload group work
@@ -159,31 +137,156 @@ function saveGroup(gantt_obj) {
                 $.fn.notifyB({description: err.data.errors}, 'failure')
             }
         )
+    }
+
+    $('#btn-group-add').off().on('click', function () {
+        const $gIDElm = $('#group_id'), $tit = $('#groupTitle'), $startD = $('#groupStartDate'),
+            $startE = $('#groupEndDate');
+        if (!$tit.val()) {
+            $.fn.notifyB({description: $.fn.gettext('Title is required')}, 'failure');
+            return false
+        }
+        let defaultOrder = parseInt($('.gantt-wrap').data('detail-index')) + 1
+        let $typeCreateElm = $('#form_create_info')
+        if ($typeCreateElm.attr('data-id')){
+            defaultOrder = $(`.grid-row[data-id="${$typeCreateElm.attr('data-id')}"]`).index()
+            if ($('#form_create_info').attr('data-menu_on_create') === 'work_after')
+                defaultOrder++
+        }
+        const data = {
+            'project': $('#id').val(),
+            'title': $tit.val(),
+            'employee_inherit': $('#selectEmployeeInherit').val(),
+            'gr_weight': $('#groupWeight').val() || 0,
+            'gr_start_date': $startD.val(),
+            'gr_end_date': $startE.val(),
+            'order': defaultOrder,
+            'sort_style': !!$typeCreateElm.attr('data-id')
+        };
+        let url = $urlFact.attr('data-group'),
+            method = 'post';
+        if ($gIDElm.val()) {
+            url = $urlFact.attr('data-group-detail').format_url_with_uuid($gIDElm.val())
+            method = 'put'
+            delete data['order']
+        }
+        const $dateFinishElm = $('#dateFinish');
+        const finishDate = moment($dateFinishElm.val()).toDate();
+        const date_lock = $dateFinishElm.next().prop('disabled');
+
+        if (moment($startE.val()).toDate() > finishDate && date_lock === false){
+            // end date > finish date and finish date is not lock
+            Swal.fire({
+                title: $.fn.gettext('Warning: The finish date was changed.'),
+                text: $.fn.gettext('The project\'s finish date was affected by the current end date'),
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: $.fn.gettext('Sure, I understand'),
+                cancelButtonText: $.fn.gettext('No, I will edit it'),
+            }).then((result) => {
+                if (result.isConfirmed){
+                    ajaxSubmit({
+                        'url': url,
+                        'method': method,
+                        'data': data
+                    })
+                    $dateFinishElm[0]._flatpickr.setDate($startE.val())
+                }
+                else return false
+            });
+        }
+        else if (moment($startE.val()).toDate() > finishDate && date_lock === true){
+            $.fn.notifyB({description: $.fn.gettext('Start date or finish date not in range of project date')}, 'failure');
+            return false
+        }
+        else ajaxSubmit({
+            'url': url,
+            'method': method,
+            'data': data
+        })
+
+
     });
 }
 
 function saveWork(gantt_obj) {
     const $wModal = $('#work_modal'), $urlFact = $('#url-factory'), $ganttElm = $('.gantt-wrap');
-    $('#btn-work-add').off().on('click', function () {
+    const $btnWork = $('#btn-work-add');
+
+    function isSubmit(opt){
+        $.fn.callAjax2(opt).then(
+            (resp) => {
+                let res = $.fn.switcherResp(resp);
+                if (res && (res['status'] === 201 || res['status'] === 200)) {
+                    $.fn.notifyB({description: res.message}, 'success');
+                    if (opt.method === 'post') {
+                        let crtIdx = parseInt($ganttElm.data('detail-index'))
+                        $ganttElm.data('detail-index', crtIdx + 1)
+                    }
+                    // get detail and reload group work
+                    $wModal.modal('hide')
+                    reGetDetail(gantt_obj)
+                }
+                $btnWork.prop('disabled', false)
+            },
+            (err) => {
+                $.fn.notifyB({description: err.data.errors}, 'failure')
+                $btnWork.prop('disabled', false)
+            }
+        )
+    }
+
+    function showWarning(title, text, opt) {
+        Swal.fire({
+            title: $.fn.gettext(title),
+            text: $.fn.gettext(text),
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: $.fn.gettext('Sure, I understand'),
+            cancelButtonText: $.fn.gettext('No, I will edit it'),
+        }).then((result) => {
+            if (result.isConfirmed) {
+                isSubmit(opt);
+            } else {
+                $('#btn-work-add').prop('disabled', false)
+                return false;
+            }
+        });
+    }
+
+    $btnWork.on('click', function () {
         $(this).prop('disabled', true)
 
         const $tit = $('#workTitle'), $startD = $('#workStartDate'), $startE = $('#workEndDate'),
             groupElm = $('#select_project_group'), workParent = $('#select_project_work'), $workID = $('#work_id');
         if (!$tit.val()) {
             $.fn.notifyB({description: $.fn.gettext('Title is required')}, 'failure');
+            $(this).prop('disabled', false)
             return false
         }
-        let workType = $('#select_relationships_type').val(),
-            childIdx = parseInt($('.gantt-wrap').data('detail-index')) + 1,
-            data = {
-                'project': $('#id').val(),
-                'title': $tit.val(),
-                'employee_inherit': $('#selectEmployeeInherit').val(),
-                'w_weight': $('#workWeight').val() || 0,
-                'w_start_date': moment($startD.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
-                'w_end_date': moment($startE.val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
-                'order': childIdx
-            };
+        let workType = $('#select_relationships_type').val();
+        let defaultOrder = parseInt($('.gantt-wrap').data('detail-index')) + 1;
+        let $typeCreateElm = $('#form_create_info');
+
+        if ($typeCreateElm.attr('data-id')){
+            defaultOrder = $(`.grid-row[data-id="${$typeCreateElm.attr('data-id')}"]`).index()
+            if ($('#form_create_info').attr('data-menu_on_create') === 'work_after')
+                defaultOrder++
+        }
+        let data = {
+            'project': $('#id').val(),
+            'title': $tit.val(),
+            'employee_inherit': $('#selectEmployeeInherit').val(),
+            'w_weight': $('#workWeight').val() || 0,
+            'w_start_date': $startD.val(),
+            'w_end_date': $startE.val(),
+            'order': defaultOrder,
+            'sort_style': !!$typeCreateElm.attr('data-id')
+        };
         const bom_data = $('#bor_select_data').data('bor_data')
         if (bom_data) data.bom_service = bom_data
 
@@ -207,30 +310,70 @@ function saveWork(gantt_obj) {
             method = 'put'
             delete data['order']
         }
-        $.fn.callAjax2({
-            'url': url,
-            'method': method,
-            'data': data
-        }).then(
-            (resp) => {
-                let res = $.fn.switcherResp(resp);
-                if (res && (res['status'] === 201 || res['status'] === 200)) {
-                    $.fn.notifyB({description: res.message}, 'success');
-                    if (method === 'post') {
-                        let crtIdx = parseInt($ganttElm.data('detail-index'))
-                        $ganttElm.data('detail-index', crtIdx + 1)
-                    }
-                    // get detail and reload group work
-                    $wModal.modal('hide')
-                    reGetDetail(gantt_obj)
+        const $dateFinishElm = $('#dateFinish');
+        const finishDate = moment($dateFinishElm.val()).toDate();
+        const date_lock = $dateFinishElm.next().prop('disabled');
+        const mess01 = $.fn.gettext('End date not in range of project date');
+        const mess02 = $.fn.gettext('Warning: The group end date was changed.');
+        const mess03 = $.fn.gettext('The group end date was affected by the current end date');
+        const grEnd = $(`.grid-row[data-id="${data?.group}"] > div:nth-child(5)`).text()
+
+        if (grEnd) {
+            if (date_lock) {
+                if (moment(data.w_end_date).toDate() > finishDate) {
+                    $.fn.notifyB({description: mess01}, 'failure');
+                    $(this).prop('disabled', false)
+                    return false;
                 }
-                $(this).prop('disabled', false)
-            },
-            (err) => {
-                $.fn.notifyB({description: err.data.errors}, 'failure')
-                $(this).prop('disabled', false)
+                else if (moment(data.w_end_date).toDate() > moment(grEnd, 'DD/MM/YYYY').toDate()) {
+                    showWarning(
+                        mess02,
+                        mess03,
+                        {'url': url, 'method': method, 'data': data});
+                } else {
+                    isSubmit({'url': url, 'method': method, 'data': data});
+                }
             }
-        )
+            else {
+                if (moment(data.w_end_date).toDate() > moment(grEnd, 'DD/MM/YYYY').toDate()
+                    && moment(data.w_end_date).toDate() > finishDate) {
+                    showWarning(
+                        $.fn.gettext('Warning: Two dates were changed.'),
+                        $.fn.gettext('The group end date and the project finish date were affected by the current end date'),
+                        {'url': url, 'method': method, 'data': data});
+                    $dateFinishElm._flatpickr.setDate(data.w_end_date)
+                }
+                else if (moment(data.w_end_date).toDate() > moment(grEnd, 'DD/MM/YYYY').toDate()) {
+                    showWarning(
+                        mess02,
+                        mess03,
+                        {'url': url, 'method': method, 'data': data});
+                } else {
+                    isSubmit({'url': url, 'method': method, 'data': data});
+                }
+            }
+        }
+        else {
+            if (date_lock) {
+                if (moment(data.w_end_date).toDate() > finishDate) {
+                    $.fn.notifyB({description: mess01}, 'failure');
+                    $(this).prop('disabled', false)
+                    return false;
+                } else {
+                    isSubmit({'url': url, 'method': method, 'data': data});
+                }
+            } else {
+                if (moment(data.w_end_date).toDate() > finishDate) {
+                    showWarning(
+                        $.fn.gettext('Warning: The finish date was changed.'),
+                        $.fn.gettext("The project's finish date was affected by the current end date"),
+                        {'url': url, 'method': method, 'data': data});
+                    $dateFinishElm._flatpickr.setDate(data.w_end_date)
+                } else {
+                    isSubmit({'url': url, 'method': method, 'data': data});
+                }
+            }
+        }
     });
 }
 
@@ -307,10 +450,10 @@ function show_task_list() {
             rowCallback: function (row, data) {
                 $('.task_detail_view', row).on('click', function (e) {
                     e.preventDefault();
-                    $('#assign_modal').modal('hide')
                     $('.task_detail_view').trigger('Task.click.view', [{
                         'id': data.id, 'task': data.task.id, 'work_id': workID
-                    }])
+                    }]);
+                    $asModal.modal('hide')
                 })
                 $('.unlink-row', row).on('click', function () {
                     $('.task_detail_view').trigger('Task.link.work', [{
@@ -558,6 +701,18 @@ function action_select_bom(){
     });
 }
 
+function loadDate(elm, dobData) {
+    elm.flatpickr({
+        'allowInput': true,
+        'altInput': true,
+        'altFormat': 'd/m/Y',
+        // 'dateFormat': 'YYYY-MM-DD',
+        'defaultDate': dobData || null,
+        'locale': globeLanguage === 'vi' ? 'vn' : 'default',
+        'shorthandCurrentMonth': true,
+    })
+}
+
 class ProjectTeamsHandle {
     static crt_user = []
 
@@ -569,6 +724,7 @@ class ProjectTeamsHandle {
                 'permit_view_this_project': $('#view_this_project').prop('checked'),
                 'permit_add_member': $('#can_add_member').prop('checked'),
                 'permit_add_gaw': $('#can_add_gaw').prop('checked'),
+                'permit_lock_fd': $('#can_lock_fd').prop('checked'),
                 'permission_by_configured': new HandlePlanAppNew().combinesPermissions(),
             };
             const urlData = ElmEditBlock.attr('data-url-update').format_url_with_uuid(ElmEditBlock.attr('data-id'));
@@ -598,6 +754,7 @@ class ProjectTeamsHandle {
             $('#view_this_project').prop('checked', res['permit_view_this_project']);
             $('#can_add_member').prop('checked', res.permit_add_member);
             $('#can_add_gaw').prop('checked', res['permit_add_gaw']);
+            $('#can_lock_fd').prop('checked', res['permit_lock_fd']);
 
             HandlePlanAppNew.rangeAllowOfApp = ["1", "4"];
             HandlePlanAppNew.hasSpaceChoice = true;
@@ -1434,7 +1591,7 @@ class TaskReport{
                         data: 'employee',
                         targets: 0,
                         width: "20%",
-                        render: (row, type, data) => {
+                        render: (row) => {
                             let time = '--';
                             if (Object.keys(row).length > 0) time = `${row.full_name}`
                             return time
@@ -1444,7 +1601,7 @@ class TaskReport{
                         data: 'role',
                         targets: 1,
                         width: "20%",
-                        render: (row, type, data) => {
+                        render: (row) => {
                             if (Array.isArray(row)) {
                                 let result = [];
                                 row.map(item => item.title ? result.push(`<span class="badge badge-outline badge-soft-pumpkin mb-1 mr-1">` + item.title + `</span>`) : null);
@@ -1458,7 +1615,7 @@ class TaskReport{
                         targets: 2,
                         width: "20%",
                         class: 'text-center',
-                        render: (row, type, data) => {
+                        render: (row) => {
                             let lst = row.split(',')
                             let temp = 0
                             for (let d of lst){
@@ -1472,7 +1629,7 @@ class TaskReport{
                         targets: 3,
                         width: "10%",
                         class: 'text-center',
-                        render: (row, type, data) => {
+                        render: (row) => {
                             let temp = 0
                             for (let d of row){
                                 temp += uom_list[d.time_spent.slice(-1)] * parseInt(d.time_spent.slice(0, d.time_spent.length -1))
@@ -1485,7 +1642,7 @@ class TaskReport{
                         targets: 3,
                         width: "10%",
                         class: 'text-center',
-                        render: (row, type, data) => {
+                        render: (row) => {
                             return row
                         }
                     },
@@ -1494,7 +1651,7 @@ class TaskReport{
                         targets: 3,
                         width: "10%",
                         class: 'text-center',
-                        render: (row, type, data) => {
+                        render: (row) => {
                             return row
                         }
                     }

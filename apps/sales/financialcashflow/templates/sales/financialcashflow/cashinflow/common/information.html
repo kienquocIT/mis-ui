@@ -1,0 +1,42 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label required" for="title">{% trans "Name" %}</label>
+                    <input required maxlength="100" name="title" class="form-control" id="title">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label required" for="customer">{% trans "Customer" %}</label>
+                    <select required id="customer" class="select2 form-select" data-method="GET" data-url="{% url 'CustomerListAPI' %}"></select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required" for="posting_date">{% trans "Posting date" %}</label>
+                    <input required name="posting_date" class="form-control" id="posting_date">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required" for="document_date">{% trans "Document date" %}</label>
+                    <input required name="document_date" class="form-control" id="document_date">
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label" for="description">{% trans "Note" %}</label>
+                    <textarea name="description" class="form-control" id="description"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

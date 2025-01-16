@@ -218,6 +218,7 @@ function LoadLineDetailTable(ele, product_datas=[], disabled='') {
                     return `<select data-tax-id="${row?.['tax_id']}"
                                     data-tax-code="${row?.['tax_code']}"
                                     data-tax-title="${row?.['tax_title']}"
+                                    data-tax-rate="${row?.['tax_rate']}"
                                     ${disabled} class="form-select select2 tax-detail"></select>`;
                 }
             },
@@ -238,16 +239,16 @@ function LoadLineDetailTable(ele, product_datas=[], disabled='') {
                                 'id': $(this).find('.tax-detail').attr('data-tax-id'),
                                 'code': $(this).find('.tax-detail').attr('data-tax-code'),
                                 'title': $(this).find('.tax-detail').attr('data-tax-title'),
+                                'rate': $(this).find('.tax-detail').attr('data-tax-rate'),
                             }
                         )
                     }
-                })
-
-                ele.find('tbody tr').each(function (index) {
-                    LoadTaxLineDetail(
-                        $(this).find('.tax-detail'),
-                        product_datas[index]?.['tax'] ? product_datas[index]?.['tax'] : null
-                    )
+                    else {
+                        LoadTaxLineDetail(
+                            $(this).find('.tax-detail'),
+                            product_datas[index]?.['tax'] ? product_datas[index]?.['tax'] : null
+                        )
+                    }
                 })
             }
         }
@@ -493,6 +494,7 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
                                   data-product-tax-id="${row?.['tax']?.['id']}"
                                   data-product-tax-code="${row?.['tax']?.['code']}"
                                   data-product-tax-title="${row?.['tax']?.['title']}"
+                                  data-product-tax-rate="${row?.['tax']?.['rate']}"
                                   class="badge badge-outline badge-primary product-span"
                             >${row?.['product']?.['code']}</span><br><span class="text-secondary">${row?.['product']?.['title']}</span>`
                     }
@@ -1098,6 +1100,7 @@ btnSelectSOProduct.on('click', function () {
                 'tax_id': $(this).find('.product-span').attr('data-product-tax-id'),
                 'tax_code': $(this).find('.product-span').attr('data-product-tax-code'),
                 'tax_title': $(this).find('.product-span').attr('data-product-tax-title'),
+                'tax_rate': $(this).find('.product-span').attr('data-product-tax-rate'),
                 'request_number': request_number
             })
         }

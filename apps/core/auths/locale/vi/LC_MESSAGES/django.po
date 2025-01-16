@@ -156,3 +156,23 @@ msgstr "Lấy thông tin"
 #
 msgid "There are some problems with the logout process."
 msgstr "Có một số vấn đề với quá trình đăng xuất."
+
+#
+msgid "Tenant Code does not match"
+msgstr "Mã Tenant không khớp"
+
+#
+msgid "Username is required"
+msgstr "Tên đăng nhập là bắt buộc"
+
+#
+msgid "Password is required"
+msgstr "Mật khẩu là bắt buộc"
+
+#
+msgid "Captcha must be completed"
+msgstr "Captcha bắt buộc phải hoàn thành"
+
+#
+msgid "Insufficient login data"
+msgstr "Dữ liệu đăng nhập không đủ"

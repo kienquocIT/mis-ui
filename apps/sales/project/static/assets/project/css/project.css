@@ -429,7 +429,7 @@
     transform: translate(-50%, -50%);
     --webkit--transform: translate(-50%, -50%);
     width: 500px;
-    z-index: 11;
+    z-index: 1111;
 }
 #select_expense_role:not(.select2-hidden-accessible){
     height:36px;
@@ -588,4 +588,37 @@
 .btn-outline-orange:hover {
     background-color: #F0552D;
     color: white;
+}
+
+form#project_form:not(.form-detail) #permit_lock_fd{
+    cursor: pointer;
+}
+.edited#permit_lock_fd .fa-lock-open{
+    color:#7fd420;
+}
+.edited#permit_lock_fd .fa-lock{
+    color:red;
+}
+.input-affix-wrapper .form-control:not(:first-child){
+    padding-left: .75rem!important;
+}
+.wrap-btn-process .dropdown-toggle:after{
+    display: none;
+}
+.context-menu-item > span{
+    font-weight: 400;
+}
+
+/*responsive */
+@media screen and (max-width: 992px) {
+    .sp-tablet-flex-wrap{
+        flex-wrap: wrap;
+        gap:10px;
+    }
+    .completion_rate_block{
+        display: block;
+        width: 100%;
+        flex-shrink: 0;
+    }
+    .completion_rate_block > .heading, .completion_rate_block > .title{display: inline-block}
 }

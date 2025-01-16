@@ -1,0 +1,305 @@
+{% load static i18n %}
+
+<div class="chat-inbox-info" id="inbox-info">
+    <div style="height: 36px;overflow: hidden;" class="w-100 d-flex justify-content-start align-items-center px-2">
+        <button
+                id="btn-min-max-info"
+                class="btn btn-primary btn-rounded btn-icon btn-xs"
+        >
+            <span>
+                <span class="icon">
+                    <i class="fa-solid fa-expand"></i>
+                    <i class="fa-solid fa-compress" style="display:none;"></i>
+                </span>
+            </span>
+        </button>
+    </div>
+    <div class="person-info-body" style="height: calc(100% - 36px);overflow-y: auto;">
+        <div class="w-100 d-flex justify-content-center mt-5">
+            <div style="text-align: center;">
+                <div class="avatar avatar-rounded avatar-xxxl">
+                    <img
+                        src="{% static 'assets/images/systems/person-avt.png' %}"
+                        data-src="{% static 'assets/images/systems/person-avt.png' %}"
+                        alt=""
+                        class="avatar-img person-avatar"
+                    >
+                </div>
+                <h5 class="person-title mt-5 mb-3"></h5>
+            </div>
+        </div>
+        <div class="w-100 mt-10">
+            <p>{% trans 'Contact' %}</p>
+            <p class="text-muted">{% trans 'Assign account to exist contact or add new one' %}</p>
+            <button
+                    id="btn-create-contact"
+                    class="w-100 btn btn-primary no-transform mb-1"
+                    disabled
+            >
+                {% trans 'Create a contact' %}
+            </button>
+            <a
+                    id="btn-exits-contact"
+                    class="w-100 btn btn-success no-transform mb-1"
+                    style="display: none;"
+                    href="#"
+                    data-href="{% url 'ContactDetail' pk='__pk__' %}"
+            >
+                {% trans 'Exist contact' %}
+            </a>
+
+            <form
+                    id="form-contact"
+                    style="display: none;"
+                    class="w-100 mt-1"
+                    data-url="{% url 'ContactCreateAPI' %}"
+                    data-url-person-link="{% url 'MessengerPersonDetailContactAPI' pk='__pk__' %}"
+            >
+                <p class="text-muted">{% trans 'Contact Form' %}</p>
+                <div class="d-flex" style="gap: 4px;">
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-contact-full-name" class="form-label required">{% trans 'Contact Owner' %}</label>
+                            <select
+                                    id="idx-contact-full-name"
+                                    class="form-select select2"
+                                    data-method="GET"
+                                    data-url="{% url "EmployeeListAPI" %}"
+                                    data-keyResp="employee_list"
+                                    data-keyText="full_name"
+                                    name="owner"
+                                    required
+                            ></select>
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-contact-account-name" class="form-label">{% trans 'Account Name' %}</label>
+                            <select
+                                    id="idx-contact-account-name"
+                                    class="form-select select2"
+                                    data-method="GET"
+                                    data-url="{% url "AccountListAPI" %}"
+                                    data-keyResp="account_list"
+                                    data-keyText="name"
+                                    name="account_name"
+                            ></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex" style="gap: 4px;">
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-contact-fullname" class="form-label required">{% trans 'Full Name' %}</label>
+                            <input
+                                    id="idx-contact-fullname"
+                                    type="text"
+                                    class="form-control"
+                                    required
+                                    name="fullname"
+                            />
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-contact-job-title" class="form-label">{% trans 'Job Title' %}</label>
+                            <input
+                                    id="idx-contact-job-title"
+                                    type="text"
+                                    class="form-control"
+                                    name="job_title"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex d-none" style="gap: 4px;">
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-contact-facebook" class="form-label required">{% trans 'Facebook' %}</label>
+                            <input
+                                    id="idx-contact-facebook"
+                                    type="text"
+                                    class="form-control"
+                                    name="additional_information__facebook"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex" style="gap: 4px;">
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-contact-phone" class="form-label">{% trans 'Phone' %}</label>
+                            <input
+                                    id="idx-contact-phone"
+                                    type="text"
+                                    class="form-control"
+                                    name="phone"
+                            />
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-contact-mobile" class="form-label">{% trans 'Mobile' %}</label>
+                            <input
+                                    id="idx-contact-mobile"
+                                    type="text"
+                                    class="form-control"
+                                    name="mobile"
+                            />
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-contact-email" class="form-label">{% trans 'Email' %}</label>
+                            <input
+                                    id="idx-contact-email"
+                                    type="email"
+                                    class="form-control"
+                                    name="email"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-soft-primary w-100">
+                    {% trans 'Submit' %}
+                </button>
+            </form>
+        </div>
+        <div class="w-100 mt-5 mb-10">
+            <p>{% trans 'Lead' %}</p>
+            <p class="text-muted">{% trans 'Assign account to exist lead or add new one' %}</p>
+            <button
+                    id="btn-create-lead"
+                    class="w-100 btn btn-primary no-transform mb-1"
+                    disabled
+            >
+                {% trans 'Create a Lead' %}
+            </button>
+            <a
+                    id="btn-exits-lead"
+                    class="w-100 btn btn-success no-transform mb-1"
+                    style="display: none;"
+                    href="#"
+                    data-href="{% url 'LeadDetail' pk='__pk__' %}"
+            >
+                {% trans 'Exist lead' %}
+            </a>
+            <form
+                    id="form-lead"
+                    style="display: none;"
+                    class="w-100 mt-1"
+                    data-url="{% url 'LeadListAPI' %}"
+                    data-url-person-link-lead="{% url 'MessengerPersonDetailLeadAPI' pk='__pk__' %}"
+            >
+                <p class="text-muted">{% trans 'Lead Form' %}</p>
+                <div class="d-flex" style="gap: 4px;">
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-lead-title" class="form-label required">{% trans 'Lead name' %}</label>
+                            <input
+                                    id="idx-lead-title"
+                                    type="text"
+                                    class="form-control"
+                                    required
+                                    name="title"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex" style="gap: 4px;">
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-lead-job-title" class="form-label">{% trans 'Contact name' %}</label>
+                            <input
+                                    id="idx-lead-job-title"
+                                    type="text"
+                                    class="form-control"
+                                    name="contact_name"
+                            />
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-lead-job-title" class="form-label">{% trans 'Job title' %}</label>
+                            <input
+                                    id="idx-lead-job-title"
+                                    type="text"
+                                    class="form-control"
+                                    name="job_title"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex" style="gap: 4px;">
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-lead-mobile" class="form-label">{% trans 'Mobile' %}</label>
+                            <input
+                                    id="idx-lead-mobile"
+                                    type="text"
+                                    class="form-control"
+                                    name="mobile"
+                            />
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-lead-email" class="form-label">{% trans 'Email' %}</label>
+                            <input
+                                    id="idx-lead-email"
+                                    type="text"
+                                    class="form-control"
+                                    name="email"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex" style="gap: 4px;">
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-lead-company-name" class="form-label">{% trans 'Company name' %}</label>
+                            <input
+                                    id="idx-lead-company-name"
+                                    type="text"
+                                    class="form-control"
+                                    name="company_name"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex" style="gap: 4px;">
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-lead-assign_to_sale" class="form-label">{% trans 'Assign to sale' %}</label>
+                            <select
+                                    id="idx-lead-assign_to_sale"
+                                    class="form-select select2"
+                                    name="assign_to_sale"
+                                    data-url="{% url 'EmployeeListAPI' %}"
+                                    data-keyResp="employee_list"
+                                    data-keyText="full_name"
+                            ></select>
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="form-group">
+                            <label for="idx-lead-lead_status" class="form-label">{% trans 'Lead status' %}</label>
+                            <select
+                                    id="idx-lead-lead_status"
+                                    class="form-select select2"
+                                    name="lead_status"
+                            >
+                                    {% for item in data.lead_status %}
+                                        <option value="{{ item.value }}">{{ item.name }}</option>
+                                    {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-soft-primary w-100">
+                    {% trans 'Submit' %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

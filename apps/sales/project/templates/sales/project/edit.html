@@ -4,8 +4,12 @@
     {% trans 'Project' %} {% trans 'Update' %}
 {% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/contextMenu/jquery.contextMenu.min.css' %}" rel="stylesheet" type="text/css"/>
+
     <link rel="stylesheet" href="{% static 'vendors/frappe-gantt/dist/frappe-gantt.css' %}">
     <link rel="stylesheet" href="{% static 'assets/project/css/project.css' %}">
 {% endblock %}
@@ -32,14 +36,14 @@
                     <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
                     <input type="text" name="title" id="titleInput" class="form-control" required>
                 </div>
-                <div class="col-xs-12 col-md-6 d-flex align-items-center">
+                <div class="col-xs-12 col-md-6 d-flex align-items-center sp-tablet-flex-wrap">
                     {{ data.employee_info|json_script:'current_info'}}
                     <input type="hidden" id="data_form">
                     <div class="completion_rate_block">
                         <p class="heading"><span>0</span>%</p>
                         <span class="title">{% trans 'Completion rate' %}</span>
                     </div>
-                    <a href="#" class="btn btn-primary mr-5" id="create_baseline">
+                    <a href="#" class="btn btn-primary mr-lg-5" id="create_baseline">
                         <span>
                             <span class="icon">
                                 <i class="bi bi-graph-up"></i>
@@ -48,7 +52,7 @@
                         </span>
                     </a>
                     {% if data.can_close %}
-                        <a href="#" class="btn btn-outline-primary" id="complete_project">
+                        <a href="#" class="btn btn-outline-primary" id="complete_project" hidden>
                             <span>
                                 <span class="icon">
                                     <i class="fa-solid fa-flag-checkered"></i>
@@ -57,6 +61,25 @@
                             </span>
                         </a>
                     {% endif %}
+                    <div class="wrap-btn-process ml-auto" data-bs-toggle="tooltip" data-bs-placement="left"
+                         data-bs-original-title="{% trans 'Process' %}">
+                        <div class="btn-group dropdown">
+                            <button type="button" class="btn font-5 btn-flush-primary btn-animated dropdown-toggle"
+                                    data-bs-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                <i class="fa-solid fa-microchip"></i>
+                            </button>
+                            <div class="dropdown-menu p-4 w-320p w-lg-500p">
+                                <label class="form-label" for="process_info">{% trans 'Process' %}</label>
+                                <i class="fa-solid fa-caret-right text-light"></i>
+                                <label class="form-label" for="process_stage_app_info">{% trans 'Stage' %}</label>
+                                <div class="d-flex gap-2">
+                                    <input class="form-control" type="text" readonly id="process_info">
+                                    <input class="form-control" type="text" readonly id="process_stage_app_info">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="col-xs-12 col-md-6 form-group">
@@ -82,10 +105,15 @@
                 </div>
                 <div class="col-xs-12 col-md-6 form-group">
                     <label for="dateFinish" class="form-label">{% trans 'Finish date' %}</label>
-                    <div class="input-affix-wrapper">
-                        <input type="text" id="dateFinish" name="finish_date" class="form-control date-picker"
-                               autocomplete="off">
-                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                    <div class="input-group">
+                        <span class="input-group-text" id="permit_lock_fd" data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="{% trans 'Lock finish date' %}"><i class="fa-solid fa-lock-open"></i></span>
+                        <div class="input-affix-wrapper">
+                            <input type="text" id="dateFinish" name="finish_date" class="form-control date-picker"
+                                   autocomplete="off">
+                            <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                        </div>
+
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-6"></div>
@@ -212,6 +240,14 @@
                                 <input type="checkbox" class="form-check-input" id="can_add_gaw">
                                 <label class="form-check-label" for="can_add_gaw">
                                     {% trans 'Allow create group and work this project' %}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" class="form-check-input" id="can_lock_fd">
+                                <label class="form-check-label" for="can_lock_fd">
+                                    {% trans 'Allow lock finish date' %}
                                 </label>
                             </div>
                         </div>
@@ -342,10 +378,15 @@
 {% endblock %}
 {% block jsFooter %}
     <!-- library -->
-    <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
     <script src="{% static 'vendors/frappe-gantt/dist/frappe-gantt.js' %}"></script>
+    <script src="{% static 'vendors/contextMenu/jquery.contextMenu.min.js' %}"></script>
 
     <!-- js component permission -->
     <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
@@ -369,12 +410,12 @@
             $('#member-current-edit').trigger('change');
         })
     </script>
+    <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
 
     <!-- js edit page -->
     <script src="{% static 'assets/project/js/project-common.js' %}"></script>
     <script src="{% static 'assets/project/js/frappe-gantt-custom.js' %}"></script>
     <script src="{% static 'assets/project/js/edit.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
     <script src="{% static 'assets/project/js/extend/component-modal-drag.js' %}"></script>
     <script src="{% static 'assets/project/js/extend/project-task.js' %}"></script>
 {% endblock %}

@@ -222,7 +222,7 @@
         <div class="modal-area">
             <div
                 class="modal fade" id="nodeModal" tabindex="-1" role="dialog"
-                aria-labelledby="nodeModal" aria-hidden="true"
+                aria-labelledby="nodeModal" aria-hidden="true" data-bs-backdrop="static"
             >
                 <div class="modal-dialog modal-dialog-centered modal-xl modal-collab" role="document">
                     <div class="modal-content">
@@ -372,17 +372,6 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
-                                            <div class="d-flex justify-content-start">
-                                                <button
-                                                        type="button"
-                                                        class="btn btn-outline-primary"
-                                                        data-bs-toggle="offcanvas"
-                                                        data-bs-target="#inWFCanvas"
-                                                        aria-controls="inWFCanvas"
-                                                >
-                                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
-                                                </button>
-                                            </div>
                                         </div>
                                         <div class="col-12 col-md-5 col-lg-5">
                                             <label class="form-label">{% trans 'Exit condition' %}</label>
@@ -705,6 +694,7 @@
         data-select-beneficiary="{% trans 'Beneficiary' %}"
         data-select-1st-manager="{% trans '1st manager' %}"
         data-select-2nd-manager="{% trans '2nd manager' %}"
+        data-select-upper-manager="{% trans 'Upper manager' %}"
         data-editing-zone="{% trans 'Editing zone' %}"
         data-hidden-zone="{% trans 'Hidden zone' %}"
         data-actions="{% trans 'Actions' %}"
@@ -722,7 +712,7 @@
         data-node-approved="{% trans 'Approved node' %}"
         data-node-completed="{% trans 'Completed node' %}"
         data-employee-list="{% trans 'Employee list' %}"
-        data-add-new="{% trans 'New' %}"
+        data-add-new="{% trans 'Add new' %}"
         data-system-node="{% trans 'System node' %}"
         data-type-src-2="{% trans 'Out form' %}"
         data-type-src-3="{% trans 'In workflow' %}"

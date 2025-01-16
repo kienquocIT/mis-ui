@@ -69,7 +69,7 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
-                    {% trans 'Select Sale Person' as inherit_title %}
+                    {% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
                     {% include 'extends/the-documents/bastion.html' with has_opp=True has_process=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True process_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
@@ -130,7 +130,7 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label class="form-label required" for="payment_term_id">{% trans 'Select Payment Terms' %}</label>
+                                <label class="form-label" for="payment_term_id">{% trans 'Select Payment Terms' %}</label>
                                 <select
                                         class="form-select"
                                         id="payment_term_id"
@@ -268,7 +268,7 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-cost"
-                                            class="table nowrap w-100 mb-5"
+                                            class="table nowrap min-w-1366p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr class="bg-light">
@@ -581,7 +581,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="sale_order_products_data">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-select-price" data-bs-dismiss="modal" data-zone="sale_order_products_data">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-price" data-bs-dismiss="modal" data-zone="sale_order_products_data" hidden>{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -601,7 +601,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="sale_order_costs_data">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-select-cost" data-bs-dismiss="modal" data-zone="sale_order_costs_data">{% trans 'Save' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-cost" data-bs-dismiss="modal" data-zone="sale_order_costs_data" hidden>{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -633,6 +633,8 @@
         data-required-product-uom="{% trans "Product unit of measure is required" %}"
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
         data-copy-successfully="{% trans "Copy successfully" %}"
+        data-validate-due-date="{% trans "Invalid due date" %}"
+        data-validate-total-ratio-payment="{% trans "Total payment ratio must be 100%" %}"
         data-validate-total-payment="{% trans "Total payment must equal to total after tax" %}"
         data-promotion="{% trans "Promotion" %}"
         data-shipping="{% trans "Shipping fee" %}"
@@ -666,42 +668,15 @@
         data-md-product="{% url 'ProductForSaleListAPI' %}"
         data-md-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
         data-md-bom="{% url 'BOMOrderListAPI' %}"
+        data-md-uom="{% url "UnitOfMeasureListAPI" %}"
+        data-md-tax="{% url "TaxListAPI" %}"
+        data-md-labor="{% url "ExpenseListAPI" %}"
+        data-md-expense="{% url "ExpenseItemListAPI" %}"
+
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
+        data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
     >
 
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-product"
-            data-url="{% url "ProductForSaleListAPI" %}"
-            data-link-detail="{% url "ProductDetail" 1 %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-expense"
-            data-url="{% url "ExpenseListAPI" %}"
-            data-link-detail="{% url "ExpenseDetail" 1 %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-expense-item"
-            data-url="{% url "ExpenseItemListAPI" %}"
-            data-link-detail="{% url "ExpenseItemDetailAPI" 1 %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-uom"
-            data-url="{% url "UnitOfMeasureListAPI" %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-tax"
-            data-url="{% url "TaxListAPI" %}"
-            data-method="GET"
-    >
     <input
             type="text"
             id="data-init-quotation-create-request-employee"

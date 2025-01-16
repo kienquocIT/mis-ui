@@ -213,6 +213,7 @@ $('#opportunity_id').on('change', function () {
 })
 
 $('#btn-offcanvas-resend-email').on('click', function () {
+    WindowControl.showLoading();
     let url_loaded = $(this).attr('data-url').replace('/0', `/${$(this).attr('data-id')}`);
     $.fn.callAjax(url_loaded, 'GET', {'resend_email': true}).then(
         (resp) => {
@@ -221,6 +222,7 @@ $('#btn-offcanvas-resend-email').on('click', function () {
                 $.fn.notifyB({'description': 'Send email successfully!'}, 'success');
                 $('#offcanvas-detail-send-email').offcanvas('hide')
                 loadOpportunityEmailList()
+                WindowControl.hideLoading();
             }
         })
 })

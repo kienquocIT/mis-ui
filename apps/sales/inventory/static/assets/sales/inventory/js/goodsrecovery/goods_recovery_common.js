@@ -455,11 +455,10 @@ class RecoveryLoadDataHandle {
                     $startDateEle.val(moment($(depreciationStartDEle).val()).format('DD/MM/YYYY'));
                 }
             }
-            let depreciationEndDEle = row.querySelector('.table-row-depreciation-end-date');
             let $endDateEle = $('#depreciation_end_date');
-            if (depreciationEndDEle && $endDateEle.length > 0) {
-                if ($(depreciationEndDEle).val()) {
-                    $endDateEle.val(moment($(depreciationEndDEle).val()).format('DD/MM/YYYY'));
+            if ($endDateEle.length > 0) {
+                if (RecoveryLoadDataHandle.$date.val()) {
+                    $endDateEle.val(RecoveryLoadDataHandle.$date.val());
                 }
             }
             let depreciationAdjustEle = row.querySelector('.table-row-depreciation-adjustment');
@@ -606,7 +605,7 @@ class RecoveryLoadDataHandle {
     };
 
     static loadSaveDepreciation() {
-        let target = RecoveryDataTableHandle.$tableCost[0].querySelector(`.table-row-item[data-product-id="${RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
+        let target = RecoveryDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
         if (target) {
             let targetRow = target.closest('tr');
 
@@ -640,17 +639,14 @@ class RecoveryLoadDataHandle {
                 let lastRowData = RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().row(':last').data();
                 if (lastRowData) {
                     let depreciationSubtotalEle = targetRow.querySelector('.table-row-depreciation-subtotal');
-                    let quantityTimeEle = targetRow.querySelector('.table-row-quantity-time');
                     let fnCostEle = targetRow.querySelector('.table-row-subtotal');
                     let fnCostRawEle = targetRow.querySelector('.table-row-subtotal-raw');
-                    if (depreciationSubtotalEle && quantityTimeEle && fnCostEle && fnCostRawEle) {
+                    if (depreciationSubtotalEle && fnCostEle && fnCostRawEle) {
                         let fnCost = lastRowData?.['accumulative_value'];
                         $(depreciationSubtotalEle).val(fnCost);
-                        if ($(quantityTimeEle).val()) {
-                            $(fnCostEle).attr('data-init-money', String(fnCost));
-                            $(fnCostRawEle).val(String(fnCost));
-                            $.fn.initMaskMoney2();
-                        }
+                        $(fnCostEle).attr('data-init-money', String(fnCost));
+                        $(fnCostRawEle).val(String(fnCost));
+                        $.fn.initMaskMoney2();
                     }
                 }
             }

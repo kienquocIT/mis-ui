@@ -2306,17 +2306,14 @@ class LeaseOrderLoadDataHandle {
                 let lastRowData = LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().row(':last').data();
                 if (lastRowData) {
                     let depreciationSubtotalEle = targetRow.querySelector('.table-row-depreciation-subtotal');
-                    let quantityTimeEle = targetRow.querySelector('.table-row-quantity-time');
                     let fnCostEle = targetRow.querySelector('.table-row-subtotal');
                     let fnCostRawEle = targetRow.querySelector('.table-row-subtotal-raw');
-                    if (depreciationSubtotalEle && quantityTimeEle && fnCostEle && fnCostRawEle) {
+                    if (depreciationSubtotalEle && fnCostEle && fnCostRawEle) {
                         let fnCost = lastRowData?.['accumulative_value'];
                         $(depreciationSubtotalEle).val(fnCost);
-                        if ($(quantityTimeEle).val()) {
-                            $(fnCostEle).attr('data-init-money', String(fnCost));
-                            $(fnCostRawEle).val(String(fnCost));
-                            $.fn.initMaskMoney2();
-                        }
+                        $(fnCostEle).attr('data-init-money', String(fnCost));
+                        $(fnCostRawEle).val(String(fnCost));
+                        $.fn.initMaskMoney2();
                     }
                 }
             }
@@ -2394,14 +2391,14 @@ class LeaseOrderLoadDataHandle {
                     }
                 }
             }
-            accumulativeValue += depreciationValue;
+            // accumulativeValue += depreciationValue;
 
 
             if (currentEndDateObj > endDateObj) {
                 if (currentStartDateObj < endDateObj) {
                     let daysOdd = LeaseOrderLoadDataHandle.calculateDaysBetween(currentStartDateObj, endDateObj);
                     depreciationValue = depreciationValue * (daysOdd + 1) / (daysEven + 1);
-
+                    accumulativeValue += depreciationValue;
                     result.push({
                         month: currentMonth.toString(),
                         start_date: currentStartDate,
@@ -2418,6 +2415,7 @@ class LeaseOrderLoadDataHandle {
                     let daysOdd = LeaseOrderLoadDataHandle.calculateDaysBetween(currentStartDateObj, currentEndDateObj);
                     depreciationValue = depreciationValue * (daysOdd + 1) / (30 + 1);
                 }
+                accumulativeValue += depreciationValue;
                 result.push({
                     month: currentMonth.toString(),
                     start_date: currentStartDate,

@@ -16,7 +16,7 @@
                 {% if page == 'lead' %}
 
                 {% else %}
-                    {% trans 'Select Sale Person' as inherit_title %}
+                    {% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
                     {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
                 {% endif %}
                 <div class="col-12 col-lg-7 col-md-7">
@@ -84,37 +84,26 @@
             {% csrf_token %}
             {% if page == 'lead' %}
             {% else %}
-                <button class="btn btn-light btn-sm w-100" type="button" data-bs-toggle="collapse" data-bs-target="#detail-opp-process-inherit">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-                <div class="collapse multi-collapse mb-5" id="detail-opp-process-inherit">
-                    <div class="card card-body">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="detail-opp" class="form-label required">{% trans 'Opportunity' %}</label>
-                                    <input disabled readonly id="detail-opp" class="form-control text-primary fw-bold form-control-line">
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6 col-md-6">
-                                <div class="form-group">
-                                    <label for="detail-process" class="form-label">{% trans 'Process' %}</label>
-                                    <input disabled readonly id="detail-process" class="form-control text-primary fw-bold form-control-line">
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6 col-md-6">
-                                <div class="form-group">
-                                    <label for="detail-stage" class="form-label">{% trans 'Stage' %}</label>
-                                    <input disabled readonly id="detail-stage" class="form-control text-primary fw-bold form-control-line">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="detail-inheritor" class="form-label required">{% trans 'Inheritor' %}</label>
-                                    <input disabled readonly id="detail-inheritor" class="form-control text-primary fw-bold form-control-line">
-                                </div>
-                            </div>
-                        </div>
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Opportunity' %}:</label>
+                        <span id="detail-opp" class="text-primary fw-bold"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Process' %}:</label>
+                        <span id="detail-process" class="text-primary"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Stage' %}:</label>
+                        <span id="detail-stage" class="text-primary"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Creator' %}:</label>
+                        <span id="detail-creator" class="text-primary"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Beneficiary' %}:</label>
+                        <span id="detail-inheritor" class="text-primary"></span>
                     </div>
                 </div>
             {% endif %}

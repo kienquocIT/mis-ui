@@ -169,12 +169,19 @@ $(document).on('click', '#table_opportunity_meeting_list .offcanvas-meeting-butt
     let meeting_obj = MEETING_LIST.filter(function (item) {
         return item?.['id'] === meeting_id;
     })[0]
-    meeting_cancel_activity_btn.attr('data-id', meeting_obj.id)
+    meeting_cancel_activity_btn.attr('data-id', meeting_id)
 
-    $('#detail-opp').val(meeting_obj?.['opportunity']?.['code'] + ' - ' + meeting_obj?.['opportunity']?.['title']);
-    $('#detail-process').val(meeting_obj?.['process']?.['title'] ? meeting_obj?.['process']?.['title'] : '--');
-    $('#detail-stage').val(meeting_obj?.['process_stage_app']?.['title'] ? meeting_obj?.['process_stage_app']?.['title'] : '--');
-    $('#detail-inheritor').val(meeting_obj?.['employee_inherit']?.['full_name']);
+    $('#btn-offcanvas-resend-email').attr('data-id', meeting_id).prop('hidden', !(!meeting_obj?.['email_notify'] || !meeting_obj?.['send_success']))
+
+    $('#detail-opp').text(meeting_obj?.['opportunity']?.['code'] + ' - ' + meeting_obj?.['opportunity']?.['title']);
+    $('#detail-process').text(meeting_obj?.['process']?.['title'] ? meeting_obj?.['process']?.['title'] : '');
+    $('#detail-stage').text(meeting_obj?.['process_stage_app']?.['title'] ? meeting_obj?.['process_stage_app']?.['title'] : '');
+    let creator_fullname = meeting_obj?.['employee_created']?.['full_name']
+    let creator_group = meeting_obj?.['employee_created']?.['group']?.['title']
+    let inherit_fullname = meeting_obj?.['employee_inherit']?.['full_name']
+    let inherit_group = meeting_obj?.['employee_inherit']?.['group']?.['title']
+    $('#detail-creator').text(`${creator_fullname} ${creator_group ? ' - ' + creator_group : ''}`);
+    $('#detail-inheritor').text(`${inherit_fullname} ${inherit_group ? ' - ' + inherit_group : ''}`);
 
     $('#detail-subject-input').text(meeting_obj?.['subject']);
     $('#is-cancelled').prop('hidden', !meeting_obj?.['is_cancelled'])
@@ -189,13 +196,13 @@ $(document).on('click', '#table_opportunity_meeting_list .offcanvas-meeting-butt
     detail_emp_attended.html('')
     for (let i = 0; i < meeting_obj.employee_attended_list.length; i++) {
         let employee_attended_item = meeting_obj.employee_attended_list[i];
-        detail_emp_attended.append(`<span class="badge badge-outline badge-soft-success mr-1">${employee_attended_item.fullname} ${employee_attended_item?.['group']?.['title'] ? '- '  + employee_attended_item?.['group']?.['title'] : ''}</span>`);
+        detail_emp_attended.append(`<span class="badge badge-outline badge-soft-success mr-1 mb-1">${employee_attended_item.fullname} ${employee_attended_item?.['group']?.['title'] ? '- '  + employee_attended_item?.['group']?.['title'] : ''}</span>`);
     }
     const detail_customer_mem = $('#detail-customer-member')
     detail_customer_mem.html('')
     for (let i = 0; i < meeting_obj.customer_member_list.length; i++) {
         let customer_member_item = meeting_obj.customer_member_list[i];
-        detail_customer_mem.append(`<span class="badge badge-outline badge-soft-orange mr-1">${customer_member_item.fullname} ${customer_member_item?.['job_title'] ? '- ' + customer_member_item?.['job_title'] : ''}</span>`);
+        detail_customer_mem.append(`<span class="badge badge-outline badge-soft-orange mr-1 mb-1">${customer_member_item.fullname} ${customer_member_item?.['job_title'] ? '- ' + customer_member_item?.['job_title'] : ''}</span>`);
     }
     $('#detail-result').text(meeting_obj.input_result);
     $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
@@ -212,12 +219,29 @@ $('#meeting-address-select-btn').on('click', function () {
     $('#meeting-address-input-div').prop('hidden', true);
 })
 
+$('#btn-offcanvas-resend-email').on('click', function () {
+    let url_loaded = $(this).attr('data-url').replace('/0', `/${$(this).attr('data-id')}`);
+    $.fn.callAjax(url_loaded, 'GET', {'resend_email': true}).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                $.fn.notifyB({'description': 'Send email successfully!'}, 'success');
+                $('#offcanvas-meeting-detail').offcanvas('hide')
+                loadOpportunityMeetingList()
+            }
+        })
+})
+
 $(document).on('click', '#meeting-cancel-activity', function () {
     Swal.fire({
 		html:
 		`<div class="mb-3"><i class="bi bi-x-square text-danger" style="font-size: 50px"></i></div>
              <h5 class="text-danger">${meeting_trans_script.attr('data-trans-alert-cancel')}</h5>
-             <p>${meeting_trans_script.attr('data-trans-alert-warn')}</p>`,
+             <p>${meeting_trans_script.attr('data-trans-alert-warn')}</p>
+             <div class="form-check my-5">
+                 <input class="form-check-input" type="checkbox" id="email_cancel">
+                 <label class="form-check-label text-primary" for="email_cancel">${meeting_trans_script.attr('data-trans-email-cancel')}</label>
+             </div>`,
 		customClass: {
 			confirmButton: 'btn btn-outline-secondary text-danger',
 			cancelButton: 'btn btn-outline-secondary text-gray',
@@ -234,16 +258,17 @@ $(document).on('click', '#meeting-cancel-activity', function () {
 		    let meeting_id = meeting_cancel_activity_btn.attr('data-id')
             let dtb = table_opportunity_meeting_list;
             let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(dtb.attr('data-url-delete').replace(0, meeting_id), 'PUT', {'is_cancelled': !meeting_cancel_activity_btn.prop('disabled')}, csr)
+            $.fn.callAjax(dtb.attr('data-url-delete').replace(0, meeting_id), 'PUT', {
+                'is_cancelled': !meeting_cancel_activity_btn.prop('disabled'),
+                'email_cancel': document.getElementById('email_cancel').checked,
+            }, csr)
                 .then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $.fn.redirectUrl(dtb.attr('data-url-redirect'), 1000);
                     }
-                }, (errs) => {
-            $.fn.notifyB({description: errs.data.errors}, 'failure');
-        })
+                })
 		}
 	})
 })

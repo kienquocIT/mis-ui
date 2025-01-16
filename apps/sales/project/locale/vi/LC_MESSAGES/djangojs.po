@@ -62,14 +62,6 @@ msgid "Pending"
 msgstr "Tạm dừng"
 
 #
-msgid "Group"
-msgstr "Nhóm"
-
-#
-msgid "Work"
-msgstr "Công việc"
-
-#
 msgid "Delete"
 msgstr "Xoá"
 
@@ -90,8 +82,8 @@ msgid "Task list"
 msgstr "Danh sách task"
 
 #
-msgid "Empty data"
-msgstr "Dữ liệu trống"
+msgid "Empty data, r-click to create new"
+msgstr "Dữ liệu trống, nhấp phải chuột để tạo mới"
 
 #
 msgid "Expense name"
@@ -292,3 +284,27 @@ msgstr "Cảnh báo: Ngày kết thúc của nhóm sẽ bị thay đổi"
 #
 msgid "The group end date was affected by the current end date"
 msgstr "Ngày kết thúc của nhóm công việc phụ thuộc, sẽ bị ảnh hưởng bởi ngày kết thúc này"
+
+#
+msgid "Insert group"
+msgstr "Chèn nhóm"
+
+#
+msgid "Insert before"
+msgstr "Chèn lên trên"
+
+#
+msgid "Insert after"
+msgstr "Chèn xuống dưới"
+
+#
+msgid "Insert work"
+msgstr "Chèn công việc"
+
+#
+msgid "Create group"
+msgstr "Tạo nhóm"
+
+#
+msgid "Create work"
+msgstr "Tạo công việc"

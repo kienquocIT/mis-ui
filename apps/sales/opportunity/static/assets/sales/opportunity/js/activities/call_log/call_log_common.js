@@ -115,11 +115,16 @@ $(document).on('click', '#table_opportunity_call_log_list .offcanvas-call-log-bu
     })[0]
     call_cancel_activity_btn.attr('data-id', call_log_id)
 
-    $('#detail-opp').val(call_log_obj?.['opportunity']?.['code'] + ' - ' + call_log_obj?.['opportunity']?.['title']);
     $('#is-cancelled').prop('hidden', !call_log_obj?.['is_cancelled'])
-    $('#detail-process').val(call_log_obj?.['process']?.['title'] ? call_log_obj?.['process']?.['title'] : '--');
-    $('#detail-stage').val(call_log_obj?.['process_stage_app']?.['title'] ? call_log_obj?.['process_stage_app']?.['title'] : '--');
-    $('#detail-inheritor').val(call_log_obj?.['employee_inherit']?.['full_name']);
+    $('#detail-opp').text(call_log_obj?.['opportunity']?.['code'] + ' - ' + call_log_obj?.['opportunity']?.['title']);
+    $('#detail-process').text(call_log_obj?.['process']?.['title'] ? call_log_obj?.['process']?.['title'] : '');
+    $('#detail-stage').text(call_log_obj?.['process_stage_app']?.['title'] ? call_log_obj?.['process_stage_app']?.['title'] : '');
+    let creator_fullname = call_log_obj?.['employee_created']?.['full_name']
+    let creator_group = call_log_obj?.['employee_created']?.['group']?.['title']
+    let inherit_fullname = call_log_obj?.['employee_inherit']?.['full_name']
+    let inherit_group = call_log_obj?.['employee_inherit']?.['group']?.['title']
+    $('#detail-creator').text(`${creator_fullname} ${creator_group ? ' - ' + creator_group : ''}`);
+    $('#detail-inheritor').text(`${inherit_fullname} ${inherit_group ? ' - ' + inherit_group : ''}`);
 
     $('#detail-subject-input').text(call_log_obj?.['subject']);
     $('#detail-date-input').text(moment(call_log_obj?.['call_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'));

@@ -21,6 +21,7 @@
             data-trans-alert-warn="{% trans 'This action cannot be back.' %}"
             data-trans-yes="{% trans 'Yes' %}"
             data-trans-no="{% trans 'No' %}"
+            data-trans-email-cancel="{% trans 'Send email notification this cancel' %}"
     ></script>
     <table id="table_opportunity_meeting_list" class="table nowrap w-100 mb-5"
            data-url="{% url 'OpportunityMeetingListAPI' %}"
@@ -40,17 +41,20 @@
         <tbody>
         </tbody>
     </table>
-    {% include 'sales/opportunity/activities/extends/meeting_modals.html' %}
+
 {% endblock %}
 {%  block dataHiddenGroup %}
-    <div class="delete-btn">
-        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-activity">
-        <span class="btn-icon-wrap">
-            <i class="fa-solid fa-trash-can"></i>
-        </span>
-        </a>
-    </div>
+{#    <div class="delete-btn">#}
+{#        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-activity">#}
+{#        <span class="btn-icon-wrap">#}
+{#            <i class="fa-solid fa-trash-can"></i>#}
+{#        </span>#}
+{#        </a>#}
+{#    </div>#}
     <input type="hidden" id="trans-factory" data-time-valid="{% trans 'To time need larger than From time' %}">
+{% endblock %}
+{% block modalData %}
+    {% include 'sales/opportunity/activities/extends/meeting_modals.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

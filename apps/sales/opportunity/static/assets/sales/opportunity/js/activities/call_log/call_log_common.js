@@ -100,7 +100,6 @@ date_input.daterangepicker({
     timePicker: false,
     showDropdowns: true,
     autoApply: true,
-    minYear: parseInt(moment().format('YYYY')),
     locale: {
         format: 'DD/MM/YYYY'
     },

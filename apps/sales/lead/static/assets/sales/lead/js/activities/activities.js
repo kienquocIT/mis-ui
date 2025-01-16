@@ -1,9 +1,9 @@
 class LeadActivitiesHandler{
     constructor() {
-        this.$activitiesArea = $('#lead-activities-area')
         this.$detailLeadDataScript = $('#detail-data-script')
         this.$urlScript = $('#data-url-script')
         this.$activitiesTable = $('#table-timeline')
+        this.$transScript = $('#trans-script')
     }
 
     loadInitS2($ele, data = [], dataParams = {}, customRes = {}, $modal = null, isClear = false) {
@@ -32,7 +32,14 @@ class LeadActivitiesHandler{
     }
 
     init(){
+        this.detailLeadData = this.$detailLeadDataScript.data('lead-detail')
         this.openOffCanvasEventBinding()
+    }
+
+    initSelectKeyData($element, url, keyResp, keyText){
+        $element.attr('data-url', url)
+        $element.attr('data-keyResp', keyResp)
+        $element.attr('data-keytext', keyText)
     }
 
     initSelectFields(selectConfigs) {
@@ -49,27 +56,25 @@ class LeadActivitiesHandler{
 
     openOffCanvasEventBinding(){
         $(document).on('click', '.open-canvas-btn',  (e) => {
-            this.loadLeadDataToCanvas()
+            this.loadLeadData()
         })
     }
 
-    loadLeadDataToCanvas(){
-        // get detail data
-        this.detailLeadData = this.$detailLeadDataScript.data('lead-detail')
-
-        //load detail based on each class
-        this.loadLeadData()
+    clickReloadEventBiding() {
+        $(document).on('click','#btn-refresh-activity', ()=>{
+            this.fetchActivityListData()
+        })
     }
 
-    //abstract method
-    loadLeadData(){
-        throw new Error("Method 'loadLeadData()' must be implemented.");
-    }
-
-    initSelectKeyData($element, url, keyResp, keyText){
-        $element.attr('data-url', url)
-        $element.attr('data-keyResp', keyResp)
-        $element.attr('data-keytext', keyText)
+    openActivityDetailEventBiding(){
+        $(document).on('click', '.open-detail-btn', (e)=>{
+            e.preventDefault()
+            let activityList =JSON.parse(this.$detailLeadDataScript.attr('data-lead-activity-list'))
+            let currentActivityId = $(e.currentTarget).attr('data-id')
+            let currentActivity = activityList.find(item=>item['doc_data']['id'] === currentActivityId)
+            console.log(currentActivity)
+            this.loadActivityDetail(currentActivity)
+        })
     }
 
     fetchActivityListData(){
@@ -77,81 +82,176 @@ class LeadActivitiesHandler{
             this.$activitiesTable.DataTable().destroy()
             this.$activitiesTable.find('tbody').empty();
         }
-        $.fn.callAjax2({
+        this.$activitiesTable.DataTableDefault({
+            useDataServer: true,
+            ajax: {
                 url: this.$urlScript.data('activity-list-url'),
                 method: 'GET',
                 isLoading: true,
-            }).then(
-                (resp) => {
+                data: {
+                    'lead_id': $.fn.getPkDetail()
+                },
+                dataSrc:  (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    this.$detailLeadDataScript.attr('data-lead-activity-list', JSON.stringify(data?.['activity_list']))
-                    this.$activitiesTable.DataTableDefault({
-                        data: data['activity_list'],
-                        rowIdx: true,
-                        columns: [
-                            {
-                                targets: 0,
-                                width: '1%',
-                                render: (data, type, row, meta) => {
-                                    return ``
-                                }
-                            },
-                            {
-                                targets: 1,
-                                width: '15%',
-                                render: (data, type, row) => {
-                                    return `<p class="table-row-application mt-2">${row?.['type']}</p>`;
-                                }
-                            },
-                            {
-                                targets: 2,
-                                width: '20%',
-                                render: (data, type, row) => {
-                                    let dataBsTarget = {
-                                        'call': '#offcanvas-call-log-detail',
-                                        'meeting': '#offcanvas-meeting-detail',
-                                        'email': '#offcanvas-detail-send-email'
-                                    }
-                                    let title = row?.['type'] === 'email' ? row?.['subject']: row?.['title']
-                                    return `<a href="" class="text-primary fw-bold open-detail-btn" 
-                                                data-bs-toggle="offcanvas"
-                                                data-bs-target=${dataBsTarget[row?.['type']]}
-                                                data-id=${row?.['id']}>${title}</a>`
-                                }
-                            },
-                            {
-                                targets: 3,
-                                width: '20%',
-                                render: (data, type, row) => {
-                                    return `<p class="table-row-application mt-2">${row?.['employee_created']?.['name']}</p>`;
-                                }
-                            },
-                            {
-                                targets: 4,
-                                width: '20%',
-                                render: (data, type, row) => {
-                                    let date = $x.fn.reformatData(row?.['date_created'], $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY');
-                                    return `<p class="table-row-application mt-2">${date}</p>`;
-                                }
-                            },
-                            {
-                                targets: 5,
-                                width: '20%',
-                                render: (data, type, row) => {
-                                    let date = row?.['date']
-                                        ? $x.fn.reformatData(row?.['date'], $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY')
-                                        : '_'
-                                    return `<p class="table-row-application mt-2">${date}</p>`;
-                                }
-                            },
-                        ]
-                    })
-                }
-            )
+                    if (data && resp.data.hasOwnProperty('lead_activity_list')) {
+                        this.$detailLeadDataScript.attr('data-lead-activity-list', JSON.stringify(resp.data['lead_activity_list']))
+                        return resp.data['lead_activity_list'] ? resp.data['lead_activity_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            rowIdx: true,
+            columns: [
+                {
+                    targets: 0,
+                    width: '1%',
+                    render: (data, type, row, meta) => {
+                        return ``
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '15%',
+                    render: (data, type, row) => {
+                        const activityType = {
+                            2: 'call',
+                            3: 'email',
+                            4: 'meeting',
+                        }
+                        return `<p class="table-row-application mt-2">${activityType[row?.['log_type']]}</p>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    width: '20%',
+                    render: (data, type, row) => {
+                        // log type for call: 2
+                        // log type for email: 3
+                        // log type for meeting: 4
+
+                        let dataBsTarget = {
+                            2: '#offcanvas-call-log-detail',
+                            3: '#offcanvas-detail-send-email',
+                            4: '#offcanvas-meeting-detail',
+                        }
+                        let dataIsCancelled = {
+                            2: row?.['call_log']?.['is_cancelled'],
+                            4: row?.['meeting']?.['is_cancelled']
+                        }
+                        let title = row?.['doc_data']?.['subject']
+                        let status = ''
+                        if (dataIsCancelled[row?.['log_type']]) {
+                            status = `<span class="badge badge-sm badge-soft-danger">${this.$transScript.data('trans-activity-cancelled')}</i>`
+                        }
+                        return `<a href="" class="text-primary fw-bold open-detail-btn" 
+                                    data-bs-toggle="offcanvas"
+                                    data-bs-target=${dataBsTarget[row?.['log_type']]}
+                                    data-id=${row?.['doc_data']?.['id']}>${title}</a> ${status}`
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '20%',
+                    render: (data, type, row) => {
+                        return `<p class="table-row-application mt-2">${row?.['doc_data']?.['employee_created']}</p>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '20%',
+                    render: (data, type, row) => {
+                        let date = $x.fn.reformatData(row?.['date_created'], $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY');
+                        return `<p class="table-row-application mt-2">${date}</p>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    width: '20%',
+                    render: (data, type, row) => {
+                        const dateMapping = {
+                            2: 'call_date',
+                            4: 'meeting_date'
+                        }
+                        const activityType = row?.['log_type']
+                        let date = row?.['doc_data'][dateMapping[activityType]]
+                        date = date ? $x.fn.reformatData(date, $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY') : '_'
+                        return `<p class="table-row-application mt-2">${date}</p>`;
+                    }
+                },
+            ]
+        })
     }
 
-    setUpFormData(){
+    loadActivityDetail(currentActivity){
+        console.log(currentActivity)
+        this.clearDetailFields()
+        const loadActivityDetailFunc = {
+            2: () => {
+                $('#detail-subject-input').html(currentActivity['doc_data']['subject'])
+                const contact_name = currentActivity['doc_data']['contact']['fullname']
+                                        ? currentActivity['doc_data']['contact']['fullname']
+                                        : 'no contact data'
+                $('#call-contact-name').html(contact_name)
+                $('#call-lead-name').html(currentActivity['doc_data']['lead']['title'])
+                $('#detail-result-text-area').html(currentActivity['doc_data']['input_result'])
+                let date = $x.fn.reformatData(currentActivity['doc_data']['call_date'], $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY');
+                $('#detail-date-input').html(date)
+                $('#lead-call-cancel-activity').attr('data-id', currentActivity['doc_data']['id'])
+                const isCancelled = currentActivity['call_log']?.['is_cancelled']
+                $('#lead-call-cancel-activity').prop('disabled', isCancelled)
+                $('#offcanvas-call-log-detail #is-cancelled').attr('hidden', !isCancelled)
+            },
+            3: () => {
+                $('#detail-email-subject-input').html(currentActivity['doc_data']['subject'])
+                let detail_email_to_list = []
+                for (let item of currentActivity['doc_data']['email_to_list']) {
+                    detail_email_to_list.push(`<a class="dropdown-item" href="#">${item}</a>`);
+                }
+                $('#btn-email-to').html('To ('+detail_email_to_list.length+ ')')
+                $('#detail-email-to').html(detail_email_to_list);
 
+                let detail_email_cc_list = []
+                for (let item of currentActivity['doc_data']['email_cc_list']) {
+                    detail_email_cc_list.push(`<a class="dropdown-item" href="#">${item}</a>`);
+                }
+                $('#btn-email-cc').html('Cc ('+detail_email_cc_list.length+ ')')
+                $('#detail-email-cc').html(detail_email_cc_list);
+                $('#detail-meeting-text-area').html(currentActivity['doc_data']['content'])
+                let date = $x.fn.reformatData(currentActivity['date_created'], $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY');
+                $('#offcanvas-detail-send-email #detail-date-input').html(date)
+            },
+            4: () => {
+                $('#form-new-meeting #detail-subject-input').html(currentActivity['doc_data']['subject'])
+                let date = $x.fn.reformatData(currentActivity['doc_data']['meeting_date'], $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY');
+                $('#form-new-meeting #detail-date-input').html(date)
+                let fromTime = $x.fn.reformatData(currentActivity['doc_data']['meeting_from_time'], 'HH:mm', 'HH:mm');
+                $('#form-new-meeting #detail-from').html(fromTime)
+                let toTime = $x.fn.reformatData(currentActivity['doc_data']['meeting_to_time'], 'HH:mm', 'HH:mm');
+                $('#form-new-meeting #detail-to').html(toTime)
+                $('#form-new-meeting #detail-meeting-address').html(currentActivity['doc_data']['meeting_address'])
+                $('#form-new-meeting #detail-meeting-room').html(currentActivity['doc_data']['room_location'])
+                for (let employee of currentActivity['doc_data']['employee_attended_list']){
+                    $('#form-new-meeting #detail-emp-attended').append(`
+                        <span class="badge badge-outline badge-soft-success mr-1">
+                            ${employee?.['fullname']} 
+                            ${employee?.['group']?.['title'] ? '- '  + employee?.['group']?.['title'] : ''}
+                        </span>`);
+                }
+                for (let employee of currentActivity['doc_data']['customer_member_list']){
+                    $('#form-new-meeting #detail-customer-member').append(`
+                        <span class="badge badge-outline badge-soft-success mr-1">
+                            ${employee?.['fullname']} 
+                        </span>`);
+                }
+                $('#form-new-meeting #detail-result').html(currentActivity['doc_data']['input_result'])
+                $('#lead-meeting-cancel-activity').attr('data-id', currentActivity['doc_data']['id'])
+                const isCancelled = currentActivity['meeting']?.['is_cancelled']
+                $('#lead-meeting-cancel-activity').prop('disabled', isCancelled)
+                $('#offcanvas-meeting-detail #is-cancelled').attr('hidden', !isCancelled)
+            },
+
+        }
+        loadActivityDetailFunc[currentActivity['log_type']]()
     }
 
     setUpFormSubmit(formSubmit){
@@ -172,7 +272,7 @@ class LeadActivitiesHandler{
                             $.fn.notifyB({
                                 'description': 'Success',
                             }, 'success');
-                            // this.fetchActivityListData()
+                            this.fetchActivityListData()
                             this.clearCreateFormFields()
                         }
                     },
@@ -187,83 +287,6 @@ class LeadActivitiesHandler{
                     });
             },
         })
-    }
-
-    clickReloadEventBiding() {
-        $(document).on('click','#btn-refresh-activity', ()=>{
-            this.fetchActivityListData()
-        })
-    }
-
-    openActivityDetailEventBiding(){
-        $(document).on('click', '.open-detail-btn', (e)=>{
-            e.preventDefault()
-            let activityList =JSON.parse(this.$detailLeadDataScript.attr('data-lead-activity-list'))
-            let currentActivityId = $(e.currentTarget).attr('data-id')
-            let currentActivity = activityList.find(item=>item.id === currentActivityId)
-            console.log(currentActivity)
-            this.loadActivityDetail(currentActivity)
-        })
-    }
-
-    loadActivityDetail(currentActivity){
-        this.clearDetailFields()
-        const loadActivityDetailFunc = {
-            'call': () => {
-                $('#detail-subject-input').html(currentActivity['title'])
-                $('#call-contact-name').html(currentActivity['contact_name'])
-                $('#call-lead-name').html(currentActivity['lead_name'])
-                $('#detail-result-text-area').html(currentActivity['detail'])
-                let date = $x.fn.reformatData(currentActivity['date'], $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY');
-                $('#detail-date-input').html(date)
-
-            },
-            'meeting': () => {
-                $('#form-new-meeting #detail-subject-input').html(currentActivity['title'])
-                let date = $x.fn.reformatData(currentActivity['date'], $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY');
-                $('#form-new-meeting #detail-date-input').html(date)
-                let fromTime = $x.fn.reformatData(currentActivity['meeting_from_time'], 'HH:mm', 'HH:mm');
-                $('#form-new-meeting #detail-from').html(fromTime)
-                let toTime = $x.fn.reformatData(currentActivity['meeting_to_time'], 'HH:mm', 'HH:mm');
-                $('#form-new-meeting #detail-to').html(toTime)
-                $('#form-new-meeting #detail-meeting-address').html(currentActivity['meeting_address'])
-                $('#form-new-meeting #detail-meeting-room').html(currentActivity['room_location'])
-                for (let employee of currentActivity['employee_member_list']){
-                    $('#form-new-meeting #detail-emp-attended').append(`
-                        <span class="badge badge-outline badge-soft-success mr-1">
-                            ${employee?.['fullname']} 
-                            ${employee?.['group']?.['title'] ? '- '  + employee?.['group']?.['title'] : ''}
-                        </span>`);
-                }
-                for (let employee of currentActivity['customer_member_list']){
-                    $('#form-new-meeting #detail-customer-member').append(`
-                        <span class="badge badge-outline badge-soft-success mr-1">
-                            ${employee?.['fullname']} 
-                        </span>`);
-                }
-                $('#form-new-meeting #detail-result').html(currentActivity['detail'])
-            },
-            'email': () => {
-                $('#detail-email-subject-input').html(currentActivity['subject'])
-                let detail_email_to_list = []
-                for (let item of currentActivity['email_to_list']) {
-                    detail_email_to_list.push(`<a class="dropdown-item" href="#">${item}</a>`);
-                }
-                $('#btn-email-to').html('To ('+detail_email_to_list.length+ ')')
-                $('#detail-email-to').html(detail_email_to_list);
-
-                let detail_email_cc_list = []
-                for (let item of currentActivity['email_cc_list']) {
-                    detail_email_cc_list.push(`<a class="dropdown-item" href="#">${item}</a>`);
-                }
-                $('#btn-email-cc').html('Cc ('+detail_email_cc_list.length+ ')')
-                $('#detail-email-cc').html(detail_email_cc_list);
-                $('#detail-meeting-text-area').html(currentActivity['detail'])
-                let date = $x.fn.reformatData(currentActivity['date_created'], $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY');
-                $('#offcanvas-detail-send-email #detail-date-input').html(date)
-            }
-        }
-        loadActivityDetailFunc[currentActivity['type']]()
     }
 
     clearDetailFields() {
@@ -292,6 +315,15 @@ class LeadActivitiesHandler{
         $('#offcanvas-detail-send-email #detail-date-input').html('');
     }
 
+    //abstract method
+    loadLeadData(){
+        //logic based on each class
+    }
+
+    setUpFormData(){
+        //logic based on each class
+    }
+
     clearCreateFormFields(){
 
     }
@@ -306,6 +338,7 @@ class LeadCallActivitiesHandler extends LeadActivitiesHandler{
         this.$callContactSelect = $('#contact-select-box')
         this.$titleInput = $('#subject-input')
         this.$contentTextArea = $('#result-text-area')
+        this.$cancelBtn = $('#lead-call-cancel-activity')
     }
 
     init() {
@@ -326,7 +359,7 @@ class LeadCallActivitiesHandler extends LeadActivitiesHandler{
         this.form.dataForm['call_date'] = call_date
         this.form.dataForm['subject'] = this.$titleInput.val()
         this.form.dataForm['input_result'] = this.$contentTextArea.val()
-        this.form.dataForm['contact'] = this.$callContactSelect.val()
+        this.form.dataForm['contact'] = this.$callContactSelect.val() ? this.$callContactSelect.val() : null
 
         this.form.dataUrl = this.$urlScript.attr('data-call-url')
     }
@@ -337,19 +370,55 @@ class LeadCallActivitiesHandler extends LeadActivitiesHandler{
 
     loadLeadData() {
         const detailLeadData = this.detailLeadData
-        console.log(detailLeadData)
         this.loadInitS2(this.$callLeadSelect, [detailLeadData])
 
         if(detailLeadData['config_data']?.['contact_mapped']){
             const contactData = detailLeadData['config_data']?.['contact_mapped']
             this.loadInitS2(this.$callContactSelect, [contactData])
         }
+        this.$callContactSelect.prop('disabled', false)
     }
 
     clearCreateFormFields() {
         this.$callDate.val('').trigger('change')
         this.$titleInput.val('')
         this.$contentTextArea.val('')
+    }
+
+    cancelCallEventBinding(){
+        $(document).on('click', '#lead-call-cancel-activity', (e)=>{
+            let url = this.$urlScript.data('call-detail-url')
+            const id = $(e.currentTarget).data('id')
+            url = url.format_url_with_uuid(id)
+            console.log(url)
+            $.fn.callAjax2({
+                    url: url,
+                    method: 'PUT',
+                    data: {
+                        'is_cancelled': true
+                    }
+                }).then(
+                    (resp) => {
+                        const data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({
+                                'description': 'Success',
+                            }, 'success');
+                            $('#lead-call-cancel-activity').prop('disabled', true)
+                            $('#offcanvas-call-log-detail #is-cancelled').attr('hidden', false)
+                            this.fetchActivityListData()
+                        }
+                    },
+                    (errs) => {
+                        if(errs.data.errors){
+                            for (const [key, value] of Object.entries(errs.data.errors)) {
+                                $.fn.notifyB({title: key, description: value}, 'failure');
+                            }
+                        } else {
+                            $.fn.notifyB('Error', 'failure');
+                        }
+                    });
+        })
     }
 }
 
@@ -362,6 +431,7 @@ class LeadEmailActivitiesHandler extends LeadActivitiesHandler{
         this.$titleInput = $('#email-subject-input')
         this.$contentTextArea = $('#email-content-area')
         this.$emailLeadSelect = $('#email-lead-select')
+        this.$logOptionCheckbox = $('#just_log')
     }
 
     init() {
@@ -382,6 +452,7 @@ class LeadEmailActivitiesHandler extends LeadActivitiesHandler{
         this.form.dataForm['content'] = $('.ck-content').html()
         this.form.dataForm['email_to_list'] = this.$emailToSelect.val()
         this.form.dataForm['email_cc_list'] = this.$emailCCSelect.val()
+        this.form.dataForm['just_log'] = this.$logOptionCheckbox.is(':checked')
 
         this.form.dataUrl = this.$urlScript.attr('data-email-url')
     }
@@ -394,7 +465,6 @@ class LeadEmailActivitiesHandler extends LeadActivitiesHandler{
         this.$emailToSelect.val('').trigger('change')
         this.$emailCCSelect.val('').trigger('change')
         this.$titleInput.val('')
-        this.$contentTextArea.val('')
     }
 }
 
@@ -483,24 +553,76 @@ class LeadMeetingActivitiesHandler extends LeadActivitiesHandler{
     setUpFormSubmit(){
         super.setUpFormSubmit(this.$formSubmit)
     }
+
+    cancelMeetingEventBinding(){
+        $(document).on('click', '#lead-meeting-cancel-activity', (e)=>{
+            let url = this.$urlScript.data('meeting-detail-url')
+            const id = $(e.currentTarget).data('id')
+            url = url.format_url_with_uuid(id)
+            console.log(url)
+            $.fn.callAjax2({
+                    url: url,
+                    method: 'PUT',
+                    data: {
+                        'is_cancelled': true
+                    }
+                }).then(
+                    (resp) => {
+                        const data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({
+                                'description': 'Success',
+                            }, 'success');
+                            $('#lead-meeting-cancel-activity').prop('disabled', true)
+                            $('#offcanvas-meeting-detail #is-cancelled').attr('hidden', false)
+                            this.fetchActivityListData()
+                        }
+                    },
+                    (errs) => {
+                        if(errs.data.errors){
+                            for (const [key, value] of Object.entries(errs.data.errors)) {
+                                $.fn.notifyB({title: key, description: value}, 'failure');
+                            }
+                        } else {
+                            $.fn.notifyB('Error', 'failure');
+                        }
+                    });
+        })
+    }
 }
 
 
 $(document).ready(function () {
-    const leadActivitiesHandlerObj = new LeadActivitiesHandler()
-    // leadActivitiesHandlerObj.fetchActivityListData()
-    leadActivitiesHandlerObj.clickReloadEventBiding()
-    leadActivitiesHandlerObj.openActivityDetailEventBiding()
+    // make sure data lead detail is loaded to scriptElement
+    const scriptElement = document.getElementById('detail-data-script')
+    const observer = new MutationObserver((mutations)=>{
+        mutations.forEach(function(mutation) {
+            if(mutation.attributeName==='data-lead-detail'){
+                // console.log($(mutation.target).attr('data-lead-detail'))
 
-    const leadCallActivitiesHandlerObj = new LeadCallActivitiesHandler()
-    leadCallActivitiesHandlerObj.init()
-    leadCallActivitiesHandlerObj.setUpFormSubmit()
+                const leadActivitiesHandlerObj = new LeadActivitiesHandler()
+                leadActivitiesHandlerObj.fetchActivityListData()
+                leadActivitiesHandlerObj.clickReloadEventBiding()
+                leadActivitiesHandlerObj.openActivityDetailEventBiding()
 
-    const leadEmailActivitiesHandlerObj = new LeadEmailActivitiesHandler()
-    leadEmailActivitiesHandlerObj.init()
-    leadEmailActivitiesHandlerObj.setUpFormSubmit()
 
-    const leadMeetingActivitiesHandlerObj = new LeadMeetingActivitiesHandler()
-    leadMeetingActivitiesHandlerObj.init()
-    leadMeetingActivitiesHandlerObj.setUpFormSubmit()
+                const leadCallActivitiesHandlerObj = new LeadCallActivitiesHandler()
+                leadCallActivitiesHandlerObj.init()
+                leadCallActivitiesHandlerObj.setUpFormSubmit()
+                leadCallActivitiesHandlerObj.cancelCallEventBinding()
+
+                const leadEmailActivitiesHandlerObj = new LeadEmailActivitiesHandler()
+                leadEmailActivitiesHandlerObj.init()
+                leadEmailActivitiesHandlerObj.setUpFormSubmit()
+
+                const leadMeetingActivitiesHandlerObj = new LeadMeetingActivitiesHandler()
+                leadMeetingActivitiesHandlerObj.init()
+                leadMeetingActivitiesHandlerObj.setUpFormSubmit()
+                leadMeetingActivitiesHandlerObj.cancelMeetingEventBinding()
+
+                observer.disconnect();
+            }
+        });
+    })
+    observer.observe(scriptElement, {attributes: true})
 })

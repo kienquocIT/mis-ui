@@ -66,10 +66,19 @@
     <script id="data-url-script"
         data-lead-list-url = "{% url 'LeadListAPI' %}"
         data-call-url = "{% url 'LeadCallListAPI' %}"
+        data-call-detail-url = "{% url 'LeadCallDetailAPI' pk=0 %}"
         data-email-url = "{% url 'LeadEmailListAPI' %}"
         data-meeting-url = "{% url 'LeadMeetingListAPI' %}"
+        data-meeting-detail-url = "{% url 'LeadMeetingDetailAPI' pk=0 %}"
         data-contact-list-url="{% url 'ContactListAPI' %}"
-        data-activity-list-url= "{% url 'LeadActivityListAPI' pk=pk %}"
+        data-activity-list-url= "{% url 'LeadActivityListAPI' %}"
+    ></script>
+    <script id="trans-script"
+            data-trans-activity-cancelled="{% trans 'Cancelled' %}"
+            data-trans-alert-cancel="{% trans 'Cancel this call log?' %}"
+            data-trans-alert-warn="{% trans 'This action cannot be back.' %}"
+            data-trans-yes="{% trans 'Yes' %}"
+            data-trans-no="{% trans 'No' %}"
     ></script>
 {% endblock %}
 

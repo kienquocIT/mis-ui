@@ -240,9 +240,15 @@
                         <label class="form-check-label" for="detail-repeat-activity">{% trans 'Need to repeat activity' %}</label>
                     </div>
                 </div>
-                <div class="col-12 mt-5">
-                    <button type="button" id="meeting-cancel-activity" class="btn btn-sm btn-danger">{% trans 'Cancel' %}</button>
-                </div>
+                {% if page == 'lead' %}
+                    <div class="col-12 mt-5">
+                        <button type="button" id="lead-meeting-cancel-activity" class="btn btn-sm btn-danger">{% trans 'Cancel' %}</button>
+                    </div>
+                {% else %}
+                    <div class="col-12 mt-5">
+                        <button type="button" id="meeting-cancel-activity" class="btn btn-sm btn-danger">{% trans 'Cancel' %}</button>
+                    </div>
+                {% endif %}
             </div>
         </form>
 	</div>

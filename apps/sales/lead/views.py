@@ -149,6 +149,20 @@ class LeadCallListAPI(APIView):
         return resp.auto_return()
 
 
+class LeadCallDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *arg, **kwargs):
+        data = request.data
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_CALL_DETAIL.fill_key(pk=pk)).put(data)
+        if resp.state:
+            resp.result['message'] = BaseMsg.SUCCESS
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
 class LeadEmailListAPI(APIView):
     @mask_view(
         auth_require=True,
@@ -175,11 +189,26 @@ class LeadMeetingListAPI(APIView):
         return resp.auto_return()
 
 
+class LeadMeetingDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *arg, **kwargs):
+        data = request.data
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_MEETING_DETAIL.fill_key(pk=pk)).put(data)
+        if resp.state:
+            resp.result['message'] = BaseMsg.SUCCESS
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
 class LeadActivityListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
-    def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_ACTIVITY_LIST.push_id(pk)).get()
-        return resp.auto_return()
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAD_ACTIVITY_LIST).get(params)
+        return resp.auto_return(key_success='lead_activity_list')

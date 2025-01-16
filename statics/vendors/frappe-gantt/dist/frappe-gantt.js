@@ -1959,7 +1959,6 @@ var Gantt = (function () {
             * @base_width: cộng tất cả width của danh sách title ( this.options['left_list'] ) khai báo và xét width
             * cho block trái
             * */
-            let htmlBtn = jQuery(`<div class="dropdown"><button class="btn btn-sm gaw-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-plus"></i></button><ul class="dropdown-menu"><li><button class="dropdown-item btn-gaw-group" type="button">${jQuery.fn.gettext('Group')}</button></li><li><button class="dropdown-item btn-gaw-work" type="button">${jQuery.fn.gettext('Work')}</button></li></ul></div>`)
             let div_outerwrap = jQuery('<div class="gantt-left-outerwrap"/>')
             let div_wrapper = jQuery('<div class="gantt-left-container"/>')
             let base_width = 0, is_flag = true;
@@ -2051,21 +2050,18 @@ var Gantt = (function () {
             }
             if (!tasksList.length){
                 let row = jQuery('<p class="empty-data"/>')
-                row.text(jQuery.fn.gettext('Empty data'))
+                row.text(jQuery.fn.gettext('Empty data, r-click to create new'))
                 div_wrapper.append(row)
             }else div_wrapper.find('.empty-data').remove()
 
             div_outerwrap.append(div_wrapper)
-            if (this.options['is_detail'] !== true)
-                div_outerwrap.append(htmlBtn)
             jQuery('.gantt-left').append(div_outerwrap)
             let grid_height =
                 this.options.header_height +
                 this.options.padding +
                 (this.options.bar_height + this.options.padding) *
                     tasksList.length;
-            grid_height = grid_height + 37 // 37 là number ngẫu nhiên canh chỉnh để fit vs chiều dài khung bên phải
-            div_wrapper.css({"min-width": base_width, "height": grid_height})
+            div_wrapper.css({"min-width": base_width, "height": grid_height + 60})
             jQuery('.gantt-wrap-title').css({"min-width": base_width})
             if (this.options.hasOwnProperty('init_create_btn')) this.options.init_create_btn()
 

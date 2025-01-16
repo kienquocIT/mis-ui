@@ -134,8 +134,15 @@ $(document).ready(function () {
                     $('#dateClose').val(moment(data['date_close']).format('DD/MM/YYYY'))
                         .closest('.form-group').removeClass('hidden')
 
+                $('#process_info').val(data.process?.title)
+                $('#process_stage_app_info').val(data.process_stage_app?.title)
+
                 const afterData = fGanttCustom.convert_data(data.groups, data?.['works'])
                 new_gantt.load_more(afterData)
+
+                // init load R-click menu
+                fGanttCustom.initRClickContextMenu()
+
                 ProjectTeamsHandle.render(data.members)
                 Task_in_project.init(data)
                 ProjectWorkExpenseHandle.init(data?.['works'])

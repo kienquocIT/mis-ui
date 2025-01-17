@@ -688,6 +688,12 @@ class RecoveryLoadDataHandle {
         } else {
             RecoveryLoadDataHandle.$date.val('');
         }
+        if (data?.['customer_data']) {
+            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxCustomer, [data?.['customer_data']]);
+        }
+        if (data?.['lease_order_data']) {
+            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxLeaseOrder, [data?.['lease_order_data']]);
+        }
         RecoveryDataTableHandle.$tableDelivery.DataTable().rows.add(data?.['recovery_delivery_data']).draw();
         RecoveryLoadDataHandle.loadLineDetail();
         return true;
@@ -1205,7 +1211,7 @@ class RecoveryDataTableHandle {
                     if (data) {
                         return data;
                     }
-                    if (dataAjax && dataAjax.hasOwnProperty('warehouse_list')) return dataAjax['warehouse_list'];
+                    if (dataAjax && dataAjax.hasOwnProperty('warehouse_inventory_list')) return dataAjax['warehouse_inventory_list'];
                     return [];
                 },
             },
@@ -1216,7 +1222,7 @@ class RecoveryDataTableHandle {
                     targets: 0,
                     width: "20%",
                     render: (data, type, row) => {
-                        return `<button class="btn-collapse-app-wf btn btn-icon btn-rounded mr-1"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>`;
+                        return `<button class="btn-collapse-app-wf btn btn-icon btn-rounded mr-1"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['warehouse_data']?.['title'] ? row?.['warehouse_data']?.['title'] : ""}</b>`;
                     }
                 },
                 {
@@ -1587,12 +1593,12 @@ class RecoveryStoreDataHandle {
                 let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
                 let rowData = $row.data();
 
-                rowData['warehouse_id'] = rowData?.['id'];
-                rowData['warehouse_data'] = {
-                    'id': rowData?.['id'],
-                    'title': rowData?.['title'],
-                    'code': rowData?.['code']
-                };
+                // rowData['warehouse_id'] = rowData?.['id'];
+                // rowData['warehouse_data'] = {
+                //     'id': rowData?.['id'],
+                //     'title': rowData?.['title'],
+                //     'code': rowData?.['code']
+                // };
 
                 let recoveryEle = row.querySelector('.table-row-quantity-recovery');
                 if (recoveryEle) {

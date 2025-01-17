@@ -464,13 +464,6 @@
     >
     <input
             type="text"
-            id="data-init-product"
-            data-url="{% url "ProductForSaleListAPI" %}"
-            data-link-detail="{% url "ProductDetail" 1 %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
             id="data-init-uom"
             data-url="{% url "UnitOfMeasureListAPI" %}"
             data-method="GET"
@@ -482,23 +475,9 @@
             data-method="GET"
     >
     <input
-            type="text"
-            id="data-init-warehouse"
-            data-url="{% url "WareHouseListAPI" %}?interact=1"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-purchase-order-products"
-    >
-    <input
-            type="text"
-            id="data-submit-pr-warehouse"
-    >
-    <input
             type="text" id="url-factory"
             data-delivery="{% url 'DeliveryForRecoveryListAPI' %}"
-            data-warehouse="{% url "WareHouseListAPI" %}?interact=1"
+            data-warehouse="{% url "WareHouseForInventoryListAPI" %}?interact=1"
 
             data-md-bom="{% url 'BOMOrderListAPI' %}"
             data-md-product="{% url 'ProductForSaleListAPI' %}"

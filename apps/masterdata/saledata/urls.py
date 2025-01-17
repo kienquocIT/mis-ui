@@ -44,6 +44,7 @@ from apps.masterdata.saledata.views.warehouse import (
     WareHouseList, WareHouseListAPI, WareHouseDetailAPI, WarehouseProductAPI, WareHouseListForInventoryAdjustmentAPI,
     WareHouseCreate, WareHouseDetail, WareHouseUpdate, WarehouseGetProductsListAPI, WarehouseLotListAPI,
     WarehouseSerialListAPI, ProductWarehouseAssetList, WarehouseGetProductsListAPIForGoodsTransfer,
+    WareHouseForInventoryListAPI,
 )
 from apps.masterdata.saledata.views.meeting_config import MeetingConfigList, MeetingRoomListAPI, \
     MeetingRoomDetailAPI, MeetingZoomConfigListAPI, MeetingZoomConfigDetailAPI
@@ -285,6 +286,7 @@ urlpatterns += [
     path('warehouse-lots/api', WarehouseLotListAPI.as_view(), name='WarehouseLotListAPI'),
     path('warehouse-serials/api', WarehouseSerialListAPI.as_view(), name='WarehouseSerialListAPI'),
     path('warehouse/product-asset/list/api', ProductWarehouseAssetList.as_view(), name='ProductWarehouseAssetList'),
+    path('warehouse-for-inventory/api', WareHouseForInventoryListAPI.as_view(), name='WareHouseForInventoryListAPI'),
 ]
 # // WareHouse
 # Good receipt

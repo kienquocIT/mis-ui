@@ -467,7 +467,7 @@ class MenusCRM:
         icon='<i class="fa-solid fa-briefcase"></i>',
     )
     CHAT_3RD = MenuCommon(
-        name='Chat Third party', code='menu_chat_third_party', view_name='ChatMessengerView',
+        name='Chat Third party', code='menu_chat_third_party', view_name='Chat3rdView',
         icon='<i class="fa-solid fa-comments"></i>',
     )
 

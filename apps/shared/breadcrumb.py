@@ -455,7 +455,6 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     LEASE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Lease order'), 'LeaseOrderList')
 
     # Partnercenter
-    PARTNER_CENTER = BreadcrumbChildren(_('Partner Center'), 'HomeView')
     PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('Lists'), 'ListList')
 
 class BreadcrumbView:
@@ -1201,7 +1200,7 @@ class BreadcrumbView:
 
     # Consulting
     PARTNER_CENTER_LIST = [
-        BreadcrumbItem.PARTNER_CENTER,
+        BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.PARTNER_CENTER_LIST_PAGE
     ]
     PARTNER_CENTER_LIST_LIST_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_LIST]

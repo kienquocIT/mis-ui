@@ -10290,3 +10290,11 @@ msgstr "Gửi lại"
 #
 msgid "Send email notification this cancel"
 msgstr "Gửi email thông báo huỷ bỏ"
+
+#
+msgid "Letter of guarantee"
+msgstr "Thư bảo lãnh"
+
+#
+msgid "Deposit"
+msgstr "Đặt cọc"

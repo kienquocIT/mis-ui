@@ -131,6 +131,13 @@
                     <span class="text-muted text-decoration-underline">{% trans 'Contents' %}</span>
                     <p id="detail-meeting-text-area"></p>
                 </div>
+                <div class="col-12 mt-3">
+                        <span class="text-muted text-decoration-underline">{% trans 'Log Status' %} - {% trans 'Send Status' %}</span>
+                        <br>
+                        <span id="email-log-status" class="text-primary"></span>
+                        <span> - </span>
+                        <span id="email-send-status"></span>
+                    </div>
             {% else %}
                 <div class="col-12 mt-3">
                     <div id="detail-email-content-area" class="border rounded p-2"></div>

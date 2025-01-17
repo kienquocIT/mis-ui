@@ -1,49 +1,88 @@
-{% load i18n %}
+{% load i18n static %}
 
 <div
         class="chat-inbox-site"
         id="chat-site"
         data-url-connected-data="{% url 'MessengerConnectedAPI' %}"
 >
-    <div class="mb-3">
-        <div class="w-100 p-2 d-flex" style="justify-content: space-between">
-            <div class="site-label">
-                <p>Messenger <span class="badge badge-primary badge-sm ml-1">BETA</span></p>
-                <p class="mt-1">
-                    <span class="messenger-limit-title" style="font-size: 0.8rem;">{% trans 'Limit per hour' %}:</span>
-                    <span class="messenger-limit">
-                        <span class="messenger-limit-used">0</span> / <span class="messenger-limit-max">200</span>
-                    </span>
-                </p>
-            </div>
-            <div
-                    id="chat-site-actions"
-                    data-url-sync="{% url 'MessengerAccountSyncAPI' pk='__pk__' %}"
-                    class="d-flex"
-            >
-                <div class="site-actions-advance mr-2">
-                    <i class="fa-solid fa-spinner fa-spin-pulse text-primary" data-code="loading"></i>
-                    <a
-                            class="btn btn-icon btn-rounded btn-flush-primary btn-xs d-none"
-                            href="{% url 'MessengerConfigView' %}"
+    <div class="chat-inbox-site-sub">
+        <div class="mb-3">
+            <div class="w-100 p-2 d-flex" style="justify-content: space-between">
+                <div class="site-label">
+                    <p>Messenger <span class="badge badge-primary badge-sm ml-1">BETA</span></p>
+                    <p class="mt-1">
+                        <span class="messenger-limit-title" style="font-size: 0.8rem;">
+                            {% trans 'Limit per hour' %}:
+                        </span>
+                        <span class="messenger-limit">
+                            <span class="messenger-limit-used">0</span> / <span class="messenger-limit-max">200</span>
+                        </span>
+                    </p>
+                </div>
+                <div
+                        id="chat-site-actions"
+                        data-url-sync="{% url 'MessengerAccountSyncAPI' pk='__pk__' %}"
+                        class="d-flex"
+                >
+                    <div class="site-actions-advance mr-2">
+                        <i class="fa-solid fa-spinner fa-spin-pulse text-primary" data-code="loading"></i>
+                        <a
+                                class="btn btn-icon btn-rounded btn-flush-primary btn-xs d-none"
+                                href="{% url 'MessengerConfigView' %}"
+                        >
+                            <span class="icon">
+                                <i class="fa-solid fa-gear"></i>
+                            </span>
+                        </a>
+                    </div>
+                    <button
+                            id="btn-collapse-site"
+                            class="btn btn-primary btn-rounded btn-icon btn-xs"
                     >
-                        <span class="icon">
-                            <i class="fa-solid fa-gear"></i>
+                        <span>
+                            <span class="icon">
+                                <i class="fa-solid fa-angles-left"></i>
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <div id="messenger-chat-list"></div>
+        </div>
+        <div class="mb-3 mt-5">
+            <div class="w-100 p-2 d-flex" style="justify-content: space-between">
+                <div class="site-label">
+                    <p>Zalo <span class="badge badge-primary badge-sm ml-1">BETA</span></p>
+                </div>
+                <div
+                        id="chat-site-actions"
+                        class="d-flex"
+                >
+                    <div class="site-actions-advance mr-2">
+                        <i class="fa-solid fa-spinner fa-spin-pulse text-primary" data-code="loading"></i>
+                    </div>
+                </div>
+            </div>
+            <div id="zalo-chat-list">
+                <div class="p-3">
+                    <a
+                            href="https://oauth.zaloapp.com/v4/oa/permission?app_id=989770863593126172&redirect_uri=http%3A%2F%2Flocalhost"
+                            class="btn btn-rounded btn-outline-primary mt-1"
+                            data-bs-toggle="tooltip"
+                            title="{% trans 'Connect to Zalo' %}"
+                    >
+                        <span>
+                            <span class="icon">
+                                <img
+                                        style="width: 20px; height: 20px;"
+                                        src="{% static 'chat3rd/icon/icons8-zalo-48.png' %}" alt=""
+                                >
+                            </span>
+                            <span class="no-transform">{% trans 'Connect to Zalo' %}</span>
                         </span>
                     </a>
                 </div>
-                <button
-                        id="btn-collapse-site"
-                        class="btn btn-primary btn-rounded btn-icon btn-xs"
-                >
-                    <span>
-                        <span class="icon">
-                            <i class="fa-solid fa-angles-left"></i>
-                        </span>
-                    </span>
-                </button>
             </div>
         </div>
-        <div id="messenger-chat-list"></div>
     </div>
 </div>

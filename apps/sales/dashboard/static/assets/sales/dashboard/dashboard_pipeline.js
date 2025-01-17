@@ -956,12 +956,10 @@ $(document).ready(function () {
                 let month_filter = parseInt(customerActivitiesMonthEle.val())
                 let flag_month = true
                 if (month_filter !== 0) {
-                    flag_month = new Date(item?.['opportunity']?.['open_date']).getMonth() + 1 === month_filter
+                    flag_month = new Date(item?.['opportunity']?.['open_date']).getMonth() + 1 === (month_filter <= 12 ? month_filter : month_filter - 12)
                 }
-                if (
-                    flag_month &&
-                    new Date(item?.['opportunity']?.['open_date']).getFullYear() === fiscal_year_Setting
-                ) {
+                console.log(new Date(item?.['opportunity']?.['open_date']).getMonth() + 1, (month_filter <= 12 ? month_filter : month_filter - 12))
+                if (flag_month) {
                     activities_data.push({
                         'id': item?.['opportunity']['customer']['id'],
                         'title': item?.['opportunity']['customer']['title'],

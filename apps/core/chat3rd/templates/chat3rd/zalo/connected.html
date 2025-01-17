@@ -3,15 +3,14 @@
 {% block pageContent %}
     <div
             id="connect-idx"
-            data-url="{% url 'MessengerConnectedAPI' %}"
-            data-furl="http://localhost{% url 'MessengerConnected' %}"
-            data-rurl="{% url 'ChatMessengerView' %}"
+            data-url="{% url 'ZaloConnectedAPI' %}"
+            data-rurl="{% url 'Chat3rdView' %}"
             style="width: 100%; height: 100%; display: flex; justify-content: center;align-items: center;"
     >
         <div class="text-primary">
             <p class="w-100 text-center mb-5"><i class="fa-solid fa-circle-notch fa-spin fa-2xl ml-1"></i></p>
             <p style="font-size: 1.5rem">
-                {% trans 'Pairing of the selected Facebook account with the Bflow system is in progress.' %}
+                {% trans 'Pairing of the selected Zalo account with the Bflow system is in progress.' %}
             </p>
         </div>
     </div>
@@ -19,21 +18,20 @@
 
 {% block jsFooter %}
     <script>
-        $(document).ready(function (){
+        $(document).ready(function () {
             const connect$ = $('#connect-idx');
             $.fn.callAjax2({
                 'url': connect$.data('url'),
                 'method': 'POST',
                 'data': {
                     'code': $x.fn.getUrlParameter('code'),
-                    'redirect_url': connect$.data('furl'),
                 },
                 isLoading: true,
             }).then(
                 resp => {
                     console.log('resp:', resp);
                     const data = $.fn.switcherResp(resp);
-                    if (data){
+                    if (data) {
                         $.fn.notifyB({
                             'description': $.fn.gettext('Successful'),
                         }, 'success');

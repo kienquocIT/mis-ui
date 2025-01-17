@@ -6,7 +6,7 @@ class LeadActivitiesHandler{
         this.$transScript = $('#trans-script')
     }
 
-    loadInitS2($ele, data = [], dataParams = {}, customRes = {}, $modal = null, isClear = false) {
+    loadInitS2($ele, data = [], dataParams = {}, customRes = {}, $modal = null, isClear = true) {
         let opts = {
             'allowClear': isClear,
         };
@@ -216,9 +216,32 @@ class LeadActivitiesHandler{
                 }
                 $('#btn-email-cc').html('Cc ('+detail_email_cc_list.length+ ')')
                 $('#detail-email-cc').html(detail_email_cc_list);
+
+                $('#detail-email-from').html(`<a class="dropdown-item" href="#">${currentActivity['doc_data']?.['from_email']}</a>`);
+                $('#btn-email-from').text('From')
+
+                let detail_email_bcc_list = []
+                for (let item of currentActivity['doc_data']['email_bcc_list']) {
+                    detail_email_bcc_list.push(`<a class="dropdown-item" href="#">${item}</a>`);
+                }
+                $('#btn-email-bcc').html('Bcc ('+detail_email_bcc_list.length+ ')')
+                $('#detail-email-bcc').html(detail_email_bcc_list);
+
                 $('#detail-meeting-text-area').html(currentActivity['doc_data']['content'])
                 let date = $x.fn.reformatData(currentActivity['date_created'], $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY');
                 $('#offcanvas-detail-send-email #detail-date-input').html(date)
+
+                $('#email-log-status').html('Successfully')
+                console.log(currentActivity['doc_data'])
+                let sendStatusElement = ''
+                if (currentActivity['doc_data']['just_log']) {
+                    sendStatusElement = '<span class="text-danger">Logged only</span>';
+                } else {
+                    sendStatusElement = currentActivity['doc_data']['send_success']
+                        ? '<span class="text-primary">Successful</span>'
+                        : '<span class="text-danger">Failed</span>';
+                }
+                $('#email-send-status').html(sendStatusElement)
             },
             4: () => {
                 $('#form-new-meeting #detail-subject-input').html(currentActivity['doc_data']['subject'])
@@ -428,6 +451,7 @@ class LeadEmailActivitiesHandler extends LeadActivitiesHandler{
         this.$formSubmit = $('#form-new-email')
         this.$emailCCSelect = $('#email-cc-select-box')
         this.$emailToSelect = $('#email-to-select-box')
+        this.$emailBCCSelect = $('#email-bcc-select-box')
         this.$titleInput = $('#email-subject-input')
         this.$contentTextArea = $('#email-content-area')
         this.$emailLeadSelect = $('#email-lead-select')
@@ -444,6 +468,7 @@ class LeadEmailActivitiesHandler extends LeadActivitiesHandler{
             : []
         loadEmailToList(contactList)
         loadEmailCcList(contactList)
+        loadEmailBccList(contactList)
         this.loadInitS2(this.$emailLeadSelect, [this.detailLeadData])
     }
 
@@ -452,6 +477,7 @@ class LeadEmailActivitiesHandler extends LeadActivitiesHandler{
         this.form.dataForm['content'] = $('.ck-content').html()
         this.form.dataForm['email_to_list'] = this.$emailToSelect.val()
         this.form.dataForm['email_cc_list'] = this.$emailCCSelect.val()
+        this.form.dataForm['email_bcc_list'] = this.$emailBCCSelect.val()
         this.form.dataForm['just_log'] = this.$logOptionCheckbox.is(':checked')
 
         this.form.dataUrl = this.$urlScript.attr('data-email-url')
@@ -601,7 +627,7 @@ $(document).ready(function () {
     const observer = new MutationObserver((mutations)=>{
         mutations.forEach(function(mutation) {
             if(mutation.attributeName==='data-lead-detail'){
-                // console.log($(mutation.target).attr('data-lead-detail'))
+                console.log($(mutation.target).attr('data-lead-detail'))
 
                 const leadActivitiesHandlerObj = new LeadActivitiesHandler()
                 leadActivitiesHandlerObj.fetchActivityListData()

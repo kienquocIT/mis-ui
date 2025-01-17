@@ -79,7 +79,7 @@ class ResultList(View):
         auth_require=True,
         template='sales/partnercenter/list/result_list.html',
         menu_active='menu_partner_center_lists',
-        breadcrumb='PARTNER_CENTER_LIST_LIST_PAGE',
+        breadcrumb='HOME_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         return {

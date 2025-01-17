@@ -371,7 +371,7 @@ class QuotationLoadDataHandle {
         let month = String(currentDate.getMonth() + 1).padStart(2, '0');
         let year = currentDate.getFullYear();
         let formattedDate = `${day}/${month}/${year}`;
-        $('#quotation-create-date-created').val(formattedDate)
+        $('#quotation-create-date-created').val(formattedDate);
     };
 
     static loadBoxQuotationPrice() {
@@ -1405,74 +1405,9 @@ class QuotationLoadDataHandle {
             'value_before_tax': 0,
             'is_ar_invoice': false,
         };
-        let newRow = QuotationDataTableHandle.$tablePayment.DataTable().row.add(dataAdd).draw().node();
-        if (newRow) {
-            // load datePicker
-            let eleDate = newRow.querySelector('.table-row-date');
-            if (eleDate) {
-                $(eleDate).daterangepicker({
-                    singleDatePicker: true,
-                    timepicker: false,
-                    showDropdowns: false,
-                    minYear: 2023,
-                    locale: {
-                        format: 'DD/MM/YYYY'
-                    },
-                    maxYear: parseInt(moment().format('YYYY'), 10),
-                    drops: 'up',
-                    autoApply: true,
-                });
-                $(eleDate).val(null).trigger('change');
-            }
-            let eleDueDate = newRow.querySelector('.table-row-due-date');
-            if (eleDueDate) {
-                $(eleDueDate).daterangepicker({
-                    singleDatePicker: true,
-                    timepicker: false,
-                    showDropdowns: false,
-                    minYear: 2023,
-                    locale: {
-                        format: 'DD/MM/YYYY'
-                    },
-                    maxYear: parseInt(moment().format('YYYY'), 10),
-                    drops: 'up',
-                    autoApply: true,
-                });
-                $(eleDueDate).val(null).trigger('change');
-            }
-            // installment
-            let term = [];
-            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-                if (dataSelected) {
-                    term = dataSelected?.['term'];
-                    for (let termData of term) {
-                        let isNum = parseFloat(termData?.['value']);
-                        if (!isNum) {  // balance
-                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
-                        }
-                    }
-                }
-            }
-            let eleInstallment = newRow.querySelector('.table-row-installment');
-            if (eleInstallment) {
-                QuotationLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
-                $(eleInstallment).val('').trigger('change');
-            }
-            // issue invoice
-            let count = QuotationDataTableHandle.$tablePayment.DataTable().data().count();
-            let dataIssue = [{'id': '', 'title': 'Select...',}];
-            for (let i = 1; i <= count; i++) {
-                let add = {'id': String(i), 'title': String(i)};
-                dataIssue.push(add);
-            }
-            let eleIssueInvoice = newRow.querySelector('.table-row-issue-invoice');
-            if (eleIssueInvoice) {
-                QuotationLoadDataHandle.loadInitS2($(eleIssueInvoice), dataIssue, {}, null, true);
-            }
-            // mask money
-            $.fn.initMaskMoney2();
-        }
+        QuotationDataTableHandle.$tablePayment.DataTable().row.add(dataAdd).draw().node();
+        // mask money
+        $.fn.initMaskMoney2();
         return true;
     };
 
@@ -4043,6 +3978,8 @@ class QuotationDataTableHandle {
             rowCallback: function (row, data, index) {
                 let installmentEle = row.querySelector('.table-row-installment');
                 let issueInvoiceEle = row.querySelector('.table-row-issue-invoice');
+                let dateEle = row.querySelector('.table-row-date');
+                let dueDateEle = row.querySelector('.table-row-due-date');
                 if (installmentEle) {
                     let term = [];
                     if (QuotationLoadDataHandle.paymentSelectEle.val()) {
@@ -4061,6 +3998,42 @@ class QuotationDataTableHandle {
                     QuotationLoadDataHandle.loadInitS2($(installmentEle), term, {}, null, true);
                     if (data?.['term_id']) {
                         $(installmentEle).val(data?.['term_id']).trigger('change');
+                    }
+                }
+                if (dateEle) {
+                    $(dateEle).daterangepicker({
+                        singleDatePicker: true,
+                        timepicker: false,
+                        showDropdowns: false,
+                        minYear: 2023,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        },
+                        maxYear: parseInt(moment().format('YYYY'), 10),
+                        drops: 'up',
+                        autoApply: true,
+                    });
+                    $(dateEle).val(null).trigger('change');
+                    if (data?.['date']) {
+                        $(dateEle).val(moment(data?.['date']).format('DD/MM/YYYY'));
+                    }
+                }
+                if (dueDateEle) {
+                    $(dueDateEle).daterangepicker({
+                        singleDatePicker: true,
+                        timepicker: false,
+                        showDropdowns: false,
+                        minYear: 2023,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        },
+                        maxYear: parseInt(moment().format('YYYY'), 10),
+                        drops: 'up',
+                        autoApply: true,
+                    });
+                    $(dueDateEle).val(null).trigger('change');
+                    if (data?.['due_date']) {
+                        $(dueDateEle).val(moment(data?.['due_date']).format('DD/MM/YYYY'));
                     }
                 }
                 if (issueInvoiceEle) {
@@ -4284,6 +4257,7 @@ class QuotationDataTableHandle {
                 );
                 // Select the appended button from the DOM and attach the event listener
                 $('#btn-add-payment-stage').on('click', function () {
+                    QuotationStoreDataHandle.storeDtbData(4);
                     QuotationLoadDataHandle.loadAddPaymentStage();
                 });
             }

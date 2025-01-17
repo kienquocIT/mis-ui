@@ -2360,6 +2360,10 @@ msgid "Select Sale Person"
 msgstr "Nhân viên kinh doanh"
 
 #
+msgid "Select Sale Person (Beneficiary)"
+msgstr "Nhân viên kinh doanh (Người thụ hưởng)"
+
+#
 msgid "Sale person of quotation"
 msgstr "Người bán hàng của báo giá"
 
@@ -5955,6 +5959,10 @@ msgstr "Yêu cầu báo giá mua hàng"
 #
 msgid "Lead time"
 msgstr "Thời gian chuẩn bị"
+
+#
+msgid "from"
+msgstr "từ"
 
 #
 msgid "to"
@@ -10248,12 +10256,24 @@ msgid "Select reference unit (if null) for this group to apply the ratio"
 msgstr "Gán đơn vị tham chiếu (nếu chưa có) để áp dụng tỉ lệ"
 
 #
+msgid "Logged"
+msgstr "Đã ghi lại"
+
+#
 msgid "Just log"
-msgstr "Chỉ ghi nhận"
+msgstr "Chỉ ghi lại"
+
+#
+msgid "Sent successfully"
+msgstr "Gửi thành công"
+
+#
+msgid "Send failed"
+msgstr "Gửi thất bại"
 
 #
 msgid "If checked, just log, not send email"
-msgstr "Nếu chọn, chỉ ghi nhận, không gửi email"
+msgstr "Nếu chọn, chỉ ghi lại, không gửi email"
 
 #
 msgid "Send email notification now"
@@ -10261,4 +10281,12 @@ msgstr "Gửi email thông báo ngay"
 
 #
 msgid "If not checked, just log this meeting"
-msgstr "Nếu không chọn, chỉ ghi nhận cuộc họp này"
+msgstr "Nếu không chọn, chỉ ghi lại cuộc họp này"
+
+#
+msgid "Resend"
+msgstr "Gửi lại"
+
+#
+msgid "Send email notification this cancel"
+msgstr "Gửi email thông báo huỷ bỏ"

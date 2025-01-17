@@ -144,6 +144,30 @@ $(function () {
 
 
 
+        RecoveryDataTableHandle.$tableProduct.on('click', '.btn-depreciation-detail', function () {
+            RecoveryLoadDataHandle.loadShowModalDepreciation(this);
+        });
+
+        RecoveryLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment', function () {
+            if (this.classList.contains('depreciation-method')) {
+                let $adjustEle = $('#depreciation_adjustment');
+                if ($adjustEle.length > 0) {
+                    $adjustEle.attr('readonly', 'true');
+                    if ($(this).val() === '1') {
+                        $adjustEle.removeAttr('readonly');
+                    }
+                }
+            }
+
+            RecoveryLoadDataHandle.loadDataTableDepreciation();
+        });
+
+        RecoveryLoadDataHandle.$btnSaveDepreciation.on('click', function () {
+            RecoveryLoadDataHandle.loadSaveDepreciation();
+        });
+
+
+
 
 
 

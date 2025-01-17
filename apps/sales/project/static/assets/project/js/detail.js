@@ -81,6 +81,9 @@ $(document).ready(function () {
                 const afterData = fGanttCustom.convert_data(group, work);
                 new_gantt.load_more(afterData)
 
+                $('#process_info').val(project.process?.title)
+                $('#process_stage_app_info').val(project.process_stage_app?.title)
+
                 ProjectTeamsHandle.render(project.members, true)
                 Task_in_project.init(project)
                 ProjectWorkExpenseHandle.init(work)
@@ -118,6 +121,11 @@ $(document).ready(function () {
         let mode = $(this).attr('data-value')
         new_gantt.change_view_mode(mode)
     })
+
+    if (typeof dragElement === "function")
+        $('.init_drag_modal').each(function(){
+            dragElement($(this)[0])
+        })
 
     // tab human report
     let tabReport = new TaskReport()

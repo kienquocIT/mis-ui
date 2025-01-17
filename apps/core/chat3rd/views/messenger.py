@@ -6,19 +6,6 @@ from apps.shared import mask_view, ServerAPI, TypeCheck, LEAD_STATUS
 from apps.shared.apis import RespData
 
 
-class ChatMessengerView(View):
-    @mask_view(
-        login_require=True,
-        is_api=False,
-        template='chat3rd/list.html',
-        jsi18n='chat3rd',
-    )
-    def get(self, request, *args, **kwargs):
-        return [{
-            'lead_status': LEAD_STATUS,
-        }, status.HTTP_200_OK]
-
-
 class ChatMessengerLimitAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
@@ -31,7 +18,7 @@ class MessengerConnected(View):
     @mask_view(
         login_require=True,
         is_api=False,
-        template='chat3rd/connected.html',
+        template='chat3rd/messenger/connected.html',
     )
     def get(self, request, *args, **kwargs):
         uri = request.GET.get('uri', '')

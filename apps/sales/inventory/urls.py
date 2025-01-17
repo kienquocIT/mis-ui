@@ -27,7 +27,8 @@ from apps.sales.inventory.views import (
     WorkOrderListAPIForGIS, WorkOrderDetailAPIForGIS, GoodsIssueProductListAPI,
     GoodsDetailListImportDBAPI, GoodsDetailSerialDataAPI
 )
-from apps.sales.inventory.views.goods_recovery import GoodsRecoveryCreate, GoodsRecoveryList, GoodsRecoveryListAPI
+from apps.sales.inventory.views.goods_recovery import GoodsRecoveryCreate, GoodsRecoveryList, GoodsRecoveryListAPI, \
+    GoodsRecoveryDetail, GoodsRecoveryDetailAPI, GoodsRecoveryUpdate
 
 urlpatterns = [
     # good receipt
@@ -41,9 +42,9 @@ urlpatterns = [
     path('goods-recovery/list', GoodsRecoveryList.as_view(), name='GoodsRecoveryList'),
     path('goods-recovery/api/list', GoodsRecoveryListAPI.as_view(), name='GoodsRecoveryListAPI'),
     path('goods-recovery/create', GoodsRecoveryCreate.as_view(), name='GoodsRecoveryCreate'),
-    # path('goods-recovery/detail/<str:pk>', GoodsReceiptDetail.as_view(), name='GoodsReceiptDetail'),
-    # path('goods-recovery/detail-api/<str:pk>', GoodsReceiptDetailAPI.as_view(), name='GoodsReceiptDetailAPI'),
-    # path('goods-recovery/update/<str:pk>', GoodsReceiptUpdate.as_view(), name='GoodsReceiptUpdate'),
+    path('goods-recovery/detail/<str:pk>', GoodsRecoveryDetail.as_view(), name='GoodsRecoveryDetail'),
+    path('goods-recovery/detail-api/<str:pk>', GoodsRecoveryDetailAPI.as_view(), name='GoodsRecoveryDetailAPI'),
+    path('goods-recovery/update/<str:pk>', GoodsRecoveryUpdate.as_view(), name='GoodsRecoveryUpdate'),
 
     # inventory adjustment
     path('inventory-adjustment/list', InventoryAdjustmentList.as_view(), name='InventoryAdjustmentList'),

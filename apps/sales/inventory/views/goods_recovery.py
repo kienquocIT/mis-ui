@@ -68,3 +68,50 @@ class GoodsRecoveryListAPI(APIView):
             url=ApiURL.GOODS_RECOVERY_LIST,
             msg=SaleMsg.GOODS_RECOVERY_CREATE
         )
+
+
+class GoodsRecoveryDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/inventory/goodsrecovery/goods_recovery_detail.html',
+        menu_active='menu_sale_order_list',
+        breadcrumb='LEASE_ORDER_DETAIL_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class GoodsRecoveryUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/inventory/goodsrecovery/goods_recovery_update.html',
+        breadcrumb='LEASE_ORDER_UPDATE_PAGE',
+        menu_active='menu_sale_order_list',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class GoodsRecoveryDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RECOVERY_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update_goods_recovery(
+            request=request,
+            url=ApiURL.GOODS_RECOVERY_DETAIL,
+            pk=pk,
+            msg=SaleMsg.GOODS_RECOVERY_UPDATE
+        )

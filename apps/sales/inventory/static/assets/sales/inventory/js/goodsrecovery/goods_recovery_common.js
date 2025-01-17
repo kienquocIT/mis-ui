@@ -480,9 +480,18 @@ class RecoveryLoadDataHandle {
         let $endEle = $('#depreciation_end_date');
         let $costEle = $('#cost_price');
         let $adjustEle = $('#depreciation_adjustment');
-        if ($methodEle.length > 0 && $timeEle.length > 0 && $startEle.length > 0 && $endEle.length > 0 && $costEle.length > 0 && $adjustEle.length > 0) {
+        let $radioSaleEle = $('#depreciation_for_sale');
+        let $radioFinanceEle = $('#depreciation_for_finance');
+        if ($methodEle.length > 0 && $timeEle.length > 0 && $startEle.length > 0 && $endEle.length > 0 && $costEle.length > 0 && $adjustEle.length > 0 && $radioSaleEle.length > 0 && $radioFinanceEle.length > 0) {
             if ($methodEle.val() && $timeEle.val() && $startEle.val() && $endEle.val() && $costEle.valCurrency()) {
-                let data = RecoveryLoadDataHandle.generateDateRangeWithDepreciation(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
+                // let data = RecoveryLoadDataHandle.generateDateRangeWithDepreciation(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
+                let data = [];
+                if ($radioSaleEle[0].checked === true) {
+                    data = RecoveryLoadDataHandle.generateDateRangeWithDepreciation(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
+                }
+                if ($radioFinanceEle[0].checked === true) {
+                    // data = RecoveryLoadDataHandle.generateDateRangeWithDepreciationFinance(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
+                }
 
                 $('#depreciation_spinner').removeAttr('hidden');
                 RecoveryDataTableHandle.$tableDepreciationDetail.attr('hidden', 'true');
@@ -672,50 +681,15 @@ class RecoveryLoadDataHandle {
 
     // LOAD DETAIL
     static loadDetailPage(data) {
-        $('#good-receipt-title').val(data?.['title']);
-        $('#good-receipt-note').val(data?.['remarks']);
-        if (data?.['date_received']) {
-            $('#good-receipt-date-received').val(moment(data?.['date_received']).format('DD/MM/YYYY'));
+        $('#title').val(data?.['title']);
+        $('#remark').val(data?.['remark']);
+        if (data?.['date_recovery']) {
+            RecoveryLoadDataHandle.$date.val(moment(data?.['date_recovery']).format('DD/MM/YYYY'));
         } else {
-            $('#good-receipt-date-received').val('');
+            RecoveryLoadDataHandle.$date.val('');
         }
-        let type_data = {
-            '1': RecoveryLoadDataHandle.transEle.attr('data-for-po'),
-            '2': RecoveryLoadDataHandle.transEle.attr('data-for-ia'),
-            '3': RecoveryLoadDataHandle.transEle.attr('data-for-production'),
-        }
-        let idAreaShow = String(data?.['goods_receipt_type'] + 1);
-        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.typeSelectEle, RecoveryLoadDataHandle.dataTypeGr);
-        RecoveryLoadDataHandle.typeSelectEle.val(idAreaShow);
-        let boxRender = $('#good-receipt-type-area')[0]?.querySelector('.select2-selection__rendered');
-        if (boxRender) {
-            boxRender.innerHTML = type_data[idAreaShow];
-            boxRender.setAttribute('title', type_data[idAreaShow]);
-        }
-        RecoveryLoadDataHandle.loadCustomAreaByType();
-        if (idAreaShow === '1') {  // GR for PO
-            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.POSelectEle, [data?.['purchase_order_data']], {'receipt_status__in': [0, 1, 2].join(','), 'system_status': 3});
-            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.supplierSelectEle, [data?.['supplier_data']]);
-            RecoveryLoadDataHandle.loadDataShowPR(data?.['purchase_requests']);
-        }
-        if (idAreaShow === '2') {  // GR for IA
-            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.IASelectEle, [data?.['inventory_adjustment_data']], {'state': 2});
-        }
-        if (idAreaShow === '3') {  // GR for Production
-            if (data?.['production_report_type'] === 0) {
-                RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxProductionOrder, [data?.['production_order_data']], {'system_status': 3});
-            }
-            if (data?.['production_report_type'] === 1) {
-                RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxWorkOrder, [data?.['work_order_data']], {'system_status': 3});
-            }
-            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxProductionReport, data?.['production_reports_data']);
-        }
-        RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(data?.['gr_products_data']).draw();
-        RecoveryLoadDataHandle.loadDataRowTable(RecoveryDataTableHandle.$tableProduct);
-        if (RecoveryLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            RecoveryLoadDataHandle.loadTableDisabled(RecoveryDataTableHandle.$tableProduct);
-        }
-        RecoveryLoadDataHandle.loadDetailProducts(data);
+        RecoveryDataTableHandle.$tableDelivery.DataTable().rows.add(data?.['recovery_delivery_data']).draw();
+        RecoveryLoadDataHandle.loadLineDetail();
         return true;
     };
 
@@ -1128,10 +1102,10 @@ class RecoveryDataTableHandle {
                                     <input 
                                         type="radio" 
                                         class="form-check-input table-row-checkbox" 
-                                        id="delivery-${row?.['id'].replace(/-/g, "")}"
-                                        data-id="${row?.['id']}"
+                                        id="delivery-${row?.['delivery_data']?.['id'].replace(/-/g, "")}"
+                                        data-id="${row?.['delivery_data']?.['id']}"
                                     >
-                                    <label class="form-check-label table-row-item" for="delivery-${row?.['id'].replace(/-/g, "")}">${row?.['code']}</label>
+                                    <label class="form-check-label table-row-item" for="delivery-${row?.['delivery_data']?.['id'].replace(/-/g, "")}">${row?.['delivery_data']?.['code']}</label>
                                 </div>`;
                     }
                 },
@@ -1139,8 +1113,8 @@ class RecoveryDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         let date = '';
-                        if (row?.['date_created']) {
-                            date = moment(row?.['date_created']).format('DD/MM/YYYY');
+                        if (row?.['delivery_data']?.['actual_delivery_date']) {
+                            date = moment(row?.['delivery_data']?.['actual_delivery_date']).format('DD/MM/YYYY');
                         }
                         return `<span type="text" class="table-row-date">${date}</span>`;
                     }
@@ -1568,6 +1542,12 @@ class RecoveryCalculateHandle {
             $(eleTaxAmount).attr('value', String(taxAmount));
             eleTaxAmountRaw.value = taxAmount;
         }
+        let depreciationSubtotalEle = row.querySelector('.table-row-depreciation-subtotal');
+        if (depreciationSubtotalEle) {
+            if ($(depreciationSubtotalEle).val()) {
+                subtotal = parseFloat($(depreciationSubtotalEle).val());
+            }
+        }
         // set subtotal value
         let eleSubtotal = row.querySelector('.table-row-subtotal');
         let eleSubtotalRaw = row.querySelector('.table-row-subtotal-raw');
@@ -1703,11 +1683,11 @@ class RecoveryStoreDataHandle {
             let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
             let rowData = $row.data();
 
-            rowData['delivery_id'] = rowData?.['id'];
-            rowData['delivery_data'] = {
-                'id': rowData?.['id'],
-                'code': rowData?.['code']
-            };
+            // rowData['delivery_id'] = rowData?.['id'];
+            // rowData['delivery_data'] = {
+            //     'id': rowData?.['id'],
+            //     'code': rowData?.['code']
+            // };
 
             let checked = row.querySelector('.table-row-checkbox:checked');
             if (checked) {

@@ -40,12 +40,6 @@
 {% endblock %}
 
 {% block pageContent %}
-    <script hidden id="direct-btn-group-url"
-        data-url-list-api="{% url 'GoodsReceiptListAPI' %}"
-        data-url-create="{% url 'GoodsReceiptCreate' %}"
-        data-url-detail="{% url 'GoodsReceiptDetail' '0' %}"
-        data-key-return="goods_receipt_list"
-    ></script>
     <form
             data-url="{% url 'GoodsRecoveryListAPI' %}"
             data-url-redirect="{% url 'GoodsRecoveryList' %}"
@@ -90,7 +84,7 @@
                                 data-link-detail=""
                                 name="status"
                                 data-keyResp=""
-                                disabled
+                                readonly
                             ></select>
                         </div>
                     </div>
@@ -379,6 +373,18 @@
                                     <div class="form-group">
                                         <label class="form-label" for="depreciation_adjustment">{% trans 'Adjustment factor' %}</label>
                                         <input type="text" class="form-control depreciation-adjustment" id="depreciation_adjustment" value="1" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="d-flex justify-content-start">
+                                    <div class="form-check form-check-lg mr-4">
+                                        <input type="radio" class="form-check-input depreciation-for-sale" id="depreciation_for_sale" checked>
+                                        <label class="form-check-label table-row-title" for="depreciation_for_sale">Sale</label>
+                                    </div>
+                                    <div class="form-check form-check-lg">
+                                        <input type="radio" class="form-check-input depreciation-for-finance" id="depreciation_for_finance">
+                                        <label class="form-check-label table-row-title" for="depreciation_for_finance">Finance</label>
                                     </div>
                                 </div>
                             </div>

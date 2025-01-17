@@ -1,11 +1,9 @@
 $(function () {
 
     $(document).ready(function () {
-        let $form = $('#frm_lease_create');
-
         // call ajax get info lease detail
         $.fn.callAjax2({
-            url: $form.data('url'),
+            url: LeaseOrderLoadDataHandle.$form.data('url'),
             method: 'GET',
             isLoading: true,
         }).then(
@@ -27,7 +25,7 @@ $(function () {
                     WFRTControl.setWFInitialData(appCode);
 
                     // init diagram
-                    if ($form[0].classList.contains('sale-order')) {
+                    if (LeaseOrderLoadDataHandle.$form[0].classList.contains('sale-order')) {
                         DiagramControl.setBtnDiagram('leaseorder.leaseorder');
                     }
 

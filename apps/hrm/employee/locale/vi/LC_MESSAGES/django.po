@@ -201,3 +201,7 @@ msgstr "tải lên tệp lên Đám Mây"
 #
 msgid "Sign a contract"
 msgstr "Ký hợp đồng"
+
+#
+msgid "Contract request signing successfully"
+msgstr "Gửi yêu cầu ký hợp đồng thành công"

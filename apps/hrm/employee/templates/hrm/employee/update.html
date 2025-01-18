@@ -6,8 +6,8 @@
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/contextMenu/jquery.contextMenu.min.css' %}" rel="stylesheet" type="text/css"/>
 
-    <link href="{% static 'assets/core/contract-template/css/online_signature.css' %}" rel="stylesheet"
-          type="text/css"/>
+{#    <link href="{% static 'assets/core/contract-template/css/online_signature.css' %}" rel="stylesheet"#}
+{#          type="text/css"/>#}
     <link rel="stylesheet" href="{% static 'assets/hrm/css/common.css' %}">
 {% endblock %}
 {% block pageAction %}
@@ -340,7 +340,7 @@
     </form>
 {% endblock %}
 {% block modalData %}
-    {% include 'online_signature/online-sign.html' with navigation=True is_edit=True %}
+{#    {% include 'online_signature/online-sign.html' with navigation=True is_edit=True %}#}
 {% endblock %}
 {% block dataHiddenGroup %}
     {{ data.template_list|json_script:'template_list' }}
@@ -352,12 +352,8 @@
     {% endif %}
     <script src="{% static 'vendors/fabric/index.min.js' %}"></script>
     <script src="{% static 'vendors/contextMenu/jquery.contextMenu.min.js' %}"></script>
-    <script src="{% static 'vendors/contextMenu/jquery.ui.position.min.js' %}"></script>
 
-
-    <script src="{% static 'assets/hrm/js/extend/contract_editor.js' %}"></script>
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
-    <script src="{% static 'assets/online_sign/js/online_signature_common.js' %}"></script>
 
     <script src="{% static 'assets/hrm/js/update.js' %}"></script>
 {% endblock %}

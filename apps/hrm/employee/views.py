@@ -166,7 +166,7 @@ class HRMEmployeeUpdateAPI(APIView):
         return resp.auto_return()
 
 
-# ############## CONTRACT ##############
+# ############## API FOR TAB CONTRACT ##############
 class HRMEmployeeContractList(APIView):
     @mask_view(
         auth_require=True,
@@ -207,5 +207,19 @@ class HRMSignatureAttachmentUpdateAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.HRM_EMPLOYEE_SIGNATURE_UPDATE.fill_key(pk=pk)).put(request.data)
         if resp.state:
             resp.result['message'] = f'{HRMMsg.HRM_EMPLOYEE_INFO} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+# ########## RUNTIME REQUEST SIGNATURE #########
+class HRMRuntimeSignatureAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.HRM_CONTRACT_RUNTIME).post(request.data)
+        if resp.state:
+            resp.result['message'] = HRMMsg.HRM_REQUEST_SIGNING
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()

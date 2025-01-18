@@ -6,6 +6,8 @@ class PrepareSign {
 
         $ModalElm.on('shown.bs.modal', function(){
             const data = tinymce.activeEditor.getContent()
+
+            // key sign_key and show on to popup to assign employee signing
             let matches = data.match(/{{(.*?)}}/g);
             if (matches) {
                 matches = matches.map(function (item) {
@@ -57,25 +59,29 @@ class PrepareSign {
                     return false
                 }
                 data_form.csrfmiddlewaretoken = $('#frm_employee_hrm input[name="csrfmiddlewaretoken"]').val()
-                // todo here đang check đến đây
-
-                $.fn.callAjax2({
-                    url: $('#url-factory').attr('data-contract-sign'),
-                    method: 'POST',
-                    isLoading: true,
-                    sweetAlertOpts: {
-                        'allowOutsideClick': true,
-                        'showCancelButton': true
-                    },
-                    data: data_form
-                }).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: data.message}, 'success');
-                        $('#modal_prepare_sign').modal('hide');
-                        $('.request_sign').addClass('hidden');
-                    }
-                });
+                console.log('data_form', data_form)
+                // todo here đang làm đến đây
+                // check bấm nút trình ký thì gửi data về API
+                // $.fn.callAjax2({
+                //     url: $('#url-factory').attr('data-contract-sign'),
+                //     method: 'POST',
+                //     isLoading: true,
+                //     sweetAlertOpts: {
+                //         'allowOutsideClick': true,
+                //         'showCancelButton': true
+                //     },
+                //     data: data_form
+                // }).then((resp) => {
+                //     let data = $.fn.switcherResp(resp);
+                //     if (data) {
+                //         $.fn.notifyB({description: data.message}, 'success');
+                //         $('#modal_prepare_sign').modal('hide');
+                //         $('.request_sign').addClass('hidden');
+                //     }
+                // },
+                //     (error) =>{
+                //         $.fn.notifyB({description: error.data.errors}, 'failure');
+                //     });
             })
         })
     }

@@ -5720,6 +5720,13 @@ class PersonControl {
         }
         return default_val;
     }
+
+    static combineName(firstName, lastName) {
+        let firstPart = firstName.trim();
+        let lastPart = lastName.trim();
+        // Combine full name
+        return `${firstPart} ${lastPart}`;
+    }
 }
 
 class DocumentControl {

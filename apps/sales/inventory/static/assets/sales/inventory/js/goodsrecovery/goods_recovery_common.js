@@ -131,60 +131,6 @@ class RecoveryLoadDataHandle {
         return true;
     };
 
-    static loadDataRow(row, $table) {
-        // mask money
-        $.fn.initMaskMoney2();
-        let rowIndex = $table.DataTable().row(row).index();
-        let $row = $table.DataTable().row(rowIndex);
-        let dataStore = $row.data();
-        if (row.querySelector('.table-row-item')) {
-            if (dataStore?.['product_data']?.['id']) {
-                RecoveryLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataStore?.['product_data']]);
-                if (RecoveryLoadDataHandle.typeSelectEle.val() === '3') {
-                    if (row.querySelector('.table-row-price')) {
-                        // call ajax check BOM
-                        $.fn.callAjax2({
-                                'url': RecoveryLoadDataHandle.urlEle.attr('data-md-bom'),
-                                'method': 'GET',
-                                'data': {
-                                    'product_id': dataStore?.['product_data']?.['id'],
-                                },
-                                'isDropdown': true,
-                            }
-                        ).then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    if (data.hasOwnProperty('bom_order_list') && Array.isArray(data.bom_order_list)) {
-                                        let elePrice = row.querySelector('.table-row-price');
-                                        if (data.bom_order_list.length > 0) {
-                                            if (elePrice) {
-                                                elePrice.setAttribute('disabled', 'true');
-                                                $(elePrice).attr('value', String(data.bom_order_list[0]?.['sum_price']));
-                                                $.fn.initMaskMoney2();
-                                                RecoveryCalculateHandle.calculateMain(RecoveryDataTableHandle.$tableProduct, row);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        )
-                    }
-                }
-            }
-        }
-        if (row.querySelector('.table-row-uom')) {
-            RecoveryLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataStore?.['uom_data']], {'group': dataStore?.['uom_data']?.['uom_group']?.['id']});
-        }
-        if (row.querySelector('.table-row-tax')) {
-            RecoveryLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataStore?.['tax_data']]);
-        }
-        if (row.querySelector('.table-row-warehouse')) {
-            RecoveryLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataStore?.['product_warehouse_data']]);
-        }
-        return true;
-    };
-
     static loadCssToDtb(tableID) {
         let tableIDWrapper = tableID + '_wrapper';
         let tableWrapper = document.getElementById(tableIDWrapper);

@@ -4581,7 +4581,7 @@ class DTBControl {
 
         // append filter search class form-control-sm
         filterEle.addClass('mr-1');
-        filterEle.find('input[type="search"]'); // .addClass('form-control w-200p');
+        filterEle.find('input[type="text"]'); // .addClass('form-control w-200p');
 
         // handle sort
         let preKeyVisible = settings.aoHeader[0].map((item) => {
@@ -5218,7 +5218,6 @@ class DTBControl {
             enableSortColumns: true,
             enableFilterCustom: true,
             enableTools: true,
-
             // scrollY: '400px',
             // scrollCollapse: true,
             // fixedHeader: true,
@@ -5234,7 +5233,7 @@ class DTBControl {
             lengthMenu: [
                 [5, 10, 25, 50, -1], [5, 10, 25, 50, $.fn.transEle.attr('data-all')],
             ],
-            pageLength: 5,
+            pageLength: 10,
             ...domOpts,
             columns: this.columns,
             rowCallback: this.mergeRowCallback,

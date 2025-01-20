@@ -4169,7 +4169,7 @@ class QuotationDataTableHandle {
                 if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                     dataZone = "sale_order_products_data";
                 }
-                let $group = $(`<button type="button" class="btn btn-outline-secondary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -4215,7 +4215,7 @@ class QuotationDataTableHandle {
                 if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                     dataZone = "sale_order_expenses_data";
                 }
-                let $group = $(`<button type="button" class="btn btn-outline-secondary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -4249,7 +4249,7 @@ class QuotationDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-payment-stage').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-add-payment-stage" data-zone="sale_order_payment_stage">
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="sale_order_payment_stage">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(

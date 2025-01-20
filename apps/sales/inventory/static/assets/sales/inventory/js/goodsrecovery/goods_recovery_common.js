@@ -21,21 +21,7 @@ class RecoveryLoadDataHandle {
         1: RecoveryLoadDataHandle.transEle.attr('data-asset-type-1'),
         2: RecoveryLoadDataHandle.transEle.attr('data-asset-type-2'),
         3: RecoveryLoadDataHandle.transEle.attr('data-asset-type-3'),
-    }
-    static dataTypeGr = [
-        {
-            'id': 3,
-            'title': RecoveryLoadDataHandle.transEle.attr('data-for-production')
-        },
-        {
-            'id': 2,
-            'title': RecoveryLoadDataHandle.transEle.attr('data-for-ia')
-        },
-        {
-            'id': 1,
-            'title': RecoveryLoadDataHandle.transEle.attr('data-for-po')
-        },
-    ];
+    };
     static dataDepreciationMethod = [
         {'id': 0, 'title': RecoveryLoadDataHandle.transEle.attr('data-depreciation-method-1')},
         {'id': 1, 'title': RecoveryLoadDataHandle.transEle.attr('data-depreciation-method-2')},
@@ -135,21 +121,13 @@ class RecoveryLoadDataHandle {
         RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxStatus, RecoveryLoadDataHandle.dataStatus);
         RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxCustomer);
         RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxLeaseOrder);
+        RecoveryLoadDataHandle.loadEventRadio(RecoveryLoadDataHandle.$depreciationModal);
         // dtb
         RecoveryDataTableHandle.dataTableProduct();
         RecoveryDataTableHandle.dataTableDelivery();
         RecoveryDataTableHandle.dataTableDeliveryProduct();
         RecoveryDataTableHandle.dataTableWareHouse();
         RecoveryDataTableHandle.dataTableDepreciationDetail();
-        return true;
-    };
-
-    static loadDataRowTable($table) {
-        $table.DataTable().rows().every(function () {
-            let row = this.node();
-            RecoveryLoadDataHandle.loadDataRow(row, $table);
-        });
-        RecoveryCalculateHandle.calculateTable($table);
         return true;
     };
 
@@ -204,15 +182,6 @@ class RecoveryLoadDataHandle {
         if (row.querySelector('.table-row-warehouse')) {
             RecoveryLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataStore?.['product_warehouse_data']]);
         }
-        return true;
-    };
-
-    static loadClearModal() {
-        RecoveryDataTableHandle.tablePOProduct.DataTable().clear().draw();
-        RecoveryDataTableHandle.tablePR.DataTable().clear().draw();
-        $('#scroll-table-pr')[0].setAttribute('hidden', 'true');
-        RecoveryDataTableHandle.tableWH.DataTable().clear().draw();
-        $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
         return true;
     };
 
@@ -378,7 +347,11 @@ class RecoveryLoadDataHandle {
     static loadLineDetail() {
         let dataJSON = {};
         let result = [];
-        let deliveryData = RecoverySubmitHandle.setupDataDelivery();
+        // let deliveryData = RecoverySubmitHandle.setupDataDelivery();
+
+        // Make a deep copy of the delivery data
+        let deliveryData = JSON.parse(JSON.stringify(RecoverySubmitHandle.setupDataDelivery()));
+
         for (let deliData of deliveryData) {
             if (deliData?.['delivery_product_data']) {
                 for (let productData of deliData?.['delivery_product_data']) {
@@ -696,127 +669,6 @@ class RecoveryLoadDataHandle {
         }
         RecoveryDataTableHandle.$tableDelivery.DataTable().rows.add(data?.['recovery_delivery_data']).draw();
         RecoveryLoadDataHandle.loadLineDetail();
-        return true;
-    };
-
-    static loadDetailProducts(dataDetail) {
-        let dataProducts = dataDetail?.['gr_products_data'];
-        let typeGR = RecoveryLoadDataHandle.typeSelectEle.val();
-        let frm = new SetupFormSubmit(RecoveryDataTableHandle.tablePOProduct);
-        if (typeGR === '1' && RecoveryLoadDataHandle.POSelectEle.val()) {
-            $.fn.callAjax2({
-                    'url': frm.dataUrl,
-                    'method': frm.dataMethod,
-                    'data': {'purchase_order_id': RecoveryLoadDataHandle.POSelectEle.val()},
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('purchase_order_product_gr') && Array.isArray(data.purchase_order_product_gr)) {
-                            RecoveryLoadDataHandle.loadTotal(dataDetail);
-                            for (let dataPOPro of data.purchase_order_product_gr) {
-                                let isDetail = false;
-                                for (let dataProduct of dataProducts) {
-                                    if (dataProduct?.['purchase_order_product_id'] === dataPOPro?.['purchase_order_product_id']) {
-                                        dataProduct['gr_completed_quantity'] = dataPOPro?.['gr_completed_quantity'];
-                                        dataProduct['gr_remain_quantity'] = dataPOPro?.['gr_remain_quantity'];
-                                        for (let dataPOPRPro of dataPOPro?.['pr_products_data']) {
-                                            for (let dataPRProduct of dataProduct?.['pr_products_data']) {
-                                                if (dataPRProduct?.['purchase_order_request_product_id'] === dataPOPRPro?.['purchase_order_request_product_id']) {
-                                                    dataPRProduct['gr_completed_quantity'] = dataPOPRPro?.['gr_completed_quantity'];
-                                                    dataPRProduct['gr_remain_quantity'] = dataPOPRPro?.['gr_remain_quantity'];
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        isDetail = true;
-                                        break;
-                                    }
-                                }
-                                if (isDetail === false) {
-                                    dataProducts.push(dataPOPro);
-                                }
-                            }
-                            RecoveryDataTableHandle.tablePOProduct.DataTable().clear().draw();
-                            RecoveryDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
-                        }
-                    }
-                }
-            )
-        }
-        if (typeGR === '2' && RecoveryLoadDataHandle.IASelectEle.val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.IASelectEle, $(this).val());
-            for (let dataIAPro of dataSelected?.['gr_products_data']) {
-                let isDetail = false;
-                for (let dataProduct of dataProducts) {
-                    if (dataProduct?.['ia_item_id'] === dataIAPro?.['ia_item_id']) {
-                        dataProduct['gr_completed_quantity'] = dataIAPro?.['gr_completed_quantity'];
-                        dataProduct['gr_remain_quantity'] = dataIAPro?.['gr_remain_quantity'];
-                        isDetail = true;
-                        break;
-                    }
-                }
-                if (isDetail === false) {
-                    dataProducts.push(dataIAPro);
-                }
-            }
-            RecoveryDataTableHandle.tablePOProduct.DataTable().clear().draw();
-            RecoveryDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
-        }
-        if (typeGR === '3' && (RecoveryLoadDataHandle.$boxProductionOrder.val() || RecoveryLoadDataHandle.$boxWorkOrder.val())) {
-            let idList = [];
-            if (dataProducts.length > 0) {
-                for (let report of dataProducts[0]?.['pr_products_data']) {
-                    idList.push(report?.['production_report_id']);
-                }
-            }
-
-            $.fn.callAjax2({
-                    'url': RecoveryLoadDataHandle.$boxProductionReport.attr('data-url'),
-                    'method': 'GET',
-                    'data': {'id__in': idList.join(',')},
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('production_report_gr') && Array.isArray(data.production_report_gr)) {
-                            RecoveryLoadDataHandle.loadTotal(dataDetail);
-                            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxProductionReport, data.production_report_gr, {'production_order_id': RecoveryLoadDataHandle.$boxProductionOrder.val()});
-                            if (RecoveryLoadDataHandle.$boxProductionReport.val().length > 0) {
-                                let dataProductionPro = RecoveryLoadDataHandle.loadSetupProduction();
-                                let isDetail = false;
-                                for (let dataProduct of dataProducts) {
-                                    if (dataProduct?.['production_order_id'] === dataProductionPro?.['production_order_id']) {
-                                        dataProduct['gr_completed_quantity'] = dataProductionPro?.['gr_completed_quantity'];
-                                        dataProduct['gr_remain_quantity'] = dataProductionPro?.['gr_remain_quantity'];
-                                        for (let dataPOPRPro of dataProductionPro?.['pr_products_data']) {
-                                            for (let dataPRProduct of dataProduct?.['pr_products_data']) {
-                                                if (dataPRProduct?.['production_report_id'] === dataPOPRPro?.['production_report_id']) {
-                                                    dataPRProduct['gr_completed_quantity'] = dataPOPRPro?.['gr_completed_quantity'];
-                                                    dataPRProduct['gr_remain_quantity'] = dataPOPRPro?.['gr_remain_quantity'];
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        isDetail = true;
-                                        break;
-                                    }
-                                }
-                                if (isDetail === false) {
-                                    dataProducts.push(dataProductionPro);
-                                }
-                                RecoveryDataTableHandle.tablePOProduct.DataTable().clear().draw();
-                                RecoveryDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
-                            }
-                        }
-                    }
-                }
-            )
-        }
         return true;
     };
 
@@ -1443,7 +1295,7 @@ class RecoveryDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-edit-product-good-receipt').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-edit-product-good-receipt" data-bs-toggle="modal" data-bs-target="#productModalCenter">
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-edit-product-good-receipt" data-bs-toggle="modal" data-bs-target="#productModalCenter">
                                     <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>${RecoveryLoadDataHandle.transEle.attr('data-edit')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -1593,13 +1445,6 @@ class RecoveryStoreDataHandle {
                 let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
                 let rowData = $row.data();
 
-                // rowData['warehouse_id'] = rowData?.['id'];
-                // rowData['warehouse_data'] = {
-                //     'id': rowData?.['id'],
-                //     'title': rowData?.['title'],
-                //     'code': rowData?.['code']
-                // };
-
                 let recoveryEle = row.querySelector('.table-row-quantity-recovery');
                 if (recoveryEle) {
                     rowData['quantity_recovery'] = parseFloat($(recoveryEle).val());
@@ -1688,12 +1533,6 @@ class RecoveryStoreDataHandle {
             let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
             let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
             let rowData = $row.data();
-
-            // rowData['delivery_id'] = rowData?.['id'];
-            // rowData['delivery_data'] = {
-            //     'id': rowData?.['id'],
-            //     'code': rowData?.['code']
-            // };
 
             let checked = row.querySelector('.table-row-checkbox:checked');
             if (checked) {

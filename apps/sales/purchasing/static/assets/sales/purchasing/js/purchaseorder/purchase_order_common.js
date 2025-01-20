@@ -2011,7 +2011,7 @@ class PODataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-product-purchase-order').length && !$('#btn-add-shipping-purchase-order').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary" aria-expanded="false" data-bs-toggle="dropdown">
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" aria-expanded="false" data-bs-toggle="dropdown">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -2048,7 +2048,7 @@ class PODataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-po-payment-stage').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-add-po-payment-stage">
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-po-payment-stage">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(

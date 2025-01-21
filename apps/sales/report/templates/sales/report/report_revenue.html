@@ -86,6 +86,7 @@
                         </div>
                     </div>
                 </div>
+                {% include 'sales/advance_filter.html' with page='report_revenue'%}
             </div>
         </div>
     </div>
@@ -106,6 +107,7 @@
             <h5><span class="mask-money fw-bold text-primary" id="report-revenue-net-income" data-init-money="0"></span></h5>
         </div>
     </div>
+
 
     <div class="row">
         <table
@@ -132,6 +134,12 @@
     </div>
 
 {% endblock %}
+
+{% block modalData %}
+    {# application id of report revenue #}
+    {% include 'sales/advance_filter_modal.html' with app_id='c326094021ff492994fe43bc4199d38b' %}
+{% endblock %}
+
 {% block dataHiddenGroup %}
     <input
             type="text" id="app-url-factory"
@@ -139,6 +147,7 @@
             data-filter_so="{% url 'SaleOrderListAPI' %}"
             data-so-detail="{% url 'SaleOrderDetail' 1 %}"
             data-quotation-detail="{% url 'QuotationDetail' 1 %}"
+            data-app-prop-list = "{% url 'ApplicationPropertyListAPI' %}"
     >
     <input
             type="text"
@@ -158,6 +167,7 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
-
     <script src="{% static 'assets/sales/report/js/report_revenue.js' %}"></script>
+    <script src="{% static 'assets/sales/report/js/advance_filter/advance_filter_common.js' %}"></script>
+    <script src="{% static 'assets/sales/report/js/advance_filter/advance_filter_revenue.js' %}"></script>
 {% endblock %}

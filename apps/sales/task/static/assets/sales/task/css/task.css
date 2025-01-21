@@ -226,6 +226,18 @@
         box-shadow: 2px 2px 10px 4px rgb(205 205 205 / 40%);
     }
     .desktop-btn{right: 0}
+
+    .scroll_active .tasklist {
+        position: relative;
+    }
+    .scroll_active > div > .card-header.card-header-action{
+        position: fixed;
+        top: 56px;
+        z-index: 11;
+        background: #f7f7f7;
+        width: 348px;
+        transform: translateX(0px);
+    }
 }
 @media screen and (max-width: 1024px) {
     .leave-filter-wrap .sp-btn{

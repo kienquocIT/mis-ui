@@ -243,9 +243,6 @@ $(function () {
         tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-uom-time, .table-row-quantity-time, .table-row-price, .table-row-tax, .table-row-discount', function () {
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
-                if ($(this).hasClass('table-row-item')) {
-                    LeaseOrderLoadDataHandle.loadDataProductSelect($(this));
-                }
                 if ($(this).hasClass('validated-number')) {
                     validateNumber(this);
                 }

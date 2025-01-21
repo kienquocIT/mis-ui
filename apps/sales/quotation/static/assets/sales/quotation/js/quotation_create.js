@@ -239,9 +239,6 @@ $(function () {
         tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
             if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
-                if ($(this).hasClass('table-row-item')) {
-                    QuotationLoadDataHandle.loadDataProductSelect($(this));
-                }
                 if ($(this).hasClass('validated-number')) {
                     validateNumber(this);
                 }

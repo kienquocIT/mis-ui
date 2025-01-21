@@ -695,73 +695,15 @@ class QuotationLoadDataHandle {
         QuotationDataTableHandle.$tableProduct.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         // check config for new row
         QuotationCheckConfigHandle.checkConfig(1, newRow);
-        // load data dropdown
-        let eleProduct = newRow.querySelector('.table-row-item');
-        if (eleProduct) {
-            // QuotationLoadDataHandle.loadInitS2($(eleProduct), [data]);
-            QuotationLoadDataHandle.loadCssS2($(eleProduct), '260px');
-            $(eleProduct).attr('data-product-id', data?.['id']);
-        }
-        $(eleProduct).trigger('change');
+        // load default price
+        let itemEle = newRow.querySelector('.table-row-item');
+        let priceEle = newRow.querySelector('.table-row-price');
+        let lastPrice = QuotationLoadDataHandle.loadPriceProduct(itemEle);
+        $(priceEle).attr('value', String(lastPrice));
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
-        // add classes for collapse
-        let eleGroups = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-group');
-        if (eleGroups) {
-            let lastGroup = eleGroups[eleGroups.length - 1];
-            if (lastGroup) {
-                let classGroupDot = lastGroup.getAttribute('data-bs-target');
-                let dataGroupOrder = lastGroup.getAttribute('data-group-order');
-                if (classGroupDot) {
-                    let classGroup = classGroupDot.replace(".", "");
-                    newRow.classList.add('collapse');
-                    newRow.classList.add(classGroup);
-                    newRow.classList.add('show');
-                    newRow.setAttribute('data-group', dataGroupOrder);
-                }
-            }
-        }
-        return true;
-    };
+        $.fn.initMaskMoney2();
 
-    static loadDataProductSelect(ele) {
-        if (ele.val()) {
-            let productData = SelectDDControl.get_data_from_idx(ele, ele.val());
-            if (productData) {
-                let data = productData;
-                data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
-                data['uom_group'] = data?.['general_information']?.['uom_group'];
-                data['tax'] = data?.['sale_information']?.['tax_code'];
-                let description = ele[0].closest('tr').querySelector('.table-row-description');
-                let uom = ele[0].closest('tr').querySelector('.table-row-uom');
-                let price = ele[0].closest('tr').querySelector('.table-row-price');
-                let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
-                let tax = ele[0].closest('tr').querySelector('.table-row-tax');
-                // load Description
-                if (description) {
-                    description.innerHTML = data?.['description'] ? data?.['description'] : '';
-                }
-                // load UOM
-                if (uom && data?.['unit_of_measure'] && data?.['uom_group']) {
-                    $(uom).empty();
-                    QuotationLoadDataHandle.loadInitS2($(uom), [data?.['unit_of_measure']], {'group': data?.['uom_group']?.['id']});
-                } else {
-                    QuotationLoadDataHandle.loadInitS2($(uom));
-                }
-                // load PRICE
-                if (price && modalBody) {
-                    let lastPrice = QuotationLoadDataHandle.loadPriceProduct(ele[0]);
-                    $(price).attr('value', String(lastPrice));
-                }
-                // load TAX
-                if (tax && data?.['tax']) {
-                    $(tax).empty();
-                    QuotationLoadDataHandle.loadInitS2($(tax), [data?.['tax']]);
-                } else {
-                    QuotationLoadDataHandle.loadInitS2($(tax));
-                }
-            }
-            $.fn.initMaskMoney2();
-        }
+        return true;
     };
 
     static loadPriceProduct(eleProduct) {
@@ -3005,6 +2947,7 @@ class QuotationDataTableHandle {
                     }
                     QuotationLoadDataHandle.loadInitS2($(itemEle), dataS2);
                     QuotationLoadDataHandle.loadCssS2($(itemEle), '260px');
+                    $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
                     QuotationLoadDataHandle.loadPriceProduct(itemEle);
                 }
                 if (promotionEle) {
@@ -3034,6 +2977,22 @@ class QuotationDataTableHandle {
                         dataS2 = [data?.['tax_data']];
                     }
                     QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+                // add classes for collapse
+                let groupsEle = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-group');
+                if (groupsEle) {
+                    let lastGroup = groupsEle[groupsEle.length - 1];
+                    if (lastGroup) {
+                        let classGroupDot = lastGroup.getAttribute('data-bs-target');
+                        let dataGroupOrder = lastGroup.getAttribute('data-group-order');
+                        if (classGroupDot) {
+                            let classGroup = classGroupDot.replace(".", "");
+                            row.classList.add('collapse');
+                            row.classList.add(classGroup);
+                            row.classList.add('show');
+                            row.setAttribute('data-group', dataGroupOrder);
+                        }
+                    }
                 }
             },
             drawCallback: function () {
@@ -4274,7 +4233,7 @@ class QuotationDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-refresh-indicator').length) {
-                let html1 = `<button type="button" class="btn btn-outline-secondary" id="btn-refresh-indicator">${QuotationLoadDataHandle.transEle.attr('data-refresh')}</button>`;
+                let html1 = `<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-refresh-indicator">${QuotationLoadDataHandle.transEle.attr('data-refresh')}</button>`;
                 let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                 ${html1}
                             </div>`);

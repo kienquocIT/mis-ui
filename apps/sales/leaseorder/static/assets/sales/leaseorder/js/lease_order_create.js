@@ -34,6 +34,7 @@ $(function () {
         LeaseOrderDataTableHandle.dataTableSelectLeasedProduct();
         LeaseOrderDataTableHandle.dataTableProduct();
         LeaseOrderDataTableHandle.dataTableCost();
+        LeaseOrderDataTableHandle.dataTableCostLeased();
         LeaseOrderDataTableHandle.dataTableDepreciationDetail();
         LeaseOrderDataTableHandle.dataTableExpense();
         LeaseOrderDataTableHandle.dataTableSaleOrderIndicator();
@@ -323,6 +324,14 @@ $(function () {
                 LeaseOrderCalculateCaseHandle.calculate(row);
             });
             LeaseOrderCalculateCaseHandle.updateTotal(tableProduct[0])
+        });
+
+        LeaseOrderDataTableHandle.$tableSLeasedProduct.on('click', '.table-row-checkbox', function () {
+            let checkedCount = LeaseOrderDataTableHandle.$tableSLeasedProduct[0].querySelectorAll('.table-row-checkbox:checked').length;
+            let leasedEle = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-leased');
+            if (leasedEle) {
+                $(leasedEle).val(checkedCount);
+            }
         });
 
 // EXPENSE

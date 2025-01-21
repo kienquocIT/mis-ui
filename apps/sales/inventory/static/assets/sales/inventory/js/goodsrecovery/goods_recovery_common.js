@@ -615,6 +615,8 @@ class RecoveryLoadDataHandle {
         }
         RecoveryDataTableHandle.$tableDelivery.DataTable().rows.add(data?.['recovery_delivery_data']).draw();
         RecoveryLoadDataHandle.loadLineDetail();
+        RecoveryLoadDataHandle.loadTotal(data);
+
         return true;
     };
 
@@ -710,10 +712,6 @@ class RecoveryLoadDataHandle {
 
 // DataTable
 class RecoveryDataTableHandle {
-    static tablePOProduct = $('#datable-good-receipt-po-product');
-    static tablePR = $('#datable-good-receipt-purchase-request');
-    static tableWH = $('#datable-good-receipt-warehouse');
-
     static $tableProduct = $('#datable-product');
     static $tableDelivery = $('#datable-delivery');
     static $tableDeliveryProduct = $('#datable-deli-product');
@@ -868,8 +866,16 @@ class RecoveryDataTableHandle {
                 },
             ],
             rowCallback: function (row, data, index) {
+                let itemEle = row.querySelector('.table-row-item');
                 let uomEle = row.querySelector('.table-row-uom');
                 let taxEle = row.querySelector('.table-row-tax');
+                if (itemEle) {
+                    let dataS2 = [];
+                    if (data?.['product_data']) {
+                        dataS2 = [data?.['product_data']];
+                    }
+                    RecoveryLoadDataHandle.loadInitS2($(itemEle), dataS2);
+                }
                 if (uomEle) {
                     let dataS2 = [];
                     if (data?.['uom_data']) {

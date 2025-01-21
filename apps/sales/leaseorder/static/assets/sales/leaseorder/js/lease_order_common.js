@@ -488,14 +488,14 @@ class LeaseOrderLoadDataHandle {
     static loadModalSQuantity(ele) {
         let row = ele.closest('tr');
         if (row) {
-            let eleNew = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-new');
-            let eleLeased = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-leased');
-            let eleRowNew = row.querySelector('.table-row-quantity-new');
-            let eleRowLeased = row.querySelector('.table-row-quantity-leased');
-            if (eleNew && eleLeased && eleRowNew && eleRowLeased) {
-                if (eleRowNew.value && eleRowLeased.value) {
-                    $(eleNew).val(parseFloat(eleRowNew.value));
-                    $(eleLeased).val(parseFloat(eleRowLeased.value));
+            let newEle = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-new');
+            let leasedEle = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-leased');
+            let rowNewEle = row.querySelector('.table-row-quantity-new');
+            let rowLeasedEle = row.querySelector('.table-row-quantity-leased');
+            if (newEle && leasedEle && rowNewEle && rowLeasedEle) {
+                if (rowNewEle.value && rowLeasedEle.value) {
+                    $(newEle).val(parseFloat(rowNewEle.value));
+                    $(leasedEle).val(parseFloat(rowLeasedEle.value));
                 }
             }
             let offsetEle = row.querySelector('.table-row-offset');
@@ -921,25 +921,25 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadQuantity(ele) {
-        let eleNew = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-new');
-        let eleLeased = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-leased');
-        if (eleNew && eleLeased) {
-            if (eleNew.value && eleLeased.value) {
-                let quantityNew = parseFloat(eleNew.value);
-                let quantityLeased = parseFloat(eleLeased.value);
+        let newEle = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-new');
+        let leasedEle = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-leased');
+        if (newEle && leasedEle) {
+            if (newEle.value && leasedEle.value) {
+                let quantityNew = parseFloat(newEle.value);
+                let quantityLeased = parseFloat(leasedEle.value);
                 let quantity = quantityNew + quantityLeased;
                 let target = LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${$(ele).attr('data-product-id')}"]`);
                 if (target) {
                     let row = target.closest('tr');
                     if (row) {
-                        let eleQuantity = row.querySelector('.table-row-quantity');
-                        let eleQuantityNew = row.querySelector('.table-row-quantity-new');
-                        let eleQuantityLeased = row.querySelector('.table-row-quantity-leased');
-                        if (eleQuantity && eleQuantityNew && eleQuantityLeased) {
-                            $(eleQuantity).val(quantity);
-                            $(eleQuantityNew).val(quantityNew);
-                            $(eleQuantityLeased).val(quantityLeased);
-                            $(eleQuantity).trigger('change');
+                        let quantityEle = row.querySelector('.table-row-quantity');
+                        let quantityNewEle = row.querySelector('.table-row-quantity-new');
+                        let quantityLeasedEle = row.querySelector('.table-row-quantity-leased');
+                        if (quantityEle && quantityNewEle && quantityLeasedEle) {
+                            $(quantityEle).val(quantity);
+                            $(quantityNewEle).val(quantityNew);
+                            $(quantityLeasedEle).val(quantityLeased);
+                            $(quantityEle).trigger('change');
                         }
                     }
                 }
@@ -1742,7 +1742,7 @@ class LeaseOrderLoadDataHandle {
                     if (data?.['product_data']?.['id']) { // PRODUCT
                         dataProduct = data?.['product_data'] ? data?.['product_data'] : {};
                         dataUOM = data?.['uom_data'] ? data?.['uom_data'] : {};
-                        valueQuantity = data?.['product_quantity'] ? data?.['product_quantity'] : 0;
+                        valueQuantity = data?.['product_quantity_new'] ? data?.['product_quantity_new'] : 0;
                         dataUOMTime = data?.['uom_time_data'] ? data?.['uom_time_data'] : {};
                         valueQuantityTime = data?.['product_quantity_time'] ? data?.['product_quantity_time'] : 0;
                         dataTax = data?.['tax_data'] ? data?.['tax_data'] : {};
@@ -1821,7 +1821,7 @@ class LeaseOrderLoadDataHandle {
                     let dataTax = {};
                     let itemEle = row.querySelector('.table-row-item');
                     let uomEle = row.querySelector('.table-row-uom');
-                    let quantityEle = row.querySelector('.table-row-quantity');
+                    let quantityEle = row.querySelector('.table-row-quantity-new');
                     let uomTimeEle = row.querySelector('.table-row-uom-time');
                     let quantityTimeEle = row.querySelector('.table-row-quantity-time');
                     let taxEle = row.querySelector('.table-row-tax');
@@ -3225,6 +3225,7 @@ class LeaseOrderDataTableHandle {
     static $tableDepreciationDetail = $('#table-depreciation-detail');
     static $tableProduct = $('#datable-quotation-create-product');
     static $tableCost = $('#datable-quotation-create-cost');
+    static $tableCostLeased = $('#datable-quotation-create-cost-leased');
     static $tableExpense = $('#datable-quotation-create-expense');
     static $tablePayment = $('#datable-quotation-payment-stage');
 
@@ -3810,6 +3811,195 @@ class LeaseOrderDataTableHandle {
             },
             drawCallback: function () {
                 LeaseOrderDataTableHandle.dtbCostHDCustom();
+            },
+        });
+    };
+
+    static dataTableCostLeased(data) {
+        // init dataTable
+        LeaseOrderDataTableHandle.$tableCostLeased.DataTableDefault({
+            styleDom: 'hide-foot',
+            data: data ? data : [],
+            ordering: false,
+            paging: false,
+            info: false,
+            searching: false,
+            autoWidth: true,
+            scrollX: true,
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order">${row?.['order']}</span>`
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        let dataZone = "lease_costs_data";
+                        let itemType = 0  // product
+                        if (row?.['shipping_id']) {
+                            itemType = 1  // shipping
+                        }
+                        if (itemType === 0) {  // product
+                            return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" data-zone="${dataZone}" readonly>${row?.['product_data']?.['title']}</textarea>
+                                    <div class="row table-row-item-area hidden">
+                                        <div class="col-12 col-md-12 col-lg-12">
+                                            <select
+                                                class="form-select table-row-item disabled-custom-show zone-readonly"
+                                                data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-product')}"
+                                                data-method="GET"
+                                                data-keyResp="product_sale_list"
+                                                data-product-id="${row?.['product_data']?.['id']}"
+                                                data-zone="${dataZone}"
+                                                readonly
+                                            >
+                                            </select>
+                                        </div>
+                                    </div>`;
+                        } else if (itemType === 1) {  // shipping
+                            let link = "";
+                            let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
+                            if (linkDetail) {
+                                link = linkDetail.format_url_with_uuid(row?.['shipping']?.['id']);
+                            }
+                            return `<div class="table-row-shipping" data-shipping="${JSON.stringify(row?.['shipping_data']).replace(/"/g, "&quot;")}"><i class="fas fa-shipping-fast mr-2"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-shipping')}</span></div>`;
+                        }
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span></span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span></span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span></span>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        return `<span></span>`;
+                    }
+                },
+                {
+                    targets: 6,
+                    render: (data, type, row) => {
+                        return `<span></span>`;
+                    }
+                },
+                {
+                    targets: 7,
+                    render: (data, type, row) => {
+                        return `<span></span>`;
+                    }
+                },
+                {
+                    targets: 8,
+                    render: (data, type, row) => {
+                        return `<span></span>`;
+                    }
+                },
+                {
+                    targets: 9,
+                    render: (data, type, row) => {
+                        return `<span></span>`;
+                    }
+                },
+                {
+                    targets: 10,
+                    render: (data, type, row) => {
+                        let dataZone = "lease_costs_data";
+                        return `<div class="row">
+                                        <div class="input-group">
+                                            <input 
+                                                type="text" 
+                                                class="form-control table-row-depreciation-time" 
+                                                value="${row?.['product_quantity_depreciation'] ? row?.['product_quantity_depreciation'] : 0}"
+                                                data-zone="${dataZone}"
+                                            >
+                                            <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                        </div>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 11,
+                    render: (data, type, row) => {
+                        return `<span></span>`;
+                    }
+                },
+                {
+                    targets: 12,
+                    render: (data, type, row) => {
+                        let dataZone = "lease_costs_data";
+                        return `<div class="row subtotal-area">
+                                <div class="d-flex align-items-center">
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-depreciation-detail"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#viewDepreciationDetail"
+                                        data-zone="${dataZone}"
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button><p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}" data-zone="${dataZone}"></span></p>
+                                </div>
+                                <input
+                                    type="text"
+                                    class="form-control table-row-subtotal-raw"
+                                    value="${row?.['product_subtotal_price']}"
+                                    hidden
+                                >
+                                
+                                <input type="text" class="form-control table-row-depreciation-subtotal" value="${row?.['product_depreciation_subtotal'] ? row?.['product_depreciation_subtotal'] : 0}" hidden>
+                                <input type="text" class="form-control table-row-depreciation-method" value="${row?.['product_depreciation_method'] ? row?.['product_depreciation_method'] : 0}" hidden>
+                                <input type="text" class="form-control table-row-depreciation-start-date" value="${row?.['product_depreciation_start_date'] ? row?.['product_depreciation_start_date'] : ''}" hidden>
+                                <input type="text" class="form-control table-row-depreciation-end-date" value="${row?.['product_depreciation_end_date'] ? row?.['product_depreciation_end_date'] : ''}" hidden>
+                                <input type="text" class="form-control table-row-depreciation-adjustment" value="${row?.['product_depreciation_adjustment'] ? row?.['product_depreciation_adjustment'] : 1}" hidden>
+                            </div>`;
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+                let itemEle = row.querySelector('.table-row-item');
+                let uomEle = row.querySelector('.table-row-uom');
+                let uomTimeEle = row.querySelector('.table-row-uom-time');
+                if (itemEle) {
+                    let dataS2 = [];
+                    if (data?.['product_data']) {
+                        dataS2 = [data?.['product_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(itemEle), dataS2);
+                    $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
+                }
+                if (uomEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_data']) {
+                        dataS2 = [data?.['uom_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(uomEle), dataS2);
+                }
+                if (uomTimeEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_time_data']) {
+                        dataS2 = [data?.['uom_time_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(uomTimeEle), dataS2);
+                }
+                // re calculate
+                LeaseOrderCalculateCaseHandle.commonCalculate(LeaseOrderDataTableHandle.$tableCostLeased, row);
+            },
+            drawCallback: function () {
+                LeaseOrderDataTableHandle.dtbCostLeasedHDCustom();
             },
         });
     };
@@ -4705,9 +4895,8 @@ class LeaseOrderDataTableHandle {
                         if (row?.['title'] && row?.['code']) {
                             return `<div class="d-flex align-items-center ml-2">
                                         <div class="form-check form-check-lg">
-                                            <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-leased-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
-                                            <label class="form-check-label table-row-title" for="s-leased-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
-                                            <span class="badge badge-light badge-outline">${row?.['lease_code'] ? row?.['lease_code'] : ''}</span>
+                                            <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-leased-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
+                                            <label class="form-check-label table-row-title" for="s-leased-${row?.['id'].replace(/-/g, "")}">${row?.['lease_code'] ? row?.['lease_code'] : ''}</label>
                                         </div>
                                     </div>`;
                         }
@@ -4717,7 +4906,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="badge badge-light badge-outline">${row?.['code'] ? row?.['code'] : ''}</span>`;
+                        return `<span>${row?.['code'] ? row?.['code'] : ''}</span>`;
                     }
                 },
                 {
@@ -4882,6 +5071,25 @@ class LeaseOrderDataTableHandle {
             // Check if the button already exists before appending
             if (!$('#label-new-product').length) {
                 let $group = $(`<b id="label-new-product">New products</b>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+            }
+        }
+    };
+
+    static dtbCostLeasedHDCustom() {
+        let $table = LeaseOrderDataTableHandle.$tableCostLeased;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#label-leased-product').length) {
+                let $group = $(`<b id="label-leased-product">Leased products</b>`);
                 textFilter$.append(
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                 );

@@ -164,6 +164,7 @@ $(function () {
 
         RecoveryLoadDataHandle.$btnSaveDepreciation.on('click', function () {
             RecoveryLoadDataHandle.loadSaveDepreciation();
+            RecoveryCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);
         });
 
 
@@ -203,6 +204,11 @@ $(function () {
                 'lease_order_data',
                 'remark',
                 'recovery_delivery_data',
+                // total
+                'total_pretax',
+                'total_tax',
+                'total',
+                'total_revenue_before_tax',
                 // attachment
                 // 'attachment',
                 // abstract

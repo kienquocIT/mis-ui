@@ -418,8 +418,12 @@ class PartnerCenterListHandler {
                         }
                     },
                     (errs) => {
-                        for (const [key, value] of Object.entries(errs.data.errors)) {
-                            $.fn.notifyB({title: key, description: value}, 'failure');
+                        if(errs.data.errors){
+                            for (const [key, value] of Object.entries(errs.data.errors)) {
+                                $.fn.notifyB({title: key, description: value}, 'failure');
+                            }
+                        } else {
+                            $.fn.notifyB('Error', 'failure');
                         }
                     });
             },

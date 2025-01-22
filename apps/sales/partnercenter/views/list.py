@@ -172,3 +172,10 @@ class ListOpportunityConfigStageListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, url=ApiURL.LIST_OPP_CONFIG_STAGE_LIST, user=request.user).get()
         return resp.auto_return(key_success='opp_config_stage_list')
+
+class ListAccountListAPI(APIView):
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.LIST_CONTACT_LIST, user=request.user).get()
+        return resp.auto_return(key_success='account_list')

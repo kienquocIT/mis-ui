@@ -830,6 +830,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LIST_CONTACT_LIST = StringUrl('partner-center/list/contact-list')
     LIST_INDUSTRY_LIST = StringUrl('partner-center/list/industry-list')
     LIST_OPP_CONFIG_STAGE_LIST = StringUrl('partner-center/list/opp-config-stage-list')
+    LIST_ACCOUNT_LIST = StringUrl('partner-center/list/account-list')
     # Goods recovery
     GOODS_RECOVERY_LIST = StringUrl('inventory/goods-recovery/list')
     GOODS_RECOVERY_DETAIL = StringUrl('inventory/goods-recovery')
+
+    # Advance Filter
+    ADVANCE_FILTER_LIST = StringUrl('report/advance-filter/list')
+    ADVANCE_FILTER_DETAIL = StringUrl('report/advance-filter/detail')

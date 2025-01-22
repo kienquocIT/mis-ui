@@ -3,7 +3,7 @@ from django.urls import path
 from apps.hrm.employee.views import HRMEmployeeList, HRMEmployeeCreate, HRMEmployeeNotMapHRM, HRMEmployeeCreateAPI, \
     HRMEmployeeListAPI, HRMEmployeeDetail, HRMEmployeeDetailAPI, HRMEmployeeUpdate, HRMEmployeeUpdateAPI, \
     HRMEmployeeContractDetailAPI, HRMEmployeeContractList, HRMEmployeeSignatureAttachmentListAPI, \
-    HRMSignatureAttachmentUpdateAPI
+    HRMSignatureAttachmentUpdateAPI, HRMRuntimeSignatureAPI
 
 urlpatterns = [
     # employee HRM page
@@ -16,7 +16,7 @@ urlpatterns = [
     path('employee-data/detail-api/<str:pk>', HRMEmployeeDetailAPI.as_view(), name='HRMEmployeeDetailAPI'),
     path('employee-data/update/<str:pk>', HRMEmployeeUpdate.as_view(), name='HRMEmployeeUpdate'),
     path('employee-data/update-api/<str:pk>', HRMEmployeeUpdateAPI.as_view(), name='HRMEmployeeUpdateAPI'),
-    # contract
+    # list contract has mapped employee info
     path(
         'employee-data/contract/list-api', HRMEmployeeContractList.as_view(), name='HRMEmployeeContractList'
     ),
@@ -32,5 +32,9 @@ urlpatterns = [
     path(
         'employee-data/signature/update/<str:pk>', HRMSignatureAttachmentUpdateAPI.as_view(),
         name='HRMEmpSignAttUpdateAPI'
+    ),
+    path(
+        'employee-data/request-signing/create', HRMRuntimeSignatureAPI.as_view(),
+        name='HRMRuntimeSignatureAPI'
     ),
 ]

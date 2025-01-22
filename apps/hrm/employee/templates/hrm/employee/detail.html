@@ -329,8 +329,10 @@
     {% include 'core/contract_template/extend/submit-to-sign.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory" data-hrm-detail="{% url 'HRMEmployeeDetail' pk %}"
-           data-employee="{% url 'EmployeeListAPI' %}" data-contract-sign="{% url 'ContractRuntimeCreateAPI' %}"
+    <input type="text" id="url-factory"
+           data-hrm-detail="{% url 'HRMEmployeeDetail' pk %}"
+           data-employee="{% url 'EmployeeListAPI' %}"
+           data-contract-sign="{% url 'HRMRuntimeSignatureAPI' %}"
     >
 {% endblock %}
 {% block jsFooter %}

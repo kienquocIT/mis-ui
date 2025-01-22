@@ -138,16 +138,3 @@ class ContractTemplateConfigAPI(APIView):
             }
         ]
         return RespData.resp_200(data={'templates': result})
-
-
-class ContractRuntimeCreate(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def post(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.CORE_CONTRACT_RUNTIME).post(request.data)
-        if resp.state:
-            resp.result['message'] = ContractTemplateMsg.CT_RUNTIME_CREATE
-            return resp.result, status.HTTP_200_OK
-        return resp.auto_return()

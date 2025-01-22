@@ -312,7 +312,7 @@ $(document).ready(function () {
                     data: data_list,
                     backgroundColor: stage_backgroundColor,
                     borderColor: stage_borderColor,
-                    borderWidth: 2
+                    borderWidth: 1
                 }]
             },
             options: {
@@ -460,7 +460,7 @@ $(document).ready(function () {
                 data: emp_list.map(item => item['stage_value'][stage?.['opp_stage_title']]),
                 backgroundColor: stage_backgroundColor[index],
                 borderColor: stage_borderColor[index],
-                borderWidth: 2
+                borderWidth: 1
             })
         );
 
@@ -578,9 +578,9 @@ $(document).ready(function () {
                 (type, index) => ({
                     label: type,
                     data: type === `≤ ${winrate_threshold}% (≠ 0%)` ? type1_data_by_month : type2_data_by_month,
-                    backgroundColor: [CHART_COLORS_OPACITY?.['blue'], CHART_COLORS_OPACITY?.['green']]?.[index],
-                    borderColor: [CHART_COLORS?.['blue'], CHART_COLORS?.['green']]?.[index],
-                    borderWidth: 2
+                    backgroundColor: [CHART_COLORS_OPACITY?.['purple'], CHART_COLORS_OPACITY?.['green']]?.[index],
+                    borderColor: [CHART_COLORS?.['purple'], CHART_COLORS?.['green']]?.[index],
+                    borderWidth: 1
                 })
             );
 
@@ -601,9 +601,9 @@ $(document).ready(function () {
                 (type, index) => ({
                     label: type,
                     data: type === `≤ ${winrate_threshold}% (≠ 0%)` ? type1_data_by_month : type2_data_by_month,
-                    backgroundColor: [CHART_COLORS_OPACITY?.['blue'], CHART_COLORS_OPACITY?.['green']]?.[index],
-                    borderColor: [CHART_COLORS?.['blue'], CHART_COLORS?.['green']]?.[index],
-                    borderWidth: 2
+                    backgroundColor: [CHART_COLORS_OPACITY?.['purple'], CHART_COLORS_OPACITY?.['green']]?.[index],
+                    borderColor: [CHART_COLORS?.['purple'], CHART_COLORS?.['green']]?.[index],
+                    borderWidth: 1
                 })
             );
 

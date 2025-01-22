@@ -10386,3 +10386,7 @@ msgstr "Lấy tất cả Giai đoạn CHKD"
 #
 msgid "Opportunity stage"
 msgstr "Giai đoạn CHKD"
+
+#
+msgid "Winrate threshold"
+msgstr "Ngưỡng xác suất thắng"

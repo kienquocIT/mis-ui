@@ -361,7 +361,7 @@ $(document).ready(function () {
                 pointRadius: 5,
                 borderColor: CHART_COLORS?.['blue'],
                 backgroundColor: CHART_COLORS_OPACITY?.['blue'],
-                borderWidth: 2,
+                borderWidth: 1,
             },
             {
                 label: trans_script.attr('data-trans-reality'),
@@ -370,7 +370,7 @@ $(document).ready(function () {
                 pointRadius: 5,
                 borderColor: CHART_COLORS?.['red'],
                 backgroundColor: CHART_COLORS_OPACITY?.['red'],
-                borderWidth: 2,
+                borderWidth: 1,
             }
         ]
 
@@ -386,7 +386,7 @@ $(document).ready(function () {
                     pointRadius: 5,
                     borderColor: CHART_COLORS?.['blue'],
                     backgroundColor: CHART_COLORS_OPACITY?.['blue'],
-                    borderWidth: 2,
+                    borderWidth: 1,
                 },
                 {
                     label: trans_script.attr('data-trans-reality'),
@@ -395,7 +395,7 @@ $(document).ready(function () {
                     pointRadius: 5,
                     borderColor: CHART_COLORS?.['red'],
                     backgroundColor: CHART_COLORS_OPACITY?.['red'],
-                    borderWidth: 2,
+                    borderWidth: 1,
                 }
             ]
         }
@@ -466,7 +466,7 @@ $(document).ready(function () {
                 pointRadius: 5,
                 borderColor: CHART_COLORS?.['blue'],
                 backgroundColor: CHART_COLORS_OPACITY?.['blue'],
-                borderWidth: 2,
+                borderWidth: 1,
             },
             {
                 label: trans_script.attr('data-trans-reality'),
@@ -475,7 +475,7 @@ $(document).ready(function () {
                 pointRadius: 5,
                 borderColor: CHART_COLORS?.['green'],
                 backgroundColor: CHART_COLORS_OPACITY?.['green'],
-                borderWidth: 2,
+                borderWidth: 1,
             }
         ]
 
@@ -491,7 +491,7 @@ $(document).ready(function () {
                     pointRadius: 5,
                     borderColor: CHART_COLORS?.['blue'],
                     backgroundColor: CHART_COLORS_OPACITY?.['blue'],
-                    borderWidth: 2,
+                    borderWidth: 1,
                 },
                 {
                     label: trans_script.attr('data-trans-reality'),
@@ -500,7 +500,7 @@ $(document).ready(function () {
                     pointRadius: 5,
                     borderColor: CHART_COLORS?.['green'],
                     backgroundColor: CHART_COLORS_OPACITY?.['green'],
-                    borderWidth: 2,
+                    borderWidth: 1,
                 }
             ]
         }
@@ -522,7 +522,7 @@ $(document).ready(function () {
                 datasets: data_list
             },
             options: {
-                borderWidth: 2,
+                borderWidth: 1,
                 indexAxis: indexAxis,
                 responsive: true,
                 scales: {
@@ -716,7 +716,7 @@ $(document).ready(function () {
             data: topX_revenue,
             borderColor: CHART_COLORS?.['orange'],
             backgroundColor: CHART_COLORS_OPACITY?.['orange'],
-            borderWidth: 2,
+            borderWidth: 1,
         }]
 
         return [topX_full_name, series_data]
@@ -785,7 +785,7 @@ $(document).ready(function () {
             data: topX_revenue,
             borderColor: CHART_COLORS?.['purple'],
             backgroundColor: CHART_COLORS_OPACITY?.['purple'],
-            borderWidth: 2,
+            borderWidth: 1,
         }]
 
         return [topX_title, series_data]
@@ -806,7 +806,7 @@ $(document).ready(function () {
                 datasets: data_list
             },
             options: {
-                borderWidth: 2,
+                borderWidth: 1,
                 indexAxis: indexAxis,
                 responsive: true,
                 scales: {
@@ -1000,7 +1000,7 @@ $(document).ready(function () {
             data: topX_revenue,
             borderColor: CHART_COLORS?.['blue'],
             backgroundColor: CHART_COLORS_OPACITY?.['blue'],
-            borderWidth: 2,
+            borderWidth: 1,
         }]
 
         return [topX_title, series_data]
@@ -1069,7 +1069,7 @@ $(document).ready(function () {
             data: topX_revenue,
             borderColor: CHART_COLORS?.['red'],
             backgroundColor: CHART_COLORS_OPACITY?.['red'],
-            borderWidth: 2,
+            borderWidth: 1,
         }]
 
         return [topX_title, series_data]

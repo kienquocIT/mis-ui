@@ -361,7 +361,7 @@ class LeadCallActivitiesHandler extends LeadActivitiesHandler{
         this.$callContactSelect = $('#contact-select-box')
         this.$titleInput = $('#subject-input')
         this.$contentTextArea = $('#result-text-area')
-        this.$cancelBtn = $('#lead-call-cancel-activity')
+        this.$offCanvas = $('#offcanvas-call-log')
     }
 
     init() {
@@ -406,6 +406,11 @@ class LeadCallActivitiesHandler extends LeadActivitiesHandler{
         this.$callDate.val('').trigger('change')
         this.$titleInput.val('')
         this.$contentTextArea.val('')
+        $('#offcanvas-call-log').css({
+            visibility: 'hidden'
+        });
+        $('#offcanvas-call-log').removeClass('show')
+        $('.offcanvas-backdrop').remove()
     }
 
     cancelCallEventBinding(){
@@ -491,6 +496,12 @@ class LeadEmailActivitiesHandler extends LeadActivitiesHandler{
         this.$emailToSelect.val('').trigger('change')
         this.$emailCCSelect.val('').trigger('change')
         this.$titleInput.val('')
+
+        $('#offcanvas-send-email').css({
+            visibility: 'hidden'
+        });
+        $('#offcanvas-send-email').removeClass('show')
+        $('.offcanvas-backdrop').remove()
     }
 }
 
@@ -617,6 +628,25 @@ class LeadMeetingActivitiesHandler extends LeadActivitiesHandler{
                         }
                     });
         })
+    }
+
+    clearCreateFormFields() {
+        this.$titleInput.val('')
+        this.$contentTextArea.val('')
+        this.$dateInput.val('').trigger('change')
+        this.$meetingFromTimeInput.val('').trigger('change')
+        this.$meetingToTimeInput.val('').trigger('change')
+        this.$meetingLeadSelect.val('')
+        this.$meetingCustomerSelect.val('').trigger('change')
+        this.$meetingEmployeeSelect.val('').trigger('change')
+        this.$meetingRoomLocation.val('')
+        $('#meeting-address-input').val('')
+
+        $('#offcanvas-meeting').css({
+            visibility: 'hidden'
+        });
+        $('#offcanvas-meeting').removeClass('show')
+        $('.offcanvas-backdrop').remove()
     }
 }
 

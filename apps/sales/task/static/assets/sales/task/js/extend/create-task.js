@@ -18,7 +18,13 @@ function resetFormTask() {
     $('.create-subtask, .parents-block').addClass('hidden')
     window.editor.setData('')
     $('.create-task').attr('disabled', false);
-    $('#process_id, #selectStatus').val(null).trigger('change')
+    $('#process_id').val(null).trigger('change')
+    $('#selectStatus').val(function(){
+        let data = $(this).data('default-stt')
+        if (!$(this).find(`option[value="${data.id}"]`).length)
+            $(this).append(`<option value="${data.id} selected>${data.title}</option>`)
+        return data.id
+    }).trigger('change')
 
     const resetUploader = ($element) => {
         $element.find('.dm-uploader').dmUploader("reset");

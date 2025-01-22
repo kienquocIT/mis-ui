@@ -84,7 +84,7 @@ class handle_tasks_cls {
                         return res;
                     },
                     data: function (params) {
-                        let txtSearch = $('#table_task_list_filter input[type="search"]').val();
+                        let txtSearch = $('#table_task_list_filter input[type="text"]').val();
                         if (txtSearch.length > 0)
                             params['search'] = txtSearch
                         params['project_id'] = $('#filter_project_id').val() || ''
@@ -344,12 +344,12 @@ class handle_tasks_cls {
             $('.cancel-task').trigger('click')
             edit_elm.removeClass('fa-eye').addClass('fa-eye-slash')
         } else {
-            if (!$('.hk-wrapper').hasClass('open'))
-                $("#drawer_task_create").trigger('drawer.show');
-            else{
-                // case click task khác mà chưa đóng task cũ
+            const $TaskElmCanvas = $('#offCanvasRightTask')
+            $TaskElmCanvas.offcanvas('show')
+            $TaskElmCanvas.on('hidden.bs.offcanvas', () =>
                 tbl.find('.btn_task-list-action i').removeClass('fa-eye').addClass('fa-eye-slash')
-            }
+            )
+
             edit_elm.removeClass('fa-eye-slash').addClass('fa-eye')
             // call ajax detail task
             $.fn.callAjax2({

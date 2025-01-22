@@ -332,7 +332,8 @@ function getDetailPage($form){
                         Customer.setCustomerList = data.customer_by_list;
                     if (data?.customer_by_condition.length)
                         Customer.setCustomerCond = data.customer_by_condition
-                    $('#currency').attr('data-onload', JSON.stringify(data.currency))
+                    data.currency.selected = true
+                    $('#currency').attr('data-onload', JSON.stringify(data.currency)).initSelect2();
                     $('#valid_time').val(`${moment(data.valid_date_start).format('DD/MM/YYYY')} - ${moment(data.valid_date_end).format('DD/MM/YYYY')}`)
                     $('#is_discount').prop('checked', data.is_discount ? data.is_discount : false)
                     $('#is_gift').prop('checked', data.is_gift ? data.is_gift : false)
@@ -444,7 +445,9 @@ $(function () {
             format: 'DD/MM/YYYY'
         }
     }).on("apply.daterangepicker", function (e, picker) {
-        picker.element.val(picker.startDate.format(picker.locale.format)+ ' - ' +picker.endDate.format(picker.locale.format));
+        picker.element.val(picker.startDate.format(picker.locale.format)+
+            ' - ' +
+            picker.endDate.format(picker.locale.format));
     });
 
     // run default currency form field
@@ -458,13 +461,15 @@ $(function () {
             .then(
                 (resp) => {
                     const data = $.fn.switcherResp(resp);
-                    let defaultCurrency = data.currency_list[0]
-                    $currencyElm.attr('data-onload', JSON.stringify({
-                        "id": defaultCurrency?.id,
-                        "title": defaultCurrency?.title,
-                        "code": defaultCurrency?.currency?.code,
-                    }))
-                    $currencyElm.initSelect2();
+                    let defaultCurrency = data['currency_list'][0]
+                    if (!$currencyElm.val()){
+                        $currencyElm.attr('data-onload', JSON.stringify({
+                            "id": defaultCurrency?.id,
+                            "title": defaultCurrency?.title,
+                            "code": defaultCurrency?.currency?.code,
+                        }))
+                        $currencyElm.initSelect2();
+                    }
                 })
     });
 

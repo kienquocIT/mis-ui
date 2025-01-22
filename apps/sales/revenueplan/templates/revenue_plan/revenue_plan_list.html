@@ -20,6 +20,21 @@
 {% endblock %}
 {% block pageContent %}
     <script id="trans-script"
+            data-trans-m1th="{% trans 'January' %}"
+            data-trans-m2th="{% trans 'February' %}"
+            data-trans-m3th="{% trans 'March' %}"
+            data-trans-m4th="{% trans 'April' %}"
+            data-trans-m5th="{% trans 'May' %}"
+            data-trans-m6th="{% trans 'June' %}"
+            data-trans-m7th="{% trans 'July' %}"
+            data-trans-m8th="{% trans 'August' %}"
+            data-trans-m9th="{% trans 'September' %}"
+            data-trans-m10th="{% trans 'October' %}"
+            data-trans-m11th="{% trans 'November' %}"
+            data-trans-m12th="{% trans 'December' %}"
+            data-trans-revenue="{% trans 'Revenue' %}"
+            data-trans-net-profit="{% trans 'Net income' %}"
+            data-trans-gross-profit="{% trans 'Gross profit' %}"
             data-trans-opening="{% trans 'Opening' %}"
             data-trans-waiting="{% trans 'Waiting' %}"
             data-trans-closed="{% trans 'Closed' %}"
@@ -41,6 +56,43 @@
                     <th style="min-width: 100px">{% trans 'Date created' %}</th>
                     <th style="min-width: 100px">{% trans 'Status' %}</th>
                 </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="col-12 mt-10">
+            <button type="button"
+                    id="view-my-revenue-plan"
+                    class="btn btn-light"
+                    data-method="GET"
+                    data-url="{% url 'RevenuePlanByReportPermListAPI' %}">
+                {% trans 'View my revenue plan this period' %}
+            </button>
+        </div>
+        <div class="col-12">
+            <table hidden class="table nowrap w-100" id="my-revenue-plan-table">
+                <thead class="bg-light">
+                    <tr>
+                        <th style="min-width: 200px;">{% trans 'Employee' %}</th>
+                        <th style="min-width: 150px;">{% trans 'Target item' %}</th>
+                        <th style="min-width: 200px;" id="m1th"></th>
+                        <th style="min-width: 200px;" id="m2th"></th>
+                        <th style="min-width: 200px;" id="m3th"></th>
+                        <th style="min-width: 200px;">{% trans 'QUARTER' %} 1</th>
+                        <th style="min-width: 200px;" id="m4th"></th>
+                        <th style="min-width: 200px;" id="m5th"></th>
+                        <th style="min-width: 200px;" id="m6th"></th>
+                        <th style="min-width: 200px;">{% trans 'QUARTER' %} 2</th>
+                        <th style="min-width: 200px;" id="m7th"></th>
+                        <th style="min-width: 200px;" id="m8th"></th>
+                        <th style="min-width: 200px;" id="m9th"></th>
+                        <th style="min-width: 200px;">{% trans 'QUARTER' %} 3</th>
+                        <th style="min-width: 200px;" id="m10th"></th>
+                        <th style="min-width: 200px;" id="m11th"></th>
+                        <th style="min-width: 200px;" id="m12th"></th>
+                        <th style="min-width: 200px;">{% trans 'QUARTER' %} 4</th>
+                        <th style="min-width: 200px;">{% trans 'YEAR' %}</th>
+                    </tr>
                 </thead>
                 <tbody></tbody>
             </table>

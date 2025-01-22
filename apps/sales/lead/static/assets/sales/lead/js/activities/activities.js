@@ -604,7 +604,8 @@ class LeadMeetingActivitiesHandler extends LeadActivitiesHandler{
                     url: url,
                     method: 'PUT',
                     data: {
-                        'is_cancelled': true
+                        'is_cancelled': true,
+                        'email_cancel': false
                     }
                 }).then(
                     (resp) => {

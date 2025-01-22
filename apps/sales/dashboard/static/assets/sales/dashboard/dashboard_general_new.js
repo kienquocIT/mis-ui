@@ -1,21 +1,27 @@
 $(document).ready(function () {
     const CHART_COLORS = {
+        blue: 'rgb(54, 162, 235)',
+        green: 'rgb(75, 192, 96)',
         red: 'rgb(255, 99, 132)',
         orange: 'rgb(255, 159, 64)',
         yellow: 'rgb(255, 205, 86)',
-        green: 'rgb(75, 192, 96)',
-        blue: 'rgb(54, 162, 235)',
         purple: 'rgb(153, 102, 255)',
-        grey: 'rgb(201, 203, 207)'
+        grey: 'rgb(201, 203, 207)',
+        custom1: 'rgb(58, 110, 31)',
+        custom2: 'rgb(194, 0, 35)',
+        custom3: 'rgb(13, 46, 118)',
     }
     const CHART_COLORS_OPACITY = {
+        blue: 'rgba(54, 162, 235, 0.6)',
+        green: 'rgba(75, 192, 96, 0.6)',
         red: 'rgba(255, 99, 132, 0.6)',
         orange: 'rgba(255, 159, 64, 0.6)',
         yellow: 'rgba(255, 205, 86, 0.6)',
-        green: 'rgba(75, 192, 96, 0.6)',
-        blue: 'rgba(54, 162, 235, 0.6)',
         purple: 'rgba(153, 102, 255, 0.6)',
-        grey: 'rgba(201, 203, 207, 0.6)'
+        grey: 'rgba(201, 203, 207, 0.6)',
+        custom1: 'rgba(58, 110, 31, 0.6)',
+        custom2: 'rgba(194, 0, 35, 0.6)',
+        custom3: 'rgba(13, 46, 118, 0.6)'
     }
     const scriptUrlEle = $('#script-url')
     const trans_script = $('#trans-script')

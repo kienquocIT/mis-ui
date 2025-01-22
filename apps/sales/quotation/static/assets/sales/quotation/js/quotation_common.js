@@ -2622,6 +2622,7 @@ class QuotationDataTableHandle {
     static $tableProduct = $('#datable-quotation-create-product');
     static $tableCost = $('#datable-quotation-create-cost');
     static $tableExpense = $('#datable-quotation-create-expense');
+    static $tableInvoice = $('#datable-quotation-invoice');
     static $tablePayment = $('#datable-quotation-payment-stage');
 
     static dataTableProduct(data) {
@@ -3802,6 +3803,86 @@ class QuotationDataTableHandle {
         }
     };
 
+    static dataTableInvoice(data) {
+        // init dataTable
+        QuotationDataTableHandle.$tableInvoice.DataTableDefault({
+            styleDom: 'hide-foot',
+            data: data ? data : [],
+            ordering: false,
+            paging: false,
+            info: false,
+            searching: false,
+            autoWidth: true,
+            scrollX: true,
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order">${row?.['order']}</span>`
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order">${row?.['order']}</span>`
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order">${row?.['order']}</span>`
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order">${row?.['order']}</span>`
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order">${row?.['order']}</span>`
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order">${row?.['order']}</span>`
+                    }
+                },
+                {
+                    targets: 6,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order">${row?.['order']}</span>`
+                    }
+                },
+                {
+                    targets: 7,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order">${row?.['order']}</span>`
+                    }
+                },
+                {
+                    targets: 8,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order">${row?.['order']}</span>`
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+            },
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    QuotationDataTableHandle.dtbInvoiceHDCustom();
+                    // set again WF runtime
+                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                }
+            },
+        });
+    };
+
     static dataTablePaymentStage(data) {
         // init dataTable
         QuotationDataTableHandle.$tablePayment.DataTableDefault({
@@ -4192,6 +4273,32 @@ class QuotationDataTableHandle {
                 $('#btn-add-labor-quotation-create').on('click', function () {
                     QuotationStoreDataHandle.storeDtbData(3);
                     QuotationLoadDataHandle.loadAddRowLabor();
+                });
+            }
+        }
+    };
+
+    static dtbInvoiceHDCustom() {
+        let $table = QuotationDataTableHandle.$tableInvoice;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-invoice').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-invoice" data-zone="sale_order_payment_stage">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-invoice').on('click', function () {
+                    // QuotationStoreDataHandle.storeDtbData(4);
+                    // QuotationLoadDataHandle.loadAddPaymentStage();
                 });
             }
         }

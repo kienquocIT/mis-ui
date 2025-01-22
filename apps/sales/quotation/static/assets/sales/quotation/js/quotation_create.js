@@ -36,6 +36,7 @@ $(function () {
             QuotationDataTableHandle.dataTableQuotationIndicator();
         } else {  // sale order
             QuotationDataTableHandle.dataTableSaleOrderIndicator();
+            // QuotationDataTableHandle.dataTableInvoice();
             QuotationDataTableHandle.dataTablePaymentStage();
         }
         // init config

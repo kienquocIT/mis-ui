@@ -24,7 +24,11 @@
             type="text" id="app-urls-factory"
             data-account-detail-view-url="{% url 'AccountDetail' pk=0 %}"
             data-contact-detail-view-url="{% url 'ContactDetail' pk=0 %}"
+            data-lists-list-view-url = "{% url 'ListList' %}"
     >
+    <script id="trans-script"
+            data-lists = "{% trans 'Lists' %}"
+    ></script>
     {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 {% block jsFooter %}

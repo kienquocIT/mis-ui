@@ -156,8 +156,8 @@ class SiteControl {
                         const path = window.location.origin + '/chat3rd/messenger/connected';
                         const addNew$ = $(`
                             <a
-                                href="https://www.facebook.com/v21.0/dialog/oauth?client_id=1125911575074544&redirect_uri=${path}&response_type=code&scope=pages_messaging,pages_show_list"
-                                class="btn btn-rounded btn-primary mt-1"
+                                href="https://www.facebook.com/v21.0/dialog/oauth?client_id=1125911575074544&redirect_uri=${path}&response_type=code&scope=pages_manage_metadata,pages_manage_engagement,pages_messaging,pages_show_list"
+                                class="btn btn-rounded btn-outline-primary mt-1"
                                 data-bs-toggle="tooltip"
                                 title="${$.fn.gettext('Connect to Facebook')}"
                             >
@@ -737,8 +737,8 @@ class PersonInfo {
                 clsThis.btnExistLead$.data('href').replaceAll('__pk__', personData['lead_id'])
             ).show(0);
         } else {
-            clsThis.btnCreateLead$.attr('href', '#').hide(0);
-            clsThis.btnExistLead$.show(0);
+            clsThis.btnExistLead$.attr('href', '#').hide(0);
+            clsThis.btnCreateLead$.show(0);
         }
     }
 

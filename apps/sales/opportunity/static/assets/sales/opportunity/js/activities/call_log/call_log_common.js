@@ -4,7 +4,7 @@ const call_log_Opp_slb = $('#sale-code-select-box')
 const date_input = $('#date-input')
 const customer_slb = $('#account-select-box')
 const contact_slb = $('#contact-select-box')
-const cancel_activity_btn = $('#cancel-activity')
+const call_cancel_activity_btn = $('#call-cancel-activity')
 let CALL_LOG_LIST = []
 
 function loadOpportunityCallLogList() {
@@ -112,7 +112,7 @@ $(document).on('click', '#table_opportunity_call_log_list .offcanvas-call-log-bu
     let call_log_obj = CALL_LOG_LIST.filter(function (item) {
         return item?.['id'] === call_log_id;
     })[0]
-    cancel_activity_btn.attr('data-id', call_log_id)
+    call_cancel_activity_btn.attr('data-id', call_log_id)
 
     $('#is-cancelled').prop('hidden', !call_log_obj?.['is_cancelled'])
     $('#detail-opp').text(call_log_obj?.['opportunity']?.['code'] + ' - ' + call_log_obj?.['opportunity']?.['title']);
@@ -131,10 +131,10 @@ $(document).on('click', '#table_opportunity_call_log_list .offcanvas-call-log-bu
     $('#detail-contact-select-box').text(call_log_obj?.['contact']?.['fullname']);
     $('#detail-result-text-area').text(call_log_obj?.['input_result']);
     $('#detail-repeat-activity').prop('checked', call_log_obj?.['repeat']);
-    cancel_activity_btn.prop('hidden', call_log_obj?.['is_cancelled'])
+    call_cancel_activity_btn.prop('hidden', call_log_obj?.['is_cancelled'])
 })
 
-$(document).on('click', '#cancel-activity', function () {
+$(document).on('click', '#call-cancel-activity', function () {
     Swal.fire({
         html:
             `<div class="mb-3"><i class="bi bi-x-square text-danger" style="font-size: 50px"></i></div>
@@ -153,10 +153,10 @@ $(document).on('click', '#cancel-activity', function () {
         reverseButtons: true
     }).then((result) => {
         if (result.value) {
-            let call_log_id = cancel_activity_btn.attr('data-id')
+            let call_log_id = call_cancel_activity_btn.attr('data-id')
             let dtb = table_opportunity_call_log_list;
             let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(dtb.attr('data-url-delete').replace(0, call_log_id), 'PUT', {'is_cancelled': !cancel_activity_btn.prop('disabled')}, csr)
+            $.fn.callAjax(dtb.attr('data-url-delete').replace(0, call_log_id), 'PUT', {'is_cancelled': !call_cancel_activity_btn.prop('disabled')}, csr)
                 .then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {

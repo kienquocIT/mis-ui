@@ -13,36 +13,49 @@
               method="post">
             {% csrf_token %}
             <div class="row" style="overflow: auto; max-height: 85vh">
-                {% trans 'Select Sale Person' as inherit_title %}
-                {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                {% if page == 'lead' %}
+
+                {% else %}
+                    {% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
+                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                {% endif %}
                 <div class="col-12 col-lg-7 col-md-7">
                     <div class="form-group">
                         <label for="subject-input" class="form-label required">{% trans 'Subject' %}</label>
-                        <input id="subject-input" class="form-control">
+                        <input required id="subject-input" class="form-control">
                     </div>
                 </div>
                 <div class="col-12 col-lg-5 col-md-5">
                     <div class="form-group">
                         <label for="date-input" class="form-label required">{% trans 'Date' %}</label>
-                        <input id="date-input" class="form-control">
+                        <input required id="date-input" class="form-control">
                     </div>
                 </div>
-                <div class="col-12 col-lg-7 col-md-7">
-                    <div class="form-group">
-                        <label for="account-select-box" class="form-label required">{% trans 'Customer' %}</label>
-                        <select disabled id="account-select-box" class="select2 form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                {% if page == 'lead' %}
+                    <div class="col-12 col-lg-7 col-md-7">
+                        <div class="form-group">
+                            <label for="call-lead-select" class="form-label required">{% trans 'Lead' %}</label>
+                            <select required name="lead" disabled id="call-lead-select" class="select2 form-select" data-url="{% url 'LeadListAPI' %}" data-method="GET" data-keyResp="lead_list"></select>
+                        </div>
                     </div>
-                </div>
+                {% else %}
+                    <div class="col-12 col-lg-7 col-md-7">
+                        <div class="form-group">
+                            <label for="account-select-box" class="form-label required">{% trans 'Customer' %}</label>
+                            <select disabled id="account-select-box" class="select2 form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                        </div>
+                    </div>
+                {% endif %}
                 <div class="col-12 col-lg-5 col-md-5">
                     <div class="form-group">
-                        <label for="contact-select-box" class="form-label required">{% trans 'Contact' %}</label>
+                        <label for="contact-select-box" class="form-label">{% trans 'Contact' %}</label>
                         <select disabled id="contact-select-box" class="select2 form-select"></select>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-group">
                         <label for="result-text-area" class="form-label required">{% trans 'Contents' %}</label>
-                        <textarea id="result-text-area" class="form-control"></textarea>
+                        <textarea required id="result-text-area" class="form-control"></textarea>
                     </div>
                 </div>
                 <div class="col-12" hidden>
@@ -69,41 +82,55 @@
               id="form-call-log"
               method="post">
             {% csrf_token %}
+            {% if page == 'lead' %}
+            {% else %}
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Opportunity' %}:</label>
+                        <span id="detail-opp" class="text-primary fw-bold"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Process' %}:</label>
+                        <span id="detail-process" class="text-primary"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Stage' %}:</label>
+                        <span id="detail-stage" class="text-primary"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Creator' %}:</label>
+                        <span id="detail-creator" class="text-primary"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Beneficiary' %}:</label>
+                        <span id="detail-inheritor" class="text-primary"></span>
+                    </div>
+                </div>
+            {% endif %}
             <div class="row">
-                <div class="col-12">
-                    <label class="form-label">{% trans 'Opportunity' %}:</label>
-                    <span id="detail-opp" class="text-primary fw-bold"></span>
-                </div>
-                <div class="col-12">
-                    <label class="form-label">{% trans 'Process' %}:</label>
-                    <span id="detail-process" class="text-primary"></span>
-                </div>
-                <div class="col-12">
-                    <label class="form-label">{% trans 'Stage' %}:</label>
-                    <span id="detail-stage" class="text-primary"></span>
-                </div>
-                <div class="col-12">
-                    <label class="form-label">{% trans 'Creator' %}:</label>
-                    <span id="detail-creator" class="text-primary"></span>
-                </div>
-                <div class="col-12">
-                    <label class="form-label">{% trans 'Beneficiary' %}:</label>
-                    <span id="detail-inheritor" class="text-primary"></span>
-                </div>
-            </div>
-            <div class="row mt-5">
                 <div class="col-12">
                     <span id="detail-subject-input" class="fs-3 fw-bold text-muted"></span>
                     <span id="is-cancelled" class="badge badge-soft-danger badge-sm" hidden>{% trans 'Cancelled' %}</span>
                     <span id="detail-date-input" class="ml-2 text-muted small"></span>
                 </div>
-                <div class="col-12 mt-3">
-                    <span class="text-muted text-decoration-underline">{% trans 'Contact' %} - {% trans 'Customer' %}</span>
-                    <br>
-                    <span id="detail-contact-select-box" class="text-primary"></span>
-                    <span> - </span>
-                    <span id="detail-account-select-box" class="text-primary"></span>
-                </div>
+                {% if page == 'lead' %}
+                    <div class="col-12 mt-3">
+                        <span class="text-muted text-decoration-underline">{% trans 'Contact' %} - {% trans 'Lead' %}</span>
+                        <br>
+                        <span id="call-contact-name" class="text-primary"></span>
+                        <span> - </span>
+                        <span id="call-lead-name" class="text-primary"></span>
+                    </div>
+                {% else %}
+                    <div class="col-12 mt-3">
+                        <span class="text-muted text-decoration-underline">{% trans 'Contact' %} - {% trans 'Customer' %}</span>
+                        <br>
+                        <span id="detail-contact-select-box" class="text-primary"></span>
+                        <span> - </span>
+                        <span id="detail-account-select-box" class="text-primary"></span>
+                    </div>
+                {% endif %}
+
                 <div class="col-12 mt-3">
                     <span class="text-muted text-decoration-underline">{% trans 'Contents' %}</span>
                     <p id="detail-result-text-area" class="text-primary"></p>
@@ -114,9 +141,15 @@
                         <label class="form-check-label" for="detail-repeat-activity">{% trans 'Need to repeat activity' %}</label>
                     </div>
                 </div>
-                <div class="col-12 mt-5">
-                    <button type="button" id="cancel-activity" class="btn btn-sm btn-danger">{% trans 'Cancel' %}</button>
-                </div>
+                {% if page == 'lead' %}
+                    <div class="col-12 mt-5">
+                        <button type="button" id="lead-call-cancel-activity" class="btn btn-sm btn-danger">{% trans 'Cancel' %}</button>
+                    </div>
+                {% else %}
+                    <div class="col-12 mt-5">
+                        <button type="button" id="call-cancel-activity" class="btn btn-sm btn-danger">{% trans 'Cancel' %}</button>
+                    </div>
+                {% endif %}
             </div>
         </form>
 	</div>

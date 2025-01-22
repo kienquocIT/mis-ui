@@ -29,6 +29,8 @@ const $related_leads_table = $('#related-leads-table')
 const $convert_to_opp_radio_group = $('input[name="convert-to-opp"]')
 const $convert_to_opp_option_radio_group = $('input[name="convert-to-opp-option"]')
 const $new_account_btn = $('#create-to-new-account-btn')
+
+const $leadDetailData = $('#detail-data-script')
 let CURRENT_LEVEL = null
 
 $lead_status.on('change', function () {
@@ -282,6 +284,8 @@ function LoadDetailLead(option) {
                 // console.log(data)
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
+
+                $leadDetailData.attr('data-lead-detail', JSON.stringify(data))
 
                 LoadStage(STAGE_LIST, data?.['current_lead_stage']['level'], 'detail || update')
                 CURRENT_LEVEL = data?.['current_lead_stage']['level']

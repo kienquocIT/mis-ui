@@ -412,6 +412,9 @@ class PartnerCenterListHandler {
                             $.fn.notifyB({
                                 'description': 'Success',
                             }, 'success');
+                            setTimeout(() => {
+                                window.location.replace(_form.dataUrlRedirect);
+                            }, 3000);
                         }
                     },
                     (errs) => {

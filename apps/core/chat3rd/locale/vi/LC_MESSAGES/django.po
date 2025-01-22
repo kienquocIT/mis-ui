@@ -87,7 +87,7 @@ msgstr "Thêm vào Lead đã có"
 
 #
 msgid "Create a Lead"
-msgstr "Tạo mới Load"
+msgstr "Tạo mới Lead"
 
 #
 msgid "Messenger config"
@@ -104,3 +104,11 @@ msgstr "Việc ghép nối tài khoản Facebook đã chọn với hệ thống 
 #
 msgid "Limit per hour"
 msgstr "Giới hạn mỗi giờ"
+
+#
+msgid "Exist lead"
+msgstr "Lead đã tồn tại"
+
+#
+msgid "Connect to Zalo"
+msgstr "Kết nối với Zalo"

@@ -14,8 +14,18 @@
         >
             {% csrf_token %}
             <div class="row" style="overflow: auto; max-height: 85vh">
-                {% trans 'Select Sale Person' as inherit_title %}
-                {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                {% if page == 'lead' %}
+                     <div class="col-12">
+                        <div class="form-group">
+                            <label for="meeting-lead-select" class="form-label required">{% trans 'Lead' %}</label>
+                            <select required name="lead" disabled id="meeting-lead-select" class="select2 form-select" data-url="{% url 'LeadListAPI' %}" data-method="GET" data-keyResp="lead_list"></select>
+                        </div>
+                    </div>
+                {% else %}
+                    {% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
+                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                {% endif %}
+
                 <div class="col-12 col-md-12 col-lg-12">
                     <div class="form-group">
                         <label for="meeting-subject-input" class="form-label required">{% trans 'Subject' %}</label>
@@ -28,6 +38,20 @@
                         <input id="meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
                     </div>
                 </div>
+            {% if page == 'lead' %}
+                <div class="col-6 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label for="meeting-from-time-input" class="form-label">{% trans 'From time' %}</label>
+                            <input name="meeting_from_time" id="meeting-from-time-input" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label for="meeting-to-time-input" class="form-label">{% trans 'To time' %}</label>
+                            <input name="meeting_to_time" id="meeting-to-time-input" class="form-control">
+                        </div>
+                    </div>
+            {% else %}
                 <div class="col-6 col-md-4 col-lg-4">
                     <div class="form-group">
                         <label for="InputFromTime" class="form-label">{% trans 'From time' %}</label>
@@ -40,6 +64,17 @@
                         {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='meeting_to_time' id_select='InputToTime' %}
                     </div>
                 </div>
+            {% endif %}
+            {% if page == 'lead' %}
+            <div class="col-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div id="meeting-address-input-div">
+                                <label for="meeting-address-input" class="form-label required">{% trans 'Meeting address' %}</label>
+                                <textarea name="meeting_address" id="meeting-address-input" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
                 <div class="col-12 col-md-12 col-lg-12">
                     <div class="form-group">
                         <div id="meeting-address-select-div">
@@ -71,6 +106,7 @@
                         </div>
                     </div>
                 </div>
+            {% endif %}
                 <div class="col-12 col-md-12 col-lg-12">
                     <div class="form-group">
                         <label for="meeting-room-location-input" class="form-label required">{% trans 'Room location' %}</label>
@@ -124,32 +160,37 @@
 		<form data-url="{% url 'OpportunityCallLogListAPI' %}"
               data-url-redirect="{% url 'OpportunityCallLogList' %}"
               data-method="POST"
-              id="form-call-log"
+              id="form-new-meeting"
               method="post">
             {% csrf_token %}
+            {% if page == 'lead' %}
+
+            {% else %}
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Opportunity' %}:</label>
+                        <span id="detail-opp" class="text-primary fw-bold"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Process' %}:</label>
+                        <span id="detail-process" class="text-primary"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Stage' %}:</label>
+                        <span id="detail-stage" class="text-primary"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Creator' %}:</label>
+                        <span id="detail-creator" class="text-primary"></span>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% trans 'Beneficiary' %}:</label>
+                        <span id="detail-inheritor" class="text-primary"></span>
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="row">
-                <div class="col-12">
-                    <label class="form-label">{% trans 'Opportunity' %}:</label>
-                    <span id="detail-opp" class="text-primary fw-bold"></span>
-                </div>
-                <div class="col-12">
-                    <label class="form-label">{% trans 'Process' %}:</label>
-                    <span id="detail-process" class="text-primary"></span>
-                </div>
-                <div class="col-12">
-                    <label class="form-label">{% trans 'Stage' %}:</label>
-                    <span id="detail-stage" class="text-primary"></span>
-                </div>
-                <div class="col-12">
-                    <label class="form-label">{% trans 'Creator' %}:</label>
-                    <span id="detail-creator" class="text-primary"></span>
-                </div>
-                <div class="col-12">
-                    <label class="form-label">{% trans 'Beneficiary' %}:</label>
-                    <span id="detail-inheritor" class="text-primary"></span>
-                </div>
-            </div>
-            <div class="row mt-5">
                 <div class="col-12">
                     <span id="detail-subject-input" class="fs-3 fw-bold text-muted"></span>
                     <span id="is-cancelled" class="badge badge-soft-danger badge-sm" hidden>{% trans 'Cancelled' %}</span>
@@ -188,10 +229,16 @@
                         <label class="form-check-label" for="detail-repeat-activity">{% trans 'Need to repeat activity' %}</label>
                     </div>
                 </div>
-                <div class="col-12 mt-5 d-flex">
-                    <button type="button" id="cancel-activity" class="btn btn-sm btn-danger mr-1">{% trans 'Cancel' %}</button>
-                    <button hidden type="button" class="btn btn-sm btn-gradient-primary" data-url="{% url 'OpportunityMeetingDetailAPI' '0' %}" id="btn-offcanvas-resend-email">{% trans 'Send email notification now' %}</button>
-                </div>
+                {% if page == 'lead' %}
+                    <div class="col-12 mt-5">
+                        <button type="button" id="lead-meeting-cancel-activity" class="btn btn-sm btn-danger">{% trans 'Cancel' %}</button>
+                    </div>
+                {% else %}
+                    <div class="col-12 mt-5 d-flex">
+                        <button type="button" id="cancel-activity" class="btn btn-sm btn-danger mr-1">{% trans 'Cancel' %}</button>
+                        <button hidden type="button" class="btn btn-sm btn-gradient-primary" data-url="{% url 'OpportunityMeetingDetailAPI' '0' %}" id="btn-offcanvas-resend-email">{% trans 'Send email notification now' %}</button>
+                    </div>
+                {% endif %}
             </div>
         </form>
 	</div>

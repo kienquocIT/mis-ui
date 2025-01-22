@@ -1,9 +1,9 @@
 let [fNameELe, lNameEle, fullNameEle] = [$('#inp-first_name'), $('#inp-last_name'), $('#inp-full_name')];
 fNameELe.on('input', function () {
-    fullNameEle.val(`${$(this).val()} ${lNameEle.val()}`)
+    fullNameEle.val(PersonControl.combineName(fNameELe.val(), lNameEle.val()));
 });
 lNameEle.on('input', function () {
-    fullNameEle.val(`${$(fNameELe).val()} ${$(this).val()}`)
+    fullNameEle.val(PersonControl.combineName(fNameELe.val(), lNameEle.val()));
 });
 
 $(document).ready(function () {

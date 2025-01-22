@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    partnerCenterListHandlerInstance = new PartnerCenterListHandler()
+    let partnerCenterListHandlerInstance = new PartnerCenterListHandler()
 
     partnerCenterListHandlerInstance.fetchData(false)
     partnerCenterListHandlerInstance.addEventBinding()

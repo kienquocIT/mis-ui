@@ -1,5 +1,5 @@
 const meeting_trans_script = $('#trans-script')
-const cancel_activity_btn = $('#cancel-activity')
+const meeting_cancel_activity_btn = $('#meeting-cancel-activity')
 const table_opportunity_meeting_list = $('#table_opportunity_meeting_list')
 const meeting_customer_member_slb = $('#meeting-customer-member-select-box');
 const meeting_address_slb = $('#meeting-address-select-box');
@@ -168,7 +168,7 @@ $(document).on('click', '#table_opportunity_meeting_list .offcanvas-meeting-butt
     let meeting_obj = MEETING_LIST.filter(function (item) {
         return item?.['id'] === meeting_id;
     })[0]
-    cancel_activity_btn.attr('data-id', meeting_id)
+    meeting_cancel_activity_btn.attr('data-id', meeting_id)
 
     $('#btn-offcanvas-resend-email').attr('data-id', meeting_id).prop('hidden', !(!meeting_obj?.['email_notify'] || !meeting_obj?.['send_success']))
 
@@ -205,7 +205,7 @@ $(document).on('click', '#table_opportunity_meeting_list .offcanvas-meeting-butt
     }
     $('#detail-result').text(meeting_obj.input_result);
     $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
-    cancel_activity_btn.prop('hidden', meeting_obj.is_cancelled)
+    meeting_cancel_activity_btn.prop('hidden', meeting_obj.is_cancelled)
 })
 
 $('#meeting-address-input-btn').on('click', function () {
@@ -233,7 +233,7 @@ $('#btn-offcanvas-resend-email').on('click', function () {
         })
 })
 
-$(document).on('click', '#cancel-activity', function () {
+$(document).on('click', '#meeting-cancel-activity', function () {
     Swal.fire({
 		html:
 		`<div class="mb-3"><i class="bi bi-x-square text-danger" style="font-size: 50px"></i></div>
@@ -256,11 +256,11 @@ $(document).on('click', '#cancel-activity', function () {
 		reverseButtons: true
 	}).then((result) => {
 		if (result.value) {
-		    let meeting_id = cancel_activity_btn.attr('data-id')
+		    let meeting_id = meeting_cancel_activity_btn.attr('data-id')
             let dtb = table_opportunity_meeting_list;
             let csr = $("input[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(dtb.attr('data-url-delete').replace(0, meeting_id), 'PUT', {
-                'is_cancelled': !cancel_activity_btn.prop('disabled'),
+                'is_cancelled': !meeting_cancel_activity_btn.prop('disabled'),
                 'email_cancel': document.getElementById('email_cancel').checked,
             }, csr)
                 .then((resp) => {

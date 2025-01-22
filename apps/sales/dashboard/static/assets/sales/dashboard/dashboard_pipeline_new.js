@@ -1,10 +1,10 @@
 $(document).ready(function () {
     const CHART_COLORS = {
         blue: 'rgb(54, 162, 235)',
-        green: 'rgb(75, 192, 96)',
         red: 'rgb(255, 99, 132)',
         orange: 'rgb(255, 159, 64)',
         yellow: 'rgb(255, 205, 86)',
+        green: 'rgb(75, 192, 96)',
         purple: 'rgb(153, 102, 255)',
         grey: 'rgb(201, 203, 207)',
         custom1: 'rgb(58, 110, 31)',
@@ -13,10 +13,10 @@ $(document).ready(function () {
     }
     const CHART_COLORS_OPACITY = {
         blue: 'rgba(54, 162, 235, 0.6)',
-        green: 'rgba(75, 192, 96, 0.6)',
         red: 'rgba(255, 99, 132, 0.6)',
         orange: 'rgba(255, 159, 64, 0.6)',
         yellow: 'rgba(255, 205, 86, 0.6)',
+        green: 'rgba(75, 192, 96, 0.6)',
         purple: 'rgba(153, 102, 255, 0.6)',
         grey: 'rgba(201, 203, 207, 0.6)',
         custom1: 'rgba(58, 110, 31, 0.6)',
@@ -53,7 +53,7 @@ $(document).ready(function () {
             period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val())
             fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
             space_month_Setting = period_selected_Setting?.['space_month']
-            DrawPipelineChart(false)
+            DrawAllChart(false)
         })
     }
 
@@ -123,12 +123,12 @@ $(document).ready(function () {
     }
 
     moneyDisplayEle.on('change', function () {
-        DrawPipelineChart(false)
+        DrawAllChart(false)
     })
 
     moneyRoundEle.on('change', function () {
         $(this).val($(this).val() || 1);
-        DrawPipelineChart(false)
+        DrawAllChart(false)
     })
 
     $('.large-view-btn').on('click', function () {
@@ -138,15 +138,12 @@ $(document).ready(function () {
         else {
             $(this).closest('.view-space').attr('class', 'view-space col-6 col-md-6 col-lg-6 mt-3')
         }
-        $(this).closest('.view-space').find('.reload-data-btn').trigger('click')
     })
 
     // common of total pipeline + top sale + forecast
 
     let filtered_pipeline_chart_DF = []
     let stage_list_DF = []
-
-    const totalPipelineGroupEle = $('#total-pipeline-group')
 
     async function ProcessData(pipeline_chart_DF) {
         filtered_pipeline_chart_DF = (pipeline_chart_DF || [])
@@ -170,6 +167,12 @@ $(document).ready(function () {
                     opp_close_date: opportunity?.['close_date'],
                     forecast_value: opportunity?.['forecast_value'],
                     value: opportunity?.['value'],
+                    customer_id: item?.['opportunity']?.['customer']?.['id'],
+                    customer_title: item?.['opportunity']?.['customer']?.['title'],
+                    customer_call: item?.['opportunity']?.['call'],
+                    customer_email: item?.['opportunity']?.['email'],
+                    customer_meeting: item?.['opportunity']?.['meeting'],
+                    customer_document: item?.['opportunity']?.['document']
                 };
             })
         filtered_forecast_chart_DF = pipeline_chart_DF
@@ -211,10 +214,91 @@ $(document).ready(function () {
         stage_list_DF.sort((a, b) => a.opp_stage_winrate - b.opp_stage_winrate);
     }
 
-    function DrawPipelineChart(is_init=false) {
+    function DrawTotalPipelineChart(is_init=false) {
+        if (!is_init) {
+            total_pipeline_chart.destroy();
+        }
+        let [stage_indicator, total_pipeline_data] = GetTotalPipelineChartDatasets()
+        total_pipeline_chart = new Chart(
+            $('#total_pipeline_chart')[0].getContext('2d'),
+            TotalPipelineChartCfg(
+                'bar',
+                stage_indicator,
+                total_pipeline_data,
+                trans_script.attr('data-trans-chart-total-pipeline'),
+                trans_script.attr('data-trans-revenue'),
+                trans_script.attr('data-trans-opp-stage'),
+                'y'
+            )
+        )
+        $('#total-pipeline-spinner').prop('hidden', true)
+    }
+
+    function DrawTopSaleChart(is_init=false) {
+        if (!is_init) {
+            top_sale_chart.destroy();
+        }
+        let [employee_fullname_list, top_sale_data] = GetTopSaleChartDatasets()
+        top_sale_chart = new Chart(
+            $('#top_sale_chart')[0].getContext('2d'),
+            TopSaleChartCfg(
+                'bar',
+                employee_fullname_list,
+                top_sale_data,
+                trans_script.attr('data-trans-chart-top-sale'),
+                trans_script.attr('data-trans-revenue'),
+                trans_script.attr('data-trans-sale-person'),
+                'y'
+            )
+        )
+        $('#top-sale-spinner').prop('hidden', true)
+    }
+
+    function DrawForecastChart(is_init=false) {
+        if (!is_init) {
+            forecast_chart.destroy();
+        }
+        let [month_list, forecast_data] = GetForecastChartDatasets()
+        forecast_chart = new Chart(
+            $('#forecast_chart')[0].getContext('2d'),
+            ForecastChartCfg(
+                'bar',
+                month_list,
+                forecast_data,
+                trans_script.attr('data-trans-chart-forecast'),
+                forecast_viewby_Ele.val() === '0' ? trans_script.attr('data-trans-month') : trans_script.attr('data-trans-quarter'),
+                trans_script.attr('data-trans-revenue'),
+                'x'
+            )
+        )
+        $('#forecast-spinner').prop('hidden', true)
+    }
+
+    function DrawActivityChart(is_init=false) {
+        if (!is_init) {
+            activity_chart.destroy();
+        }
+        let [customer_list, activity_data] = GetActivityChartDatasets()
+        activity_chart = new Chart(
+            $('#activity_chart')[0].getContext('2d'),
+            ActivityChartCfg(
+                'bar',
+                customer_list,
+                activity_data,
+                trans_script.attr('data-trans-chart-activity'),
+                trans_script.attr('data-trans-customer'),
+                trans_script.attr('data-trans-revenue'),
+                'x'
+            )
+        )
+        $('#activity-spinner').prop('hidden', true)
+    }
+
+    function DrawAllChart(is_init=false) {
         $('#total-pipeline-spinner').prop('hidden', false)
         $('#top-sale-spinner').prop('hidden', false)
         $('#forecast-spinner').prop('hidden', false)
+        $('#activity-spinner').prop('hidden', false)
 
         let total_pipeline_chart_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-pipeline-list'),
@@ -235,63 +319,13 @@ $(document).ready(function () {
         Promise.all([total_pipeline_chart_ajax]).then(
             (results) => {
                 ProcessData(results[0]).then(() => {
-                    if (!is_init) {
-                        total_pipeline_chart.destroy();
-                        top_sale_chart.destroy();
-                        forecast_chart.destroy();
-                    }
-
-                    let [stage_indicator, total_pipeline_data] = GetTotalPipelineChartDatasets()
-                    total_pipeline_chart = new Chart(
-                        $('#total_pipeline_chart')[0].getContext('2d'),
-                        TotalPipelineChartCfg(
-                            'bar',
-                            stage_indicator,
-                            total_pipeline_data,
-                            trans_script.attr('data-trans-chart-total-pipeline'),
-                            trans_script.attr('data-trans-revenue'),
-                            trans_script.attr('data-trans-opp-stage'),
-                            'y'
-                        )
-                    )
-                    $('#total-pipeline-spinner').prop('hidden', true)
-
-                    let [employee_fullname_list, top_sale_data] = GetTopSaleChartDatasets()
-                    top_sale_chart = new Chart(
-                        $('#top_sale_chart')[0].getContext('2d'),
-                        TopSaleChartCfg(
-                            'bar',
-                            employee_fullname_list,
-                            top_sale_data,
-                            trans_script.attr('data-trans-chart-top-sale'),
-                            trans_script.attr('data-trans-revenue'),
-                            trans_script.attr('data-trans-sale-person'),
-                            'y'
-                        )
-                    )
-                    $('#top-sale-spinner').prop('hidden', true)
-
-                    let [month_list, forecast_data] = GetForecastChartDatasets()
-                    forecast_chart = new Chart(
-                        $('#forecast_chart')[0].getContext('2d'),
-                        ForecastChartCfg(
-                            'bar',
-                            month_list,
-                            forecast_data,
-                            trans_script.attr('data-trans-chart-forecast'),
-                            trans_script.attr('data-trans-revenue'),
-                            forecast_viewby_Ele.val() === '0' ? trans_script.attr('data-trans-month') : trans_script.attr('data-trans-quarter'),
-                            'y'
-                        )
-                    )
-                    $('#forecast-spinner').prop('hidden', true)
+                    DrawTotalPipelineChart(is_init)
+                    DrawTopSaleChart(is_init)
+                    DrawForecastChart(is_init)
+                    DrawActivityChart(is_init)
                 })
             })
     }
-
-    $('#reload-pipeline-data-btn').on('click', function () {
-        DrawPipelineChart(false)
-    })
 
     // total pipeline
 
@@ -318,6 +352,7 @@ $(document).ready(function () {
             options: {
                 indexAxis: indexAxis,
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
                         stacked: true,
@@ -372,7 +407,7 @@ $(document).ready(function () {
     const top_sale_number = $('#top-sale-number')
 
     top_sale_number.on('change', function () {
-        DrawPipelineChart(false)
+        DrawTopSaleChart(false)
     })
 
     function TopSaleChartCfg(chart_type, labelX, data_list, chart_title='', titleX='', titleY='', indexAxis='x') {
@@ -385,6 +420,7 @@ $(document).ready(function () {
             options: {
                 indexAxis: indexAxis,
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
                         stacked: true,
@@ -484,9 +520,9 @@ $(document).ready(function () {
                 month_list,
                 forecast_data,
                 trans_script.attr('data-trans-chart-forecast'),
-                trans_script.attr('data-trans-revenue'),
                 forecast_viewby_Ele.val() === '0' ? trans_script.attr('data-trans-month') : trans_script.attr('data-trans-quarter'),
-                'y'
+                trans_script.attr('data-trans-revenue'),
+                'x'
             )
         )
         $('#forecast-spinner').prop('hidden', true)
@@ -502,9 +538,9 @@ $(document).ready(function () {
                 month_list,
                 forecast_data,
                 trans_script.attr('data-trans-chart-forecast'),
-                trans_script.attr('data-trans-revenue'),
                 forecast_viewby_Ele.val() === '0' ? trans_script.attr('data-trans-month') : trans_script.attr('data-trans-quarter'),
-                'y'
+                trans_script.attr('data-trans-revenue'),
+                'x'
             )
         )
         $('#forecast-spinner').prop('hidden', true)
@@ -520,6 +556,7 @@ $(document).ready(function () {
             options: {
                 indexAxis: indexAxis,
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
                         stacked: true,
@@ -619,12 +656,137 @@ $(document).ready(function () {
         }
     }
 
-    $('#reload-forecast-data-btn').on('click', function () {
-        DrawPipelineChart(false)
+    // activity
+
+    let activity_chart =null
+
+    const top_customer_number = $('#top-customer-number')
+    top_customer_number.on('change', function () {
+        DrawActivityChart(false)
     })
+
+    const activityTimeEle = $('#activity-time')
+    activityTimeEle.on('change', function () {
+        activityTimeDetailEle.empty()
+        if ($(this).val() === '0') {
+            activityTimeDetailEle.prop('disabled', false)
+            for (let i = 0; i < period_selected_Setting?.['subs'].length; i++) {
+                let sub = period_selected_Setting?.['subs'][i]
+                let value = sub?.['order'] + space_month_Setting
+                activityTimeDetailEle.append(`<option value="${value <= 12 ? value : value - 12}">${moment(sub?.['start_date'], 'YYYY-MM-DD').format('MM/YYYY')}</option>`)
+            }
+        }
+        else if ($(this).val() === '1') {
+            activityTimeDetailEle.prop('disabled', false)
+            for (let i = 1; i <= 4; i++) {
+                activityTimeDetailEle.append(`<option value="${i}">${trans_script.attr(`data-trans-quarter-${i}`)}</option>`)
+            }
+        }
+        else if ($(this).val() === '2') {
+            activityTimeDetailEle.prop('disabled', true)
+        }
+        DrawActivityChart(false)
+    })
+
+    const activityTimeDetailEle = $('#activity-time-detail')
+    activityTimeDetailEle.on('change', function () {
+        DrawActivityChart(false)
+    })
+
+    function ActivityChartCfg(chart_type, labelX, data_list, chart_title='', titleX='', titleY='', indexAxis='x') {
+        return {
+            type: chart_type,
+            data: {
+                labels: labelX,
+                datasets: data_list,
+            },
+            options: {
+                indexAxis: indexAxis,
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        display: true,
+                        title: {
+                            display: true,
+                            text: titleX,
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        display: true,
+                        title: {
+                            display: true,
+                            text: titleY,
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: chart_title
+                    }
+                },
+            }
+        }
+    }
+
+    function GetActivityChartDatasets() {
+        const customer_activity_map = new Map();
+        let activity_chart_DF = filtered_pipeline_chart_DF
+        if (activityTimeEle.val() === '0') {
+            activity_chart_DF = activity_chart_DF.filter(item => new Date(item?.['opp_open_date']).getMonth() + 1 === parseInt(activityTimeDetailEle.val()))
+        }
+        else if (activityTimeEle.val() === '1') {
+            activity_chart_DF = activity_chart_DF.filter(item => GetQuarter(item?.['opp_open_date'], period_selected_Setting) === parseInt(activityTimeDetailEle.val()))
+        }
+        activity_chart_DF.forEach(item => {
+            const customer_id = item?.['customer_id'];
+            let customer_sum_activity = (item?.['customer_call'] || 0) + (item?.['customer_email'] || 0) + (item?.['customer_meeting'] || 0) + (item?.['customer_document'] || 0)
+            if (!customer_activity_map.has(customer_id)) {
+                customer_activity_map.set(customer_id, {
+                    'customer_id': item?.['customer_id'],
+                    'customer_title': item?.['customer_title'],
+                    'customer_call': item?.['customer_call'] || 0,
+                    'customer_email': item?.['customer_email'] || 0,
+                    'customer_meeting': item?.['customer_meeting'] || 0,
+                    'customer_document': item?.['customer_document'] || 0,
+                    'customer_sum_activity': customer_sum_activity
+                });
+            }
+            else {
+                customer_activity_map.get(customer_id)['customer_call'] += item?.['customer_call'] || 0
+                customer_activity_map.get(customer_id)['customer_email'] += item?.['customer_email'] || 0
+                customer_activity_map.get(customer_id)['customer_meeting'] += item?.['customer_meeting'] || 0
+                customer_activity_map.get(customer_id)['customer_document'] += item?.['customer_document'] || 0
+                customer_activity_map.get(customer_id)['customer_sum_activity'] += customer_sum_activity
+            }
+        });
+        let customer_activity_DF = Array.from(customer_activity_map.values()).filter(item => item?.['customer_sum_activity'] > 0)
+        customer_activity_DF.sort((a, b) => b.customer_sum_activity - a.customer_sum_activity);
+
+        const series_data = ['Call', 'Email', 'Meeting', 'Document'].map(
+            (type, index) => ({
+                label: type === 'Call' ? trans_script.attr('data-trans-call') : type === 'Email' ? trans_script.attr('data-trans-email') : type === 'Meeting' ? trans_script.attr('data-trans-meeting') : type === 'Document' ? trans_script.attr('data-trans-document') : '',
+                data:  customer_activity_DF.map(item => {
+                    return type === 'Call' ? item?.['customer_call'] : type === 'Email' ? item?.['customer_email'] : type === 'Meeting' ? item?.['customer_meeting'] : type === 'Document' ? item?.['customer_document']: 0
+                }),
+                backgroundColor: [CHART_COLORS_OPACITY?.['blue'], CHART_COLORS_OPACITY?.['red'], CHART_COLORS_OPACITY?.['green'],  CHART_COLORS_OPACITY?.['purple']]?.[index],
+                borderColor: [CHART_COLORS?.['blue'], CHART_COLORS?.['red'], CHART_COLORS?.['green'], CHART_COLORS?.['purple']]?.[index],
+                borderWidth: 1
+            })
+        );
+
+        return [customer_activity_DF.map(item => {return item?.['customer_title']}).slice(0, top_customer_number.val()), series_data];
+    }
 
     // Load Page
 
     LoadPeriod(current_period)
-    DrawPipelineChart(true)
+    DrawAllChart(true)
 })

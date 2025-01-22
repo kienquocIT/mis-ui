@@ -1,10 +1,10 @@
 $(document).ready(function () {
     const CHART_COLORS = {
         blue: 'rgb(54, 162, 235)',
-        green: 'rgb(75, 192, 96)',
         red: 'rgb(255, 99, 132)',
         orange: 'rgb(255, 159, 64)',
         yellow: 'rgb(255, 205, 86)',
+        green: 'rgb(75, 192, 96)',
         purple: 'rgb(153, 102, 255)',
         grey: 'rgb(201, 203, 207)',
         custom1: 'rgb(58, 110, 31)',
@@ -13,10 +13,10 @@ $(document).ready(function () {
     }
     const CHART_COLORS_OPACITY = {
         blue: 'rgba(54, 162, 235, 0.6)',
-        green: 'rgba(75, 192, 96, 0.6)',
         red: 'rgba(255, 99, 132, 0.6)',
         orange: 'rgba(255, 159, 64, 0.6)',
         yellow: 'rgba(255, 205, 86, 0.6)',
+        green: 'rgba(75, 192, 96, 0.6)',
         purple: 'rgba(153, 102, 255, 0.6)',
         grey: 'rgba(201, 203, 207, 0.6)',
         custom1: 'rgba(58, 110, 31, 0.6)',
@@ -146,7 +146,6 @@ $(document).ready(function () {
         else {
             $(this).closest('.view-space').attr('class', 'view-space col-6 col-md-6 col-lg-6 mt-3')
         }
-        $(this).closest('.view-space').find('.reload-data-btn').trigger('click')
     })
 
     // common of Revenue and Profit
@@ -160,6 +159,7 @@ $(document).ready(function () {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
                         display: true,
@@ -525,6 +525,7 @@ $(document).ready(function () {
                 borderWidth: 1,
                 indexAxis: indexAxis,
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
                         display: true,
@@ -809,6 +810,7 @@ $(document).ready(function () {
                 borderWidth: 1,
                 indexAxis: indexAxis,
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
                         display: true,

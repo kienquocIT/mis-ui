@@ -10356,11 +10356,11 @@ msgid "Top product"
 msgstr "Top sản phẩm"
 
 #
-msgid "View sale number"
+msgid "Sale number viewed"
 msgstr "SL sale hiển thị"
 
 #
-msgid "View customer number"
+msgid "Customer number viewed"
 msgstr "SL khách hàng hiển thị"
 
 #
@@ -10390,3 +10390,11 @@ msgstr "Giai đoạn CHKD"
 #
 msgid "Winrate threshold"
 msgstr "Ngưỡng xác suất thắng"
+
+#
+msgid "Revenue forecast chart"
+msgstr "Biểu đồ Dự tính doanh thu"
+
+#
+msgid "Sale activity chart"
+msgstr "Biểu đồ Hoạt động bán hàng"

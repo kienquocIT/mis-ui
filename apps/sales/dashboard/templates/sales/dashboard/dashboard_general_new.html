@@ -62,8 +62,8 @@
                     <div class="col-6 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label for="money-display" class="form-check-label">{% trans 'Money display' %}</label>
-                            <select class="form-select" id="money-display">
-                                <option value="0">{% trans 'Million' %}</option>
+                            <select class="form-select select2" id="money-display">
+                                <option value="0" selected>{% trans 'Million' %}</option>
                                 <option value="1">{% trans 'Billion' %}</option>
                             </select>
                         </div>
@@ -179,11 +179,11 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <div id="revenue-spinner" class="spinner-grow" role="status"></div>
-                        <canvas id="revenue_chart"></canvas>
+                        <canvas id="revenue_chart" style="min-height: 300px"></canvas>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div id="profit-spinner" class="spinner-grow" role="status"></div>
-                        <canvas id="profit_chart"></canvas>
+                        <canvas id="profit_chart" style="min-height: 300px"></canvas>
                     </div>
                 </div>
             </div>
@@ -236,13 +236,13 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label for="top-sale-number" class="form-label">{% trans 'View sale number' %}</label>
+                                <label for="top-sale-number" class="form-label">{% trans 'Sale number viewed' %}</label>
                                 <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
                             </div>
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label for="top-customer-number" class="form-label">{% trans 'View customer number' %}</label>
+                                <label for="top-customer-number" class="form-label">{% trans 'Customer number viewed' %}</label>
                                 <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">
                             </div>
                         </div>
@@ -251,11 +251,11 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <div id="topsale-spinner" class="spinner-grow" role="status"></div>
-                        <canvas id="topsale_chart"></canvas>
+                        <canvas id="topsale_chart" style="min-height: 300px"></canvas>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div id="topcustomer-spinner" class="spinner-grow" role="status"></div>
-                        <canvas id="topcustomer_chart"></canvas>
+                        <canvas id="topcustomer_chart" style="min-height: 300px"></canvas>
                     </div>
                 </div>
             </div>
@@ -322,11 +322,11 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <div id="topcategory-spinner" class="spinner-grow" role="status"></div>
-                        <canvas id="topcategory_chart"></canvas>
+                        <canvas id="topcategory_chart" style="min-height: 300px"></canvas>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div id="topproduct-spinner" class="spinner-grow" role="status"></div>
-                        <canvas id="topproduct_chart"></canvas>
+                        <canvas id="topproduct_chart" style="min-height: 300px"></canvas>
                     </div>
                 </div>
             </div>

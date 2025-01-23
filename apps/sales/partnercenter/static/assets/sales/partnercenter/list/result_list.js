@@ -161,14 +161,14 @@ $(document).ready(function () {
             <th>Revenue ytd</th>
             <th>Revenue average</th>
             <th>Contact information</th>
-            <th>Manager</th>
+            <th>Account Manager</th>
         `,
         'contact': `
             <th></th>
             <th>Code</th>
             <th>Name</th>
             <th>Job Title</th>
-            <th>Owner</th>
+            <th>Contact Owner</th>
             <th>Phone</th>
             <th>Email</th>
         `

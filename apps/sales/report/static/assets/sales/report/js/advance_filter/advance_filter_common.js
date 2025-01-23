@@ -111,7 +111,7 @@ class AdvanceFilterCommonHandler {
         this.onChangeOperatorSelectValueEventBinding()
         this.onClickOpenModalDetailEventBinding()
         this.onClickAddNewFilterGroupUpdateEventBinding()
-        // this.onClickDeleteAdvanceFilterEventBinding()
+        this.onClickDeleteAdvanceFilterEventBinding()
     }
 
     onClickRadiusEventBinding() {
@@ -354,24 +354,48 @@ class AdvanceFilterCommonHandler {
         })
     }
 
-    // onClickDeleteAdvanceFilterEventBinding(){
-    //     $(document).on('click', '.btn-del', ()=>{
-    //         Swal.fire({
-    //             title: this.$msgScript.attr('data-msg-are-u-sure'),
-    //             text: this.$msgScript.attr('data-msg-not-revert'),
-    //             icon: 'warning',
-    //             showCancelButton: true,
-    //             confirmButtonColor: '#3085d6',
-    //             cancelButtonColor: '#d33',
-    //             confirmButtonText: this.$msgScript.attr('data-msg-delete'),
-    //             cancelButtonText: this.$msgScript.attr('data-msg-cancel'),
-    //         }).then((result) => {
-    //             if (result.isConfirmed) {
-    //                 console.log('oke')
-    //             }
-    //         })
-    //     })
-    // }
+    onClickDeleteAdvanceFilterEventBinding(){
+        $(document).on('click', '.btn-del', (e)=>{
+            Swal.fire({
+                title: this.$msgScript.attr('data-msg-are-u-sure'),
+                text: this.$msgScript.attr('data-msg-not-revert'),
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: this.$msgScript.attr('data-msg-delete'),
+                cancelButtonText: this.$msgScript.attr('data-msg-cancel'),
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const advanceFilterId = $(e.currentTarget).closest('.filter-item').find('input[type="radio"]').attr('id')
+                    let url = this.$formFilterUpdate.attr('data-url')
+                    url = url.format_url_with_uuid(advanceFilterId)
+                    $.fn.callAjax2({
+                        url: url,
+                        method: 'DELETE',
+                    }).then(
+                        (resp) => {
+                            const data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyB({
+                                    'description': 'Success',
+                                }, 'success');
+                                this.fetchDataFilterList()
+                            }
+                        },
+                        (errs) => {
+                            if(errs.data.errors){
+                                for (const [key, value] of Object.entries(errs.data.errors)) {
+                                    $.fn.notifyB({title: key, description: value}, 'failure');
+                                }
+                            } else {
+                                $.fn.notifyB('Error', 'failure');
+                            }
+                        });
+                }
+            })
+        })
+    }
 
     setUpFormCreateFilterData(form) {
         let filterCondition = []
@@ -534,7 +558,7 @@ class AdvanceFilterCommonHandler {
                         ${advanceFilter?.['title']}
                     </label>
                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-detail" data-bs-toggle="modal" data-bs-target="#advance-filter-modal-update" data-bs-placement="bottom" title=""><span class="icon"><i class="fa fa-pencil"></i></span></button>
-                    <button disabled type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-del" data-bs-toggle="tooltip" data-bs-placement="bottom" title=""><span class="icon"><i class="far fa-trash-alt"></i></span></button>
+                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-del" data-bs-toggle="tooltip" data-bs-placement="bottom" title=""><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                 </div>
             `
             this.$advanceFilterArea.append(advanceFilterArea)

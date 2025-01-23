@@ -8,7 +8,6 @@ $(document).ready(function () {
                 keyId: 'id',
                 keyText: 'name'
             })
-    console.log(consultingInstance.customerSelect)
     consultingInstance.initAttachment()
     consultingInstance.initDateField(consultingInstance.consultingDate)
     consultingInstance.initTableProductCategories(consultingInstance.tableProductCategories,[], consultingInstance.consultingValue)

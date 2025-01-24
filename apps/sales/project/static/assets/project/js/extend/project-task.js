@@ -229,8 +229,8 @@ function logWorkSubmit() {
             return false
         }
         const data = {
-            'start_date': moment(startDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-            'end_date': moment(endDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+            'start_date': startDate,
+            'end_date': endDate,
             'time_spent': est,
         }
         // if has task id => log time
@@ -352,17 +352,16 @@ class Task_in_project {
         });
     }
 
-    static runDatePick(elm){
-        elm.daterangepicker({
-            minYear: 2023,
-            singleDatePicker: true,
-            timePicker: false,
-            showDropdowns: true,
-            autoApply: true,
-            locale: {
-                format: 'DD/MM/YYYY'
-            }
-        }).val(null).trigger('change')
+    static runDatePick(elm, dobData){
+        elm.flatpickr({
+            'allowInput': true,
+            'altInput': true,
+            'altFormat': 'd/m/Y',
+            // 'dateFormat': 'YYYY-MM-DD',
+            'defaultDate': dobData || null,
+            'locale': globeLanguage === 'vi' ? 'vn' : 'default',
+            'shorthandCurrentMonth': true,
+        })
     }
 
     static init(prj_info) {

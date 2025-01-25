@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'General Dashboard' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        #idxPageContent {
+            background-color: #f9f9f9;
+        }
+        .view-space {
+            transition: all 0.25s ease-in-out;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    {{ data.data.current_period | json_script:"current_period" }}
+    <script id="script-url"
+            data-url-report-revenue-profit="{% url 'ReportRevenueListAPI' %}"
+            data-url-top-sale-customer-list="{% url 'ReportCustomerListAPI' %}"
+            data-url-top-category-product-list="{% url 'ReportProductListAPIRDashBoard' %}"
+            data-url-company-revenue-plan="{% url 'RevenuePlanListAPI' %}"
+            data-url-revenue-plan-by-report-perm="{% url 'RevenuePlanByReportPermListAPI' %}"
+    ></script>
+    <script id="trans-script"
+            data-trans-m1th="{% trans 'Jan ' %}"
+            data-trans-m2th="{% trans 'Feb ' %}"
+            data-trans-m3th="{% trans 'Mar ' %}"
+            data-trans-m4th="{% trans 'Apr ' %}"
+            data-trans-m5th="{% trans 'May ' %}"
+            data-trans-m6th="{% trans 'Jun ' %}"
+            data-trans-m7th="{% trans 'Jul ' %}"
+            data-trans-m8th="{% trans 'Aug ' %}"
+            data-trans-m9th="{% trans 'Sep ' %}"
+            data-trans-m10th="{% trans 'Oct ' %}"
+            data-trans-m11th="{% trans 'Nov ' %}"
+            data-trans-m12th="{% trans 'Dec ' %}"
+            data-trans-revenue="{% trans 'Revenue' %}"
+            data-trans-profit="{% trans 'Profit' %}"
+            data-trans-month="{% trans 'Month' %}"
+            data-trans-chart-revenue="{% trans 'Revenue chart' %}"
+            data-trans-chart-profit="{% trans 'Profit chart' %}"
+            data-trans-expected="{% trans 'Expected' %}"
+            data-trans-reality="{% trans 'Reality' %}"
+            data-trans-chart-topsale="{% trans 'Top sale' %}"
+            data-trans-chart-topcustomer="{% trans 'Top customer' %}"
+            data-trans-chart-topcategory="{% trans 'Top category' %}"
+            data-trans-chart-topproduct="{% trans 'Top product' %}"
+            data-trans-quarter-1="{% trans 'Quarter' %} 1"
+            data-trans-quarter-2="{% trans 'Quarter' %} 2"
+            data-trans-quarter-3="{% trans 'Quarter' %} 3"
+            data-trans-quarter-4="{% trans 'Quarter' %} 4"
+    ></script>
+    <div class="row">
+        <div class="col-12 col-md-12 col-lg-8">
+            <div class="bg-white border border-white rounded p-2">
+                <div class="row">
+                    <div class="col-6 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label for="money-display" class="form-check-label">{% trans 'Money display' %}</label>
+                            <select class="form-select select2" id="money-display">
+                                <option value="0" selected>{% trans 'Million' %}</option>
+                                <option value="1">{% trans 'Billion' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label for="money-round" class="form-check-label">{% trans 'Money round' %}</label>
+                            <input id="money-round" type="number" class="form-control" value="1" min="0">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="period-filter" class="form-check-label">{% trans 'Fiscal year' %} <span class="text-muted small">({% trans 'for revenue chart & profit chart' %})</span></label>
+                            <select class="form-select select2"
+                                    id="period-filter"
+                                    data-url="{% url 'PeriodsConfigListAPI' %}"
+                                    data-method="GET"
+                            ></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-6 col-lg-2 mt-lg-0 mt-md-0 mt-3">
+            <div class="bg-white border border-white rounded p-2 h-100 text-center">
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5 class="fw-bold small" style="color: rgb(255, 99, 132)">{% trans 'This month revenue' %}</h5>
+                    </div>
+                    <div class="col-12">
+                        <span class="mask-money fw-bold fs-5" style="color: rgb(255, 99, 132)" id="current-revenue">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-6 col-lg-2 mt-lg-0 mt-md-0 mt-3">
+            <div class="bg-white border border-white rounded p-2 h-100 text-center">
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5 class="fw-bold small" style="color: rgb(75, 192, 96)">{% trans 'This month profit' %}</h5>
+                    </div>
+                    <div class="col-12">
+                        <span class="mask-money fw-bold fs-5" style="color: rgb(75, 192, 96)" id="current-profit">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row dashboard-space mb-10">
+        <div class="view-space col-12 col-md-12 col-lg-12 mt-3">
+            <div class="bg-white border border-white rounded p-2">
+                <div class="row">
+                    <div class="col-12 col-md-8 col-lg-8">
+                        <span class="small text-muted">* {% trans 'For data to display correctly, the view permissions of Revenue Plan and Revenue Report must correspond.' %}</span>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4 text-right">
+                        <button class="large-view-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover" type="button">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Resize' %}"><i class="bi bi-window"></i></span>
+                        </button>
+                        <button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover"
+                                data-bs-toggle="collapse"
+                                href="#revenueprofitCollapse"
+                                type="button">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Filter' %}"><i class="bi bi-filter-circle"></i></span>
+                        </button>
+                        <button type="button"
+                                id="reload-revenue-profit-data-btn"
+                                class="reload-data-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Reload data' %}"><i class="fas fa-sync"></i></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="collapse show" id="revenueprofitCollapse">
+                    <div class="row">
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="revenue-profit-chart-type">{% trans 'Chart type' %}</label>
+                                <select class="form-select select2" id="revenue-profit-chart-type">
+                                    <option value="0" selected>{% trans 'Line' %}</option>
+                                    <option value="1">{% trans 'Bar' %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="revenue-profit-view-type">{% trans 'View by' %}</label>
+                                <select class="form-select select2" id="revenue-profit-view-type">
+                                    <option value="0" selected>{% trans 'Period revenue / profit' %}</option>
+                                    <option value="1">{% trans 'Accumulated revenue / profit' %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="profit-type">{% trans 'Profit type' %}</label>
+                                <select class="form-select select2" id="profit-type">
+                                    <option value="0" selected>{% trans 'Gross profit' %}</option>
+                                    <option value="1">{% trans 'Net income' %}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div id="revenue-spinner" class="spinner-grow" role="status"></div>
+                        <canvas id="revenue_chart" style="min-height: 300px"></canvas>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div id="profit-spinner" class="spinner-grow" role="status"></div>
+                        <canvas id="profit_chart" style="min-height: 300px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-space col-12 col-md-12 col-lg-12 mt-3">
+            <div class="bg-white border border-white rounded p-2">
+                <div class="row">
+                    <div class="col-12 col-md-12 col-lg-12 text-right">
+                        <button class="large-view-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover" type="button">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Resize' %}"><i class="bi bi-window"></i></span>
+                        </button>
+                        <button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover"
+                                data-bs-toggle="collapse"
+                                href="#topsalecustomerCollapse"
+                                type="button">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Filter' %}"><i class="bi bi-filter-circle"></i></span>
+                        </button>
+                        <button type="button"
+                                id="reload-top-sale-customer-data-btn"
+                                class="reload-data-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Reload data' %}"
+                            ><i class="fas fa-sync"></i></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="collapse show" id="topsalecustomerCollapse">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="top-sale-customer-time">{% trans 'Time range' %}</label>
+                                <div class="input-group">
+                                    <select class="form-select select2" id="top-sale-customer-time">
+                                        <option value="0">{% trans 'Month' %}</option>
+                                        <option value="1">{% trans 'Quarter' %}</option>
+                                        <option value="2" selected>{% trans 'Whole year' %}</option>
+                                    </select>
+                                    <label class="input-group-text" for="top-sale-customer-time-detail" hidden></label>
+                                    <select class="form-select select2" id="top-sale-customer-time-detail" disabled></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label for="top-sale-number" class="form-label">{% trans 'Sale number viewed' %}</label>
+                                <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label for="top-customer-number" class="form-label">{% trans 'Customer number viewed' %}</label>
+                                <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div id="topsale-spinner" class="spinner-grow" role="status"></div>
+                        <canvas id="topsale_chart" style="min-height: 300px"></canvas>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div id="topcustomer-spinner" class="spinner-grow" role="status"></div>
+                        <canvas id="topcustomer_chart" style="min-height: 300px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-space col-12 col-md-12 col-lg-12 mt-3">
+            <div class="bg-white border border-white rounded p-2">
+                <div class="row">
+                    <div class="col-12 col-md-12 col-lg-12 text-right">
+                        <button class="large-view-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover" type="button">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Resize' %}"><i class="bi bi-window"></i></span>
+                        </button>
+                        <button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover"
+                                data-bs-toggle="collapse"
+                                href="#topcategoryproductCollapse"
+                                type="button">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Filter' %}"><i class="bi bi-filter-circle"></i></span>
+                        </button>
+                        <button type="button"
+                                id="reload-top-category-product-data-btn"
+                                class="reload-data-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Reload data' %}"><i class="fas fa-sync"></i></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="collapse show" id="topcategoryproductCollapse">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="top-category-product-time">{% trans 'Time range' %}</label>
+                                <div class="input-group">
+                                    <select class="form-select select2" id="top-category-product-time">
+                                        <option value="0">{% trans 'Month' %}</option>
+                                        <option value="1">{% trans 'Quarter' %}</option>
+                                        <option value="2" selected>{% trans 'Whole year' %}</option>
+                                    </select>
+                                    <label class="input-group-text" for="top-category-product-time-detail" hidden></label>
+                                    <select class="form-select select2" id="top-category-product-time-detail" disabled></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label for="top-category-number" class="form-label">{% trans 'View category number' %}</label>
+                                <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label for="top-product-number" class="form-label">{% trans 'View product number' %}</label>
+                                <input class="form-control" type="number" id="top-product-number" min="1" max="20" value="10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div id="topcategory-spinner" class="spinner-grow" role="status"></div>
+                        <canvas id="topcategory_chart" style="min-height: 300px"></canvas>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div id="topproduct-spinner" class="spinner-grow" role="status"></div>
+                        <canvas id="topproduct_chart" style="min-height: 300px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooterUnCompress %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/chartjs/chart.umd.min.js' %}"></script>
+    <script src="{% static 'assets/sales/dashboard/dashboard_general_new.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
+{% endblock %}

@@ -2,7 +2,7 @@ from django.urls import path
 
 from apps.sales.revenueplan.views import (
     RevenuePlanUpdate, RevenuePlanDetail, RevenuePlanDetailAPI,
-    RevenuePlanListAPI, RevenuePlanList, RevenuePlanCreate
+    RevenuePlanListAPI, RevenuePlanList, RevenuePlanCreate, RevenuePlanByReportPermListAPI
 )
 
 urlpatterns = [
@@ -14,4 +14,5 @@ urlpatterns = [
     path('update', RevenuePlanUpdate.as_view(), name='RevenuePlanUpdate'),
     path('update/<str:pk>', RevenuePlanUpdate.as_view(), name='RevenuePlanUpdate'),
     path('api/<str:pk>', RevenuePlanDetailAPI.as_view(), name='RevenuePlanDetailAPI'),
+    path('list-by-report-perm', RevenuePlanByReportPermListAPI.as_view(), name='RevenuePlanByReportPermListAPI'),
 ]

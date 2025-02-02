@@ -144,44 +144,68 @@ $(document).ready(function () {
 
     let filtered_pipeline_chart_DF = []
     let stage_list_DF = []
+    let pipeline_chart_DF = []
 
-    async function ProcessData(pipeline_chart_DF) {
-        filtered_pipeline_chart_DF = (pipeline_chart_DF || [])
-            .filter(item =>
-                Check_in_period(item?.['opportunity']?.['open_date'], period_selected_Setting)
-                && item?.['opportunity']?.['stage']?.['win_rate'] !== 0
-                && item?.['opportunity']?.['stage']?.['win_rate'] !== 100
-            )
-            .map(item => {
-                const opportunity = item?.['opportunity'] || {};
-                const stage = opportunity?.['stage'] || {};
-                const employee = item?.['employee_inherit'] || {};
-                return {
-                    employee_id: employee?.['id'],
-                    employee_fullname: employee?.['full_name'],
-                    employee_group_id: employee?.['group_id'],
-                    opp_stage_id: stage?.['id'],
-                    opp_stage_title: `${stage?.['indicator']} (${stage?.['win_rate']}%)`,
-                    opp_stage_winrate: stage?.['win_rate'],
-                    opp_open_date: opportunity?.['open_date'],
-                    opp_close_date: opportunity?.['close_date'],
-                    forecast_value: opportunity?.['forecast_value'],
-                    value: opportunity?.['value'],
-                    customer_id: item?.['opportunity']?.['customer']?.['id'],
-                    customer_title: item?.['opportunity']?.['customer']?.['title'],
-                    customer_call: item?.['opportunity']?.['call'],
-                    customer_email: item?.['opportunity']?.['email'],
-                    customer_meeting: item?.['opportunity']?.['meeting'],
-                    customer_document: item?.['opportunity']?.['document']
-                };
-            })
-        filtered_forecast_chart_DF = pipeline_chart_DF
-            .filter(item =>
-                Check_in_period(item?.['opportunity']?.['close_date'], period_selected_Setting)
-                && item?.['opportunity']?.['stage']?.['win_rate'] !== 0
-                && item?.['opportunity']?.['stage']?.['win_rate'] !== 100
-            )
-            .map(item => {
+    async function ProcessData(chart_name=['pipeline', 'forecast']) {
+        if (chart_name.includes('pipeline')) {
+            filtered_pipeline_chart_DF = pipeline_chart_DF
+                .filter(item =>
+                    Check_in_period(item?.['opportunity']?.['open_date'], period_selected_Setting)
+                    && item?.['opportunity']?.['stage']?.['win_rate'] !== 0
+                    && item?.['opportunity']?.['stage']?.['win_rate'] !== 100
+                )
+                .map(item => {
+                    const opportunity = item?.['opportunity'] || {};
+                    const stage = opportunity?.['stage'] || {};
+                    const employee = item?.['employee_inherit'] || {};
+                    return {
+                        employee_id: employee?.['id'],
+                        employee_fullname: employee?.['full_name'],
+                        employee_group_id: employee?.['group_id'],
+                        opp_stage_id: stage?.['id'],
+                        opp_stage_title: `${stage?.['indicator']} (${stage?.['win_rate']}%)`,
+                        opp_stage_winrate: stage?.['win_rate'],
+                        opp_open_date: opportunity?.['open_date'],
+                        opp_close_date: opportunity?.['close_date'],
+                        forecast_value: opportunity?.['forecast_value'],
+                        value: opportunity?.['value'],
+                        customer_id: item?.['opportunity']?.['customer']?.['id'],
+                        customer_title: item?.['opportunity']?.['customer']?.['title'],
+                        customer_call: item?.['opportunity']?.['call'],
+                        customer_email: item?.['opportunity']?.['email'],
+                        customer_meeting: item?.['opportunity']?.['meeting'],
+                        customer_document: item?.['opportunity']?.['document']
+                    };
+                })
+            if (pipelineGroupEle.val()) {
+                filtered_pipeline_chart_DF = filtered_pipeline_chart_DF.filter(item => {
+                    return item?.['employee_group_id'] === pipelineGroupEle.val()
+                })
+            }
+
+            const stage_map = new Map();
+            filtered_pipeline_chart_DF.forEach(item => {
+                const stage_title = item?.['opp_stage_title'];
+                if (!stage_map.has(stage_title)) {
+                    stage_map.set(stage_title, {
+                        'opp_id': item?.['opp_stage_id'],
+                        'opp_stage_title': item?.['opp_stage_title'],
+                        'opp_stage_winrate': item?.['opp_stage_winrate'],
+                    });
+                }
+            });
+            stage_list_DF = Array.from(stage_map.values());
+            stage_list_DF.sort((a, b) => a.opp_stage_winrate - b.opp_stage_winrate);
+        }
+
+        if (chart_name.includes('forecast')) {
+            filtered_forecast_chart_DF = pipeline_chart_DF
+                .filter(item =>
+                    Check_in_period(item?.['opportunity']?.['close_date'], period_selected_Setting)
+                    && item?.['opportunity']?.['stage']?.['win_rate'] !== 0
+                    && item?.['opportunity']?.['stage']?.['win_rate'] !== 100
+                )
+                .map(item => {
                     const opportunity = item?.['opportunity'] || {};
                     const stage = opportunity?.['stage'] || {};
                     const employee = item?.['employee_inherit'] || {};
@@ -198,20 +222,12 @@ $(document).ready(function () {
                         value: opportunity?.['value'],
                     };
                 })
-
-        const stage_map = new Map();
-        filtered_pipeline_chart_DF.forEach(item => {
-            const stage_title = item?.['opp_stage_title'];
-            if (!stage_map.has(stage_title)) {
-                stage_map.set(stage_title, {
-                    'opp_id': item?.['opp_stage_id'],
-                    'opp_stage_title': item?.['opp_stage_title'],
-                    'opp_stage_winrate': item?.['opp_stage_winrate'],
-                });
+            if (forecastGroupEle.val()) {
+                filtered_forecast_chart_DF = filtered_forecast_chart_DF.filter(item => {
+                    return item?.['employee_group_id'] === forecastGroupEle.val()
+                })
             }
-        });
-        stage_list_DF = Array.from(stage_map.values());
-        stage_list_DF.sort((a, b) => a.opp_stage_winrate - b.opp_stage_winrate);
+        }
     }
 
     function DrawTotalPipelineChart(is_init=false) {
@@ -266,9 +282,9 @@ $(document).ready(function () {
                 month_list,
                 forecast_data,
                 trans_script.attr('data-trans-chart-forecast'),
-                forecast_viewby_Ele.val() === '0' ? trans_script.attr('data-trans-month') : trans_script.attr('data-trans-quarter'),
                 trans_script.attr('data-trans-revenue'),
-                'x'
+                forecast_viewby_Ele.val() === '0' ? trans_script.attr('data-trans-month') : trans_script.attr('data-trans-quarter'),
+                'y'
             )
         )
         $('#forecast-spinner').prop('hidden', true)
@@ -286,9 +302,9 @@ $(document).ready(function () {
                 customer_list,
                 activity_data,
                 trans_script.attr('data-trans-chart-activity'),
-                trans_script.attr('data-trans-customer'),
                 trans_script.attr('data-trans-revenue'),
-                'x'
+                trans_script.attr('data-trans-customer'),
+                'y'
             )
         )
         $('#activity-spinner').prop('hidden', true)
@@ -318,7 +334,8 @@ $(document).ready(function () {
 
         Promise.all([total_pipeline_chart_ajax]).then(
             (results) => {
-                ProcessData(results[0]).then(() => {
+                pipeline_chart_DF = results[0] ? results[0] : []
+                ProcessData().then(() => {
                     DrawTotalPipelineChart(is_init)
                     DrawTopSaleChart(is_init)
                     DrawForecastChart(is_init)
@@ -399,6 +416,30 @@ $(document).ready(function () {
         })
 
         return [stage_list.map(item => item['opp_stage_title']), stage_list.map(item => item['sum_value'])];
+    }
+
+    const pipelineGroupEle = $('#pipeline-group')
+    function LoadPipelineGroup(data) {
+        pipelineGroupEle.initSelect2({
+            allowClear: true,
+            placeholder: trans_script.attr('data-trans-all'),
+            ajax: {
+                url: pipelineGroupEle.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                return resp.data[keyResp]
+            },
+            data: (data ? data : null),
+            keyResp: 'group_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            ProcessData(['pipeline']).then(() => {
+                DrawTotalPipelineChart(false)
+                DrawTopSaleChart(false)
+            })
+        })
     }
 
     // top sale
@@ -511,39 +552,11 @@ $(document).ready(function () {
     const forecast_viewby_Ele = $('#forecast-viewby')
 
     winrate_threshold_ELe.on('change', function () {
-        forecast_chart.destroy();
-        let [month_list, forecast_data] = GetForecastChartDatasets()
-        forecast_chart = new Chart(
-            $('#forecast_chart')[0].getContext('2d'),
-            ForecastChartCfg(
-                'bar',
-                month_list,
-                forecast_data,
-                trans_script.attr('data-trans-chart-forecast'),
-                forecast_viewby_Ele.val() === '0' ? trans_script.attr('data-trans-month') : trans_script.attr('data-trans-quarter'),
-                trans_script.attr('data-trans-revenue'),
-                'x'
-            )
-        )
-        $('#forecast-spinner').prop('hidden', true)
+        DrawForecastChart(false)
     })
 
     forecast_viewby_Ele.on('change', function () {
-        forecast_chart.destroy();
-        let [month_list, forecast_data] = GetForecastChartDatasets()
-        forecast_chart = new Chart(
-            $('#forecast_chart')[0].getContext('2d'),
-            ForecastChartCfg(
-                'bar',
-                month_list,
-                forecast_data,
-                trans_script.attr('data-trans-chart-forecast'),
-                forecast_viewby_Ele.val() === '0' ? trans_script.attr('data-trans-month') : trans_script.attr('data-trans-quarter'),
-                trans_script.attr('data-trans-revenue'),
-                'x'
-            )
-        )
-        $('#forecast-spinner').prop('hidden', true)
+        DrawForecastChart(false)
     })
 
     function ForecastChartCfg(chart_type, labelX, data_list, chart_title='', titleX='', titleY='', indexAxis='x') {
@@ -654,6 +667,29 @@ $(document).ready(function () {
                 series_data
             ];
         }
+    }
+
+    const forecastGroupEle = $('#forecast-group')
+    function LoadForecastGroup(data) {
+        forecastGroupEle.initSelect2({
+            allowClear: true,
+            placeholder: trans_script.attr('data-trans-all'),
+            ajax: {
+                url: forecastGroupEle.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                return resp.data[keyResp]
+            },
+            data: (data ? data : null),
+            keyResp: 'group_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            ProcessData(['forecast']).then(() => {
+                DrawForecastChart(false)
+            })
+        })
     }
 
     // activity
@@ -776,8 +812,8 @@ $(document).ready(function () {
                 data:  customer_activity_DF.map(item => {
                     return type === 'Call' ? item?.['customer_call'] : type === 'Email' ? item?.['customer_email'] : type === 'Meeting' ? item?.['customer_meeting'] : type === 'Document' ? item?.['customer_document']: 0
                 }),
-                backgroundColor: [CHART_COLORS_OPACITY?.['blue'], CHART_COLORS_OPACITY?.['red'], CHART_COLORS_OPACITY?.['green'],  CHART_COLORS_OPACITY?.['purple']]?.[index],
-                borderColor: [CHART_COLORS?.['blue'], CHART_COLORS?.['red'], CHART_COLORS?.['green'], CHART_COLORS?.['purple']]?.[index],
+                backgroundColor: [CHART_COLORS_OPACITY?.['orange'], CHART_COLORS_OPACITY?.['green'], CHART_COLORS_OPACITY?.['yellow'],  CHART_COLORS_OPACITY?.['purple']]?.[index],
+                borderColor: [CHART_COLORS?.['orange'], CHART_COLORS?.['green'], CHART_COLORS?.['yellow'], CHART_COLORS?.['purple']]?.[index],
                 borderWidth: 1
             })
         );
@@ -788,5 +824,7 @@ $(document).ready(function () {
     // Load Page
 
     LoadPeriod(current_period)
+    LoadPipelineGroup()
+    LoadForecastGroup()
     DrawAllChart(true)
 })

@@ -10398,3 +10398,7 @@ msgstr "Biểu đồ Dự tính doanh thu"
 #
 msgid "Sale activity chart"
 msgstr "Biểu đồ Hoạt động bán hàng"
+
+#
+msgid "Reload data"
+msgstr "Tải lại dữ liệu"

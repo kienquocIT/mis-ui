@@ -54,6 +54,7 @@
             data-trans-quarter-2="{% trans 'Quarter' %} 2"
             data-trans-quarter-3="{% trans 'Quarter' %} 3"
             data-trans-quarter-4="{% trans 'Quarter' %} 4"
+            data-trans-all="{% trans 'Default all' %}"
     ></script>
     <div class="row">
         <div class="col-12 col-md-12 col-lg-8">
@@ -147,7 +148,7 @@
                 </div>
                 <div class="collapse show" id="revenueprofitCollapse">
                     <div class="row">
-                        <div class="col-12 col-md-4 col-lg-4">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label" for="revenue-profit-chart-type">{% trans 'Chart type' %}</label>
                                 <select class="form-select select2" id="revenue-profit-chart-type">
@@ -156,7 +157,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-12 col-md-4 col-lg-4">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label" for="revenue-profit-view-type">{% trans 'View by' %}</label>
                                 <select class="form-select select2" id="revenue-profit-view-type">
@@ -165,13 +166,19 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-12 col-md-4 col-lg-4">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label class="form-label" for="profit-type">{% trans 'Profit type' %}</label>
                                 <select class="form-select select2" id="profit-type">
                                     <option value="0" selected>{% trans 'Gross profit' %}</option>
                                     <option value="1">{% trans 'Net income' %}</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="revenue-profit-group">{% trans 'Group' %}</label>
+                                <select class="form-select select2" id="revenue-profit-group" data-method="GET" data-url="{% url 'GroupListAPI' %}"></select>
                             </div>
                         </div>
                     </div>
@@ -308,7 +315,7 @@
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <label for="top-category-number" class="form-label">{% trans 'View category number' %}</label>
-                                <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
+                                <input class="form-control" type="number" id="top-category-number" min="1" max="20" value="10">
                             </div>
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">

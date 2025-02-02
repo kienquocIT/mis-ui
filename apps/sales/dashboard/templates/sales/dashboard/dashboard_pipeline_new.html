@@ -53,6 +53,7 @@
             data-trans-email="{% trans 'Email' %}"
             data-trans-meeting="{% trans 'Meeting' %}"
             data-trans-document="{% trans 'Document' %}"
+            data-trans-all="{% trans 'Default all' %}"
     ></script>
     <div class="row">
         <div class="col-12 col-md-12 col-lg-12">
@@ -113,6 +114,12 @@
                     <div class="row">
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
+                                <label class="form-label" for="pipeline-group">{% trans 'Group' %}</label>
+                                <select class="form-select select2" id="pipeline-group" data-method="GET" data-url="{% url 'GroupListAPI' %}"></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
                                 <label for="top-sale-number" class="form-label">{% trans 'Sale number viewed' %}</label>
                                 <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
                             </div>
@@ -122,11 +129,11 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <div id="total-pipeline-spinner" class="spinner-grow" role="status"></div>
-                        <canvas id="total_pipeline_chart" style="min-height: 300px"></canvas>
+                        <canvas id="total_pipeline_chart" style="max-height: 350px"></canvas>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div id="top-sale-spinner" class="spinner-grow" role="status"></div>
-                        <canvas id="top_sale_chart" style="min-height: 300px"></canvas>
+                        <canvas id="top_sale_chart" style="min-height: 350px"></canvas>
                     </div>
                 </div>
             </div>
@@ -154,7 +161,7 @@
                 </div>
                 <div class="collapse show" id="forecastCollapse">
                     <div class="row">
-                        <div class="col-12 col-md-3 col-lg-3">
+                        <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label for="forecast-viewby" class="form-label">{% trans 'View by' %}</label>
                                 <select class="form-select select2" id="forecast-viewby">
@@ -163,7 +170,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-12 col-md-3 col-lg-3">
+                        <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label for="winrate-threshold" class="form-label">{% trans 'Winrate threshold' %}</label>
                                 <div class="input-group">
@@ -172,12 +179,18 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="forecast-group">{% trans 'Group' %}</label>
+                                <select class="form-select select2" id="forecast-group" data-method="GET" data-url="{% url 'GroupListAPI' %}"></select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-12 col-lg-12">
                         <div id="forecast-spinner" class="spinner-grow" role="status"></div>
-                        <canvas id="forecast_chart" style="min-height: 400px"></canvas>
+                        <canvas id="forecast_chart" style="min-height: 350px"></canvas>
                     </div>
                 </div>
             </div>
@@ -205,7 +218,7 @@
                 </div>
                 <div class="collapse show" id="activityCollapse">
                     <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-8 col-lg-8">
                             <div class="form-group">
                                 <label class="form-label" for="activity-time">{% trans 'Time range' %}</label>
                                 <div class="input-group">
@@ -219,7 +232,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-3 col-lg-3">
+                        <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label for="top-customer-number" class="form-label">{% trans 'Customer number viewed' %}</label>
                                 <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">
@@ -230,7 +243,7 @@
                 <div class="row">
                     <div class="col-12 col-md-12 col-lg-12">
                         <div id="activity-spinner" class="spinner-grow" role="status"></div>
-                        <canvas id="activity_chart" style="min-height: 400px"></canvas>
+                        <canvas id="activity_chart" style="min-height: 350px"></canvas>
                     </div>
                 </div>
             </div>

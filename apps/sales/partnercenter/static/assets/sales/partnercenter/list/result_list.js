@@ -240,9 +240,9 @@ $(document).ready(function () {
             trEle.removeClass('bg-grey-light-5');
             iconEle.removeClass('text-dark').addClass('text-secondary');
 
-            let nextRow = trEle.next('.child-workflow-list');
+            let nextRow = trEle.next('.child-opp-list');
 
-            nextRow.find('.child-workflow-group').slideToggle("fast",function () {
+            nextRow.find('.child-opp-group').slideToggle("fast",function () {
                 nextRow.addClass('hidden');
             });
 
@@ -252,7 +252,7 @@ $(document).ready(function () {
             trEle.addClass('bg-grey-light-5');
             iconEle.removeClass('text-secondary').addClass('text-dark');
 
-            let nextRow = trEle.next('.child-workflow-list');
+            let nextRow = trEle.next('.child-opp-list');
             if (!nextRow.length) {
                 let dtlSub = `<table id="${idTbl}" class="table nowrap w-100 mb-5">
                                         <thead>
@@ -273,9 +273,9 @@ $(document).ready(function () {
                 const accountDataEle = trEle.find('.account-data')
                 const accountId = accountDataEle.attr('data-account-id')
                 trEle.after(`
-                    <tr class="child-workflow-list">
+                    <tr class="child-opp-list ">
                         <td colspan="100%">
-                            <div class="child-workflow-group hidden-simple">${dtlSub}</div>
+                            <div class="child-opp-group pt-3 pb-3 ml-3 pl-5 pr-5 hidden-simple">${dtlSub}</div>
                         </td>
                     </tr>
                 `);
@@ -293,7 +293,7 @@ $(document).ready(function () {
                         if (data && resp.data.hasOwnProperty('opportunity_list')) {
                             console.log(data)
                             $('#' + idTbl).DataTableDefault({
-                                dom: '<t<"bottom"lip>>',
+                                dom: '<t>',
                                 rowIdx: true,
                                 authWidth: false,
                                 scrollX: true,
@@ -380,11 +380,11 @@ $(document).ready(function () {
                     }
 
                     )
-                nextRow = trEle.next('.child-workflow-list');
+                nextRow = trEle.next('.child-opp-list');
             }
 
             nextRow.removeClass('hidden')
-            nextRow.find('.child-workflow-group').slideToggle("fast");
+            nextRow.find('.child-opp-group').slideToggle("fast");
         }
     });
 

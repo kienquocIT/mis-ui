@@ -10290,3 +10290,115 @@ msgstr "Gửi lại"
 #
 msgid "Send email notification this cancel"
 msgstr "Gửi email thông báo huỷ bỏ"
+
+#
+msgid "Letter of guarantee"
+msgstr "Thư bảo lãnh"
+
+#
+msgid "Deposit"
+msgstr "Đặt cọc"
+
+#
+msgid "Chart type"
+msgstr "Loại biểu đồ"
+
+#
+msgid "Expected"
+msgstr "Kỳ vọng"
+
+#
+msgid "Reality"
+msgstr "Thực tế"
+
+#
+msgid "View my revenue plan this period"
+msgstr "Xem kế hoạch doanh thu của tôi kỳ này"
+
+#
+msgid "Period revenue / profit"
+msgstr "Doanh thu / Lợi nhuận theo kỳ"
+
+#
+msgid "Accumulated revenue / profit"
+msgstr "Doanh thu / Lợi nhuận tích luỹ"
+
+#
+msgid "Profit type"
+msgstr "Loại lợi nhuận"
+
+#
+msgid "Revenue chart"
+msgstr "Biểu đồ Doanh thu"
+
+#
+msgid "Profit chart"
+msgstr "Biểu đồ Lợi nhuận"
+
+#
+msgid "For data to display correctly, the view permissions of Revenue Plan and Revenue Report must correspond."
+msgstr "Để dữ liệu hiển thị chính xác, quyền xem của Kế hoạch doanh thu và Báo cáo doanh thu phải tương ứng nhau"
+
+#
+msgid "Top sale"
+msgstr "Top sale"
+
+#
+msgid "Top customer"
+msgstr "Top khách hàng"
+
+#
+msgid "Top category"
+msgstr "Top danh mục sản phẩm"
+
+#
+msgid "Top product"
+msgstr "Top sản phẩm"
+
+#
+msgid "Sale number viewed"
+msgstr "SL sale hiển thị"
+
+#
+msgid "Customer number viewed"
+msgstr "SL khách hàng hiển thị"
+
+#
+msgid "View category number"
+msgstr "SL danh mục hiển thị"
+
+#
+msgid "View product number"
+msgstr "SL sản phẩm hiển thị"
+
+#
+msgid "Resize"
+msgstr "Đổi kích thước"
+
+#
+msgid "Total pipeline chart"
+msgstr "Biểu đồ toàn bộ pipeline"
+
+#
+msgid "Get all Opportunity Stage"
+msgstr "Lấy tất cả Giai đoạn CHKD"
+
+#
+msgid "Opportunity stage"
+msgstr "Giai đoạn CHKD"
+
+#
+msgid "Winrate threshold"
+msgstr "Ngưỡng xác suất thắng"
+
+#
+msgid "Revenue forecast chart"
+msgstr "Biểu đồ Dự tính doanh thu"
+
+#
+msgid "Sale activity chart"
+msgstr "Biểu đồ Hoạt động bán hàng"
+
+#
+msgid "Reload data"
+msgstr "Tải lại dữ liệu"

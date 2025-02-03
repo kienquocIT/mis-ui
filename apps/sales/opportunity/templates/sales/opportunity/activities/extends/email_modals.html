@@ -13,8 +13,18 @@
               method="post">
             {% csrf_token %}
             <div class="row" style="overflow: auto; max-height: 85vh">
-                {% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
-                {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                {% if page == 'lead' %}
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="email-lead-select" class="form-label required">{% trans 'Lead' %}</label>
+                            <select required name="lead" disabled id="email-lead-select" class="select2 form-select" data-url="{% url 'LeadListAPI' %}" data-method="GET" data-keyResp="lead_list"></select>
+                        </div>
+                    </div>
+                {% else %}
+                    {% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
+                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                {% endif %}
+
                 <div class="col-12 col-md-12 col-lg-12">
                     <div class="form-group">
                         <label for="email-to-select-box" class="form-label">{% trans 'to' %}</label>
@@ -64,33 +74,36 @@
 		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 	</div>
 	<div class="offcanvas-body">
+        {% if page == 'lead' %}
+        {% else %}
+            <div class="row mb-5">
+                <div class="col-12">
+                    <label class="form-label">{% trans 'Opportunity' %}:</label>
+                    <span id="detail-opp" class="text-primary fw-bold"></span>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">{% trans 'Process' %}:</label>
+                    <span id="detail-process" class="text-primary"></span>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">{% trans 'Stage' %}:</label>
+                    <span id="detail-stage" class="text-primary"></span>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">{% trans 'Creator' %}:</label>
+                    <span id="detail-creator" class="text-primary"></span>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">{% trans 'Beneficiary' %}:</label>
+                    <span id="detail-inheritor" class="text-primary"></span>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">{% trans 'State' %}:</label>
+                    <span id="email-state"></span>
+                </div>
+            </div>
+        {% endif %}
         <div class="row">
-            <div class="col-12">
-                <label class="form-label">{% trans 'Opportunity' %}:</label>
-                <span id="detail-opp" class="text-primary fw-bold"></span>
-            </div>
-            <div class="col-12">
-                <label class="form-label">{% trans 'Process' %}:</label>
-                <span id="detail-process" class="text-primary"></span>
-            </div>
-            <div class="col-12">
-                <label class="form-label">{% trans 'Stage' %}:</label>
-                <span id="detail-stage" class="text-primary"></span>
-            </div>
-            <div class="col-12">
-                <label class="form-label">{% trans 'Creator' %}:</label>
-                <span id="detail-creator" class="text-primary"></span>
-            </div>
-            <div class="col-12">
-                <label class="form-label">{% trans 'Beneficiary' %}:</label>
-                <span id="detail-inheritor" class="text-primary"></span>
-            </div>
-            <div class="col-12">
-                <label class="form-label">{% trans 'State' %}:</label>
-                <span id="email-state"></span>
-            </div>
-        </div>
-        <div class="row mt-5">
             <div class="col-12">
                 <span id="detail-email-subject-input" class="fs-3 fw-bold text-muted"></span>
                 <span id="detail-date-input" class="ml-2 text-muted small"></span>
@@ -113,12 +126,27 @@
                     <div class="dropdown-menu" id="detail-email-bcc"></div>
                 </div>
             </div>
-            <div class="col-12 mt-3">
-               <div id="detail-email-content-area" class="border rounded p-2"></div>
-            </div>
-            <div class="col-12 mt-5">
-                <button hidden type="button" class="btn btn-sm btn-gradient-primary" data-url="{% url 'OpportunityEmailDetailAPI' '0' %}" id="btn-offcanvas-resend-email">{% trans 'Send email' %}</button>
-            </div>
+            {% if page == 'lead' %}
+                <div class="col-12 mt-3">
+                    <span class="text-muted text-decoration-underline">{% trans 'Contents' %}</span>
+                    <p id="detail-meeting-text-area"></p>
+                </div>
+                <div class="col-12 mt-3">
+                        <span class="text-muted text-decoration-underline">{% trans 'Log Status' %} - {% trans 'Send Status' %}</span>
+                        <br>
+                        <span id="email-log-status" class="text-primary"></span>
+                        <span> - </span>
+                        <span id="email-send-status"></span>
+                    </div>
+            {% else %}
+                <div class="col-12 mt-3">
+                    <div id="detail-email-content-area" class="border rounded p-2"></div>
+                </div>
+                <div class="col-12 mt-5">
+                    <button hidden type="button" class="btn btn-sm btn-gradient-primary" data-url="{% url 'OpportunityEmailDetailAPI' '0' %}" id="btn-offcanvas-resend-email">{% trans 'Send email' %}</button>
+                </div>
+            {% endif %}
+
         </div>
 	</div>
 </div>

@@ -94,6 +94,7 @@ class ProjectDetail(View):
         return {
                    'dependencies_list': DEPENDENCIES_TYPE,
                    'system_status': SYSTEM_STATUS,
+                   'list_from_app': 'project.project.edit',
                    'pk': pk,
                    'can_close': can_close,
                    'unit_data': unit_data,

@@ -412,11 +412,18 @@ class PartnerCenterListHandler {
                             $.fn.notifyB({
                                 'description': 'Success',
                             }, 'success');
+                            setTimeout(() => {
+                                window.location.replace(_form.dataUrlRedirect);
+                            }, 3000);
                         }
                     },
                     (errs) => {
-                        for (const [key, value] of Object.entries(errs.data.errors)) {
-                            $.fn.notifyB({title: key, description: value}, 'failure');
+                        if(errs.data.errors){
+                            for (const [key, value] of Object.entries(errs.data.errors)) {
+                                $.fn.notifyB({title: key, description: value}, 'failure');
+                            }
+                        } else {
+                            $.fn.notifyB('Error', 'failure');
                         }
                     });
             },

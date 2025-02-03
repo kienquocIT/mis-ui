@@ -155,8 +155,8 @@ function TaskSubmitFunc(platform) {
 
     let _form = new SetupFormSubmit(platform);
     let formData = _form.dataForm
-    const start_date = new Date(moment(formData.start_date, 'DD/MM/YYYY')).getTime()
-    const end_date = new Date(moment(formData.end_date, 'DD/MM/YYYY')).getTime()
+    const start_date = new Date(formData.start_date).getTime()
+    const end_date = new Date(formData.end_date).getTime()
     if (end_date < start_date) {
         $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
         return false
@@ -169,8 +169,6 @@ function TaskSubmitFunc(platform) {
         temp = JSON.parse(temp)
         formData.log_time = temp
     }
-    formData.start_date = moment(formData.start_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
-    formData.end_date = moment(formData.end_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
     formData.priority = parseInt(formData.priority)
     let tagsList = $('#inputLabel').attr('value')
     if (tagsList) formData.label = JSON.parse(tagsList)
@@ -446,15 +444,18 @@ class Task_in_project {
             }
 
             $empElm.attr('data-onload', JSON.stringify(infoObj))
+                .attr('data-params', JSON.stringify({"list_from_prj": prj_info.id}))
             if ($(`option[value="${infoObj.id}"]`, $empElm).length <= 0)
                 $empElm.append(`<option value="${infoObj.id}">${infoObj.full_name}</option>`)
             $empElm.val(infoObj.id).trigger('change')
         });
-
+        // to do here đang làm đến đây tìm class bastionField check add thêm list_from_prj cho employee list
         // run component project/employee inherit
+
         new $x.cls.bastionField({
             has_prj: true,
             has_inherit: true,
+            inherit_params: {'list_from_prj': prj_info.id},
             data_inherit: [{
                 "id": prj_info['employee_inherit']['id'],
                 "full_name": prj_info['employee_inherit']['full_name'],

@@ -2,6 +2,9 @@
 
 <div class="row">
     <div class="col-12 text-right">
+        <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#activities-collapse" aria-expanded="false" aria-controls="activities-collapse">
+            {% trans 'Sales Activities' %}
+        </button>
         <button class="btn btn-sm btn-outline-secondary" type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapseExample"
@@ -37,6 +40,9 @@
         </div>
     </div>
 </div>
+
+{% include 'sales/lead/activities/activities_collapse.html' %}
+
 <div class="modal fade" id="convert_opp_config" tabindex="-1" role="dialog" aria-labelledby="convert_opp_config" aria-hidden="true">
     <div class="modal-dialog modal-lg min-w-1000p" role="document">
         <div class="modal-content">

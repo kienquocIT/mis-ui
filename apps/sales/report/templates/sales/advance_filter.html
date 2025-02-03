@@ -1,0 +1,21 @@
+{% load static i18n %}
+
+<div class="d-flex flex-row gap-5 flex-wrap" id="advance-filter-area">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#advance-filter-modal">
+        Open Advance Filter
+    </button>
+</div>
+
+{% block dataHiddenGroup %}
+    <script
+            id="advance-filter-script"
+            data-advance-filter-list=""
+    ></script>
+    <script
+        id="msg-script"
+        data-msg-are-u-sure="{% trans 'Are you sure?' %}"
+        data-msg-not-revert="{% trans "You won't be able to revert this!" %}"
+        data-msg-cancel="{% trans 'Cancel' %}"
+        data-msg-delete="{% trans 'Delete' %}"
+></script>
+{% endblock %}

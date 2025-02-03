@@ -641,6 +641,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Revenue plan
     REVENUE_PLAN_LIST = StringUrl('revenue-plans/list')
     REVENUE_PLAN_DETAIL = StringUrl('revenue-plans/detail/{pk}')
+    REVENUE_PLAN_BY_REPORT_PERM_LIST = StringUrl('revenue-plans/list-by-report-perm')
 
     # Budget plan
     BUDGET_PLAN_LIST = StringUrl('budget-plans/list')
@@ -652,6 +653,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEAD_CHART = StringUrl('lead/chart-data')
     LEAD_DETAIL = StringUrl('lead/detail/{pk}')
     LEAD_STAGE_LIST = StringUrl('lead/list-lead-stage')
+    LEAD_CALL_LIST = StringUrl('lead/call/list')
+    LEAD_CALL_DETAIL = StringUrl('lead/call/detail/{pk}')
+    LEAD_EMAIL_LIST = StringUrl('lead/email/list')
+    LEAD_MEETING_LIST = StringUrl('lead/meeting/list')
+    LEAD_MEETING_DETAIL = StringUrl('lead/meeting/detail/{pk}')
+    LEAD_ACTIVITY_LIST = StringUrl('lead/activity/list')
 
     # Distribution plan
     DISTRIBUTION_PLAN_LIST = StringUrl('distribution-plans/list')
@@ -825,6 +832,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LIST_CONTACT_LIST = StringUrl('partner-center/list/contact-list')
     LIST_INDUSTRY_LIST = StringUrl('partner-center/list/industry-list')
     LIST_OPP_CONFIG_STAGE_LIST = StringUrl('partner-center/list/opp-config-stage-list')
+    LIST_ACCOUNT_LIST = StringUrl('partner-center/list/account-list')
     # Goods recovery
     GOODS_RECOVERY_LIST = StringUrl('inventory/goods-recovery/list')
     GOODS_RECOVERY_DETAIL = StringUrl('inventory/goods-recovery')
+
+    # Advance Filter
+    ADVANCE_FILTER_LIST = StringUrl('report/advance-filter/list')
+    ADVANCE_FILTER_DETAIL = StringUrl('report/advance-filter/detail')

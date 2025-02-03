@@ -1,6 +1,7 @@
 $(document).ready(function () {
-    let table = $('#table_partnercenter_result_list');
-    let $url = $('#app-urls-factory')
+    const table = $('#table_partnercenter_result_list');
+    const $url = $('#app-urls-factory')
+    const $transScript = $('#trans-script')
     const COLUMNS = {
         'account': [
             {
@@ -59,14 +60,16 @@ $(document).ready(function () {
                 targets: 6,
                 width: '10%',
                 render: (data, type, row, meta) => {
-                    return `${row.revenue_information.revenue_ytd ? row.revenue_information.revenue_ytd : 'no data'}`
+                    const value = row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0
+                    return `<span class="mask-money" data-init-money="${value}"></span>`
                 }
             },
             {
                 targets: 7,
                 width: '10%',
                 render: (data, type, row, meta) => {
-                    return `${row.revenue_information.revenue_average ? row.revenue_information.revenue_average : 'no data'}`
+                    const value = row?.['revenue_information']?.['revenue_average'] ? row?.['revenue_information']?.['revenue_average'] : 0
+                    return `<span class="mask-money" data-init-money="${value}"></span>`
                 }
             },
             {
@@ -181,17 +184,25 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                     if (data && resp.data.hasOwnProperty('list_result')) {
+                        const listViewUrl = $url.data('lists-list-view-url')
+                        const listsTitle = $transScript.data('lists')
                         let $breadcrumb = $('ol.breadcrumb');
                         $breadcrumb.find('li').each(function () {
                             $(this).removeClass('active')
                             $(this).removeAttr('aria-current')
                         })
                         $breadcrumb.append(
+                            `<li class="breadcrumb-item">
+                                <a href="${listViewUrl}">${listsTitle}</a>
+                            </li>`
+                        ).removeClass('hidden');
+                        $breadcrumb.append(
                             `<li class="breadcrumb-item">${data.title}</li>`
                         ).removeClass('hidden');
                         $('#table-row-header').append(HEADERS[data['data_object'].toLowerCase()])
                         table.DataTableDefault({
                             dom: '<t<"bottom"lip>>',
+                            reloadCurrency: true,
                             rowIdx: true,
                             authWidth: false,
                             scrollX: true,

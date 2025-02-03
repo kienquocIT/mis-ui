@@ -1,14 +1,10 @@
 $(document).ready(function () {
-    let first_name = '';
-    let last_name = '';
-    $('#inp-firstname').change(function () {
-        first_name = $(this).val();
-        $('#inp-fullname').val(`{0} {1}`.format_by_idx(last_name, first_name));
+    let [fNameELe, lNameEle, fullNameEle] = [$('#inp-first_name'), $('#inp-last_name'), $('#inp-full_name')];
+    fNameELe.on('input', function () {
+        fullNameEle.val(PersonControl.combineName(fNameELe.val(), lNameEle.val()));
     });
-
-    $('#inp-lastname').change(function () {
-        last_name = $(this).val();
-        $('#inp-fullname').val(`{0} {1}`.format_by_idx(last_name, first_name));
+    lNameEle.on('input', function () {
+        fullNameEle.val(PersonControl.combineName(fNameELe.val(), lNameEle.val()));
     });
 
     $('.btn-icon').on('click', function () {

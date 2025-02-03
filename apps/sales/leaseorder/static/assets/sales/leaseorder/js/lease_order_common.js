@@ -511,6 +511,7 @@ class LeaseOrderLoadDataHandle {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                                LeaseOrderDataTableHandle.$tableSLeasedProduct.DataTable().clear().draw();
                                 LeaseOrderDataTableHandle.$tableSLeasedProduct.DataTable().rows.add(data.product_sale_list).draw();
                                 WindowControl.hideLoading();
                             }
@@ -845,7 +846,8 @@ class LeaseOrderLoadDataHandle {
                                 if (row) {
                                     let rowIndex = LeaseOrderDataTableHandle.$tableSLeasedProduct.DataTable().row(row).index();
                                     let $row = LeaseOrderDataTableHandle.$tableSLeasedProduct.DataTable().row(rowIndex);
-                                    leasedData.push($row.data());
+                                    let rowData = $row.data();
+                                    leasedData.push(rowData?.['id']);
                                 }
                             }
                             $(quantityLeasedDataEle).val(JSON.stringify(leasedData));
@@ -3324,7 +3326,7 @@ class LeaseOrderDataTableHandle {
                                     <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" data-zone="${dataZone}" readonly required>
                                     <input type="text" class="form-control table-row-quantity-new validated-number hidden" value="${row?.['product_quantity_new'] ? row?.['product_quantity_new'] : "0"}">
                                     <input type="text" class="form-control table-row-quantity-leased validated-number hidden" value="${row?.['product_quantity_leased'] ? row?.['product_quantity_leased'] : "0"}">
-                                    <input type="text" class="form-control table-row-quantity-leased-data hidden" value="${JSON.stringify(row?.['product_quantity_leased_data'] ? row?.['product_quantity_leased_data'] : [])}">
+                                    <input type="text" class="form-control table-row-quantity-leased-data hidden" value=${JSON.stringify(row?.['product_quantity_leased_data'] ? row?.['product_quantity_leased_data'] : [])}>
                                     <button
                                         type="button"
                                         class="btn btn-icon btn-outline-light btn-select-quantity"
@@ -4892,7 +4894,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span>`;
+                        return `<span class="mask-money table-row-net-value" data-init-money="${parseFloat(row?.['net_value'] ? row?.['net_value'] : '0')}"></span>`;
                     }
                 },
                 {

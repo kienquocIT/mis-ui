@@ -1540,6 +1540,24 @@ class RecoverySubmitHandle {
             let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
             let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
             let rowData = $row.data();
+            // update depreciation data for recovery product
+            for (let product_data of rowData?.['delivery_product_data']) {
+                let target = RecoveryDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${product_data?.['product_data']?.['id']}"]`);
+                if (target) {
+                    let targetRow = target.closest('tr');
+                    if (targetRow) {
+                        let depreciationSubtotalEle = targetRow.querySelector('.table-row-depreciation-subtotal');
+                        if (depreciationSubtotalEle) {
+                            if ($(depreciationSubtotalEle).val()) {
+                                product_data['product_depreciation_subtotal'] = parseFloat($(depreciationSubtotalEle).val());
+                                if (product_data?.['product_depreciation_subtotal'] && product_data?.['quantity_recovery']) {
+                                    product_data['product_depreciation_price'] = product_data?.['product_depreciation_subtotal'] / product_data?.['quantity_recovery'];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             result.push(rowData);
         });
         return result;

@@ -435,6 +435,10 @@ class BastionFieldControl {
             } catch (e) {
             }
         }
+        if (this.globalOpts?.['inherit_params'])
+            try {
+                paramData = {...paramData, ...this.globalOpts?.['inherit_params']}
+            } catch (e) {}
 
         return {
             allowClear: true,

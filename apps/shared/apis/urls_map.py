@@ -640,6 +640,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Revenue plan
     REVENUE_PLAN_LIST = StringUrl('revenue-plans/list')
     REVENUE_PLAN_DETAIL = StringUrl('revenue-plans/detail/{pk}')
+    REVENUE_PLAN_BY_REPORT_PERM_LIST = StringUrl('revenue-plans/list-by-report-perm')
 
     # Budget plan
     BUDGET_PLAN_LIST = StringUrl('budget-plans/list')

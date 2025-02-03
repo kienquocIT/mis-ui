@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Dashboard Pipeline' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        #idxPageContent {
+            background-color: #f9f9f9;
+        }
+        .view-space {
+            transition: all 0.25s ease-in-out;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    {{ data.data.current_period | json_script:"current_period" }}
+    <script id="script-url"
+            data-url-pipeline-list="{% url 'ReportPipelineListAPI' %}"
+    ></script>
+    <script id="trans-script"
+            data-trans-m1th="{% trans 'Jan ' %}"
+            data-trans-m2th="{% trans 'Feb ' %}"
+            data-trans-m3th="{% trans 'Mar ' %}"
+            data-trans-m4th="{% trans 'Apr ' %}"
+            data-trans-m5th="{% trans 'May ' %}"
+            data-trans-m6th="{% trans 'Jun ' %}"
+            data-trans-m7th="{% trans 'Jul ' %}"
+            data-trans-m8th="{% trans 'Aug ' %}"
+            data-trans-m9th="{% trans 'Sep ' %}"
+            data-trans-m10th="{% trans 'Oct ' %}"
+            data-trans-m11th="{% trans 'Nov ' %}"
+            data-trans-m12th="{% trans 'Dec ' %}"
+            data-trans-quarter-1="{% trans 'Quarter' %} 1"
+            data-trans-quarter-2="{% trans 'Quarter' %} 2"
+            data-trans-quarter-3="{% trans 'Quarter' %} 3"
+            data-trans-quarter-4="{% trans 'Quarter' %} 4"
+            data-trans-revenue="{% trans 'Revenue' %}"
+            data-trans-opp-stage="{% trans 'Opportunity stage' %}"
+            data-trans-chart-total-pipeline="{% trans 'Total pipeline chart' %}"
+            data-trans-chart-top-sale="{% trans 'Top sale' %}"
+            data-trans-chart-forecast="{% trans 'Revenue forecast chart' %}"
+            data-trans-month="{% trans 'Month' %}"
+            data-trans-quarter="{% trans 'Quarter' %}"
+            data-trans-sale-person="{% trans 'Sale person' %}"
+            data-trans-chart-activity="{% trans 'Sale activity chart' %}"
+            data-trans-customer="{% trans 'Customer' %}"
+            data-trans-call="{% trans 'Call' %}"
+            data-trans-email="{% trans 'Email' %}"
+            data-trans-meeting="{% trans 'Meeting' %}"
+            data-trans-document="{% trans 'Document' %}"
+            data-trans-all="{% trans 'Default all' %}"
+    ></script>
+    <div class="row">
+        <div class="col-12 col-md-12 col-lg-12">
+            <div class="bg-white border border-white rounded p-2">
+                <div class="row">
+                    <div class="col-4 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <label for="money-display" class="form-check-label">{% trans 'Money display' %}</label>
+                            <select class="form-select select2" id="money-display">
+                                <option value="0" selected>{% trans 'Million' %}</option>
+                                <option value="1">{% trans 'Billion' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <label for="money-round" class="form-check-label">{% trans 'Money round' %}</label>
+                            <input id="money-round" type="number" class="form-control" value="1" min="0">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label for="period-filter" class="form-check-label">{% trans 'Fiscal year' %}</label>
+                            <select class="form-select select2"
+                                    id="period-filter"
+                                    data-url="{% url 'PeriodsConfigListAPI' %}"
+                                    data-method="GET"
+                            ></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row dashboard-space mb-10">
+        <div class="view-space col-12 col-md-12 col-lg-12 mt-3">
+            <div class="bg-white border border-white rounded p-2">
+                <div class="row">
+                    <div class="col-12 col-md-12 col-lg-12 text-right">
+                        <button class="large-view-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover" type="button">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Resize' %}"><i class="bi bi-window"></i></span>
+                        </button>
+                        <button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover"
+                                data-bs-toggle="collapse"
+                                href="#pipelineCollapse"
+                                type="button">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Filter' %}"><i class="bi bi-filter-circle"></i></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="collapse show" id="pipelineCollapse">
+                    <div class="row">
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="pipeline-group">{% trans 'Group' %}</label>
+                                <select class="form-select select2" id="pipeline-group" data-method="GET" data-url="{% url 'GroupListAPI' %}"></select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label for="top-sale-number" class="form-label">{% trans 'Sale number viewed' %}</label>
+                                <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div id="total-pipeline-spinner" class="spinner-grow" role="status"></div>
+                        <canvas id="total_pipeline_chart" style="max-height: 350px"></canvas>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div id="top-sale-spinner" class="spinner-grow" role="status"></div>
+                        <canvas id="top_sale_chart" style="min-height: 350px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-space col-6 col-md-6 col-lg-6 mt-3">
+            <div class="bg-white border border-white rounded p-2">
+                <div class="row">
+                    <div class="col-12 col-md-12 col-lg-12 text-right">
+                        <button class="large-view-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover" type="button">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Resize' %}"><i class="bi bi-window"></i></span>
+                        </button>
+                        <button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover"
+                                data-bs-toggle="collapse"
+                                href="#forecastCollapse"
+                                type="button">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Filter' %}"><i class="bi bi-filter-circle"></i></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="collapse show" id="forecastCollapse">
+                    <div class="row">
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="forecast-viewby" class="form-label">{% trans 'View by' %}</label>
+                                <select class="form-select select2" id="forecast-viewby">
+                                    <option value="0" selected>{% trans 'Month' %}</option>
+                                    <option value="1">{% trans 'Quarter' %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="winrate-threshold" class="form-label">{% trans 'Winrate threshold' %}</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="number" id="winrate-threshold" step="5" min="0" max="100" value="70">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="forecast-group">{% trans 'Group' %}</label>
+                                <select class="form-select select2" id="forecast-group" data-method="GET" data-url="{% url 'GroupListAPI' %}"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <div id="forecast-spinner" class="spinner-grow" role="status"></div>
+                        <canvas id="forecast_chart" style="min-height: 350px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-space col-6 col-md-6 col-lg-6 mt-3">
+            <div class="bg-white border border-white rounded p-2">
+                <div class="row">
+                    <div class="col-12 col-md-12 col-lg-12 text-right">
+                        <button class="large-view-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover" type="button">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Resize' %}"><i class="bi bi-window"></i></span>
+                        </button>
+                        <button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover"
+                                data-bs-toggle="collapse"
+                                href="#activityCollapse"
+                                type="button">
+                            <span class="icon"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{% trans 'Filter' %}"><i class="bi bi-filter-circle"></i></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="collapse show" id="activityCollapse">
+                    <div class="row">
+                        <div class="col-12 col-md-8 col-lg-8">
+                            <div class="form-group">
+                                <label class="form-label" for="activity-time">{% trans 'Time range' %}</label>
+                                <div class="input-group">
+                                    <select class="form-select select2" id="activity-time">
+                                        <option value="0">{% trans 'Month' %}</option>
+                                        <option value="1">{% trans 'Quarter' %}</option>
+                                        <option value="2" selected>{% trans 'Whole year' %}</option>
+                                    </select>
+                                    <label class="input-group-text" for="activity-time-detail" hidden></label>
+                                    <select class="form-select select2" id="activity-time-detail" disabled></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="top-customer-number" class="form-label">{% trans 'Customer number viewed' %}</label>
+                                <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <div id="activity-spinner" class="spinner-grow" role="status"></div>
+                        <canvas id="activity_chart" style="min-height: 350px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/chartjs/chart.umd.min.js' %}"></script>
+    <script src="{% static 'assets/sales/dashboard/dashboard_pipeline_new.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
+{% endblock %}

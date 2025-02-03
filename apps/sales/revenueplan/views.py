@@ -110,3 +110,16 @@ class RevenuePlanDetailAPI(APIView):
             resp.result['message'] = SaleMsg.RP_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+# Employee plan
+class RevenuePlanByReportPermListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REVENUE_PLAN_BY_REPORT_PERM_LIST).get(data)
+        return resp.auto_return(key_success='revenue_plan_by_report_perm_list')

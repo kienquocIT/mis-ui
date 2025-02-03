@@ -320,7 +320,6 @@ class ConsultingHandler{
                     width: '55%',
                     render: (data, type, row) => {
                         let prodCateUrl = this.urlScript.data('url-product-category');
-                        console.log(row)
                         let defaultOption = row['product_category']
                             ? `<option value="${row['product_category']}">${row['title']}</option>`
                             : ``;
@@ -1123,7 +1122,6 @@ class ConsultingHandler{
                     'isManual': isManual
                 })
             }
-            console.log(row)
         })
         return {'document_data': result, 'attachment': attachmentAll}
     }
@@ -1144,7 +1142,6 @@ class ConsultingHandler{
             }
 
         })
-        console.log(result)
         return result
 
     }

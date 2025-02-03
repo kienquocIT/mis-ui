@@ -47,7 +47,8 @@ $(document).ready(function () {
                 }
                 let empCurrent = JSON.parse($('#employee_current').text());
                 let systemStatus = data?.['system_status']
-                loadUIBidResult(empCurrent, systemStatus)
+                const bidStatus = data?.['bid_status']
+                loadUIBidResult(empCurrent, systemStatus, bidStatus)
 
                 // file
                 new $x.cls.file($('#attachment')).init({
@@ -185,7 +186,7 @@ $(document).ready(function () {
         )
     })
 
-    function loadUIBidResult(empCurrent, sysStatus) {
+    function loadUIBidResult(empCurrent, sysStatus, bidStatus) {
         $.fn.callAjax2({
             url: $urlBidResultConfig,
             method: 'GET',
@@ -199,7 +200,7 @@ $(document).ready(function () {
                         // !! convert value to boolean
                         isAllowedModify = !!employeeList.find(item => item?.["id"] === empCurrent?.["id"])
                     }
-                    if(isAllowedModify && sysStatus === 3){
+                    if(isAllowedModify && sysStatus === 3 && bidStatus===0){
                         $('#btn-save-result').attr('disabled', false)
                         $('#btn-open-bidder-modal').attr('disabled', false)
                         $('#bid-status-won').attr('disabled', false)

@@ -954,14 +954,22 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="d-flex justify-content-start">
-                                    <div class="form-check form-check-lg mr-4">
-                                        <input type="radio" class="form-check-input depreciation-for-sale" id="depreciation_for_sale" checked>
-                                        <label class="form-check-label table-row-title" for="depreciation_for_sale">Sale</label>
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="d-flex justify-content-start">
+                                        <div class="form-check form-check-lg mr-4">
+                                            <input type="radio" class="form-check-input depreciation-for-sale" id="depreciation_for_sale" checked>
+                                            <label class="form-check-label table-row-title" for="depreciation_for_sale">Sale</label>
+                                        </div>
+                                        <div class="form-check form-check-lg">
+                                            <input type="radio" class="form-check-input depreciation-for-finance" id="depreciation_for_finance">
+                                            <label class="form-check-label table-row-title" for="depreciation_for_finance">Finance</label>
+                                        </div>
                                     </div>
-                                    <div class="form-check form-check-lg">
-                                        <input type="radio" class="form-check-input depreciation-for-finance" id="depreciation_for_finance">
-                                        <label class="form-check-label table-row-title" for="depreciation_for_finance">Finance</label>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-check form-check-lg" id="depreciation_start_date_recovery_area"  hidden>
+                                        <input type="checkbox" name="row-checkbox" class="form-check-input" id="depreciation_start_date_recovery">
+                                        <label class="form-check-label table-row-title" for="depreciation_start_date_recovery">{% trans 'Start date is last recovery date' %}</label>
                                     </div>
                                 </div>
                             </div>

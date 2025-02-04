@@ -390,6 +390,7 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(4);
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 LeaseOrderLoadDataHandle.loadDataTableCost();
+                LeaseOrderLoadDataHandle.loadDataTableCostLeased();
             }
         });
 
@@ -445,6 +446,12 @@ $(function () {
 
 
         tableCost.on('click', '.btn-depreciation-detail', function () {
+            $('#depreciation_start_date_recovery_area').attr('hidden', 'true');
+            LeaseOrderLoadDataHandle.loadShowModalDepreciation(this);
+        });
+
+        LeaseOrderDataTableHandle.$tableCostLeased.on('click', '.btn-depreciation-detail', function () {
+            $('#depreciation_start_date_recovery_area').removeAttr('hidden');
             LeaseOrderLoadDataHandle.loadShowModalDepreciation(this);
         });
 

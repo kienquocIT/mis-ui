@@ -332,7 +332,6 @@ class RecoveryLoadDataHandle {
             }
 
 
-
             let depreciationMethodEle = row.querySelector('.table-row-depreciation-method');
             let $methodEle = $('#depreciation_method');
             if (depreciationMethodEle && $methodEle.length > 0) {
@@ -353,7 +352,7 @@ class RecoveryLoadDataHandle {
             let $priceEle = $('#cost_price');
             if (priceEle && quantityEle && $priceEle.length > 0) {
                 if ($(priceEle).valCurrency() && $(quantityEle).val()) {
-                    let total = parseFloat($(priceEle).valCurrency()) * parseFloat($(quantityEle).val())
+                    let total = parseFloat($(priceEle).valCurrency()) * parseFloat($(quantityEle).val());
                     $($priceEle).attr('value', String(total));
                     // mask money
                     $.fn.initMaskMoney2();
@@ -853,7 +852,6 @@ class RecoveryDataTableHandle {
                                     <input type="text" class="form-control table-row-depreciation-adjustment" value="${row?.['product_depreciation_adjustment'] ? row?.['product_depreciation_adjustment'] : 1}" hidden>
                                     
                                     <input type="text" class="form-control table-row-depreciation-time" value="${row?.['product_quantity_depreciation'] ? row?.['product_quantity_depreciation'] : 0}" hidden>
-<!--                                    <input type="text" class="form-control table-row-uom-time" value="${row?.['product_depreciation_adjustment'] ? row?.['product_depreciation_adjustment'] : 1}" hidden>-->
                                 </div>`;
                     }
                 },

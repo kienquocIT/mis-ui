@@ -248,4 +248,12 @@ $(document).ready(function () {
         $(this).find('i').toggleClass('fa-lock').toggleClass('fa-lock-open')
         $finishDateElm.next().prop('disabled', !$finishDateElm.next().prop('disabled'))
     })
+
+    // action click text "Zone"
+    $('.announcement del').on('click', () =>{
+        $('.gantt-left-container').addClass('effect-active')
+        setTimeout(() => {
+            $('.gantt-left-container').removeClass("effect-active");
+        }, 2000);
+    })
 });

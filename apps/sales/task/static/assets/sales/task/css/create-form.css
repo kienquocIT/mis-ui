@@ -33,3 +33,6 @@
 #rangeValue + small{
     color:#e95144;
 }
+.input-affix-wrapper .form-control:not(:first-child){
+    padding-left: 0.75rem;
+}

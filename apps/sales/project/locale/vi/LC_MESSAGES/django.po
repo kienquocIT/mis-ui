@@ -48,3 +48,15 @@ msgstr "Tổng giao việc"
 #
 msgid "Total task complete"
 msgstr "Tổng giao việc đã hoàn thành"
+
+#
+msgid "R-click to"
+msgstr "Chuột phải vào"
+
+#
+msgid "zone"
+msgstr "vùng"
+
+#
+msgid "to create new Group and Work"
+msgstr "để tạo mới Nhóm và Công việc"

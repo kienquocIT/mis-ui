@@ -4,7 +4,8 @@
     {% trans 'Project' %} {% trans 'Detail' %}
 {% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{% static 'vendors/frappe-gantt/dist/frappe-gantt.css' %}">
     <link rel="stylesheet" href="{% static 'assets/project/css/project.css' %}">
 {% endblock %}
@@ -162,14 +163,17 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade show active" id="tab_detail">
-            <label for="change_view_mode" class="label font-weight-bold mr-3">{% trans 'Change view mode' %}: </label>
-            <div class="mx-auto mt-3 btn-group mb-3" role="group" id="change_view_mode">
-                <button type="button" class="btn btn-sm btn-primary" data-value="Quarter Day">{% trans 'Quarter Day' %}</button>
-                <button type="button" class="btn btn-sm btn-primary" data-value="Half Day">{% trans 'Half Day' %}</button>
-                <button type="button" class="btn btn-sm btn-primary active" data-value="Day">{% trans 'Day' %}</button>
-                <button type="button" class="btn btn-sm btn-primary" data-value="Week">{% trans 'Week' %}</button>
-                <button type="button" class="btn btn-sm btn-primary" data-value="Month">{% trans 'Month' %}</button>
+            <div class="float-right">
+                <label for="change_view_mode" class="label font-weight-bold mr-3">{% trans 'Change view mode' %}: </label>
+                <div class="mx-auto mt-3 btn-group mb-3" role="group" id="change_view_mode">
+                    <button type="button" class="btn btn-sm btn-primary" data-value="Quarter Day">{% trans 'Quarter Day' %}</button>
+                    <button type="button" class="btn btn-sm btn-primary" data-value="Half Day">{% trans 'Half Day' %}</button>
+                    <button type="button" class="btn btn-sm btn-primary active" data-value="Day">{% trans 'Day' %}</button>
+                    <button type="button" class="btn btn-sm btn-primary" data-value="Week">{% trans 'Week' %}</button>
+                    <button type="button" class="btn btn-sm btn-primary" data-value="Month">{% trans 'Month' %}</button>
+                </div>
             </div>
+            <div class="clearfix"></div>
             <div class="gantt-wrap">
                 <div class="gantt-block gantt-left">
                 </div>
@@ -341,8 +345,12 @@
     >
 {% endblock %}
 {% block jsFooter %}
+    <!-- library -->
     <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
-    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
     <script src="{% static 'vendors/frappe-gantt/dist/frappe-gantt.js' %}"></script>
     <!-- js component permission -->

@@ -364,7 +364,6 @@ $(function () {
                     .then((req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
-                            resetFormTask()
                             const offCanvasTaskElm = $('.btn-create-todo');
                             offCanvasTaskElm.trigger('click');
                             const titCreate = $('.title-create');
@@ -381,12 +380,8 @@ $(function () {
                             const stt = data.task_status
                             $('#selectStatus').attr('data-onload',
                                 JSON.stringify(stt)).initSelect2().val(stt.id).trigger('change')
-                            $('#inputTextStartDate').val(
-                                moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                            )
-                            $('#inputTextEndDate').val(
-                                moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                            )
+                            $('#inputTextStartDate')[0]._flatpickr.setDate(data.start_date)
+                            $('#inputTextEndDate')[0]._flatpickr.setDate(data.end_date)
                             $('#inputTextEstimate').val(data.estimate)
 
                             $('#selectPriority').val(data.priority).trigger('change')
@@ -424,7 +419,8 @@ $(function () {
                             if (data.employee_inherit) {
                                 data.employee_inherit.selected = true
                                 $empElm.html(`<option value="${data.employee_inherit.id}">${data.employee_inherit.full_name}</option>`)
-                                    .attr('data-onload', JSON.stringify(data.employee_inherit)).trigger("change")
+                                    .attr('data-onload', JSON.stringify(data.employee_inherit))
+                                $empElm.trigger("change", BastionFieldControl.skipBastionChange)
                             }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist

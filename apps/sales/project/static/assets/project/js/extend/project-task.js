@@ -229,8 +229,8 @@ function logWorkSubmit() {
             return false
         }
         const data = {
-            'start_date': moment(startDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-            'end_date': moment(endDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+            'start_date': startDate,
+            'end_date': endDate,
             'time_spent': est,
         }
         // if has task id => log time
@@ -352,17 +352,16 @@ class Task_in_project {
         });
     }
 
-    static runDatePick(elm){
-        elm.daterangepicker({
-            minYear: 2023,
-            singleDatePicker: true,
-            timePicker: false,
-            showDropdowns: true,
-            autoApply: true,
-            locale: {
-                format: 'DD/MM/YYYY'
-            }
-        }).val(null).trigger('change')
+    static runDatePick(elm, dobData){
+        elm.flatpickr({
+            'allowInput': true,
+            'altInput': true,
+            'altFormat': 'd/m/Y',
+            // 'dateFormat': 'YYYY-MM-DD',
+            'defaultDate': dobData || null,
+            'locale': globeLanguage === 'vi' ? 'vn' : 'default',
+            'shorthandCurrentMonth': true,
+        })
     }
 
     static init(prj_info) {
@@ -451,7 +450,6 @@ class Task_in_project {
         });
         // to do here đang làm đến đây tìm class bastionField check add thêm list_from_prj cho employee list
         // run component project/employee inherit
-
         new $x.cls.bastionField({
             has_prj: true,
             has_inherit: true,
@@ -555,12 +553,8 @@ class Task_in_project {
                     $('#inputTextCode', $form).val(data.code)
                     const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                     $form.append(taskIDElm)
-                    $('#inputTextStartDate', $form).val(
-                        moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                    )
-                    $('#inputTextEndDate', $form).val(
-                        moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                    )
+                    $('#inputTextStartDate', $form)[0]._flatpickr.setDate(data.start_date)
+                    $('#inputTextEndDate', $form)[0]._flatpickr.setDate(data.end_date)
                     $('#inputTextEstimate', $form).val(data.estimate)
                     $('#selectPriority', $form).val(data.priority).trigger('change')
                     $('#rangeValue').text(data['percent_completed'])

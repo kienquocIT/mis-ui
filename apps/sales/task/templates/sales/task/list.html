@@ -4,7 +4,7 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/dragula/dragula.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/perfect-scrollbar.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
 
     <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/sales/task/css/task.css' %}" rel="stylesheet" type="text/css"/>
@@ -258,7 +258,10 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
     <script src="{% static 'vendors/gantt/jquery.fn.gantt.js' %}"></script>
-    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
     <script src="{% static 'assets/js/perfect-scrollbar.min.js' %}"></script>
     <script src="{% static 'vendors/dragula/dragula.min.js' %}"></script>
 

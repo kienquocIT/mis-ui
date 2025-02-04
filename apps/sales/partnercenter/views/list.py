@@ -4,6 +4,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from apps.shared.msg import BaseMsg
+
 
 def create(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
@@ -103,7 +105,7 @@ class ListListAPI(APIView):
         return create(
             request=request,
             url=ApiURL.LIST_LIST,
-            msg="Success"
+            msg=BaseMsg.SUCCESS
         )
 
 class ListDetailAPI(APIView):
@@ -124,8 +126,19 @@ class ListDetailAPI(APIView):
             request=request,
             url=ApiURL.LIST_DETAIL,
             pk=pk,
-            msg='Success'
+            msg=BaseMsg.SUCCESS
         )
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def delete(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LIST_DETAIL.push_id(pk)).delete(request.data)
+        if resp.state:
+            resp.result['message'] = BaseMsg.SUCCESS
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
 
 class ListResultListAPI(APIView):
     @mask_view(

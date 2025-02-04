@@ -83,7 +83,7 @@ class AdvanceFilterCommonHandler {
     }
 
     getCurrPageAppID() {
-        this.currPageAppID = this.$filterModal.data('curr-page-app-id')
+        this.currPageAppID = this.$filterModal.attr('data-curr-page-app-id')
     }
 
     init(){
@@ -268,7 +268,7 @@ class AdvanceFilterCommonHandler {
     }
 
     onClickDelModalFilterItemEventBinding(){
-        $(document).on('click', '#advance-filter-modal .del-row', (e) => {
+        $(document).on('click', '.del-row', (e) => {
             const $currentRow = $(e.currentTarget).closest('.filter-row');
             const $currentCardBody = $currentRow.closest('.card-body')
             if ($currentCardBody.children().length === 1) {
@@ -410,7 +410,7 @@ class AdvanceFilterCommonHandler {
                 } else if ($right.is('input')) {
                     rightData = $right.val()
                 }
-                let type =$(filterRowEle).find("select[name='left']").data('prop-type');
+                let type =$(filterRowEle).find("select[name='left']").attr('data-prop-type');
 
                 if (Number(type) === 6 && isNaN(rightData)) {
                     isError = true
@@ -600,7 +600,7 @@ class AdvanceFilterCommonHandler {
         form.dataForm['filter_condition'] = filterCondition
         form.dataForm['application'] = this.currPageAppID
         form.dataForm['isError'] = isError
-        form.dataUrl = form.dataUrl.format_url_with_uuid($('#btn-update-advance-filter').data('id'))
+        form.dataUrl = form.dataUrl.format_url_with_uuid($('#btn-update-advance-filter').attr('data-id'))
     }
 
     setUpFormUpdateFilterSubmit(){
@@ -801,11 +801,9 @@ class AdvanceFilterCommonHandler {
             const $currentEle = $(e.currentTarget)
             const advanceFilterId = $currentEle.closest('.filter-item').find('input').attr('id')
             const advanceFilterListData = JSON.parse($('#advance-filter-script').attr('data-advance-filter-list'))
-            console.log(advanceFilterListData)
             const currentAdvanceFilterData = advanceFilterListData.find(item=>item['id'] === advanceFilterId)
             this.loadDataDetailAdvanceFilter(currentAdvanceFilterData)
             $('#btn-update-advance-filter').attr('data-id', advanceFilterId)
-            console.log(currentAdvanceFilterData)
         })
     }
 

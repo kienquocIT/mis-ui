@@ -190,5 +190,5 @@ class ListAccountListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, url=ApiURL.LIST_CONTACT_LIST, user=request.user).get()
+        resp = ServerAPI(request=request, url=ApiURL.LIST_ACCOUNT_LIST, user=request.user).get()
         return resp.auto_return(key_success='account_list')

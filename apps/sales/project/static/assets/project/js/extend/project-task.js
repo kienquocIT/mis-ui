@@ -450,7 +450,6 @@ class Task_in_project {
         });
         // to do here đang làm đến đây tìm class bastionField check add thêm list_from_prj cho employee list
         // run component project/employee inherit
-
         new $x.cls.bastionField({
             has_prj: true,
             has_inherit: true,
@@ -554,12 +553,8 @@ class Task_in_project {
                     $('#inputTextCode', $form).val(data.code)
                     const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                     $form.append(taskIDElm)
-                    $('#inputTextStartDate', $form).val(
-                        moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                    )
-                    $('#inputTextEndDate', $form).val(
-                        moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                    )
+                    $('#inputTextStartDate', $form)[0]._flatpickr.setDate(data.start_date)
+                    $('#inputTextEndDate', $form)[0]._flatpickr.setDate(data.end_date)
                     $('#inputTextEstimate', $form).val(data.estimate)
                     $('#selectPriority', $form).val(data.priority).trigger('change')
                     $('#rangeValue').text(data['percent_completed'])

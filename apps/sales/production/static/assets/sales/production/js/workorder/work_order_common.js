@@ -123,7 +123,7 @@ class WorkOrderLoadDataHandle {
 
     static loadInitPage() {
         // date
-        WorkOrderLoadDataHandle.$dateCreated.val(WorkOrderCommonHandle.getCurrentDate());
+        WorkOrderLoadDataHandle.$dateCreated.val(DateTimeControl.getCurrentDate("DMY", "/"));
         // select2
         WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxStatus, WorkOrderLoadDataHandle.dataStatus);
         WorkOrderLoadDataHandle.loadInitS2(WorkOrderLoadDataHandle.$boxSO, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
@@ -1064,14 +1064,6 @@ class WorkOrderCommonHandle {
         let row = $table.DataTable().row(rowIdx);
         row.remove().draw();
         return true;
-    };
-
-    static getCurrentDate() {
-        let currentDate = new Date();
-        let day = String(currentDate.getDate()).padStart(2, '0');
-        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        let year = currentDate.getFullYear();
-        return `${day}/${month}/${year}`;
     };
 
     static filterFieldList(field_list, data_json) {

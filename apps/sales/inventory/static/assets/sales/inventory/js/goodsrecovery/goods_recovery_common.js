@@ -372,6 +372,9 @@ class RecoveryLoadDataHandle {
                 if ($(depreciationStartDEle).val()) {
                     $startDateEle.val(moment($(depreciationStartDEle).val()).format('DD/MM/YYYY'));
                 }
+                if (!$startDateEle.val()) {
+                    $startDateEle.val(DateTimeControl.getCurrentDate("DMY", "/"));
+                }
             }
             let $endDateEle = $('#depreciation_end_date');
             if ($endDateEle.length > 0) {

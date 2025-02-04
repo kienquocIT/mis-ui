@@ -5208,7 +5208,7 @@ class QuotationPromotionHandle {
     static callPromotion(type_check) {
         let $ele = $('#data-init-quotation-create-promotion');
         let customer_id = QuotationLoadDataHandle.customerSelectEle.val();
-        let currentDate = getCurrentDate();
+        let currentDate = DateTimeControl.getCurrentDate();
         $.fn.callAjax2({  // promotion for all
                 'url': $ele.attr('data-url'),
                 'method': $ele.attr('data-method'),
@@ -7054,14 +7054,6 @@ function filterDataProductNotPromotion(data_products) {
         }
     }
     return finalList
-}
-
-function getCurrentDate() {
-    let currentDate = new Date();
-    let day = String(currentDate.getDate()).padStart(2, '0');
-    let month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    let year = currentDate.getFullYear();
-    return `${year}-${month}-${day}`;
 }
 
 // math functions

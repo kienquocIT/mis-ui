@@ -6443,6 +6443,23 @@ class DateTimeControl {
         const timeDifference = Math.abs(rDate2 - rDate1);
         return Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
     }
+
+    static getCurrentDate(dateType = "YMD", separate = "-") {
+        let currentDate = new Date();
+        let day = String(currentDate.getDate()).padStart(2, '0');
+        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        let year = currentDate.getFullYear();
+        switch (dateType) {
+            case "YMD":
+                return `${year}${separate}${month}${separate}${day}`;
+            case "DMY":
+                return `${day}${separate}${month}${separate}${year}`;
+            case "MDY":
+                return `${month}${separate}${day}${separate}${year}`;
+            default:
+                throw new Error("Invalid dateType. Use 'YMD', 'DMY', or 'MDY'.");
+        }
+    }
 }
 
 class Beautiful {

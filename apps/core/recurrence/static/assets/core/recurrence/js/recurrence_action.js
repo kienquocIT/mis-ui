@@ -27,21 +27,13 @@ $(function () {
             },
         }
 
-        function getCurrentDate() {
-            let currentDate = new Date();
-            let day = String(currentDate.getDate()).padStart(2, '0');
-            let month = String(currentDate.getMonth() + 1).padStart(2, '0');
-            let year = currentDate.getFullYear();
-            return `${year}-${month}-${day}`;
-        }
-
         function loadDbl() {
             $table.DataTableDefault({
                 useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
-                    data: {'date_next': getCurrentDate()},
+                    data: {'date_next': DateTimeControl.getCurrentDate()},
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('recurrence_action')) {

@@ -62,7 +62,7 @@ class ProdReportLoadDataHandle {
 
     static loadInitPage() {
         // date
-        ProdReportLoadDataHandle.$dateCreated.val(ProdReportCommonHandle.getCurrentDate());
+        ProdReportLoadDataHandle.$dateCreated.val(DateTimeControl.getCurrentDate("DMY", "/"));
         // Num
         ProdReportLoadDataHandle.loadEventValidNum(ProdReportLoadDataHandle.$quantityFinished[0]);
         ProdReportLoadDataHandle.loadEventValidNum(ProdReportLoadDataHandle.$quantityNG[0]);
@@ -593,14 +593,6 @@ class ProdReportSubmitHandle {
 
 // Common
 class ProdReportCommonHandle {
-
-    static getCurrentDate() {
-        let currentDate = new Date();
-        let day = String(currentDate.getDate()).padStart(2, '0');
-        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        let year = currentDate.getFullYear();
-        return `${day}/${month}/${year}`;
-    };
 
     static filterFieldList(field_list, data_json) {
         for (let key in data_json) {

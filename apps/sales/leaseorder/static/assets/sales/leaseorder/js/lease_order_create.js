@@ -447,11 +447,18 @@ $(function () {
 
         tableCost.on('click', '.btn-depreciation-detail', function () {
             $('#depreciation_start_date_recovery_area').attr('hidden', 'true');
+            LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target', 'new-product-fn-cost');
             LeaseOrderLoadDataHandle.loadShowModalDepreciation(this);
         });
 
         LeaseOrderDataTableHandle.$tableCostLeased.on('click', '.btn-depreciation-detail', function () {
-            $('#depreciation_start_date_recovery_area').removeAttr('hidden');
+            if (this.closest('.net-value-area')) {
+                LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target', 'leased-product-net-value');
+            }
+            if (this.closest('.depreciation-area')) {
+                LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target', 'leased-product-fn-cost');
+                $('#depreciation_start_date_recovery_area').removeAttr('hidden');
+            }
             LeaseOrderLoadDataHandle.loadShowModalDepreciation(this);
         });
 

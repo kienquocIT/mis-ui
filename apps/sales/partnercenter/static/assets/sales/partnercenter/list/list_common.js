@@ -627,7 +627,7 @@ class PartnerCenterListHandler {
             }
         }).then(()=>{
             if (isDetail){
-                this.$formSubmit.find('button').not('[id="btn-enable-edit"]').each(function () {
+                this.$formSubmit.find('button').not('[id="btn-enable-edit"]').not('[class="accordion-button"]').each(function () {
                     $(this).attr('disabled', true)
                     $(this).attr('readonly', true)
                 })

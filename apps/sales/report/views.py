@@ -4,7 +4,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL
-from apps.shared.msg import ReportMsg
+from apps.shared.msg import ReportMsg, BaseMsg
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -78,6 +78,18 @@ class ReportProductListAPI(APIView):
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.REPORT_PRODUCT_LIST).get(data)
+        return resp.auto_return(key_success='report_product_list')
+
+
+class ReportProductListAPIRDashBoard(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_PRODUCT_LIST_FOR_DASHBOARD).get(data)
         return resp.auto_return(key_success='report_product_list')
 
 
@@ -400,7 +412,6 @@ class PurchaseOrderReportListAPI(APIView):
 
 
 # BUDGET REPORT
-
 # PO REPORT
 class BudgetReportList(View):
 
@@ -453,3 +464,51 @@ class PaymentListForBudgetReportAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.BUDGET_REPORT_PAYMENT_LIST).get(data)
         return resp.auto_return(key_success='budget_report_payment_list')
+
+
+class AdvanceFilterListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_FILTER_LIST).get(data)
+        return resp.auto_return(key_success='advance_filter_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_FILTER_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = BaseMsg.SUCCESS
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
+
+
+class AdvanceFilterDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_FILTER_DETAIL.push_id(pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = BaseMsg.SUCCESS
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def delete(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_FILTER_DETAIL.push_id(pk)).delete(request.data)
+        if resp.state:
+            resp.result['message'] = BaseMsg.SUCCESS
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()

@@ -540,16 +540,27 @@ class NotifyController {
         this.btnClearAll = $('#btnNotifyClearAll');
     }
 
+    handleBellCount(count=0){
+        if (typeof count !== 'number') {
+            count = 0;
+        }
+        this.bellCount.data('notify.count', count);
+        if (count > 0){
+            this.bellCount.text(count);
+            this.bellIdxIcon.addClass('my-bell-ring');
+        } else {
+            this.bellCount.text('');
+            this.bellIdxIcon.removeClass('my-bell-ring');
+        }
+    }
+
     checkNotifyCount() {
         $.fn.callAjax2({
             url: this.notifyCountUrl,
             method: 'GET',
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
-            if (data && data.hasOwnProperty('count') && data['count'] > 0) {
-                this.bellCount.text(data['count']);
-                this.bellIdxIcon.addClass('my-bell-ring');
-            }
+            this.handleBellCount(data['count'] || 0);
         });
     }
 
@@ -587,10 +598,21 @@ class NotifyController {
         }
     }
 
+    onEvents(){
+        const clsThis = this;
+        this.bellIdx.on('data.newOne', function (){
+            const count = clsThis.bellCount.data('notify.count');
+            clsThis.handleBellCount(count + 1);
+        });
+    }
+
     // main
     active() {
         new NotifyPopup().cleanChildNotifyBlock();
         let realThis = this;
+
+        realThis.onEvents();
+
         if (realThis.notifyCountUrl) realThis.checkNotifyCount();
 
         let notifyData = [];
@@ -2506,7 +2528,7 @@ class WFRTControl {
                                 <div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="radio" name="next-node-collab" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
                                     <label class="form-check-label mr-2" for="collab-${collab?.['id'].replace(/-/g, "")}">${collab?.['full_name']}</label>
-                                    <span class="badge badge-light badge-outline badge-sm">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
+                                    <span class="badge badge-light badge-outline">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                                 </div>
                             </div>`;
         }
@@ -4559,7 +4581,7 @@ class DTBControl {
 
         // append filter search class form-control-sm
         filterEle.addClass('mr-1');
-        filterEle.find('input[type="search"]'); // .addClass('form-control w-200p');
+        filterEle.find('input[type="text"]'); // .addClass('form-control w-200p');
 
         // handle sort
         let preKeyVisible = settings.aoHeader[0].map((item) => {
@@ -5196,7 +5218,6 @@ class DTBControl {
             enableSortColumns: true,
             enableFilterCustom: true,
             enableTools: true,
-
             // scrollY: '400px',
             // scrollCollapse: true,
             // fixedHeader: true,
@@ -5212,7 +5233,7 @@ class DTBControl {
             lengthMenu: [
                 [5, 10, 25, 50, -1], [5, 10, 25, 50, $.fn.transEle.attr('data-all')],
             ],
-            pageLength: 5,
+            pageLength: 10,
             ...domOpts,
             columns: this.columns,
             rowCallback: this.mergeRowCallback,
@@ -5719,6 +5740,13 @@ class PersonControl {
             return default_val;
         }
         return default_val;
+    }
+
+    static combineName(firstName, lastName) {
+        let firstPart = firstName.trim();
+        let lastPart = lastName.trim();
+        // Combine full name
+        return `${firstPart} ${lastPart}`;
     }
 }
 
@@ -8859,20 +8887,24 @@ String.prototype.valid_uuid4 = function () {
  * common function for DataTable action
  */
 var DataTableAction = {
-    'delete': function (url, data, crf, row) {
+    'delete': function (url, crf, row) {
         let div = jQuery('<div>');
-        let $transElm = $('#trans-factory')
-        let $content = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content">' + `<div class="modal-header"><h5 class="modal-title">${$transElm.data('terms-mess_tit')}</h5></div>` + `<div class="modal-body"><p class="text-center">${$transElm.data('terms-mess')}</p></div>` + '<div class="modal-footer justify-content-between">' + `<button type="button" class="btn btn-primary" data-type="confirm">${$transElm.data('terms-config')}</button>` + `<button type="reset" class="btn btn-outline-primary" data-type="cancel">${$transElm.data('terms-cancel')}` + '</button></div></div></div>';
+        let $content = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content">' +
+            `<div class="modal-header"><h5 class="modal-title">${$.fn.gettext('Delete Item')}</h5></div>` +
+            `<div class="modal-body"><p class="text-center">${$.fn.gettext('Do you really want to delete this item')}</p></div>` +
+            '<div class="modal-footer justify-content-between">' +
+            `<button type="button" class="btn btn-primary" data-type="confirm">${$.fn.gettext('Confirm')}</button>` +
+            `<button type="reset" class="btn btn-outline-primary" data-type="cancel">${$.fn.gettext('Cancel')}` +
+            '</button></div></div></div>';
         div.addClass('modal fade')
         div.html($content)
         div.appendTo('body');
         div.modal('show');
-        div.find('.btn').off().on('click', function (e) {
+        div.find('.btn').off().on('click', function () {
             if ($(this).attr('data-type') === 'cancel') div.remove(); else {
                 $.fn.callAjax2({
                     url: url,
                     method: 'DELETE',
-                    data: data,
                 }).then((res) => {
                     if (res.hasOwnProperty('status')) {
                         div.modal('hide');

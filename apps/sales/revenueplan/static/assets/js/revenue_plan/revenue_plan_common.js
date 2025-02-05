@@ -360,7 +360,6 @@ $(document).on("change", '.month-target', function () {
         sum_year_target_company += parseFloat(sum_year)
     })
 
-
     for (let i = 0; i < 12; i++) {
         revenuePlanTable.find(`thead .sum-company-m${i+1}`).attr('value', sum_month_target_company[i])
     }
@@ -466,7 +465,10 @@ function UpdateTablePlan(group_employee_list, group_selected) {
         revenuePlanTable.find('tbody').append(
             `<tr class="group-row" data-row="group-sum-row" data-group-id="${group_selected.id}">
                 <td class="bg-white">
-                    <button type="button" data-group-id="${group_selected.id}" class="minimize-group btn btn-custom btn-light icon-wthot-bg btn-rounded w-100"><span><span>${group_selected.title}</span><span class="icon"><i class="fas fa-angle-double-up"></i> </span></span></button>
+                    <span data-group-id="${group_selected.id}" class="minimize-groupw-100">
+                        <span class="fw-bold">${group_selected.title}</span>
+                        <span class="icon"><i class="fas fa-angle-double-up"></i></span>
+                    </span>
                 </td>
                 <td class="bg-white">
                     <label class="text-primary">${trans_script.attr('data-trans-revenue')}</label><br>
@@ -592,8 +594,8 @@ function UpdateTablePlan(group_employee_list, group_selected) {
             revenuePlanTable.find('.ytarget-td').each(function () {
                 if ($(this).html() === '') {
                     $(this).append(`
-                        <input class="mb-1 mask-money form-control text-primary yeartargetvalue" value="0">
-                        <input class="mask-money form-control text-secondary yeartargetvalue-profit" value="0">
+                        <input readonly disabled class="mb-1 mask-money form-control text-primary yeartargetvalue" value="0">
+                        <input readonly disabled class="mask-money form-control text-secondary yeartargetvalue-profit" value="0">
                     `)
                 }
             })
@@ -966,8 +968,8 @@ class RevenuePlanHandle {
 
 function Disabled(option) {
     if (option === 'detail') {
-        $('input').prop('readonly', true).prop('disabled', true)
-        $('select').prop('disabled', true)
+        $('form input').prop('readonly', true).prop('disabled', true)
+        $('form select').prop('disabled', true)
         $('#add-group-plan').addClass('disabled')
     }
     else {
@@ -1037,6 +1039,7 @@ function LoadDetailRevenuePlan(option) {
             $('.profit-type-span').text(profit_type)
 
             let data_get_group_emp = []
+            data?.['revenue_plan_group_data'].sort((a, b) => a?.['group_mapped']?.['code'].localeCompare(b?.['group_mapped']?.['code']));
             for (let i = 0; i < data?.['revenue_plan_group_data'].length; i++) {
                 let group_selected = data?.['revenue_plan_group_data'][i]?.['group_mapped']
                 let group_month_target = data?.['revenue_plan_group_data'][i]?.['group_month_target']
@@ -1048,7 +1051,10 @@ function LoadDetailRevenuePlan(option) {
                 revenuePlanTable.find('tbody').append(
                     `<tr class="group-row" data-row="group-sum-row" data-group-id="${group_selected.id}">
                         <td class="bg-white">
-                            <button type="button" data-group-id="${group_selected.id}" class="minimize-group btn btn-custom btn-light icon-wthot-bg btn-rounded w-100"><span><span>${group_selected.title}</span><span class="icon"><i class="fas fa-angle-double-up"></i> </span></span></button>
+                            <span data-group-id="${group_selected.id}" class="minimize-group w-100">
+                                <span class="fw-bold">${group_selected.title}</span>
+                                <span class="icon"><i class="fas fa-angle-double-up"></i></span>
+                            </span>
                         </td>
                         <td class="bg-white">
                             <label class="text-primary">${trans_script.attr('data-trans-revenue')}</label><br>
@@ -1127,6 +1133,7 @@ function LoadDetailRevenuePlan(option) {
 
                 let group_employee_valid = data?.['revenue_plan_group_data'][i]?.['employee_target_data']
                 let data_get_emp = []
+                group_employee_valid.sort((a, b) => a?.['code'].localeCompare(b?.['code']));
                 for (let j = 0; j < group_employee_valid.length; j++) {
                     data_get_emp.push(group_employee_valid[j]?.['id'])
                     let emp_month_target = group_employee_valid[j]?.['emp_month_target']

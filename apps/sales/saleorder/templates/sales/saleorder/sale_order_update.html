@@ -124,7 +124,7 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label class="form-label required" for="payment_term_id">{% trans 'Select Payment Terms' %}</label>
+                                <label class="form-label" for="payment_term_id">{% trans 'Select Payment Terms' %}</label>
                                 <select
                                         class="form-select"
                                         id="payment_term_id"
@@ -133,7 +133,6 @@
                                         data-method="GET"
                                         name="payment_term_id"
                                         data-keyResp="payment_terms_list"
-                                        required
                                 ></select>
                             </div>
                         </div>
@@ -258,18 +257,6 @@
                                     </table>
                                 </div>
                                 <div class="row">
-{#                                    <div class="col-12 col-md-6 col-lg-6">#}
-{#                                        <button type="button" class="btn btn-outline-primary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="sale_order_products_data">#}
-{#                                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'Add' %}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>#}
-{#                                        </button>#}
-{#                                        <div class="dropdown-menu w-210p">#}
-{#                                            <a class="dropdown-item" href="#" id="btn-add-product-quotation-create" data-bs-toggle="modal" data-bs-target="#selectProductModal"><i class="dropdown-icon fas fa-cube"></i><span class="mt-2">{% trans 'Add Product' %}</span></a>#}
-{#                                            <a class="dropdown-item" href="#" id="btn-add-product-group-quotation"><i class="dropdown-icon fas fa-layer-group"></i><span>{% trans 'Add group' %}</span></a>#}
-{#                                            <div class="dropdown-divider"></div>#}
-{#                                            <a class="dropdown-item" href="#" id="btn-add-shipping" data-bs-toggle="modal" data-bs-target="#shippingFeeModalCenter"><i class="dropdown-icon fas fa-shipping-fast"></i><span class="mt-2">{% trans 'Shipping fee' %}</span></a>#}
-{#                                            <a class="dropdown-item" href="#" id="btn-check-promotion" data-bs-toggle="modal" data-bs-target="#promotionModalCenter"><i class="dropdown-icon fas fa-tags"></i><span>{% trans 'Promotion' %}</span></a>#}
-{#                                        </div>#}
-{#                                    </div>#}
                                     <div class="col-12 col-md-6 col-lg-6">
                                         <div
                                                 class="modal fade" id="shippingFeeModalCenter" tabindex="-1"
@@ -353,7 +340,7 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-cost"
-                                            class="table nowrap w-100 mb-5"
+                                            class="table nowrap min-w-1366p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr class="bg-light">
@@ -471,47 +458,33 @@
                                         </tfoot>
                                     </table>
                                 </div>
-{#                                <div class="row">#}
-{#                                    <div class="col-12 col-md-6 col-lg-6">#}
-{#                                        <button type="button" class="btn btn-outline-primary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="sale_order_expenses_data">#}
-{#                                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>#}
-{#                                        </button>#}
-{#                                        <div class="dropdown-menu w-210p">#}
-{#                                            <a class="dropdown-item" href="#" id="btn-add-expense-quotation-create"><i class="dropdown-icon fas fa-hand-holding-usd"></i><span class="mt-2">{% trans 'Add Expense' %}</span></a>#}
-{#                                            <a class="dropdown-item" href="#" id="btn-add-labor-quotation-create"><i class="dropdown-icon fas fa-people-carry"></i><span>{% trans 'Add Labor' %}</span></a>#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                </div>#}
                             </div>
                             <div class="tab-pane fade" id="tab_payment">
                                 <div class="row">
                                     <table
                                             id="datable-quotation-payment-stage"
-                                            class="table nowrap w-100 mb-5"
+                                            class="table nowrap min-w-1920p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr class="bg-light">
-                                            <th class="w-20">{% trans 'Description' %}</th>
-                                            <th class="w-15">{% trans 'Date' %}</th>
-                                            <th class="w-15">{% trans 'Payment term date type' %}</th>
-                                            <th class="w-10">% {% trans 'Payment' %}</th>
-                                            <th class="w-15">{% trans 'Value before tax' %}</th>
-                                            <th class="w-15">{% trans 'Due date' %}</th>
-                                            <th class="w-5">{% trans '(AR)invoice' %}</th>
-                                            <th class="w-5"></th>
+                                            <th></th>
+                                            <th>{% trans 'Installment' %}</th>
+                                            <th>{% trans 'Description' %}</th>
+                                            <th>{% trans 'Date' %}</th>
+                                            <th>{% trans 'Term date type' %}</th>
+                                            <th>% {% trans 'Payment' %}</th>
+                                            <th>{% trans 'Value before tax' %}</th>
+                                            <th>{% trans 'Issue invoice' %}</th>
+                                            <th>{% trans 'Value invoice after tax' %}</th>
+                                            <th>{% trans 'Total payment' %}</th>
+                                            <th>{% trans 'Due date' %}</th>
+                                            <th></th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         </tbody>
                                     </table>
                                 </div>
-{#                                <div class="row">#}
-{#                                    <div class="col-12 col-md-6 col-lg-6">#}
-{#                                        <button type="button" class="btn btn-outline-primary" id="btn-add-payment-stage" data-zone="sale_order_logistic_data_readonly">#}
-{#                                            <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>#}
-{#                                        </button>#}
-{#                                    </div>#}
-{#                                </div>#}
                             </div>
                             <div class="tab-pane fade" id="tab_logistic">
                                 <div class="row logistics-body">
@@ -640,7 +613,7 @@
                                 <tbody>
                                 </tbody>
                             </table>
-                            <div class="form-check" id="copy-quotation-option" hidden>
+                            <div class="form-check form-check-lg" id="copy-quotation-option" hidden>
                                 <input type="checkbox" class="form-check-input check-option" id="customCheck1" checked>
                                 <label class="form-check-label" for="customCheck1">{% trans 'Copy all from quotation' %}</label>
                             </div>
@@ -773,12 +746,14 @@
         data-apply="{% trans 'Apply' %}"
         data-refreshed="{% trans 'Data is refreshed.' %}"
         data-valid="{% trans "Valid" %}"
+        data-invalid="{% trans "Invalid" %}"
         data-required-expense="{% trans "Expense is required" %}"
         data-required-product-uom="{% trans "Product unit of measure is required" %}"
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
         data-copy-successfully="{% trans "Copy successfully" %}"
         data-validate-due-date="{% trans "Invalid due date" %}"
-        data-validate-total-payment="{% trans "Total payment must less than or equal to total before tax" %}"
+        data-validate-total-ratio-payment="{% trans "Total payment ratio must be 100%" %}"
+        data-validate-total-payment="{% trans "Total payment must equal to total after tax" %}"
         data-validate-ss-role="{% trans "Opportunity is disabled because employee in short sales roles" %}"
         data-promotion="{% trans "Promotion" %}"
         data-shipping="{% trans "Shipping fee" %}"
@@ -815,42 +790,15 @@
         data-md-product="{% url 'ProductForSaleListAPI' %}"
         data-md-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
         data-md-bom="{% url 'BOMOrderListAPI' %}"
+        data-md-uom="{% url "UnitOfMeasureListAPI" %}"
+        data-md-tax="{% url "TaxListAPI" %}"
+        data-md-labor="{% url "ExpenseListAPI" %}"
+        data-md-expense="{% url "ExpenseItemListAPI" %}"
+
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
+        data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
     >
 
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-product"
-            data-url="{% url "ProductForSaleListAPI" %}"
-            data-link-detail="{% url "ProductDetail" 1 %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-expense"
-            data-url="{% url "ExpenseListAPI" %}"
-            data-link-detail="{% url "ExpenseDetail" 1 %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-expense-item"
-            data-url="{% url "ExpenseItemListAPI" %}"
-            data-link-detail="{% url "ExpenseItemDetailAPI" 1 %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-uom"
-            data-url="{% url "UnitOfMeasureListAPI" %}"
-            data-method="GET"
-    >
-    <input
-            type="text"
-            id="data-init-quotation-create-tables-tax"
-            data-url="{% url "TaxListAPI" %}"
-            data-method="GET"
-    >
     <input
             type="text"
             id="data-init-quotation-create-request-employee"

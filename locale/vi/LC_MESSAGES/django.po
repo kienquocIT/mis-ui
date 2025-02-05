@@ -93,6 +93,18 @@ msgstr "Chưa xem"
 msgid "Seen"
 msgstr "Đã xem"
 
+#
+msgid "Press esc to exit"
+msgstr "Nhấn nút ESC để thoát"
+
+#
+msgid "Enter your search text"
+msgstr "Nhập thông tin tìm kiếm"
+
+#
+msgid "Menu finder"
+msgstr "Tìm nhanh Menu"
+
 #: .\apps\core\account\templates\core\account\user_create.html:89
 msgid "Select your company"
 msgstr "Chọn công ty của bạn"
@@ -1228,7 +1240,7 @@ msgstr "Nhóm"
 
 #
 msgid "Industry"
-msgstr "Lĩnh vực"
+msgstr "Ngành nghề"
 
 #
 msgid "Size"
@@ -1312,7 +1324,7 @@ msgstr "Không khả dụng"
 
 #
 msgid "Invalid"
-msgstr "Không khả dụng"
+msgstr "Không hợp lệ"
 
 #
 msgid "Expired"
@@ -1372,7 +1384,7 @@ msgstr "Tài khoản cha"
 
 #
 msgid "Tax Code"
-msgstr "Thuế"
+msgstr "Mã số thuế"
 
 #
 msgid "Annual Revenue"
@@ -1548,11 +1560,11 @@ msgstr "Quốc gia"
 
 #
 msgid "Bank name"
-msgstr "Tên NH"
+msgstr "Tên ngân hàng"
 
 #
 msgid "Bank code"
-msgstr "Mã NH"
+msgstr "Mã ngân hàng"
 
 #
 msgid "Account number"
@@ -1924,12 +1936,12 @@ msgid "Unit Of Measure Group"
 msgstr "Nhóm Đơn vị tính"
 
 #
-msgid "Is referenced unit"
-msgstr "Là đơn vị tham chiếu"
+msgid "set as referenced unit"
+msgstr "đặt làm đơn vị tham chiếu"
 
 #
-msgid "is referenced for ratio from other unit"
-msgstr "Được tham chiếu cho tỉ lệ từ đơn vị khác"
+msgid "Referenced unit"
+msgstr "Đơn vị tham chiếu"
 
 #
 msgid "Ratio"
@@ -2346,6 +2358,10 @@ msgstr "Trạng thái của báo giá"
 #
 msgid "Select Sale Person"
 msgstr "Nhân viên kinh doanh"
+
+#
+msgid "Select Sale Person (Beneficiary)"
+msgstr "Nhân viên kinh doanh (Người thụ hưởng)"
 
 #
 msgid "Sale person of quotation"
@@ -5421,6 +5437,10 @@ msgid "Please select sale order"
 msgstr "Vui lòng chọn đơn hàng"
 
 #
+msgid "Select Sale order"
+msgstr "Chọn Đơn hàng"
+
+#
 msgid "Load last storage local"
 msgstr "Tải lại bản lưu trữ cuối cùng ở máy tính này"
 
@@ -5943,6 +5963,10 @@ msgstr "Yêu cầu báo giá mua hàng"
 #
 msgid "Lead time"
 msgstr "Thời gian chuẩn bị"
+
+#
+msgid "from"
+msgstr "từ"
 
 #
 msgid "to"
@@ -8073,8 +8097,8 @@ msgid "Received money"
 msgstr "Đã nhận tiền"
 
 #
-msgid "Google app password"
-msgstr "Mật khẩu ứng dụng Google"
+msgid "Google API Key"
+msgstr "API Key của Google"
 
 #
 msgid "include space"
@@ -8177,8 +8201,8 @@ msgid "Budget report"
 msgstr "Báo cáo ngân sách"
 
 #
-msgid "Get by Budget plan config permission"
-msgstr "Lấy theo quyền trong Cấu hình KHNS"
+msgid "By granted permission in 'Budget plan config'"
+msgstr "Theo quyền được gán trong 'Cấu hình KHNS'"
 
 #
 msgid "Red lines are the expenses out of plan."
@@ -8314,11 +8338,11 @@ msgstr "Vai trò Nhà cung cấp"
 
 #
 msgid "Bank Account Information"
-msgstr "Thông tin Tài khoản ngân hàng"
+msgstr "Thông tin tài khoản ngân hàng"
 
 #
 msgid "Credit Card Account Information"
-msgstr "Thông tin Tài khoản Credit Card"
+msgstr "Thông tin thẻ tín dụng"
 
 #
 msgid "Add new bank account"
@@ -8326,7 +8350,7 @@ msgstr "Thêm tài khoản ngân hàng"
 
 #
 msgid "Add new credit card"
-msgstr "Thêm Credit card"
+msgstr "Thêm thẻ tín dụng"
 
 #
 msgid "Go to Stage"
@@ -8495,6 +8519,10 @@ msgstr "Đã nhập"
 #
 msgid "This time"
 msgstr "Lần này"
+
+#
+msgid "Quantity this time"
+msgstr "SL lần này"
 
 #
 msgid "Deliver"
@@ -9038,7 +9066,7 @@ msgstr "Nhập dữ liệu từ excel"
 
 #
 msgid "The table in excel file must have the column order below: "
-msgstr "Bảng trong file excel phải có thứ cột như sau: "
+msgstr "Bảng trong excel phải có thứ tự các cột như sau: "
 
 #
 msgid "From row"
@@ -9546,7 +9574,7 @@ msgstr "Kết quả"
 
 #
 msgid "Required Documents"
-msgstr "Tài liệu dự thầu"
+msgstr "Tài liệu bắt buộc"
 
 #
 msgid "Document Name"
@@ -9778,7 +9806,7 @@ msgstr "Bắt đầu nhập bây giờ?"
 
 #
 msgid "Please wait until the import has finished!"
-msgstr "Làm ơn đợi cho đến khi nhập liệu hoàn tất! 😀"
+msgstr "Vui lòng đợi cho đến khi nhập liệu hoàn tất!"
 
 #
 msgid "Bidding Result Config"
@@ -9845,8 +9873,8 @@ msgid "Data Import Limit"
 msgstr "Giới hạn nhập dữ liệu"
 
 #
-msgid "To ensure system performance and stability, row number is limited to 500 rows. If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
-msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 500 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
+msgid "To ensure system performance and stability, row number is limited to 150 rows. If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
+msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 150 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
 
 #
 msgid "Lease order"
@@ -9911,6 +9939,497 @@ msgstr "Thuê từ"
 #
 msgid "Lease to"
 msgstr "Thuê đến"
+
+#
+msgid "Consulting"
+msgstr "Tư vấn"
+
+#
+msgid "Due Date"
+msgstr "Thời hạn"
+
+#
+msgid "Consulting list"
+msgstr "Danh sách tư vấn"
+
+#
+msgid "Consulting create"
+msgstr "Tạo tư vấn"
+
+#
+msgid "Related Product Categories"
+msgstr "Danh sách loại sản phẩm liên quan"
+
+#
+msgid "Consulting name"
+msgstr "Tên tư vấn"
+
+#
+msgid "Bidding create successfully"
+msgstr "Tạo thầu thành công"
+
+#
+msgid "Bidding update successfully"
+msgstr "Sửa thầu thành công"
+
+#
+msgid "Consulting create successfully"
+msgstr "Tạo tư vấn thành công"
+
+#
+msgid "Consulting update successfully"
+msgstr "Sửa tư vấn thành công"
+
+#
+msgid "Bidding Document Type"
+msgstr "Loại tài liệu thầu"
+
+#
+msgid "Consulting Document Type"
+msgstr "Loại tài liệu tư vấn"
+
+#
+msgid "This product category has already been selected."
+msgstr "Loại sản phẩm này đã được chọn"
+
+#
+msgid "Masterdata Documents"
+msgstr "Tài liệu dùng chung"
+
+#
+msgid "Manual Documents"
+msgstr "Tài liệu nhập tay"
+
+#
+msgid "Term date type"
+msgstr "Loại ngày thanh toán"
+
+#
+msgid "Issue invoice"
+msgstr "Phát hành hóa đơn"
+
+#
+msgid "Total payment"
+msgstr "Tổng thanh toán"
+
+#
+msgid "Total payment must equal to total after tax"
+msgstr "Tổng số tiền thanh toán phải bằng tổng số tiền sau thuế"
+
+#
+msgid "Value invoice after tax"
+msgstr "GT hóa đơn sau thuế"
+
+#
+msgid "Example"
+msgstr "Ví dụ"
+
+#
+msgid "Installment"
+msgstr "Khoản thanh toán"
+
+#
+msgid "Total payment ratio must be 100%"
+msgstr "Tổng tỉ lệ thanh toán phải đủ 100%"
+#
+msgid "Account payable"
+msgstr "Các khoản phải trả"
+
+#
+msgid "Cash inflow"
+msgstr "Phiếu thu"
+
+#
+msgid "Cash outflow"
+msgstr "Phiếu chi"
+
+#
+msgid "Cash inflow list"
+msgstr "Danh sách phiếu thu"
+
+#
+msgid "Cash outflow list"
+msgstr "Danh sách phiếu chi"
+
+#
+msgid "Customer pays by invoice"
+msgstr "Khách hàng thanh toán theo hóa đơn"
+
+#
+msgid "Payment discount"
+msgstr "Chiết khấu thanh toán"
+
+#
+msgid "Document type"
+msgstr "Loại tài liệu"
+
+#
+msgid "Document date"
+msgstr "Ngày chứng từ"
+
+#
+msgid "Posting date"
+msgstr "Ngày ghi sổ"
+
+#
+msgid "Balance value"
+msgstr "Giá trị cân đối"
+
+#
+msgid "Customer prepay for purchase"
+msgstr "Khách hàng ứng trước tiền mua hàng"
+
+#
+msgid "Payment method"
+msgstr "Phương thức thanh toán"
+
+#
+msgid "Company information"
+msgstr "Thông tin công ty"
+
+#
+msgid "Company representative"
+msgstr "Người đại diện công ty"
+
+#
+msgid "Inventory management"
+msgstr "Quản lý tồn kho"
+
+#
+msgid "Bank account"
+msgstr "Tài khoản ngân hàng"
+
+#
+msgid "Bank account owner"
+msgstr "Chủ tài khoản"
+
+#
+msgid "Customer advance payment according to contract"
+msgstr "Khách hàng tạm ứng theo hợp đồng"
+
+#
+msgid "Add Company Bank Account"
+msgstr "Thêm tài khoản ngân hàng Công ty"
+
+#
+msgid "Invoice value"
+msgstr "Giá trị hóa đơn"
+
+#
+msgid "Detail payment value by invoice"
+msgstr "Chi tiết thanh toán theo hóa đơn"
+
+#
+msgid "Cash value"
+msgstr "Giá trị tiền mặt"
+
+#
+msgid "Bank value"
+msgstr "Giá trị chuyển khoản"
+
+#
+msgid "Select company bank account"
+msgstr "Chọn tài khoản ngân hàng công ty"
+
+#
+msgid "Related leads:"
+msgstr "Lead liên quan:"
+
+#
+msgid "Direct"
+msgstr "Điều hướng"
+
+#
+msgid "Connect successfully. Updating API Key..."
+msgstr "Kết nối thành công. Đang cập nhập API Key..."
+
+#
+msgid "Can not verify your Email. Check your API Key again"
+msgstr "Không thể xác tực Email của bạn. Kiểm tra lại API Key"
+
+#
+msgid "Delivery (sale)"
+msgstr "Giao hàng (bán)"
+
+#
+msgid "Delivery (lease)"
+msgstr "Giao hàng (cho thuê)"
+
+#
+msgid "Reconciliation"
+msgstr "Cấn trừ"
+
+#
+msgid "Reconciliation list"
+msgstr "Danh sách phiếu cấn trừ"
+
+#
+msgid "Reconciliation create"
+msgstr "Tạo phiếu cấn trừ"
+
+#
+msgid "Reconciliation amount"
+msgstr "Giá trị cấn trừ"
+
+#
+msgid "Reconciliation total"
+msgstr "Tổng cấn trừ"
+
+#
+msgid "Reconciliation total must be 0"
+msgstr "Tổng cấn trừ phải bằng 0"
+
+#
+msgid "Click the button to select or input here"
+msgstr "Nhấn nút để lựa chọn hoặc nhập tại đây"
+
+#
+msgid "View payment term information"
+msgstr "Xem thông tin điều khoản thanh toán"
+
+#
+msgid "Check tax number information"
+msgstr "Kiểm tra thông tin mã số thuế"
+
+#
+msgid "Select customer"
+msgstr "Chọn khách hàng"
+
+#
+msgid "Add new product row"
+msgstr "Thêm dòng sản phẩm"
+
+#
+msgid "Add new description row"
+msgstr "Thêm dòng mô tả"
+
+#
+msgid "Expand to view detail"
+msgstr "Mở rộng để xem chi tiết"
+
+#
+msgid "Already"
+msgstr "Đã xong"
+
+#
+msgid "Select Delivery"
+msgstr "Chọn phiếu giao hàng"
+
+#
+msgid "UOM Group"
+msgstr "Nhóm đơn vị tính"
+
+#
+msgid "Confirm delete ?"
+msgstr "Xác nhận xoá dữ liệu này ?"
+
+#
+msgid "Related leads"
+msgstr "Lead liên quan"
+
+#
+msgid "Check all ratio in this group again when referenced uom is changed"
+msgstr "Kiểm tra lại các tỉ lệ trong nhóm này khi Đơn vị tham chiếu thay đổi"
+
+#
+msgid "Upper manager"
+msgstr "Quản lý cấp trên"
+
+#
+msgid "Date range"
+msgstr "Khoảng ngày"
+
+#
+msgid "Filter by quarter"
+msgstr "Lọc theo quý"
+
+#
+msgid "Filter by month"
+msgstr "Lọc theo tháng"
+
+#
+msgid "All group (Company)"
+msgstr "Tất cả phòng ban (Công ty)"
+
+#
+msgid "Uncheck all filters to view full year plan"
+msgstr "Bỏ chọn tất cả bộ lọc để xem kế hoạch cả năm"
+
+#
+msgid "The ratio will be automatically = 1 if this UOM becomes the reference unit"
+msgstr "Tỉ lệ sẽ tự động = 1 nếu UOM này trở thành đơn vị tham chiếu"
+
+#
+msgid "Select reference unit (if null) for this group to apply the ratio"
+msgstr "Gán đơn vị tham chiếu (nếu chưa có) để áp dụng tỉ lệ"
+
+#
+msgid "Logged"
+msgstr "Đã ghi lại"
+
+#
+msgid "Just log"
+msgstr "Chỉ ghi lại"
+
+#
+msgid "Sent successfully"
+msgstr "Gửi thành công"
+
+#
+msgid "Send failed"
+msgstr "Gửi thất bại"
+
+#
+msgid "If checked, just log, not send email"
+msgstr "Nếu chọn, chỉ ghi lại, không gửi email"
+
+#
+msgid "Send email notification now"
+msgstr "Gửi email thông báo ngay"
+
+#
+msgid "If not checked, just log this meeting"
+msgstr "Nếu không chọn, chỉ ghi lại cuộc họp này"
+
+#
+msgid "Resend"
+msgstr "Gửi lại"
+
+#
+msgid "Send email notification this cancel"
+msgstr "Gửi email thông báo huỷ bỏ"
+
+#
+msgid "Letter of guarantee"
+msgstr "Thư bảo lãnh"
+
+#
+msgid "Deposit"
+msgstr "Đặt cọc"
+
+#
+msgid "Chart type"
+msgstr "Loại biểu đồ"
+
+#
+msgid "Expected"
+msgstr "Kỳ vọng"
+
+#
+msgid "Reality"
+msgstr "Thực tế"
+
+#
+msgid "View my revenue plan this period"
+msgstr "Xem kế hoạch doanh thu của tôi kỳ này"
+
+#
+msgid "Period revenue / profit"
+msgstr "Doanh thu / Lợi nhuận theo kỳ"
+
+#
+msgid "Accumulated revenue / profit"
+msgstr "Doanh thu / Lợi nhuận tích luỹ"
+
+#
+msgid "Profit type"
+msgstr "Loại lợi nhuận"
+
+#
+msgid "Revenue chart"
+msgstr "Biểu đồ Doanh thu"
+
+#
+msgid "Profit chart"
+msgstr "Biểu đồ Lợi nhuận"
+
+#
+msgid "For data to display correctly, the view permissions of Revenue Plan and Revenue Report must correspond."
+msgstr "Để dữ liệu hiển thị chính xác, quyền xem của Kế hoạch doanh thu và Báo cáo doanh thu phải tương ứng nhau"
+
+#
+msgid "Top sale"
+msgstr "Top sale"
+
+#
+msgid "Top customer"
+msgstr "Top khách hàng"
+
+#
+msgid "Top category"
+msgstr "Top danh mục sản phẩm"
+
+#
+msgid "Top product"
+msgstr "Top sản phẩm"
+
+#
+msgid "Sale number viewed"
+msgstr "SL sale hiển thị"
+
+#
+msgid "Customer number viewed"
+msgstr "SL khách hàng hiển thị"
+
+#
+msgid "View category number"
+msgstr "SL danh mục hiển thị"
+
+#
+msgid "View product number"
+msgstr "SL sản phẩm hiển thị"
+
+#
+msgid "Resize"
+msgstr "Đổi kích thước"
+
+#
+msgid "Total pipeline chart"
+msgstr "Biểu đồ toàn bộ pipeline"
+
+#
+msgid "Get all Opportunity Stage"
+msgstr "Lấy tất cả Giai đoạn CHKD"
+
+#
+msgid "Opportunity stage"
+msgstr "Giai đoạn CHKD"
+
+#
+msgid "Winrate threshold"
+msgstr "Ngưỡng xác suất thắng"
+
+#
+msgid "Revenue forecast chart"
+msgstr "Biểu đồ Dự tính doanh thu"
+
+#
+msgid "Sale activity chart"
+msgstr "Biểu đồ Hoạt động bán hàng"
+
+#
+msgid "Reload data"
+msgstr "Tải lại dữ liệu"
+
+#
+msgid "Purchase request for Sale order"
+msgstr "Yêu cầu mua hàng cho Đơn hàng"
+
+#
+msgid "Purchase request for Distribution plan"
+msgstr "Yêu cầu mua hàng cho Kế hoạch nhập hàng"
+
+#
+msgid "Select Distribution plan"
+msgstr "Chọn Kế hoạch nhập hàng"
+
+#
+msgid "Only create Purchase request your own Sale order"
+msgstr "Chỉ được làm Yêu cầu mua hàng cho Đơn hàng của bản thân"
+
+#
+msgid "Configured to create Purchase request for all Sale order"
+msgstr "Được cấu hình để làm Yêu cầu mua hàng cho mọi Đơn hàng"
 
 msgid "Assets"
 msgstr "Tài sản"

@@ -1,19 +1,13 @@
 $(document).ready(function () {
+    ////////////////////////////////////////////////// for periods group
+    const periodEle = $('#period-select')
+    const periodMonthEle = $('#period-month')
     const table_inventory_report = $('#table-inventory-report')
-    const current_period_Ele = $('#current_period')
     const items_select_Ele = $('#items_select')
     const warehouses_select_Ele = $('#warehouses_select')
     const project_select_Ele = $('#project-select')
-    const periodEle = $('#period-select')
-    const periodMonthEle = $('#period-month')
     const trans_script = $('#trans-script')
     const url_script = $('#url-script')
-    let current_period = {}
-    if (current_period_Ele.text() !== '') {
-        current_period = JSON.parse(current_period_Ele.text())
-        getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-        periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
-    }
     const $definition_inventory_valuation = $('#definition_inventory_valuation').text()
     let $is_project = false
     const company_current_data = JSON.parse($('#company_current_data').text());
@@ -41,111 +35,6 @@ $(document).ready(function () {
             })
     }
     let PERIODIC_CLOSED = false
-
-    function get_final_date_of_current_month(filter_year, filter_month) {
-        let currentDate = new Date();
-
-        let year = currentDate.getFullYear();
-
-        let nextMonth = currentDate.getMonth() + 1;
-
-        if (filter_year && filter_month) {
-            year = filter_year;
-            nextMonth = filter_month;
-        }
-
-        if (nextMonth > 11) {
-            year++;
-            nextMonth = 0;
-        }
-
-        let firstDayOfNextMonth = new Date(year, nextMonth, 0);
-
-        return firstDayOfNextMonth.getDate();
-    }
-
-    $('#period-day-from').val(1);
-
-    $('#period-day-to').val(get_final_date_of_current_month());
-
-    periodMonthEle.on('change', function () {
-        let selected_option = SelectDDControl.get_data_from_idx(periodEle, periodEle.val())
-        if (selected_option) {
-            $('#period-day-from').val(1);
-            $('#period-day-to').val(
-                get_final_date_of_current_month(
-                    selected_option?.['fiscal_year'], parseInt(periodMonthEle.val()) + selected_option['space_month']
-                )
-            );
-        }
-    })
-
-    function getMonthOrder(space_month, fiscal_year) {
-        periodMonthEle.html(``)
-        let data = []
-        for (let i = 0; i < 12; i++) {
-            let year_temp = fiscal_year
-            let trans_order = i + 1 + space_month
-            if (trans_order > 12) {
-                trans_order -= 12
-                year_temp += 1
-            }
-
-            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() + 1) {
-                if (year_temp === new Date().getFullYear()) {
-                    periodMonthEle.append(`<option value="${i + 1}">${trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
-                    data.push({
-                        'id': i + 1,
-                        'title': trans_script.attr(`data-trans-m${trans_order}th`),
-                        'month': i + 1,
-                        'year': year_temp
-                    })
-                }
-            }
-        }
-        data.push({
-            'id': '',
-            'title': 'Select...',
-            'month': 0,
-            'year': 0,
-        })
-        periodMonthEle.empty();
-        periodMonthEle.initSelect2({
-            data: data,
-            templateResult: function (state) {
-                let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
-                return $(`<span>${state.text} ${groupHTML}</span>`);
-            },
-        });
-    }
-
-    function LoadPeriod(ele, data) {
-        ele.initSelect2({
-            ajax: {
-                url: ele.attr('data-url'),
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                let res = []
-                for (const item of resp.data[keyResp]) {
-                    if (item?.['fiscal_year'] <= new Date().getFullYear()) {
-                        res.push(item)
-                    }
-                }
-                return res
-            },
-            data: (data ? data : null),
-            keyResp: 'periods_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            let selected_option = SelectDDControl.get_data_from_idx(ele, ele.val())
-            if (selected_option) {
-                getMonthOrder(selected_option['space_month'], selected_option?.['fiscal_year'])
-            }
-        })
-    }
-    LoadPeriod(periodEle, current_period)
 
     function LoadItemsSelectBox(ele, data) {
         ele.initSelect2({
@@ -256,15 +145,14 @@ $(document).ready(function () {
                                     data-bs-toggle="popover"
                                     data-bs-trigger="hover focus"
                                     data-bs-html="true"
-                                    data-bs-content="
-                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-code')}</span>: <span class='badge badge-primary badge-sm'>${row?.['product_code']}</span>
-                                    <br>
-                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-vm')}</span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}<span>
-                                    "
+                                    data-bs-content="<span class='text-decoration-underline'>
+                                                        ${trans_script.attr('data-trans-vm')}
+                                                        </span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}
+                                                    </span>"
                                     class="popover-prd text-secondary">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
-                                <span class="${row?.['type']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
+                                <span class="${row?.['type']}" data-product-code="${row?.['product_code']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
                             `
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
@@ -281,7 +169,7 @@ $(document).ready(function () {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'product_row') {
-                            return `<span class="text-secondary">${row?.['uom_title']}</span>`
+                            return `<span class="text-secondary">${row?.['uom_title'] ? row?.['uom_title'] : '--'}</span>`
                         }
                         return ``
                     }
@@ -290,7 +178,7 @@ $(document).ready(function () {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
-                            return `<span>${row?.['date']}</span>`
+                            return `<span>${row?.['date'] ? row?.['date'] : ''}</span>`
                         }
                         return ``
                     }
@@ -421,6 +309,10 @@ $(document).ready(function () {
                         $(this).addClass('bg-primary-light-5')
                         $(this).addClass('fixed-row')
                     }
+                    if ($(this).find('.product_row').length > 0) {
+                        $(this).attr('data-bs-toggle', 'tooltip')
+                        $(this).attr('title', $(this).find('.product_row').attr('data-product-code') + ' - ' + $(this).find('.product_row').text())
+                    }
                 })
 
                 let sum_wh_open_value = 0;
@@ -508,21 +400,6 @@ $(document).ready(function () {
                 const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
                 const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
                 $('.popover-prd:first-child').trigger('hover')
-
-                let wrapper$ = table.closest('.dataTables_wrapper');
-                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-                headerToolbar$.prepend(textFilter$);
-                if (textFilter$.length > 0) {
-                    textFilter$.css('display', 'flex');
-                    textFilter$.append(
-                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append(`
-                            <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                <i class="fas fa-sliders-h"></i>&nbsp;${trans_script.attr('data-trans-filter')}
-                            </button>
-                        `)
-                    )
-                }
             },
         });
     }
@@ -896,8 +773,11 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods return') {
                                         bg_in = 'badge-soft-blue'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'badge-soft-danger'
+                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                        bg_out = 'badge-soft-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'badge-soft-green'
@@ -960,8 +840,11 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods return') {
                                         bg_in = 'badge-soft-blue'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'badge-soft-danger'
+                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                        bg_out = 'badge-soft-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'badge-soft-green'
@@ -1036,8 +919,11 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods return') {
                                         bg_in = 'badge-soft-blue'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'badge-soft-danger'
+                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                        bg_out = 'badge-soft-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'badge-soft-green'
@@ -1099,8 +985,11 @@ $(document).ready(function () {
                                     if (activity?.['trans_title'] === 'Goods return') {
                                         bg_in = 'badge-soft-blue'
                                     }
-                                    if (activity?.['trans_title'] === 'Delivery') {
-                                        bg_out = 'badge-soft-danger'
+                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                        bg_out = 'badge-soft-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
                                         bg_in = 'badge-soft-green'
@@ -1179,10 +1068,15 @@ $(document).ready(function () {
                 $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-grt'))
             }
-            if ($(this).attr('class').includes('badge-soft-danger')) {
+            if ($(this).attr('class').includes('badge-soft-danger dlvr-sale')) {
                 $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
                 $(this).closest('tr').attr('data-bs-placement', 'top')
-                $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr'))
+                $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr-sale'))
+            }
+            if ($(this).attr('class').includes('badge-soft-danger dlvr-lease')) {
+                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
+                $(this).closest('tr').attr('data-bs-placement', 'top')
+                $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr-lease'))
             }
             if ($(this).attr('class').includes('badge-soft-green')) {
                 $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
@@ -1376,18 +1270,6 @@ $(document).ready(function () {
         printQRLot('QR-lot-img-div')
     })
 
-    $('#btn-reset').on('click', function () {
-        items_select_Ele.empty()
-        warehouses_select_Ele.empty()
-        periodMonthEle.empty()
-        let current_period = {}
-        if (current_period_Ele.text() !== '') {
-            current_period = JSON.parse(current_period_Ele.text())
-            getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-            periodMonthEle.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
-        }
-    })
-
     $(document).on("click", '#btn-filter', function () {
         LoadItemsSelectBox(items_select_Ele)
         LoadWarehouseSelectBox(warehouses_select_Ele)
@@ -1453,7 +1335,7 @@ $(document).ready(function () {
         }
         static get_products_opening_quantity_gte(threshold) {
             let row_info = ''
-            $('#table-inventory-report').find('tbody tr').each(function () {
+            table_inventory_report.find('tbody tr').each(function () {
                 if (!$(this).hasClass('fixed-row')) {
                     let opening_quantity = $(this).find('td:eq(2) span:eq(0)').text()
                     if (parseFloat(opening_quantity) >= parseFloat(threshold)) {
@@ -1468,7 +1350,7 @@ $(document).ready(function () {
         }
         static get_products_opening_quantity_lte(threshold) {
             let row_info = ''
-            $('#table-inventory-report').find('tbody tr').each(function () {
+            table_inventory_report.find('tbody tr').each(function () {
                 if (!$(this).hasClass('fixed-row')) {
                     let opening_quantity = $(this).find('td:eq(2) span:eq(0)').text()
                     if (parseFloat(opening_quantity) <= parseFloat(threshold)) {
@@ -1483,7 +1365,7 @@ $(document).ready(function () {
         }
         static get_products_ending_quantity_gte(threshold) {
             let row_info = ''
-            $('#table-inventory-report').find('tbody tr').each(function () {
+            table_inventory_report.find('tbody tr').each(function () {
                 if (!$(this).hasClass('fixed-row')) {
                     let ending_quantity = $(this).find('td:eq(5) span:eq(0)').text()
                     if (parseFloat(ending_quantity) >= parseFloat(threshold)) {
@@ -1498,7 +1380,7 @@ $(document).ready(function () {
         }
         static get_products_ending_quantity_lte(threshold) {
             let row_info = ''
-            $('#table-inventory-report').find('tbody tr').each(function () {
+            table_inventory_report.find('tbody tr').each(function () {
                 if (!$(this).hasClass('fixed-row')) {
                     let ending_quantity = $(this).find('td:eq(2) span:eq(0)').text()
                     if (parseFloat(ending_quantity) <= parseFloat(threshold)) {
@@ -1567,7 +1449,7 @@ $(document).ready(function () {
             }
             else {
                 is_filter = false
-                $('#table-inventory-report').find('tbody tr').each(function () {
+                table_inventory_report.find('tbody tr').each(function () {
                     if (!$(this).hasClass('fixed-row')) {
                         contexts += GetContexts.get_product_row_info($(this))
                     } else {
@@ -1581,7 +1463,7 @@ $(document).ready(function () {
             console.log(contexts)
             dataParam['question'] = message
             let chatbot_response_ajax = $.fn.callAjax2({
-                url: $('#url-script').attr('data-url-ask'),
+                url: url_script.attr('data-url-ask'),
                 data: dataParam,
                 method: 'GET'
             }).then(
@@ -1604,7 +1486,7 @@ $(document).ready(function () {
                         for (let i = 0; i < data.length; i++) {
                             let messageResponse = $(`<div class="mt-2">
                                 <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">
-                                    ${data[i] === '' ? $('#trans-script').attr('data-trans-no-response') : data[i]}
+                                    ${data[i] === '' ? trans_script.attr('data-trans-no-response') : data[i]}
                                 </div>
                             </div>`);
                             chatShowSpace.append(messageResponse)
@@ -1612,7 +1494,7 @@ $(document).ready(function () {
                     } else {
                         let messageResponse = $(`<div class="mt-2">
                             <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">
-                                ${results[0] === '' ? $('#trans-script').attr('data-trans-no-response') : results[0]}
+                                ${results[0] === '' ? trans_script.attr('data-trans-no-response') : results[0]}
                             </div>
                         </div>`);
                         chatShowSpace.append(messageResponse)
@@ -1632,7 +1514,7 @@ $(document).ready(function () {
                 chatInput.val('');
 
                 let messageResponse = $(`<div class="mt-2">
-                    <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">${$('#trans-script').attr('data-trans-no-response')}</div>
+                    <div class="you bg-white rounded p-2" style="max-width: 80%; border-radius: 0.375rem">${trans_script.attr('data-trans-no-response')}</div>
                 </div>`);
                 chatShowSpace.append(messageResponse)
                 chatShowSpace.scrollTop(chatShowSpace.prop('scrollHeight'));

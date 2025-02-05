@@ -429,7 +429,7 @@
     transform: translate(-50%, -50%);
     --webkit--transform: translate(-50%, -50%);
     width: 500px;
-    z-index: 11;
+    z-index: 1111;
 }
 #select_expense_role:not(.select2-hidden-accessible){
     height:36px;
@@ -588,4 +588,58 @@
 .btn-outline-orange:hover {
     background-color: #F0552D;
     color: white;
+}
+
+form#project_form:not(.form-detail) #permit_lock_fd{
+    cursor: pointer;
+}
+.edited#permit_lock_fd .fa-lock-open{
+    color:#7fd420;
+}
+.edited#permit_lock_fd .fa-lock{
+    color:red;
+}
+.input-affix-wrapper .form-control:not(:first-child){
+    padding-left: .75rem!important;
+}
+.wrap-btn-process .dropdown-toggle:after{
+    display: none;
+}
+.context-menu-item > span{
+    font-weight: 400;
+}
+.announcement{
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+.announcement del{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.announcement i{
+    color:  rgb(233 81 68);
+}
+/*keyframe effect*/
+@keyframes bg-effect {
+    0% {box-shadow: 5px 5px 15px rgb(255 0 0 / 0%) inset, -5px -5px 15px rgb(255 0 0 / 0%) inset}
+    50% {box-shadow: 5px 5px 15px rgb(255 0 0 / 30%) inset, -5px -5px 15px rgb(255 0 0 / 30%) inset}
+    75% {box-shadow: 5px 5px 15px rgb(255 0 0 / 0%) inset, -5px -5px 15px rgb(255 0 0 / 0%) inset}
+    100% {box-shadow: 5px 5px 15px rgb(255 0 0 / 30%) inset, -5px -5px 15px rgb(255 0 0 / 30%) inset}
+}
+.effect-active{
+    animation: bg-effect 1s alternate;
+}
+
+/*responsive */
+@media screen and (max-width: 992px) {
+    .sp-tablet-flex-wrap{
+        flex-wrap: wrap;
+        gap:10px;
+    }
+    .completion_rate_block{
+        display: block;
+        width: 100%;
+        flex-shrink: 0;
+    }
+    .completion_rate_block > .heading, .completion_rate_block > .title{display: inline-block}
 }

@@ -3,11 +3,8 @@ $(function () {
     $(document).ready(function () {
 
         // Elements
-        let formSubmit = $('#frm_quotation_create');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let tabPrice = $('#tab_terms');
-        let btnAddProductGr = $('#btn-add-product-group-quotation');
-        let btnAddProduct = $('#btn-add-product-quotation-create');
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -35,28 +32,36 @@ $(function () {
         QuotationDataTableHandle.dataTableProduct();
         QuotationDataTableHandle.dataTableCost();
         QuotationDataTableHandle.dataTableExpense();
-        if (!formSubmit[0].classList.contains('sale-order')) {  // quotation
+        if (!QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {  // quotation
             QuotationDataTableHandle.dataTableQuotationIndicator();
         } else {  // sale order
             QuotationDataTableHandle.dataTableSaleOrderIndicator();
             QuotationDataTableHandle.dataTablePaymentStage();
         }
         // init config
-        QuotationLoadDataHandle.loadInitQuotationConfig(formSubmit.attr('data-method'));
-        $('input[name="date_created"]').daterangepicker({
-            singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: false,
-            minYear: 1901,
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
+        QuotationLoadDataHandle.loadInitQuotationConfig(QuotationLoadDataHandle.$form.attr('data-method'));
+        // date picker
+        $('.date-picker').each(function () {
+            $(this).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                autoApply: true,
+                autoUpdateInput: false,
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
+            });
+            $(this).val('').trigger('change');
         });
-        $('.daterangepicker').remove();
+
         // get WF initial zones
         let appCode = 'quotation';
-        if (formSubmit[0].classList.contains('sale-order')) {
+        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
             appCode = 'saleorder';
         }
         WFRTControl.setWFInitialData(appCode);
@@ -94,7 +99,8 @@ $(function () {
         $quotationTabs.on('click', '.tab-detail', function () {
             QuotationStoreDataHandle.storeDtbData(1);
             QuotationStoreDataHandle.storeDtbData(2);
-            QuotationLoadDataHandle.loadReInitDataTableProduct();
+            QuotationStoreDataHandle.storeDtbData(3);
+            QuotationStoreDataHandle.storeDtbData(4);
         });
 
         QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
@@ -188,9 +194,11 @@ $(function () {
         });
 
         tableProduct.on('click', '.btn-select-price', function () {
-            if (this.closest('tr')) {
-                if (this.closest('tr').querySelector('.table-row-item')) {
-                    QuotationLoadDataHandle.loadPriceProduct(this.closest('tr').querySelector('.table-row-item'));
+            let row = this.closest('tr');
+            if (row) {
+                let itemEle = row.querySelector('.table-row-item');
+                if (itemEle) {
+                    QuotationLoadDataHandle.loadPriceProduct(itemEle);
                 }
             }
          });
@@ -229,7 +237,7 @@ $(function () {
         });
 
         tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
-            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
                 if ($(this).hasClass('table-row-item')) {
                     QuotationLoadDataHandle.loadDataProductSelect($(this));
@@ -241,8 +249,6 @@ $(function () {
                     $(this).removeClass('text-primary');
                 }
                 if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-uom') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
-                    // load again table cost
-                    // QuotationLoadDataHandle.loadDataTableCost();
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                     if ($(this).hasClass('table-row-uom')) {
                         let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
@@ -319,15 +325,8 @@ $(function () {
         $quotationTabs.on('click', '.tab-expense', function () {
             QuotationStoreDataHandle.storeDtbData(1);
             QuotationStoreDataHandle.storeDtbData(2);
-            QuotationLoadDataHandle.loadReInitDataTableExpense();
-        });
-
-        $('#btn-add-expense-quotation-create').on('click', function (e) {
-            QuotationLoadDataHandle.loadAddRowExpense();
-        });
-
-        $('#btn-add-labor-quotation-create').on('click', function (e) {
-            QuotationLoadDataHandle.loadAddRowLabor();
+            QuotationStoreDataHandle.storeDtbData(3);
+            QuotationStoreDataHandle.storeDtbData(4);
         });
 
         tableExpense.on('click', '.del-row', function (e) {
@@ -377,22 +376,26 @@ $(function () {
         $quotationTabs.on('click', '.tab-cost', function () {
             QuotationStoreDataHandle.storeDtbData(1);
             QuotationStoreDataHandle.storeDtbData(2);
-            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            QuotationStoreDataHandle.storeDtbData(3);
+            QuotationStoreDataHandle.storeDtbData(4);
+            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 QuotationLoadDataHandle.loadDataTableCost();
             }
         });
 
         tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
-            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
-                let row = $(this)[0].closest('tr');
+            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
+                let row = this.closest('tr');
                 QuotationCalculateCaseHandle.commonCalculate(tableCost, row);
             }
         });
 
         tableCost.on('click', '.btn-select-cost', function () {
-            if (this.closest('tr')) {
-                if (this.closest('tr').querySelector('.table-row-item')) {
-                    QuotationLoadDataHandle.loadCostProduct(this.closest('tr').querySelector('.table-row-item'));
+            let row = this.closest('tr');
+            if (row) {
+                let itemEle = row.querySelector('.table-row-item');
+                if (itemEle) {
+                    QuotationLoadDataHandle.loadCostProduct(itemEle);
                 }
             }
          });
@@ -702,34 +705,39 @@ $(function () {
                 QuotationLoadDataHandle.loadRowDisabled(newRow);
                 // ReOrder STT
                 reOrderSTT(tableProduct);
-                // load again table cost
-                // QuotationLoadDataHandle.loadDataTableCost();
                 QuotationLoadDataHandle.loadSetWFRuntimeZone();
             }
         });
 
 // INDICATORS
         $('#tab-indicator').on('click', function () {
-            if (formSubmit.attr('data-method').toLowerCase() !== 'get') {
+            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 indicatorHandle.loadIndicator();
                 QuotationLoadDataHandle.loadSetWFRuntimeZone();
             }
         });
 
 // PAYMENT STAGE
+        $quotationTabs.on('click', '.tab-payment', function () {
+            QuotationStoreDataHandle.storeDtbData(1);
+            QuotationStoreDataHandle.storeDtbData(2);
+            QuotationStoreDataHandle.storeDtbData(3);
+            QuotationStoreDataHandle.storeDtbData(4);
+        });
+
         $('#btn-add-payment-stage').on('click', function () {
             QuotationLoadDataHandle.loadAddPaymentStage();
         });
 
-        tablePS.on('change', '.table-row-date, .table-row-term, .table-row-ratio, .table-row-value-before-tax, .table-row-due-date', function () {
-            if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+        tablePS.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-issue-invoice, .table-row-value-total, .table-row-due-date', function () {
+            if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order') && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 if ($(this).hasClass('table-row-date')) {
                     let isCheck = true;
                     let eleDueDate = row.querySelector('.table-row-due-date');
-                    let eleTerm = row.querySelector('.table-row-term');
-                    if (eleDueDate && eleTerm) {
-                        if ($(this).val() && $(eleDueDate).val() && !$(eleTerm).val()) {
+                    let eleInstallment = row.querySelector('.table-row-installment');
+                    if (eleDueDate && eleInstallment) {
+                        if ($(this).val() && $(eleDueDate).val() && !$(eleInstallment).val()) {
                             isCheck = validateStartEndDate($(this).val(), $(eleDueDate).val());
                         }
                     }
@@ -741,14 +749,17 @@ $(function () {
                         return false;
                     }
                 }
-                if ($(this).hasClass('table-row-term')) {
-                    QuotationLoadDataHandle.loadChangePSTerm(this);
+                if ($(this).hasClass('table-row-installment')) {
+                    QuotationLoadDataHandle.loadChangePSInstallment(this);
                 }
                 if ($(this).hasClass('table-row-ratio') && $(this).hasClass('validated-number')) {
                     validateNumber(this);
                     let eleValueBeforeTax = row.querySelector('.table-row-value-before-tax');
                     QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBeforeTax, $(this).val());
                     validatePSValue(eleValueBeforeTax);
+                }
+                if ($(this).hasClass('table-row-issue-invoice')) {
+                    QuotationLoadDataHandle.loadChangePSIssueInvoice(this);
                 }
                 if ($(this).hasClass('table-row-due-date')) {
                     let row = this.closest('tr');
@@ -774,66 +785,14 @@ $(function () {
 
 // IMPORT TABLE
         $('#modal-load-datatable-from-excel .btn-gradient-primary').on('click', function () {
-            let import_data_rows = $('#tab_line_detail').find('.import_data_rows');
-            let dataIP = [];
-            if (import_data_rows.text()) {
-                dataIP = JSON.parse(import_data_rows.text());
-            }
-            if (dataIP.length > 0) {
-                let listProdID = [];
-                let JSonProd = {};
-                let result = [];
-                for (let data of dataIP) {
-                    listProdID.push(data?.['product']?.['id']);
-                    JSonProd[data?.['product']?.['id']] = data;
-                }
-                if (listProdID.length > 0) {
-                    WindowControl.showLoading();
-                    $.fn.callAjax2({
-                            'url': QuotationDataTableHandle.productInitEle.attr('data-url'),
-                            'method': QuotationDataTableHandle.productInitEle.attr('data-method'),
-                            'data': {'id__in': listProdID.join(',')},
-                            'isDropdown': true,
-                        }
-                    ).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                                    let order = 1;
-                                    for (let dataProd of data?.['product_sale_list']) {
-                                        let dataPush = {'product_data': dataProd, 'order': order};
-                                        if (JSonProd.hasOwnProperty(dataProd?.['id'])) {
-                                            dataPush['uom_data'] = JSonProd[dataProd?.['id']]?.['uom'];
-                                            dataPush['tax_data'] = JSonProd[dataProd?.['id']]?.['tax'];
-                                            dataPush['product_quantity'] = JSonProd[dataProd?.['id']]?.['quantity'];
-                                            dataPush['product_unit_price'] = JSonProd[dataProd?.['id']]?.['unit_price'];
-                                            dataPush['product_tax_value'] = JSonProd[dataProd?.['id']]?.['tax_value'];
-                                            dataPush['product_discount_value'] = 0;
-                                            dataPush['product_subtotal_price'] = JSonProd[dataProd?.['id']]?.['subtotal_price'];
-                                        }
-                                        order++;
-                                        result.push(dataPush);
-                                    }
-                                    tableProduct.DataTable().clear().draw();
-                                    // load table product
-                                    tableProduct.DataTable().rows.add(result).draw();
-                                    QuotationLoadDataHandle.loadReInitDataTableProduct();
-                                    $('#modal-load-datatable-from-excel').modal('hide');
-                                    WindowControl.hideLoading();
-                                }
-                            }
-                        }
-                    )
-                }
-            }
+            QuotationLoadDataHandle.loadImport();
         });
 
 
 
 
 // Submit form quotation + sale order
-        SetupFormSubmit.validate(formSubmit, {
+        SetupFormSubmit.validate(QuotationLoadDataHandle.$form, {
             rules: {
                 title: {
                     required: true,
@@ -848,22 +807,19 @@ $(function () {
                 contact_id: {
                     required: true,
                 },
-                payment_term_id: {
-                    required: true,
-                },
             },
             errorClass: 'is-invalid cl-red',
             submitHandler: submitHandlerFunc
         });
 
         function submitHandlerFunc() {
-            if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method').toLowerCase() === "post") { // HAS PROMOTION => Check condition again
+            if (tableProduct[0].querySelector('.table-row-promotion') && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === "post") { // HAS PROMOTION => Check condition again
                 QuotationPromotionHandle.callPromotion(1);
                 // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal
                 // Submit Form normal
-                submitForm(formSubmit);
+                submitForm();
             }
         }
 
@@ -871,7 +827,7 @@ $(function () {
             let valueCheck = $('#quotation-check-promotion').val();
             if (valueCheck) {
                 if (valueCheck === 'true') {
-                    submitForm(formSubmit);
+                    submitForm();
                 } else if (valueCheck === 'false') {
                     $('#btn-invalid-promotion').click();
                     return false
@@ -881,12 +837,12 @@ $(function () {
             }
         }
 
-         function submitForm(formSubmit) {
+         function submitForm() {
              let is_sale_order = false;
              if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                  is_sale_order = true;
              }
-             let _form = new SetupFormSubmit(formSubmit);
+             let _form = new SetupFormSubmit(QuotationLoadDataHandle.$form);
             // Load again indicator when Submit
             indicatorHandle.loadIndicator();
             let result = QuotationSubmitHandle.setupDataSubmit(_form);
@@ -898,11 +854,13 @@ $(function () {
                 if (keyHidden.length > 0) {
                     // special case: loadCost if products is not in hidden zones
                     if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
+                        QuotationStoreDataHandle.storeDtbData(2);
                         QuotationLoadDataHandle.loadDataTableCost();
                         QuotationSubmitHandle.setupDataSubmit(_form);
                         QuotationLoadDataHandle.loadSetWFRuntimeZone();
                     }
                 } else {
+                    QuotationStoreDataHandle.storeDtbData(2);
                     QuotationLoadDataHandle.loadDataTableCost();
                     QuotationSubmitHandle.setupDataSubmit(_form);
                 }

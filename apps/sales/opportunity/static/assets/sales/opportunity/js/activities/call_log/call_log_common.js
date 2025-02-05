@@ -4,7 +4,7 @@ const call_log_Opp_slb = $('#sale-code-select-box')
 const date_input = $('#date-input')
 const customer_slb = $('#account-select-box')
 const contact_slb = $('#contact-select-box')
-const cancel_activity_btn = $('#cancel-activity')
+const call_cancel_activity_btn = $('#call-cancel-activity')
 let CALL_LOG_LIST = []
 
 function loadOpportunityCallLogList() {
@@ -13,6 +13,9 @@ function loadOpportunityCallLogList() {
         let frm = new SetupFormSubmit(dtb);
         dtb.DataTableDefault({
             rowIdx: true,
+            scrollX: '100vw',
+            scrollY: '75vh',
+            scrollCollapse: true,
             useDataServer: true,
             ajax: {
                 url: frm.dataUrl,
@@ -51,14 +54,14 @@ function loadOpportunityCallLogList() {
                     data: 'opportunity',
                     className: 'wrap-text text-center w-20',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue badge-outline">${row?.['opportunity']?.['code']}</span>`
+                        return `${row?.['opportunity']?.['code']}`
                     }
                 },
                 {
                     data: 'employee_inherit',
                     className: 'wrap-text w-30',
                     render: (data, type, row) => {
-                        return `<span class="text-primary">${row?.['employee_inherit']?.['full_name']}</span><span class="text-primary"> --- <i class="fas fa-phone-volume"></i> --- </span><a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="text-primary underline_hover">${row?.['contact']?.['fullname']}</span></a>`
+                        return `<span class="text-blue">${row?.['employee_inherit']?.['full_name']}</span><span class="text-primary"> --- <i class="fas fa-phone-volume"></i> --- </span><a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="text-primary underline_hover">${row?.['contact']?.['fullname']}</span></a>`
                     }
                 },
                 {
@@ -97,7 +100,6 @@ date_input.daterangepicker({
     timePicker: false,
     showDropdowns: true,
     autoApply: true,
-    minYear: parseInt(moment().format('YYYY')),
     locale: {
         format: 'DD/MM/YYYY'
     },
@@ -110,13 +112,18 @@ $(document).on('click', '#table_opportunity_call_log_list .offcanvas-call-log-bu
     let call_log_obj = CALL_LOG_LIST.filter(function (item) {
         return item?.['id'] === call_log_id;
     })[0]
-    cancel_activity_btn.attr('data-id', call_log_id)
+    call_cancel_activity_btn.attr('data-id', call_log_id)
 
-    $('#detail-opp').val(call_log_obj?.['opportunity']?.['code'] + ' - ' + call_log_obj?.['opportunity']?.['title']);
     $('#is-cancelled').prop('hidden', !call_log_obj?.['is_cancelled'])
-    $('#detail-process').val(call_log_obj?.['process']?.['title'] ? call_log_obj?.['process']?.['title'] : '--');
-    $('#detail-stage').val(call_log_obj?.['process_stage_app']?.['title'] ? call_log_obj?.['process_stage_app']?.['title'] : '--');
-    $('#detail-inheritor').val(call_log_obj?.['employee_inherit']?.['full_name']);
+    $('#detail-opp').text(call_log_obj?.['opportunity']?.['code'] + ' - ' + call_log_obj?.['opportunity']?.['title']);
+    $('#detail-process').text(call_log_obj?.['process']?.['title'] ? call_log_obj?.['process']?.['title'] : '');
+    $('#detail-stage').text(call_log_obj?.['process_stage_app']?.['title'] ? call_log_obj?.['process_stage_app']?.['title'] : '');
+    let creator_fullname = call_log_obj?.['employee_created']?.['full_name']
+    let creator_group = call_log_obj?.['employee_created']?.['group']?.['title']
+    let inherit_fullname = call_log_obj?.['employee_inherit']?.['full_name']
+    let inherit_group = call_log_obj?.['employee_inherit']?.['group']?.['title']
+    $('#detail-creator').text(`${creator_fullname} ${creator_group ? ' - ' + creator_group : ''}`);
+    $('#detail-inheritor').text(`${inherit_fullname} ${inherit_group ? ' - ' + inherit_group : ''}`);
 
     $('#detail-subject-input').text(call_log_obj?.['subject']);
     $('#detail-date-input').text(moment(call_log_obj?.['call_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'));
@@ -124,10 +131,10 @@ $(document).on('click', '#table_opportunity_call_log_list .offcanvas-call-log-bu
     $('#detail-contact-select-box').text(call_log_obj?.['contact']?.['fullname']);
     $('#detail-result-text-area').text(call_log_obj?.['input_result']);
     $('#detail-repeat-activity').prop('checked', call_log_obj?.['repeat']);
-    cancel_activity_btn.prop('hidden', call_log_obj?.['is_cancelled'])
+    call_cancel_activity_btn.prop('hidden', call_log_obj?.['is_cancelled'])
 })
 
-$(document).on('click', '#cancel-activity', function () {
+$(document).on('click', '#call-cancel-activity', function () {
     Swal.fire({
         html:
             `<div class="mb-3"><i class="bi bi-x-square text-danger" style="font-size: 50px"></i></div>
@@ -146,10 +153,10 @@ $(document).on('click', '#cancel-activity', function () {
         reverseButtons: true
     }).then((result) => {
         if (result.value) {
-            let call_log_id = cancel_activity_btn.attr('data-id')
+            let call_log_id = call_cancel_activity_btn.attr('data-id')
             let dtb = table_opportunity_call_log_list;
             let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(dtb.attr('data-url-delete').replace(0, call_log_id), 'PUT', {'is_cancelled': !cancel_activity_btn.prop('disabled')}, csr)
+            $.fn.callAjax(dtb.attr('data-url-delete').replace(0, call_log_id), 'PUT', {'is_cancelled': !call_cancel_activity_btn.prop('disabled')}, csr)
                 .then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {

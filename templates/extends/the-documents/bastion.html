@@ -8,6 +8,7 @@
     {% if not process_stages_title %}{% trans 'Stages' as process_stages_title %}{% endif %}
 
     {% override_list_form_app data.list_from_app new_list_from_app as resolve_list_from_app %}
+    {% override_list_form_app data.app_id new_list_from_app_id as resolve_list_from_app_id %}
 
     {% get_or_default idx "bastionFieldTheDocument" as idx %}
 
@@ -16,7 +17,7 @@
             id="{{idx}}"
 
             data-current-feature="{{ data.list_from_app }}"
-            data-current-app-id="{{ data.app_id }}"
+            data-current-app-id="{{ resolve_list_from_app_id }}"
 
             {# Opp flag #}
             data-has_opp="{{ has_opp|parse_0_or_1 }}"

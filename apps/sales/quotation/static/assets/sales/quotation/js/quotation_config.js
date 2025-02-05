@@ -42,7 +42,28 @@ $(function () {
         let boxZonesEditingEdit = $('#edit-zone-box-zones-editing');
         let boxZonesHiddenEdit = $('#edit-zone-box-zones-hidden');
         let $eleRemarkEdit = $('#edit-zone-remark');
-
+        let appMapMDUrls = {
+            "saledata.product": {
+                "url": $eleUrlFact.attr('data-md-product'),
+                "keyResp": "product_sale_list"
+            },
+            "saledata.producttype": {
+                "url": $eleUrlFact.attr('data-md-type'),
+                "keyResp": "product_type_list"
+            },
+            "saledata.productcategory": {
+                "url": $eleUrlFact.attr('data-md-category'),
+                "keyResp": "product_category_list"
+            },
+            "saledata.expense": {
+                "url": $eleUrlFact.attr('data-md-labor'),
+                "keyResp": "expense_list"
+            },
+            "saledata.expenseitem": {
+                "url": $eleUrlFact.attr('data-md-expense-item'),
+                "keyResp": "expense_item_list"
+            },
+        }
 
         // call ajax get info quotation config detail
         $.fn.callAjax($form.data('url'), 'GET').then(
@@ -180,7 +201,7 @@ $(function () {
                                     <div
                                             class="modal fade" id="${modalID}" tabindex="-1"
                                             role="dialog" aria-labelledby="${modalID}"
-                                            aria-hidden="true"
+                                            aria-hidden="true" data-bs-backdrop="static"
                                     >
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
@@ -200,7 +221,7 @@ $(function () {
                                                             <textarea class="form-control indicator-editor" rows="4" cols="50" name=""></textarea>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
+                                                    <div class="row mb-4">
                                                         <ul class="nav nav-light">
                                                             <li class="nav-item">
                                                                 <a class="nav-link active" data-bs-toggle="tab" href="${tabIndicatorHref}">
@@ -217,7 +238,7 @@ $(function () {
                                                                 <span class="nav-link-text">${transEle.attr('data-function')}</span>
                                                                 </a>
                                                             </li>
-                                                            <li class="nav-item">
+                                                            <li class="nav-item" hidden>
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabOperatorHref}">
                                                                 <span class="nav-link-text">${transEle.attr('data-operator')}</span>
                                                                 </a>
@@ -249,7 +270,7 @@ $(function () {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <h6 class="text-primary mt-2">${eleTrans.attr('data-final-acceptance')}</h6>
+                                                    <b>${eleTrans.attr('data-final-acceptance')}</b>
                                                     <div class="row final-acceptance-zone">
                                                         <div class="col-12 col-md-6 col-lg-6">
                                                             <div class="form-group form-group-data-source">
@@ -264,7 +285,7 @@ $(function () {
                                                             </div>
                                                         </div>
                                                         <div class="col-12 col-md-6 col-lg-6">
-                                                            <div class="form-check mt-5">
+                                                            <div class="form-check form-check-lg mt-5">
                                                                 <input type="checkbox" class="form-check-input acceptance-editable">
                                                                 <label class="form-check-label">${eleTrans.attr('data-editable')}</label>
                                                             </div>
@@ -319,16 +340,57 @@ $(function () {
                     }
                 ],
                 rowCallback(row, data, index) {
-                    loadBoxAcceptanceAffect($(row.querySelector('.box-acceptance-affect')));
-                    $(row.querySelector('.box-acceptance-affect')).val(data?.['acceptance_affect_by']);
-                    let boxRender = row?.querySelector('.form-group-data-source')?.querySelector('.select2-selection__rendered');
-                    if (boxRender) {
-                        boxRender.innerHTML = dataAcceptanceAffectJSON[data?.['acceptance_affect_by']]?.['title'];
-                        boxRender.setAttribute('title', dataAcceptanceAffectJSON[data?.['acceptance_affect_by']]?.['title']);
+                    let eleAcceptanceAffect = row.querySelector('.box-acceptance-affect');
+                    let eleAcceptanceIsEdit = row.querySelector('.acceptance-editable');
+                    if (eleAcceptanceAffect && eleAcceptanceIsEdit) {
+                        loadInitS2($(eleAcceptanceAffect), dataAcceptanceAffect);
+                        eleAcceptanceIsEdit.checked = data?.['is_acceptance_editable'];
+                        $(eleAcceptanceAffect).val(data?.['acceptance_affect_by']).trigger('change');
                     }
-                    row.querySelector('.acceptance-editable').checked = data?.['is_acceptance_editable'];
+                },
+                drawCallback: function () {
+                    dtbHDCustom();
                 },
             });
+        }
+
+        // Custom dtb
+        function dtbHDCustom() {
+            let $table = tableIndicator;
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+            headerToolbar$.prepend(textFilter$);
+
+            if (textFilter$.length > 0) {
+                textFilter$.css('display', 'flex');
+                // Check if the button already exists before appending
+                if (!$('#btn-add-indicator').length) {
+                    let $group = $(`<button
+                                            type="button"
+                                            class="btn btn-outline-secondary"
+                                            id="btn-add-indicator"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#indicatorCreateModalCenter"
+                                    >
+                                    <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-plus"></i></span></span><span>${eleTrans.attr('data-add')}</span></span>
+                                    </button>
+                                    <button
+                                            type="button"
+                                            class="btn btn-outline-secondary"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#restoreIndicatorModalCenter"
+                                    >
+                                    <span><span class="icon"><span class="feather-icon"><i class="fas fa-redo-alt"></i></span></span><span>${eleTrans.attr('data-restore')}</span></span>
+                                    </button>`);
+                    textFilter$.append(
+                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                    );
+                    // Select the appended button from the DOM and attach the event listener
+                    $('#btn-add-indicator').on('click', function () {
+                    });
+                }
+            }
         }
 
         tabs.on('click', '.nav-item', function () {
@@ -393,29 +455,31 @@ $(function () {
                 let dataShow = JSON.parse(propertySelected.value);
                 let dataStr = JSON.stringify(dataShow).replace(/"/g, "&quot;");
                 // show description
-                let eleDescription = null;
-                let eleBoxMD = null;
-                if ($(this)[0].closest('.tab-pane').querySelector('.property-description')) {
-                    eleDescription = $(this)[0].closest('.tab-pane').querySelector('.property-description');
-                } else if ($(this)[0].closest('.tab-pane').querySelector('.indicator-description')) {
-                    eleDescription = $(this)[0].closest('.tab-pane').querySelector('.indicator-description');
-                } else if ($(this)[0].closest('.tab-pane').querySelector('.function-description')) {
-                    eleDescription = $(this)[0].closest('.tab-pane').querySelector('.function-description');
-                }
-                if (eleDescription) {
-                    let htmlBoxMD = ``;
-                    if (dataShow?.['type'] === 5) {
-                        let url = "";
-                        let keyResp = "";
-                        if (dataShow?.['content_type'] === 'saledata.expenseitem') {
-                            url = $eleUrlFact.attr('data-url-expense-item');
-                            keyResp = "expense_item_list";
-                        }
-                        if (dataShow?.['content_type'] === 'saledata.expense') {
-                            url = $eleUrlFact.attr('data-url-labor');
-                            keyResp = "expense_list";
-                        }
-                        htmlBoxMD = `<div class="row w-80">
+                let tabPane = $(this)[0].closest('.tab-pane');
+                if (tabPane) {
+                    let eleDescription = null;
+                    let eleBoxMD = null;
+                    if (tabPane.querySelector('.property-description')) {
+                        eleDescription = tabPane.querySelector('.property-description');
+                    } else if (tabPane.querySelector('.indicator-description')) {
+                        eleDescription = tabPane.querySelector('.indicator-description');
+                    } else if (tabPane.querySelector('.function-description')) {
+                        eleDescription = tabPane.querySelector('.function-description');
+                    }
+                    if (eleDescription) {
+                        let htmlBoxMD = ``;
+                        if (dataShow?.['type'] === 5) {
+                            let url = "";
+                            let keyResp = "";
+                            if (appMapMDUrls?.[dataShow?.['content_type']]) {
+                                if (appMapMDUrls[dataShow?.['content_type']]?.['url']) {
+                                    url = appMapMDUrls[dataShow?.['content_type']]?.['url'];
+                                }
+                                if (appMapMDUrls[dataShow?.['content_type']]?.['keyResp']) {
+                                    keyResp = appMapMDUrls[dataShow?.['content_type']]?.['keyResp'];
+                                }
+                            }
+                            htmlBoxMD = `<div class="row">
                                             <select
                                                     class="form-select box-md w-60"
                                                     id="box-ss-role"
@@ -427,29 +491,30 @@ $(function () {
                                                     hidden
                                             ></select>
                                         </div>`;
-                    }
-                    eleDescription.innerHTML = "";
-                    $(eleDescription).append(`<div data-simplebar class="nicescroll-bar h-250p">
+                        }
+                        eleDescription.innerHTML = "";
+                        $(eleDescription).append(`<div data-simplebar class="nicescroll-bar h-250p">
                                                 <div class="row mb-3">
                                                     <h5>${dataShow?.['title'] ? dataShow?.['title'] : ''}</h5>
                                                     <p class="mb-2">${dataShow?.['remark'] ? dataShow?.['remark'] : ''}</p>
                                                     ${htmlBoxMD}
                                                 </div>
                                                 <div class="row mb-2">
-                                                    <b>Syntax</b>
+                                                    <b>${eleTrans.attr('data-syntax')}</b>
                                                     <p class="ml-2">${dataShow?.['syntax_show'] ? dataShow?.['syntax_show'] : ''}</p>
                                                 </div>
                                                 <div class="row">
-                                                    <b>Example</b>
+                                                    <b>${eleTrans.attr('data-example')}</b>
                                                     <p class="ml-2">${dataShow?.['example'] ? dataShow?.['example'] : ''}</p>
                                                 </div>
                                             </div>`)
-                eleBoxMD = eleDescription.querySelector('.box-md');
-                }
-                if (eleBoxMD) {
-                    $(eleBoxMD).initSelect2({
-                        'allowClear': true,
-                    });
+                        eleBoxMD = eleDescription.querySelector('.box-md');
+                    }
+                    if (eleBoxMD) {
+                        $(eleBoxMD).initSelect2({
+                            'allowClear': true,
+                        });
+                    }
                 }
             }
         });
@@ -1115,11 +1180,11 @@ $(function () {
                         let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
                         if (item.id !== indicator_detail_id && item.order < parseInt(indicator_detail_order)) { // check & not append this current indicator or higher indicators
                             indicator_list += `<div class="row param-item">
-                                            <button type="button" class="btn btn-flush-light">
-                                                <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${item.title}</span></span></div>
-                                                <input type="hidden" class="data-show" value="${dataStr}">
-                                            </button>
-                                        </div>`
+                                                    <button type="button" class="btn btn-flush-light">
+                                                        <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${item.title}</span></span></div>
+                                                        <input type="hidden" class="data-show" value="${dataStr}">
+                                                    </button>
+                                                </div>`;
                         }
                         // load detail editor by ID indicator
                         if (item.id === indicator_detail_id) {
@@ -1161,19 +1226,18 @@ $(function () {
                                     let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
                                     let iconMD = ``;
                                     if (item?.['type'] === 5) {
-                                        iconMD = `<small><i class="fas fa-database text-primary ml-3 mt-1"></i></small>`;
+                                        iconMD = `<span class="icon"><span class="feather-icon"><i class="fas fa-database"></i></span></span>`;
                                     }
                                     param_list += `<div class="row param-item">
-                                                <button type="button" class="btn btn-flush-light">
-                                                    <div class="float-left">
-                                                        <div class="d-flex justify-content-between">
-                                                            <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span>
-                                                            ${iconMD}
-                                                        </div>
-                                                    </div>
-                                                    <input type="hidden" class="data-show" value="${dataStr}">
-                                                </button>
-                                            </div>`
+                                                        <button type="button" class="btn btn-flush-light">
+                                                            <div class="float-left">
+                                                                <div class="d-flex justify-content-between">
+                                                                    <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title mr-2">${item.title}</span>${iconMD}</span>
+                                                                </div>
+                                                            </div>
+                                                            <input type="hidden" class="data-show" value="${dataStr}">
+                                                        </button>
+                                                    </div>`;
                                 })
                                 eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
                                             ${param_list}

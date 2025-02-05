@@ -39,6 +39,7 @@
             data-url="{% url "OrderDeliveryListAPI" %}"
             data-url-detail="{% url 'OrderDeliveryDetail' pk=1 %}"
             data-url-sale-order-detail="{% url 'SaleOrderDetail' pk=1 %}"
+            data-url-lease-order-detail="{% url 'LeaseOrderDetail' pk=1 %}"
     >
         <thead>
         <tr>
@@ -50,7 +51,7 @@
                    title="{% trans 'Press row here to open detail page.' %}"
                 ></i></th>
             <th>
-                {% trans 'Sale Order' %}
+                {% trans 'Sale Order' %} / {% trans 'Lease order' %}
                 <i
                         class="fas fa-info-circle icon-info tit_visible_tb-head"
                         data-bs-toggle="tooltip"
@@ -107,11 +108,11 @@
                         </thead>
                     </table>
                 </div>
-                <div class="modal-footer justify-content-between ">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">{% trans 'Close' %}</button>
                     <button type="button" class="btn btn-primary" id="call_delivery" data-bs-dismiss="modal">
                         {% trans 'Select' %}</button>
-                    <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
                 </div>
             </div>
         </div>

@@ -1,5 +1,6 @@
 """needed module import"""
 import datetime
+import os
 
 from functools import wraps
 
@@ -224,10 +225,10 @@ def mask_view(**parent_kwargs):
             if settings.IS_SERVER_MAINTAINING is True:
                 return OutLayoutRender(request=request).render_503()
 
-            if settings.UI_ALLOW_AUTO_TENANT:
-                state_http = HttpRequestControl(request=request).check()
-                if not state_http:
-                    return OutLayoutRender(request=request).render_404()
+            # if settings.UI_ALLOW_AUTO_TENANT:
+            #     state_http = HttpRequestControl(request=request).check()
+            #     if not state_http:
+            #         return OutLayoutRender(request=request).render_404()
 
             ctx = {}
             pk = kwargs.get('pk', None)
@@ -362,6 +363,10 @@ def mask_view(**parent_kwargs):
                                 return HttpResponse(status=500)
                             case _:
                                 ctx['pk'] = pk
+                                ctx['fcm'] = {
+                                    'key_pair': os.getenv("FCM_KEY_PAIR", ""),
+                                    'config': os.getenv('FCM_CONFIG', '{}'),
+                                }
                                 ctx['jsi18n'] = jsi18n
                                 ctx['is_ga_enabled'] = settings.GA_COLLECTION_ENABLED
                                 ctx['ga_config'] = {

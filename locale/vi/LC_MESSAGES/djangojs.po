@@ -276,3 +276,23 @@ msgstr "Bạn có chắc chắn loại bỏ nó?"
 #
 msgid "Retrieving Opportunity Data that has been linked to Process"
 msgstr "Đang truy xuất dữ liệu Cơ hội Kinh Doanh đã được liên kết với Tiến trình"
+
+#
+msgid "Delete Item"
+msgstr "Xóa mục này"
+
+#
+msgid "Do you really want to delete this item"
+msgstr "Bạn có thực sự muốn xóa mục này"
+
+#
+msgid "Confirm"
+msgstr "Xác nhận"
+
+#
+msgid "Cancel"
+msgstr "Huỷ bỏ"
+
+#
+msgid "Delete item successfully"
+msgstr "Xoá thành công"

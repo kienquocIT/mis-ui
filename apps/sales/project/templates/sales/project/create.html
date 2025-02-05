@@ -4,7 +4,8 @@
     {% trans 'Project' %} {% trans 'create' %}
 {% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="project_form">
@@ -66,13 +67,12 @@
     </form>
 {% endblock %}
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory"
-    >
-    <input type="text" id="trans-factory"
-    >
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
     <script src="{% static 'assets/project/js/project-common.js' %}"></script>
     <script src="{% static 'assets/project/js/create.js' %}"></script>
     <script>

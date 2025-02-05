@@ -1,0 +1,114 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "Conversations"
+msgstr "Cuộc hội thoại"
+
+#
+msgid "Select the page on the left to get started!"
+msgstr "Chọn một trang ở bên trái để bắt đầu!"
+
+#
+msgid "Select the conversation on the left to get started!"
+msgstr "Chọn một cuộc trò chuyện ở bên trái để bắt đầu!"
+
+#
+msgid "Scroll to down"
+msgstr "Cuộn đến cuối"
+
+#
+msgid "Scroll to top"
+msgstr "Cuộn lên đầu"
+
+#
+msgid "Open inbox in new tab of Messenger"
+msgstr "Mở hộp thư đến trong tab mới của Messenger"
+
+#
+msgid "Open profile in new tab of Facebook"
+msgstr "Mở hồ sơ trong tab mới của Facebook"
+
+#
+msgid "The direct messaging feature on the platform is currently under development and will be available soon."
+msgstr "Tính năng nhắn tin trực tiếp trên nền tảng hiện đang được phát triển."
+
+#
+msgid "It is currently not possible to track messages in real time."
+msgstr "Hiện tại không thể theo dõi tin nhắn theo thời gian thực."
+
+#
+msgid "Chat recordings are still available even if you don't interact through Bflow."
+msgstr "Bản ghi trò chuyện vẫn khả dụng ngay cả khi bạn không tương tác qua Bflow."
+
+#
+msgid "Use Messenger redirects to interact directly with users through the Messenger platform."
+msgstr "Sử dụng chuyển hướng Messenger để tương tác trực tiếp với người dùng thông qua nền tảng Messenger."
+
+#
+msgid "Collapse user information area and advanced operations."
+msgstr "Thu gọn vùng thông tin người dùng và các thao tác nâng cao."
+
+#
+msgid "Assign account to exist contact or add new one"
+msgstr "Gán tài khoản vào Liên Hệ đã tồn tại hoặc thêm mới"
+
+#
+msgid "Add to exist contact"
+msgstr "Thêm vào Liên Hệ đã có"
+
+#
+msgid "Create a contact"
+msgstr "Tạo mới Liên Hệ"
+
+#
+msgid "Assign account to exist lead or add new one"
+msgstr "Gán tài khoản vào Lead hoặc thêm mới"
+
+#
+msgid "Add to exist Lead"
+msgstr "Thêm vào Lead đã có"
+
+#
+msgid "Create a Lead"
+msgstr "Tạo mới Lead"
+
+#
+msgid "Messenger config"
+msgstr "Cấu hình tính năng Messenger"
+
+#
+msgid "Exist contact"
+msgstr "Liên hệ đã tồn tại"
+
+#
+msgid "Pairing of the selected Facebook account with the Bflow system is in progress."
+msgstr "Việc ghép nối tài khoản Facebook đã chọn với hệ thống Bflow đang được tiến hành."
+
+#
+msgid "Limit per hour"
+msgstr "Giới hạn mỗi giờ"
+
+#
+msgid "Exist lead"
+msgstr "Lead đã tồn tại"
+
+#
+msgid "Connect to Zalo"
+msgstr "Kết nối với Zalo"

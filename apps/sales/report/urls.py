@@ -9,7 +9,7 @@ from apps.sales.report.views import (
     PurchaseOrderReportList, PurchaseOrderReportListAPI, ReportInventoryProductWarehouseViewAPI, BudgetReportList,
     BudgetReportCompanyListAPI, PaymentListForBudgetReportAPI, BudgetReportGroupListAPI, GetQRCodeSerialInfoAPI,
     GetQRCodeLotInfoAPI,
-    ReportInventoryAskAPI
+    ReportInventoryAskAPI, ReportProductListAPIRDashBoard, AdvanceFilterListAPI, AdvanceFilterDetailAPI
 )
 
 urlpatterns = [
@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/revenue', ReportRevenueListAPI.as_view(), name='ReportRevenueListAPI'),
     path('product', ReportProductList.as_view(), name='ReportProductList'),
     path('api/product', ReportProductListAPI.as_view(), name='ReportProductListAPI'),
+    path('api/product-for-dashboard', ReportProductListAPIRDashBoard.as_view(), name='ReportProductListAPIRDashBoard'),
     path('customer', ReportCustomerList.as_view(), name='ReportCustomerList'),
     path('api/customer', ReportCustomerListAPI.as_view(), name='ReportCustomerListAPI'),
     path('pipeline', ReportPipelineList.as_view(), name='ReportPipelineList'),
@@ -46,4 +47,8 @@ urlpatterns = [
     path('api/budget-report-company', BudgetReportCompanyListAPI.as_view(), name='BudgetReportCompanyListAPI'),
     path('api/budget-report-group', BudgetReportGroupListAPI.as_view(), name='BudgetReportGroupListAPI'),
     path('api/budget-report-payment', PaymentListForBudgetReportAPI.as_view(), name='PaymentListForBudgetReportAPI'),
+
+    # advance filter
+    path('api/advance-filter/list', AdvanceFilterListAPI.as_view(), name='AdvanceFilterListAPI'),
+    path('api/advance-filter/detail/<str:pk>', AdvanceFilterDetailAPI.as_view(), name='AdvanceFilterDetailAPI')
 ]

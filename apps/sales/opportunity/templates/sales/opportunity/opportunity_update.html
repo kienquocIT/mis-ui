@@ -113,14 +113,11 @@
         </form>
     </div>
 
-{#    {% include 'sales/opportunity/activities/extends/call_log_modals.html' %}#}
-{#    {% include 'sales/opportunity/activities/extends/meeting_modals.html' %}#}
-{#    {% include 'sales/opportunity/activities/extends/email_modals.html' %}#}
-    {% include 'sales/task/extend/task-form.html' with has_prj=False%}
-
     {{ data.type_customer|json_script:'data_type_customer' }}
     {{ data.role_customer|json_script:'data_role_customer' }}
-
+{% endblock %}
+{% block modalData %}
+    {% include 'sales/task/extend/task-form.html' with has_prj=False%}
     <div class="modal fade" id="modalEditMember" tabindex="-1" role="dialog" aria-labelledby="modalEditMember" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -142,7 +139,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="modalProcess" tabindex="-1" role="dialog" aria-labelledby="modalProcess" aria-hidden="true">
         <div class="modal-dialog modal-lg" style="min-width: 80%" role="document">
             <div class="modal-content">
@@ -202,6 +198,9 @@
             data-url-return-detail="{% url 'ReturnAdvanceDetail' pk=0 %}"
             data-url-bom-detail="{% url "OpportunityBOMDetail" '0' %}"
             data-url-bidding-detail="{% url "BiddingDetail" pk=0%}"
+            data-url-consulting-detail="{% url "ConsultingDetail" pk=0%}"
+            data-url-lease-order-detail="{% url "LeaseOrderDetail" pk=0%}"
+            data-url-contract-detail="{% url "ContractApprovalDetail" pk=0%}"
 
             data-url-quo-list="{% url "QuotationListAPI" %}"
             data-url-so-list="{% url "SaleOrderListAPI" %}"
@@ -230,6 +229,9 @@
             data-trans-return="{% trans "Return Advance" %}"
             data-trans-task="{% trans "Task" %}"
             data-trans-bom="{% trans 'BOM' %}"
+            data-trans-lease-order="{% trans 'Lease order' %}"
+            data-trans-contract="{% trans 'Contract approval' %}"
+
             data-trans-call="{% trans "Call" %}"
             data-trans-email="{% trans "Email" %}"
             data-trans-meeting="{% trans "Meeting" %}"
@@ -240,6 +242,7 @@
             data-cancel-so="{% trans "Please cancel current sale order" %}"
             data-cancel-quo-so="{% trans "Please cancel current quotation, sale order" %}"
             data-trans-bidding="{% trans "Bidding" %}"
+            data-trans-consulting="{% trans "Consulting" %}"
             data-trans-activity-cancelled="{% trans 'Cancelled' %}"
             data-trans-notify-update-permission="{% trans 'Please save Update Opportunity page to apply all the permissions!' %}"
     ></script>

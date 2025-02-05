@@ -1,4 +1,5 @@
 class GroupLoadDataHandle {
+    static $form = $('#frm_group_create');
     static boxGroupLevel = $('#select-box-group-level');
     static boxGroupParent = $('#select-box-group');
     static box1stManager = $('#select-box-first-manager');
@@ -26,6 +27,11 @@ class GroupLoadDataHandle {
             }
         }
         $ele.initSelect2(opts);
+        return true;
+    };
+
+    static loadUpperAlphanumeric(ele) {
+        ele.value = ele.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
         return true;
     };
 
@@ -271,8 +277,7 @@ function dataTableEmployeeShow(data) {
                 targets: 3,
                 width: '5%',
                 render: (data, type, row) => {
-                    let form = $('#frm_group_create');
-                    if (form.attr('data-method') !== "GET") {
+                    if (GroupLoadDataHandle.$form.attr('data-method').toLowerCase() !== "get") {
                         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" id="${row?.['id']}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
                     } else {
                         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" id="${row?.['id']}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`

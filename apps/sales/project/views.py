@@ -5,7 +5,8 @@ __all__ = ['ProjectList', 'ProjectListAPI', 'ProjectCreate', 'ProjectCreateAPI',
            'ProjectTaskDetailAPI', 'ProjectWorkExpenseAPI', 'ProjectListBaselineAPI', 'ProjectBaselineDetail',
            'ProjectBaselineDetailAPI', 'ProjectHome', 'ProjectConfig', 'ProjectConfigAPI', 'ProjectExpenseListAPI',
            'ProjectWorkList', 'ProjectActivities', 'ProjectActivitiesListAPI', 'ProjectCommentListAPI',
-           'ProjectActivitiesCommentDetail', 'ProjectCommentDetailFlowsAPI', 'ProjectTaskList', 'ProjectTaskListAllAPI'
+           'ProjectActivitiesCommentDetail', 'ProjectCommentDetailFlowsAPI', 'ProjectTaskList', 'ProjectTaskListAllAPI',
+           'ProjectUpdateStatusAPI'
            ]
 
 from django.views import View
@@ -93,6 +94,7 @@ class ProjectDetail(View):
         return {
                    'dependencies_list': DEPENDENCIES_TYPE,
                    'system_status': SYSTEM_STATUS,
+                   'list_from_app': 'project.project.edit',
                    'pk': pk,
                    'can_close': can_close,
                    'unit_data': unit_data,
@@ -150,6 +152,20 @@ class ProjectEditAPI(APIView):
     )
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_EDIT.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class ProjectUpdateStatusAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_STATUS_UPDATE.fill_key(pk=pk)).put(request.data)
         if resp.state:
             resp.result['message'] = f'{SaleMsg.PROJECT} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
             return resp.result, status.HTTP_200_OK

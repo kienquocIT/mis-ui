@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'List' %}{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'ListCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create List' %}"
+       id="create_partnercenter_list_btn"
+       data-bs-original-title="Add List">
+            <button type="button" class="btn btn-outline-primary">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                </span>
+            </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <table
+            id="table_partnercenter_list_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'ListListAPI' %}"
+            data-method="get"
+            data-url-result-list = "{% url 'ResultList' pk=0 %}"
+            data-url-detail = "{% url 'ListDetail' pk=0 %}"
+    >
+        <thead>
+            <tr>
+                <th></th>
+                <th>{% trans 'Title' %}</th>
+                <th>{% trans 'Date created' %}</th>
+                <th>{% trans 'Data object' %}</th>
+                <th>{% trans 'Last size updated' %}</th>
+                <th>{% trans 'Action' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <script
+        id="url-script"
+        data-list-detail-api-url="{% url 'ListDetailAPI' pk=0 %}"
+></script>
+    <script
+        id="msg-script"
+        data-msg-are-u-sure="{% trans 'Are you sure?' %}"
+        data-msg-not-revert="{% trans "You won't be able to revert this!" %}"
+        data-msg-cancel="{% trans 'Cancel' %}"
+        data-msg-delete="{% trans 'Delete' %}"
+></script>
+    {{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/partnercenter/list/list_list.js' %}"></script>
+{% endblock %}

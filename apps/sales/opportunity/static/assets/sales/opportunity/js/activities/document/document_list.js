@@ -7,6 +7,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 useDataServer: true,
+                rowIdx: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -20,8 +21,14 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        data: 'title',
                         targets: 0,
+                        render: (data, type, row) => {
+                            return ``;
+                        }
+                    },
+                    {
+                        data: 'title',
+                        targets: 1,
                         render: (data, type, row) => {
                             let urlDetail = urlEle.data('url-detail').format_url_with_uuid(row.id);
                             return `<a href="${urlDetail}"><span class="badge badge-primary">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
@@ -29,14 +36,14 @@ $(document).ready(function () {
                     },
                     {
                         data: 'opportunity',
-                        targets: 1,
+                        targets: 2,
                         render: (data, type, row) => {
                             return `<p>${data.code}</p>`
                         }
                     },
                     {
                         data: 'person_in_charge',
-                        targets: 2,
+                        targets: 3,
                         render: (data, type, row) => {
                             let html = ``;
                             data.map(function (item) {
@@ -47,7 +54,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'request_completed_date',
-                        targets: 3,
+                        targets: 4,
                         render: (data, type, row) => {
                             return $x.fn.displayRelativeTime(data, {
                                 'outputFormat': 'DD-MM-YYYY',

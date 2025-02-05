@@ -4,79 +4,33 @@ $(document).ready(function () {
     const $periodEle = $('#period-select')
     const $month_filter = $('#month-filter')
     const $quarter_filter = $('#quarter-filter')
-    const $month_select = $('#month-select')
-    const $quarter_select = $('#quarter-select')
+    const $month_select = $('#period-month')
+    const $quarter_select = $('#period-quarter')
 
     const $current_period_Ele = $('#current_period')
     let current_period = {}
     if ($current_period_Ele.text() !== '') {
         current_period = JSON.parse($current_period_Ele.text())
-        getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-        $month_select.val(new Date().getMonth() - current_period['space_month'] + 1).trigger('change');
     }
 
     function getQuarterMonth(quarter) {
         let month_list = []
         for (let i = 0; i < 3; i++) {
-            month_list.push(
-                [
-                    [1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]
-                ][parseFloat(quarter) - 1][i] + parseFloat(current_period['space_month'])
-            )
+            let fiscal_month = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]][parseFloat(quarter) - 1][i] + parseFloat(current_period['space_month'])
+            month_list.push(fiscal_month <= 12 ? fiscal_month : fiscal_month - 12)
         }
         return month_list
-    }
-
-    function getMonthOrder(space_month, fiscal_year) {
-        $month_select.html(``)
-        let data = []
-        for (let i = 0; i < 12; i++) {
-            let year_temp = fiscal_year
-            let trans_order = i + 1 + space_month
-            if (trans_order > 12) {
-                trans_order -= 12
-                year_temp += 1
-            }
-            if (fiscal_year !== current_period['fiscal_year'] || trans_order <= new Date().getMonth() + 1) {
-                if (year_temp === new Date().getFullYear()) {
-                    $month_select.append(`<option value="${i + 1}">${$trans_script.attr(`data-trans-m${trans_order}th`)}</option>`)
-                    data.push({
-                        'id': i + 1,
-                        'title': $trans_script.attr(`data-trans-m${trans_order}th`),
-                        'month': i + 1,
-                        'year': year_temp
-                    })
-                }
-            }
-        }
-        data.push({
-            'id': '',
-            'title': 'Select...',
-            'month': 0,
-            'year': 0,
-        })
-        $month_select.empty();
-        $month_select.initSelect2({
-            placeholder: $trans_script.attr('data-trans-all'),
-            data: data,
-            allowClear: true,
-            templateResult: function (state) {
-                let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
-                return $(`<span>${state.text} ${groupHTML}</span>`);
-            },
-        });
     }
 
     function LoadGroup(ele, data) {
         ele.initSelect2({
             allowClear: true,
-            placeholder: $trans_script.attr('data-trans-get-by-config'),
             ajax: {
                 url: ele.attr('data-url'),
                 data: {'current_emp': true},
                 method: 'GET',
             },
-            callbackDataResp: function (resp, keyResp) {
+            callbackDataResp: function (resp) {
                 let res = []
                 for (const config of resp.data?.['budget_plan_config']) {
                     if (config?.['can_view_company']) {
@@ -96,26 +50,6 @@ $(document).ready(function () {
         })
     }
     LoadGroup($('#group-select'))
-
-    function LoadPeriod(ele, data) {
-        ele.initSelect2({
-            ajax: {
-                url: ele.attr('data-url'),
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp] ? resp.data[keyResp] : []
-            },
-            data: (data ? data : null),
-            keyResp: 'periods_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            current_period = SelectDDControl.get_data_from_idx(ele, ele.val())
-            getMonthOrder(current_period['space_month'], current_period?.['fiscal_year'])
-        })
-    }
-    LoadPeriod($periodEle, current_period)
 
     function LoadTableForAllCompany() {
         WindowControl.showLoading();
@@ -373,10 +307,10 @@ $(document).ready(function () {
         }
     }
 
-    function BuildTable(table, data_list=[], group_id) {
+    function BuildTable(table, data_list=[]) {
         table.DataTable().clear().destroy()
         table.DataTableDefault({
-            ordering: false,
+            styleDom: 'hide-foot',
             rowIdx: true,
             paging: false,
             scrollY: '70vh',
@@ -387,7 +321,7 @@ $(document).ready(function () {
             columns: [
                 {
                     className: 'w-5',
-                    render: (data, type, row) => {
+                    render: () => {
                         return ``
                     }
                 },
@@ -507,17 +441,18 @@ $(document).ready(function () {
     function RenderTable(table, data_planned_list=[], group_id=null, init=false) {
         if (!init) {
             let dataParam = {}
+            if ($periodEle.val()) {
+                dataParam['period_id'] = $periodEle.val()
+            }
             if ($month_filter.prop('checked') && $month_select.val()) {
-                dataParam['month_list'] = JSON.stringify([parseInt($month_select.val()) + parseInt(current_period?.['space_month'])])
+                let fiscal_month = parseInt($month_select.val()) + parseInt(current_period?.['space_month'])
+                dataParam['month_list'] = JSON.stringify([fiscal_month <= 12 ? fiscal_month : fiscal_month - 12])
             }
             else if ($quarter_filter.prop('checked') && $quarter_select.val()) {
                 dataParam['month_list'] = JSON.stringify(getQuarterMonth($quarter_select.val()))
             }
-            else {
-                dataParam['date_approved__year'] = current_period?.['fiscal_year']
-            }
             if (group_id) {
-                dataParam['employee_inherit__group_id'] = group_id
+                dataParam['group_id'] = group_id
             }
             let payment_list_ajax = $.fn.callAjax2({
                 url: $url_script.attr('data-url-payment-list'),
@@ -560,7 +495,7 @@ $(document).ready(function () {
                     let not_in_plan = []
                     for (const payment of results[0]) {
                         for (const payment_expense of payment?.['expense_items']) {
-                            if (payment_expense?.['planned'] !== true) {
+                            if (!payment_expense?.['planned']) {
                                 not_in_plan.push(
                                     {
                                         "expense_item": {
@@ -581,20 +516,20 @@ $(document).ready(function () {
                         const id = item.expense_item.id;
                         if (!acc[id]) {
                             acc[id] = {
-                                expense_item: item.expense_item,
+                                expense_item: item?.['expense_item'],
                                 plan_value: 0,
                                 actual_value: 0,
                                 difference_value: 0,
-                                rate_value: item.rate_value
+                                rate_value: parseFloat(item?.['rate_value']) ? parseFloat(item?.['rate_value']) : 0
                             };
                         }
-                        acc[id].plan_value += item.plan_value;
-                        acc[id].actual_value += item.actual_value;
-                        acc[id].difference_value += item.difference_value;
+                        acc[id].plan_value += parseFloat(item?.['plan_value']) ? parseFloat(item?.['plan_value']) : 0;
+                        acc[id].actual_value += parseFloat(item?.['actual_value']) ? parseFloat(item?.['actual_value']) : 0;
+                        acc[id].difference_value += parseFloat(item?.['difference_value']) ? parseFloat(item?.['difference_value']) : 0;
                         return acc;
                     }, {});
 
-                    BuildTable(table, table_data.concat(Object.values(aggregatedData)), group_id)
+                    BuildTable(table, table_data.concat(Object.values(aggregatedData)))
                 })
         }
         else {
@@ -602,20 +537,4 @@ $(document).ready(function () {
         }
     }
     RenderTable($('#main-table'), [], true, true)
-
-    $month_filter.on('change', function () {
-        if ($(this).prop('checked')) {
-            $quarter_filter.prop('checked', !$(this).prop('checked'))
-            $quarter_select.prop('disabled', $(this).prop('checked'))
-        }
-        $month_select.prop('disabled', !$(this).prop('checked'))
-    })
-
-    $quarter_filter.on('change', function () {
-        if ($(this).prop('checked')) {
-            $month_filter.prop('checked', !$(this).prop('checked'))
-            $month_select.prop('disabled', $(this).prop('checked'))
-        }
-        $quarter_select.prop('disabled', !$(this).prop('checked'))
-    })
 })

@@ -1,6 +1,4 @@
 $(document).ready(function () {
-    ContactHandle.load();
-
     ContactHandle.loadDetailContact('update')
 
     const frm = new SetupFormSubmit($('#form-detail-contact'));

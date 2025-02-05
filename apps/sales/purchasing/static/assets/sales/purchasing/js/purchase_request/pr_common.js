@@ -218,6 +218,7 @@ function LoadLineDetailTable(ele, product_datas=[], disabled='') {
                     return `<select data-tax-id="${row?.['tax_id']}"
                                     data-tax-code="${row?.['tax_code']}"
                                     data-tax-title="${row?.['tax_title']}"
+                                    data-tax-rate="${row?.['tax_rate']}"
                                     ${disabled} class="form-select select2 tax-detail"></select>`;
                 }
             },
@@ -238,16 +239,16 @@ function LoadLineDetailTable(ele, product_datas=[], disabled='') {
                                 'id': $(this).find('.tax-detail').attr('data-tax-id'),
                                 'code': $(this).find('.tax-detail').attr('data-tax-code'),
                                 'title': $(this).find('.tax-detail').attr('data-tax-title'),
+                                'rate': $(this).find('.tax-detail').attr('data-tax-rate'),
                             }
                         )
                     }
-                })
-
-                ele.find('tbody tr').each(function (index) {
-                    LoadTaxLineDetail(
-                        $(this).find('.tax-detail'),
-                        product_datas[index]?.['tax'] ? product_datas[index]?.['tax'] : null
-                    )
+                    else {
+                        LoadTaxLineDetail(
+                            $(this).find('.tax-detail'),
+                            product_datas[index]?.['tax'] ? product_datas[index]?.['tax'] : null
+                        )
+                    }
                 })
             }
         }
@@ -345,21 +346,24 @@ function LoadLineDetailTableAddRow(ele, product_datas=[], disabled='') {
     });
 }
 
-function LoadSaleOrderTable() {
+function LoadSaleOrderTable(is_all_so=false) {
+    $('#self-so').prop('hidden', is_all_so)
+    $('#all-so').prop('hidden', !is_all_so)
     tableSaleOrder.DataTable().clear().destroy()
+    let data_param = is_all_so ? {
+        'system_status': 3,
+    } : {
+        'system_status': 3,
+        'employee_inherit_id': emp_current_id
+    }
     tableSaleOrder.DataTableDefault({
         useDataServer: true,
         rowIdx: true,
-        paging: false,
-        scrollY: '40vh',
+        scrollY: '25vh',
         scrollX: '100vw',
-        scrollCollapse: true,
         ajax: {
             url: tableSaleOrder.attr('data-url'),
-            data: {
-                'system_status': 3,
-                'employee_inherit_id': emp_current_id
-            },
+            data: data_param,
             type: 'GET',
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
@@ -377,19 +381,25 @@ function LoadSaleOrderTable() {
         },
         columns: [
             {
-                className: 'wrap-text',
+                className: 'wrap-text w-5',
                 render: () => {
                     return ``
                 }
             }, {
-                className: 'wrap-text',
+                className: 'wrap-text w-5',
+                render: (data, type, row) => {
+                    return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-so" data-id="${row?.['id']}"/></span>`
+                }
+            }, {
+                className: 'wrap-text w-45',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary p-so-code">${row?.['code']}</span><br><span class="text-primary">${row?.['title']}</span>`
                 }
             }, {
-                className: 'wrap-text',
+                className: 'wrap-text w-45',
                 render: (data, type, row) => {
-                    return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-so" data-id="${row?.['id']}"/></span>`
+                   let group = row?.['employee_inherit']?.['group']?.['title']
+                    return `<span class="badge badge-light">${row?.['employee_inherit']?.['code']}</span><br><span class="text-muted">${row?.['employee_inherit']?.['full_name']} ${group ? '(' + group + ')' : ''}</span>`
                 }
             }
         ],
@@ -400,9 +410,10 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
     tableSaleOrderProduct.DataTable().clear().destroy()
     if (!sale_order_id) {
         tableSaleOrderProduct.DataTableDefault({
+            styleDom: 'hide-foot',
             rowIdx: true,
             paging: false,
-            scrollY: '40vh',
+            scrollY: '30vh',
             scrollX: '100vw',
             scrollCollapse: true,
             data: [],
@@ -449,9 +460,10 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
     else {
         tableSaleOrderProduct.DataTableDefault({
             useDataServer: true,
+            styleDom: 'hide-foot',
             rowIdx: true,
             paging: false,
-            scrollY: '40vh',
+            scrollY: '30h',
             scrollX: '100vw',
             scrollCollapse: true,
             ajax: {
@@ -464,6 +476,7 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
                         let product_data = []
                         for (let i = 0; i < resp.data['so_product_list']?.['product_data'].length; i++) {
                             let item = resp.data['so_product_list']?.['product_data'][i]
+                            console.log(item)
                             if (item?.['product']?.['product_choice'].includes(2) && parseFloat(item?.['remain_for_purchase_request']) > 0) {
                                 product_data.push(item)
                             }
@@ -493,6 +506,7 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
                                   data-product-tax-id="${row?.['tax']?.['id']}"
                                   data-product-tax-code="${row?.['tax']?.['code']}"
                                   data-product-tax-title="${row?.['tax']?.['title']}"
+                                  data-product-tax-rate="${row?.['tax']?.['rate']}"
                                   class="badge badge-outline badge-primary product-span"
                             >${row?.['product']?.['code']}</span><br><span class="text-secondary">${row?.['product']?.['title']}</span>`
                     }
@@ -531,8 +545,7 @@ function LoadDistributionTable() {
     tableDistribution.DataTableDefault({
         useDataServer: true,
         rowIdx: true,
-        paging: false,
-        scrollY: '40vh',
+        scrollY: '25vh',
         scrollX: '100vw',
         scrollCollapse: true,
         ajax: {
@@ -552,19 +565,25 @@ function LoadDistributionTable() {
         },
         columns: [
             {
-                className: 'wrap-text',
+                className: 'wrap-text w-5',
                 render: () => {
                     return ``
                 }
             }, {
-                className: 'wrap-text',
+                className: 'wrap-text w-5',
+                render: (data, type, row) => {
+                    return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-dp" data-id="${row?.['id']}"/></span>`
+                }
+            }, {
+                className: 'wrap-text w-45',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary p-db-code">${row?.['code']}</span><br><span class="text-secondary">${row?.['title']}</span>`
                 }
             }, {
-                className: 'wrap-text',
+                className: 'wrap-text w-45',
                 render: (data, type, row) => {
-                    return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-dp" data-id="${row?.['id']}"/></span>`
+                   let group = row?.['employee_inherit']?.['group']?.['title']
+                    return `<span class="badge badge-light">${row?.['employee_inherit']?.['code']}</span><br><span class="text-muted">${row?.['employee_inherit']?.['full_name']} ${group ? '(' + group + ')' : ''}</span>`
                 }
             }
         ],
@@ -577,7 +596,7 @@ function LoadDistributionProductTable(distribution_id=null) {
         tableDistributionProduct.DataTableDefault({
             rowIdx: true,
             paging: false,
-            scrollY: '40vh',
+            scrollY: '30vh',
             scrollX: '100vw',
             scrollCollapse: true,
             data: [],
@@ -626,7 +645,7 @@ function LoadDistributionProductTable(distribution_id=null) {
             useDataServer: true,
             rowIdx: true,
             paging: false,
-            scrollY: '40vh',
+            scrollY: '30vh',
             scrollX: '100vw',
             scrollCollapse: true,
             ajax: {
@@ -734,7 +753,32 @@ class PurchaseRequestHandle {
             LoadDeliveryDate(deliveryDate_so)
             LoadSupplier(supplier_so)
             LoadLineDetailTable(lineDetailTable_so, [])
-            LoadSaleOrderTable()
+
+            let dataParam = {}
+            let pr_config = $.fn.callAjax2({
+                url: script_url.attr('data-url-pr-config-so'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('config')) {
+                        return data?.['config']?.['employee_reference'] ? data?.['config']?.['employee_reference'] : [];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([pr_config]).then(
+                (results) => {
+                    LoadSaleOrderTable(
+                        (results[0] ? results[0] : []).some(emp => emp?.['employee']?.['id'] === emp_current_id)
+                    )
+                })
+
             LoadSaleOrderProductTable()
             if (option === 'create') {
                 modalSelectSaleOrder.modal('show')
@@ -1098,6 +1142,7 @@ btnSelectSOProduct.on('click', function () {
                 'tax_id': $(this).find('.product-span').attr('data-product-tax-id'),
                 'tax_code': $(this).find('.product-span').attr('data-product-tax-code'),
                 'tax_title': $(this).find('.product-span').attr('data-product-tax-title'),
+                'tax_rate': $(this).find('.product-span').attr('data-product-tax-rate'),
                 'request_number': request_number
             })
         }

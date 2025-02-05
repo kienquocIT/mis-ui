@@ -24,6 +24,14 @@ $(document).ready(function () {
     }
     let $transFact = $('#app-trans-factory');
 
+    function sortArrayByObjectKey(array, key, isDescending = false) {
+        return array.sort((a, b) => {
+            if (a[key] < b[key]) return isDescending ? 1 : -1; // Flip comparison for descending
+            if (a[key] > b[key]) return isDescending ? -1 : 1; // Flip comparison for descending
+            return 0; // a and b are equal
+        });
+    }
+
     // INIT DATATABLE APP LIST
     let LIST_APP_URL = $table.attr('data-app-list');
     $table.DataTableDefault({
@@ -36,7 +44,10 @@ $(document).ready(function () {
             },
             dataSrc: function (resp){
               let data = $.fn.switcherResp(resp);
-              if (data && data.hasOwnProperty('app_list')) return data['app_list'];
+              // if (data && data.hasOwnProperty('app_list')) return data['app_list'];
+              if (data && data.hasOwnProperty('app_list')) {
+                  return sortArrayByObjectKey(data['app_list'], "title_i18n");
+              }
               return [];
             },
         },

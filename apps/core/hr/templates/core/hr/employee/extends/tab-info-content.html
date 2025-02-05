@@ -52,14 +52,14 @@
                     </div>
                     <div class="col-12 col-md-9 col-lg-4">
                         <div class="form-group">
-                            <label for="employee-last-name" class="form-label required">{% trans 'Surname and Middle Names' %}</label>
-                            <input type="text" placeholder="" class="form-control" name="last_name" id="employee-last-name"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
+                            <label for="employee-first-name" class="form-label required">{% trans 'First Name' %}</label>
+                            <input type="text" class="form-control" name="first_name" id="employee-first-name"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-4">
                         <div class="form-group">
-                            <label for="employee-first-name" class="form-label required">{% trans 'First Name' %}</label>
-                            <input type="text" class="form-control" name="first_name" id="employee-first-name"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
+                            <label for="employee-last-name" class="form-label required">{% trans 'Surname and Middle Names' %}</label>
+                            <input type="text" class="form-control" name="last_name" id="employee-last-name"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>
                     </div>
                     <div class="col-12 col-md-12 col-lg-4">
@@ -69,10 +69,13 @@
                                     <label for="employee-email" class="form-label required" for="email">{% trans 'Email' %}</label>
                                 </div>
                                 <div class="col-6 text-right">
-                                    <a href="#"><span hidden id="span-verified" class="badge badge-soft-success badge-sm" data-bs-toggle="modal" data-bs-target="#advance-setting-modal">{% trans 'Verified' %}&nbsp;<i class="bi bi-check2-all"></i>
-                                    </span></a>
                                     <a href="#">
-                                        <span hidden id="span-not-verified" class="badge badge-soft-danger badge-sm" data-bs-toggle="modal" data-bs-target="#advance-setting-modal">
+                                        <span hidden id="span-verified" class="badge badge-soft-success badge-sm" data-bs-toggle="modal" data-bs-target="#update-email-api-key-modal">
+                                            {% trans 'Verified' %}&nbsp;<i class="bi bi-check2-all"></i>
+                                        </span>
+                                    </a>
+                                    <a href="#">
+                                        <span hidden id="span-not-verified" class="badge badge-soft-danger badge-sm" data-bs-toggle="modal" data-bs-target="#update-email-api-key-modal">
                                             {% trans 'Need verify' %}&nbsp;<i class="bi bi-exclamation-triangle-fill"></i>
                                         </span>
                                     </a>
@@ -128,43 +131,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="advance-setting-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{% trans 'Email verify' %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-8">
-                                    <label class="form-label" for="email-app-password">
-                                        {% trans 'Google app password' %}
-                                    </label>
-                                </div>
-                                <div class="col-4 text-right small fw-bold">
-                                    <a href="https://myaccount.google.com/apppasswords" target="_blank">{% trans 'Get here' %}</a>
-                                </div>
-                            </div>
-                            <input type="password" class="form-control" id="email-app-password" placeholder="{% trans '19 letters' %} ({% trans 'include space' %})">
-                            <label class="text-muted fst-italic small">{% trans 'Your Google account must be TURNED ON 2-Step verification first.' %}</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button id="btn-test-email-connection" data-url="{% url 'TestEmailConnection' %}" type="button" class="btn btn-primary">{% trans 'Test connection and Save' %}</button>
             </div>
         </div>
     </div>

@@ -21,10 +21,13 @@
            data-url="{% url "OpportunityDocumentListAPI" %}"
            data-method="GET">
         <thead>
-        <th class="w-30">{% trans "Title" %}</th>
-        <th class="w-20">{% trans "Sale Code" %}</th>
-        <th class="w-30">{% trans "Person In Charge" %}</th>
-        <th class="w-20">{% trans "Date" %}</th>
+        <tr>
+            <th class="w-5"></th>
+            <th class="w-30">{% trans "Title" %}</th>
+            <th class="w-20">{% trans "Sale Code" %}</th>
+            <th class="w-25">{% trans "Person In Charge" %}</th>
+            <th class="w-20">{% trans "Date" %}</th>
+        </tr>
         </thead>
     </table>
 {% endblock %}

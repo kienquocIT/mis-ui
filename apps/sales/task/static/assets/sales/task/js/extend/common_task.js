@@ -119,13 +119,13 @@ function logworkSubmit() {
         const endDate = $('#endDateLogTime').val()
         const est = $('#EstLogtime').val()
         const taskID = $('#logtime_task_id').val()
-        if (!startDate && !endDate && !est) {
+        if (!startDate || !endDate || !est) {
             $.fn.notifyB({description: $('#form_valid').attr('data-logtime-valid')}, 'failure')
             return false
         }
         const data = {
-            'start_date': moment(startDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-            'end_date': moment(endDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+            'start_date': startDate,
+            'end_date': endDate,
             'time_spent': est,
         }
         // if has task id => log time

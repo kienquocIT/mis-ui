@@ -29,17 +29,22 @@ $(document).ready(function () {
                     return html
                 },
             }, {
-                data: 'sale_order_data',
                 width: '15%',
                 render: (data, type, row) => {
-                    if (data && data.hasOwnProperty('id') && data.hasOwnProperty('code')) {
-                        return `<a href="{0}" class="link-primary underline_hover"><span class="badge badge-soft-success">{2}</span><span>{1}</span></a>`.format_by_idx(
+                    let target = row?.['sale_order_data'];
+                    let url = tbl.attr('data-url-sale-order-detail');
+                    if (row?.['lease_order_data']?.['id']) {
+                        target = row?.['lease_order_data'];
+                        url = tbl.attr('data-url-lease-order-detail');
+                    }
+                    if (target && target.hasOwnProperty('id') && target.hasOwnProperty('code')) {
+                        return `<a href="{0}" class="link-primary underline_hover"><span class="mr-2">{1}</span><span class="badge badge-light badge-outline">{2}</span></a>`.format_by_idx(
                             SetupFormSubmit.getUrlDetailWithID(
-                                tbl.attr('data-url-sale-order-detail'),
-                                data['id']
+                                url,
+                                target['id']
                             ),
-                            UtilControl.getValueOrEmpty(data, 'title'),
-                            UtilControl.getValueOrEmpty(data, 'code'),
+                            UtilControl.getValueOrEmpty(target, 'title'),
+                            UtilControl.getValueOrEmpty(target, 'code'),
                         );
                     }
                     return '';

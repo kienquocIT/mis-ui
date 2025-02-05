@@ -382,6 +382,10 @@ $(function () {
                 dataParams['date_approved__lte'] = formatEndDate(dateEnd);
                 listDate.push(boxEnd.val());
             }
+            const appliedAdvanceFilter = $('.filter-item').find('input[type="radio"]:checked')
+            if(appliedAdvanceFilter.length > 0) {
+                dataParams['advance_filter_id'] = $(appliedAdvanceFilter[0]).attr('id')
+            }
             loadFilter(listDate, $('#card-filter-date'));
             WindowControl.showLoading();
             $.fn.callAjax2({

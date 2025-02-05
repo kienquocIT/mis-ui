@@ -29,6 +29,8 @@ const $related_leads_table = $('#related-leads-table')
 const $convert_to_opp_radio_group = $('input[name="convert-to-opp"]')
 const $convert_to_opp_option_radio_group = $('input[name="convert-to-opp-option"]')
 const $new_account_btn = $('#create-to-new-account-btn')
+
+const $leadDetailData = $('#detail-data-script')
 let CURRENT_LEVEL = null
 
 $lead_status.on('change', function () {
@@ -265,9 +267,9 @@ $btn_add_note.on('click', function () {
 
 function Disable(option) {
     if (option === 'detail') {
-        $('form input').prop('readonly', true).prop('disabled', true)
-        $('form select').prop('readonly', true).prop('disabled', true)
-        $('form textarea').prop('readonly', true).prop('disabled', true)
+        $('#main-space input').prop('readonly', true).prop('disabled', true)
+        $('#main-space select').prop('readonly', true).prop('disabled', true)
+        $('#main-space textarea').prop('readonly', true).prop('disabled', true)
         $btn_add_note.prop('disabled', true)
     }
 }
@@ -282,6 +284,8 @@ function LoadDetailLead(option) {
                 // console.log(data)
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
+
+                $leadDetailData.attr('data-lead-detail', JSON.stringify(data))
 
                 LoadStage(STAGE_LIST, data?.['current_lead_stage']['level'], 'detail || update')
                 CURRENT_LEVEL = data?.['current_lead_stage']['level']
@@ -469,17 +473,17 @@ function LoadOpportunityList(data_src) {
 function LoadStage(stage_list, level, page='create') {
     $lead_stage.html('')
     for (const stage of stage_list) {
-        let class_ctn = 'sub-stage w-25 bg-primary-light-5 border rounded py-1 px-5 text-center'
+        let class_ctn = 'sub-stage bg-blue-light-5 w-25 border rounded py-1 px-5 text-center'
         let style_ctn = 'min-width: 300px'
         if (stage?.['level'] <= level) {
-            class_ctn = 'sub-stage w-25 bg-primary border rounded py-1 px-5 text-center'
-            style_ctn = 'color: #f0f0f0; min-width: 300px'
+            class_ctn = 'sub-stage w-25 border rounded py-1 px-5 text-center'
+            style_ctn = 'background-color: rgb(0, 112, 210); color: white; min-width: 300px'
         }
 
         let btn_goto_html = ``
         if (stage?.['level'] === 3 && page !== 'create') {
             btn_goto_html = `&nbsp;<button type="button"
-                                    class="btn btn-icon text-primary btn-rounded btn-xs btn-goto"
+                                    class="btn btn-icon ${stage?.['level'] <= level ? 'text-white' : 'text-blue'} btn-rounded btn-xs btn-goto"
                                     data-bs-toggle="tooltip"
                                     data-bs-placement="top"
                                     title="Go to this stage"

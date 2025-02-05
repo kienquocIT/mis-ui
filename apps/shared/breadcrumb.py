@@ -126,7 +126,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PAYMENT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Price
-    PRICE_LIST_PAGE = BreadcrumbChildren(_('Price'), 'PriceList')
+    PRICE_LIST_PAGE = BreadcrumbChildren(_('Price List'), 'PriceList')
     PRICE_LIST_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Expense
@@ -368,6 +368,21 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RETURN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     GOODS_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    CASH_INFLOW_LIST_PAGE = BreadcrumbChildren(_('Cash inflow list'), 'CashInflowList')
+    CASH_INFLOW_CREATE_PAGE = BreadcrumbChildren(_('Cash inflow create'), 'CashInflowCreate')
+    CASH_INFLOW_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    CASH_INFLOW_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
+    RECON_LIST_PAGE = BreadcrumbChildren(_('Reconciliation list'), 'ReconList')
+    RECON_CREATE_PAGE = BreadcrumbChildren(_('Reconciliation create'), 'ReconCreate')
+    RECON_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    RECON_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
+    CASH_OUTFLOW_LIST_PAGE = BreadcrumbChildren(_('Cash outflow list'), 'CashOutflowList')
+    CASH_OUTFLOW_CREATE_PAGE = BreadcrumbChildren(_('Cash outflow create'), 'CashOutflowCreate')
+    CASH_OUTFLOW_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    CASH_OUTFLOW_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     GOODS_REGISTRATION_LIST_PAGE = BreadcrumbChildren(_('Goods registration list'), 'GoodsRegistrationList')
     GOODS_REGISTRATION_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
@@ -427,11 +442,26 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     HRM_EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'HRMEmployeeCreate')
     HRM_EMPLOYEE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     HRM_EMPLOYEE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+    # CONTRACT TEMPLATE
+    CONTRACT_TEMPLATE_LIST_PAGE = BreadcrumbChildren(_('Contract template list'), 'ContractTemplateList')
+    CONTRACT_TEMPLATE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'ContractTemplateCreate')
+    CONTRACT_TEMPLATE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    CONTRACT_TEMPLATE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     # Accounting
     CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of accounts'), 'ChartOfAccountsList')
     DEFAULT_ACCOUNT_DEFINITION_LIST_PAGE = BreadcrumbChildren(_('Default account definition'), 'DefaultAccountDefinitionList')
     JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry'), 'JournalEntryList')
 
+    #Consulting
+    CONSULTING_LIST_PAGE = BreadcrumbChildren(_('Consulting list'), 'ConsultingList')
+    CONSULTING_CREATE_PAGE = BreadcrumbChildren(_('Consulting create'), 'ConsultingCreate')
+
+    # Lease order
+    LEASE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Lease order'), 'LeaseOrderList')
+
+    # Partnercenter
+    PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('Lists'), 'ListList')
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1013,11 +1043,29 @@ class BreadcrumbView:
     REPORT_PURCHASING_LIST_PAGE = [
         BreadcrumbItem.REPORT_PURCHASING_LIST_PAGE
     ]
+    BUDGET_REPORT_LIST_PAGE = [
+        BreadcrumbItem.BUDGET_REPORT_LIST_PAGE
+    ]
 
     GOODS_RETURN_LIST_PAGE = [BreadcrumbItem.GOODS_RETURN_LIST_PAGE]
     GOODS_RETURN_CREATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_RETURN_DETAIL_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RETURN_UPDATE_PAGE = GOODS_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    CASH_INFLOW_LIST_PAGE = [BreadcrumbItem.CASH_INFLOW_LIST_PAGE]
+    CASH_INFLOW_CREATE_PAGE = CASH_INFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    CASH_INFLOW_DETAIL_PAGE = CASH_INFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CASH_INFLOW_UPDATE_PAGE = CASH_INFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    RECON_LIST_PAGE = [BreadcrumbItem.RECON_LIST_PAGE]
+    RECON_CREATE_PAGE = RECON_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    RECON_DETAIL_PAGE = RECON_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    RECON_UPDATE_PAGE = RECON_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    CASH_OUTFLOW_LIST_PAGE = [BreadcrumbItem.CASH_OUTFLOW_LIST_PAGE]
+    CASH_OUTFLOW_CREATE_PAGE = CASH_OUTFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    CASH_OUTFLOW_DETAIL_PAGE = CASH_OUTFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CASH_OUTFLOW_UPDATE_PAGE = CASH_OUTFLOW_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     GOODS_REGISTRATION_LIST_PAGE = [BreadcrumbItem.GOODS_REGISTRATION_LIST_PAGE]
     GOODS_REGISTRATION_DETAIL_PAGE = GOODS_REGISTRATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
@@ -1123,6 +1171,7 @@ class BreadcrumbView:
         BreadcrumbItem.RECURRENCE_ACTION_LIST_PAGE
     ]
 
+    # HRM
     HRM_EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.HRM_EMPLOYEE_LIST_PAGE
@@ -1131,6 +1180,40 @@ class BreadcrumbView:
     HRM_EMPLOYEE_DETAIL_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     HRM_EMPLOYEE_UPDATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
+    # Consulting
+    CONSULTING_LIST_PAGE = [
+        BreadcrumbItem.CONSULTING_LIST_PAGE
+    ]
+    CONSULTING_CREATE_PAGE = CONSULTING_LIST_PAGE + [BreadcrumbItem.CONSULTING_CREATE_PAGE]
+    CONSULTING_DETAIL_PAGE = CONSULTING_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CONSULTING_UPDATE_PAGE = CONSULTING_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Contract
+    LEASE_ORDER_LIST_PAGE = [
+        BreadcrumbItem.LEASE_ORDER_LIST_PAGE
+    ]
+    LEASE_ORDER_CREATE_PAGE = LEASE_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    LEASE_ORDER_DETAIL_PAGE = LEASE_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    LEASE_ORDER_UPDATE_PAGE = LEASE_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # CONTRACT TEMPLATE
+    CONTRACT_TEMPLATE_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.CONTRACT_TEMPLATE_LIST_PAGE
+    ]
+    CONTRACT_TEMPLATE_CREATE_PAGE = CONTRACT_TEMPLATE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    CONTRACT_TEMPLATE_DETAIL_PAGE = CONTRACT_TEMPLATE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    CONTRACT_TEMPLATE_UPDATE_PAGE = CONTRACT_TEMPLATE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Consulting
+    PARTNER_CENTER_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.PARTNER_CENTER_LIST_PAGE
+    ]
+    PARTNER_CENTER_LIST_LIST_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_LIST]
+    PARTNER_CENTER_LIST_CREATE_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_CREATE]
+    PARTNER_CENTER_LIST_DETAIL_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    PARTNER_CENTER_LIST_UPDATE_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_UPDATE]
     CHART_OF_ACCOUNTS_LIST_PAGE = [
         BreadcrumbItem.CHART_OF_ACCOUNTS_LIST_PAGE
     ]

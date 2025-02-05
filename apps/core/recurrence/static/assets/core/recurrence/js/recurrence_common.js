@@ -60,7 +60,11 @@ class RecurrenceLoadDataHandle {
             'url': RecurrenceLoadDataHandle.$urls.attr('data-so-recurrence'),
             'keyResp': "sale_order_recurrence",
         },
-         'arinvoice.arinvoice': {
+        'leaseorder.leaseorder': {
+            'url': RecurrenceLoadDataHandle.$urls.attr('data-lo-recurrence'),
+            'keyResp': "lease_order_recurrence",
+        },
+        'arinvoice.arinvoice': {
             'url': RecurrenceLoadDataHandle.$urls.attr('data-ar-recurrence'),
             'keyResp': "ar_invoice_recurrence",
         },

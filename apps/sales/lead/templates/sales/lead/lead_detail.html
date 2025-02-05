@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Lead' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -41,15 +42,55 @@
     <form id="form-detail-lead" data-url="{% url 'LeadDetailAPI' pk=pk %}" data-method="GET">
         {% csrf_token %}
         {% include 'sales/lead/common/config.html' %}
-        {% include 'sales/lead/common/stage.html' %}
-        {% include 'sales/lead/common/information.html' %}
-        {% include 'sales/lead/common/comments.html' %}
+        <div id="main-space">
+            {% include 'sales/lead/common/stage.html' %}
+            {% include 'sales/lead/common/information.html' %}
+            {% include 'sales/lead/common/comments.html' %}
+        </div>
     </form>
 {% endblock %}
-{% block dataHiddenGroup %}
+
+{% block modalData %}
+    <div id="lead-activities-area">
+        {% include 'sales/opportunity/activities/extends/call_log_modals.html' with page='lead'%}
+        {% include 'sales/opportunity/activities/extends/email_modals.html' with page='lead'%}
+        {% include 'sales/opportunity/activities/extends/meeting_modals.html' with page='lead'%}
+    </div>
 {% endblock %}
+
+{% block dataHiddenGroup %}
+    <script id="detail-data-script"
+        data-lead-detail=""
+        data-lead-activity-list=""
+    ></script>
+    <script id="data-url-script"
+        data-lead-list-url = "{% url 'LeadListAPI' %}"
+        data-call-url = "{% url 'LeadCallListAPI' %}"
+        data-call-detail-url = "{% url 'LeadCallDetailAPI' pk=0 %}"
+        data-email-url = "{% url 'LeadEmailListAPI' %}"
+        data-meeting-url = "{% url 'LeadMeetingListAPI' %}"
+        data-meeting-detail-url = "{% url 'LeadMeetingDetailAPI' pk=0 %}"
+        data-contact-list-url="{% url 'ContactListAPI' %}"
+        data-activity-list-url= "{% url 'LeadActivityListAPI' %}"
+    ></script>
+    <script id="trans-script"
+            data-trans-activity-cancelled="{% trans 'Cancelled' %}"
+            data-trans-alert-cancel="{% trans 'Cancel this call log?' %}"
+            data-trans-alert-warn="{% trans 'This action cannot be back.' %}"
+            data-trans-yes="{% trans 'Yes' %}"
+            data-trans-no="{% trans 'No' %}"
+    ></script>
+{% endblock %}
+
 {% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
     <script src="{% static 'assets/sales/lead/js/lead_common.js' %}"></script>
     <script src="{% static 'assets/sales/lead/js/lead_detail.js' %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
+    <script src="{% static 'assets/sales/lead/js/activities/activities.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/activities/call_log/call_log_common.js'%}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/activities/email/email_common.js'%}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/activities/meeting/meeting_common.js'%}"></script>
+
 {% endblock %}

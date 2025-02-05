@@ -89,6 +89,9 @@ class OpportunityBOMLoadTab {
         table_select_bom_copy.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
+            scrollX: '100vw',
+            scrollY: '60vh',
+            scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
                 url: table_select_bom_copy.attr('data-url'),
@@ -110,6 +113,14 @@ class OpportunityBOMLoadTab {
                     }
                 },
                 {
+                    className: 'w-5',
+                    'render': (data, type, row) => {
+                        return `<div class="form-check">
+                            <input data-id="${row?.['id']}" type="radio" name="bom-copy-group" class="bom-copy-selected form-check-input">
+                        </div>`;
+                    }
+                },
+                {
                     className: 'w-30',
                     'render': (data, type, row) => {
                         return `<span class="badge badge-light">${row?.['code']}</span> ${row?.['title']}`;
@@ -128,14 +139,6 @@ class OpportunityBOMLoadTab {
                             return `<span class="badge badge-soft-blue">${row?.['opportunity']?.['code']}</span> ${row?.['opportunity']?.['title']}`;
                         }
                         return '--'
-                    }
-                },
-                {
-                    className: 'w-5 text-right',
-                    'render': (data, type, row) => {
-                        return `<div class="form-check">
-                            <input data-id="${row?.['id']}" type="radio" name="bom-copy-group" class="bom-copy-selected form-check-input">
-                        </div>`;
                     }
                 },
             ]
@@ -878,9 +881,9 @@ class OpportunityBOMAction {
     }
     static DisableDetailPage(option) {
         if (option === 'detail') {
-            $('input').prop('readonly', true).prop('disabled', true)
-            $('textarea').prop('readonly', true).prop('disabled', true)
-            $('select').prop('readonly', true).prop('disabled', true)
+            $('form input').prop('readonly', true).prop('disabled', true)
+            $('form textarea').prop('readonly', true).prop('disabled', true)
+            $('form select').prop('disabled', true)
             add_new_process_description.prop('disabled', true)
             $('.del-row-material').prop('disabled', true)
             $('.add-new-material').prop('disabled', true)

@@ -1,0 +1,51 @@
+/*** format style ***/
+.text-bold{
+    font-weight: 600;
+}
+.disabled{
+    opacity: .3;
+    cursor: no-drop!important;
+}
+/*** style ***/
+#signatures{
+    min-height: 33px;
+    margin-bottom: 1rem;
+}
+#signatures > div[class*="block-index-"]{
+    display: flex;
+    width: 100%;
+}
+.wrap-action{
+    padding-top: 6px;
+    width:60px;
+    text-align: right;
+}
+.wrap-action span{
+    cursor: pointer;
+}
+div[class*="block-index-"] > .wrap-param{
+    width: calc(100% - 55px);
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.wrap-param > input{
+    width: 150px;
+}
+.wrap-param sub{
+     position: relative; top: -1ex; font-size: 100%;
+}
+.wrap-param > div{
+    width: calc(100% - 170px);
+    display: inline-block;
+}
+.signatures-list > span{display: block;}
+.signatures-list{ margin:0;}
+.signatures-list > span{
+    padding-left: 15px;
+}
+.signatures-list > span:first-child, .signatures-list > span:last-child{
+    padding-left: 0;
+}

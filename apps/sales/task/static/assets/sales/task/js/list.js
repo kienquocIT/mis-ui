@@ -16,6 +16,7 @@ $(function () {
     // lấy danh sách status và render
     function getSttAndRender() {
         const config = JSON.parse($('#task_config').text());
+        // to do item
         for (const item of config.list_status) {
             let stt_template = $($('.card-parent_template').html());
             // for kanban main task
@@ -31,7 +32,7 @@ $(function () {
                     'title': item.name,
                     'selected': true
                 }
-                $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                $('#offCanvasRightTask').offcanvas('show')
                 let createFormTask = setInterval(function () {
                     clearInterval(createFormTask)
                     const $sttElm = $('#selectStatus')
@@ -47,6 +48,13 @@ $(function () {
             cloneHTML.find('.card-header').addClass('hidden')
             cloneHTML.find('.wrap-child').attr('id', `sub-taskID-${item.id}`)
             $('#sub-tasklist_wrap').append(cloneHTML)
+
+            if (item.name.toLowerCase() === 'to do' && item['is_edit'] === false && item.is_finish === false){
+                item.selected = true
+                item.title = item.name
+                $('#selectStatus').attr('data-onload', JSON.stringify(item)).initSelect2()
+                    .data('default-stt', item)
+            }
         }
     }
 
@@ -58,9 +66,13 @@ $(function () {
     }
 
     function callDataTaskList(kanban, list, params = {}, isReturn=false) {
-        let callData = $.fn.callAjax2({'url': $urlFact.attr('data-task-list'), 'method': 'GET', 'data': params})
+        let callData = $.fn.callAjax2({
+            'url': $urlFact.attr('data-task-list'),
+            'method': 'GET',
+            'data': params,
+            'isLoading': true
+        })
         if (isReturn) return callData
-        $x.fn.showLoadingPage();
         callData.then(
             (req) => {
                 let data = $.fn.switcherResp(req);
@@ -75,11 +87,9 @@ $(function () {
                     $('.btn-task-bar').data('task_info', temp)
                     $('#btn_load-more').prop('disabled', temp.page_next === 0)
                 }
-                $x.fn.hideLoadingPage();
             },
             (err) => {
-                console.log('call data error, ', err);
-                $x.fn.hideLoadingPage();
+                $.fn.notifyB({description: err.data.errors}, 'failure');
             }
         );
     }
@@ -344,7 +354,7 @@ $(function () {
             let elm = $('.card-title')
             const _this = this
             if (newTaskElm) elm = newTaskElm.find('.card-title')
-            elm.on('click', function (e) {
+            elm.off().on('click', function (e) {
                 e.preventDefault()
                 const taskID = $(this).attr('data-task-id')
                 $.fn.callAjax2({
@@ -354,13 +364,12 @@ $(function () {
                     .then((req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
-                            resetFormTask()
-                            const drawTaskElm = $('#drawer_task_create')
-                            if (!drawTaskElm.hasClass('open'))
-                                drawTaskElm.trigger('drawer.show');
-                            const titCreate = $('.title-create'), titEdit = $('.title-detail');
-                            titCreate.off().addClass("hidden")
-                            titEdit.off().removeClass("hidden")
+                            const offCanvasTaskElm = $('.btn-create-todo');
+                            offCanvasTaskElm.trigger('click');
+                            const titCreate = $('.title-create');
+                            const titEdit = $('.title-detail');
+                            titCreate.addClass("hidden")
+                            titEdit.removeClass("hidden")
                             const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                             $formElm.append(taskIDElm);
 
@@ -371,12 +380,8 @@ $(function () {
                             const stt = data.task_status
                             $('#selectStatus').attr('data-onload',
                                 JSON.stringify(stt)).initSelect2().val(stt.id).trigger('change')
-                            $('#inputTextStartDate').val(
-                                moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                            )
-                            $('#inputTextEndDate').val(
-                                moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                            )
+                            $('#inputTextStartDate')[0]._flatpickr.setDate(data.start_date)
+                            $('#inputTextEndDate')[0]._flatpickr.setDate(data.end_date)
                             $('#inputTextEstimate').val(data.estimate)
 
                             $('#selectPriority').val(data.priority).trigger('change')
@@ -385,38 +390,37 @@ $(function () {
                             window.formLabel.renderLabel(data.label)
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
 
-                            $('#inputAssigner').val(data.employee_created.last_name + ' ' + data.employee_created.first_name)
-                                .attr(
-                                    'data-name', data.employee_created.last_name + ' ' + data.employee_created.first_name
-                                )
-                                .attr(
-                                    'value', data.employee_created.id
-                                )
-                                .attr(
-                                    'data-value-id', data.employee_created.id
-                                )
-                            if (data['opportunity'] && Object.keys(data["opportunity"]).length > 0) {
-                                $prjElm.attr('disabled', true)
-                                $oppElm.attr('disabled', true).attr('data-onload', JSON.stringify({...data['opportunity'], selected: true}))
-                                let isCheck = $(`option[value="${data['opportunity'].id}"]`, $oppElm)
-                                if (isCheck.length <= 0)
-                                    $oppElm.append(`<option value="${data['opportunity'].id}" selected>${
-                                        data['opportunity'].code}</option>`
-                                    )
-                                else $oppElm.val(data['opportunity']["id"]).trigger("change")
+                            $('#inputAssigner')
+                                .val(data.employee_created.full_name)
+                                .attr('data-name', data.employee_created.full_name)
+                                .attr('value', data.employee_created.id)
+                                .attr('data-value-id', data.employee_created.id)
 
+                            const runComponent = (elm, data) => {
+                                data.selected = true;
+                                elm.attr('data-onload', JSON.stringify(data))
+                                    .html(`<option value="${data.id}" selected>${data.title}</option>`)
+                                    .trigger('change')
                             }
-                            if (data['project'] && Object.keys(data["project"]).length > 0) {
-                                $oppElm.attr('disabled', true)
-                                $prjElm.attr('disabled', true).attr('data-onload', JSON.stringify({...data['project'], selected: true}))
-                                let isCheck = $(`option[value="${data['project'].id}"]`, $oppElm)
-                                if (isCheck.length <= 0) $prjElm.append(`<option value="${data['project'].id}" selected>${data['project'].code}</option>`)
-                                else $prjElm.val(data['project']["id"]).trigger("change")
+                            if (data?.['process'] && data?.['process']?.['id']){
+                                const { process } = data;
+                                runComponent($('#process_id'), process)
+                            }
+                            else if (data['opportunity'] && Object.keys(data["opportunity"]).length > 0) {
+                                const { opportunity } = data
+                                $prjElm.attr('disabled', true)
+                                runComponent($oppElm, opportunity)
+                            }
+                            else if (data['project'] && Object.keys(data["project"]).length > 0) {
+                                const { project } = data;
+                                $oppElm.attr('disabled', true);
+                                runComponent($prjElm, project)
                             }
                             if (data.employee_inherit) {
                                 data.employee_inherit.selected = true
                                 $empElm.html(`<option value="${data.employee_inherit.id}">${data.employee_inherit.full_name}</option>`)
-                                    .attr('data-onload', JSON.stringify(data.employee_inherit)).trigger("change")
+                                    .attr('data-onload', JSON.stringify(data.employee_inherit))
+                                $empElm.trigger("change", BastionFieldControl.skipBastionChange)
                             }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
@@ -702,7 +706,6 @@ $(function () {
             })
         }
 
-
         init(data) {
             // clean when create new init
             $('.wrap-child').html('')
@@ -713,6 +716,14 @@ $(function () {
             $('[href="#tab_kanban"]').on('show.bs.tab', function(){
                 $('.wrap-child').html('')
                 $this.getAndRenderTask($this.getTaskList)
+            })
+
+            $('#idxPageContent').on('scroll', function(e){
+                const top = $(this).scrollTop()
+                if ($('#tab_kanban').hasClass('active')){
+                    if (top >= 68) $('#tasklist_wrap').addClass('scroll_active')
+                    else $('#tasklist_wrap').removeClass('scroll_active')
+                }
             })
         }
     }
@@ -930,8 +941,7 @@ $(function () {
                         item.edited = false
                     }
                 )
-                if (!$('.hk-wrapper').hasClass('open'))
-                    $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                $('#offCanvasRightTask').offcanvas('show')
                 allData[index].edited = true
                 cls.setTaskList = allData
                 if (typeof infoOld === 'number') // case click task khác mà chưa đóng task cũ
@@ -1187,8 +1197,7 @@ $(function () {
         }
 
         static loadTaskInfo(dataID){
-            if (!$('.hk-wrapper').hasClass('open'))
-                    $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+            $('#offCanvasRightTask').offcanvas('show')
             $.fn.callAjax2({
                 url: $urlFact.attr('data-task-detail').format_url_with_uuid(dataID),
                 method: "get"
@@ -1528,6 +1537,12 @@ $(function () {
     $('.leave-filter-wrap button.desktop-btn').off().on('click', function () {
         // $(this).parents('.leave-filter-wrap').toggleClass('desktop-show')
         $('.form-group-filter').slideToggle()
+    })
+    const $filterElm = $('.form-group-filter')
+    $('#idxPageContent').click(function(event){
+        var $target = $(event.target);
+        if (!$target.closest('.form-group-filter').length && $filterElm.is(":visible") && !$target.closest('.leave-filter-wrap button').length)
+            $filterElm.slideToggle(200)
     })
 
     // load more button

@@ -20,11 +20,6 @@ $(function () {
                     LeaseOrderLoadDataHandle.loadDataTablesAndDropDowns(data);
                     LeaseOrderIndicatorHandle.loadIndicator();
 
-                    // prepare for copy quotation to sale order
-                    if (!$form.hasClass('sale-order')) { // QUOTATION PAGES
-                        $('#data-copy-quotation-detail').val(JSON.stringify(data));
-                    }
-
                     // init workflow
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                     // get WF initial zones for change
@@ -42,7 +37,7 @@ $(function () {
 
                     // init print
                     // if ($form.attr('data-method').toLowerCase() === 'get') {
-                    //     new PrintTinymceControl().render('b9650500-aba7-44e3-b6e0-2542622702a3', data, false);
+                    //     new PrintTinymceControl().render('010404b3-bb91-4b24-9538-075f5f00ef14', data, false);
                     // }
                 }
             }

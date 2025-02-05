@@ -27,8 +27,14 @@ class POLoadDataHandle {
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                let res1 = ``;
+                let res2 = ``;
+                if (customRes?.['res1']) {
+                    res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
+                }
+                if (customRes?.['res2']) {
+                    res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
+                }
                 return $(`<span>${res1} ${res2}</span>`);
             }
         }
@@ -1335,8 +1341,8 @@ class PODataTableHandle {
                         }
                         return `<div class="form-check form-check-lg">
                                     <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="pr-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}" ${checked} ${disabled}>
-                                    <span class="badge badge-soft-success table-row-code">${row?.['code']}</span>
                                     <label class="form-check-label table-row-title" for="pr-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                    <span class="badge badge-light badge-outline table-row-code">${row?.['code']}</span>
                                 </div>`;
                     },
                 },
@@ -1384,14 +1390,14 @@ class PODataTableHandle {
                                     <input 
                                         type="checkbox" 
                                         class="form-check-input table-row-checkbox" 
-                                        id="pr-pro-${row?.['product']?.['id'].replace(/-/g, "")}"
+                                        id="pr-pro-${row?.['product']?.['id'].replace(/-/g, "")}-${purchase_request_id.replace(/-/g, "")}"
                                         data-id="${row?.['id']}" 
                                         data-purchase-request-id="${purchase_request_id}"
                                         data-sale-order-product-id="${row?.['sale_order_product_id']}"
                                         ${checked}
                                         ${disabled}
                                     >
-                                    <label class="form-check-label table-row-item" for="pr-pro-${row?.['product']?.['id'].replace(/-/g, "")}" id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</label>
+                                    <label class="form-check-label table-row-item" for="pr-pro-${row?.['product']?.['id'].replace(/-/g, "")}-${purchase_request_id.replace(/-/g, "")}" id="${row?.['product']?.['id']}">${row?.['product']?.['title']}</label>
                                 </div>`;
                     },
                 },
@@ -1446,6 +1452,7 @@ class PODataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 POLoadDataHandle.loadCssToDtb('datable-purchase-request-product');
+                POLoadDataHandle.loadEventCheckbox($table);
             },
         });
     };
@@ -1939,7 +1946,7 @@ class PODataTableHandle {
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
-                                    class="form-control mask-money table-row-value-before-tax" 
+                                    class="form-control mask-money table-row-value-before-tax text-black" 
                                     value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
                                     data-return-type="number"
                                     disabled
@@ -1967,17 +1974,14 @@ class PODataTableHandle {
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        if (row?.['due_date'] !== '') {
-                            return `<div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-due-date" value="${moment(row?.['due_date']).format('DD/MM/YYYY')}">
-                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
-                                    </div>`;
-                        } else {
-                            return `<div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-due-date" value="">
-                                        <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
-                                    </div>`;
+                        let value = "";
+                        if (row?.['due_date'] !== "") {
+                            value = moment(row?.['due_date']).format('DD/MM/YYYY');
                         }
+                        return `<div class="input-affix-wrapper">
+                                    <input type="text" class="form-control table-row-due-date text-black" value="${value}">
+                                    <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
+                                </div>`;
                     }
                 },
                 {

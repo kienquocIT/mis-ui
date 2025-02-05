@@ -268,3 +268,14 @@ class OrderDeliveryDetailAPI(APIView):
             pk=pk,
             msg=SaleMsg.DELIVERY_UPDATE
         )
+
+
+class DeliveryForRecoveryListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_FOR_RECOVERY_LIST).get(data)
+        return resp.auto_return(key_success='delivery_for_recovery_list')

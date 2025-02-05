@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AnonymousUser
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -25,7 +26,13 @@ class FinalAcceptanceList(View):
         breadcrumb='FINAL_ACCEPTANCE_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
+        return {
+                   'employee_current': employee_current,
+                   'app_id': '710c5a94-3a29-4e0e-973c-e6cace96c1e7',
+               }, status.HTTP_200_OK
 
 
 class FinalAcceptanceListAPI(APIView):

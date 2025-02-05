@@ -1,32 +1,41 @@
 function resetFormTask() {
     // clean html select etc.
-    $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
-    $('#employee_inherit_id').val('').trigger('change').prop('disabled', false).removeClass('is-invalid');
-    $('#employee_inherit_id-error').remove()
-    $('#opportunity_id').val('').trigger('change', BastionFieldControl.skipBastionChange).attr('disabled', false);
+    const $form = $('#formOpportunityTask')
+    $form[0].reset()
+    $form.removeClass('task_edit')
+    $('#employee_inherit_id-error, [name="id"], [name="parent_n"]').remove()
+    $('#employee_inherit_id, #opportunity_id, #project_id').val(null)
+        .trigger('change', BastionFieldControl.skipBastionChange)
+        .prop('disabled', false)
+        .removeClass('is-invalid');
+
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
     $('#rangeValue').text(0)
     $('#percent_completed').val(0)
-    $('[name="id"]').remove();
     const $inputAssigner = $('#inputAssigner');
     $inputAssigner.val($inputAssigner.attr('data-name'))
-    $('.create-subtask').addClass('hidden')
-    $('[name="parent_n"]').remove();
+    $('.create-subtask, .parents-block').addClass('hidden')
     window.editor.setData('')
     $('.create-task').attr('disabled', false);
-    $('.parents-block').addClass('hidden')
-    $('#process_id').val('').trigger('change', BastionFieldControl.skipBastionChange)
-    $('#process_stage_app_id').val('').trigger('change', BastionFieldControl.skipBastionChange)
+    $('#process_id').val(null).trigger('change')
+    $('#selectStatus').val(function(){
+        let data = $(this).data('default-stt')
+        if (!$(this).find(`option[value="${data.id}"]`).length)
+            $(this).append(`<option value="${data.id} selected>${data.title}</option>`)
+        return data.id
+    }).trigger('change')
 
-    const $attachElm = $('#assigner_attachment'), $attachElmAssignee = $('#assignee_attachment');
-    $attachElm.find('.dm-uploader').dmUploader("reset")
-    $attachElm.find('.dm-uploader-result-list').html('');
-    $attachElm.find('.dm-uploader-no-files').css({ 'display': 'block'});
+    const resetUploader = ($element) => {
+        $element.find('.dm-uploader').dmUploader("reset");
+        $element.find('.dm-uploader-result-list').html('');
+        $element.find('.dm-uploader-no-files').css({'display': 'block'});
+    };
+    resetUploader($('#assigner_attachment'));
+    resetUploader($('#assignee_attachment'));
 
-    $attachElmAssignee.find('.dm-uploader').dmUploader("reset")
-    $attachElmAssignee.find('.dm-uploader-result-list').html('');
-    $attachElmAssignee.find('.dm-uploader-no-files').css({ 'display': 'block'});
+    const $table = $('#table_log-work')
+    if ($table.hasClass('dataTable')) $table.DataTable().clear().draw();
 }
 
 function isValidString(inputString) {
@@ -46,16 +55,14 @@ $(document).ready(function () {
     new $x.cls.file($('#assignee_attachment')).init({'name': 'attach_assignee'});
 
     //--DATETIME-- run single date
-    $('input[type=text].date-picker').daterangepicker({
-        minYear: 2023,
-        singleDatePicker: true,
-        timePicker: false,
-        showDropdowns: true,
-        autoApply: true,
-        locale: {
-            format: 'DD/MM/YYYY'
-        }
-    }).val("").trigger('change')
+    $('input[type=text].date-picker').flatpickr({
+        'allowInput': true,
+        'altInput': true,
+        'altFormat': 'd/m/Y',
+        'defaultDate': null,
+        'locale': globeLanguage === 'vi' ? 'vn' : 'default',
+        'shorthandCurrentMonth': true,
+    })
 
     //--DROPDOWN STATUS-- run status select default
     $sttElm.attr('data-url')
@@ -168,18 +175,61 @@ $(document).ready(function () {
     window.checklist = checklist;
 
     // reset form create task khi click huỷ bỏ hoặc tạo mới task con
-    $('.cancel-task, [data-drawer-target="#drawer_task_create"]').each((idx, elm) => {
-        $(elm).on('click', function () {
-            if ($(this).hasClass('cancel-task')) {
-                $(this).closest('.ntt-drawer').toggleClass('open');
-                $('.hk-wrapper').toggleClass('open');
+    $('#offCanvasRightTask').on('hidden.bs.offcanvas', () => resetFormTask())
+
+    const {
+        opp_id,
+        opp_title,
+        opp_code,
+        process_id,
+        process_title,
+        process_stage_app_id,
+        process_stage_app_title,
+        inherit_id,
+        inherit_title,
+    } = $x.fn.getManyUrlParameters([
+        'opp_id', 'opp_title', 'opp_code',
+        'process_id', 'process_title',
+        'process_stage_app_id', 'process_stage_app_title',
+        'inherit_id', 'inherit_title',
+    ])
+
+    new $x.cls.bastionField({
+        has_opp: true,
+        has_inherit: true,
+        has_process: true,
+        has_prj: true,
+        data_opp: $x.fn.checkUUID4(opp_id) ? [
+            {
+                "id": opp_id,
+                "title": $x.fn.decodeURI(opp_title),
+                "code": $x.fn.decodeURI(opp_code),
+                "selected": true,
             }
-            const titCreate = $('.title-create'), titEdit = $('.title-detail');
-            if (titCreate.hasClass('hidden')) titCreate.removeClass("hidden")
-            if (!titEdit.hasClass('hidden')) titEdit.addClass("hidden")
-            resetFormTask()
-        });
-    });
+        ] : [],
+        data_process: $x.fn.checkUUID4(process_id) ? [
+            {
+                "id": process_id,
+                "title": process_title,
+                "selected": true,
+            }
+        ] : [],
+        data_process_stage_app: $x.fn.checkUUID4(process_stage_app_id) ? [
+            {
+                "id": process_stage_app_id,
+                "title": process_stage_app_title,
+                "selected": true,
+            }
+        ] : [],
+        data_inherit: $x.fn.checkUUID4(inherit_id) ? [
+            {
+                "id": inherit_id,
+                "full_name": inherit_title,
+                "selected": true,
+            }
+        ] : [],
+        "inheritFlagData": {"disabled": false, "readonly": false},
+    }).init();
 
     SetupFormSubmit.validate(
         $form,
@@ -196,8 +246,6 @@ $(document).ready(function () {
                     temp = JSON.parse(temp)
                     formData.log_time = temp
                 }
-                formData.start_date = $x.fn.convertDatetime(formData.start_date, 'DD/MM/YYYY', null)
-                formData.end_date = $x.fn.convertDatetime(formData.end_date, 'DD/MM/YYYY', null)
                 if (new Date(formData.end_date).getTime() < new Date(formData.start_date).getTime()) {
                     $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
                     return false
@@ -231,7 +279,6 @@ $(document).ready(function () {
                         'first_name': assign_to.first_name,
                         'last_name': assign_to.last_name,
                     }
-                    // formData.employee_inherit_id = assign_to.id
                 }
 
                 formData.checklist = []

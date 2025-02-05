@@ -58,8 +58,8 @@ class NodeLoadDataHandle {
     };
     static dataSource = [
         {'id': '', 'title': 'Select...',},
-        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-3')},
         {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-2')},
+        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-type-src-3')},
     ];
     static dataSourceNote = {
         '1': NodeLoadDataHandle.transEle.attr('data-type-src-2-note'),
@@ -67,14 +67,15 @@ class NodeLoadDataHandle {
     }
     static dataInWFOption = [
         {'id': '', 'title': 'Select...',},
-        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-employee')},
         {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-position')},
+        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-employee')},
     ];
     static dataInWFPosition = [
         {'id': '', 'title': 'Select...',},
-        {'id': 3, 'title': NodeLoadDataHandle.transEle.attr('data-select-beneficiary')},
-        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-2nd-manager')},
-        {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-1st-manager')},
+        {'id': 1, 'title': NodeLoadDataHandle.transEle.attr('data-select-beneficiary')},
+        {'id': 2, 'title': NodeLoadDataHandle.transEle.attr('data-select-1st-manager')},
+        {'id': 3, 'title': NodeLoadDataHandle.transEle.attr('data-select-2nd-manager')},
+        {'id': 4, 'title': NodeLoadDataHandle.transEle.attr('data-select-upper-manager')},
     ];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -829,6 +830,7 @@ class NodeDataTableHandle {
             ordering: false,
             paginate: false,
             info: false,
+            searching: false,
             columns: [
                 {
                     targets: 0,
@@ -907,10 +909,11 @@ class NodeDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                // add css to Dtb
-                NodeLoadDataHandle.loadCssToDtb(NodeDataTableHandle.$tableInWF[0].id);
                 // load change exit condition default
                 NodeLoadDataHandle.loadExitConDefault();
+                if (['post', 'put'].includes(NodeLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    NodeDataTableHandle.dtbInWFEmployeeHDCustom();
+                }
             },
         });
     };
@@ -951,6 +954,35 @@ class NodeDataTableHandle {
                 NodeLoadDataHandle.loadCssToDtb(NodeDataTableHandle.$tableInWFExitCon[0].id);
             },
         });
+    };
+
+    // Custom dtb
+    static dtbInWFEmployeeHDCustom() {
+        let $table = NodeDataTableHandle.$tableInWF;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-collab-in-wf').length) {
+                let $group = $(`<button
+                                        type="button"
+                                        class="btn btn-outline-secondary"
+                                        data-bs-toggle="offcanvas"
+                                        data-bs-target="#inWFCanvas"
+                                        aria-controls="inWFCanvas"
+                                        id="btn-add-collab-in-wf"
+                                >
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${NodeLoadDataHandle.transEle.attr('data-add-new')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+            }
+        }
     };
 
 }

@@ -75,6 +75,8 @@ class PrepareSign {
                             $.fn.notifyB({description: data.message}, 'success');
                             $('#modal_prepare_sign').modal('hide');
                             $('.request_sign').addClass('hidden');
+                            $('.sign_check span').text($.fn.gettext('Signing'))
+                                .removeClass('badge-soft-secondary').addClass('badge-soft-primary')
                         }
                     },
                     (error) => {

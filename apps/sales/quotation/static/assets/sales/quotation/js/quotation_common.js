@@ -1038,24 +1038,25 @@ class QuotationLoadDataHandle {
                         }
                     }
                 }
-            })
-        }
-        QuotationDataTableHandle.$tableProduct.DataTable().destroy();
-        QuotationDataTableHandle.dataTableProduct();
-        if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
-                    if (dataDetail?.['quotation_products_data']) {
-                        tableData = dataDetail?.['quotation_products_data'];
-                    }
-                    if (dataDetail?.['sale_order_products_data']) {
-                        tableData = dataDetail?.['sale_order_products_data'];
+            });
+
+            if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+                let eleDetail = $('#quotation-detail-data');
+                if (eleDetail && eleDetail.length > 0) {
+                    if (eleDetail.val()) {
+                        dataDetail = JSON.parse(eleDetail.val());
+                        if (dataDetail?.['quotation_products_data']) {
+                            tableData = dataDetail?.['quotation_products_data'];
+                        }
+                        if (dataDetail?.['sale_order_products_data']) {
+                            tableData = dataDetail?.['sale_order_products_data'];
+                        }
                     }
                 }
             }
         }
+        QuotationDataTableHandle.$tableProduct.DataTable().destroy();
+        QuotationDataTableHandle.dataTableProduct();
         QuotationDataTableHandle.$tableProduct.DataTable().rows.add(tableData).draw();
         // load dropdowns
         QuotationLoadDataHandle.loadDropDowns(QuotationDataTableHandle.$tableProduct);
@@ -1143,23 +1144,24 @@ class QuotationLoadDataHandle {
 
                 tableData.push(dataRow);
             });
-        }
-        QuotationDataTableHandle.$tableCost.DataTable().destroy();
-        QuotationDataTableHandle.dataTableCost();
-        if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
-                    if (dataDetail?.['quotation_costs_data']) {
-                        tableData = dataDetail?.['quotation_costs_data'];
-                    }
-                    if (dataDetail?.['sale_order_costs_data']) {
-                        tableData = dataDetail?.['sale_order_costs_data'];
+
+            if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+                let eleDetail = $('#quotation-detail-data');
+                if (eleDetail && eleDetail.length > 0) {
+                    if (eleDetail.val()) {
+                        dataDetail = JSON.parse(eleDetail.val());
+                        if (dataDetail?.['quotation_costs_data']) {
+                            tableData = dataDetail?.['quotation_costs_data'];
+                        }
+                        if (dataDetail?.['sale_order_costs_data']) {
+                            tableData = dataDetail?.['sale_order_costs_data'];
+                        }
                     }
                 }
             }
         }
+        QuotationDataTableHandle.$tableCost.DataTable().destroy();
+        QuotationDataTableHandle.dataTableCost();
         QuotationDataTableHandle.$tableCost.DataTable().rows.add(tableData).draw();
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             QuotationLoadDataHandle.loadTableDisabled(QuotationDataTableHandle.$tableCost);
@@ -1196,23 +1198,24 @@ class QuotationLoadDataHandle {
 
                 tableData.push(dataRow);
             });
-        }
-        QuotationDataTableHandle.$tableExpense.DataTable().destroy();
-        QuotationDataTableHandle.dataTableExpense();
-        if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
-                    if (dataDetail?.['quotation_expenses_data']) {
-                        tableData = dataDetail?.['quotation_expenses_data'];
-                    }
-                    if (dataDetail?.['sale_order_expenses_data']) {
-                        tableData = dataDetail?.['sale_order_expenses_data'];
+
+            if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+                let eleDetail = $('#quotation-detail-data');
+                if (eleDetail && eleDetail.length > 0) {
+                    if (eleDetail.val()) {
+                        dataDetail = JSON.parse(eleDetail.val());
+                        if (dataDetail?.['quotation_expenses_data']) {
+                            tableData = dataDetail?.['quotation_expenses_data'];
+                        }
+                        if (dataDetail?.['sale_order_expenses_data']) {
+                            tableData = dataDetail?.['sale_order_expenses_data'];
+                        }
                     }
                 }
             }
         }
+        QuotationDataTableHandle.$tableExpense.DataTable().destroy();
+        QuotationDataTableHandle.dataTableExpense();
         QuotationDataTableHandle.$tableExpense.DataTable().rows.add(tableData).draw();
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             QuotationLoadDataHandle.loadTableDisabled(QuotationDataTableHandle.$tableExpense);
@@ -1244,18 +1247,19 @@ class QuotationLoadDataHandle {
 
                 tableData.push(dataRow);
             });
-        }
-        QuotationDataTableHandle.$tablePayment.DataTable().destroy();
-        QuotationDataTableHandle.dataTablePaymentStage();
-        if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
-                    tableData = dataDetail?.['sale_order_payment_stage'];
+
+            if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+                let eleDetail = $('#quotation-detail-data');
+                if (eleDetail && eleDetail.length > 0) {
+                    if (eleDetail.val()) {
+                        dataDetail = JSON.parse(eleDetail.val());
+                        tableData = dataDetail?.['sale_order_payment_stage'];
+                    }
                 }
             }
         }
+        QuotationDataTableHandle.$tablePayment.DataTable().destroy();
+        QuotationDataTableHandle.dataTablePaymentStage();
         QuotationDataTableHandle.$tablePayment.DataTable().rows.add(tableData).draw();
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
             QuotationLoadDataHandle.loadTableDisabled(QuotationDataTableHandle.$tablePayment);
@@ -2348,12 +2352,12 @@ class QuotationLoadDataHandle {
     };
 
     static loadDataTables(data) {
-        let form = document.getElementById('frm_quotation_create');
-        let tableProduct = $('#datable-quotation-create-product');
-        let tableCost = $('#datable-quotation-create-cost');
-        let tableExpense = $('#datable-quotation-create-expense');
+        let form = QuotationLoadDataHandle.$form[0];
+        let tableProduct = QuotationDataTableHandle.$tableProduct;
+        let tableCost = QuotationDataTableHandle.$tableCost;
+        let tableExpense = QuotationDataTableHandle.$tableExpense;
         let tableIndicator = $('#datable-quotation-create-indicator');
-        let tablePaymentStage = $('#datable-quotation-payment-stage');
+        let tablePaymentStage = QuotationDataTableHandle.$tablePayment;
         let products_data = data?.['quotation_products_data'];
         let costs_data = data?.['quotation_costs_data'];
         let expenses_data = data?.['quotation_expenses_data'];
@@ -2516,6 +2520,7 @@ class QuotationLoadDataHandle {
         }
         for (let ele of table[0].querySelectorAll('.table-row-expense-title')) {
             ele.setAttribute('readonly', 'true');
+            ele.classList.add('text-black');
         }
         for (let ele of table[0].querySelectorAll('.table-row-uom')) {
             ele.setAttribute('readonly', 'true');

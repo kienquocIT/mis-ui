@@ -336,6 +336,7 @@ $(function () {
         $quotationTabs.on('click', '.tab-expense', function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(2);
+            LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
             LeaseOrderStoreDataHandle.storeDtbData(5);
         });
@@ -785,6 +786,7 @@ $(function () {
         $quotationTabs.on('click', '.tab-payment', function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(2);
+            LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
             LeaseOrderStoreDataHandle.storeDtbData(5);
         });
@@ -959,6 +961,7 @@ $(function () {
                 'customer_shipping',
                 'customer_billing',
                 'lease_costs_data',
+                'lease_costs_leased_data',
                 'lease_expenses_data',
                 // indicator tab
                 'lease_indicators_data',

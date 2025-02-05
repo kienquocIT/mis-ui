@@ -350,13 +350,17 @@ class RecoveryLoadDataHandle {
             let priceEle = row.querySelector('.table-row-price');
             let quantityEle = row.querySelector('.table-row-quantity');
             let $priceEle = $('#cost_price');
-            if (priceEle && quantityEle && $priceEle.length > 0) {
-                if ($(priceEle).valCurrency() && $(quantityEle).val()) {
-                    let total = parseFloat($(priceEle).valCurrency()) * parseFloat($(quantityEle).val());
-                    $($priceEle).attr('value', String(total));
-                    // mask money
-                    $.fn.initMaskMoney2();
+            if ($priceEle.length > 0) {
+                $($priceEle).attr('value', String(0));
+                if (priceEle && quantityEle) {
+                    if ($(priceEle).valCurrency() && $(quantityEle).val()) {
+                        let total = parseFloat($(priceEle).valCurrency()) * parseFloat($(quantityEle).val());
+                        $($priceEle).attr('value', String(total));
+
+                    }
                 }
+                // mask money
+                $.fn.initMaskMoney2();
             }
             let uomTimeEle = row.querySelector('.table-row-uom-time');
             let $uomEle = $('#depreciation_uom');
@@ -369,6 +373,7 @@ class RecoveryLoadDataHandle {
             let depreciationStartDEle = row.querySelector('.table-row-depreciation-start-date');
             let $startDateEle = $('#depreciation_start_date');
             if (depreciationStartDEle && $startDateEle.length > 0) {
+                $startDateEle.val("");
                 if ($(depreciationStartDEle).val()) {
                     $startDateEle.val(moment($(depreciationStartDEle).val()).format('DD/MM/YYYY'));
                 }
@@ -378,6 +383,7 @@ class RecoveryLoadDataHandle {
             }
             let $endDateEle = $('#depreciation_end_date');
             if ($endDateEle.length > 0) {
+                $endDateEle.val("");
                 if (RecoveryLoadDataHandle.$date.val()) {
                     $endDateEle.val(RecoveryLoadDataHandle.$date.val());
                 }
@@ -403,6 +409,7 @@ class RecoveryLoadDataHandle {
         let $adjustEle = $('#depreciation_adjustment');
         let $radioSaleEle = $('#depreciation_for_sale');
         let $radioFinanceEle = $('#depreciation_for_finance');
+        RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
         if ($methodEle.length > 0 && $timeEle.length > 0 && $startEle.length > 0 && $endEle.length > 0 && $costEle.length > 0 && $adjustEle.length > 0 && $radioSaleEle.length > 0 && $radioFinanceEle.length > 0) {
             if ($methodEle.val() && $timeEle.val() && $startEle.val() && $endEle.val() && $costEle.valCurrency()) {
                 // let data = RecoveryLoadDataHandle.generateDateRangeWithDepreciation(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
@@ -421,7 +428,6 @@ class RecoveryLoadDataHandle {
                     RecoveryDataTableHandle.$tableDepreciationDetail.removeAttr('hidden');
                 }, 300);
 
-                RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
                 RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(data).draw();
             }
         }
@@ -472,7 +478,8 @@ class RecoveryLoadDataHandle {
         let accumulativeValue = 0;
 
         let currentStartDate = start_date;
-        let currentMonth = parseInt(start_date.split('/')[1]);
+        // let currentMonth = parseInt(start_date.split('/')[1]);
+        let currentMonth = 1;
         let currentValue = price;
 
         let endDateObj = RecoveryLoadDataHandle.parseToDateObj(end_date);

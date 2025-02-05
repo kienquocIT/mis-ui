@@ -98,6 +98,7 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
@@ -335,8 +336,8 @@ $(function () {
         $quotationTabs.on('click', '.tab-expense', function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(2);
-            LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         tableExpense.on('click', '.del-row', function (e) {
@@ -388,6 +389,7 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderStoreDataHandle.storeDtbData(5);
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 LeaseOrderLoadDataHandle.loadDataTableCost();
                 LeaseOrderLoadDataHandle.loadDataTableCostLeased();
@@ -783,8 +785,8 @@ $(function () {
         $quotationTabs.on('click', '.tab-payment', function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(2);
-            LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         $('#btn-add-payment-stage').on('click', function () {

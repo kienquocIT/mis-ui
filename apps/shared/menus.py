@@ -826,7 +826,7 @@ class MenusFinancials:
                 icon='<i class="bi bi-ui-checks"></i>',
             ),
         ],
-    ),
+    )
     ACCOUNTING_SETTING = MenuCommon(
         name='Accounting settings', code='', view_name='', icon='<i class="fas fa-cog"></i>',
         child=[
@@ -945,8 +945,9 @@ class SpaceItem:
             menus=[
                 MenusFinancials.HOME,
                 MenusFinancials.CASHFLOW,
-				MenusFinancials.ACCOUNTING_SETTING,
                 MenusFinancials.GENERAL,
+                MenusFinancials.ACCOUNTING_SETTING,
+                MenusFinancials.JOURNAL_ENTRY,
             ]
         ),
         'forms': SpaceCommon(

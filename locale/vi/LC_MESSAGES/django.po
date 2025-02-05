@@ -10489,4 +10489,3 @@ msgstr "Tự động"
 #
 msgid "Original transaction"
 msgstr "Giao dịch gốc"
-

@@ -341,7 +341,7 @@ function saveWork(gantt_obj) {
                         $.fn.gettext('Warning: Two dates were changed.'),
                         $.fn.gettext('The group end date and the project finish date were affected by the current end date'),
                         {'url': url, 'method': method, 'data': data});
-                    $dateFinishElm._flatpickr.setDate(data.w_end_date)
+                    $dateFinishElm[0]._flatpickr.setDate(data.w_end_date)
                 }
                 else if (moment(data.w_end_date).toDate() > moment(grEnd, 'DD/MM/YYYY').toDate()) {
                     showWarning(
@@ -368,7 +368,7 @@ function saveWork(gantt_obj) {
                         $.fn.gettext('Warning: The finish date was changed.'),
                         $.fn.gettext("The project's finish date was affected by the current end date"),
                         {'url': url, 'method': method, 'data': data});
-                    $dateFinishElm._flatpickr.setDate(data.w_end_date)
+                    $dateFinishElm[0]._flatpickr.setDate(data.w_end_date)
                 } else {
                     isSubmit({'url': url, 'method': method, 'data': data});
                 }

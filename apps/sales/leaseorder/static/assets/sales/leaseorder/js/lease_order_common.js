@@ -2138,6 +2138,8 @@ class LeaseOrderLoadDataHandle {
         }
     };
 
+    
+
 
     // TABLE COST-DEPRECIATION (SALE)
     static loadShowModalDepreciation(ele) {
@@ -2323,7 +2325,7 @@ class LeaseOrderLoadDataHandle {
 
         let result = [];
         let totalMonths = months;
-        let depreciationValue = Math.round(price / totalMonths); // Depreciation per month
+        let depreciationValue = Math.round(price / totalMonths); // Khấu hao đều
         let accumulativeValue = 0;
 
         let currentStartDate = start_date;
@@ -2346,11 +2348,18 @@ class LeaseOrderLoadDataHandle {
                 depreciationValue = depreciationAdjustValue;
 
                 if (result.length > 0) {
+                    let last_end_value = 0;
                     let last = result[result.length - 1];
-                    depreciationAdjustValue = Math.round(last?.['end_value'] / totalMonths * adjust);  // Khấu hao hệ số
+                    last_end_value = last?.['end_value'];
+                    let total_accumulative_month = 0;
+                    for (let data of result) {
+                        total_accumulative_month += data?.['accumulative_month'];
+                    }
+
+                    depreciationAdjustValue = Math.round(last_end_value / totalMonths * adjust);  // Khấu hao hệ số
                     // Kiểm tra nếu khấu hao theo hệ số mà lớn hơn khấu hao chia đều số tháng còn lại thì lấy theo khấu hao hệ số còn ngược lại thì lấy theo khấu hao chia đều.
-                    let monthsRemain = totalMonths - last?.['month'];
-                    let depreciationValueCompare = last?.['end_value'] / monthsRemain;
+                    let monthsRemain = totalMonths - total_accumulative_month;
+                    let depreciationValueCompare = last_end_value / monthsRemain;
                     if (depreciationAdjustValue > depreciationValueCompare) {
                         depreciationValue = depreciationAdjustValue;
                     } else {
@@ -2367,8 +2376,9 @@ class LeaseOrderLoadDataHandle {
                     accumulativeValue += depreciationValue;
                     result.push({
                         month: currentMonth.toString(),
-                        start_date: currentStartDate,
-                        end_date: end_date,
+                        begin: currentStartDate,
+                        end: end_date,
+                        accumulative_month: LeaseOrderLoadDataHandle.getAccumulativeMonth(currentStartDate, end_date),
                         start_value: Math.round(currentValue),
                         depreciation_value: Math.round(depreciationValue),
                         accumulative_value: Math.round(accumulativeValue),
@@ -2380,8 +2390,9 @@ class LeaseOrderLoadDataHandle {
                 accumulativeValue += depreciationValue;
                 result.push({
                     month: currentMonth.toString(),
-                    start_date: currentStartDate,
-                    end_date: currentEndDate,
+                    begin: currentStartDate,
+                    end: currentEndDate,
+                    accumulative_month: LeaseOrderLoadDataHandle.getAccumulativeMonth(currentStartDate, currentEndDate),
                     start_value: Math.round(currentValue),
                     depreciation_value: Math.round(depreciationValue),
                     accumulative_value: Math.round(accumulativeValue),
@@ -2462,7 +2473,6 @@ class LeaseOrderLoadDataHandle {
         return true;
     };
 
-
     // TABLE COST-DEPRECIATION (FINANCE)
     static addOneMonthToLast(date_current, alignToEndOfMonth = false) {
         const [day, month, year] = date_current.split('/').map(num => parseInt(num));
@@ -2496,13 +2506,27 @@ class LeaseOrderLoadDataHandle {
         return months.length + 1;
     };
 
+    static getAccumulativeMonth(begin, end) {
+        // Convert strings to Date objects
+        let [beginDay, beginMonth, beginYear] = begin.split('/').map(Number);
+        let [endDay, endMonth, endYear] = end.split('/').map(Number);
+        let beginDate = new Date(beginYear, beginMonth - 1, beginDay);
+        let endDate = new Date(endYear, endMonth - 1, endDay);
+        // Get total days between begin and end
+        let totalDaysBetween = (endDate - beginDate) / (1000 * 60 * 60 * 24) + 1;
+        // Get total days of the month
+        let totalDaysInMonth = new Date(beginYear, beginMonth, 0).getDate();
+        // Calculate the fraction
+        return totalDaysBetween / totalDaysInMonth;
+    };
+
     static calDepreciation(method, months, start_date, end_date, price, adjust = null) {
         // method: 0: line method || 1: adjust method
 
         let result = [];
-        // let totalMonths = months;
-        let totalMonths = LeaseOrderLoadDataHandle.getMonthsDepreciation(start_date, end_date);
-        let depreciationValue = Math.round(price / totalMonths); // Depreciation per month
+        let totalMonths = months;
+        // let totalMonths = LeaseOrderLoadDataHandle.getMonthsDepreciation(start_date, end_date);
+        let depreciationValue = Math.round(price / totalMonths); // Khấu hao đều
         let accumulativeValue = 0;
 
         let currentStartDate = start_date;
@@ -2534,11 +2558,18 @@ class LeaseOrderLoadDataHandle {
                 depreciationValue = depreciationAdjustValue;
 
                 if (result.length > 0) {
+                    let last_end_value = 0;
                     let last = result[result.length - 1];
-                    depreciationAdjustValue = Math.round(last?.['end_value'] / totalMonths * adjust);  // Khấu hao hệ số
+                    last_end_value = last?.['end_value'];
+                    let total_accumulative_month = 0;
+                    for (let data of result) {
+                        total_accumulative_month += data?.['accumulative_month'];
+                    }
+
+                    depreciationAdjustValue = Math.round(last_end_value / totalMonths * adjust);  // Khấu hao hệ số
                     // Kiểm tra nếu khấu hao theo hệ số mà lớn hơn khấu hao chia đều số tháng còn lại thì lấy theo khấu hao hệ số còn ngược lại thì lấy theo khấu hao chia đều.
-                    let monthsRemain = totalMonths - last?.['month'];
-                    let depreciationValueCompare = last?.['end_value'] / monthsRemain;
+                    let monthsRemain = totalMonths - total_accumulative_month;
+                    let depreciationValueCompare = last_end_value / monthsRemain;
                     if (depreciationAdjustValue > depreciationValueCompare) {
                         depreciationValue = depreciationAdjustValue;
                     } else {
@@ -2555,8 +2586,9 @@ class LeaseOrderLoadDataHandle {
                     accumulativeValue += depreciationValue;
                     result.push({
                         month: currentMonth.toString(),
-                        start_date: currentStartDate,
-                        end_date: end_date,
+                        begin: currentStartDate,
+                        end: end_date,
+                        accumulative_month: LeaseOrderLoadDataHandle.getAccumulativeMonth(currentStartDate, end_date),
                         start_value: Math.round(currentValue),
                         depreciation_value: Math.round(depreciationValue),
                         accumulative_value: Math.round(accumulativeValue),
@@ -2572,8 +2604,9 @@ class LeaseOrderLoadDataHandle {
                 accumulativeValue += depreciationValue;
                 result.push({
                     month: currentMonth.toString(),
-                    start_date: currentStartDate,
-                    end_date: currentEndDate,
+                    begin: currentStartDate,
+                    end: currentEndDate,
+                    accumulative_month: LeaseOrderLoadDataHandle.getAccumulativeMonth(currentStartDate, currentEndDate),
                     start_value: Math.round(currentValue),
                     depreciation_value: Math.round(depreciationValue),
                     accumulative_value: Math.round(accumulativeValue),
@@ -2591,6 +2624,8 @@ class LeaseOrderLoadDataHandle {
 
         return result;
     };
+
+
 
 
     // TABLE EXPENSE
@@ -5181,13 +5216,13 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-start-date">${row?.['start_date'] ? row?.['start_date'] : ''}</span>`;
+                        return `<span class="table-row-start-date">${row?.['begin'] ? row?.['begin'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-end-date">${row?.['end_date'] ? row?.['end_date'] : ''}</span>`;
+                        return `<span class="table-row-end-date">${row?.['end'] ? row?.['end'] : ''}</span>`;
                     }
                 },
                 {

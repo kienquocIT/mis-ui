@@ -904,8 +904,15 @@
                             <div class="row">
                                 <div class="col-12 col-md-2 col-lg-2">
                                     <div class="form-group">
-                                        <label class="form-label required" for="cost_price">{% trans 'unit cost' %}</label>
+                                        <label class="form-label required" for="cost_price">{% trans 'Total value' %}</label>
                                         <input type="text" class="form-control mask-money" id="cost_price" value="0" data-return-type="number" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-2 col-lg-2">
+                                    <label class="form-label" for="depreciation_time">{% trans 'Depreciation time' %}</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control validated-number" id="depreciation_time" value="0" readonly>
+                                        <span class="input-group-text" id="depreciation_uom"></span>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-2 col-lg-2">
@@ -922,13 +929,6 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12 col-md-2 col-lg-2">
-                                    <label class="form-label" for="depreciation_time">{% trans 'Depreciation time' %}</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control validated-number" id="depreciation_time" value="0" readonly>
-                                        <span class="input-group-text" id="depreciation_uom"></span>
-                                    </div>
-                                </div>
                                 <div class="col-12 col-md-2 col-lg-2">
                                     <div class="form-group">
                                         <label class="form-label required" for="depreciation_start_date">{% trans 'Start date' %}</label>
@@ -953,6 +953,30 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-12 col-md-2 col-lg-2">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="leased_start_date">{% trans 'Start leased' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" id="leased_start_date"
+                                                   class="form-control leased-start-date date-picker" autocomplete="off">
+                                            <div class="input-suffix">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-2 col-lg-2">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="leased_end_date">{% trans 'End leased' %}</label>
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" id="leased_end_date"
+                                                   class="form-control leased-end-date date-picker" autocomplete="off">
+                                            <div class="input-suffix">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6 col-lg-6">
@@ -965,12 +989,6 @@
                                             <input type="radio" class="form-check-input depreciation-for-finance" id="depreciation_for_finance" checked>
                                             <label class="form-check-label table-row-title" for="depreciation_for_finance">Finance</label>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <div class="form-check form-check-lg" id="depreciation_start_date_recovery_area" hidden>
-                                        <input type="checkbox" name="row-checkbox" class="form-check-input" id="depreciation_start_date_recovery">
-                                        <label class="form-check-label table-row-title" for="depreciation_start_date_recovery">{% trans 'Start date is last recovery date' %}</label>
                                     </div>
                                 </div>
                             </div>
@@ -987,8 +1005,8 @@
                                 <thead>
                                 <tr class="bg-light">
                                     <th>{% trans 'Month' %}</th>
-                                    <th>{% trans 'Start date' %}</th>
-                                    <th>{% trans 'End date' %}</th>
+                                    <th>{% trans 'Begin' %}</th>
+                                    <th>{% trans 'End' %}</th>
                                     <th>{% trans 'Start net value' %}</th>
                                     <th>{% trans 'Depreciation value' %}</th>
                                     <th>{% trans 'End net value' %}</th>

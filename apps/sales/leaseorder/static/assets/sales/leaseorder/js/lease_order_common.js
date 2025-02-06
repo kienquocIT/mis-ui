@@ -2138,7 +2138,7 @@ class LeaseOrderLoadDataHandle {
         }
     };
 
-    
+
 
 
     // TABLE COST-DEPRECIATION (SALE)
@@ -2253,23 +2253,63 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadDataTableDepreciation() {
-        let $methodEle = $('#depreciation_method');
+        let $costEle = $('#cost_price');
         let $timeEle = $('#depreciation_time');
+        let $methodEle = $('#depreciation_method');
+        let $adjustEle = $('#depreciation_adjustment');
+
         let $startEle = $('#depreciation_start_date');
         let $endEle = $('#depreciation_end_date');
-        let $costEle = $('#cost_price');
-        let $adjustEle = $('#depreciation_adjustment');
+        let $startLeaseEle = $('#lease_start_date');
+        let $endLeaseEle = $('#lease_end_date');
+
         let $radioSaleEle = $('#depreciation_for_sale');
         let $radioFinanceEle = $('#depreciation_for_finance');
         LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
         if ($methodEle.length > 0 && $timeEle.length > 0 && $startEle.length > 0 && $endEle.length > 0 && $costEle.length > 0 && $adjustEle.length > 0 && $radioSaleEle.length > 0 && $radioFinanceEle.length > 0) {
             if ($methodEle.val() && $timeEle.val() && $startEle.val() && $endEle.val() && $costEle.valCurrency()) {
-                let data = [];
+                let dataFn = [];
+                let dataDepreciation = [];
                 if ($radioSaleEle[0].checked === true) {
-                    data = LeaseOrderLoadDataHandle.calDepreciationSale(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
+                    dataDepreciation = LeaseOrderLoadDataHandle.calDepreciationSale(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
                 }
                 if ($radioFinanceEle[0].checked === true) {
-                    data = LeaseOrderLoadDataHandle.calDepreciation(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
+                    dataDepreciation = LeaseOrderLoadDataHandle.calDepreciation(parseInt($methodEle.val()), parseInt($timeEle.val()), $startEle.val(), $endEle.val(), parseFloat($costEle.valCurrency()), parseInt($adjustEle.val()));
+                    dataFn = dataDepreciation;
+                    if ($startLeaseEle.length > 0 && $endLeaseEle.length > 0) {
+                        if ($startLeaseEle.val() && $endLeaseEle.val()) {
+                            let matchingRange = LeaseOrderLoadDataHandle.findMatchingRange($startLeaseEle.val(), $endLeaseEle.val(), dataDepreciation);
+                            if (matchingRange.length > 0) {
+                                let firstData = matchingRange[0];
+                                let lastData = matchingRange[matchingRange.length - 1];
+                                let accumulativeMonthStart = LeaseOrderLoadDataHandle.getAccumulativeMonth($startLeaseEle.val(), firstData?.['end']);
+                                firstData['lease_time'] = $startLeaseEle.val();
+                                firstData['depreciation_value'] = firstData['depreciation_value'] * accumulativeMonthStart;
+                                firstData['accumulative_value'] = firstData['depreciation_value'];
+                                let accumulativeMonthEnd = LeaseOrderLoadDataHandle.getAccumulativeMonth(lastData?.['begin'], $endLeaseEle.val());
+                                lastData['lease_time'] = lastData?.['begin'];
+                                lastData['depreciation_value'] = lastData['depreciation_value'] * accumulativeMonthEnd;
+                                // Loop through the array and update accumulative_value
+                                for (let i = 1; i < matchingRange.length; i++) {
+                                    matchingRange[i]["accumulative_value"] = matchingRange[i - 1]["accumulative_value"] + matchingRange[i]["depreciation_value"];
+                                }
+
+                                let matchingRangeJSON = {};
+                                for (let matching of matchingRange) {
+                                    matchingRangeJSON[matching?.['month']] = matching;
+                                }
+                                for (let data of dataFn) {
+                                    if (matchingRangeJSON.hasOwnProperty(data?.['month'])) {
+                                        data['lease_allocated'] = matchingRangeJSON[data?.['month']]?.['depreciation_value'];
+                                        data['lease_accumulative_allocated'] = matchingRangeJSON[data?.['month']]?.['accumulative_value'];
+                                    }
+                                }
+                            }
+
+
+
+                        }
+                    }
                 }
 
                 $('#depreciation_spinner').removeAttr('hidden');
@@ -2279,7 +2319,7 @@ class LeaseOrderLoadDataHandle {
                     LeaseOrderDataTableHandle.$tableDepreciationDetail.removeAttr('hidden');
                 }, 300);
 
-                LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(data).draw();
+                LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
             }
         }
         return true;
@@ -2623,6 +2663,33 @@ class LeaseOrderLoadDataHandle {
         }
 
         return result;
+    };
+
+    // Function to check if a date is in range
+    static findMatchingRange(lease_from, lease_to, data) {
+        let leaseFromDate = new Date(lease_from.split('/').reverse().join('-'));
+        let leaseToDate = new Date(lease_to.split('/').reverse().join('-'));
+
+        // Find start index (first dict where lease_from falls in range)
+        let startIndex = data.findIndex(item => {
+            let beginDate = new Date(item.begin.split('/').reverse().join('-'));
+            let endDate = new Date(item.end.split('/').reverse().join('-'));
+            return leaseFromDate >= beginDate && leaseFromDate <= endDate;
+        });
+
+        // Find end index (first dict where lease_to falls in range)
+        let endIndex = data.findIndex(item => {
+            let beginDate = new Date(item.begin.split('/').reverse().join('-'));
+            let endDate = new Date(item.end.split('/').reverse().join('-'));
+            return leaseToDate >= beginDate && leaseToDate <= endDate;
+        });
+
+        // If both start and end indexes are found, return the range
+        if (startIndex !== -1 && endIndex !== -1) {
+            return data.slice(startIndex, endIndex + 1);
+        }
+
+        return []; // Return empty array if no match found
     };
 
 
@@ -3974,7 +4041,7 @@ class LeaseOrderDataTableHandle {
                                         <button
                                             type="button"
                                             class="btn btn-icon btn-depreciation-detail"
-                                            data-bs-toggle="modal"
+                                            data-bs-toggle="offcanvas"
                                             data-bs-target="#viewDepreciationDetail"
                                             data-zone="${dataZone}"
                                         ><i class="fas fa-ellipsis-h"></i>
@@ -5246,7 +5313,28 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-accumulative" data-init-money="${parseFloat(row?.['accumulative_value'] ? row?.['accumulative_value'] : '0')}"></span>`;
+                        return `<span class="table-row-lease-time">${row?.['lease_time'] ? row?.['lease_time'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 7,
+                    render: (data, type, row) => {
+                        if (row?.['lease_allocated']) {
+                            return `<span class="mask-money table-row-lease-allocated" data-init-money="${parseFloat(row?.['lease_allocated'] ? row?.['lease_allocated'] : '0')}"></span>`;
+                        }
+                        return ``;
+                    }
+                },
+                {
+                    targets: 8,
+                    render: (data, type, row) => {
+                        if (row?.['lease_accumulative_allocated']) {
+                            return `<span class="mask-money table-row-lease-accumulative-allocated" data-init-money="${parseFloat(row?.['lease_accumulative_allocated'] ? row?.['lease_accumulative_allocated'] : '0')}"></span>`;
+                        }
+                        return ``;
+
+
+                        // return `<span class="mask-money table-row-accumulative" data-init-money="${parseFloat(row?.['accumulative_value'] ? row?.['accumulative_value'] : '0')}"></span>`;
                     }
                 },
             ],

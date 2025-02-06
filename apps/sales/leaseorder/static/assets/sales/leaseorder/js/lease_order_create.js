@@ -463,7 +463,7 @@ $(function () {
             LeaseOrderLoadDataHandle.loadShowModalDepreciation(this);
         });
 
-        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .depreciation-for-sale, .depreciation-for-finance', function () {
+        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .lease-start-date, .lease-end-date', function () {
             if (this.classList.contains('depreciation-method')) {
                 let $adjustEle = $('#depreciation_adjustment');
                 if ($adjustEle.length > 0) {
@@ -473,7 +473,6 @@ $(function () {
                     }
                 }
             }
-
             LeaseOrderLoadDataHandle.loadDataTableDepreciation();
         });
 

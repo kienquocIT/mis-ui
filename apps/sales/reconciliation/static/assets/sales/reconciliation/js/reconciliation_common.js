@@ -177,7 +177,7 @@ const table_recon_column_opts_cif = [
         render: (data, type, row) => {
             let recon_amount = row?.['recon_amount'] ? row?.['recon_amount'] : 0
             if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
-                return `<input disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount negative-no" value="${recon_amount}">`;
+                return `<input disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount negative-no" value="${recon_amount*(-1)}">`;
             }
             return ``;
         }
@@ -366,7 +366,7 @@ class ReconAction {
                 negative_value += parseFloat($(this).attr('value'))
             }
         })
-        $recon_total.attr('value', positive_value - negative_value)
+        $recon_total.attr('value', positive_value + negative_value)
         $.fn.initMaskMoney2()
     }
     // detail

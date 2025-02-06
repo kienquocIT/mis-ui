@@ -2313,7 +2313,7 @@ msgstr "Tạo cơ hội kinh doanh"
 
 #
 msgid "Select Customer"
-msgstr "Khách hàng"
+msgstr "Chọn khách hàng"
 
 #
 msgid "title of quotation"
@@ -10188,8 +10188,8 @@ msgid "View payment term information"
 msgstr "Xem thông tin điều khoản thanh toán"
 
 #
-msgid "Check tax number information"
-msgstr "Kiểm tra thông tin mã số thuế"
+msgid "View tax number information"
+msgstr "Xem thông tin mã số thuế"
 
 #
 msgid "Select customer"
@@ -10200,8 +10200,8 @@ msgid "Add new product row"
 msgstr "Thêm dòng sản phẩm"
 
 #
-msgid "Add new description row"
-msgstr "Thêm dòng mô tả"
+msgid "Add new description"
+msgstr "Thêm mô tả"
 
 #
 msgid "Expand to view detail"
@@ -10489,3 +10489,31 @@ msgstr "Tự động"
 #
 msgid "Original transaction"
 msgstr "Giao dịch gốc"
+
+#
+msgid "Auto load according to config"
+msgstr "Tự động load theo cấu hình"
+
+#
+msgid "Tax number is not valid"
+msgstr "MST không hợp lệ"
+
+#
+msgid "Tax number is valid"
+msgstr "MST hợp lệ"
+
+#
+msgid "Payment term information"
+msgstr "Thông tin Điều khoản thanh toán"
+
+#
+msgid "Remark"
+msgstr "Mô tả"
+
+#
+msgid "Term"
+msgstr "Điều khoản"
+
+#
+msgid "Invoice status"
+msgstr "TT hoá đơn"

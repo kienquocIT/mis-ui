@@ -327,7 +327,14 @@ class CashInflowAction {
                                 }
 
                                 // load datatable
-                                CashInflowAction.LoadSOPaymentStageTable(so_pm_stage_data_list, no_ar_invoice_data)
+                                CashInflowAction.LoadSOPaymentStageTable(
+                                    so_pm_stage_data_list.reduce((acc, item) => { // lọc trùng khi lấy payment term của SO có nhiều AR Invoice
+                                        if (!acc.some(existingItem => existingItem.id === item.id)) {
+                                            acc.push(item);
+                                        }
+                                        return acc;
+                                    }, []), no_ar_invoice_data
+                                )
 
                                 return []
                             }
@@ -350,9 +357,14 @@ class CashInflowAction {
                                     so_pm_stage_data_list = so_pm_stage_data_list.concat(resp.data?.['ar_invoice_list'][i]?.['sale_order_data']?.['payment_term'])
                                 }
                                 CashInflowAction.LoadSOPaymentStageTable(
-                                    so_pm_stage_data_list.filter((item) => {
-                                        return item?.['is_ar_invoice'] === false
-                                    }),
+                                    so_pm_stage_data_list
+                                        .filter(item => item?.['is_ar_invoice'] === false)
+                                        .reduce((acc, item) => { // lọc trùng khi lấy payment term của SO có nhiều AR Invoice
+                                            if (!acc.some(existingItem => existingItem.id === item.id)) {
+                                                acc.push(item);
+                                            }
+                                            return acc;
+                                        }, []),
                                     no_ar_invoice_data
                                 )
 

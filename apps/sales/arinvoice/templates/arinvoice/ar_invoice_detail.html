@@ -54,16 +54,18 @@
     >
     </script>
     {{ data.data.employee_current | json_script:"employee_current" }}
-    <form id="form-detail-ar-invoice" data-url-detail-api="{% url 'ARInvoiceDetailAPI' '0' %}"
+    <form id="form-detail-ar-invoice"
         data-method="PUT"
-        data-url-detail-api="{% url 'ARInvoiceDetailAPI' '0' %}"
-        data-url-redirect="{% url "ARInvoiceDetail" pk=0 %}"
-        data-url-detail="{% url 'ARInvoiceDetailAPI' pk=0 %}"
+        data-url-redirect="{% url "ARInvoiceDetail" pk=pk %}"
+        data-url="{% url 'ARInvoiceDetailAPI' pk=pk %}"
     >
         {% csrf_token %}
         {% include 'arinvoice/common/information.html' %}
         {% include 'arinvoice/common/tabs.html' %}
     </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'arinvoice/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
     <!-- Daterangepicker JS -->

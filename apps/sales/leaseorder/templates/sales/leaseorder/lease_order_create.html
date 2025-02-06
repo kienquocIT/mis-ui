@@ -904,16 +904,24 @@
                             <div class="row">
                                 <div class="col-12 col-md-2 col-lg-2">
                                     <div class="form-group">
+                                        <label class="form-label required" for="cost_price">{% trans 'unit cost' %}</label>
+                                        <input type="text" class="form-control mask-money" id="cost_price" value="0" data-return-type="number" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-2 col-lg-2">
+                                    <div class="form-group">
                                         <label class="form-label" for="depreciation_method">{% trans 'Select method' %}</label>
                                         <select class="form-select depreciation-method" id="depreciation_method"></select>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-2 col-lg-2">
                                     <div class="form-group">
-                                        <label class="form-label required" for="cost_price">{% trans 'unit cost' %}</label>
-                                        <input type="text" class="form-control mask-money" id="cost_price" value="0" data-return-type="number" readonly>
+                                        <label class="form-label" for="depreciation_adjustment">{% trans 'Adjustment factor' %}</label>
+                                        <input type="text" class="form-control depreciation-adjustment" id="depreciation_adjustment" value="1" readonly>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-12 col-md-2 col-lg-2">
                                     <label class="form-label" for="depreciation_time">{% trans 'Depreciation time' %}</label>
                                     <div class="input-group">
@@ -945,22 +953,16 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-2 col-lg-2">
-                                    <div class="form-group">
-                                        <label class="form-label" for="depreciation_adjustment">{% trans 'Adjustment factor' %}</label>
-                                        <input type="text" class="form-control depreciation-adjustment" id="depreciation_adjustment" value="1" readonly>
-                                    </div>
-                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6 col-lg-6">
-                                    <div class="d-flex justify-content-start">
+                                    <div class="d-flex justify-content-start hidden">
                                         <div class="form-check form-check-lg mr-4">
-                                            <input type="radio" class="form-check-input depreciation-for-sale" id="depreciation_for_sale" hidden>
+                                            <input type="radio" class="form-check-input depreciation-for-sale" id="depreciation_for_sale">
                                             <label class="form-check-label table-row-title" for="depreciation_for_sale">Sale</label>
                                         </div>
                                         <div class="form-check form-check-lg">
-                                            <input type="radio" class="form-check-input depreciation-for-finance" id="depreciation_for_finance" checked hidden>
+                                            <input type="radio" class="form-check-input depreciation-for-finance" id="depreciation_for_finance" checked>
                                             <label class="form-check-label table-row-title" for="depreciation_for_finance">Finance</label>
                                         </div>
                                     </div>

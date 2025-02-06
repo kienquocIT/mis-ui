@@ -323,7 +323,15 @@ class ReconAction {
                         })
                     }
                 }
-                ReconLoadPage.LoadTableReconAR($table_recon_ar, ar_items_data_list.concat(ar_items_data_list))
+                ReconLoadPage.LoadTableReconAR(
+                    $table_recon_ar,
+                    ar_items_data_list.reduce((acc, item) => { // lọc trùng khi lấy payment term của SO có nhiều AR Invoice
+                        if (!acc.some(existingItem => existingItem.ar_invoice_data.id === item.ar_invoice_data.id)) {
+                            acc.push(item);
+                        }
+                        return acc;
+                    }, [])
+                )
 
                 let cif_items_data_list = []
                 let cif_items_data = results[1]
@@ -473,10 +481,19 @@ class ReconHandle {
 }
 
 $(document).on('change', '.selected_document', function () {
-    $(this).closest('tr').find('.recon_amount').attr(
-        'value',
-        $(this).prop('checked') ? $(this).closest('tr').find('.balance_value').attr('data-init-money') : 0
-    ).prop('disabled', !$(this).prop('checked'))
+    if ($(this).attr('data-ar-id')) {
+        $(this).closest('tr').find('.recon_amount').attr(
+            'value',
+            $(this).prop('checked') ? parseFloat($(this).closest('tr').find('.balance_value').attr('data-init-money')) : 0
+        ).prop('disabled', !$(this).prop('checked'))
+    }
+    if ($(this).attr('data-cif-id')) {
+        $(this).closest('tr').find('.recon_amount').attr(
+            'value',
+            $(this).prop('checked') ? parseFloat($(this).closest('tr').find('.balance_value').attr('data-init-money')) * (-1) : 0
+        ).prop('disabled', !$(this).prop('checked'))
+    }
+
     $(this).closest('tr').find('.note').prop('disabled', !$(this).prop('checked'))
     ReconAction.RecalculateReconTotal()
 })

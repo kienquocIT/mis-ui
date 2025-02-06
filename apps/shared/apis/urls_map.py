@@ -839,3 +839,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Advance Filter
     ADVANCE_FILTER_LIST = StringUrl('report/advance-filter/list')
     ADVANCE_FILTER_DETAIL = StringUrl('report/advance-filter/detail')
+
+    # masterdata/ fixed asset
+    FIXED_ASSET_CLASSIFICATION_GROUP_LIST = StringUrl('saledata/fixed-asset/classification-group/list')
+    FIXED_ASSET_CLASSIFICATION_LIST = StringUrl('saledata/fixed-asset/classification/list')

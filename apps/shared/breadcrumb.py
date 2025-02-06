@@ -457,6 +457,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Partnercenter
     PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('Lists'), 'ListList')
 
+    # Fixed asset
+    FIXED_ASSET_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetMasterDataList')
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -1207,3 +1209,6 @@ class BreadcrumbView:
     PARTNER_CENTER_LIST_CREATE_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_CREATE]
     PARTNER_CENTER_LIST_DETAIL_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_DETAIL]
     PARTNER_CENTER_LIST_UPDATE_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Fixed asset
+    FIXED_ASSET_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.FIXED_ASSET_MASTER_DATA_LIST_PAGE]

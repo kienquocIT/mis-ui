@@ -164,6 +164,10 @@ class MenusCoreConfigurations:
                 name='Document', code='id_menu_master_data_document', view_name='DocumentTypeMasterDataList',
                 icon='<i class="fas fa-file"></i>',
             ),
+            MenuCommon(
+                name='Fixed Asset', code='id_menu_master_data_fixed_asset', view_name='FixedAssetMasterDataList',
+                icon='<i class="fas fa-warehouse"></i>',
+            ),
         ]
     )
     TRANSITION_DATA_CONFIG = MenuCommon(

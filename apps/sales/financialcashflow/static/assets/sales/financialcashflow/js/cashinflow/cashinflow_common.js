@@ -493,9 +493,11 @@ class CashInflowAction {
         $so_pm_stage_table.find('tbody tr').each(function () {
             let row = $(this);
             for (let i=0; i < data_list.length; i++) {
-                row.find('.selected-so-pm-stage').prop('checked', true).prop('disabled', true)
-                row.find('.balance-advance-value').attr('data-init-money', data_list[i]?.['sum_balance_value'])
-                row.find('.payment-advance-value').attr('value', data_list[i]?.['sum_payment_value']).prop('disabled', true).prop('readonly', true)
+                if (row.find('.selected-so-pm-stage').attr('data-sale-order-id') === data_list[i]?.['sale_order_data']?.['id']) {
+                    row.find('.selected-so-pm-stage').prop('checked', true).prop('disabled', true)
+                    row.find('.balance-advance-value').attr('data-init-money', data_list[i]?.['sum_balance_value'])
+                    row.find('.payment-advance-value').attr('value', data_list[i]?.['sum_payment_value']).prop('disabled', true).prop('readonly', true)
+                }
             }
         })
         $.fn.initMaskMoney2()
@@ -504,21 +506,23 @@ class CashInflowAction {
         $ar_invoice_table.find('tbody tr').each(function () {
             let row = $(this);
             for (let i=0; i < data_list.length; i++) {
-                row.find('.selected-ar').prop('checked', true).prop('disabled', true)
-                row.find('.sum_balance_value').attr('data-init-money', data_list[i]?.['sum_balance_value'])
-                row.find('.sum_payment_value').attr('value', data_list[i]?.['sum_payment_value'])
-                row.find('.btn-detail-payment-value').prop('hidden', false)
-                row.find('.discount_payment').val(data_list[i]?.['discount_payment']).prop('disabled', true).prop('readonly', true)
+                if (row.find('.selected-ar').attr('data-ar-invoice-id') === data_list[i]?.['ar_invoice_data']?.['id']) {
+                    row.find('.selected-ar').prop('checked', true).prop('disabled', true)
+                    row.find('.sum_balance_value').attr('data-init-money', data_list[i]?.['sum_balance_value'])
+                    row.find('.sum_payment_value').attr('value', data_list[i]?.['sum_payment_value'])
+                    row.find('.btn-detail-payment-value').prop('hidden', false)
+                    row.find('.discount_payment').val(data_list[i]?.['discount_payment']).prop('disabled', true).prop('readonly', true)
 
-                let detail_payment = []
-                for (let j=0; j < data_list[i]?.['detail_payment'].length; j++) {
-                    detail_payment.push({
-                        'so_pm_stage_id': data_list[i]?.['detail_payment'][j]?.['so_pm_stage_data']?.['id'],
-                        'balance_value': data_list[i]?.['detail_payment'][j]?.['balance_value'],
-                        'payment_value': data_list[i]?.['detail_payment'][j]?.['payment_value'],
-                    })
+                    let detail_payment = []
+                    for (let j = 0; j < data_list[i]?.['detail_payment'].length; j++) {
+                        detail_payment.push({
+                            'so_pm_stage_id': data_list[i]?.['detail_payment'][j]?.['so_pm_stage_data']?.['id'],
+                            'balance_value': data_list[i]?.['detail_payment'][j]?.['balance_value'],
+                            'payment_value': data_list[i]?.['detail_payment'][j]?.['payment_value'],
+                        })
+                    }
+                    row.find('.btn-detail-payment-value').attr('data-detail-payment', JSON.stringify(detail_payment))
                 }
-                row.find('.btn-detail-payment-value').attr('data-detail-payment', JSON.stringify(detail_payment))
             }
         })
         $.fn.initMaskMoney2()

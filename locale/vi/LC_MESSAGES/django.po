@@ -10521,3 +10521,27 @@ msgstr "TT hoá đơn"
 #
 msgid "Accounting setting"
 msgstr "Thiết lập kế toán"
+
+#
+msgid "Chart of accounts"
+msgstr "Danh sách tài khoản"
+
+#
+msgid "Default account definition"
+msgstr "Định nghĩa tài khoản mặc định"
+
+#
+msgid "Trading account type"
+msgstr "Loại tài khoản giao dịch"
+
+#
+msgid "Add same level account"
+msgstr "Thêm tài khoản cùng cấp"
+
+#
+msgid "Add sub level account"
+msgstr "Thêm tài khoản cấp dưới"
+
+#
+msgid "Select an account for these actions"
+msgstr "Chọn một tài khoản cho các hành động này"

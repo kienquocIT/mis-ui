@@ -2,9 +2,6 @@ $(function () {
 
     $(document).ready(function () {
 
-        // Elements Case PO
-        let btnConfirmAdd = $('#btn-confirm-add-product');
-
         // Load init
         RecoveryLoadDataHandle.loadInit();
 
@@ -143,9 +140,12 @@ $(function () {
         });
 
 
+        RecoveryLoadDataHandle.$date.on('change', function () {
+            $('#lease_end_date').val(RecoveryLoadDataHandle.$date.val());
+        });
 
         RecoveryDataTableHandle.$tableProduct.on('click', '.btn-depreciation-detail', function () {
-            RecoveryLoadDataHandle.loadShowModalDepreciation(this);
+            RecoveryLoadDataHandle.loadShowDepreciation(this);
         });
 
         RecoveryLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .depreciation-for-sale, .depreciation-for-finance', function () {

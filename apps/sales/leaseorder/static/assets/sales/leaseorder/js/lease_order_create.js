@@ -450,7 +450,7 @@ $(function () {
 
         tableCost.on('click', '.btn-depreciation-detail', function () {
             LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target', 'new-product-fn-cost');
-            LeaseOrderLoadDataHandle.loadShowModalDepreciation(this);
+            LeaseOrderLoadDataHandle.loadShowDepreciation(this);
         });
 
         LeaseOrderDataTableHandle.$tableCostLeased.on('click', '.btn-depreciation-detail', function () {
@@ -460,7 +460,7 @@ $(function () {
             if (this.closest('.depreciation-area')) {
                 LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target', 'leased-product-fn-cost');
             }
-            LeaseOrderLoadDataHandle.loadShowModalDepreciation(this);
+            LeaseOrderLoadDataHandle.loadShowDepreciation(this);
         });
 
         LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .lease-start-date, .lease-end-date', function () {

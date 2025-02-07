@@ -1384,7 +1384,7 @@ msgstr "Tài khoản cha"
 
 #
 msgid "Tax Code"
-msgstr "Thuế"
+msgstr "Mã số thuế"
 
 #
 msgid "Annual Revenue"

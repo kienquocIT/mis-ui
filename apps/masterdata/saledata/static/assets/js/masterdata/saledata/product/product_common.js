@@ -431,6 +431,7 @@ function loadPriceList(price_list_from_detail, option) {
 }
 
 function loadSaleDefaultUom(data) {
+    saleDefaultUomEle.empty()
     saleDefaultUomEle.initSelect2({
         ajax: {
             url: saleDefaultUomEle.attr('data-url'),
@@ -453,6 +454,7 @@ function loadSaleDefaultUom(data) {
 }
 
 function loadInventoryDefaultUom(data) {
+    inventoryDefaultUomEle.empty()
     inventoryDefaultUomEle.initSelect2({
         ajax: {
             url: inventoryDefaultUomEle.attr('data-url'),
@@ -475,6 +477,7 @@ function loadInventoryDefaultUom(data) {
 }
 
 function loadPurchaseDefaultUom(data) {
+    purchaseDefaultUomEle.empty()
     purchaseDefaultUomEle.initSelect2({
         ajax: {
             url: purchaseDefaultUomEle.attr('data-url'),

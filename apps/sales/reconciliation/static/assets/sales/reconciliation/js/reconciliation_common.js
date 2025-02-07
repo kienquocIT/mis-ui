@@ -177,7 +177,7 @@ const table_recon_column_opts_cif = [
         render: (data, type, row) => {
             let recon_amount = row?.['recon_amount'] ? row?.['recon_amount'] : 0
             if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
-                return `<input disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount negative-no" value="${recon_amount*(-1)}">`;
+                return `<input disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount negative-no" value="${recon_amount}">`;
             }
             return ``;
         }
@@ -299,6 +299,8 @@ class ReconAction {
 
         Promise.all([ar_items_ajax, cif_items_ajax]).then(
             (results) => {
+                console.log(results)
+
                 let ar_items_data_list = []
                 let ar_items_data = results[0]
                 for (let i=0; i < ar_items_data.length; i++) {
@@ -374,7 +376,7 @@ class ReconAction {
                 negative_value += parseFloat($(this).attr('value'))
             }
         })
-        $recon_total.attr('value', positive_value + negative_value)
+        $recon_total.attr('value', positive_value - negative_value)
         $.fn.initMaskMoney2()
     }
     // detail
@@ -480,19 +482,16 @@ class ReconHandle {
     }
 }
 
+$(document).on('change', '.negative-no', function () {
+    let old_val = $(this).val()
+    $(this).val('('+ old_val +')')
+})
+
 $(document).on('change', '.selected_document', function () {
-    if ($(this).attr('data-ar-id')) {
-        $(this).closest('tr').find('.recon_amount').attr(
-            'value',
-            $(this).prop('checked') ? parseFloat($(this).closest('tr').find('.balance_value').attr('data-init-money')) : 0
-        ).prop('disabled', !$(this).prop('checked'))
-    }
-    if ($(this).attr('data-cif-id')) {
-        $(this).closest('tr').find('.recon_amount').attr(
-            'value',
-            $(this).prop('checked') ? parseFloat($(this).closest('tr').find('.balance_value').attr('data-init-money')) * (-1) : 0
-        ).prop('disabled', !$(this).prop('checked'))
-    }
+    $(this).closest('tr').find('.recon_amount').attr(
+        'value',
+        $(this).prop('checked') ? parseFloat($(this).closest('tr').find('.balance_value').attr('data-init-money')) : 0
+    ).prop('disabled', !$(this).prop('checked'))
 
     $(this).closest('tr').find('.note').prop('disabled', !$(this).prop('checked'))
     ReconAction.RecalculateReconTotal()
@@ -506,4 +505,29 @@ $(document).on('change', '.recon_amount', function () {
         $(this).attr('value', balance_value)
     }
     ReconAction.RecalculateReconTotal()
+})
+
+$(document).on('mouseenter', '#table-recon-ar tbody tr', function () {
+    let row_index = parseFloat($(this).closest('tr').find('td:eq(0)').text())
+    if ($.fn.getPkDetail()) {
+        $table_recon_ar.find('tbody tr').removeClass('bg-primary-light-5')
+        $(this).closest('tr').addClass('bg-primary-light-5')
+        $table_recon_cif.find('tbody tr').removeClass('bg-danger-light-5')
+        $table_recon_cif.find(`tbody tr:eq(${row_index - 1})`).addClass('bg-danger-light-5')
+    }
+})
+
+$(document).on('mouseenter', '#table-recon-cif tbody tr', function () {
+    let row_index = parseFloat($(this).closest('tr').find('td:eq(0)').text())
+    if ($.fn.getPkDetail()) {
+        $table_recon_cif.find('tbody tr').removeClass('bg-danger-light-5')
+        $(this).closest('tr').addClass('bg-danger-light-5')
+        $table_recon_ar.find('tbody tr').removeClass('bg-primary-light-5')
+        $table_recon_ar.find(`tbody tr:eq(${row_index - 1})`).addClass('bg-primary-light-5')
+    }
+})
+
+$(document).on('mouseleave', 'table tbody tr', function () {
+    $table_recon_ar.find('tbody tr').removeClass('bg-primary-light-5')
+    $table_recon_cif.find('tbody tr').removeClass('bg-danger-light-5')
 })

@@ -334,16 +334,9 @@ class RecoveryLoadDataHandle {
             let depreciationMethodEle = row.querySelector('.table-row-depreciation-method');
             let $methodEle = $('#depreciation_method');
             if (depreciationMethodEle && $methodEle.length > 0) {
-                $methodEle.removeAttr('readonly');
                 RecoveryLoadDataHandle.loadInitS2($methodEle, RecoveryLoadDataHandle.dataDepreciationMethod, {}, RecoveryLoadDataHandle.$depreciationModal);
                 if ($(depreciationMethodEle).val()) {
                     $methodEle.val(parseInt($(depreciationMethodEle).val())).trigger('change');
-                }
-                if (RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-net-value') {
-                    $methodEle.attr('readonly', 'true');
-                }
-                if (RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-fn-cost') {
-                    $methodEle.attr('readonly', 'true');
                 }
             }
             let depreciationAdjustEle = row.querySelector('.table-row-depreciation-adjustment');
@@ -376,15 +369,6 @@ class RecoveryLoadDataHandle {
                     if ($(netValueEle).attr('data-init-money')) {
                         let total = parseFloat($(netValueEle).attr('data-init-money'));
                         $($priceEle).attr('value', String(total));
-                    }
-                }
-                if (RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-net-value') {
-                    let originCostEle = row.querySelector('.table-row-origin-cost');
-                    if (originCostEle) {
-                        if ($(originCostEle).attr('data-init-money')) {
-                            let total = parseFloat($(originCostEle).attr('data-init-money'));
-                            $($priceEle).attr('value', String(total));
-                        }
                     }
                 }
                 // mask money
@@ -471,9 +455,12 @@ class RecoveryLoadDataHandle {
                                 let accumulativeMonthStart = RecoveryLoadDataHandle.getAccumulativeMonth($startLeaseEle.val(), firstData?.['end']);
                                 firstData['lease_time'] = $startLeaseEle.val();
                                 firstData['lease_allocated'] = firstData['depreciation_value'] * accumulativeMonthStart;
+                                if (firstData?.['month'] === "1") {
+                                    firstData['lease_allocated'] = firstData['depreciation_value'];
+                                }
                                 firstData['lease_accumulative_allocated'] = firstData['lease_allocated'];
                                 let accumulativeMonthEnd = RecoveryLoadDataHandle.getAccumulativeMonth(lastData?.['begin'], $endLeaseEle.val());
-                                lastData['lease_time'] = lastData?.['begin'];
+                                lastData['lease_time'] = $endLeaseEle.val();
                                 lastData['lease_allocated'] = lastData['depreciation_value'] * accumulativeMonthEnd;
                                 // Loop through matchingRange and update lease_allocated and lease_accumulative_allocated
                                 for (let i = 1; i < matchingRange.length; i++) {
@@ -813,10 +800,7 @@ class RecoveryLoadDataHandle {
     };
 
     static loadSaveDepreciation() {
-        let $table = RecoveryDataTableHandle.$tableCost;
-        if (RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-net-value' || RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-fn-cost') {
-            $table = RecoveryDataTableHandle.$tableCostLeased;
-        }
+        let $table = RecoveryDataTableHandle.$tableProduct;
         let target = $table[0].querySelector(`.table-row-item[data-product-id="${RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
         if (target) {
             let targetRow = target.closest('tr');
@@ -870,28 +854,15 @@ class RecoveryLoadDataHandle {
                     if (dataRow?.['lease_accumulative_allocated']) {
                         fnCost = dataRow?.['lease_accumulative_allocated'];
                     }
-                    if (RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-net-value') {
-                        if (dataRow?.['end_value']) {
-                            fnCost = dataRow?.['end_value'];
-                        }
-                    }
                 });
-                if (RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'new-product-fn-cost' || RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-fn-cost') {
-                    let depreciationSubtotalEle = targetRow.querySelector('.table-row-depreciation-subtotal');
-                    let fnCostEle = targetRow.querySelector('.table-row-subtotal');
-                    let fnCostRawEle = targetRow.querySelector('.table-row-subtotal-raw');
+                let depreciationSubtotalEle = targetRow.querySelector('.table-row-depreciation-subtotal');
+                let fnCostEle = targetRow.querySelector('.table-row-subtotal');
+                let fnCostRawEle = targetRow.querySelector('.table-row-subtotal-raw');
 
-                    if (depreciationSubtotalEle && fnCostEle && fnCostRawEle) {
-                        $(depreciationSubtotalEle).val(fnCost);
-                        $(fnCostEle).attr('data-init-money', String(fnCost));
-                        $(fnCostRawEle).val(String(fnCost));
-                    }
-                }
-                if (RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-net-value') {
-                    let netValueEle = targetRow.querySelector('.table-row-net-value');
-                    if (netValueEle) {
-                        $(netValueEle).attr('data-init-money', String(fnCost));
-                    }
+                if (depreciationSubtotalEle && fnCostEle && fnCostRawEle) {
+                    $(depreciationSubtotalEle).val(fnCost);
+                    $(fnCostEle).attr('data-init-money', String(fnCost));
+                    $(fnCostRawEle).val(String(fnCost));
                 }
                 $.fn.initMaskMoney2();
             }
@@ -1871,6 +1842,18 @@ class RecoverySubmitHandle {
                                 if (product_data?.['product_depreciation_subtotal'] && product_data?.['quantity_recovery']) {
                                     product_data['product_depreciation_price'] = product_data?.['product_depreciation_subtotal'] / product_data?.['quantity_recovery'];
                                 }
+                            }
+                        }
+                        let leaseStartDateEle = targetRow.querySelector('.table-row-lease-start-date');
+                        if (leaseStartDateEle) {
+                            if ($(leaseStartDateEle).val()) {
+                                product_data['product_lease_start_date'] = $(leaseStartDateEle).val();
+                            }
+                        }
+                        let leaseEndDateEle = targetRow.querySelector('.table-row-lease-end-date');
+                        if (leaseEndDateEle) {
+                            if ($(leaseEndDateEle).val()) {
+                                product_data['product_lease_end_date'] = $(leaseEndDateEle).val();
                             }
                         }
                     }

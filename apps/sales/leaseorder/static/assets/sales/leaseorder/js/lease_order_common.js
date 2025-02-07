@@ -2345,9 +2345,12 @@ class LeaseOrderLoadDataHandle {
                                 let accumulativeMonthStart = LeaseOrderLoadDataHandle.getAccumulativeMonth($startLeaseEle.val(), firstData?.['end']);
                                 firstData['lease_time'] = $startLeaseEle.val();
                                 firstData['lease_allocated'] = firstData['depreciation_value'] * accumulativeMonthStart;
+                                if (firstData?.['month'] === "1") {
+                                    firstData['lease_allocated'] = firstData['depreciation_value'];
+                                }
                                 firstData['lease_accumulative_allocated'] = firstData['lease_allocated'];
                                 let accumulativeMonthEnd = LeaseOrderLoadDataHandle.getAccumulativeMonth(lastData?.['begin'], $endLeaseEle.val());
-                                lastData['lease_time'] = lastData?.['begin'];
+                                lastData['lease_time'] = $endLeaseEle.val();
                                 lastData['lease_allocated'] = lastData['depreciation_value'] * accumulativeMonthEnd;
                                 // Loop through matchingRange and update lease_allocated and lease_accumulative_allocated
                                 for (let i = 1; i < matchingRange.length; i++) {
@@ -5319,7 +5322,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-depreciation-price" data-init-money="${parseFloat(row?.['depreciation_price'] ? row?.['depreciation_price'] : '0')}"></span>`;
+                        return `<span class="mask-money table-row-origin-cost" data-init-money="${parseFloat(row?.['origin_cost'] ? row?.['origin_cost'] : '0')}"></span>`;
                     }
                 },
                 {

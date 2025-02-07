@@ -19,7 +19,7 @@ $(function () {
                 autoApply: true,
                 autoUpdateInput: false,
             }).on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                $(this).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
             });
             $(this).val('').trigger('change');
         });
@@ -141,14 +141,23 @@ $(function () {
 
 
         RecoveryLoadDataHandle.$date.on('change', function () {
-            $('#lease_end_date').val(RecoveryLoadDataHandle.$date.val());
+            RecoveryDataTableHandle.$tableProduct.DataTable().rows().every(function () {
+                let row = this.node();
+                if (row) {
+                    let leaseEndDateEle = row.querySelector('.table-row-lease-end-date');
+                    if (leaseEndDateEle) {
+                        $(leaseEndDateEle).val(moment(RecoveryLoadDataHandle.$date.val(),
+                            'DD/MM/YYYY').format('YYYY-MM-DD'));
+                    }
+                }
+            });
         });
 
         RecoveryDataTableHandle.$tableProduct.on('click', '.btn-depreciation-detail', function () {
             RecoveryLoadDataHandle.loadShowDepreciation(this);
         });
 
-        RecoveryLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .depreciation-for-sale, .depreciation-for-finance', function () {
+        RecoveryLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .lease-start-date, .lease-end-date', function () {
             if (this.classList.contains('depreciation-method')) {
                 let $adjustEle = $('#depreciation_adjustment');
                 if ($adjustEle.length > 0) {

@@ -861,7 +861,7 @@ class RecoveryDataTableHandle {
                                     <input type="text" class="form-control table-row-depreciation-end-date" value="${row?.['product_depreciation_end_date'] ? row?.['product_depreciation_end_date'] : ''}" hidden>
                                     <input type="text" class="form-control table-row-depreciation-adjustment" value="${row?.['product_depreciation_adjustment'] ? row?.['product_depreciation_adjustment'] : 1}" hidden>
                                     
-                                    <input type="text" class="form-control table-row-depreciation-time" value="${row?.['product_quantity_depreciation'] ? row?.['product_quantity_depreciation'] : 0}" hidden>
+                                    <input type="text" class="form-control table-row-depreciation-time" value="${row?.['product_depreciation_time'] ? row?.['product_depreciation_time'] : 0}" hidden>
                                 </div>`;
                     }
                 },

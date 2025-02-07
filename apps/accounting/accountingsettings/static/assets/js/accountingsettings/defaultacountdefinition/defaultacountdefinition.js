@@ -4,8 +4,8 @@ $(document).ready(function() {
     const purchasing_table_data = $('#purchasing-table-data')
     const inventory_table_data = $('#inventory-table-data')
 
-    $('.btn').on('click', function() {
-        $('.btn').removeClass('btn-primary w-20').addClass('btn-outline-primary w-10');
+    $('.tab-btn').on('click', function() {
+        $('.tab-btn').removeClass('btn-primary w-20').addClass('btn-outline-primary w-10');
         $(this).removeClass('btn-outline-primary w-10').addClass('btn-primary w-20');
     });
 

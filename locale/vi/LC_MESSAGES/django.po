@@ -10517,3 +10517,7 @@ msgstr "Điều khoản"
 #
 msgid "Invoice status"
 msgstr "TT hoá đơn"
+
+#
+msgid "Accounting setting"
+msgstr "Thiết lập kế toán"

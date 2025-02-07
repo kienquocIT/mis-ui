@@ -805,17 +805,17 @@ class MenusFinancials:
     HOME = MenuCommon(
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
-    CASHFLOW = MenuCommon(
-        name='Cashflow', code='menu_cashflow', view_name='', icon='<i class="fas fa-exchange-alt"></i>',
+    ACCOUNTING_SETTING = MenuCommon(
+        name='Accounting setting', code='', view_name='', icon='<i class="fas fa-cog"></i>',
         child=[
             MenuCommon(
-                name='Cash inflow', code='menu_cash_inflow', view_name='CashInflowList',
-                icon='<i class="fas fa-share"></i>',
+                name='Chart of accounts', code='menu_chart_of_accounts_list', view_name='ChartOfAccountsList',
+                icon='<i class="fas fa-list-alt"></i>',
             ),
-            # MenuCommon(
-            #     name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
-            #     icon='<i class="fas fa-reply"></i>',
-            # ),
+            MenuCommon(
+                name='Default account definition', code='menu_default_account_definition_list', view_name='DefaultAccountDefinitionList',
+                icon='<i class="fas fa-shield-alt"></i>',
+            ),
         ],
     )
     GENERAL = MenuCommon(
@@ -827,17 +827,17 @@ class MenusFinancials:
             ),
         ],
     )
-    ACCOUNTING_SETTING = MenuCommon(
-        name='Accounting settings', code='', view_name='', icon='<i class="fas fa-cog"></i>',
+    CASHFLOW = MenuCommon(
+        name='Cashflow', code='menu_cashflow', view_name='', icon='<i class="fas fa-exchange-alt"></i>',
         child=[
             MenuCommon(
-                name='Chart of accounts', code='menu_chart_of_accounts_list', view_name='ChartOfAccountsList',
-                icon='<i class="fas fa-list-alt"></i>',
+                name='Cash inflow', code='menu_cash_inflow', view_name='CashInflowList',
+                icon='<i class="fas fa-reply"></i>',
             ),
-            MenuCommon(
-                name='Default account definition', code='menu_default_account_definition_list', view_name='DefaultAccountDefinitionList',
-                icon='<i class="fas fa-shield-alt"></i>',
-            ),
+            # MenuCommon(
+            #     name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
+            #     icon='<i class="fas fa-share"></i>',
+            # ),
         ],
     )
     JOURNAL_ENTRY = MenuCommon(
@@ -944,10 +944,10 @@ class SpaceItem:
             icon='<i class="fas fa-balance-scale"></i>',
             menus=[
                 MenusFinancials.HOME,
-                MenusFinancials.CASHFLOW,
-                MenusFinancials.GENERAL,
                 MenusFinancials.ACCOUNTING_SETTING,
-                MenusFinancials.JOURNAL_ENTRY,
+                MenusFinancials.GENERAL,
+                MenusFinancials.CASHFLOW,
+                # MenusFinancials.JOURNAL_ENTRY,
             ]
         ),
         'forms': SpaceCommon(

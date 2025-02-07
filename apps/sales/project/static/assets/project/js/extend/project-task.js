@@ -377,22 +377,29 @@ class Task_in_project {
                 $.fn.notifyB({description: $('#form_valid').attr('data-estimate-error')}, 'failure')
         })
 
-        // click to log-work
-        $('.btn-log_work').on('click', function() {
-            if ($(this).hasClass('disabled')) return;
-            $('#logWorkModal').modal('show')
-            $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
-            $('#logWorkModal #logtime_task_id').val($('#formOpportunityTask input[name="id"]').val())
-            logWorkSubmit()
-        })
-
         // run date picker
         $('.date-picker', $form).each(function(){
             Task_in_project.runDatePick($(this))
         })
-        $('.date-picker', $('#logWorkModal')).each(function(){
+        const $modalLog = $('#logWorkModal');
+        $('.date-picker', $modalLog).each(function(){
             Task_in_project.runDatePick($(this))
         })
+
+        // click to log-work
+
+        $('.btn-log_work').on('click', function() {
+            if ($(this).hasClass('disabled')) return;
+            $modalLog.modal('show')
+            $('#logWorkModal #logtime_task_id').val($('#formOpportunityTask input[name="id"]').val())
+            logWorkSubmit()
+        })
+        $modalLog.on('hidden.bs.modal', ()=>{
+            $('#startDateLogTime')[0]._flatpickr.clear()
+            $('#endDateLogTime')[0]._flatpickr.clear()
+            $('#EstLogtime').val(null)
+        })
+
 
         // run status select default
         const sttElm = $('#selectStatus');

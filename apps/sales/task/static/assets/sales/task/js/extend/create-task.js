@@ -149,8 +149,14 @@ $(document).ready(function () {
     } else $oppElm.initSelect2() // run init select2 in task page
 
     //--BTN LOG-TIME-- action click to log-work
+    const $logWorkModal = $('#logWorkModal');
+    $logWorkModal.on('hide.bs.modal', () => {
+        $('#startDateLogTime')[0]._flatpickr.clear()
+        $('#endDateLogTime')[0]._flatpickr.clear()
+        $('#EstLogtime').val(null)
+    })
     $('.btn-log_work').off().on('click', () => {
-        $('#logWorkModal').modal('show')
+        $logWorkModal.modal('show')
         $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
         const taskID = $('.task_edit [name="id"]').val()
         if (taskID) $('#logtime_task_id').val(taskID)

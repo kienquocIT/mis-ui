@@ -223,7 +223,7 @@ function TaskSubmitFuncOpps(platform, callBackFunc) {
             }
         },
         (error) => {
-            console.log('call submit error', error)
+            $.fn.notifyB({description: error?.data?.errors || error?.message}, 'failure');
         }
     )
 }

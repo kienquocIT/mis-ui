@@ -1046,7 +1046,7 @@ class ARInvoiceHandle {
                     $('#invoice-number').val(data?.['invoice_number'])
                     $('#invoice-status').val(
                         ['Khởi tạo', 'Đã phát hành', 'Đã kê khai', 'Đã thay thế', 'Đã điều chỉnh'][data?.['invoice_status']]
-                    ).addClass(
+                    ).removeClass('text-blue').addClass(
                         ['text-blue', 'text-primary', 'text-info', 'text-danger', 'text-warning'][data?.['invoice_status']]
                     )
 

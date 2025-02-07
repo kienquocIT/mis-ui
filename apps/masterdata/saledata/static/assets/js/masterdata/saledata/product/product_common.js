@@ -711,7 +711,6 @@ function getDataForm() {
     data['product_choice'] = []
 
     data['part_number'] = partNumberEle.val();
-    data['supplied_by'] = suppliedByEle.val();
 
     data['length'] = parseFloat(lengthEle.val());
     data['width'] = parseFloat(widthEle.val());
@@ -877,6 +876,7 @@ function getDataForm() {
         data['product_choice'].push(2)
         data['purchase_default_uom'] = $('#purchase-select-box-default-uom option:selected').attr('value');
         data['purchase_tax'] = $('#purchase-select-box-tax-code option:selected').attr('value');
+        data['supplied_by'] = suppliedByEle.val();
     } else {
         data['purchase_default_uom'] = null
         data['purchase_tax'] = null

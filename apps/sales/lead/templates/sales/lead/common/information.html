@@ -1,100 +1,147 @@
 {% load i18n %}
 
-<div class="row mt-5">
-    <div class="col-12 col-md-12 col-lg-6">
+
+<div class="row">
+    <div class="col-12">
+        <ul class="nav nav-line nav-tabs nav-light" id="tab-select-table">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_info">
+                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-link-text">{% trans 'Detail' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_activity" id="link-tab-sale">
+                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-link-text">{% trans 'Activities' %}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="tab_info">
         <div class="row">
-            <div class="col-12 col-lg-12">
-                <div class="form-group">
-                    <label class="form-label required" for="lead-name">{% trans "Lead name" %}</label>
-                    <input required class="form-control" id="lead-name">
+            <div class="col-12 col-md-12 col-lg-6">
+                <div class="row">
+                    <div class="col-12 col-lg-12">
+                        <div class="form-group">
+                            <label class="form-label required" for="lead-name">{% trans "Lead name" %}</label>
+                            <input required class="form-control" id="lead-name">
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="contact-name">{% trans "Contact name" %}</label>
+                            <input class="form-control" id="contact-name">
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="job-title">{% trans "Job title" %}</label>
+                            <input class="form-control" id="job-title">
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="mobile">{% trans "Mobile" %}</label>
+                            <input class="form-control" id="mobile">
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="email">{% trans "Email" %}</label>
+                            <input class="form-control" id="email">
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-12">
+                        <div class="form-group">
+                            <label class="form-label" for="company-name">{% trans "Company name" %}</label>
+                            <input class="form-control" id="company-name">
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label" for="contact-name">{% trans "Contact name" %}</label>
-                    <input class="form-control" id="contact-name">
+            <div class="col-12 col-md-12 col-lg-6">
+                <div class="row">
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="industry">{% trans "Industry" %}</label>
+                            <select class="form-select select2" data-method="GET" data-url="{% url 'IndustryListAPI' %}" id="industry"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="total-employees">{% trans "Total employees" %}</label>
+                            <select class="form-select select2" id="total-employees">
+                                <option value=""></option>
+                                {% for item in data.company_size %}
+                                    <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="revenue">{% trans "Revenue" %}</label>
+                            <select class="form-select select2" id="revenue">
+                                <option value=""></option>
+                                {% for item in data.customer_revenue %}
+                                    <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="assign-to-sale">{% trans "Assign to sale" %}</label>
+                            <select class="form-select select2" data-method="GET" data-url="{% url 'EmployeeListAPI' %}" id="assign-to-sale"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="lead-source">{% trans "Source" %}</label>
+                            <select disabled class="form-select select2" id="lead-source">
+                                <option value="0" selected disabled>{% trans 'Manual' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="lead-status">{% trans "Lead status" %}</label>
+                            <select class="form-select" id="lead-status">
+                                {% for item in data.lead_status %}
+                                    <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label" for="job-title">{% trans "Job title" %}</label>
-                    <input class="form-control" id="job-title">
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label" for="lead-note">{% trans "Note" %}</label>
+                    </div>
+                    <div class="col-6 text-right">
+                        <button type="button" id="btn-add-note" class="mb-2 btn btn-outline-primary btn-xs">
+                            <i class="fas fa-plus-circle"></i>
+                            {% trans 'Add new note' %}
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label" for="mobile">{% trans "Mobile" %}</label>
-                    <input class="form-control" id="mobile">
-                </div>
-            </div>
-            <div class="col-12 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label" for="email">{% trans "Email" %}</label>
-                    <input class="form-control" id="email">
-                </div>
-            </div>
-            <div class="col-12 col-lg-12">
-                <div class="form-group">
-                    <label class="form-label" for="company-name">{% trans "Company name" %}</label>
-                    <input class="form-control" id="company-name">
+                <div class="row" style="position: relative; overflow: auto; max-height: 25vh;">
+                    <div class="col-12" id="note-area">
+                        <textarea class="form-control lead-note mb-2" placeholder="{% trans 'Note' %} 1"></textarea>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-12 col-md-12 col-lg-6">
-        <div class="row">
-            <div class="col-12 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label" for="industry">{% trans "Industry" %}</label>
-                    <select class="form-select select2" data-method="GET" data-url="{% url 'IndustryListAPI' %}" id="industry"></select>
-                </div>
-            </div>
-            <div class="col-12 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label" for="total-employees">{% trans "Total employees" %}</label>
-                    <select class="form-select select2" id="total-employees">
-                        <option value=""></option>
-                        {% for item in data.company_size %}
-                            <option value="{{ item.value }}">{{ item.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="col-12 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label" for="revenue">{% trans "Revenue" %}</label>
-                    <select class="form-select select2" id="revenue">
-                        <option value=""></option>
-                        {% for item in data.customer_revenue %}
-                            <option value="{{ item.value }}">{{ item.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="col-12 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label" for="assign-to-sale">{% trans "Assign to sale" %}</label>
-                    <select class="form-select select2" data-method="GET" data-url="{% url 'EmployeeListAPI' %}" id="assign-to-sale"></select>
-                </div>
-            </div>
-            <div class="col-12 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label" for="lead-source">{% trans "Lead source" %}</label>
-                    <select disabled class="form-select select2" id="lead-source">
-                        <option value="0" selected disabled>{% trans 'Manual' %}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-12 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label" for="lead-status">{% trans "Lead status" %}</label>
-                    <select class="form-select" id="lead-status">
-                        {% for item in data.lead_status %}
-                            <option value="{{ item.value }}">{{ item.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-        </div>
+    <div class="tab-pane fade" id="tab_activity">
+        {% include 'sales/lead/activities/activities_collapse.html' %}
     </div>
 </div>

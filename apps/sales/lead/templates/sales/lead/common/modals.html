@@ -1,0 +1,125 @@
+{% load i18n %}
+
+<div class="modal fade" id="modalconvert" tabindex="-1" role="dialog" aria-labelledby="modalconvert" aria-hidden="true">
+	<div class="modal-dialog" style="min-width: 75%;" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">{% trans 'Convert to' %}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-lg-8">
+                        <div class="row">
+                            <div class="col-12 mt-3">
+                                <a href="#" data-url="{% url 'ContactCreateAPI' %}" data-url-detail-contact="{% url 'ContactDetail' '0' %}" id="convert-to-contact-btn">
+                                    <button class="btn btn-sm btn-outline-blue" type="button">{% trans 'Convert to a new Contact' %}</button>
+                                </a>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <button id="btn-opp" class="btn btn-sm btn-outline-blue" type="button" data-bs-toggle="modal" data-bs-target="#convert_opp_config">
+                                    {% trans 'Convert to Opportunity' %}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <span id="related-opps-span">{% trans 'Related opps' %}:</span>
+                        <div class="mt-2 mb-2" id="related-opps-table" style="max-height: 50vh; overflow-y: auto;"></div>
+                        <span id="related-leads-span">{% trans 'Related leads' %}:</span>
+                        <div class="mt-2 mb-2" id="related-leads-table" style="max-height: 50vh; overflow-y: auto;"></div>
+                    </div>
+                </div>
+            </div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="convert_opp_config" tabindex="-1" role="dialog" aria-labelledby="convert_opp_config" aria-hidden="true">
+    <div class="modal-dialog modal-lg min-w-1000p" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Convert to Opportunity' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-lg-6">
+                        <div class="form-check">
+                            <input type="radio" id="convert-to-new-opp-radio" name="convert-to-opp" class="form-check-input" checked>
+                            <label class="form-check-label" for="convert-to-new-opp-radio">{% trans 'Convert to a new Opportunity' %}</label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-check">
+                            <input type="radio" id="select-an-existing-opp-radio" name="convert-to-opp" class="form-check-input">
+                            <label class="form-check-label" for="select-an-existing-opp-radio">{% trans 'Select an existing Opportunity' %}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="convert-to-new-opp-radio-child row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="form-label required" for="existing-account">{% trans "Select account" %}</label>
+                                        </div>
+                                        <div class="col-6 text-right">
+                                            <a class="small" id="create-to-new-account-btn" href="{% url 'AccountCreate' %}" target="_blank">
+                                                {% trans 'Create new account' %}&nbsp;<i class="fa-solid fa-up-right-from-square"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <select class="form-select select2" data-method="GET" data-url="{% url 'AccountListAPI' %}" id="existing-account"></select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="assign-to-sale-config">{% trans "Assign to sale" %}</label>
+                                    <select class="form-select select2" data-method="GET"
+                                            data-url="{% url 'EmployeeListAPI' %}"
+                                            id="assign-to-sale-config"
+                                    ></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="select-an-existing-opp-radio-child row">
+                            <div hidden class="select-an-existing-opp-radio-child col-12">
+                                <table id="select-an-existing-opp-table" class="table table-hover w-100" data-method="GET" data-url="{% url 'OpportunityListAPI' %}">
+                                    <thead>
+                                    <tr>
+                                        <th class="w-20">{% trans 'Code' %}</th>
+                                        <th class="w-30">{% trans 'Name' %}</th>
+                                        <th class="w-25">{% trans 'Customer' %}</th>
+                                        <th class="w-25">{% trans 'Sale person' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                <a href='#'
+                   data-url="{% url 'OpportunityListAPI' %}"
+                   data-url-map-opp="{% url 'LeadDetailAPI' pk=pk %}"
+                   data-url-detail-opp="{% url 'OpportunityDetail' '0' %}"
+                   id="convert-to-opp-btn" class="underline_hover">
+                    <button type="button" class="btn btn-primary">{% trans 'Convert' %}</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

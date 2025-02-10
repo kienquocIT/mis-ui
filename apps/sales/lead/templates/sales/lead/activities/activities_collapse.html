@@ -1,56 +1,50 @@
 {% load i18n %}
 
-<div class="collapse" id="activities-collapse">
-    <div class="card card-body">
-        <div class="row">
-            <div class="col-12 mb-5">
-                <div class="btn-group" role="group">
-                    <span class="ml-1" data-bs-toggle="tooltip" title="{% trans 'Call' %}">
-                        <button class="btn btn-xs btn-light btn-rounded open-canvas-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-call-log" aria-controls="offcanvas-call-log">
-                            <i class="dropdown-icon fas fa-phone-volume"></i>
-                        </button>
-                    </span>
-                    <span class="ml-1" data-bs-toggle="tooltip" title="{% trans 'Email' %}">
-                        <button class="btn btn-xs btn-light btn-rounded open-canvas-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-send-email" aria-controls="offcanvas-send-email">
-                            <i class="dropdown-icon bi bi-envelope-fill"></i>
-                        </button>
-                    </span>
-                    <span class="ml-1" data-bs-toggle="tooltip" title="{% trans 'Meeting' %}">
-                        <button class="btn btn-xs btn-light btn-rounded open-canvas-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-meeting" aria-controls="offcanvas-meeting">
-                            <i class="dropdown-icon bi bi-person-workspace"></i>
-                        </button>
-                    </span>
-                </div>
-            </div>
-            <div class="col-12">
-                <table class="table table-hover nowrap w-100" id="table-timeline"
-                       data-url-logs_list="{% url 'OpportunityActivityLogListAPI' %}"
-                       data-url-delete-call-log="{% url 'OpportunityCallLogDetailAPI' '0' %}"
-                       data-url-delete-email="{% url 'OpportunityEmailDetailAPI' '0' %}"
-                       data-url-delete-meeting="{% url 'OpportunityMeetingDetailAPI' '0' %}"
-                       data-method="GET">
-                    <thead>
-                        <tr>
-                            <th>
-                                <button type="button" class="btn btn-xs p-0" id="btn-refresh-activity" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Refresh' %}">
-                                    <span class="icon">
-                                        <i class="fas fa-redo-alt text-primary"></i>
-                                    </span>
-                                </button>
-                            </th>
-                            <th class="w-15">{% trans "Activity" %}</th>
-                            <th class="w-20">
-                                {% trans 'Subject' %}
-                            </th>
-                            <th class="w-20">{% trans "Employee Created" %}</th>
-                            <th class="w-20">{% trans "Date Created" %}</th>
-                            <th class="w-20">{% trans "Date For Activity" %}</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+<div class="row">
+    <div class="col-12">
+        <div class="btn-group" role="group">
+            <span class="ml-1" data-bs-toggle="tooltip" title="{% trans 'Call' %}">
+                <button class="btn btn-xs btn-light btn-rounded open-canvas-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-call-log" aria-controls="offcanvas-call-log">
+                    <i class="dropdown-icon fas fa-phone-volume"></i>
+                </button>
+            </span>
+            <span class="ml-1" data-bs-toggle="tooltip" title="{% trans 'Email' %}">
+                <button class="btn btn-xs btn-light btn-rounded open-canvas-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-send-email" aria-controls="offcanvas-send-email">
+                    <i class="dropdown-icon bi bi-envelope-fill"></i>
+                </button>
+            </span>
+            <span class="ml-1" data-bs-toggle="tooltip" title="{% trans 'Meeting' %}">
+                <button class="btn btn-xs btn-light btn-rounded open-canvas-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-meeting" aria-controls="offcanvas-meeting">
+                    <i class="dropdown-icon bi bi-person-workspace"></i>
+                </button>
+            </span>
         </div>
+    </div>
+    <div class="col-12">
+        <table class="table table-hover nowrap w-100" id="table-timeline"
+               data-url-logs_list="{% url 'OpportunityActivityLogListAPI' %}"
+               data-url-delete-call-log="{% url 'OpportunityCallLogDetailAPI' '0' %}"
+               data-url-delete-email="{% url 'OpportunityEmailDetailAPI' '0' %}"
+               data-url-delete-meeting="{% url 'OpportunityMeetingDetailAPI' '0' %}"
+               data-method="GET">
+            <thead>
+                <tr>
+                    <th>
+                        <button type="button" class="btn btn-xs p-0" id="btn-refresh-activity" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Refresh' %}">
+                            <span class="icon">
+                                <i class="fas fa-redo-alt text-primary"></i>
+                            </span>
+                        </button>
+                    </th>
+                    <th>{% trans "Activity" %}</th>
+                    <th>{% trans 'Subject' %}</th>
+                    <th>{% trans "Employee created" %}</th>
+                    <th>{% trans "Date Created" %}</th>
+                    <th>{% trans "Date For Activity" %}</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 </div>
 

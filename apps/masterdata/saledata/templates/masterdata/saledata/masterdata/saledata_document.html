@@ -88,16 +88,9 @@
     </div>
 {% endblock %}
 {% block modalData %}
-    <form
-            id="form_create_document_type_bidding" data-method="POST"
-            data-url-document-type="{% url "DocumentTypeMasterDataListAPI" %}"
-    >
+    <form id="form_create_document_type_bidding" data-method="POST" data-url-document-type="{% url "DocumentTypeMasterDataListAPI" %}">
         {% csrf_token %}
-        <div
-                class="modal fade" id="modal_document_type_bidding" tabindex="-1" role="dialog"
-                aria-labelledby="exampleModalCenter"
-                aria-hidden="true"
-        >
+        <div class="modal fade" id="modal_document_type_bidding" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -122,36 +115,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button
-                                    type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal"
-                            >{% trans 'Close' %}</button>
-                            <button
-                                    type="submit" form="form_create_document_type_bidding"
-                                    class="btn btn-primary"
-                            >{% trans 'Save' %}</button>
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="submit" form="form_create_document_type_bidding" class="btn btn-primary">{% trans 'Save' %}</button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
-
-    <form
-            id="form_update_document_type_bidding" data-method="PUT"
-            data-url-update-document-type="{% url "DocumentTypeMasterDataDetailAPI" pk=0 %}"
-    >
+    <form id="form_update_document_type_bidding" data-method="PUT" data-url-update-document-type="{% url "DocumentTypeMasterDataDetailAPI" pk=0 %}">
         {% csrf_token %}
-        <div
-                class="modal fade" id="modal_update_document_type_bidding" tabindex="-1" role="dialog"
-                aria-labelledby="exampleModalCenter"
-                aria-hidden="true"
-        >
+        <div class="modal fade" id="modal_update_document_type_bidding" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Biddding Document Type" %}</h5>
+                        <h5 class="modal-title">{% trans "Bidding Document Type" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -172,32 +151,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button
-                                    type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal"
-                            >{% trans 'Close' %}</button>
-                            <button
-                                    type="submit" form="form_update_document_type_bidding"
-                                    class="btn btn-primary"
-                            >{% trans 'Save' %}</button>
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="submit" form="form_update_document_type_bidding" class="btn btn-primary">{% trans 'Save' %}</button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
-
-    <form
-            id="form_create_document_type_consulting" data-method="POST"
-            data-url-document-type="{% url "DocumentTypeMasterDataListAPI" %}"
-    >
+    <form id="form_create_document_type_consulting" data-method="POST" data-url-document-type="{% url "DocumentTypeMasterDataListAPI" %}">
         {% csrf_token %}
-        <div
-                class="modal fade" id="modal_document_type_consulting" tabindex="-1" role="dialog"
-                aria-labelledby="exampleModalCenter"
-                aria-hidden="true"
-        >
+        <div class="modal fade" id="modal_document_type_consulting" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -222,32 +187,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button
-                                    type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal"
-                            >{% trans 'Close' %}</button>
-                            <button
-                                    type="submit" form="form_create_document_type_consulting"
-                                    class="btn btn-primary"
-                            >{% trans 'Save' %}</button>
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="submit" form="form_create_document_type_consulting" class="btn btn-primary">{% trans 'Save' %}</button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
-
-    <form
-            id="form_update_document_type_consulting" data-method="PUT"
-            data-url-update-document-type="{% url "DocumentTypeMasterDataDetailAPI" pk=0 %}"
-    >
+    <form id="form_update_document_type_consulting" data-method="PUT" data-url-update-document-type="{% url "DocumentTypeMasterDataDetailAPI" pk=0 %}">
         {% csrf_token %}
-        <div
-                class="modal fade" id="modal_update_document_type_consulting" tabindex="-1" role="dialog"
-                aria-labelledby="exampleModalCenter"
-                aria-hidden="true"
-        >
+        <div class="modal fade" id="modal_update_document_type_consulting" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -272,16 +223,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button
-                                    type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal"
-                            >{% trans 'Close' %}</button>
-                            <button
-                                    type="submit" form="form_update_document_type_consulting"
-                                    class="btn btn-primary"
-                            >{% trans 'Save' %}</button>
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="submit" form="form_update_document_type_consulting" class="btn btn-primary">{% trans 'Save' %}</button>
                     </div>
                 </div>
             </div>

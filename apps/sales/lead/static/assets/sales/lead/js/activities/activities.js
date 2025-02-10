@@ -83,6 +83,9 @@ class LeadActivitiesHandler{
         }
         this.$activitiesTable.DataTableDefault({
             useDataServer: true,
+            scrollY: '50vh',
+            scrollX: '100vw',
+            scrollCollapse: true,
             ajax: {
                 url: this.$urlScript.data('activity-list-url'),
                 method: 'GET',
@@ -102,15 +105,13 @@ class LeadActivitiesHandler{
             rowIdx: true,
             columns: [
                 {
-                    targets: 0,
-                    width: '1%',
+                    className: 'wrap-text w-5',
                     render: (data, type, row, meta) => {
                         return ``
                     }
                 },
                 {
-                    targets: 1,
-                    width: '15%',
+                    className: 'wrap-text w-15',
                     render: (data, type, row) => {
                         const activityType = {
                             2: 'call',
@@ -121,8 +122,7 @@ class LeadActivitiesHandler{
                     }
                 },
                 {
-                    targets: 2,
-                    width: '20%',
+                    className: 'wrap-text w-20',
                     render: (data, type, row) => {
                         // log type for call: 2
                         // log type for email: 3
@@ -149,23 +149,20 @@ class LeadActivitiesHandler{
                     }
                 },
                 {
-                    targets: 3,
-                    width: '20%',
+                    className: 'wrap-text w-20',
                     render: (data, type, row) => {
                         return `<p class="table-row-application mt-2">${row?.['doc_data']?.['employee_created']}</p>`;
                     }
                 },
                 {
-                    targets: 4,
-                    width: '20%',
+                    className: 'wrap-text w-20',
                     render: (data, type, row) => {
                         let date = $x.fn.reformatData(row?.['date_created'], $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY');
                         return `<p class="table-row-application mt-2">${date}</p>`;
                     }
                 },
                 {
-                    targets: 5,
-                    width: '20%',
+                    className: 'wrap-text w-20',
                     render: (data, type, row) => {
                         const dateMapping = {
                             2: 'call_date',
@@ -334,18 +331,11 @@ class LeadActivitiesHandler{
         $('#offcanvas-detail-send-email #detail-date-input').html('');
     }
 
-    //abstract method
-    loadLeadData(){
-        //logic based on each class
-    }
+    loadLeadData() {}
 
-    setUpFormData(){
-        //logic based on each class
-    }
+    setUpFormData() {}
 
-    clearCreateFormFields(){
-
-    }
+    clearCreateFormFields() {}
 }
 
 class LeadCallActivitiesHandler extends LeadActivitiesHandler{
@@ -644,7 +634,6 @@ class LeadMeetingActivitiesHandler extends LeadActivitiesHandler{
         $('.offcanvas-backdrop').remove()
     }
 }
-
 
 $(document).ready(function () {
     // make sure data lead detail is loaded to scriptElement

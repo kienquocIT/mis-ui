@@ -8221,10 +8221,6 @@ msgid "Source"
 msgstr "Nguồn"
 
 #
-msgid "Lead source"
-msgstr "Nguồn lead"
-
-#
 msgid "Lead status"
 msgstr "Trạng thái lead"
 
@@ -8241,8 +8237,8 @@ msgid "Lead create"
 msgstr "Tạo mới lead"
 
 #
-msgid "Qualify Lead"
-msgstr "Đánh giá lead"
+msgid "Qualify"
+msgstr "Đánh giá"
 
 #
 msgid "Convert to a new Contact"
@@ -10557,3 +10553,15 @@ msgstr "Loại tài liệu"
 #
 msgid "Master Data Document"
 msgstr "Dữ liệu tài liệu chùng chung"
+
+#
+msgid "Activities"
+msgstr "Hoạt động"
+
+#
+msgid "Convert to"
+msgstr "Chuyển đổi thành"
+
+#
+msgid "Go to this Stage"
+msgstr "Nhảy đến trạng thái này"

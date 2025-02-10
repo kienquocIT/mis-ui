@@ -68,13 +68,13 @@ $(document).ready(function() {
                         if (data) {
                             let data_list = resp.data['default_account_definition_list'] ? resp.data['default_account_definition_list'] : []
 
-                            if (data_param?.['type'] === 0) {
+                            if (data_param?.['default_account_definition_type'] === 0) {
                                 sale_table_data.text(JSON.stringify(data_list))
                             }
-                            else if (data_param?.['type'] === 1) {
+                            else if (data_param?.['default_account_definition_type'] === 1) {
                                 purchasing_table_data.text(JSON.stringify(data_list))
                             }
-                            else if (data_param?.['type'] === 2) {
+                            else if (data_param?.['default_account_definition_type'] === 2) {
                                 inventory_table_data.text(JSON.stringify(data_list))
                             }
 
@@ -100,17 +100,17 @@ $(document).ready(function() {
 
     $('#btn-sale').on('click', function () {
         let data_list = sale_table_data.text() ? JSON.parse(sale_table_data.text()) : []
-        loadDefinitionTable({'type': 0}, data_list)
+        loadDefinitionTable({'default_account_definition_type': 0}, data_list)
     })
 
     $('#btn-purchasing').on('click', function () {
         let data_list = purchasing_table_data.text() ? JSON.parse(purchasing_table_data.text()) : []
-        loadDefinitionTable({'type': 1}, data_list)
+        loadDefinitionTable({'default_account_definition_type': 1}, data_list)
     })
 
     $('#btn-inventory').on('click', function () {
         let data_list = inventory_table_data.text() ? JSON.parse(inventory_table_data.text()) : []
-        loadDefinitionTable({'type': 2}, data_list)
+        loadDefinitionTable({'default_account_definition_type': 2}, data_list)
     })
 
 });

@@ -1668,7 +1668,6 @@ class GRDataTableHandle {
                                     <input 
                                         type="radio" 
                                         class="form-check-input table-row-checkbox"
-                                        name="row-checkbox"
                                         id="wh-${row?.['warehouse_id'].replace(/-/g, "")}"
                                         data-id="${row?.['warehouse_id']}" 
                                     >

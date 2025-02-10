@@ -63,8 +63,8 @@
                                                 type="button"
                                                 class="btn btn-icon btn-outline-secondary btn-floating btn-xs"
                                                 id="btn-purchase-request-modal"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#purchaseRequestModalCenter"
+                                                data-bs-toggle="offcanvas"
+                                                data-bs-target="#purchaseRequestCanvas"
                                             ><i class="fas fa-pen"></i></button>
                                         </div>
                                     </div>
@@ -335,105 +335,102 @@
 
 
         <div class="modal-area">
-            <div class="modal fade" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title ml-4"><b>{% trans 'Select items from purchase request' %}</b></h5>
-                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row mb-1">
-                            <div class="col-4"></div>
-                            <div class="col-8">
-                                <div class="form-check form-check-lg">
-                                    <input type="checkbox" class="form-check-input" id="merge-same-product">
-                                    <label
-                                        class="form-check-label"
-                                        for="merge-same-product"
-                                    >{% trans 'Merge same product in 1 line, convert to reference unit if there is more 1 UOM' %}</label>
-                                </div>
+
+            <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="purchaseRequestCanvas" aria-labelledby="offcanvasTopLabel">
+                <div class="modal-header">
+                    <h5><b>{% trans 'Select items from purchase request' %}</b></h5>
+                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div class="row mb-1">
+                        <div class="col-4"></div>
+                        <div class="col-8">
+                            <div class="form-check form-check-lg">
+                                <input type="checkbox" class="form-check-input" id="merge-same-product">
+                                <label
+                                    class="form-check-label"
+                                    for="merge-same-product"
+                                >{% trans 'Merge same product in 1 line, convert to reference unit if there is more 1 UOM' %}</label>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-4 border-right">
-                                <div data-simplebar class="h-700p nicescroll-bar">
+                    </div>
+                    <div class="row">
+                        <div class="col-4 border-right">
+                            <div data-simplebar class="h-700p nicescroll-bar">
+                                <table
+                                    id="datable-purchase-request"
+                                    class="table nowrap w-100"
+                                    data-url="{% url "PurchaseRequestSaleListAPI" %}"
+                                    data-method="GET"
+                                >
+                                    <thead>
+                                    <tr class="bg-light">
+                                        <th class="w-5"></th>
+                                        <th class="w-80">{% trans 'Purchase request' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div data-simplebar class="h-700p nicescroll-bar" id="sroll-datable-purchase-request-product">
+                                <div id="table-purchase-request-product-area">
                                     <table
-                                        id="datable-purchase-request"
+                                        id="datable-purchase-request-product"
                                         class="table nowrap w-100"
-                                        data-url="{% url "PurchaseRequestSaleListAPI" %}"
+                                        data-url="{% url 'PurchaseRequestProductListAPI' %}"
                                         data-method="GET"
                                     >
                                         <thead>
                                         <tr class="bg-light">
-                                            <th class="w-5"></th>
-                                            <th class="w-80">{% trans 'Purchase request' %}</th>
+                                            <th></th>
+                                            <th>{% trans 'Product' %}</th>
+                                            <th>{% trans 'PR code' %}</th>
+                                            <th>{% trans 'UOM' %}</th>
+                                            <th>{% trans 'Quantity' %}</th>
+                                            <th>{% trans 'Remain (PO)' %}</th>
+                                            <th>{% trans 'Quantity order' %}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
-                            <div class="col-8">
-                                <div data-simplebar class="h-700p nicescroll-bar" id="sroll-datable-purchase-request-product">
-                                    <div id="table-purchase-request-product-area">
-                                        <table
-                                            id="datable-purchase-request-product"
-                                            class="table nowrap w-100"
-                                            data-url="{% url 'PurchaseRequestProductListAPI' %}"
-                                            data-method="GET"
-                                        >
-                                            <thead>
-                                            <tr class="bg-light">
-                                                <th></th>
-                                                <th>{% trans 'Product' %}</th>
-                                                <th>{% trans 'PR code' %}</th>
-                                                <th>{% trans 'UOM' %}</th>
-                                                <th>{% trans 'Quantity' %}</th>
-                                                <th>{% trans 'Remain (PO)' %}</th>
-                                                <th>{% trans 'Quantity order' %}</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
 
-                                    <div id="table-purchase-request-product-merge-area" hidden>
-                                        <table
-                                            id="datable-purchase-request-product-merge"
-                                            class="table nowrap w-100"
-                                            data-url="{% url 'SaleOrderListAPI' %}"
-                                            data-method="get"
-                                        >
-                                            <thead>
-                                            <tr class="bg-light">
-                                                <th></th>
-                                                <th>{% trans 'Product' %}</th>
-                                                <th>{% trans 'PR code' %}</th>
-                                                <th>{% trans 'UOM' %}</th>
-                                                <th>{% trans 'Quantity' %}</th>
-                                                <th>{% trans 'Remain (PO)' %}</th>
-                                                <th>{% trans 'Quantity order' %}</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
+                                <div id="table-purchase-request-product-merge-area" hidden>
+                                    <table
+                                        id="datable-purchase-request-product-merge"
+                                        class="table nowrap w-100"
+                                        data-url="{% url 'SaleOrderListAPI' %}"
+                                        data-method="get"
+                                    >
+                                        <thead>
+                                        <tr class="bg-light">
+                                            <th></th>
+                                            <th>{% trans 'Product' %}</th>
+                                            <th>{% trans 'PR code' %}</th>
+                                            <th>{% trans 'UOM' %}</th>
+                                            <th>{% trans 'Quantity' %}</th>
+                                            <th>{% trans 'Remain (PO)' %}</th>
+                                            <th>{% trans 'Quantity order' %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
                                 </div>
+
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-                        <button type="button" class="btn btn-primary" id="btn-confirm-add-purchase-request" data-bs-dismiss="modal">{% trans 'Next' %}</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+                    <button type="button" class="btn btn-primary" id="btn-confirm-add-purchase-request" data-bs-dismiss="offcanvas">{% trans 'Save' %}</button>
                 </div>
             </div>
-        </div>
 
             <div class="modal fade" id="purchaseQuotationModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseQuotationModalCenter" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl" role="document">

@@ -10545,3 +10545,15 @@ msgstr "Thêm tài khoản cấp dưới"
 #
 msgid "Select an account for these actions"
 msgstr "Chọn một tài khoản cho các hành động này"
+
+#
+msgid "This group is to manage Units of measure not created from Blow in one place. For example: Units of measure imported from excel file in Quotation function, ..."
+msgstr "Nhóm này để quản lý các đơn vị tính không được tạo từ Blow về một chỗ. Ví dụ: các Đơn vị tính nhập từ file excel trong chức năng Báo Giá, ..."
+
+#
+msgid "Document Type"
+msgstr "Loại tài liệu"
+
+#
+msgid "Master Data Document"
+msgstr "Dữ liệu tài liệu chùng chung"

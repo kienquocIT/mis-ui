@@ -70,9 +70,9 @@ $(document).ready(function () {
                     className: 'wrap-text w-25',
                     render: (data, type, row) => {
                         if (!row?.['is_default']) {
-                            return `<span class="text-primary"><b>${data}</b></span></a>`
+                            return `<span class="text-primary">${data}</span></a>`
                         } else {
-                            return `<span class="text-red"><b></b>${data}</span></a>`
+                            return `<span class="text-muted">${data}</span></a>`
                         }
                     }
                 },
@@ -124,7 +124,7 @@ $(document).ready(function () {
                     className: 'wrap-text w-10',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
-                            return `<span class="badge badge-secondary w-70">${row?.['code']}</span>`
+                            return `<span class="badge badge-light w-70">${row?.['code']}</span>`
                         } else {
                             return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
                         }

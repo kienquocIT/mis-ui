@@ -37,8 +37,7 @@
                 </li>
             </ul>
         </div>
-        <div class="col-12 col-md-1 col-lg-1"></div>
-        <div class="col-12 col-md-9 col-lg-9">
+        <div class="col-12 col-md-10 col-lg-10">
             <div class="tab-content">
                 <div class="tab-pane fade show active lookup-data" id="section_document_type_bidding">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#modal_document_type_bidding">
@@ -87,6 +86,8 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block modalData %}
     <form
             id="form_create_document_type_bidding" data-method="POST"
             data-url-document-type="{% url "DocumentTypeMasterDataListAPI" %}"
@@ -100,7 +101,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Document Type" %}</h5>
+                        <h5 class="modal-title">{% trans "Bidding Document Type" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -110,14 +111,14 @@
                             <div class="col-12 col-lg-4 col-md-6">
                                 <div class="form-group">
                                     <label for="inp_code" class="form-label required">{% trans "Code" %}</label>
-                                    <input id="inp_code" required class="form-control" type="text" name="code" placeholder="CODE01"
+                                    <input id="inp_code" required class="form-control" type="text" name="code"
                                            oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-8 col-md-6">
                                 <div class="form-group">
                                     <label  for="inp_name" class="form-label required">{% trans "Name" %}</label>
-                                    <input id="inp_name" required class="form-control" type="text" name="title" placeholder="Input name">
+                                    <input id="inp_name" required class="form-control" type="text" name="title">
                                 </div>
                             </div>
                         </div>
@@ -150,7 +151,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Document Type" %}</h5>
+                        <h5 class="modal-title">{% trans "Biddding Document Type" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -160,14 +161,14 @@
                             <div class="col-12 col-lg-4 col-md-6">
                                 <div class="form-group">
                                     <label for="inp_code" class="form-label required">{% trans "Code" %}</label>
-                                    <input id="inp_code" required class="form-control form-control-line" type="text" name="code" placeholder="CODE01" readonly
+                                    <input id="inp_code" required class="form-control form-control-line" type="text" name="code" readonly
                                            oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-8 col-md-6">
                                 <div class="form-group">
                                     <label  for="inp_name" class="form-label required">{% trans "Name" %}</label>
-                                    <input id="inp_name" required class="form-control" type="text" name="title" placeholder="Input name">
+                                    <input id="inp_name" required class="form-control" type="text" name="title">
                                 </div>
                             </div>
                         </div>
@@ -200,7 +201,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Document Type" %}</h5>
+                        <h5 class="modal-title">{% trans "Consulting Document Type" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -210,14 +211,14 @@
                             <div class="col-12 col-lg-4 col-md-6">
                                 <div class="form-group">
                                     <label for="inp_code" class="form-label required">{% trans "Code" %}</label>
-                                    <input id="inp_code" required class="form-control" type="text" name="code" placeholder="CODE01"
+                                    <input id="inp_code" required class="form-control" type="text" name="code"
                                            oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-8 col-md-6">
                                 <div class="form-group">
                                     <label  for="inp_name" class="form-label required">{% trans "Name" %}</label>
-                                    <input id="inp_name" required class="form-control" type="text" name="title" placeholder="Input name">
+                                    <input id="inp_name" required class="form-control" type="text" name="title">
                                 </div>
                             </div>
                         </div>
@@ -250,7 +251,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Document Type" %}</h5>
+                        <h5 class="modal-title">{% trans "Consulting Document Type" %}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -260,14 +261,14 @@
                             <div class="col-12 col-lg-4 col-md-6">
                                 <div class="form-group">
                                     <label for="inp_code" class="form-label required">{% trans "Code" %}</label>
-                                    <input id="inp_code" required class="form-control form-control-line" type="text" name="code" placeholder="CODE01" readonly
+                                    <input id="inp_code" required class="form-control form-control-line" type="text" name="code" readonly
                                            oninput="this.value=this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="col-12 col-lg-8 col-md-6">
                                 <div class="form-group">
                                     <label  for="inp_name" class="form-label required">{% trans "Name" %}</label>
-                                    <input id="inp_name" required class="form-control" type="text" name="title" placeholder="Input name">
+                                    <input id="inp_name" required class="form-control" type="text" name="title">
                                 </div>
                             </div>
                         </div>

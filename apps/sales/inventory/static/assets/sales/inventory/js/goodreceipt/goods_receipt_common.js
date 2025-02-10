@@ -1526,7 +1526,7 @@ class GRDataTableHandle {
                             targetID = row?.['production_order_id'];
                         }
                         if (targetID) {
-                            return `<div class="form-check form-check-lg">
+                            return `<div class="form-check form-check-lg d-flex align-items-center">
                                     <input 
                                         type="radio" 
                                         class="form-check-input table-row-checkbox" 
@@ -2085,7 +2085,7 @@ class GRDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-edit-product-good-receipt').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-edit-product-good-receipt" data-bs-toggle="modal" data-bs-target="#productModalCenter">
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-edit-product-good-receipt" data-bs-toggle="offcanvas" data-bs-target="#productCanvas">
                                     <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>${GRLoadDataHandle.transEle.attr('data-edit')}</span></span>
                                 </button>`);
                 textFilter$.append(

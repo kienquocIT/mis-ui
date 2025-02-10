@@ -158,7 +158,7 @@ $(function () {
             deleteRowGR(this.closest('tr'), GRDataTableHandle.tableSerial);
         });
 
-        $('#productModalCenter').on('change', '.validated-number', function () {
+        $('#productCanvas').on('change', '.validated-number', function () {
             GRValidateHandle.validateNumber(this);
         });
 

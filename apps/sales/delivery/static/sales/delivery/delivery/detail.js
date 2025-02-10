@@ -9,7 +9,8 @@ $(async function () {
     let $tableProductLeased = $('#productLeased');
     let $tableLot = $('#datable-delivery-wh-lot');
     let $tableSerial = $('#datable-delivery-wh-serial');
-    let $canvasPW = $('#warehouseStockCanvas')
+    let $canvasPW = $('#warehouseStockCanvas');
+    let $btnSave = $('#save-stock');
 
     let dataCompanyConfig = await DocumentControl.getCompanyConfig();
     // prod tab handle
@@ -42,7 +43,7 @@ $(async function () {
             return this.wareHouseList
         }
 
-        contentModalHandle(idx, config, prod_data) {
+        contentCanvasHandle(config, prod_data) {
             const _this = this
             let table = $('#productStockDetail');
             let url = $url.attr('data-product-warehouse');
@@ -54,9 +55,10 @@ $(async function () {
                 $tableProductLeased.DataTable().rows.add(prod_data?.['product_quantity_leased_data'] ? prod_data?.['product_quantity_leased_data'] : []).draw();
             }
             $tableProductNew.DataTable().clear().draw();
-            $tableProductNew.DataTable().rows.add([targetItemData]).draw();
+            $tableProductNew.DataTable().rows.add([{'product_id': targetItemData?.['id'], 'product_data': targetItemData, 'product_quantity_new': prod_data?.['product_quantity_new']}]).draw();
+            prodTable.loadEventRadio($('#scroll-new-leased-product'));
 
-
+            // load tên SP cho canvas header
             let titleMdl = $canvasPW[0].querySelector('.title-mdl');
             if (titleMdl) {
                 $(titleMdl).empty();
@@ -64,9 +66,119 @@ $(async function () {
             }
             let $eleUndelivered = $('#undelivered');
             $eleUndelivered.empty().html(`${prod_data?.['remaining_quantity']}`);
+
+            // call ajax product warehouse
+            prodTable.loadCallAjaxPW(config, prod_data, targetItemData);
+
+            // let dataParam = {'product_id': targetItemData?.['id']};
+            // let keyResp = 'warehouse_products_list';
+            // let dataRegisConfig = prodTable.getRegisConfig();
+            // let isRegis = dataRegisConfig?.['isRegis'];
+            // let dataSO = dataRegisConfig?.['dataSO'];
+            // if (isRegis === true && dataSO) {
+            //     url = $url.attr('data-product-regis');
+            //     dataParam = {
+            //         'so_item__sale_order_id': dataSO?.['id'],
+            //         'product_id': targetItemData?.['id'],
+            //     };
+            //     keyResp = 'regis_borrow_list';
+            // }
+            // $.fn.callAjax2({
+            //     'url': url,
+            //     'method': 'get',
+            //     'data': dataParam,
+            // }).then((req) => {
+            //     const isKey = `${targetItemData?.['id']}.${prod_data?.['uom_data']?.['id']}`
+            //     let temp = _this.getWarehouseList
+            //     const res = $.fn.switcherResp(req);
+            //     let ResData = res?.[keyResp];
+            //     let isData = ResData;
+            //     temp[isKey] = isData;
+            //     _this.setWarehouseList = temp;
+            //
+            //     table.DataTable().destroy();
+            //     if (keyResp === 'regis_borrow_list') {
+            //         if (ResData.length > 0) {
+            //             isData = ResData[0];
+            //             temp[isKey] = isData?.['regis_data'];
+            //             _this.setWarehouseList = temp;
+            //
+            //             let dataRegis = prodTable.setupDataPW(isData?.['regis_data'], prod_data, config, 0);
+            //             for (let borrow_data of isData?.['borrow_data']) {
+            //                 let dataBorrow = prodTable.setupDataPW(borrow_data?.['regis_data'], prod_data, config, 0);
+            //                 dataRegis = dataRegis.concat(dataBorrow);
+            //             }
+            //             for (let borrow_data of isData?.['borrow_data_general_stock']) {
+            //                 let dataBorrow = prodTable.setupDataPW(borrow_data?.['regis_data'], prod_data, config, 1);
+            //                 dataRegis = dataRegis.concat(dataBorrow);
+            //             }
+            //             prodTable.dataTablePW(dataRegis, config);
+            //         }
+            //     } else {
+            //         let dataPW = prodTable.setupDataPW(isData, prod_data, config, 0);
+            //         prodTable.dataTablePW(dataPW, config);
+            //     }
+            //
+            //     let scrollLot = $('#scroll-table-lot');
+            //     let scrollSerial = $('#scroll-table-serial');
+            //     scrollLot[0].setAttribute('hidden', 'true');
+            //     scrollSerial[0].setAttribute('hidden', 'true');
+            //     if ([1, 2].includes(targetItemData?.['general_traceability_method'])) {
+            //         if (scrollLot && scrollSerial && scrollLot.length > 0 && scrollSerial.length > 0) {
+            //             if (targetItemData?.['general_traceability_method'] === 1) {
+            //                 scrollLot[0].removeAttribute('hidden');
+            //                 prodTable.dataTableTableLot();
+            //             }
+            //             if (targetItemData?.['general_traceability_method'] === 2) {
+            //                 scrollSerial[0].removeAttribute('hidden');
+            //                 prodTable.dataTableTableSerial();
+            //             }
+            //         }
+            //     }
+            //     $canvasPW.offcanvas('show');
+            //     $('#save-stock').off().on('click', function () {
+            //         let isSelected = table.DataTable().data().toArray()
+            //         let temp_picked = 0
+            //         let sub_delivery_data = []
+            //         for (let item of isSelected) {
+            //             const picked = parseFloat(item?.['picked'])
+            //             if (picked > 0) {
+            //                 sub_delivery_data.push({
+            //                     'sale_order': item?.['sale_order']?.['id'] ? item?.['sale_order']?.['id'] : null,
+            //                     'sale_order_data': item?.['sale_order'] ? item?.['sale_order'] : {},
+            //                     'lease_order': item?.['lease_order']?.['id'] ? item?.['lease_order']?.['id'] : null,
+            //                     'lease_order_data': item?.['lease_order'] ? item?.['lease_order'] : {},
+            //                     'warehouse': item?.['warehouse']?.['id'],
+            //                     'warehouse_data': item?.['warehouse'],
+            //                     'uom': prod_data?.['uom_data']?.['id'],
+            //                     'uom_data': prod_data?.['uom_data'],
+            //                     'stock': picked,
+            //                     'lot_data': item?.['lot_data'] ? item?.['lot_data'] : [],
+            //                     'serial_data': item?.['serial_data'] ? item?.['serial_data'] : [],
+            //                 })
+            //                 temp_picked += picked
+            //             }
+            //         }
+            //         if (temp_picked > 0) {
+            //             // lấy hàng từ popup warehouse add vào danh sách product detail
+            //             let tableTargetData = _this.getProdList
+            //             tableTargetData[idx]['picked_quantity'] = temp_picked
+            //             tableTargetData[idx]['delivery_data'] = sub_delivery_data
+            //             _this.setProdList = tableTargetData
+            //             let targetTable = $('#dtbPickingProductList')
+            //             targetTable.DataTable().row(idx).data(tableTargetData[idx]).draw()
+            //         }
+            //         $canvasPW.offcanvas('hide');
+            //     })
+            // });
+        };
+
+        loadCallAjaxPW(config, prod_data, targetItemData) {
+            const _this = this;
+            let table = $('#productStockDetail');
+            let url = $url.attr('data-product-warehouse');
             let dataParam = {'product_id': targetItemData?.['id']};
             let keyResp = 'warehouse_products_list';
-
             let dataRegisConfig = prodTable.getRegisConfig();
             let isRegis = dataRegisConfig?.['isRegis'];
             let dataSO = dataRegisConfig?.['dataSO'];
@@ -131,44 +243,47 @@ $(async function () {
                     }
                 }
                 $canvasPW.offcanvas('show');
-                $('#save-stock').off().on('click', function () {
-                    let isSelected = table.DataTable().data().toArray()
-                    let temp_picked = 0
-                    let sub_delivery_data = []
-                    for (let item of isSelected) {
-                        const picked = parseFloat(item?.['picked'])
-                        if (picked > 0) {
-                            sub_delivery_data.push({
-                                'sale_order': item?.['sale_order']?.['id'] ? item?.['sale_order']?.['id'] : null,
-                                'sale_order_data': item?.['sale_order'] ? item?.['sale_order'] : {},
-                                'lease_order': item?.['lease_order']?.['id'] ? item?.['lease_order']?.['id'] : null,
-                                'lease_order_data': item?.['lease_order'] ? item?.['lease_order'] : {},
-                                'warehouse': item?.['warehouse']?.['id'],
-                                'warehouse_data': item?.['warehouse'],
-                                'uom': prod_data?.['uom_data']?.['id'],
-                                'uom_data': prod_data?.['uom_data'],
-                                'stock': picked,
-                                'lot_data': item?.['lot_data'] ? item?.['lot_data'] : [],
-                                'serial_data': item?.['serial_data'] ? item?.['serial_data'] : [],
-                            })
-                            temp_picked += picked
+                $btnSave.off().on('click', function () {
+                    if ($btnSave.attr('data-target')) {
+                        let idx = parseInt($btnSave.attr('data-target'));
+                        let isSelected = table.DataTable().data().toArray();
+                        let temp_picked = 0;
+                        let sub_delivery_data = [];
+                        for (let item of isSelected) {
+                            const picked = parseFloat(item?.['picked'])
+                            if (picked > 0) {
+                                sub_delivery_data.push({
+                                    'sale_order': item?.['sale_order']?.['id'] ? item?.['sale_order']?.['id'] : null,
+                                    'sale_order_data': item?.['sale_order'] ? item?.['sale_order'] : {},
+                                    'lease_order': item?.['lease_order']?.['id'] ? item?.['lease_order']?.['id'] : null,
+                                    'lease_order_data': item?.['lease_order'] ? item?.['lease_order'] : {},
+                                    'warehouse': item?.['warehouse']?.['id'],
+                                    'warehouse_data': item?.['warehouse'],
+                                    'uom': prod_data?.['uom_data']?.['id'],
+                                    'uom_data': prod_data?.['uom_data'],
+                                    'stock': picked,
+                                    'lot_data': item?.['lot_data'] ? item?.['lot_data'] : [],
+                                    'serial_data': item?.['serial_data'] ? item?.['serial_data'] : [],
+                                })
+                                temp_picked += picked
+                            }
                         }
+                        if (temp_picked > 0) {
+                            // lấy hàng từ popup warehouse add vào danh sách product detail
+                            let tableTargetData = _this.getProdList;
+                            tableTargetData[idx]['picked_quantity'] = temp_picked;
+                            tableTargetData[idx]['delivery_data'] = sub_delivery_data;
+                            _this.setProdList = tableTargetData;
+                            let targetTable = $('#dtbPickingProductList');
+                            targetTable.DataTable().row(idx).data(tableTargetData[idx]).draw();
+                        }
+                        $canvasPW.offcanvas('hide');
                     }
-                    if (temp_picked > 0) {
-                        // lấy hàng từ popup warehouse add vào danh sách product detail
-                        let tableTargetData = _this.getProdList
-                        tableTargetData[idx]['picked_quantity'] = temp_picked
-                        tableTargetData[idx]['delivery_data'] = sub_delivery_data
-                        _this.setProdList = tableTargetData
-                        let targetTable = $('#dtbPickingProductList')
-                        targetTable.DataTable().row(idx).data(tableTargetData[idx]).draw()
-                    }
-                    $canvasPW.offcanvas('hide');
                 })
-            })
+            });
         };
 
-        loadProductWHModal(pwh, prod_data) {
+        loadPWData(pwh, prod_data) {
             for (let val of prod_data?.['delivery_data']) {
                 let check = false;
                 if (val?.['warehouse'] === pwh?.['warehouse']?.['id']) {
@@ -332,7 +447,8 @@ $(async function () {
                     $(`button.select-prod`, row).off().on('click', function (e) {
                         e.preventDefault()
                         e.stopPropagation()
-                        _this.contentModalHandle(index, delivery_config, data)
+                        $btnSave.attr('data-target', index);
+                        _this.contentCanvasHandle(delivery_config, data)
                     })
                     $(`input.services_input`, row).off().on('change', function () {
                         if (parseFloat(this.value) > data.remaining_quantity){
@@ -510,7 +626,7 @@ $(async function () {
                         pwh['stock_amount'] = pwh?.['stock_amount'] * finalRate;
                         pwh['available_stock'] = pwh?.['available_stock'] * finalRate;
                         if (prod_data?.['delivery_data']) {
-                            prodTable.loadProductWHModal(pwh, prod_data);
+                            prodTable.loadPWData(pwh, prod_data);
                         }
                     }
                     if ((config?.['is_picking'] && config?.['is_partial_ship']) && prod_data?.['delivery_data']) { // Trường hợp has_picking_many_delivery
@@ -519,7 +635,7 @@ $(async function () {
                         pwh['stock_amount'] = pwh?.['picked_ready'] * finalRate;
                         pwh['available_stock'] = pwh?.['available_picked'] * finalRate;
                         if (prod_data?.['ready_quantity'] > 0) {
-                            prodTable.loadProductWHModal(pwh, prod_data);
+                            prodTable.loadPWData(pwh, prod_data);
                         }
                         // change column name stock -> picked
                         if (!$table.hasClass('dataTable')) {
@@ -533,7 +649,7 @@ $(async function () {
                     pwh['stock_amount'] = pwh?.['stock_amount'] * finalRate;
                     pwh['available_stock'] = pwh?.['available_stock'] * finalRate;
                     if (prod_data?.['delivery_data']) {
-                        prodTable.loadProductWHModal(pwh, prod_data);
+                        prodTable.loadPWData(pwh, prod_data);
                     }
                 }
                 baseData.push(pwh);
@@ -1053,7 +1169,12 @@ $(async function () {
                     },
                 ],
                 rowCallback: function (row, data, index) {
+                    let checkEle = row.querySelector('.table-row-checkbox');
                     let itemEle = row.querySelector('.table-row-item');
+                    if (checkEle) {
+                        
+                    }
+
                     if (itemEle) {
                         let dataS2 = [];
                         if (data?.['product_data']) {
@@ -1270,7 +1391,7 @@ $(async function () {
                                     disabled = 'disabled';
                                 }
                             }
-                            return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row?.['picked'] ? row?.['picked'] : 0}" ${disabled}>`;
+                            return `<input class="form-control table-row-picked text-black" type="number" id="warehouse_stock-${meta.row}" value="${row?.['picked'] ? row?.['picked'] : 0}" ${disabled}>`;
                         }
                     },
                 ],

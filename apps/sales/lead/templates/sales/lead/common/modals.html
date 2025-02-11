@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="modal fade" id="modalconvert" tabindex="-1" role="dialog" aria-labelledby="modalconvert" aria-hidden="true">
-	<div class="modal-dialog" style="min-width: 75%;" role="document">
+	<div class="modal-dialog" style="min-width: 60%;" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">{% trans 'Convert to' %}</h5>
@@ -11,21 +11,33 @@
 			</div>
 			<div class="modal-body">
                 <div class="row">
-                    <div class="col-12 col-lg-8">
+                    <div class="col-12 col-lg-4">
                         <div class="row">
-                            <div class="col-12 mt-3">
+                            <div class="col-12">
                                 <a href="#" data-url="{% url 'ContactCreateAPI' %}" data-url-detail-contact="{% url 'ContactDetail' '0' %}" id="convert-to-contact-btn">
-                                    <button class="btn btn-sm btn-outline-blue" type="button">{% trans 'Convert to a new Contact' %}</button>
+                                    <button class="btn btn-sm btn-outline-blue" type="button">
+                                        <span>
+                                            <span class="icon">
+                                                <span class="feather-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
+                                            </span>
+                                            <span>{% trans 'Convert to a new Contact' %}</span>
+                                        </span>
+                                    </button>
                                 </a>
                             </div>
-                            <div class="col-12 mt-3">
-                                <button id="btn-opp" class="btn btn-sm btn-outline-blue" type="button" data-bs-toggle="modal" data-bs-target="#convert_opp_config">
-                                    {% trans 'Convert to Opportunity' %}
+                            <div class="col-12 mt-1">
+                                <button class="btn btn-sm btn-outline-blue" type="button" data-bs-toggle="modal" data-bs-target="#convert_opp_config">
+                                    <span>
+                                        <span class="icon">
+                                            <span class="feather-icon"><i class="far fa-lightbulb"></i></span>
+                                        </span>
+                                        <span>{% trans 'Convert to Opportunity' %}</span>
+                                    </span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-lg-4">
+                    <div class="col-12 col-lg-8">
                         <span id="related-opps-span">{% trans 'Related opps' %}:</span>
                         <div class="mt-2 mb-2" id="related-opps-table" style="max-height: 50vh; overflow-y: auto;"></div>
                         <span id="related-leads-span">{% trans 'Related leads' %}:</span>

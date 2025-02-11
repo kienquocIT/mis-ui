@@ -96,7 +96,7 @@ $(document).ready(function() {
         }
     }
 
-    loadDefinitionTable({'type': 0})
+    loadDefinitionTable({'default_account_definition_type': 0})
 
     $('#btn-sale').on('click', function () {
         let data_list = sale_table_data.text() ? JSON.parse(sale_table_data.text()) : []

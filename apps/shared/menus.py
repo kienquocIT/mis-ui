@@ -818,6 +818,15 @@ class MenusFinancials:
             # ),
         ],
     )
+    ASSET = MenuCommon(
+        name='Assets', code='menu_asset', view_name='', icon='<i class="fas fa-warehouse"></i>',
+        child=[
+            MenuCommon(
+                name='Fixed assets', code='menu_fixed_asset', view_name='FixedAssetList',
+                icon='<i class="fas fa-warehouse"></i>',
+            ),
+        ],
+    )
     GENERAL = MenuCommon(
         name='General', code='menu_general', view_name='', icon='<i class="bi bi-link"></i>',
         child=[
@@ -929,6 +938,7 @@ class SpaceItem:
             menus=[
                 MenusFinancials.HOME,
                 MenusFinancials.CASHFLOW,
+                MenusFinancials.ASSET,
                 MenusFinancials.GENERAL,
             ]
         ),
@@ -1069,7 +1079,7 @@ class SpaceGroup:
             SpaceItem.mapping['crm'],
             # SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
-            # SpaceItem.mapping['financials'],
+            SpaceItem.mapping['financials'],
             SpaceItem.mapping['forms'],
             SpaceItem.mapping['hrm'],
             SpaceItem.mapping['inventory'],

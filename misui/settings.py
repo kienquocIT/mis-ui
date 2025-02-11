@@ -128,7 +128,8 @@ INSTALLED_APPS = \
         'apps.hrm.employee'
     ] + [
         'apps.sales.financialcashflow',
-        'apps.sales.reconciliation'
+        'apps.sales.reconciliation',
+        'apps.sales.fixedasset'
     ]
 
 INSTALLED_APPS += [

@@ -262,7 +262,7 @@ $(document).ready(function () {
                 {
                     className: 'wrap-text text-center w-10',
                     render: (data, type, row) => {
-                        return `<a class="btn btn-icon btn-detail-stage" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#modalStageCondition"><span class="btn-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-code-branch"></i></span></span></a>`
+                        return `<a class="btn btn-icon btn-detail-stage" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#modalStageCondition"><span class="btn-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-sitemap"></i></span></span></a>`
                     }
                 },
                 {

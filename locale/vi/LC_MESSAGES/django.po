@@ -10589,3 +10589,7 @@ msgstr "Thêm chỉ tiêu mới"
 #
 msgid "Logical operator"
 msgstr "Toán tử logic"
+
+#
+msgid "You can not delete default stages!"
+msgstr "Bạn không thể xóa các giai đoạn mặc định!"

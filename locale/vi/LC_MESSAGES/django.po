@@ -1008,7 +1008,7 @@ msgstr "Hoàn tất"
 
 #
 msgid "Restore default"
-msgstr "khôi phục mặc định"
+msgstr "Khôi phục mặc định"
 
 #
 msgid "Workflow detail"
@@ -3514,10 +3514,6 @@ msgstr "Người dùng tự chọn giai đoạn của cơ hội kinh doanh"
 #
 msgid "User can input win rate of Opportunity"
 msgstr "Người dùng có thể tự nhập tỷ lệ thành công của cơ hội kinh doanh"
-
-#
-msgid "Add Factor"
-msgstr "Thêm yếu tố"
 
 #
 msgid "Factors that customer decision to buy your product"
@@ -10565,3 +10561,31 @@ msgstr "Chuyển đổi thành"
 #
 msgid "Go to this Stage"
 msgstr "Nhảy đến trạng thái này"
+
+#
+msgid "Add Stage"
+msgstr "Thêm giai đoạn"
+
+#
+msgid "The system will restore the initial configuration stages"
+msgstr "Hệ thống sẽ khôi phục các giai đoạn về cài đặt ban đầu"
+
+#
+msgid "Decision factor"
+msgstr "Yếu tố quyết định"
+
+#
+msgid "Create New Factor"
+msgstr "Tạo yếu tố mới"
+
+#
+msgid "Condition"
+msgstr "Điều kiện"
+
+#
+msgid "Create New Stage"
+msgstr "Thêm chỉ tiêu mới"
+
+#
+msgid "Logical operator"
+msgstr "Toán tử logic"

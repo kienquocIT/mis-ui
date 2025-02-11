@@ -388,8 +388,7 @@ class OpportunityLoadDetail {
         $.fn.compareStatusShowPageAction(opportunity_detail);
         // console.log(opportunity_detail)
         let stage_obj = await OpportunityLoadDetail.loadStage(opportunity_detail.stage, opportunity_detail.is_close_lost, opportunity_detail.is_deal_close);
-        let ele_header = $('#header-title');
-        ele_header.text(opportunity_detail.title);
+        $('#header-title').text(opportunity_detail.title);
         $('#span-code').text(opportunity_detail.code);
         $('#rangeInput').val(opportunity_detail.win_rate);
         let ele_input_rate = $('#input-rate');
@@ -1402,7 +1401,7 @@ class LoadConfigAndLoadStage {
         list_stage_condition,
         list_stage,
         condition_sale_oder_approved,
-        condition_is_quotation_confirm,
+        condition_quotation_approved,
         condition_sale_oder_delivery_status,
         config_is_input_rate,
         dict_stage
@@ -1518,14 +1517,14 @@ class LoadConfigAndLoadStage {
         let ele_decision_maker = $('#input-decision-maker');
         if (ele_decision_maker.attr('data-id') === '') {
             list_property_config.push({
-                'property': 'Decision maker',
+                'property': 'Decision Maker',
                 'comparison_operator': '=',
                 'compare_data': '0',
             })
         }
         else {
             list_property_config.push({
-                'property': 'Decision maker',
+                'property': 'Decision Maker',
                 'comparison_operator': '≠',
                 'compare_data': '0',
             })
@@ -1533,14 +1532,14 @@ class LoadConfigAndLoadStage {
 
         if (OpportunityLoadDetail.productTableEle.DataTable().data().length === 0) {
             list_property_config.push({
-                'property': 'Product.Line.Detail',
+                'property': 'Product Line Detail',
                 'comparison_operator': '=',
                 'compare_data': '0',
             })
         }
         else {
             list_property_config.push({
-                'property': 'Product.Line.Detail',
+                'property': 'Product Line Detail',
                 'comparison_operator': '≠',
                 'compare_data': '0',
             })
@@ -1549,14 +1548,14 @@ class LoadConfigAndLoadStage {
         let ele_competitor_win = $('.input-win-deal:checked');
         if (ele_competitor_win.length === 0) {
             list_property_config.push({
-                'property': 'Competitor.Win',
+                'property': 'Competitor Win',
                 'comparison_operator': '≠',
                 'compare_data': '0',
             })
         }
         else {
             list_property_config.push({
-                'property': 'Competitor.Win',
+                'property': 'Competitor Win',
                 'comparison_operator': '=',
                 'compare_data': '0',
             })
@@ -1578,16 +1577,16 @@ class LoadConfigAndLoadStage {
             })
         }
 
-        if (condition_is_quotation_confirm) {
+        if (condition_quotation_approved) {
             list_property_config.push({
-                'property': 'Quotation.confirm',
+                'property': 'Quotation Status',
                 'comparison_operator': '=',
                 'compare_data': '0',
             })
         }
         else {
             list_property_config.push({
-                'property': 'Quotation.confirm',
+                'property': 'Quotation Status',
                 'comparison_operator': '≠',
                 'compare_data': '0',
             })
@@ -1595,14 +1594,14 @@ class LoadConfigAndLoadStage {
 
         if (condition_sale_oder_approved) {
             list_property_config.push({
-                'property': 'SaleOrder.status',
+                'property': 'SaleOrder Status',
                 'comparison_operator': '=',
                 'compare_data': '0',
             })
         }
         else {
             list_property_config.push({
-                'property': 'SaleOrder.status',
+                'property': 'SaleOrder Status',
                 'comparison_operator': '≠',
                 'compare_data': '0',
             })
@@ -1610,15 +1609,15 @@ class LoadConfigAndLoadStage {
 
         if (condition_sale_oder_delivery_status) {
             list_property_config.push({
-                'property': 'SaleOrder.Delivery.Status',
-                'comparison_operator': '≠',
+                'property': 'SaleOrder Delivery Status',
+                'comparison_operator': '=',
                 'compare_data': '0',
             })
         }
         else {
             list_property_config.push({
-                'property': 'SaleOrder.Delivery.Status',
-                'comparison_operator': '=',
+                'property': 'SaleOrder Delivery Status',
+                'comparison_operator': '≠',
                 'compare_data': '0',
             })
         }

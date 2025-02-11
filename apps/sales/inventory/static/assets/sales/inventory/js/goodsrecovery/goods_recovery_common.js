@@ -225,7 +225,7 @@ class RecoveryLoadDataHandle {
         return true;
     };
 
-    static loadQuantityRecovery() {
+    static loadCheckRecovery() {
         let productChecked = RecoveryDataTableHandle.$tableDeliveryProduct[0].querySelector('.table-row-checkbox:checked');
         if (productChecked) {
             let rowTarget = productChecked.closest('tr');
@@ -243,7 +243,6 @@ class RecoveryLoadDataHandle {
                             return false;
                         }
                     }
-                    recoveryEle.innerHTML = String(fnRecovery);
                 }
             }
         }
@@ -1332,6 +1331,25 @@ class RecoveryDataTableHandle {
                     }
                 },
             ],
+            rowCallback(row, data, index) {
+                let recoveryEle = row.querySelector('.table-row-quantity-recovery');
+                if (recoveryEle) {
+                    $(recoveryEle).on('change', function () {
+                        let check = RecoveryLoadDataHandle.loadCheckRecovery();
+                        if (check === false) {
+                            $(this).val('0');
+                            return false;
+                        }
+                        data['quantity_recovery'] = $(this).val();
+                        RecoveryDataTableHandle.$tableWarehouse.DataTable().row(index).data(data).draw();
+                        RecoveryStoreDataHandle.storeData();
+                        let btnEle = row.querySelector('.btn-collapse-app-wf');
+                        if (btnEle) {
+                            $(btnEle).trigger('click');
+                        }
+                    });
+                }
+            },
             drawCallback: function () {
                 // add css to Dtb
                 RecoveryLoadDataHandle.loadCssToDtb('datable-warehouse');
@@ -1676,6 +1694,9 @@ class RecoveryCalculateHandle {
 // Store data
 class RecoveryStoreDataHandle {
     static storeData() {
+        // Lưu lại data row của tất cả dtb & draw() lại row, dòng checked sẽ được lưu thêm data sub từ các dtb phụ
+        // dtb data cố định => store hết, dtb data động callAjax => store data có thay đổi
+
         let product_warehouse_data = [];
         let delivery_product_data = [];
 
@@ -1730,7 +1751,9 @@ class RecoveryStoreDataHandle {
                 }
 
                 RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData);
-                product_warehouse_data.push(rowData);
+                if (rowData?.['quantity_recovery'] > 0) {
+                    product_warehouse_data.push(rowData);
+                }
 
                 iconEle = $(row).find('.icon-collapse-app-wf');
                 if (right_or_down === 'right') {
@@ -1753,10 +1776,13 @@ class RecoveryStoreDataHandle {
             if (checked) {
                 rowData['product_warehouse_data'] = product_warehouse_data;
             }
-            let recoveryEle = row.querySelector('.table-row-quantity-recovery');
-            if (recoveryEle) {
-                rowData['quantity_recovery'] = parseFloat(recoveryEle.innerHTML);
+            let recovery = 0;
+            if (rowData?.['product_warehouse_data']) {
+                for (let dataPW of rowData?.['product_warehouse_data'] ? rowData?.['product_warehouse_data'] : []) {
+                    recovery += dataPW?.['quantity_recovery'];
+                }
             }
+            rowData['quantity_recovery'] = recovery;
 
             RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex).data(rowData);
             delivery_product_data.push(rowData);

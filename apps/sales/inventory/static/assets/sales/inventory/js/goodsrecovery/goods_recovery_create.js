@@ -108,25 +108,6 @@ $(function () {
             }
         });
 
-        RecoveryDataTableHandle.$tableWarehouse.on('change', '.table-row-quantity-recovery', function () {
-            let check = RecoveryLoadDataHandle.loadQuantityRecovery();
-            if (check === false) {
-                $(this).val('0');
-                return false;
-            }
-
-            let row = this.closest('tr');
-            if (row) {
-                let btnEle = row.querySelector('.btn-collapse-app-wf');
-                if (btnEle) {
-                    $(btnEle).trigger('click');
-                }
-            }
-
-            RecoveryStoreDataHandle.storeData();
-            return true;
-        });
-
         RecoveryLoadDataHandle.$btnSaveModal.on('click', function () {
             RecoveryLoadDataHandle.loadLineDetail();
             RecoveryCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);

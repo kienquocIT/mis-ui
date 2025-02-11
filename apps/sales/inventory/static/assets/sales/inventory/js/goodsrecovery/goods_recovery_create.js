@@ -108,6 +108,28 @@ $(function () {
             }
         });
 
+        RecoveryDataTableHandle.$tableWarehouse.on('change', '.table-row-quantity-recovery', function () {
+            let check = RecoveryLoadDataHandle.loadCheckRecovery();
+            if (check === false) {
+                $(this).val('0');
+                return false;
+            }
+            let row = this.closest('tr');
+            if (row) {
+                let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(row).index();
+                let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
+                let rowData = $row.data();
+
+                rowData['quantity_recovery'] = $(this).val();
+                RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData).draw();
+                RecoveryStoreDataHandle.storeData();
+            }
+            let btnEle = row.querySelector('.btn-collapse-app-wf');
+            if (btnEle) {
+                $(btnEle).trigger('click');
+            }
+        });
+
         RecoveryLoadDataHandle.$btnSaveModal.on('click', function () {
             RecoveryLoadDataHandle.loadLineDetail();
             RecoveryCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);

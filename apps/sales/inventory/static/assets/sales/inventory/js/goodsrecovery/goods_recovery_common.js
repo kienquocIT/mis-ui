@@ -1331,25 +1331,6 @@ class RecoveryDataTableHandle {
                     }
                 },
             ],
-            rowCallback(row, data, index) {
-                let recoveryEle = row.querySelector('.table-row-quantity-recovery');
-                if (recoveryEle) {
-                    $(recoveryEle).on('change', function () {
-                        let check = RecoveryLoadDataHandle.loadCheckRecovery();
-                        if (check === false) {
-                            $(this).val('0');
-                            return false;
-                        }
-                        data['quantity_recovery'] = $(this).val();
-                        RecoveryDataTableHandle.$tableWarehouse.DataTable().row(index).data(data).draw();
-                        RecoveryStoreDataHandle.storeData();
-                        let btnEle = row.querySelector('.btn-collapse-app-wf');
-                        if (btnEle) {
-                            $(btnEle).trigger('click');
-                        }
-                    });
-                }
-            },
             drawCallback: function () {
                 // add css to Dtb
                 RecoveryLoadDataHandle.loadCssToDtb('datable-warehouse');

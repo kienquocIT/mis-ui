@@ -3,6 +3,9 @@
 {% block title %}{% trans 'Contract tempate detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'assets/core/contract-template/css/contract-template.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+    .table-bordered>:not(caption)>*{border-width: 1px;}
+    </style>
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'ContractTemplateUpdate' data.pk %}" class="btn-edit-page">
@@ -42,6 +45,9 @@
                             data-keyResp="tenant_application_list"
                             required
                     ></select>
+            </div>
+            <div class="col-lg-12 col-xs-12 user_assign mb-3">
+                <label class="form-label" for="txt_template">{% trans 'User Signature Definitioned' %}</label>
             </div>
             <div class="col-lg-12 col-xs-12">
                 <label class="form-label" for="txt_template">{% trans 'Template' %}</label>

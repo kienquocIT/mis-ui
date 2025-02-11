@@ -2,7 +2,10 @@
 {% load static i18n %}
 {% block title %}{% trans 'Contract tempate create' %}{% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'assets/core/contract-template/css/contract-template.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/core/contract-template/css/contract-template.css' %}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{% static 'assets/core/contract-template/css/extend/modal-submit.css' %}" rel="stylesheet"
+          type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="form_contract_template">
@@ -50,12 +53,16 @@
                         class="form-control"
                 ></textarea>
             </div>
+            <input id="inputExtraData" type="hidden" name="extra_data">
         </div>
     </form>
 {% endblock %}
-
+{% block modalData %}
+    {% include 'core/contract_template/extend/modal_sign_defination.html' %}
+{% endblock %}
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory" data-template="{% url 'ContractTemplateConfigAPI' %}">
+    <input type="text" id="url-factory" data-template="{% url 'ContractTemplateConfigAPI' %}"
+    data-employee="{% url 'EmployeeListAPI' %}">
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/core/contract-template/js/common.js' %}"></script>

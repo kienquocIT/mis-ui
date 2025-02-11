@@ -13,7 +13,8 @@ class Signature {
     init() {
 
         // show btn sign request
-        const $btnSign = $('.request_sign')
+        const $btnSign = $('.request_sign');
+        const _this = this
         $btnSign.removeClass('hidden')
         // load draw tab
         $('a.nav-link[href="#tab_block_2"]').on('shown.bs.tab', function(){
@@ -62,15 +63,13 @@ class Signature {
                         }
                         canvas.getElement().toBlob(blob => {
                             let fileNew = new File([blob], fileName, {type: blob.type});
-                            this.uploadDataFile(fileNew)
+                            _this.uploadDataFile(fileNew)
                         }, 'image/png');
 
                     })
                 })
             }
         });
-
-
         // init attachment
         this.loadSignList();
     }

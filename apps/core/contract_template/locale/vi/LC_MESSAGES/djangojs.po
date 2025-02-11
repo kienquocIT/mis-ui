@@ -20,3 +20,15 @@ msgstr ""
 #
 msgid "Signature and employee not equal"
 msgstr "Số lượng chữ ký và nhân viên không khớp"
+
+#
+msgid "User Signature Definition"
+msgstr "Định nghĩa chữ ký người dùng"
+
+#
+msgid "keyword"
+msgstr "Từ khoá"
+
+#
+msgid "User assign"
+msgstr "Người dùng được chỉ định"

@@ -787,6 +787,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     HRM_EMPLOYEE_SIGNATURE_UPDATE = StringUrl('hrm/employee-info/signature/update/{pk}')
     # HRM CONTRACT RUNTIME
     HRM_CONTRACT_RUNTIME = StringUrl('hrm/employee-info/contract-signing/create')
+    HRM_CONTRACT_RUNTIME_DETAIL = StringUrl('hrm/employee-info/contract-signing/detail/{pk}')
 
     # Lease order
     LEASE_ORDER_LIST = StringUrl('leaseorder/list')

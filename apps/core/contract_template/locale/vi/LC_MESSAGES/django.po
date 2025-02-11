@@ -32,3 +32,10 @@ msgstr "Ký tự thay thế chữ ký"
 #
 msgid "Assign employee to signature character"
 msgstr "Chỉ định nhân viên cho Ký tự thay thế"
+
+#
+msgid "User Signature Definitioned"
+msgstr "Chữ ký người dùng được định nghĩa"
+#
+msgid "Template"
+msgstr "Biểu mẫu"

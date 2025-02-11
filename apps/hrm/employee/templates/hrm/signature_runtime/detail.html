@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'HRM Signing request detail' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'assets/hrm/css/signing-request.css' %}" type="text/css">
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+
+{% block pageContent %}
+    <form id="form_signing_request" class="hidden" method="POST" data-url="{% url 'HRMRuntimeSignatureDetailAPI' pk %}">
+        {% csrf_token %}
+    </form>
+    <div class="wrap-hd-review A4">
+{#        <div class="spinner-border" role="status">#}
+{#            <span class="sr-only">Loading...</span>#}
+{#        </div>#}
+        <section class="sheet padding-20mm with-A4">
+{#            <p>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>#}
+{#            <p>Độc lập – Tự do – Hạnh phúc</p>#}
+{#            <p>__________________</p>#}
+{#            <h3>HỢP ĐỒNG MUA BÁN HÀNG HÓA[1]</h3>#}
+{#            <p>Số:…/2024/HĐMB</p>#}
+{#            <ul>#}
+{#                <li>Căn cứ Bộ luật Dân sự 2015</li>#}
+{#                <li>Căn cứ Luật Thương mại 2005 (đã được sửa đổi, bổ sung bởi Luật số 05/2017/QH14 và Luật số 44/2019/QH14)</li>#}
+{#                <li>Căn cứ nhu cầu và khả năng thực tế của các bên.</li>#}
+{#            </ul>#}
+{#            <p>Hôm nay, ngày…tháng…năm 2024, tại địa chỉ[2]:...........................................................</p>#}
+{#            <p>Chúng tôi, gồm có:</p>#}
+{#            <p>BÊN BÁN (Bên A)</p>#}
+{#            <p>Tên doanh nghiệp:........................................................................................................................</p>#}
+{#            <p>Mã số doanh nghiệp:....................................................................................................................</p>#}
+{#            <p>Địa chỉ trụ sở chính:.....................................................................................................................</p>#}
+{#            <p>Người đại diện theo pháp luật[3]: …………………………………Chức danh[4]:....................</p>#}
+{#            <p>CMND/CCCD/Hộ chiếu số[5]: ……………………cấp ngày……………nơi cấp..................</p>#}
+{#            <p>Số điện thoại: …………………………………Fax:................................................................</p>#}
+{#            <p>Tài khoản ngân hàng số[6]: ……………………….Mở tại ngân hàng:....................................</p>#}
+{#            <p>BÊN MUA (Bên B)</p>#}
+{#            <p>Tên doanh nghiệp:........................................................................................................................</p>#}
+{#            <p>Mã số doanh nghiệp:....................................................................................................................</p>#}
+{#            <p>Địa chỉ trụ sở chính:.....................................................................................................................</p>#}
+{#            <p>Người đại diện theo pháp luật[7]: …………………………………Chức danh[8]:....................</p>#}
+{#            <p>CMND/CCCD/Hộ chiếu số[9]: ……………………cấp ngày……………nơi cấp..................</p>#}
+{#            <p>Số điện thoại:…………………………………Fax:.................................................................</p>#}
+{#            <p>Tài khoản ngân hàng số[10]:……………………….Mở tại ngân hàng:....................................</p>#}
+{#            <p>Trên cơ sở thỏa thuận hoàn toàn tự nguyện, hai bên thống nhất ký kết hợp đồng mua bán hàng hóa với các điều khoản như sau:</p>#}
+{#            <p>Điều 1: Tên hàng hóa, số lượng, chất lượng, giá trị hợp đồng</p>#}
+{#            <p>Bên A bán cho bên B hàng hóa sau đây:</p>#}
+{#            <table>#}
+{#                <tr>#}
+{#                    <td><p>STT</p></td>#}
+{#                    <td><p>Tên hàng hóa</p></td>#}
+{#                    <td><p>Đơn vị</p></td>#}
+{#                    <td><p>Số lượng</p></td>#}
+{#                    <td><p>Đơn giá[11]</p></td>#}
+{#                    <td><p>Thành tiền[12]</p></td>#}
+{#                    <td><p>(VNĐ đồng)</p></td>#}
+{#                    <td><p>Ghi chú</p></td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                    <td><p>1</p></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                    <td><p>2</p></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                    <td><p>3</p></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                    <td><p>4</p></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                </tr>#}
+{#                <pre><tr>#}
+{#                    <td><p>5</p></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                </tr></pre>#}
+{#                <tr>#}
+{#                    <td><p>6</p></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                    <td><p>7</p></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                    <td><p>8</p></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                    <td><p>9</p></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                    <td><p>...</p></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                    <td></td>#}
+{#                </tr>#}
+{#                <tr>#}
+{#                    <td colspan="8"><p>Tổng cộng[13]: ………………………………………………………</p></td></tr>#}
+{#                <tr>#}
+{#                    <td colspan="8"><p>Bằng chữ:[14]………………………………………………………</p></td></tr>#}
+{#            </table>#}
+        </section>
+    </div>
+{% endblock %}
+{% block modalData %}
+    <!-- Float wrap button -->
+    <div class="wrap_action">
+        <div class="container">
+            <div class="row">
+                <div class="col text-right">
+                    <button class="btn btn-lg btn-primary w-150p" type="button" id="btn_allow_signing">
+                        <span>{% trans 'Sign' %}</span>
+                    </button>
+                    <button class="btn btn-lg btn-warning ml-4 w-150p" type="button">
+                        <span>{% trans 'Reject' %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Draw -->
+    {% include 'hrm/contract/modal-draw-signature.html' %}
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory">
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/hrm/js/extend/detail-signing-request.js' %}"></script>
+{% endblock %}

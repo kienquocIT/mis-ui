@@ -1,7 +1,22 @@
 $(document).ready(function () {
     // run editor
-    var is_editor = new tiny_editor()
-    window.is_editor = is_editor
+    window.is_editor = new tiny_editor();
+    const $modal = $('#modal_sign_definition')
+
+    function sendData(opt, form){
+        $.fn.callAjax2(opt).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                $.fn.notifyB({description: data.message}, 'success')
+                $(form)[0].reset();
+                setTimeout(() => {
+                    window.location.replace(form.attr('data-redirect'));
+                }, 1000)
+            }
+        }, (errs) => {
+            $.fn.switcherResp(errs);
+        })
+    }
 
     // handle form SUBMIT
     SetupFormSubmit.validate(
@@ -14,8 +29,58 @@ $(document).ready(function () {
                     const item = serializerArray[key]
                     if (item) contractData[key] = item
                 }
+                let matches = contractData?.template.match(/{{(.*?)}}/g);
+                if (matches) {
+                    matches = matches.map(function (item) {
+                        return item.replace(/{{|}}/g, '').trim();
+                    });
+                }
+                if (matches.length){
+                    let html = '';
+                    for (let item of matches) {
+                        html += `<div class="item_sign">` +
+                            `<input type="text" class="form-control" readonly value="${item}"><strong> : </strong>` +
+                            `<div><select class="form-select" id="sign_emp_${item}" multiple data-allowClear="true" data-closeOnSelect="false"></select></div></div>`
+                    }
+                    $modal.find('.modal-body').html('').append(html)
+                    $('.modal-body select', $modal).each(function () {
+                        $(this).initSelect2({
+                            ajax: {
+                                url: $('#url-factory').attr('data-employee'),
+                                method: 'GET',
+                            },
+                            keyResp: 'employee_list',
+                            keyText: 'full_name',
+                            keyId: "id",
+                        }).on('select2:select', function(e){
+                            let defaultData = $(this).data('data-select');
+                            const dataSelect = {
+                                id: e.params.data.id,
+                                code: e.params.data.data.code,
+                                full_name: e.params.data.data.full_name
+                            };
+                            if (defaultData)
+                                defaultData.push(dataSelect)
+                            else
+                                defaultData = [dataSelect]
 
-                $.fn.callAjax2({
+                            $(this).data('data-select', defaultData)
+                        }).on('select2:unselect', function(e){
+                            let defaultData = $(this).data('data-select');
+                            const dataUnSlt = e.params.data.id
+
+                            for (let idx in defaultData){
+                                if (defaultData[idx].id === dataUnSlt){
+                                    delete defaultData[idx]
+                                    break
+                                }
+                            }
+                            $(this).data('data-select', defaultData)
+                        })
+                    });
+                }
+
+                const optionSubmit = {
                     url: form.attr('data-url'),
                     method: form.attr('data-method'),
                     data: contractData,
@@ -24,17 +89,44 @@ $(document).ready(function () {
                         'allowOutsideClick': true,
                         'showCancelButton': true
                     },
-                }).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: data.message}, 'success')
-                        $(form)[0].reset();
-                        setTimeout(() => {
-                            window.location.replace(form.attr('data-redirect'));
-                        }, 1000)
+                };
+                let has_assign = true;
+                const extra_data = $('.user_assign table').data('data-extra_data')
+                if (extra_data)
+                    for (let idx in extra_data){
+                        if (extra_data[idx].length < 0){
+                            has_assign =  false
+                            break;
+                        }
                     }
-                }, (errs) => {
-                    $.fn.switcherResp(errs);
+                if (!has_assign)
+                    Swal.fire({
+                        title: $.fn.gettext("User Signature Definition"),
+                        text: $.fn.gettext("Template include signature keyword do you want to assign user"),
+                        icon: "question",
+                        showCancelButton: false,
+                        confirmButtonText: $.fn.gettext('Okay'),
+                        showDenyButton: true,
+                        denyButtonText: $.fn.gettext('Let me see')
+                    }).then((result) => {
+                        if (result.value) {
+                            $('#modal_sign_definition').modal('show');
+                        } else return false
+                    })
+                else{
+                    optionSubmit.data['extra_data'] = extra_data
+                    sendData(optionSubmit, form)
+                }
+
+                $('#confirm_definition').off().on('click', function (e) {
+                    e.preventDefault();
+                    let extraData = {}
+                    $('#modal_sign_definition .modal-body .item_sign').each(function () {
+                        const self_key = $(this).find('input').val()
+                        extraData[self_key] = $(this).find('select').data('data-select')
+                    });
+                    optionSubmit.data['extra_data'] = extraData
+                    sendData(optionSubmit, form)
                 })
             }
         }

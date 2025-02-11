@@ -1,0 +1,45 @@
+#idxPageContent{
+    padding: 0!important;
+}
+.A4{
+    padding-top:15px;
+    padding-bottom: 146px;
+    background: rgb(250 251 253);
+    position: relative;
+}
+.sheet {
+    display: block;
+    margin: 0 auto;
+    background: rgb(255 255 255);
+    outline: 1px solid #c7c7c7;
+    aspect-ratio: auto 794 / 1123;
+    direction: ltr;
+}
+
+.padding-20mm {
+    padding: 20mm;
+}
+
+.with-A4 {
+    width: 210mm;
+}
+
+.height-A4 {
+    height: 297mm;
+}
+
+tbody, td, tfoot, th, thead, tr{
+    border-width: 1px;
+}
+
+.wrap_action{
+    height: 73px;
+    width: 100%;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 1111;
+    background: rgb(255 255 255);
+    outline: 1px solid #c7c7c7;
+    padding: 20px;
+}

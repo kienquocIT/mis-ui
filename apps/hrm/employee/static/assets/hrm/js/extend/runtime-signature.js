@@ -59,7 +59,6 @@ class PrepareSign {
                     return false
                 }
                 data_form.csrfmiddlewaretoken = $('#frm_employee_hrm input[name="csrfmiddlewaretoken"]').val()
-                console.log('data_form', data_form)
                 $.fn.callAjax2({
                     url: $('#url-factory').attr('data-contract-sign'),
                     method: 'POST',

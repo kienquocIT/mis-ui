@@ -223,3 +223,23 @@ class HRMRuntimeSignatureAPI(APIView):
             resp.result['message'] = HRMMsg.HRM_REQUEST_SIGNING
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class HRMRuntimeSignatureDetailView(View):
+    @mask_view(
+        auth_require=True,
+        template='hrm/signature_runtime/detail.html',
+        jsi18n='hrm',
+    )
+    def get(self, request, *args, pk, **kwargs):
+        return {'pk': pk}, status.HTTP_200_OK
+
+
+class HRMRuntimeSignatureDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.HRM_CONTRACT_RUNTIME_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return()

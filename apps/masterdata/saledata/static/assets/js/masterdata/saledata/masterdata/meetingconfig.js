@@ -6,14 +6,6 @@ $(document).ready(function () {
         $('#1-existing-config').prop('hidden', false)
     }
 
-    $('#reset-config').on('click', function () {
-        $('#zoom-account-email').val('');
-        $('#zoom-account-id').val('');
-        $('#zoom-client-id').val('');
-        $('#zoom-client-secret').val('');
-        $('#zoom-personal-meeting-id').val('')
-    })
-
     function loadMeetingRoomList() {
         let tbl = $('#table-meeting-room');
         tbl.DataTable().clear().destroy()
@@ -225,9 +217,8 @@ $(document).ready(function () {
         }
     })
 
-    $('#zoom-app-instruction-hidden-btn').on('click', function () {
-        let zoom_app_instruction = $('#zoom-app-instruction')
-        zoom_app_instruction.prop('hidden', !zoom_app_instruction.prop('hidden'))
+    $('.nav-item').on('click', function () {
+        $('#save-zoom-cfg-btn').prop('hidden', $(this).find('a').attr('href') !== '#tab_block_meeting_zoom_setting')
     })
 
     $(document).on("click", '.edit-meeting-room', function () {

@@ -10693,3 +10693,7 @@ msgstr "Đăng nhập vào tài khoản Zoom của bạn"
 #
 msgid "Go to Profile tab, your Personal meeting ID here."
 msgstr "Đi tới tab Profile (Cá nhân), ID Cuộc họp cá nhân cảu bạn ở đây."
+
+#
+msgid "Sync with Vietcombank"
+msgstr "Đồng bộ với Vietcombank"

@@ -15,6 +15,14 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
+    <button hidden id="save-zoom-cfg-btn" class="btn btn-outline-primary" type="submit" form="form-create-zoom-config">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     {{ data.zoom_config | json_script:"zoom_config" }}
@@ -65,24 +73,29 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="tab_block_meeting_zoom_setting">
-                    <span class="text-muted" id="1-existing-config" hidden><i class="fas fa-exclamation-circle"></i>&nbsp;{% trans '1 existing config' %}</span>
-                    <a href="#form-create-zoom-config" id="reset-config" data-bs-toggle="collapse" role="button" aria-expanded="false">
-                        <button class="btn btn-sm btn-outline-primary btn-modal">
-                            <span>
-                                <span>{% trans 'Add new config' %}</span>
-                                <span class="icon">
-                                    <i class="fa-solid fa-plus"></i>
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <img style="height: 50px;"
+                                src="https://st1.zoom.us/fe-static/fe-signup-login-active/img/ZoomNewLogo.b2fd5c95.png"
+                                alt="Zoom Logo">
+                        </div>
+                        <div class="col-12 mt-2">
+                            <a class="text-muted bg-dark-hover" id="zoom-app-instruction-hidden-btn" data-bs-toggle="modal" data-bs-target="#modalInstruction" href="#">
+                                <span>
+                                    <span>{% trans 'See instruction here' %}</span>&nbsp;
+                                    <span class="icon"><span class="feather-icon"><i class="bi bi-info-circle"></i></span></span>
                                 </span>
-                            </span>
-                        </button>
-                    </a>
-                    <form id="form-create-zoom-config" class="collapse mt-5"
-                          data-url="{% url 'MeetingZoomConfigListAPI' %}"
-                          data-url-redirect="{% url 'MeetingConfigList' %}"
-                          data-method="POST">
+                            </a>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <span class="text-muted" id="1-existing-config" hidden><i class="fas fa-exclamation-circle"></i>&nbsp;{% trans '1 existing config' %}</span>
+                        </div>
+                    </div>
+                    <form id="form-create-zoom-config" data-url="{% url 'MeetingZoomConfigListAPI' %}" data-url-redirect="{% url 'MeetingConfigList' %}" data-method="POST">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="col-12 col-md-5 col-lg-5">
+                            <div class="col-12 col-md-4 col-lg-4"></div>
+                            <div class="col-12 col-md-4 col-lg-4">
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-group">
@@ -129,17 +142,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-12">
-                                        <button type="submit" class="btn btn-gradient-primary w-100" form="form-create-zoom-config">{% trans 'Save' %}</button>
-                                        <a id="zoom-app-instruction-hidden-btn" class="mt-2" data-bs-toggle="modal" data-bs-target="#modalInstruction" href="#">
-                                            <span>
-                                                <span>{% trans 'See instruction here' %}</span>&nbsp;
-                                                <span class="icon"><span class="feather-icon"><i class="bi bi-info-circle"></i></span></span>
-                                            </span>
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
+                            <div class="col-12 col-md-4 col-lg-4"></div>
                         </div>
                     </form>
                 </div>
@@ -166,20 +171,26 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label class="form-label required" for="room-title">{% trans 'Name' %}</label>
-                                    <input type="text" class="form-control" id="room-title">
-                                </div>
-                                <div class="form-group">
                                     <label class="form-label required" for="room-code">{% trans 'Code' %}</label>
                                     <input type="text" class="form-control" id="room-code">
                                 </div>
+                            </div>
+                            <div class="col-12">
                                 <div class="form-group">
-                                    <label class="form-label required" for="room-location">{% trans 'Room location' %}</label>
-                                    <textarea type="text" class="form-control" id="room-location"></textarea>
+                                    <label class="form-label required" for="room-title">{% trans 'Name' %}</label>
+                                    <input type="text" class="form-control" id="room-title">
                                 </div>
+                            </div>
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label class="form-label required" for="room-description">{% trans 'Description' %}</label>
                                     <textarea type="text" class="form-control" id="room-description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-location">{% trans 'Room location' %}</label>
+                                    <textarea type="text" class="form-control" id="room-location"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -210,20 +221,26 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
+                                    <label class="form-label required" for="room-code">{% trans 'Code' %}</label>
+                                    <input disabled readonly type="text" class="form-control form-control-line" id="room-code">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
                                     <label class="form-label required" for="room-title">{% trans 'Name' %}</label>
                                     <input type="text" class="form-control" id="room-title">
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label required" for="room-code">{% trans 'Code' %}</label>
-                                    <input disabled readonly type="text" class="form-control" id="room-code">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label required" for="room-location">{% trans 'Room location' %}</label>
-                                    <textarea type="text" class="form-control" id="room-location"></textarea>
-                                </div>
+                            </div>
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label class="form-label required" for="room-description">{% trans 'Description' %}</label>
                                     <textarea type="text" class="form-control" id="room-description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-location">{% trans 'Room location' %}</label>
+                                    <textarea type="text" class="form-control" id="room-location"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -237,7 +254,7 @@
         </div>
     </div>
     <div class="modal fade" id="modalInstruction" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog" style="min-width: 50%" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans 'Instruction' %}</h5>
@@ -248,7 +265,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
-                            <div id="zoom-app-instruction" hidden class="hk-wizard hk-wizard-vertical">
+                            <div id="zoom-app-instruction" class="hk-wizard hk-wizard-vertical">
                                 <div class="hk-wizard-item hk-wizard-item-process hk-wizard-item-active">
                                     <div class="hk-wizard-item-container">
                                         <div class="hk-wizard-item-tail"></div>
@@ -311,7 +328,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" form="form-update-meeting-room">{% trans 'Update' %}</button>
                 </div>
             </div>
         </div>

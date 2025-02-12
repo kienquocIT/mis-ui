@@ -6661,8 +6661,8 @@ msgid "Tax number"
 msgstr "Mã số thuế"
 
 #
-msgid "Click the button to select"
-msgstr "Nhấn vào nút để lựa chọn"
+msgid "Click the button behind the box to select"
+msgstr "Nhấn vào nút phía sau ô nhập để lựa chọn"
 
 #
 msgid "Supplier code"
@@ -6729,12 +6729,12 @@ msgid "Online meeting will be created after saving this page"
 msgstr "Cuộc họp trực tuyến sẽ được tạo sau khi Lưu trang này"
 
 #
-msgid "Online meeting"
-msgstr "Cuộc họp trực tuyến"
+msgid "Online"
+msgstr "Trực tuyến"
 
 #
-msgid "Offline meeting"
-msgstr "Cuộc họp trực tiếp"
+msgid "Offline"
+msgstr "Trực tiếp"
 
 #
 msgid "Date occur"
@@ -6817,8 +6817,8 @@ msgid "Last"
 msgstr "Cuối cùng"
 
 #
-msgid "By"
-msgstr "Trước"
+msgid "Before the date"
+msgstr "Trước ngày"
 
 #
 msgid "occurrences"
@@ -6826,7 +6826,7 @@ msgstr "lần lặp"
 
 #
 msgid "Enable continuous meeting chat"
-msgstr "Cho phép tiếp tục cuộc hội thoại trong cộc họp"
+msgstr "Cho phép tiếp tục cuộc hội thoại trong cuộc họp"
 
 #
 msgid "Added attendees will have access to the Meeting Group Chat before and after the meeting"
@@ -6839,6 +6839,10 @@ msgstr "Bảo mật"
 #
 msgid "Only users who have the invite link OR passcode can join the meeting"
 msgstr "Chỉ những người có liên kết HOẶC passcode mới có thể tham dự cuộc họp"
+
+#
+msgid "Meeting ID"
+msgstr "ID cuộc họp"
 
 #
 msgid "Waiting room"
@@ -10172,8 +10176,8 @@ msgid "Reconciliation total must be 0"
 msgstr "Tổng cấn trừ phải bằng 0"
 
 #
-msgid "Click the button to select or input here"
-msgstr "Nhấn nút để lựa chọn hoặc nhập tại đây"
+msgid "Click the button behind the box to select or input here"
+msgstr "Nhấn nút phía sau ô nhập để lựa chọn hoặc nhập tại đây"
 
 #
 msgid "View payment term information"
@@ -10697,3 +10701,39 @@ msgstr "Đi tới tab Profile (Cá nhân), ID Cuộc họp cá nhân cảu bạn
 #
 msgid "Sync with Vietcombank"
 msgstr "Đồng bộ với Vietcombank"
+
+#
+msgid "Send notify email"
+msgstr "Gửi email thông báo"
+
+#
+msgid "Meeting schedule list"
+msgstr "Danh sách cuộc họp"
+
+#
+msgid "Meeting schedule create"
+msgstr "Lên lich cuộc họp"
+
+#
+msgid "Meeting schedule detail"
+msgstr "Chi tiết cuộc họp"
+
+#
+msgid "Only available with online meeting!"
+msgstr "Chỉ khả dụng với Cuộc họp trực tuyến!"
+
+#
+msgid "Generate automatically"
+msgstr "Tạo tự động"
+
+#
+msgid "Personal meeting ID"
+msgstr "ID cuộc họp cá nhân"
+
+#
+msgid "The passcode will be embedded in the invite link. Users joining with the invite link will not have to enter the passcode manually. A numeric passcode will be generated for users who dial in from a phone or a room system"
+msgstr "Mã truy cập sẽ được nhúng trong đường link mời. Người dùng tham gia qua đường link này sẽ không cần nhập mã truy cập thủ công. Một mã số sẽ được tạo ra cho những ai tham gia bằng điện thoại hoặc hệ thống phòng họp."
+
+#
+msgid "Chat with participants any time and access in-meeting chat in the same place. External users must be manually added to the Meeting Group Chat."
+msgstr "Trò chuyện với người tham gia bất cứ lúc nào và truy cập cuộc trò chuyện trong cuộc họp tại cùng một nơi. Người dùng bên ngoài phải được thêm thủ công vào nhóm trò chuyện của cuộc họp."

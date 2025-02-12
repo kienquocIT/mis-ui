@@ -3,7 +3,6 @@ const startDateEle = $('#start-date')
 const externalParticipantsAccountEle = $('#external-participants-account')
 const endDateBySelectEle = $('#end-date-by-select')
 const endDateAfterSelectEle = $('#end-date-after-select')
-const modalMeetingSelectAppEle = $('#modal-select-app')
 const modalMeetingTitleEle = $('#modal-meeting-title')
 const modalRecurringMeetingEle = $('#modal-recurring-meeting')
 const modalRecurrenceEle = $('#modal-recurrence')
@@ -40,10 +39,11 @@ startDateEle.daterangepicker({
     singleDatePicker: true,
     timePicker: false,
     showDropdowns: true,
+    autoApply: true,
     minYear: parseInt(moment().format('YYYY')),
     minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM'))-1, parseInt(moment().format('DD'))),
     locale: {
-        format: 'YYYY-MM-DD'
+        format: 'DD/MM/YYYY'
     },
     cancelClass: "btn-secondary",
     maxYear: parseInt(moment().format('YYYY')) + 100,
@@ -64,7 +64,7 @@ endDateBySelectEle.daterangepicker({
 
 modalRecurringMeetingEle.on('change', function () {
     $('.row-for-recurring').prop('hidden', !$(this).prop('checked'))
-    $('#meeting-id-personal').closest('.form-group').closest('.row').prop('hidden', $(this).prop('checked'))
+    $('#meeting-id-space').prop('hidden', $(this).prop('checked'))
 })
 
 modalRecurrenceEle.on('change', function () {
@@ -93,16 +93,16 @@ modalRecurrenceEle.on('change', function () {
 
 meetingTypeEle.on('change', function () {
     $('.row-for-offline-meeting').prop('hidden', !parseInt($(this).val()))
-    $('#tab_app_meeting .row-1').prop('hidden', parseInt($(this).val()))
-    $('#tab_app_meeting .row-2').prop('hidden', !parseInt($(this).val()))
+    $('#online-meeting-tab-space').prop('hidden', parseInt($(this).val()))
+    $('#offline-meeting-tab-space').prop('hidden', !parseInt($(this).val()))
 })
 
 meetingIDEle.on('change', function () {
     let bool = $('#meeting-id-personal').prop('checked')
-    $('#enable-continuous-meeting-chat-row .form-switch').prop('hidden', bool)
+    $('#enable-continuous-meeting-chat-row').prop('hidden', bool)
     $('#modal-enable-continuous-meeting-chat').prop('checked', !bool).prop('disabled', bool)
     modalRecurringMeetingEle.prop('checked', !bool)
-    modalRecurringMeetingEle.closest('.row').prop('hidden', bool)
+    modalRecurringMeetingEle.closest('.form-check').prop('hidden', bool)
 })
 
 function loadInternalParticipants(data) {
@@ -122,6 +122,9 @@ function loadInternalParticipantsTable() {
         useDataServer: true,
         rowIdx: true,
         paging: false,
+        scrollX: '100vw',
+        scrollY: '40vh',
+        scrollCollapse: true,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
@@ -135,21 +138,29 @@ function loadInternalParticipantsTable() {
         },
         columns: [
             {
-                className: 'wrap-text',
+                className: 'wrap-text w-5',
                 render: () => {
                     return ``;
                 }
             },
             {
-                data: 'full_name',
-                className: 'wrap-text',
+                className: 'wrap-text w-5',
                 render: (data, type, row) => {
-                    return `<span data-id="${row.id}" data-fullname="${row?.['full_name']}" class="text-primary emp-info">${row?.['full_name']}</span>`;
+                    return `<div class="form-check">
+                                <input type="checkbox" class="form-check-input checkbox_internal_employees">
+                            </div>`
+                }
+            },
+            {
+                data: 'full_name',
+                className: 'wrap-text w-40',
+                render: (data, type, row) => {
+                    return `<span class="badge badge-primary mr-1">${row?.['code']}</span><span data-id="${row?.['id']}" data-fullname="${row?.['full_name']}" class="text-primary emp-info">${row?.['full_name']}</span>`;
                 }
             },
             {
                 data: 'group',
-                className: 'wrap-text',
+                className: 'wrap-text w-35',
                 render: (data, type, row) => {
                     if (row?.['group']?.['title']) {
                         return `<span class="text-secondary">${row?.['group']?.['title']}</span>`;
@@ -158,10 +169,10 @@ function loadInternalParticipantsTable() {
                 }
             },
             {
-                className: 'wrap-text',
+                className: 'wrap-text w-15 text-right',
                 render: (data, type, row) => {
-                    return `<div class="form-check form-check-lg">
-                                <input type="checkbox" class="form-check-input checkbox_internal_employees">
+                    return `<div class="form-check">
+                                <input type="checkbox" class="form-check-input checkbox_internal_send_notify_email">
                             </div>`
                 }
             },
@@ -333,13 +344,15 @@ function loadMeetingRoom(data) {
         callbackDataResp: function (resp, keyResp) {
             return resp.data[keyResp];
         },
+        templateResult: function (state) {
+            const title = state.data?.['title'];
+            const description = state.data?.['description'];
+            return description ? `${title} (${description})` : title;
+        },
         data: (data ? data : null),
         keyResp: 'meeting_room_list',
         keyId: 'id',
         keyText: 'title',
-    }).on('change', function () {
-        let obj_selected = SelectDDControl.get_data_from_idx(roomEle, roomEle.val())
-        $('#room-des').val(obj_selected?.['description'])
     })
 }
 
@@ -353,14 +366,8 @@ function generateRandomString() {
     return randomString;
 }
 
-modalMeetingSelectAppEle.on('change', function () {
-    let meeting_type = modalMeetingSelectAppEle.find(`option[value="${modalMeetingSelectAppEle.val()}"]`).text()
-    modalMeetingTitleEle.val(`${current_employee?.['full_name']}'s ${meeting_type} meeting from ${current_company?.['title']}`)
-})
-
 btn_add_app_meeting_schedule.on('click', function () {
-    let meeting_type = modalMeetingSelectAppEle.find(`option[value="${modalMeetingSelectAppEle.val()}"]`).text()
-    modalMeetingTitleEle.val(`${current_employee?.['full_name']}'s ${meeting_type} meeting from ${current_company?.['title']}`)
+    modalMeetingTitleEle.val(`${current_employee?.['full_name']}'s Zoom meeting from ${current_company?.['title']}`)
     let meeting_password_autogen = generateRandomString()
     $('#meeting-passcode-input').val(meeting_password_autogen)
     $('#pmi').text(zoom_config?.['personal_meeting_id'])
@@ -569,7 +576,7 @@ class MeetingScheduleHandle {
         let meeting_content = $('#content').val()
         let meeting_type = $('#offline-meeting').prop('checked')
         let meeting_room = roomEle.val()
-        let meeting_start_date = startDateEle.val()
+        let meeting_start_date = moment(startDateEle.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
         let meeting_start_time = startTimeEle.val()
         let meeting_duration = parseInt($('#duration-hour').val()) * 60 + parseInt($('#duration-min').val());
 
@@ -630,7 +637,7 @@ class MeetingScheduleHandle {
                 return false
             }
         }
-        console.log(frm.dataForm)
+
         return {
             url: frm.dataUrl,
             method: frm.dataMethod,
@@ -662,10 +669,9 @@ function LoadDetailMeetingSchedule() {
                 loadExternalParticipants(data?.['participants'].filter(entity => entity.is_external === true).map(entity => entity.external))
                 $('#offline-meeting').prop('checked', data?.['meeting_type'])
                 $('.row-for-offline-meeting').prop('hidden', !data?.['meeting_type'])
-                $('#tab_app_meeting .row-1').prop('hidden', data?.['meeting_type'])
-                $('#tab_app_meeting .row-2').prop('hidden', !data?.['meeting_type'])
+                $('#online-meeting-tab-space').prop('hidden', data?.['meeting_type'])
+                $('#offline-meeting-tab-space').prop('hidden', !data?.['meeting_type'])
                 loadMeetingRoom(data?.['meeting_room_mapped'])
-                $('#room-des').val(data?.['meeting_room_mapped']?.['description'])
                 if (data?.['online_meeting_data'].length > 0) {
                     let online_meeting_data = data?.['online_meeting_data'][0]
                     let formatted_start_time = formatDateTime(online_meeting_data?.['meeting_create_payload']?.['start_time'])

@@ -357,7 +357,6 @@
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="offcanvas-body">
-                <span><b>{% trans 'Undelivered' %}: </b><b id="undelivered"></b></span>
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6 border-right">
                         <div data-simplebar class="h-750p nicescroll-bar" id="scroll-new-leased-product">
@@ -425,7 +424,7 @@
                         <div data-simplebar class="h-300p nicescroll-bar" id="scroll-table-serial" hidden>
                             <table
                                 id="datable-delivery-wh-serial"
-                                class="table nowrap min-w-800p w-100"
+                                class="table nowrap w-100"
                                 data-url="{% url "WarehouseSerialListAPI" %}"
                                 data-url-regis="{% url "GReItemProductWarehouseSerialListAPI" %}"
                                 data-method="GET"

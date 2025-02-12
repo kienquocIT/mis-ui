@@ -1116,12 +1116,12 @@ class RecoveryDataTableHandle {
                                             data-bs-toggle="offcanvas"
                                             data-bs-target="#viewDepreciationDetail"
                                         ><i class="fas fa-ellipsis-h"></i>
-                                        </button><p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
+                                        </button><p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_depreciation_subtotal'] ? row?.['product_depreciation_subtotal'] : '0')}"></span></p>
                                     </div>
                                     <input
                                         type="text"
                                         class="form-control table-row-subtotal-raw"
-                                        value="${row?.['product_subtotal_price']}"
+                                        value="${row?.['product_depreciation_subtotal']}"
                                         hidden
                                     >
                                     
@@ -1687,11 +1687,6 @@ class RecoveryStoreDataHandle {
                 let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(row).index();
                 let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
                 let rowData = $row.data();
-
-                let recoveryEle = row.querySelector('.table-row-quantity-recovery');
-                if (recoveryEle) {
-                    rowData['quantity_recovery'] = parseFloat($(recoveryEle).val());
-                }
 
                 let lease_generate_data = [];
                 let $child = $(row).next();

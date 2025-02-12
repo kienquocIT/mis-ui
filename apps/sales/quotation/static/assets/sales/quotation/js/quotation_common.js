@@ -6971,19 +6971,21 @@ class QuotationSubmitHandle {
             // validate payment stage submit
             if (type === 0) {
                 if (_form.dataForm?.['sale_order_payment_stage'] && _form.dataForm?.['total_product']) {
-                    let totalRatio = 0;
-                    let totalPayment = 0;
-                    for (let payment of _form.dataForm['sale_order_payment_stage']) {
-                        totalRatio += payment?.['payment_ratio'] ? payment?.['payment_ratio'] : 0;
-                        totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
-                    }
-                    if (totalRatio !== 100) {
-                        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-ratio-payment')}, 'failure');
-                        return false;
-                    }
-                    if (totalPayment !== _form.dataForm?.['total_product']) {
-                        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-                        return false;
+                    if (_form.dataForm?.['sale_order_payment_stage'].length > 0) {
+                        let totalRatio = 0;
+                        let totalPayment = 0;
+                        for (let payment of _form.dataForm['sale_order_payment_stage']) {
+                            totalRatio += payment?.['payment_ratio'] ? payment?.['payment_ratio'] : 0;
+                            totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
+                        }
+                        if (totalRatio !== 100) {
+                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-ratio-payment')}, 'failure');
+                            return false;
+                        }
+                        if (totalPayment !== _form.dataForm?.['total_product']) {
+                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                            return false;
+                        }
                     }
                 }
             }

@@ -119,10 +119,11 @@ $(function () {
                 let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(row).index();
                 let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
                 let rowData = $row.data();
-
-                rowData['quantity_recovery'] = $(this).val();
-                RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData).draw();
-                RecoveryStoreDataHandle.storeData();
+                if ($(this).val()) {
+                    rowData['quantity_recovery'] = parseFloat($(this).val());
+                    RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData).draw();
+                    RecoveryStoreDataHandle.storeData();
+                }
             }
             let btnEle = row.querySelector('.btn-collapse-app-wf');
             if (btnEle) {

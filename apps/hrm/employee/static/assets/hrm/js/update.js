@@ -58,7 +58,8 @@ $(document).ready(function () {
                         $.fn.notifyB({description: data.message}, 'success')
                         $(form)[0].reset();
                         setTimeout(() => {
-                            window.location.replace($(form).attr('data-url-redirect'));
+                            // window.location.replace($(form).attr('data-url-redirect'));
+                            window.location.reload();
                         }, 1000)
                     }
                 }, (errs) => {

@@ -87,3 +87,7 @@ legend span{
         display: block;
     }
 }
+
+.tox-form__group[role="presentation"]{
+    display: none!important;
+}

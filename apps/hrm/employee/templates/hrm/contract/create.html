@@ -14,7 +14,8 @@
         <div class="row">
             <div class="col-md-12 col-lg-6 form-group">
                 <label for="contract_type_id">{% trans 'Contract type' %}</label>
-                <select class="select2" id="contract_type_id" name="contract_type" data-onload="{{ data.contract_type }}"></select>
+                <select class="select2" id="contract_type_id" name="contract_type"
+                        data-onload="{{ data.contract_type }}"></select>
             </div>
             <div class="col-md-12 col-lg-6 form-check style-checkbox">
                 <input class="form-check-input" type="checkbox" id="gridCheck" name="limit_time" checked>
@@ -76,11 +77,12 @@
                 <div class="col-md-12 col-lg-12 request_sign text-right hidden">
                     <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal"
                             data-bs-target="#modal_prepare_sign">
-                    {% trans 'Sign a contract' %}</button>
+                        {% trans 'Sign a contract' %}</button>
                 </div>
             {% endif %}
-        <div class="clearfix mt-4"></div>
+            <div class="clearfix mt-4"></div>
             <div class="col-md-12 col-lg-12">
+                <input type="hidden" name="content_info" id="extra_data">
                 <textarea
                         id="inp-remarks"
                         data-css-url-render="{% static 'comment/css/style.css' %}"

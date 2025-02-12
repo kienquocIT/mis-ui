@@ -217,7 +217,7 @@ class editor_handle {
             templates: templateList.map(
                 (item) => {
                     item['content'] = item['template'];
-                    item['description'] = 'content will be look like'
+                    item['description'] = JSON.stringify(item['extra_data'])
                     return item;
                 }
             ),
@@ -235,6 +235,13 @@ class editor_handle {
                     }
                 }
             `,
+            setup: function (editor){
+                editor.on('SetContent', function () {
+                    const extra_data = $('.tox-dialog .tox-form__group[role="presentation"] p').text()
+                    if (extra_data)
+                        $('#extra_data').attr('value', extra_data)
+                });
+            },
         });
         if (isReadonly)
             tinymce.activeEditor.setMode('readonly');
@@ -364,6 +371,7 @@ class contract_data {
                     $('#signing_date')[0]._flatpickr.setDate(data.signing_date)
                     $('input[name="file_type"]').prop('checked', false)
                     $(`input[name="file_type"][value="${data.file_type}"]`).prop('checked', true)
+                    $('#extra_data').attr('value', data?.['content_info'] ? JSON.stringify(data.content_info) : '{}')
 
                     const signStt = [
                         {'text': $.fn.gettext('Unsigned'), 'class': 'badge-soft-secondary'},
@@ -410,6 +418,16 @@ class contract_data {
         if (formSer['signing_date']) dataList.signing_date = formSer['signing_date']
         if (formSer['file_type']) dataList.file_type = parseInt(formSer['file_type'])
         if (formSer['remarks'] && dataList.file_type === 1) dataList.content = formSer['remarks']
+        if (formSer['content_info']){
+            let dataParse = {}
+            try {
+                dataParse = JSON.parse(formSer['content_info']);
+            }
+            catch {
+                console.log('parse data error')
+            }
+            dataList.content_info = dataParse
+        }
         if (formSer['attachment'] && dataList.file_type === 0)
             dataList.attachment = $x.cls.file.get_val(formSer['attachment'], [])
         if (Object.keys(dataList).length < 8)

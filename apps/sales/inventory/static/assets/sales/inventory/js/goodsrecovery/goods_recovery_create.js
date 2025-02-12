@@ -69,7 +69,7 @@ $(function () {
                         }
                     )
                 }
-                RecoveryLoadDataHandle.$modalMain.modal('show');
+                RecoveryLoadDataHandle.$canvasMain.modal('show');
             }
             return true;
         });
@@ -80,7 +80,7 @@ $(function () {
         });
 
         RecoveryDataTableHandle.$tableDeliveryProduct.on('click', '.table-row-checkbox', function () {
-            let warehouseArea = RecoveryLoadDataHandle.$modalMain[0].querySelector('.dtb-warehouse-area');
+            let warehouseArea = RecoveryLoadDataHandle.$canvasMain[0].querySelector('.dtb-warehouse-area');
             if (warehouseArea) {
                 RecoveryLoadDataHandle.loadCheckDeliveryProduct();
 
@@ -131,7 +131,7 @@ $(function () {
             }
         });
 
-        RecoveryLoadDataHandle.$btnSaveModal.on('click', function () {
+        RecoveryLoadDataHandle.$btnSaveProduct.on('click', function () {
             RecoveryLoadDataHandle.loadLineDetail();
             RecoveryCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);
         });

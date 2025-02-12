@@ -5,8 +5,8 @@ class RecoveryLoadDataHandle {
     static $boxStatus = $('#recovery_status');
     static $boxCustomer = $('#customer_id');
     static $boxLeaseOrder = $('#lease_order_id');
-    static $modalMain = $('#productModalCenter');
-    static $btnSaveModal = $('#btn-save-modal');
+    static $canvasMain = $('#productCanvas');
+    static $btnSaveProduct = $('#btn-save-product');
     static $depreciationModal = $('#viewDepreciationDetail');
     static $btnSaveDepreciation = $('#btn-save-depreciation-detail');
 
@@ -260,7 +260,7 @@ class RecoveryLoadDataHandle {
 
                 RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().clear().draw();
                 RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows.add(rowData?.['delivery_product_data'] ? rowData?.['delivery_product_data'] : []).draw();
-                let warehouseArea = RecoveryLoadDataHandle.$modalMain[0].querySelector('.dtb-warehouse-area');
+                let warehouseArea = RecoveryLoadDataHandle.$canvasMain[0].querySelector('.dtb-warehouse-area');
                 if (warehouseArea) {
                     warehouseArea.setAttribute('hidden', 'true');
                 }
@@ -1390,7 +1390,7 @@ class RecoveryDataTableHandle {
                                         }
                                     }
                                 }
-                                RecoveryLoadDataHandle.loadInitS2($(serialEle), serialData, {}, RecoveryLoadDataHandle.$modalMain, false, {'res2': 'serial_number'});
+                                RecoveryLoadDataHandle.loadInitS2($(serialEle), serialData, {}, RecoveryLoadDataHandle.$canvasMain, false, {'res2': 'serial_number'});
                                 if (data?.['serial_id']) {
                                     $(serialEle).val(data?.['serial_id']).trigger('change');
                                 }
@@ -1535,7 +1535,7 @@ class RecoveryDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-edit-product-good-receipt').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-edit-product-good-receipt" data-bs-toggle="modal" data-bs-target="#productModalCenter">
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-edit-product-good-receipt" data-bs-toggle="offcanvas" data-bs-target="#productCanvas">
                                     <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>${RecoveryLoadDataHandle.transEle.attr('data-edit')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -1749,7 +1749,7 @@ class RecoveryStoreDataHandle {
             let rowData = $row.data();
 
             let checked = row.querySelector('.table-row-checkbox:checked');
-            if (checked) {
+            if (checked) {  // update data hiện tại cho dòng được chọn
                 rowData['product_warehouse_data'] = product_warehouse_data;
             }
             let recovery = 0;
@@ -1778,7 +1778,7 @@ class RecoveryStoreDataHandle {
             let rowData = $row.data();
 
             let checked = row.querySelector('.table-row-checkbox:checked');
-            if (checked) {
+            if (checked) {  // update data hiện tại cho dòng được chọn
                 rowData['delivery_product_data'] = delivery_product_data;
             }
 

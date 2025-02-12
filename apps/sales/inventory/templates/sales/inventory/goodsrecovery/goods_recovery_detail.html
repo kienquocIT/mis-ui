@@ -230,88 +230,79 @@
         </div>
 
         <div class="modal-area">
-            <div class="modal fade" id="productModalCenter" tabindex="-1" role="dialog" aria-labelledby="productModalCenter" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title ml-4"><b>{% trans 'Product list' %}</b></h5>
-                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-6 border-right">
-                                    <div class="row mb-2">
-                                        <div data-simplebar class="h-350p nicescroll-bar">
-                                            <table
-                                                id="datable-delivery"
-                                                class="table nowrap w-100"
-                                            >
-                                                <thead>
-                                                <tr class="bg-light">
-                                                    <th class="w-60">{% trans 'Delivery' %}</th>
-                                                    <th class="w-20">{% trans 'Date' %}</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div data-simplebar class="h-350p nicescroll-bar">
-                                            <table
-                                                id="datable-deli-product"
-                                                class="table nowrap w-100"
-                                            >
-                                                <thead>
-                                                <tr class="bg-light">
-                                                    <th class="w-25">{% trans 'Product' %}</th>
-                                                    <th class="w-15">{% trans 'Asset type' %}</th>
-                                                    <th class="w-10">{% trans 'UOM' %}</th>
-                                                    <th class="w-10">{% trans 'Ordered' %}</th>
-                                                    <th class="w-10">{% trans 'Delivered' %}</th>
-                                                    <th class="w-10">{% trans 'Recovered' %}</th>
-                                                    <th class="w-10">{% trans 'Recovery' %}</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="row mb-2">
-                                        <div data-simplebar class="h-700p nicescroll-bar dtb-warehouse-area" hidden>
-                                            <table
-                                                    id="datable-warehouse"
-                                                    class="table nowrap w-100 mb-5"
-                                                    data-url="{% url 'WorkflowListAPI' %}"
-                                                    data-method="get"
-                                                    data-app-list="{% url 'TenantApplicationListAPI' %}"
-                                            >
-                                                {% csrf_token %}
-                                                <thead>
-                                                <tr class="bg-light">
-                                                    <th>{% trans 'Warehouse' %}</th>
-                                                    <th>{% trans 'Delivered' %}</th>
-                                                    <th>{% trans 'Recovered' %}</th>
-                                                    <th>{% trans 'This time' %}</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+
+            <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="productCanvas" aria-labelledby="offcanvasTopLabel">
+                <div class="modal-header">
+                    <h5><b>{% trans 'Product list' %}</b></h5>
+                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6 border-right">
+                            <div data-simplebar class="h-300p nicescroll-bar">
+                                <table
+                                    id="datable-delivery"
+                                    class="table nowrap w-100"
+                                >
+                                    <thead>
+                                    <tr class="bg-light">
+                                        <th class="w-60">{% trans 'Delivery' %}</th>
+                                        <th class="w-20">{% trans 'Date' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div data-simplebar class="h-300p nicescroll-bar">
+                                <table
+                                    id="datable-deli-product"
+                                    class="table nowrap w-100"
+                                >
+                                    <thead>
+                                    <tr class="bg-light">
+                                        <th class="w-25">{% trans 'Product' %}</th>
+                                        <th class="w-15">{% trans 'Asset type' %}</th>
+                                        <th class="w-10">{% trans 'UOM' %}</th>
+                                        <th class="w-10">{% trans 'Ordered' %}</th>
+                                        <th class="w-10">{% trans 'Delivered' %}</th>
+                                        <th class="w-10">{% trans 'Recovered' %}</th>
+                                        <th class="w-10">{% trans 'Recovery' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="button" class="btn btn-primary" id="btn-save-modal" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div data-simplebar class="h-700p nicescroll-bar dtb-warehouse-area" hidden>
+                                <table
+                                        id="datable-warehouse"
+                                        class="table nowrap w-100 mb-5"
+                                        data-url="{% url 'WorkflowListAPI' %}"
+                                        data-method="get"
+                                        data-app-list="{% url 'TenantApplicationListAPI' %}"
+                                >
+                                    {% csrf_token %}
+                                    <thead>
+                                    <tr class="bg-light">
+                                        <th>{% trans 'Warehouse' %}</th>
+                                        <th>{% trans 'Delivered' %}</th>
+                                        <th>{% trans 'Recovered' %}</th>
+                                        <th>{% trans 'This time' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+                    <button type="button" class="btn btn-primary" id="btn-save-product" data-bs-dismiss="offcanvas">{% trans 'Save' %}</button>
                 </div>
             </div>
 

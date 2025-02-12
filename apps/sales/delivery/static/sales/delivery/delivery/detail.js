@@ -1022,7 +1022,7 @@ $(async function () {
                 columns: [
                     {
                         targets: 0,
-                        width: '25%',
+                        width: '30%',
                         render: (data, type, row) => {
                             let targetData = row?.['product_data'];
                             if (row?.['offset_data']?.['id']) {
@@ -1034,7 +1034,6 @@ $(async function () {
                                                 type="radio"
                                                 class="form-check-input table-row-checkbox"
                                                 id="new-product-${targetData?.['id'].replace(/-/g, "")}"
-                                                checked
                                             >
                                         </div>
                                         <textarea class="form-control table-row-item-show" rows="2" readonly>${targetData?.['code']}</textarea>
@@ -1056,7 +1055,7 @@ $(async function () {
                     },
                     {
                         targets: 1,
-                        width: '35%',
+                        width: '30%',
                         render: (data, type, row) => {
                             let targetData = row?.['product_data'];
                             if (row?.['offset_data']?.['id']) {
@@ -1069,7 +1068,7 @@ $(async function () {
                         targets: 1,
                         width: '20%',
                         render: (data, type, row) => {
-                            return `<span class="table-row-undelivered">${row?.['remaining_quantity'] ? row?.['remaining_quantity'] : 0}</span>`;
+                            return `<span class="table-row-undelivered">${row?.['product_quantity_new'] ? row?.['product_quantity_new'] : 0}</span>`;
                         },
                     },
                     {
@@ -1111,7 +1110,7 @@ $(async function () {
                 columns: [
                     {
                         targets: 0,
-                        width: '25%',
+                        width: '30%',
                         render: (data, type, row) => {
                             return `<div class="d-flex align-items-center">
                                         <div class="form-check form-check-lg">
@@ -1140,7 +1139,7 @@ $(async function () {
                     },
                     {
                         targets: 1,
-                        width: '35%',
+                        width: '30%',
                         render: (data, type, row) => {
                             return `<textarea class="form-control table-row-name" rows="2" readonly>${row?.['product_data']?.['title'] ? row?.['product_data']?.['title'] : ''}</textarea>`;
                         },
@@ -1638,7 +1637,7 @@ $(async function () {
                 let rowData = $row.data();
 
                 let checkedEle = row.querySelector('.table-row-checkbox:checked');
-                if (checkedEle) {
+                if (checkedEle) {  // update data hiện tại cho dòng được chọn
                     rowData['serial_data'] = serialData;
                     rowData['lot_data'] = lotData;
                 }
@@ -1653,7 +1652,7 @@ $(async function () {
                 }
                 rowData['picked_quantity'] = picked;
 
-                $tablePW.DataTable().row(rowIndex).data(rowData);
+                $tablePW.DataTable().row(rowIndex).data(rowData).draw();
                 if (rowData?.['picked_quantity'] > 0) {
                     pwData.push(rowData);
                 }
@@ -1673,7 +1672,7 @@ $(async function () {
                 let rowData = $row.data();
 
                 let checkedEle = row.querySelector('.table-row-checkbox:checked');
-                if (checkedEle) {
+                if (checkedEle) {  // update data hiện tại cho dòng được chọn
                     rowData['delivery_data'] = pwData;
                 }
                 let picked = 0;
@@ -1702,7 +1701,7 @@ $(async function () {
                 let rowData = $row.data();
 
                 let checkedEle = row.querySelector('.table-row-checkbox:checked');
-                if (checkedEle) {
+                if (checkedEle) {  // update data hiện tại cho dòng được chọn
                     rowData['delivery_data'] = pwData;
                 }
                 let picked = 0;
@@ -1922,13 +1921,15 @@ $(async function () {
 
             let prodSub = []
             for (let prod of prodTable.getProdList) {
-                if (prod.picked_quantity > 0)
+                if (prod?.['picked_quantity'] > 0) {
                     prodSub.push({
-                        'product_id': prod.product_data.id,
-                        'done': prod.picked_quantity,
-                        'delivery_data': prod.delivery_data,
-                        'order': prod.order,
+                        'product_id': prod?.['product_data']?.['id'],
+                        'done': prod?.['picked_quantity'],
+                        'delivery_data': prod?.['delivery_data'],
+                        'product_quantity_leased_data': prod?.['product_quantity_leased_data'],
+                        'order': prod?.['order'],
                     })
+                }
             }
             if (!prodSub.length && $('#wrap-employee_inherit').attr('data-is_lead').toLowerCase() !== 'true') {
                 // ko co and ko fai lead

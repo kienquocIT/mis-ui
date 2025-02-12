@@ -5437,6 +5437,10 @@ msgid "Please select sale order"
 msgstr "Vui lòng chọn đơn hàng"
 
 #
+msgid "Select Sale order"
+msgstr "Chọn Đơn hàng"
+
+#
 msgid "Load last storage local"
 msgstr "Tải lại bản lưu trữ cuối cùng ở máy tính này"
 
@@ -8517,6 +8521,10 @@ msgid "This time"
 msgstr "Lần này"
 
 #
+msgid "Quantity this time"
+msgstr "SL lần này"
+
+#
 msgid "Deliver"
 msgstr "Giao"
 
@@ -10402,3 +10410,23 @@ msgstr "Biểu đồ Hoạt động bán hàng"
 #
 msgid "Reload data"
 msgstr "Tải lại dữ liệu"
+
+#
+msgid "Purchase request for Sale order"
+msgstr "Yêu cầu mua hàng cho Đơn hàng"
+
+#
+msgid "Purchase request for Distribution plan"
+msgstr "Yêu cầu mua hàng cho Kế hoạch nhập hàng"
+
+#
+msgid "Select Distribution plan"
+msgstr "Chọn Kế hoạch nhập hàng"
+
+#
+msgid "Only create Purchase request your own Sale order"
+msgstr "Chỉ được làm Yêu cầu mua hàng cho Đơn hàng của bản thân"
+
+#
+msgid "Configured to create Purchase request for all Sale order"
+msgstr "Được cấu hình để làm Yêu cầu mua hàng cho mọi Đơn hàng"

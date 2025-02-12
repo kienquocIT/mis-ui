@@ -153,6 +153,7 @@ $(document).ready(function () {
     let revenue_expected_DF = []
     let profit_chart = null
     let profit_expected_DF = []
+    let profit_expected_type = null
     let COMPANY_CURRENT_REVENUE = null
     let COMPANY_CURRENT_PROFIT = null
 
@@ -256,18 +257,21 @@ $(document).ready(function () {
 
                 revenue_expected_DF = Array(12).fill(0)
                 profit_expected_DF = Array(12).fill(0)
-                for (let i = 0; i < results[1].length; i++) {
-                    if (!revenueprofitGroupEle.val() || results[1][i]?.['employee_mapped']?.['group']?.['id'] === revenueprofitGroupEle.val()) {
-                        const empMonthTarget = results[1][i]?.['emp_month_target']
-                        if (Array.isArray(empMonthTarget)) {
-                            for (let j = 0; j < empMonthTarget.length; j++) {
-                                revenue_expected_DF[j] += empMonthTarget[j] || 0
+                profit_expected_type = results[1].length ? results[1][0]?.['profit_target_type'] : null
+                if (parseInt(profit_expected_type) === parseInt(profitTypeEle.val())) {
+                    for (let i = 0; i < results[1].length; i++) {
+                        if (!revenueprofitGroupEle.val() || results[1][i]?.['employee_mapped']?.['group']?.['id'] === revenueprofitGroupEle.val()) {
+                            const empMonthTarget = results[1][i]?.['emp_month_target']
+                            if (Array.isArray(empMonthTarget)) {
+                                for (let j = 0; j < empMonthTarget.length; j++) {
+                                    revenue_expected_DF[j] += empMonthTarget[j] || 0
+                                }
                             }
-                        }
-                        const empMonthProfitTarget = results[1][i]?.['emp_month_profit_target']
-                        if (Array.isArray(empMonthProfitTarget)) {
-                            for (let j = 0; j < empMonthProfitTarget.length; j++) {
-                                profit_expected_DF[j] += empMonthProfitTarget[j] || 0
+                            const empMonthProfitTarget = results[1][i]?.['emp_month_profit_target']
+                            if (Array.isArray(empMonthProfitTarget)) {
+                                for (let j = 0; j < empMonthProfitTarget.length; j++) {
+                                    profit_expected_DF[j] += empMonthProfitTarget[j] || 0
+                                }
                             }
                         }
                     }

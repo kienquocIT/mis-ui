@@ -10593,3 +10593,103 @@ msgstr "Toán tử logic"
 #
 msgid "You can not delete default stages!"
 msgstr "Bạn không thể xóa các giai đoạn mặc định!"
+
+#
+msgid "Accounting policies"
+msgstr "Chính sách kế toán"
+
+#
+msgid "Meeting room"
+msgstr "Phòng họp"
+
+#
+msgid "Create meeting room"
+msgstr "Tạo phòng họp"
+
+#
+msgid "Zoom account config"
+msgstr "Cấu hình tài khoản Zoom"
+
+#
+msgid "Add new meeting room"
+msgstr "Thêm phòng họp"
+
+#
+msgid "See instruction here"
+msgstr "Xem hướng dẫn tại đây"
+
+#
+msgid "1 existing config"
+msgstr "1 cấu hình đang tồn tại"
+
+#
+msgid "Instruction"
+msgstr "Hướng dẫn"
+
+#
+msgid "Enter Account email"
+msgstr "Nhập Account email"
+
+#
+msgid "Enter your email, which you use to connect to Zoom API."
+msgstr "Nhập email của bạn, cái được sử dụng để kết nối với Zoom API"
+
+#
+msgid "Build app"
+msgstr "Xây dựng ứng dụng"
+
+#
+msgid "Go to"
+msgstr "Đi đến"
+
+#
+msgid "here"
+msgstr "đây"
+
+#
+msgid "Login your Zoom account with email in last step."
+msgstr "Đăng nhập tài khoản Zoom với email ở bước trước."
+
+#
+msgid "Click Develop button > Select Build Server-to-Server App > Enter App name."
+msgstr "Nhấn vào nút Develop > Chọn Build Server-to-Server App > Nhập App name."
+
+#
+msgid "In tab App Credentials: click Next button."
+msgstr "Ở tab App Credentials: chọn Next"
+
+#
+msgid "In tab Information: fill in all fields (required)."
+msgstr "Ở tab Information: điền vào tất cả các trường (bắt buộc)."
+
+#
+msgid "In tab Feature: click Next button."
+msgstr "Ở tab Feature: nhấn vào nút Next."
+
+#
+msgid "In tab Scopes: click Add Scopes button > In tab Meeting, select 2 rows:  (Get a meetings encoded SIP URL) and (View and manage all user meetings) > Click Continue button."
+msgstr "Ở tab Scopes: nhấn vào nút Add Scopes > Ở tab Meeting, chọn  2 hàng: (Get a meetings encoded SIP URL) và (View and manage all user meetings) > nhấn vào nút Continue."
+
+#
+msgid "Finally, in tab Activation: click Activate your app button to active your app."
+msgstr "Cuối cùng, ở tab Activation: nhấn vào nút Activate your app để kích hoạt ứng ựng của bạn."
+
+#
+msgid "Get Account ID, Client ID, Client secret"
+msgstr "Lấy Account ID, Client ID, Client secret"
+
+#
+msgid "Open your app in last step, then go to App Credentials tab. You will see your Account ID, Client ID and Client secret."
+msgstr "Mở ứng ụng của bạn ở bước trước lên, sau đó đi đến tab App Credentials. Bạn sẽ thấy Account ID, Client ID và Client secret."
+
+#
+msgid "Get Personal meeting ID"
+msgstr "Lấy ID Cuộc họp cá nhân"
+
+#
+msgid "Login to your Zoom Account"
+msgstr "Đăng nhập vào tài khoản Zoom của bạn"
+
+#
+msgid "Go to Profile tab, your Personal meeting ID here."
+msgstr "Đi tới tab Profile (Cá nhân), ID Cuộc họp cá nhân cảu bạn ở đây."

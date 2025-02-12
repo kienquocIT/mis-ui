@@ -5,6 +5,16 @@ $(document).ready(function () {
             this.$formSubmit = $('#form-fixed-asset')
         }
 
+        disableFields(){
+            const $fields = $('#form-fixed-asset').find('input, select, button')
+            $fields.attr('disabled', true)
+            $fields.attr('readonly', true)
+
+            $('#datatable-asset-source').on('draw.dt', function() {
+                $(this).find('input, button').attr('disabled', true).attr('readonly', true);
+            });
+        }
+
         fetchDetailData(){
             $.fn.callAjax2({
                 url: this.$formSubmit.attr('data-url'),
@@ -30,6 +40,7 @@ $(document).ready(function () {
                         this.$depreciationTimeInput.val(data?.['depreciation_time'])
                         this.$depreciationMethodSelect.val(data?.['depreciation_method']).trigger('change')
                         this.$adjustmentFactorSelect.val(data?.['adjustment_factor']).trigger('change')
+                        this.$timeUnitSelect.val(data?.['depreciation_time_unit']).trigger('change')
                         this.openModalAPInvoiceDetailEventBinding()
                     }
                 },
@@ -42,7 +53,9 @@ $(document).ready(function () {
                         $.fn.notifyB('Error', 'failure')
                     }
                 })
-
+                .then(() => {
+                    this.disableFields()
+                })
         }
     }
 

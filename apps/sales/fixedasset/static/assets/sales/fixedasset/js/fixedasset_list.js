@@ -81,15 +81,16 @@ $(document).ready(function () {
                     targets: 7,
                     width: '10%',
                     render: (data, type, row) => {
-                        const customerName = row?.['use_customer'] ? row?.['use_customer']?.['name'] : 'no data'
-                        return `<div>${row?.['use_customer']?.['name']}</div>`
+                        const customerName = row?.['use_customer']?.['name'] ? row?.['use_customer']?.['name'] : 'no data'
+                        return `<div>${customerName}</div>`
                     }
                 },
                 {
                     targets: 8,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<div>${row?.['date_created']}</div>`
+                        const date =row?.['date_created'] ? moment(row?.['date_created'].split(' ')[0], 'YYYY-MM-DD').format('DD-MM-YYYY') : ''
+                        return `<div>${date}</div>`
                     }
                 },
                 {

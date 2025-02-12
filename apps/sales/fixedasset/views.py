@@ -32,7 +32,7 @@ class FixedAssetList(View):
         auth_require=True,
         template='sales/fixedasset/fixedasset_list.html',
         menu_active='menu_fixed_asset',
-        breadcrumb='',
+        breadcrumb='FIXED_ASSET_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
@@ -43,11 +43,11 @@ class FixedAssetCreate(View):
         auth_require=True,
         template='sales/fixedasset/fixedasset_create.html',
         menu_active='menu_fixed_asset',
-        breadcrumb='',
+        breadcrumb='FIXED_ASSET_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         ctx = {
-            'form_id': '',
+            'form_id': 'form-fixed-asset-create',
         }
         return ctx, status.HTTP_200_OK
 
@@ -56,11 +56,11 @@ class FixedAssetDetail(View):
         auth_require=True,
         template='sales/fixedasset/fixedasset_detail.html',
         menu_active='menu_fixed_asset',
-        breadcrumb='',
+        breadcrumb='FIXED_ASSET_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         ctx = {
-            'form_id': '',
+            'form_id': 'form-fixed-asset',
         }
         return ctx, status.HTTP_200_OK
 

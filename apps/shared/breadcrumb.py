@@ -459,6 +459,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Fixed asset
     FIXED_ASSET_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetMasterDataList')
+    FIXED_ASSET_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetList')
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -1212,3 +1213,10 @@ class BreadcrumbView:
 
     # Fixed asset
     FIXED_ASSET_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.FIXED_ASSET_MASTER_DATA_LIST_PAGE]
+    FIXED_ASSET_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.FIXED_ASSET_PAGE
+    ]
+    FIXED_ASSET_LIST_PAGE = FIXED_ASSET_LIST + [BreadcrumbItem.BASTION_LIST]
+    FIXED_ASSET_CREATE_PAGE = FIXED_ASSET_LIST + [BreadcrumbItem.BASTION_CREATE]
+    FIXED_ASSET_DETAIL_PAGE = FIXED_ASSET_LIST + [BreadcrumbItem.BASTION_DETAIL]

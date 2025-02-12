@@ -21,7 +21,7 @@ class CommonHandler{
         this.$sourceTypeSelect = $('#source-type')
         this.$depreciationTimeInput = $('#depreciation-time')
         this.$depreciationMethodSelect = $('#depreciation-method')
-
+        this.$timeUnitSelect = $('#time-unit')
     }
 
     init(){

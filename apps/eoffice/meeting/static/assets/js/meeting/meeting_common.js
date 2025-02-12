@@ -237,6 +237,9 @@ function loadExternalParticipantsTable(data, contact_mapped_id=[]) {
         useDataServer: true,
         rowIdx: true,
         paging: false,
+        scrollX: '100vw',
+        scrollY: '40vh',
+        scrollCollapse: true,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
@@ -257,21 +260,29 @@ function loadExternalParticipantsTable(data, contact_mapped_id=[]) {
         },
         columns: [
             {
-                className: 'wrap-text',
+                className: 'wrap-text w-5',
                 render: () => {
                     return ``;
                 }
             },
             {
-                data: 'full_name',
-                className: 'wrap-text',
+                className: 'wrap-text w-5',
                 render: (data, type, row) => {
-                    return `<span data-id="${row.id}" data-fullname="${row?.['fullname']}" class="text-primary emp-info">${row?.['fullname']}</span>`;
+                    return `<div class="form-check ">
+                                <input type="checkbox" class="form-check-input checkbox_external_contacts">
+                            </div>`
+                }
+            },
+            {
+                data: 'full_name',
+                className: 'wrap-text w-40',
+                render: (data, type, row) => {
+                    return `<span class="badge badge-primary mr-1">${row?.['code']}</span><span data-id="${row?.['id']}" data-fullname="${row?.['fullname']}" class="text-primary emp-info">${row?.['fullname']}</span>`;
                 }
             },
             {
                 data: 'job_title',
-                className: 'wrap-text',
+                className: 'wrap-text w-35',
                 render: (data, type, row) => {
                     if (row?.['job_title']) {
                         return `<span class="text-secondary">${row?.['job_title']}</span>`;
@@ -280,10 +291,10 @@ function loadExternalParticipantsTable(data, contact_mapped_id=[]) {
                 }
             },
             {
-                className: 'wrap-text',
+                className: 'wrap-text w-15 text-right',
                 render: (data, type, row) => {
-                    return `<div class="form-check form-check-lg">
-                                <input type="checkbox" class="form-check-input checkbox_external_contacts">
+                    return `<div class="form-check">
+                                <input type="checkbox" class="form-check-input checkbox_external_send_notify_email">
                             </div>`
                 }
             },

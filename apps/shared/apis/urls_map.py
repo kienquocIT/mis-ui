@@ -843,5 +843,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # masterdata/ fixed asset
     FIXED_ASSET_CLASSIFICATION_GROUP_LIST = StringUrl('saledata/fixed-asset/classification-group/list')
     FIXED_ASSET_CLASSIFICATION_LIST = StringUrl('saledata/fixed-asset/classification/list')
-    FIXED_ASSET_LIST = StringUrl('fixed-asset/list')
-    FIXED_ASSET_DETAIL = StringUrl('fixed-asset/detail')
+
+    # asset/ fixed asset
+    FIXED_ASSET_LIST = StringUrl('asset/fixed-asset/list')
+    FIXED_ASSET_DETAIL = StringUrl('asset/fixed-asset/detail')

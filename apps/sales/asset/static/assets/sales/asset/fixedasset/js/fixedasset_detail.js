@@ -23,7 +23,10 @@ $(document).ready(function () {
                 (resp) => {
                     const data = $.fn.switcherResp(resp);
                     if (data) {
+                        $x.fn.renderCodeBreadcrumb(data);
+                        $.fn.compareStatusShowPageAction(data);
                         console.log(data)
+                        $('#data-script').attr('data-fixed-asset-detail', JSON.stringify(data))
                         this.initClassificationSelect([data?.['classification']])
                         this.$assetNameInput.val(data?.['title'])
                         this.$assetCodeInput.val(data?.['code'])
@@ -58,7 +61,7 @@ $(document).ready(function () {
                 })
         }
     }
-
+    WFRTControl.setWFInitialData('asset');
     const instance = new DetailHandler()
     instance.fetchDetailData()
 })

@@ -29,15 +29,16 @@
         <thead>
             <tr>
                 <th></th>
+                <th>{% trans 'Title' %}</th>
                 <th>{% trans 'Asset Number' %}</th>
                 <th>{% trans 'Offset Item' %}</th>
-                <th>{% trans 'Title' %}</th>
                 <th>{% trans 'Status' %}</th>
                 <th>{% trans 'Managing Department' %}</th>
                 <th>{% trans 'Using Department' %}</th>
                 <th>{% trans 'Using Customer' %}</th>
                 <th>{% trans 'Created Date' %}</th>
                 <th>{% trans 'Depreciation Time' %}</th>
+                <th>{% trans 'Status' %}</th>
             </tr>
         </thead>
         <tbody>
@@ -45,7 +46,8 @@
     </table>
 {% endblock %}
 {% block dataHiddenGroup %}
+    {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/sales/fixedasset/js/fixedasset_list.js' %}"></script>
+    <script src="{% static 'assets/sales/asset/fixedasset/js/fixedasset_list.js' %}"></script>
 {% endblock %}

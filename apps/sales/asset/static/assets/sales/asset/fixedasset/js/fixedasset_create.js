@@ -2,7 +2,7 @@ $(document).ready(function () {
     class CreateHandler extends CommonHandler{
         constructor() {
             super();
-            this.$formSubmit = $('#form-fixed-asset-create')
+            this.$formSubmit = $('#form-fixed-asset')
         }
 
         setupFormData(form) {
@@ -55,36 +55,12 @@ $(document).ready(function () {
                 submitHandler: (form, event) => {
                     let _form = new SetupFormSubmit(this.$formSubmit);
                     this.setupFormData(_form)
-                    $.fn.callAjax2({
-                        url: _form.dataUrl,
-                        method: _form.dataMethod,
-                        data: _form.dataForm
-                    }).then(
-                        (resp) => {
-                            const data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({
-                                    'description': 'Success',
-                                }, 'success');
-                                setTimeout(() => {
-                                    window.location.replace(_form.dataUrlRedirect);
-                                }, 3000)
-                            }
-                        },
-                        (errs) => {
-                            if(errs.data.errors){
-                                for (const [key, value] of Object.entries(errs.data.errors)) {
-                                    $.fn.notifyB({title: key, description: value}, 'failure')
-                                }
-                            } else {
-                                $.fn.notifyB('Error', 'failure')
-                            }
-                        });
+                    WFRTControl.callWFSubmitForm(_form)
                 }
             })
         }
     }
-
+    WFRTControl.setWFInitialData('asset');
     const instance = new CreateHandler()
     instance.init()
     instance.setupFormSubmit()

@@ -82,18 +82,3 @@
         </div>
     </div>
 </div>
-
-{% block dataHiddenGroup %}
-    <script id="url-script"
-            data-url-product-category="{% url 'ConsultingProductCategoryListAPI' %}"
-            data-url-masterdatadoc = "{% url 'ConsultingDocumentMasterDataListAPI' %}"
-            data-url-oppdetail = "{% url 'ConsultingOppDetailAPI' pk=0%}"
-    ></script>
-    <script id="doc-data-script"
-        data-doc-list="[]"
-    ></script>
-    <script id="trans-script"
-        data-product-already-selected="{% trans 'This product category has already been selected.' %}"
-        data-field-required="{% trans 'This field is required.' %}"
-    ></script>
-{% endblock %}

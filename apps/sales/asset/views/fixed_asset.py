@@ -4,10 +4,18 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared import mask_view, ServerAPI, ApiURL, InputMappingProperties
 from apps.shared.constant import SYSTEM_STATUS
 from apps.shared.msg import BaseMsg
 
+__all__ = [
+    'FixedAssetList',
+    'FixedAssetCreate',
+    'FixedAssetUpdate',
+    'FixedAssetDetail',
+    'FixedAssetDetailAPI',
+    'FixedAssetListAPI',
+]
 
 def create(request, url, msg):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
@@ -30,7 +38,7 @@ class FixedAssetList(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/fixedasset/fixedasset_list.html',
+        template='sales/asset/fixed-asset/fixedasset_list.html',
         menu_active='menu_fixed_asset',
         breadcrumb='FIXED_ASSET_LIST_PAGE',
     )
@@ -41,26 +49,52 @@ class FixedAssetList(View):
 class FixedAssetCreate(View):
     @mask_view(
         auth_require=True,
-        template='sales/fixedasset/fixedasset_create.html',
+        template='sales/asset/fixed-asset/fixedasset_create.html',
         menu_active='menu_fixed_asset',
         breadcrumb='FIXED_ASSET_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         ctx = {
-            'form_id': 'form-fixed-asset-create',
+            "list_from_app": 'asset.fixedasset.create',
+            'input_mapping_properties': InputMappingProperties.FIXED_ASSET_DATA_MAP,
+            'app_id': 'fc552ebbeb984d7b81cde4b5813b7815',
+            'form_id': 'form-fixed-asset',
         }
         return ctx, status.HTTP_200_OK
 
 class FixedAssetDetail(View):
     @mask_view(
         auth_require=True,
-        template='sales/fixedasset/fixedasset_detail.html',
+        template='sales/asset/fixed-asset/fixedasset_detail.html',
         menu_active='menu_fixed_asset',
         breadcrumb='FIXED_ASSET_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         ctx = {
+            'data': {'doc_id': pk},
+            "list_from_app": 'asset.fixedasset.view',
+            'input_mapping_properties': InputMappingProperties.FIXED_ASSET_DATA_MAP,
+            'app_id': 'fc552ebbeb984d7b81cde4b5813b7815',
             'form_id': 'form-fixed-asset',
+            'employee_current': request.user.employee_current_data,
+        }
+        return ctx, status.HTTP_200_OK
+
+class FixedAssetUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/asset/fixed-asset/fixedasset_update.html',
+        menu_active='menu_fixed_asset',
+        breadcrumb='FIXED_ASSET_UPDATE_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        ctx = {
+            'data': {'doc_id': pk},
+            "list_from_app": 'asset.fixedasset.edit',
+            'input_mapping_properties': InputMappingProperties.FIXED_ASSET_DATA_MAP,
+            'app_id': 'fc552ebbeb984d7b81cde4b5813b7815',
+            'form_id': 'form-fixed-asset',
+            'employee_current': request.user.employee_current_data,
         }
         return ctx, status.HTTP_200_OK
 
@@ -93,3 +127,15 @@ class FixedAssetDetailAPI(APIView):
     def get(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.FIXED_ASSET_DETAIL.push_id(pk)).get()
         return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update(
+            request=request,
+            url=ApiURL.FIXED_ASSET_DETAIL,
+            pk=pk,
+            msg=BaseMsg.SUCCESS
+        )

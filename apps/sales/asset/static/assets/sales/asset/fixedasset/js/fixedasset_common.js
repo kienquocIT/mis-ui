@@ -9,7 +9,6 @@ class CommonHandler{
         this.$APInvoiceDatatable = $('#modal-datatable-ap-invoice')
         this.$sourceDatatable = $('#datatable-asset-source')
         this.$APInvoiceModal = $('#modal-ap-invoice')
-        this.$APInvoiceDetailModal = $('#modal-ap-invoice-detail')
         this.$APInvoiceDetailDatatable = $('#modal-datatable-ap-invoice-detail')
         this.$originalCostInput = $('#original-cost')
         this.$netBookValueInput = $('#net-book-value')
@@ -220,8 +219,12 @@ class CommonHandler{
                     targets: 6,
                     width: '5%',
                     render: (data, type, row) => {
+                        const dataBSTargetMap = {
+                            0: '#modal-ap-invoice-detail'
+                        }
+                        const dataBSTarget = dataBSTargetMap[Number(row?.['transaction_type'])]
                         return `<div class="d-flex justify-content-center">
-                                    <button data-id="${row?.['source_id']}" type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover open-modal" data-bs-toggle="modal" data-bs-target="#modal-ap-invoice-detail" title="">
+                                    <button data-id="${row?.['source_id']}" type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover open-modal" data-bs-toggle="modal" data-bs-target="${dataBSTarget}">
                                         <span class="icon"><i class="fa-regular fa-pen-to-square"></i></span>
                                     </button>
                                 </div>`
@@ -239,6 +242,9 @@ class CommonHandler{
     addSourceAPInvoiceEventBinding(){
         $(document).on('click', '#btn-add-ap-invoice', ()=>{
             const $curAPInvoice = $('input[name="ap_invoice"]:checked')
+            if($curAPInvoice.length===0){
+                return;
+            }
             const code = $curAPInvoice.attr("data-code")
             const documentNo = $curAPInvoice.attr("data-document-no")
             const id = $curAPInvoice.attr("data-id")
@@ -248,7 +254,7 @@ class CommonHandler{
             let exists = false;
             table.rows().every(function () {
                 let rowData = this.data();
-                if (rowData.id === id) {
+                if (rowData.source_id === id) {
                     exists = true;
                     return false;
                 }
@@ -344,7 +350,20 @@ class CommonHandler{
                         targets: 4,
                         width: '20%',
                         render: (data, type, row) => {
-                            const increasedFA = row?.['increased_FA_value'] ? Number(row?.['increased_FA_value']) : 0
+                            const apInvoiceProdId = row?.['id']
+                            let dataFADetail = $('#data-script').attr('data-fixed-asset-detail')
+                            if (dataFADetail){
+                                dataFADetail = JSON.parse(dataFADetail)
+                            }
+                            let increasedFA = row?.['increased_FA_value'] ? Number(row?.['increased_FA_value']) : 0
+
+                            if(dataFADetail?.['ap_invoice_items']){
+                                const fixedAssetAPInvoiceItem = dataFADetail?.['ap_invoice_items'].find(item=>item.ap_invoice_item_id=apInvoiceProdId)
+                                if(fixedAssetAPInvoiceItem){
+                                    increasedFA = increasedFA - fixedAssetAPInvoiceItem?.['increased_FA_value']
+                                }
+                            }
+
                             return `<span class="mask-money prior-increased-fa" data-init-money="${increasedFA}"></span>`
                         }
                     },

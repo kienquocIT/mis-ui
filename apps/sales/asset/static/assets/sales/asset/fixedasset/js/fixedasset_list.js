@@ -30,21 +30,22 @@ $(document).ready(function () {
                     width: '10%',
                     render: (data, type, row) => {
                         const link = urlDetail.replace('0', row.id);
-                        return `<a href=${link} class="text-primary fw-bold">${row?.['code']}</a> ${$x.fn.buttonLinkBlank(link)}`
+                        return `<a href=${link} class="text-primary fw-bold">${row?.['title']}</a> ${$x.fn.buttonLinkBlank(link)}`
                     }
                 },
                 {
                     targets: 2,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<div>${row?.['product']?.['title']}</div>`
+                        const link = urlDetail.replace('0', row.id);
+                        return `<a href=${link} class="text-primary fw-bold">${row?.['code']}</a>`
                     }
                 },
                 {
                     targets: 3,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<div>${row?.['title']}</div>`
+                        return `<div>${row?.['product']?.['title']}</div>`
                     }
                 },
                 {
@@ -62,7 +63,7 @@ $(document).ready(function () {
                     targets: 5,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<div>${row?.['manage_department']?.['title']}</div>`
+                        return `<div class="w-100 badge badge-soft-success badge-outline mb-1">${row?.['manage_department']?.['title']}</div>`
                     }
                 },
                 {
@@ -102,6 +103,21 @@ $(document).ready(function () {
                             1: 'Year',
                         }
                         return `<div>${row?.['depreciation_time']} ${depreciationTimeUnitMap[row?.['depreciation_time_unit']]}</div>`
+                    }
+                },
+                {
+                    targets: 10,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        let sttTxt = JSON.parse($('#stt_sys').text())
+                        let sttData = [
+                            "light",
+                            "primary",
+                            "info",
+                            "success",
+                            "danger",
+                        ]
+                        return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
                     }
                 },
             ]

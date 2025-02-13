@@ -1,11 +1,11 @@
 $(document).ready(function () {
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
-    new MeetingScheduleHandle().load()
+    MeetingScheduleHandle.load()
 
     $('#form-create-meeting').submit(function (event) {
         event.preventDefault();
-        let combinesData = new MeetingScheduleHandle().combinesData($(this));
+        let combinesData = MeetingScheduleHandle.combinesData($(this));
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

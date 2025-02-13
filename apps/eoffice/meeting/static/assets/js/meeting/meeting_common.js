@@ -154,14 +154,14 @@ function loadInternalParticipantsTable() {
             },
             {
                 data: 'full_name',
-                className: 'wrap-text w-40',
+                className: 'wrap-text w-30',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary mr-1">${row?.['code']}</span><span data-id="${row?.['id']}" data-fullname="${row?.['full_name']}" class="text-primary emp-info">${row?.['full_name']}</span>`;
                 }
             },
             {
                 data: 'group',
-                className: 'wrap-text w-35',
+                className: 'wrap-text w-25',
                 render: (data, type, row) => {
                     if (row?.['group']?.['title']) {
                         return `<span class="text-secondary">${row?.['group']?.['title']}</span>`;
@@ -170,11 +170,21 @@ function loadInternalParticipantsTable() {
                 }
             },
             {
+                data: 'email',
+                className: 'wrap-text w-20',
+                render: (data, type, row) => {
+                    if (row?.['email']) {
+                        return `<span class="text-secondary">${row?.['email']}</span>`;
+                    }
+                    return ``;
+                }
+            },
+            {
                 className: 'wrap-text w-15 text-right',
                 render: (data, type, row) => {
-                    return `<div class="form-check">
+                    return row?.['email'] ? `<div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox_internal_send_notify_email">
-                            </div>`
+                            </div>` : ''
                 }
             },
         ],
@@ -278,14 +288,14 @@ function loadExternalParticipantsTable(data, contact_mapped_id=[]) {
             },
             {
                 data: 'full_name',
-                className: 'wrap-text w-40',
+                className: 'wrap-text w-30',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary mr-1">${row?.['code']}</span><span data-id="${row?.['id']}" data-fullname="${row?.['fullname']}" class="text-primary emp-info">${row?.['fullname']}</span>`;
                 }
             },
             {
                 data: 'job_title',
-                className: 'wrap-text w-35',
+                className: 'wrap-text w-25',
                 render: (data, type, row) => {
                     if (row?.['job_title']) {
                         return `<span class="text-secondary">${row?.['job_title']}</span>`;
@@ -294,11 +304,21 @@ function loadExternalParticipantsTable(data, contact_mapped_id=[]) {
                 }
             },
             {
+                data: 'email',
+                className: 'wrap-text w-20',
+                render: (data, type, row) => {
+                    if (row?.['email']) {
+                        return `<span class="text-secondary">${row?.['email']}</span>`;
+                    }
+                    return ``;
+                }
+            },
+            {
                 className: 'wrap-text w-15 text-right',
                 render: (data, type, row) => {
-                    return `<div class="form-check">
+                    return row?.['email'] ? `<div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox_external_send_notify_email">
-                            </div>`
+                            </div>` : ''
                 }
             },
         ],
@@ -583,10 +603,10 @@ function isToday(targetDateTimeString) {
 }
 
 class MeetingScheduleHandle {
-    load() {
+    static load() {
         loadMeetingRoom()
     }
-    combinesData(frmEle) {
+    static combinesData(frmEle) {
         let meeting_name = $('#name').val()
         let meeting_content = $('#content').val()
         let meeting_type = $('#offline-meeting').prop('checked')

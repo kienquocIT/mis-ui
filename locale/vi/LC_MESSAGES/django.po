@@ -6706,7 +6706,7 @@ msgstr "Người tham dự bên ngoài"
 
 #
 msgid "Start time"
-msgstr "Thời gian bắt đầu"
+msgstr "Bắt đầu lúc"
 
 #
 msgid "Duration"

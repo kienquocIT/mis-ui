@@ -112,6 +112,7 @@ function loadInternalParticipants(data) {
         keyId: 'id',
         keyText: 'full_name',
     })
+    internalParticipantsEle.attr('data-select-internal', JSON.stringify(data))
 }
 
 function loadInternalParticipantsTable() {
@@ -192,6 +193,7 @@ $('#select-internal-employees-btn').on('click', function () {
             internal_employee_list.push({
                 'id': emp_info.attr('data-id'),
                 'full_name': emp_info.attr('data-fullname'),
+                'send_notify_email': $(this).find('.checkbox_internal_send_notify_email').prop('checked'),
             })
         }
     })
@@ -227,6 +229,7 @@ function loadExternalParticipants(data) {
         keyId: 'id',
         keyText: 'full_name',
     })
+    externalParticipantsEle.attr('data-select-external', JSON.stringify(data))
 }
 
 function loadExternalParticipantsTable(data, contact_mapped_id=[]) {
@@ -315,6 +318,7 @@ $('#select-external-employees-btn').on('click', function () {
             external_employee_list.push({
                 'id': emp_info.attr('data-id'),
                 'full_name': emp_info.attr('data-fullname'),
+                'send_notify_email': $(this).find('.checkbox_external_send_notify_email').prop('checked'),
             })
         }
     })
@@ -601,18 +605,27 @@ class MeetingScheduleHandle {
         frm.dataForm['meeting_duration'] = meeting_duration
         frm.dataForm['account_external'] = externalParticipantsAccountEle.val()
         frm.dataForm['participants'] = []
-        for (let i = 0; i < internalParticipantsEle.val().length; i++) {
+
+        let internal_data = internalParticipantsEle.attr('data-select-internal');
+        internal_data = internal_data ? JSON.parse(internal_data) : [];
+        internal_data.forEach(item => {
             frm.dataForm['participants'].push({
-                'internal_id': internalParticipantsEle.val()[i],
-                'is_external': false
+                'internal_id': item?.['id'],
+                'is_external': false,
+                'send_notify_email': item?.['send_notify_email'] || false
             })
-        }
-        for (let i = 0; i < externalParticipantsEle.val().length; i++) {
+        })
+
+        let external_data = externalParticipantsEle.attr('data-select-external');
+        external_data = external_data ? JSON.parse(external_data) : [];
+        external_data.forEach(item => {
             frm.dataForm['participants'].push({
-                'external_id': externalParticipantsEle.val()[i],
-                'is_external': true
+                'external_id': item?.['id'],
+                'is_external': true,
+                'send_notify_email': item?.['send_notify_email'] || false
             })
-        }
+        })
+
         if (frm.dataForm['participants'].length <= 0) {
             $.fn.notifyB({description: 'Participants have not selected yet.'}, 'failure');
             return false

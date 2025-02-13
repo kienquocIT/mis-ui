@@ -1068,7 +1068,7 @@ $(async function () {
                         targets: 1,
                         width: '20%',
                         render: (data, type, row) => {
-                            return `<span class="table-row-undelivered">${row?.['product_quantity_new'] ? row?.['product_quantity_new'] : 0}</span>`;
+                            return `<span class="table-row-undelivered">${row?.['remaining_quantity_new'] ? row?.['remaining_quantity_new'] : 0}</span>`;
                         },
                     },
                     {
@@ -1148,13 +1148,7 @@ $(async function () {
                         targets: 2,
                         width: '20%',
                         render: (data, type, row) => {
-                            let value = 1;
-                            if (row?.['picked_quantity']) {
-                                if (row?.['picked_quantity'] > 1) {
-                                    value = 0;
-                                }
-                            }
-                            return `<span class="table-row-undelivered">${value}</span>`;
+                            return `<span class="table-row-undelivered">${row?.['remaining_quantity_leased'] ? row?.['remaining_quantity_leased'] : 0}</span>`;
                         },
                     },
                     {

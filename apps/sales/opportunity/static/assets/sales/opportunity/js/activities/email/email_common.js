@@ -125,15 +125,14 @@ function loadOpportunityEmailList() {
             {
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    let default_state = `<span class="text-primary">${trans_script.attr('data-just-log')}</span>`
                     if (!row?.['just_log']) {
                         if (row?.['send_success']) {
-                            return `${default_state} - <span class="text-success">${trans_script.attr('data-sent')}</span>`
+                            return `<span class="text-success">${trans_script.attr('data-sent')}</span>`
                         } else {
-                            return `${default_state} - <span class="text-danger">${trans_script.attr('data-err')}</span>`
+                            return `<span class="text-danger">${trans_script.attr('data-err')}</span>`
                         }
                     }
-                    return `${default_state}`
+                    return ``
                 }
             },
             {
@@ -219,6 +218,12 @@ $('#btn-offcanvas-resend-email').on('click', function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                if (data?.['opportunity_email_detail']?.['send_success']) {
+                    $.fn.notifyB({description: trans_script.attr('data-sent')}, 'success')
+                }
+                else {
+                    $.fn.notifyB({description: trans_script.attr('data-err')}, 'failure')
+                }
                 $('#offcanvas-detail-send-email').offcanvas('hide')
                 loadOpportunityEmailList()
                 WindowControl.hideLoading();

@@ -225,6 +225,12 @@ $('#btn-offcanvas-resend-email').on('click', function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                if (data?.['opportunity_meeting_detail']?.['send_success']) {
+                    $.fn.notifyB({description: trans_script.attr('data-sent')}, 'success')
+                }
+                else {
+                    $.fn.notifyB({description: trans_script.attr('data-err')}, 'failure')
+                }
                 $('#offcanvas-meeting-detail').offcanvas('hide')
                 loadOpportunityMeetingList()
                 WindowControl.hide();

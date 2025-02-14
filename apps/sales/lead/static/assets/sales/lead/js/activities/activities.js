@@ -72,7 +72,6 @@ class LeadActivitiesHandler{
             let activityList =JSON.parse(this.$detailLeadDataScript.attr('data-lead-activity-list'))
             let currentActivityId = $(e.currentTarget).attr('data-id')
             let currentActivity = activityList.find(item=>item['doc_data']['id'] === currentActivityId)
-            console.log(currentActivity)
             this.loadActivityDetail(currentActivity)
         })
     }
@@ -183,7 +182,6 @@ class LeadActivitiesHandler{
     }
 
     loadActivityDetail(currentActivity){
-        console.log(currentActivity)
         this.clearDetailFields()
         const loadActivityDetailFunc = {
             2: () => {
@@ -232,7 +230,6 @@ class LeadActivitiesHandler{
                 $('#offcanvas-detail-send-email #detail-date-input').html(date)
 
                 $('#email-log-status').html('Successfully')
-                console.log(currentActivity['doc_data'])
                 let sendStatusElement = ''
                 if (currentActivity['doc_data']['just_log']) {
                     sendStatusElement = '<span class="text-danger">Logged only</span>';
@@ -283,7 +280,6 @@ class LeadActivitiesHandler{
             submitHandler: (form, event) => {
                 this.form = new SetupFormSubmit(formSubmit);
                 this.setUpFormData()
-                console.log(this.form)
                 $.fn.callAjax2({
                     url: this.form.dataUrl,
                     method: this.form.dataMethod,
@@ -418,7 +414,6 @@ class LeadCallActivitiesHandler extends LeadActivitiesHandler{
             let url = this.$urlScript.data('call-detail-url')
             const id = $(e.currentTarget).data('id')
             url = url.format_url_with_uuid(id)
-            console.log(url)
             $.fn.callAjax2({
                     url: url,
                     method: 'PUT',
@@ -599,12 +594,12 @@ class LeadMeetingActivitiesHandler extends LeadActivitiesHandler{
             let url = this.$urlScript.data('meeting-detail-url')
             const id = $(e.currentTarget).data('id')
             url = url.format_url_with_uuid(id)
-            console.log(url)
             $.fn.callAjax2({
                     url: url,
                     method: 'PUT',
                     data: {
-                        'is_cancelled': true
+                        'is_cancelled': true,
+                        'email_cancel': false
                     }
                 }).then(
                     (resp) => {
@@ -657,7 +652,6 @@ $(document).ready(function () {
     const observer = new MutationObserver((mutations)=>{
         mutations.forEach(function(mutation) {
             if(mutation.attributeName==='data-lead-detail'){
-                console.log($(mutation.target).attr('data-lead-detail'))
 
                 const leadActivitiesHandlerObj = new LeadActivitiesHandler()
                 leadActivitiesHandlerObj.fetchActivityListData()

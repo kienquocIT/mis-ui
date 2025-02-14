@@ -10,7 +10,6 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                console.log(data)
                 $x.fn.renderCodeBreadcrumb(data),
                 $.fn.compareStatusShowPageAction(data)
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])

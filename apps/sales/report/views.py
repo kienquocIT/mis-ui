@@ -499,5 +499,16 @@ class AdvanceFilterDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_FILTER_DETAIL.push_id(pk)).put(request.data)
         if resp.state:
             resp.result['message'] = BaseMsg.SUCCESS
-            return resp.result, status.HTTP_201_CREATED
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def delete(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_FILTER_DETAIL.push_id(pk)).delete(request.data)
+        if resp.state:
+            resp.result['message'] = BaseMsg.SUCCESS
+            return resp.result, status.HTTP_200_OK
         return resp.auto_return()

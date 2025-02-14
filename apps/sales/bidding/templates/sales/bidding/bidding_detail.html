@@ -45,11 +45,13 @@
             {% include 'comment/list.html' %}
         </div>
     </div>
+{% endblock %}
 
-
+{% block modalData %}
     <!-- modal !-->
     {% include 'sales/bidding/common/modal.html' %}
 {% endblock %}
+
 {% block dataHiddenGroup %}
     <input
             type="text"

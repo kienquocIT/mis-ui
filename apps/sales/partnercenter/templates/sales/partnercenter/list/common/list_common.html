@@ -36,8 +36,24 @@
                 <div class="row">
                     <div class="col-12">
                         <label class="form-label fs-3" for="list-name">{% trans 'Filter conditions' %}</label>
+                        <div class="accordion" id="note">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="note-character-heading">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#note-character" aria-controls="note-character">
+                                    {% trans 'Note for searching characters' %}
+                                </button>
+                                </h2>
+                                <div id="note-character" class="accordion-collapse collapse" aria-labelledby="note-character-heading" data-bs-parent="#note">
+                                <div class="accordion-body">
+                                    {% trans 'When searching for characters with (d vs đ), the exact character must be entered' %}
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="separator fs-2"></div>
                     </div>
+
                     <div class="col-12">
                         <div id="filter-cond-area">
                             <div class="filter-card">

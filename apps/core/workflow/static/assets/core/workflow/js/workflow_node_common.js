@@ -25,6 +25,8 @@ class NodeLoadDataHandle {
             'code_node_system': 'initial',
             'is_system': true,
             'is_edit_all_zone': true,
+            'zone_initial_node': [],
+            'zone_hidden_initial_node': [],
             'order': 1,
         },
         {
@@ -264,8 +266,15 @@ class NodeLoadDataHandle {
                             eleCheck.checked = (parseInt(eleCheck.getAttribute('data-id')) === 0);
                         }
                         NodeLoadDataHandle.loadActionShow();
-                        if (NodeLoadDataHandle.$nodeSysArea[0].querySelector('.checkbox-zone-edit-all')) {
-                            NodeLoadDataHandle.$nodeSysArea[0].querySelector('.checkbox-zone-edit-all').checked = true;
+                        let editAllEle = NodeLoadDataHandle.$nodeSysArea[0].querySelector('.checkbox-zone-edit-all');
+                        if (editAllEle) {
+                            editAllEle.checked = data?.['is_edit_all_zone'];
+                        }
+                        for (let checkEle of NodeLoadDataHandle.$nodeSysArea[0].querySelectorAll('.checkbox-zone-edit')) {
+                            checkEle.checked = data?.['zone_initial_node'].includes(parseInt(checkEle.getAttribute('data-id')));
+                        }
+                        for (let checkEle of NodeLoadDataHandle.$nodeSysArea[0].querySelectorAll('.checkbox-zone-hidden')) {
+                            checkEle.checked = data?.['zone_hidden_initial_node'].includes(parseInt(checkEle.getAttribute('data-id')));
                         }
                     }
 
@@ -1011,8 +1020,12 @@ class NodeStoreHandle {
                         if (NodeLoadDataHandle.dataNode[i]?.['order'] === parseInt(NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-order'))) {
                             let data = NodeStoreHandle.storeSetup();
                             if (NodeLoadDataHandle.dataNode[i]?.['order'] === 1) {  // initial node
-                                if (data?.['actions'])
-                                NodeLoadDataHandle.dataNode[i]['actions'] = data?.['actions'];
+                                if (data?.['actions']) {
+                                    NodeLoadDataHandle.dataNode[i]['actions'] = data?.['actions'];
+                                    NodeLoadDataHandle.dataNode[i]['is_edit_all_zone'] = data?.['is_edit_all_zone'];
+                                    NodeLoadDataHandle.dataNode[i]['zone_initial_node'] = data?.['zone_initial_node'];
+                                    NodeLoadDataHandle.dataNode[i]['zone_hidden_initial_node'] = data?.['zone_hidden_initial_node'];
+                                }
                             }
                             if (NodeLoadDataHandle.dataNode[i]?.['order'] > 1) {  // custom node
                                 // check collab
@@ -1069,7 +1082,22 @@ class NodeStoreHandle {
         }
         // system node
         if (NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-save-type') === "1" && NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-order')) {
-            if (NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-order') === 1) {
+            if (NodeLoadDataHandle.$btnSaveNode[0].getAttribute('data-order') === "1") {
+                dataStore['is_edit_all_zone'] = !!NodeLoadDataHandle.$nodeSysArea[0].querySelector('.checkbox-zone-edit-all:checked');
+                let zone = [];
+                for (let eleChecked of NodeLoadDataHandle.$nodeSysArea[0].querySelectorAll('.checkbox-zone-edit:checked')) {
+                    if (eleChecked.getAttribute('data-id')) {
+                        zone.push(parseInt(eleChecked.getAttribute('data-id')));
+                    }
+                }
+                dataStore['zone_initial_node'] = zone;
+                let zoneHidden = [];
+                for (let eleChecked of NodeLoadDataHandle.$nodeSysArea[0].querySelectorAll('.checkbox-zone-hidden:checked')) {
+                    if (eleChecked.getAttribute('data-id')) {
+                        zoneHidden.push(parseInt(eleChecked.getAttribute('data-id')));
+                    }
+                }
+                dataStore['zone_hidden_initial_node'] = zoneHidden;
                 return dataStore;
             }
         }

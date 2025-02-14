@@ -83,7 +83,7 @@ class AdvanceFilterCommonHandler {
     }
 
     getCurrPageAppID() {
-        this.currPageAppID = this.$filterModal.data('curr-page-app-id')
+        this.currPageAppID = this.$filterModal.attr('data-curr-page-app-id')
     }
 
     init(){
@@ -111,7 +111,7 @@ class AdvanceFilterCommonHandler {
         this.onChangeOperatorSelectValueEventBinding()
         this.onClickOpenModalDetailEventBinding()
         this.onClickAddNewFilterGroupUpdateEventBinding()
-        // this.onClickDeleteAdvanceFilterEventBinding()
+        this.onClickDeleteAdvanceFilterEventBinding()
     }
 
     onClickRadiusEventBinding() {
@@ -268,7 +268,7 @@ class AdvanceFilterCommonHandler {
     }
 
     onClickDelModalFilterItemEventBinding(){
-        $(document).on('click', '#advance-filter-modal .del-row', (e) => {
+        $(document).on('click', '.del-row', (e) => {
             const $currentRow = $(e.currentTarget).closest('.filter-row');
             const $currentCardBody = $currentRow.closest('.card-body')
             if ($currentCardBody.children().length === 1) {
@@ -354,24 +354,48 @@ class AdvanceFilterCommonHandler {
         })
     }
 
-    // onClickDeleteAdvanceFilterEventBinding(){
-    //     $(document).on('click', '.btn-del', ()=>{
-    //         Swal.fire({
-    //             title: this.$msgScript.attr('data-msg-are-u-sure'),
-    //             text: this.$msgScript.attr('data-msg-not-revert'),
-    //             icon: 'warning',
-    //             showCancelButton: true,
-    //             confirmButtonColor: '#3085d6',
-    //             cancelButtonColor: '#d33',
-    //             confirmButtonText: this.$msgScript.attr('data-msg-delete'),
-    //             cancelButtonText: this.$msgScript.attr('data-msg-cancel'),
-    //         }).then((result) => {
-    //             if (result.isConfirmed) {
-    //                 console.log('oke')
-    //             }
-    //         })
-    //     })
-    // }
+    onClickDeleteAdvanceFilterEventBinding(){
+        $(document).on('click', '.btn-del', (e)=>{
+            Swal.fire({
+                title: this.$msgScript.attr('data-msg-are-u-sure'),
+                text: this.$msgScript.attr('data-msg-not-revert'),
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: this.$msgScript.attr('data-msg-delete'),
+                cancelButtonText: this.$msgScript.attr('data-msg-cancel'),
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const advanceFilterId = $(e.currentTarget).closest('.filter-item').find('input[type="radio"]').attr('id')
+                    let url = this.$formFilterUpdate.attr('data-url')
+                    url = url.format_url_with_uuid(advanceFilterId)
+                    $.fn.callAjax2({
+                        url: url,
+                        method: 'DELETE',
+                    }).then(
+                        (resp) => {
+                            const data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyB({
+                                    'description': 'Success',
+                                }, 'success');
+                                this.fetchDataFilterList()
+                            }
+                        },
+                        (errs) => {
+                            if(errs.data.errors){
+                                for (const [key, value] of Object.entries(errs.data.errors)) {
+                                    $.fn.notifyB({title: key, description: value}, 'failure');
+                                }
+                            } else {
+                                $.fn.notifyB('Error', 'failure');
+                            }
+                        });
+                }
+            })
+        })
+    }
 
     setUpFormCreateFilterData(form) {
         let filterCondition = []
@@ -386,7 +410,7 @@ class AdvanceFilterCommonHandler {
                 } else if ($right.is('input')) {
                     rightData = $right.val()
                 }
-                let type =$(filterRowEle).find("select[name='left']").data('prop-type');
+                let type =$(filterRowEle).find("select[name='left']").attr('data-prop-type');
 
                 if (Number(type) === 6 && isNaN(rightData)) {
                     isError = true
@@ -534,7 +558,7 @@ class AdvanceFilterCommonHandler {
                         ${advanceFilter?.['title']}
                     </label>
                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-detail" data-bs-toggle="modal" data-bs-target="#advance-filter-modal-update" data-bs-placement="bottom" title=""><span class="icon"><i class="fa fa-pencil"></i></span></button>
-                    <button disabled type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-del" data-bs-toggle="tooltip" data-bs-placement="bottom" title=""><span class="icon"><i class="far fa-trash-alt"></i></span></button>
+                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-del" data-bs-toggle="tooltip" data-bs-placement="bottom" title=""><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                 </div>
             `
             this.$advanceFilterArea.append(advanceFilterArea)
@@ -576,7 +600,7 @@ class AdvanceFilterCommonHandler {
         form.dataForm['filter_condition'] = filterCondition
         form.dataForm['application'] = this.currPageAppID
         form.dataForm['isError'] = isError
-        form.dataUrl = form.dataUrl.format_url_with_uuid($('#btn-update-advance-filter').data('id'))
+        form.dataUrl = form.dataUrl.format_url_with_uuid($('#btn-update-advance-filter').attr('data-id'))
     }
 
     setUpFormUpdateFilterSubmit(){
@@ -777,11 +801,9 @@ class AdvanceFilterCommonHandler {
             const $currentEle = $(e.currentTarget)
             const advanceFilterId = $currentEle.closest('.filter-item').find('input').attr('id')
             const advanceFilterListData = JSON.parse($('#advance-filter-script').attr('data-advance-filter-list'))
-            console.log(advanceFilterListData)
             const currentAdvanceFilterData = advanceFilterListData.find(item=>item['id'] === advanceFilterId)
             this.loadDataDetailAdvanceFilter(currentAdvanceFilterData)
             $('#btn-update-advance-filter').attr('data-id', advanceFilterId)
-            console.log(currentAdvanceFilterData)
         })
     }
 

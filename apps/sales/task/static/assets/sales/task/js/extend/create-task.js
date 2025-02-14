@@ -55,16 +55,14 @@ $(document).ready(function () {
     new $x.cls.file($('#assignee_attachment')).init({'name': 'attach_assignee'});
 
     //--DATETIME-- run single date
-    $('input[type=text].date-picker').daterangepicker({
-        minYear: 2023,
-        singleDatePicker: true,
-        timePicker: false,
-        showDropdowns: true,
-        autoApply: true,
-        locale: {
-            format: 'DD/MM/YYYY'
-        }
-    }).val("").trigger('change')
+    $('input[type=text].date-picker').flatpickr({
+        'allowInput': true,
+        'altInput': true,
+        'altFormat': 'd/m/Y',
+        'defaultDate': null,
+        'locale': globeLanguage === 'vi' ? 'vn' : 'default',
+        'shorthandCurrentMonth': true,
+    })
 
     //--DROPDOWN STATUS-- run status select default
     $sttElm.attr('data-url')
@@ -151,8 +149,14 @@ $(document).ready(function () {
     } else $oppElm.initSelect2() // run init select2 in task page
 
     //--BTN LOG-TIME-- action click to log-work
+    const $logWorkModal = $('#logWorkModal');
+    $logWorkModal.on('hide.bs.modal', () => {
+        $('#startDateLogTime')[0]._flatpickr.clear()
+        $('#endDateLogTime')[0]._flatpickr.clear()
+        $('#EstLogtime').val(null)
+    })
     $('.btn-log_work').off().on('click', () => {
-        $('#logWorkModal').modal('show')
+        $logWorkModal.modal('show')
         $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
         const taskID = $('.task_edit [name="id"]').val()
         if (taskID) $('#logtime_task_id').val(taskID)
@@ -248,8 +252,6 @@ $(document).ready(function () {
                     temp = JSON.parse(temp)
                     formData.log_time = temp
                 }
-                formData.start_date = $x.fn.convertDatetime(formData.start_date, 'DD/MM/YYYY', null)
-                formData.end_date = $x.fn.convertDatetime(formData.end_date, 'DD/MM/YYYY', null)
                 if (new Date(formData.end_date).getTime() < new Date(formData.start_date).getTime()) {
                     $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
                     return false
@@ -283,7 +285,6 @@ $(document).ready(function () {
                         'first_name': assign_to.first_name,
                         'last_name': assign_to.last_name,
                     }
-                    // formData.employee_inherit_id = assign_to.id
                 }
 
                 formData.checklist = []

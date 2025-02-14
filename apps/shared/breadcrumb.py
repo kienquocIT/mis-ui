@@ -457,6 +457,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Partnercenter
     PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('Lists'), 'ListList')
 
+    # Fixed asset
+    FIXED_ASSET_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetMasterDataList')
+    FIXED_ASSET_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetList')
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -1207,3 +1210,14 @@ class BreadcrumbView:
     PARTNER_CENTER_LIST_CREATE_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_CREATE]
     PARTNER_CENTER_LIST_DETAIL_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_DETAIL]
     PARTNER_CENTER_LIST_UPDATE_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Fixed asset
+    FIXED_ASSET_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.FIXED_ASSET_MASTER_DATA_LIST_PAGE]
+    FIXED_ASSET_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.FIXED_ASSET_PAGE
+    ]
+    FIXED_ASSET_LIST_PAGE = FIXED_ASSET_LIST + [BreadcrumbItem.BASTION_LIST]
+    FIXED_ASSET_CREATE_PAGE = FIXED_ASSET_LIST + [BreadcrumbItem.BASTION_CREATE]
+    FIXED_ASSET_DETAIL_PAGE = FIXED_ASSET_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    FIXED_ASSET_UPDATE_PAGE = FIXED_ASSET_LIST + [BreadcrumbItem.BASTION_UPDATE]

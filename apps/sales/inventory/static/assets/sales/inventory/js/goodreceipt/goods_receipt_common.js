@@ -525,7 +525,7 @@ class GRLoadDataHandle {
         if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
             let eleAdditional = row.querySelector('.table-row-checkbox-additional');
             let eleImport = row.querySelector('.table-row-import');
-            if (eleAdditional && eleImport && !eleAdditional.hasAttribute('disabled')) {
+            if (eleAdditional && eleImport && !eleAdditional.hasAttribute('hidden')) {
                 if (eleAdditional.checked === true) {
                     eleImport.removeAttribute('disabled');
                 } else {
@@ -1683,7 +1683,7 @@ class GRDataTableHandle {
                         if (row?.['is_additional'] === true) {
                             checked = `checked`;
                         }
-                        let disabled = '';
+                        let hidden = '';
                         let tablePO = GRDataTableHandle.tablePOProduct;
                         let elePOChecked = tablePO[0].querySelector('.table-row-checkbox:checked');
                         if (elePOChecked) {
@@ -1692,11 +1692,11 @@ class GRDataTableHandle {
                             let $row = tablePO.DataTable().row(rowIndex);
                             let dataStore = $row.data();
                             if ([0, 1].includes(dataStore?.['product_data']?.['general_traceability_method'])) {
-                                disabled = 'disabled';
+                                hidden = 'hidden';
                             }
                         }
                         return `<div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" ${checked} ${disabled}>
+                                    <input type="checkbox" class="form-check-input table-row-checkbox-additional" ${checked} ${hidden}>
                                 </div>`;
                     }
                 },

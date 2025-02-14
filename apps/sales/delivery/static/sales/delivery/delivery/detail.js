@@ -11,6 +11,8 @@ $(async function () {
     let $tableLot = $('#datable-delivery-wh-lot');
     let $tableSerial = $('#datable-delivery-wh-serial');
     let $scrollProduct = $('#scroll-new-leased-product');
+    let $scrollLot = $('#scroll-table-lot');
+    let $scrollSerial = $('#scroll-table-serial');
     let $canvasPW = $('#warehouseStockCanvas');
     let $btnSave = $('#save-stock');
 
@@ -135,18 +137,16 @@ $(async function () {
                         prodTable.dataTablePW(dataPW);
                     }
 
-                    let scrollLot = $('#scroll-table-lot');
-                    let scrollSerial = $('#scroll-table-serial');
-                    scrollLot[0].setAttribute('hidden', 'true');
-                    scrollSerial[0].setAttribute('hidden', 'true');
+                    $scrollLot[0].setAttribute('hidden', 'true');
+                    $scrollSerial[0].setAttribute('hidden', 'true');
                     if ([1, 2].includes(targetItemData?.['general_traceability_method'])) {
-                        if (scrollLot && scrollSerial && scrollLot.length > 0 && scrollSerial.length > 0) {
+                        if ($scrollLot && $scrollSerial && $scrollLot.length > 0 && $scrollSerial.length > 0) {
                             if (targetItemData?.['general_traceability_method'] === 1) {
-                                scrollLot[0].removeAttribute('hidden');
+                                $scrollLot[0].removeAttribute('hidden');
                                 prodTable.dataTableTableLot();
                             }
                             if (targetItemData?.['general_traceability_method'] === 2) {
-                                scrollSerial[0].removeAttribute('hidden');
+                                $scrollSerial[0].removeAttribute('hidden');
                                 prodTable.dataTableTableSerial();
                             }
                         }
@@ -181,6 +181,8 @@ $(async function () {
                             _this.setProdList = tableTargetData;
                             $tableMain.DataTable().row(idx).data(tableTargetData[idx]).draw();
                         }
+                        $scrollLot[0].setAttribute('hidden', 'true');
+                        $scrollSerial[0].setAttribute('hidden', 'true');
                         $canvasPW.offcanvas('hide');
                     })
                 });
@@ -737,6 +739,7 @@ $(async function () {
                     isRegis = false;
                 }
             }
+            WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': url,
                     'method': 'GET',
@@ -748,41 +751,51 @@ $(async function () {
                     let dataLot = $.fn.switcherResp(resp);
                     if (dataLot) {
                         if (dataLot.hasOwnProperty(keyResp) && Array.isArray(dataLot?.[keyResp])) {
-                            let dataLotFn = dataLot?.[keyResp];
+                            let dataFn = dataLot?.[keyResp];
                             if (isRegis === true) {
-                                dataLotFn = [];
+                                dataFn = [];
                                 for (let lot of dataLot?.[keyResp]) {
-                                    dataLotFn.push(lot?.['lot_registered']);
+                                    dataFn.push(lot?.['lot_registered']);
                                 }
                             }
-                            for (let lot of dataLotFn) {
-                                // exchange uom ratio
-                                let finalRate = 1;
-                                if (data?.['uom_stock']?.['ratio'] && data?.['uom_delivery']?.['ratio']) {
-                                    if (data?.['uom_delivery']?.['ratio'] > 0) {
-                                        finalRate = data?.['uom_stock']?.['ratio'] / data?.['uom_delivery']?.['ratio'];
-                                    }
-                                }
-                                if (lot?.['quantity_import']) {
-                                    lot['quantity_import'] = lot?.['quantity_import'] * finalRate;
-                                }
-                                if (lot?.['available_stock']) {
-                                    lot['available_stock'] = lot?.['available_stock'] * finalRate;
-                                }
-                                if (data?.['lot_data']) {
-                                    for (let delivery_lot of data?.['lot_data']) {
-                                        if (delivery_lot?.['product_warehouse_lot_id'] === lot?.['id']) {
-                                            lot['quantity_delivery'] = delivery_lot?.['quantity_delivery'];
-                                            break;
+                            $tableLot.DataTable().clear().draw();
+                            $tableLot.DataTable().rows.add(dataFn).draw();
+
+                            let dataCheck = {};
+                            $tablePW.DataTable().rows().every(function () {
+                                let row = this.node();
+                                let rowIndex = $tablePW.DataTable().row(row).index();
+                                let $row = $tablePW.DataTable().row(rowIndex);
+                                let rowData = $row.data();
+
+                                let checkedEle = row.querySelector('.table-row-checkbox:checked');
+                                if (checkedEle) {
+                                    if (rowData?.['product_data']?.['general_traceability_method'] === 1) {
+                                        if (rowData?.['lot_data']) {
+                                            for (let lotData of rowData?.['lot_data']) {
+                                                if (lotData?.['quantity_delivery'] > 0) {
+                                                    dataCheck[lotData?.['product_warehouse_lot_id']] = lotData?.['quantity_delivery'];
+                                                }
+                                            }
                                         }
                                     }
                                 }
-                                lot['uom_delivery'] = data?.['uom_delivery'];
-                            }
-                            prodTable.dataTableTableLot(dataLotFn);
-                            eleChecked.checked = true;
+                            });
+
+                            $tableLot.DataTable().rows().every(function () {
+                                let row = this.node();
+                                let rowIndex = $tableLot.DataTable().row(row).index();
+                                let $row = $tableLot.DataTable().row(rowIndex);
+                                let rowData = $row.data();
+
+                                if (dataCheck.hasOwnProperty(rowData?.['id'])) {
+                                    rowData['quantity_delivery'] = dataCheck?.[rowData?.['id']];
+                                    $tableLot.DataTable().row(rowIndex).data(rowData).draw();
+                                }
+                            });
                         }
                     }
+                    WindowControl.hideLoading();
                 }
             )
             return true;
@@ -872,7 +885,6 @@ $(async function () {
                     isRegis = false;
                 }
             }
-            let detailData = [];
             WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': url,
@@ -885,46 +897,53 @@ $(async function () {
                     let dataSerial = $.fn.switcherResp(resp);
                     if (dataSerial) {
                         if (dataSerial.hasOwnProperty(keyResp) && Array.isArray(dataSerial?.[keyResp])) {
-                            let dataSerialFn = dataSerial?.[keyResp];
+                            let dataFn = dataSerial?.[keyResp];
                             if (isRegis === true) {
-                                dataSerialFn = [];
+                                dataFn = [];
                                 for (let serial of dataSerial?.[keyResp]) {
-                                    dataSerialFn.push(serial?.['sn_registered']);
+                                    dataFn.push(serial?.['sn_registered']);
                                 }
                             }
-                            let listIDDetail = [];
-                            if (data?.['serial_data']) {
-                                for (let delivery_serial of data?.['serial_data']) {
-                                    if (delivery_serial?.['product_warehouse_serial_id']) {
-                                        listIDDetail.push(delivery_serial?.['product_warehouse_serial_id']);
-                                    }
-                                }
-                            }
+                            $tableSerial.DataTable().clear().draw();
+                            $tableSerial.DataTable().rows.add(dataFn).draw();
 
-                            let count = 0;
-                            for (let serial of dataSerialFn) {
-                                if (data?.['serial_data']) {
-                                    if (listIDDetail.includes(serial?.['id'])) {
-                                        serial['is_checked'] = true;
-                                        if ($form.attr('data-method').toLowerCase() === 'get') {
-                                            detailData.push(serial);
-                                        }
-                                        count++;
-                                        if (count === listIDDetail.length) {
-                                            break;
+                            let dataCheck = [];
+                            $tablePW.DataTable().rows().every(function () {
+                                let row = this.node();
+                                let rowIndex = $tablePW.DataTable().row(row).index();
+                                let $row = $tablePW.DataTable().row(rowIndex);
+                                let rowData = $row.data();
+
+                                let checkedEle = row.querySelector('.table-row-checkbox:checked');
+                                if (checkedEle) {
+                                    if (rowData?.['product_data']?.['general_traceability_method'] === 2) {
+                                        if (rowData?.['serial_data']) {
+                                            for (let serialData of rowData?.['serial_data']) {
+                                                if (serialData?.['product_warehouse_serial_id']) {
+                                                    dataCheck.push(serialData?.['product_warehouse_serial_id']);
+                                                }
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            if ($form.attr('data-method').toLowerCase() === 'get') {
-                                prodTable.dataTableTableSerial(detailData);
-                            } else {
-                                prodTable.dataTableTableSerial(dataSerialFn);
-                            }
-                            eleChecked.checked = true;
-                            WindowControl.hideLoading();
+                            });
+
+                            $tableSerial.DataTable().rows().every(function () {
+                                let row = this.node();
+                                let rowIndex = $tableSerial.DataTable().row(row).index();
+                                let $row = $tableSerial.DataTable().row(rowIndex);
+                                let rowData = $row.data();
+
+                                let checkEle = row.querySelector('.table-row-checkbox');
+                                if (checkEle) {
+                                    if (dataCheck.includes(rowData?.['id'])) {
+                                        checkEle.checked = true;
+                                    }
+                                }
+                            });
                         }
                     }
+                    WindowControl.hideLoading();
                 }
             )
             return true;
@@ -1029,12 +1048,17 @@ $(async function () {
                             if (row?.['offset_data']?.['id']) {
                                 targetData = row?.['offset_data'];
                             }
+                            let checked = '';
+                            if (!$scrollProduct[0].querySelector('.table-row-checkbox:checked')) {
+                                checked = 'checked';
+                            }
                             return `<div class="d-flex align-items-center">
                                         <div class="form-check form-check-lg">
                                             <input
                                                 type="radio"
                                                 class="form-check-input table-row-checkbox"
                                                 id="new-product-${targetData?.['id'].replace(/-/g, "")}"
+                                                ${checked}
                                             >
                                         </div>
                                         <textarea class="form-control table-row-item-show" rows="2" readonly>${targetData?.['code']}</textarea>
@@ -1092,7 +1116,9 @@ $(async function () {
                     }
                 },
                 drawCallback: function () {
-                    prodTable.dtbProductNewHDCustom();
+                    if ($eleSO.attr('data-lo')) {
+                        prodTable.dtbProductNewHDCustom();
+                    }
                 },
             });
         };
@@ -1172,7 +1198,9 @@ $(async function () {
                     }
                 },
                 drawCallback: function () {
-                    prodTable.dtbProductLeasedHDCustom();
+                    if ($eleSO.attr('data-lo')) {
+                        prodTable.dtbProductLeasedHDCustom();
+                    }
                 },
             });
         };
@@ -1330,13 +1358,6 @@ $(async function () {
                     },
                     {
                         targets: 2,
-                        class: 'w-10',
-                        render: (data, type, row) => {
-                            return `<span class="table-row-uom">${row?.['uom_delivery']?.['title'] ? row?.['uom_delivery']?.['title'] : ''}</span>`;
-                        }
-                    },
-                    {
-                        targets: 3,
                         class: 'w-15',
                         render: (data, type, row) => {
                             if (row?.['expire_date']) {
@@ -1347,7 +1368,7 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 4,
+                        targets: 3,
                         class: 'w-15',
                         render: (data, type, row) => {
                             if (row?.['manufacture_date']) {
@@ -1358,7 +1379,7 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 4,
                         class: 'w-20',
                         render: (data, type, row) => {
                             let disabled = '';
@@ -1369,17 +1390,7 @@ $(async function () {
                         }
                     },
                 ],
-                rowCallback(row, data, index) {
-                    $(`input.form-control`, row).on('change', function () {
-                        prodTable.formatNum(this);
-                        prodTable.loadDeliverByLot(this);
-                    });
-                },
             });
-            if ($tableLot.hasClass('dataTable')) {
-                $tableLot.DataTable().clear().draw();
-                $tableLot.DataTable().rows.add(data ? data : []).draw();
-            }
         };
 
         dataTableTableSerial(data) {
@@ -1477,17 +1488,6 @@ $(async function () {
                         }
                     },
                 ],
-                rowCallback(row, data, index) {
-                    $(`input.form-check-input`, row).on('click', function () {
-                        if (this.checked === false) {
-                            let checkAll = $tableSerial[0].querySelector('.table-row-checkbox-all');
-                            if (checkAll) {
-                                checkAll.checked = false;
-                            }
-                        }
-                        prodTable.loadDeliverBySerial(this);
-                    });
-                },
                 drawCallback: function () {
                     prodTable.loadEventCheckboxAll($tableSerial);
                     let checkAll = $tableSerial[0].querySelector('.table-row-checkbox-all');
@@ -1496,10 +1496,6 @@ $(async function () {
                     }
                 },
             });
-            if ($tableSerial.hasClass('dataTable')) {
-                $tableSerial.DataTable().clear().draw();
-                $tableSerial.DataTable().rows.add(data ? data : []).draw();
-            }
         };
 
         // dtb header custom
@@ -1636,15 +1632,19 @@ $(async function () {
                     rowData['serial_data'] = serialData;
                     rowData['lot_data'] = lotData;
                 }
-                if (rowData?.['serial_data']) {
-                    rowData['picked_quantity'] = rowData?.['serial_data'].length;
-                }
-                if (rowData?.['lot_data']) {
-                    let picked = 0;
-                    for (let lotData of rowData?.['lot_data'] ? rowData?.['lot_data'] : []) {
-                        picked += lotData?.['quantity_delivery'];
+                if (rowData?.['product_data']?.['general_traceability_method'] === 1) {
+                    if (rowData?.['lot_data']) {
+                        let picked = 0;
+                        for (let lotData of rowData?.['lot_data'] ? rowData?.['lot_data'] : []) {
+                            picked += lotData?.['quantity_delivery'];
+                        }
+                        rowData['picked_quantity'] = picked;
                     }
-                    rowData['picked_quantity'] = picked;
+                }
+                if (rowData?.['product_data']?.['general_traceability_method'] === 2) {
+                    if (rowData?.['serial_data']) {
+                        rowData['picked_quantity'] = rowData?.['serial_data'].length;
+                    }
                 }
 
                 $tablePW.DataTable().row(rowIndex).data(rowData).draw();
@@ -2029,6 +2029,23 @@ $(async function () {
 
     $tablePW.on('click', '.cl-parent', function () {
         $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
+    });
+
+    $tableLot.on('change', '.table-row-quantity-delivery', function () {
+        prodTable.formatNum(this);
+        prodTable.loadDeliverByLot(this);
+        return true;
+    });
+
+    $tableSerial.on('click', '.table-row-checkbox', function () {
+        if (this.checked === false) {
+            let checkAll = $tableSerial[0].querySelector('.table-row-checkbox-all');
+            if (checkAll) {
+                checkAll.checked = false;
+            }
+        }
+        prodTable.loadDeliverBySerial(this);
+        return true;
     });
     // handle before form submit
     formSubmit()

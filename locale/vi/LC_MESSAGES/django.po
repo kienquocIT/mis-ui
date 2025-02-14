@@ -6725,12 +6725,12 @@ msgid "min(s)"
 msgstr "phút"
 
 #
-msgid "Online meeting changes will be updated after saving this page"
-msgstr "Cuộc họp trực tuyến sẽ được thay đổi sau khi Lưu trang này"
+msgid "Zoom meeting changes will be updated after saving this page"
+msgstr "Cuộc họp Zoom sẽ được thay đổi sau khi Lưu trang này"
 
 #
-msgid "Online meeting will be created after saving this page"
-msgstr "Cuộc họp trực tuyến sẽ được tạo sau khi Lưu trang này"
+msgid "Zoom meeting will be created after saving this page"
+msgstr "Cuộc họp Zoom sẽ được tạo sau khi Lưu trang này"
 
 #
 msgid "Online"
@@ -7131,6 +7131,10 @@ msgstr "Tạo chuyến công tác"
 #
 msgid "Schedule a meeting"
 msgstr "Lên lịch cuộc họp"
+
+#
+msgid "Meeting schedule"
+msgstr "Lịch họp"
 
 #
 msgid "Create leave"
@@ -10716,7 +10720,7 @@ msgstr "Gửi email thông báo"
 
 #
 msgid "Meeting schedule list"
-msgstr "Danh sách cuộc họp"
+msgstr "Danh sách lịch họp"
 
 #
 msgid "Meeting schedule create"
@@ -10745,3 +10749,8 @@ msgstr "Mã truy cập sẽ được nhúng trong đường link mời. Người
 #
 msgid "Chat with participants any time and access in-meeting chat in the same place. External users must be manually added to the Meeting Group Chat."
 msgstr "Trò chuyện với người tham gia bất cứ lúc nào và truy cập cuộc trò chuyện trong cuộc họp tại cùng một nơi. Người dùng bên ngoài phải được thêm thủ công vào nhóm trò chuyện của cuộc họp."
+
+
+#
+msgid "The Zoom meeting cannot be created because you have not configured a Zoom account. Go to settings to add it, then go here to create it again."
+msgstr "Cuộc họp trên Zoom chưa thể tạo vì bạn chưa cấu hình tài khoản Zoom. Hãy vào phần cài đặt để thêm, sau đó vào đây để tạo lại."

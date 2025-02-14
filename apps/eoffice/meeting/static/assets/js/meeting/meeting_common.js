@@ -17,6 +17,10 @@ const save_meeting_payload = $('#btn-save-meeting-info-payload')
 const translateScriptEle = $('#translate-script')
 const zoomConfigEle = $('#zoom_config')
 const zoom_config = zoomConfigEle.text() ? JSON.parse(zoomConfigEle.text()) : {};
+if (!zoom_config) {
+    $('#zoom-cfg-not-found-noti').prop('hidden', false)
+    btn_add_app_meeting_schedule.remove()
+}
 const currentEmployeeEle = $('#employee_current')
 const current_employee = currentEmployeeEle.text() ? JSON.parse(currentEmployeeEle.text()) : {};
 const currentCompanyEle = $('#company_current')
@@ -195,7 +199,7 @@ function loadInternalParticipantsTable() {
             },
         ],
         initComplete: function () {
-            let data_internal = JSON.parse(internalParticipantsEle.attr('data-select-internal')) || []
+            let data_internal = internalParticipantsEle.attr('data-select-internal') !== undefined ? JSON.parse(internalParticipantsEle.attr('data-select-internal')) : []
             dtb.find('tbody tr').each(function () {
                 let internal_id = $(this).find('.emp-info').attr('data-id')
                 let exist = data_internal.filter(item => item?.['id'] === internal_id)
@@ -347,7 +351,7 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
             },
         ],
         initComplete: function () {
-            let data_external = JSON.parse(externalParticipantsEle.attr('data-select-external')) || []
+            let data_external = externalParticipantsEle.attr('data-select-external') !== undefined ? JSON.parse(externalParticipantsEle.attr('data-select-external')) : []
             dtb.find('tbody tr').each(function () {
                 let external_id = $(this).find('.emp-info').attr('data-id')
                 let exist = data_external.filter(item => item?.['id'] === external_id)
@@ -755,81 +759,89 @@ function LoadDetailMeetingSchedule() {
                 loadInternalParticipants(data?.['participants'].filter(entity => entity?.['is_external'] === false).map(entity => entity?.['internal']))
                 loadExternalParticipants(data?.['participants'].filter(entity => entity?.['is_external'] === true).map(entity => entity?.['external']))
                 loadExternalAccountParticipants(data?.['account_external'])
-                $('#offline-meeting').prop('checked', data?.['meeting_type'])
-                $('.row-for-offline-meeting').prop('hidden', !data?.['meeting_type'])
-                $('#online-meeting-tab-space').prop('hidden', data?.['meeting_type'])
-                $('#offline-meeting-tab-space').prop('hidden', !data?.['meeting_type'])
-                loadMeetingRoom(data?.['meeting_room_mapped'])
-                if (data?.['online_meeting_data'].length > 0) {
-                    let online_meeting_data = data?.['online_meeting_data'][0]
-                    let formatted_start_time = formatDateTime(online_meeting_data?.['meeting_create_payload']?.['start_time'])
-                    $('#meeting-card-div').html(`
-                        <div class="col-12 col-lg-6 col-md-6">
-                            <div class="card meeting-card card-selected">
-                                <script id="meeting-payload-script"></script>
-                                <div class="card-header">
-                                    <span class="meeting-schedule-title badge badge-blue"><b><i class="fas fa-video"></i>&nbsp;Zoom Meeting</b></span>
-                                    ${isToday(online_meeting_data?.['meeting_create_payload']?.['start_time'])}
-                                </div>
-                                <div class="card-body">
-                                    <h4 class="mb-3"><b>${online_meeting_data['meeting_topic']}</b></h4>
-                                    <p class="card-text"><i class="fas fa-calendar"></i>&nbsp;${translateScriptEle.attr('data-start-time')}: ${formatted_start_time}</p>
-                                    <p class="card-text"><i class="fas fa-clock"></i>&nbsp;${translateScriptEle.attr('data-duration')}: ${data?.['meeting_duration']} ${translateScriptEle.attr('data-minute')}</p>
-                                    <hr class="bg-teal">
-                                    <p class="card-text"><i class="bi bi-camera-video"></i>&nbsp;<u>${translateScriptEle.attr('data-meeting-id')}:</u> <span class="text-primary"><b>${online_meeting_data?.['meeting_ID']}</b></span></p>
-                                    <p class="card-text"><i class="bi bi-link-45deg"></i>&nbsp;<u>${translateScriptEle.attr('data-meeting-url')}:</u> <span><a class="bg-dark-hover" target="_blank" href="${online_meeting_data?.['meeting_link']}">${online_meeting_data?.['meeting_link']}</a></span></p>
-                                    <p class="card-text"><i class="bi bi-qr-code-scan"></i>&nbsp;<u>${translateScriptEle.attr('data-meeting-passcode')}:</u> <span class="text-muted">${online_meeting_data?.['meeting_passcode']}</span></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-6 col-md-6">
-                            <div class="row">
-                                <div class="col-12">
-                                    <button type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="${translateScriptEle.attr('data-see-invitation')}" class="btn btn-icon btn-flush-secondary flush-soft-hover">
-                                        <span class="icon" data-bs-toggle="collapse" href="#see-meeting-invitation" role="button" aria-expanded="false" aria-controls="see-meeting-invitation"><i class="far fa-eye"></i></span>
-                                    </button>
-                                    <div class="collapse multi-collapse" id="see-meeting-invitation">
-                                        <div class="card card-body">
-                                            <p class="card-text">${current_employee.full_name} from ${current_company?.['title']} has invited you to a scheduled Zoom meeting.</p>
-                                            <p class="card-text">
-                                                Topic: ${online_meeting_data['meeting_topic']}
-                                                <br>
-                                                Time: ${formatted_start_time}
-                                            </p>
-                                            <p class="card-text">
-                                                Join Zoom Meeting
-                                                <br>
-                                                ${online_meeting_data?.['meeting_link']}
-                                            </p>
-                                            <p class="card-text">
-                                                Meeting ID: ${online_meeting_data?.['meeting_ID']}
-                                                <br>
-                                                Passcode: ${online_meeting_data?.['meeting_passcode']}
-                                            </p>
-                                            <div>
-                                                <button data-clipboard-text="${current_employee.full_name} from ${current_company?.['title']} has invited you to a scheduled Zoom meeting.
-    
-    Topic: ${online_meeting_data['meeting_topic']}
-    Time: ${formatted_start_time}
-    
-    Join Zoom Meeting
-    ${online_meeting_data?.['meeting_link']}
-    
-    Meeting ID: ${online_meeting_data?.['meeting_ID']}
-    Passcode: ${online_meeting_data?.['meeting_passcode']}" id="btn-copy-invitation" class="btn btn-xs btn-outline-secondary mb-2"><span><span class="icon"><span class="feather-icon"><i class="far fa-copy"></i></span></span><span>${translateScriptEle.attr('data-copy-invitation')}</span></span>
-                                                </button>
-                                            </div>
-                                        </div>      
+                if (data?.['meeting_type']) {
+                    $('#online-meeting-tab-space').prop('hidden', true)
+                    $('#offline-meeting').prop('checked', true)
+                    $('#offline-meeting-tab-space').prop('hidden', false)
+                    roomEle.closest('.form-group').prop('hidden', false)
+                    loadMeetingRoom(data?.['meeting_room_mapped'])
+                }
+                else {
+                    $('#offline-meeting-tab-space').prop('hidden', true)
+                    $('#online-meeting').prop('checked', true)
+                    $('#online-meeting-tab-space').prop('hidden', false)
+                    roomEle.closest('.form-group').prop('hidden', true)
+                    if (data?.['online_meeting_data'].length > 0) {
+                        let online_meeting_data = data?.['online_meeting_data'][0]
+                        let formatted_start_time = formatDateTime(online_meeting_data?.['meeting_create_payload']?.['start_time'])
+                        $('#meeting-card-div').html(`
+                            <div class="col-12 col-lg-6 col-md-6">
+                                <div class="card meeting-card card-selected">
+                                    <script id="meeting-payload-script"></script>
+                                    <div class="card-header">
+                                        <span class="meeting-schedule-title badge badge-blue"><b><i class="fas fa-video"></i>&nbsp;Zoom Meeting</b></span>
+                                        ${isToday(online_meeting_data?.['meeting_create_payload']?.['start_time'])}
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="mb-3"><b>${online_meeting_data['meeting_topic']}</b></h4>
+                                        <p class="card-text"><i class="fas fa-calendar"></i>&nbsp;${translateScriptEle.attr('data-start-time')}: ${formatted_start_time}</p>
+                                        <p class="card-text"><i class="fas fa-clock"></i>&nbsp;${translateScriptEle.attr('data-duration')}: ${data?.['meeting_duration']} ${translateScriptEle.attr('data-minute')}</p>
+                                        <hr class="bg-teal">
+                                        <p class="card-text"><i class="bi bi-camera-video"></i>&nbsp;<u>${translateScriptEle.attr('data-meeting-id')}:</u> <span class="text-primary"><b>${online_meeting_data?.['meeting_ID']}</b></span></p>
+                                        <p class="card-text"><i class="bi bi-link-45deg"></i>&nbsp;<u>${translateScriptEle.attr('data-meeting-url')}:</u> <span><a class="bg-dark-hover" target="_blank" href="${online_meeting_data?.['meeting_link']}">${online_meeting_data?.['meeting_link']}</a></span></p>
+                                        <p class="card-text"><i class="bi bi-qr-code-scan"></i>&nbsp;<u>${translateScriptEle.attr('data-meeting-passcode')}:</u> <span class="text-muted">${online_meeting_data?.['meeting_passcode']}</span></p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    `)
-                    $('#meeting-payload-script').text(JSON.stringify(online_meeting_data))
-                }
-                if ($('.meeting-status').attr('data-value') !== '2') {
-                    $('#btn-edit-meeting').remove()
-                    $('#btn-delete-meeting').remove()
+                            <div class="col-12 col-lg-6 col-md-6">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="${translateScriptEle.attr('data-see-invitation')}" class="btn btn-icon btn-flush-secondary flush-soft-hover">
+                                            <span class="icon" data-bs-toggle="collapse" href="#see-meeting-invitation" role="button" aria-expanded="false" aria-controls="see-meeting-invitation"><i class="far fa-eye"></i></span>
+                                        </button>
+                                        <div class="collapse multi-collapse" id="see-meeting-invitation">
+                                            <div class="card card-body">
+                                                <p class="card-text">${current_employee.full_name} from ${current_company?.['title']} has invited you to a scheduled Zoom meeting.</p>
+                                                <p class="card-text">
+                                                    Topic: ${online_meeting_data['meeting_topic']}
+                                                    <br>
+                                                    Time: ${formatted_start_time}
+                                                </p>
+                                                <p class="card-text">
+                                                    Join Zoom Meeting
+                                                    <br>
+                                                    ${online_meeting_data?.['meeting_link']}
+                                                </p>
+                                                <p class="card-text">
+                                                    Meeting ID: ${online_meeting_data?.['meeting_ID']}
+                                                    <br>
+                                                    Passcode: ${online_meeting_data?.['meeting_passcode']}
+                                                </p>
+                                                <div>
+                                                    <button data-clipboard-text="${current_employee.full_name} from ${current_company?.['title']} has invited you to a scheduled Zoom meeting.
+    
+                                                        Topic: ${online_meeting_data['meeting_topic']}
+                                                        Time: ${formatted_start_time}
+                                                        
+                                                        Join Zoom Meeting
+                                                        ${online_meeting_data?.['meeting_link']}
+                                                        
+                                                        Meeting ID: ${online_meeting_data?.['meeting_ID']}
+                                                        Passcode: ${online_meeting_data?.['meeting_passcode']}" id="btn-copy-invitation" class="btn btn-xs btn-outline-secondary mb-2"><span><span class="icon"><span class="feather-icon"><i class="far fa-copy"></i></span></span><span>${translateScriptEle.attr('data-copy-invitation')}</span></span>
+                                                    </button>
+                                                </div>
+                                            </div>      
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `)
+                        $('#meeting-payload-script').text(JSON.stringify(online_meeting_data))
+                        if ($('.meeting-status').attr('data-value') !== '2') {
+                            $('#btn-edit-meeting').remove()
+                            $('#btn-delete-meeting').remove()
+                        }
+                    }
                 }
 
                 new $x.cls.file($('#attachment')).init({

@@ -20,8 +20,8 @@
                     <div class="col-12">
                         <div id="meeting-card-div" class="row"></div>
                         <div class="row">
-                            <div class="col-12">
-                                <span class="text-muted">{% trans 'Online meeting will be created after saving this page' %}!</span>
+                            <div hidden class="col-12" id="zoom-cfg-not-found-noti">
+                                <span class="text-danger">{% trans 'The Zoom meeting cannot be created because you have not configured a Zoom account. Go to settings to add it, then go here to create it again.' %}</span>
                             </div>
                             <div class="col-12">
                                 <button type="button"
@@ -30,8 +30,9 @@
                                         data-bs-toggle="modal"
                                         data-bs-target="#modal_add_meeting_app_schedule"
                                 >
-                                    <i class="fas fa-plus-circle"></i>
-                                    {% trans 'Create meeting schedule' %}
+                                    <span data-bs-toggle="tooltip" title="{% trans 'Zoom meeting will be created after saving this page' %}">
+                                        {% trans 'Create meeting schedule' %}
+                                    </span>
                                 </button>
                             </div>
                         </div>

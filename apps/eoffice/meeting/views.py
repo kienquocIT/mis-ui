@@ -47,7 +47,8 @@ class MeetingScheduleDetail(View):
         resp0 = ServerAPI(user=request.user, url=ApiURL.MEETING_ZOOM_CONFIG_LIST).get()
         return {
             'zoom_config': resp0.result[0] if len(resp0.result) > 0 else '',
-            'employee_current': request.user.employee_current_data
+            'employee_current': request.user.employee_current_data,
+            'company_current': request.user.company_current_data
         }, status.HTTP_200_OK
 
 

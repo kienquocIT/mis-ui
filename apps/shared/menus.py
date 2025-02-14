@@ -630,7 +630,7 @@ class MenuEOffice:
         ]
     )
     MEETING = MenuCommon(
-        name='Meeting', code='menu_meeting_list', view_name='MeetingScheduleList',
+        name='Meeting schedule', code='menu_meeting_list', view_name='MeetingScheduleList',
         icon='<i class="fas fa-chalkboard-teacher"></i>',
     )
 

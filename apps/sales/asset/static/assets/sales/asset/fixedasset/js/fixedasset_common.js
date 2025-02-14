@@ -23,19 +23,24 @@ class CommonHandler{
         this.$timeUnitSelect = $('#time-unit')
     }
 
-    init(){
+    init(isUpdate=false){
         $.fn.initMaskMoney2()
         this.initClassificationSelect()
         this.initOffsetItemSelect()
         this.initManageDepartmentSelect()
         this.initUseDepartmentSelect()
+
         this.initDateInput(this.$depreciationStartDateInput, null)
         this.initDateInput(this.$depreciationEndDateInput, null)
+        this.initMaskMoneyInput(this.$accDepreciationInput, 0)
+
         this.initAPInvoiceDataTable()
-        this.initSourceListDataTable()
-        this.initAccumulativeDepreciation()
-        this.addEventBinding()
+        if(!isUpdate){
+            this.initSourceListDataTable()
+        }
         this.initAPInvoiceDetailDataTable()
+
+        this.addEventBinding()
     }
 
     addEventBinding(){
@@ -71,6 +76,7 @@ class CommonHandler{
         return true;
     };
 
+    // ----selects----
     initClassificationSelect(data=[]){
         this.loadInitS2(this.$classificationSelect, data)
     }
@@ -87,6 +93,11 @@ class CommonHandler{
         this.loadInitS2(this.$useDepartmentSelect, data)
     }
 
+    triggerChangeSelect($selector, data=null){
+        $selector.val(data).trigger('change')
+    }
+
+    // ----inputs----
     initDateInput($dateInput, dateData){
         if (dateData) {
             dateData = $x.fn.reformatData(
@@ -119,6 +130,15 @@ class CommonHandler{
         $dateInput.val(dateData).trigger('change');
     }
 
+    initInput($selector, data=null){
+        $selector.val(data)
+    }
+
+    initMaskMoneyInput($selector, data=null){
+        $selector.attr('value', data).focus({preventScroll: true}).blur()
+    }
+
+    // datatables
     initAPInvoiceDataTable(){
         this.$APInvoiceDatatable.DataTableDefault({
             useDataServer: true,
@@ -234,59 +254,6 @@ class CommonHandler{
         })
     }
 
-    initAccumulativeDepreciation(data){
-        const value = data ? data : 0
-        this.$accDepreciationInput.attr('value', value).focus().blur()
-    }
-
-    addSourceAPInvoiceEventBinding(){
-        $(document).on('click', '#btn-add-ap-invoice', ()=>{
-            const $curAPInvoice = $('input[name="ap_invoice"]:checked')
-            if($curAPInvoice.length===0){
-                return;
-            }
-            const code = $curAPInvoice.attr("data-code")
-            const documentNo = $curAPInvoice.attr("data-document-no")
-            const id = $curAPInvoice.attr("data-id")
-            const table = this.$sourceDatatable.DataTable();
-
-            // Check if the ID already exists in the table
-            let exists = false;
-            table.rows().every(function () {
-                let rowData = this.data();
-                if (rowData.source_id === id) {
-                    exists = true;
-                    return false;
-                }
-            });
-
-            if (exists) {
-                alert("This invoice has already been added.");
-                return;
-            }
-
-            this.$APInvoiceModal.modal('hide')
-
-            let data={
-                'source_id': id,
-                'code': code,
-                'document_no': documentNo,
-                'transaction_type': 0,
-                'value': 0,
-                'description': '',
-            }
-            this.$sourceDatatable.DataTable().row.add(data).draw()
-        })
-    }
-
-    openModalAPInvoiceDetailEventBinding(){
-        $(document).on('click', '.open-modal', (e)=>{
-            const apInvoiceId = $(e.currentTarget).attr('data-id')
-            this.$APInvoiceDetailDatatable.attr('data-id', apInvoiceId)
-            this.initAPInvoiceDetailDataTable()
-        })
-    }
-
     initAPInvoiceDetailDataTable(){
         const apInvoiceId = this.$APInvoiceDetailDatatable.attr('data-id')
         const dataScript = $('#data-script')
@@ -385,11 +352,61 @@ class CommonHandler{
         }
     }
 
+    // event handler
+    addSourceAPInvoiceEventBinding(){
+        $(document).on('click', '#btn-add-ap-invoice', ()=>{
+            const $curAPInvoice = $('input[name="ap_invoice"]:checked')
+            if($curAPInvoice.length===0){
+                return;
+            }
+            const code = $curAPInvoice.attr("data-code")
+            const documentNo = $curAPInvoice.attr("data-document-no")
+            const id = $curAPInvoice.attr("data-id")
+            const table = this.$sourceDatatable.DataTable();
+
+            // Check if the ID already exists in the table
+            let exists = false;
+            table.rows().every(function () {
+                let rowData = this.data();
+                if (rowData.source_id === id) {
+                    exists = true;
+                    return false;
+                }
+            });
+
+            if (exists) {
+                alert("This invoice has already been added.");
+                return;
+            }
+
+            this.$APInvoiceModal.modal('hide')
+
+            let data={
+                'source_id': id,
+                'code': code,
+                'document_no': documentNo,
+                'transaction_type': 0,
+                'value': 0,
+                'description': '',
+            }
+            this.$sourceDatatable.DataTable().row.add(data).draw()
+        })
+    }
+
+    openModalAPInvoiceDetailEventBinding(){
+        $(document).on('click', '.open-modal', (e)=>{
+            const apInvoiceId = $(e.currentTarget).attr('data-id')
+            this.$APInvoiceDetailDatatable.attr('data-id', apInvoiceId)
+            this.initAPInvoiceDetailDataTable()
+        })
+    }
+
     updateAPInvoiceValueEventBinding(){
         $(document).on('click', '#btn-update-ap-invoice-value', (e)=>{
             const dataScript = $('#data-script')
             const apInvoiceId = $(e.currentTarget).attr('data-id')
             let originalCost = 0
+
             // update source value
             const currIncreasedFA = $('.current-increased-fa[data-id="' + apInvoiceId + '"]')
             let valueNumber = 0
@@ -397,28 +414,28 @@ class CommonHandler{
             let isValid = true
 
             currIncreasedFA.each((id, ele) => {
-                const value = Number($(ele).attr('value'))
-                valueNumber += value
+                const currIncreaseValue = Number($(ele).attr('value'))
                 const apInvoiceProdId = $(ele).attr('data-apinvoice-prod-id')
                 const increasedFA = Number($(ele).closest('tr').find('.prior-increased-fa').attr('data-init-money')) || 0
                 const totalValue = Number($(ele).closest('tr').find('.total-value').attr('data-init-money')) || 0
-                if ((value + increasedFA) > totalValue) {
-                    const text = `The sum of current increased FA (${value}) and existing increased FA (${increasedFA}) exceeds the total value (${totalValue})`
+
+                //  check if value + increasedFA > totalValue
+                if ((currIncreaseValue + increasedFA) > totalValue) {
+                    const text = `The sum of current increased FA (${currIncreaseValue}) and existing increased FA (${increasedFA}) exceeds the total value (${totalValue})`
                     $.fn.notifyB({'title': '','description': text}, 'failure')
                     isValid = false
                     return false
                 }
-
                 if (!dataApInvoiceDetailList[apInvoiceId]) {
                     dataApInvoiceDetailList[apInvoiceId] = {}
                 }
+                dataApInvoiceDetailList[apInvoiceId][apInvoiceProdId] = currIncreaseValue
 
-                dataApInvoiceDetailList[apInvoiceId][apInvoiceProdId] = value
+                valueNumber += currIncreaseValue
             })
             if (!isValid) {
                 return
             }
-            console.log(dataApInvoiceDetailList)
             dataScript.attr('data-apinvoice-detail-list', JSON.stringify(dataApInvoiceDetailList))
             const valueText = valueNumber.toString() + ' VND'
             let updatedSourceValue = $('.source-value[data-id="' + apInvoiceId + '"]')
@@ -436,10 +453,6 @@ class CommonHandler{
             // update net book value
             let netBookValue = this.$originalCostInput.attr('value') - this.$accDepreciationInput.attr('value')
             this.$netBookValueInput.attr('value', netBookValue).focus({preventScroll: true}).blur()
-
-            // update data-prod-id
-            let dataProdId = currIncreasedFA.attr('data-prod-id')
-            updatedSourceValue.closest('tr').find('button').attr('data-prod-id', dataProdId)
         })
     }
 
@@ -491,5 +504,123 @@ class CommonHandler{
                 this.$adjustmentFactorSelect.attr('disabled', false)
             }
         })
+    }
+
+    // setup form
+    setupFormData(form) {
+        let tmpData = form.dataForm['depreciation_start_date'];
+        form.dataForm['depreciation_start_date'] = tmpData.split('-').reverse().join('-');
+        tmpData = this.$depreciationEndDateInput.val()
+
+        form.dataForm['depreciation_end_date'] = tmpData.split('-').reverse().join('-');
+
+        form.dataForm['increase_fa_list'] = JSON.parse($('#data-script').attr('data-apinvoice-detail-list'))
+
+        let result=[]
+        this.$sourceDatatable.DataTable().rows().every(function(){
+            let row = $(this.node());
+            const description = row.find('.source-description').val()
+            const documentNo = row.find('.source-document-no').val()
+            const transactionType = row.find('.source-transaction-type').text()
+            const code = row.find('.source-code').text()
+            const value = row.find('.source-value').attr('value')
+            result.push({
+                'description': description,
+                'document_no': documentNo,
+                'transaction_type': transactionType === 'AP Invoice' ? 0 : 1,
+                'code': code,
+                'value': value
+            })
+        })
+        form.dataForm['asset_sources'] = result
+
+        tmpData = this.$originalCostInput.attr('value')
+        form.dataForm['original_cost'] = tmpData
+
+        tmpData = this.$netBookValueInput.attr('value')
+        form.dataForm['net_book_value'] = tmpData
+
+        tmpData = this.$accDepreciationInput.attr('value')
+        form.dataForm['accumulative_depreciation'] = tmpData
+
+        tmpData = form.dataForm['depreciation_time']
+        form.dataForm['depreciation_time'] = Number(tmpData)
+
+        if (form.dataForm['depreciation_method']===0){
+            delete form.dataForm['adjustment_factor']
+        }
+    }
+
+    setupFormSubmit($formSubmit) {
+        SetupFormSubmit.call_validate($formSubmit, {
+            onsubmit: true,
+            submitHandler: (form, event) => {
+                let _form = new SetupFormSubmit($formSubmit);
+                this.setupFormData(_form)
+                WFRTControl.callWFSubmitForm(_form)
+            }
+        })
+    }
+
+    // detail page
+    disableFields(){
+        const $fields = $('#form-fixed-asset').find('input, select, button')
+        $fields.attr('disabled', true)
+        $fields.attr('readonly', true)
+
+        $('#datatable-asset-source').on('draw.dt', function() {
+            $(this).find('input, button').attr('disabled', true).attr('readonly', true);
+        });
+    }
+
+    fetchDetailData(disabledFields=false){
+        $.fn.callAjax2({
+            url: this.$formSubmit.attr('data-url'),
+            method:'GET',
+        }).then(
+            (resp) => {
+                const data = $.fn.switcherResp(resp);
+                if (data) {
+                    $x.fn.renderCodeBreadcrumb(data);
+                    $.fn.compareStatusShowPageAction(data);
+
+                    $('#data-script').attr('data-fixed-asset-detail', JSON.stringify(data))
+                    this.initInput(this.$assetNameInput, data?.['title'])
+                    this.initInput(this.$assetCodeInput, data?.['code'])
+                    this.initInput(this.$depreciationTimeInput, data?.['depreciation_time'])
+                    this.initMaskMoneyInput(this.$originalCostInput, data?.['original_cost'])
+                    this.initMaskMoneyInput(this.$accDepreciationInput, data?.['accumulative_depreciation'])
+                    this.initMaskMoneyInput(this.$netBookValueInput, data?.['net_book_value'])
+                    this.initDateInput(this.$depreciationStartDateInput, data?.['depreciation_start_date'])
+                    this.initDateInput(this.$depreciationEndDateInput, data?.['depreciation_end_date'])
+
+                    this.initOffsetItemSelect([data?.['product']])
+                    this.initManageDepartmentSelect([data?.['manage_department']])
+                    this.initUseDepartmentSelect(data?.['use_department'])
+                    this.initClassificationSelect([data?.['classification']])
+
+                    this.triggerChangeSelect(this.$sourceTypeSelect, data?.['source_type'])
+                    this.triggerChangeSelect(this.$depreciationMethodSelect, data?.['depreciation_method'])
+                    this.triggerChangeSelect(this.$adjustmentFactorSelect, data?.['adjustment_factor'])
+                    this.triggerChangeSelect(this.$timeUnitSelect, data?.['depreciation_time_unit'])
+
+                    this.initSourceListDataTable(data?.['asset_sources'])
+                    this.openModalAPInvoiceDetailEventBinding()
+                }
+            },
+            (errs) => {
+                if(errs.data.errors){
+                    for (const [key, value] of Object.entries(errs.data.errors)) {
+                        $.fn.notifyB({title: key, description: value}, 'failure')
+                    }
+                } else {
+                    $.fn.notifyB('Error', 'failure')
+                }
+            })
+            .then(() => {
+                if (disableFields) {
+                    this.disableFields();
+                }
+            })
     }
 }

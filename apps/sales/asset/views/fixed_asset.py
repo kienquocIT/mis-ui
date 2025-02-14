@@ -55,9 +55,7 @@ class FixedAssetCreate(View):
     )
     def get(self, request, *args, **kwargs):
         ctx = {
-            "list_from_app": 'asset.fixedasset.create',
             'input_mapping_properties': InputMappingProperties.FIXED_ASSET_DATA_MAP,
-            'app_id': 'fc552ebbeb984d7b81cde4b5813b7815',
             'form_id': 'form-fixed-asset',
         }
         return ctx, status.HTTP_200_OK
@@ -72,11 +70,8 @@ class FixedAssetDetail(View):
     def get(self, request, pk, *args, **kwargs):
         ctx = {
             'data': {'doc_id': pk},
-            "list_from_app": 'asset.fixedasset.view',
             'input_mapping_properties': InputMappingProperties.FIXED_ASSET_DATA_MAP,
-            'app_id': 'fc552ebbeb984d7b81cde4b5813b7815',
             'form_id': 'form-fixed-asset',
-            'employee_current': request.user.employee_current_data,
         }
         return ctx, status.HTTP_200_OK
 
@@ -90,11 +85,8 @@ class FixedAssetUpdate(View):
     def get(self, request, pk, *args, **kwargs):
         ctx = {
             'data': {'doc_id': pk},
-            "list_from_app": 'asset.fixedasset.edit',
             'input_mapping_properties': InputMappingProperties.FIXED_ASSET_DATA_MAP,
-            'app_id': 'fc552ebbeb984d7b81cde4b5813b7815',
             'form_id': 'form-fixed-asset',
-            'employee_current': request.user.employee_current_data,
         }
         return ctx, status.HTTP_200_OK
 

@@ -2681,9 +2681,12 @@ class WFRTControl {
                                     if (window.location.href.includes('/create')) {
                                         WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                                     }
-                                    if (window.location.href.includes('/update/') && !globeWFRuntimeID) {
-                                        WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
-                                    }
+                                    // if (window.location.href.includes('/update/')) {
+                                    //     WFRTControl.activeBtnOpenZone([], [], true);
+                                    //     if (!globeWFRuntimeID) {
+                                    //         WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                                    //     }
+                                    // }
                                     // association handler
                                     WFRTControl.setAssociateCreate(workflow_current['association']);
                                 }

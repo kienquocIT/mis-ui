@@ -453,31 +453,6 @@ $(document).ready(function () {
         }
     })
 
-    $(document).on('click', '#btn-restore-default-stage', function () {
-        WindowControl.showLoading()
-        let method = $(this).data('method');
-        let url = $(this).data('url');
-        $.fn.callAjax2({
-            url: url,
-            method: method,
-            data: {}
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({'description': $.fn.gettext('Successful')}, 'success')
-                    $('#modalRestoreDefault').modal('hide');
-                    loadStage()
-                    WindowControl.hideLoading()
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-                WindowControl.hideLoading()
-            }
-        )
-    })
-
     $(document).on('change', '.input-win-rate', function () {
         let ele_base_tran = $('#base-trans-factory')
         Swal.fire({

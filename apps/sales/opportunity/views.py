@@ -299,18 +299,6 @@ class OpportunityConfigStageDetailAPI(APIView):
         return resp.auto_return()
 
 
-class RestoreDefaultStageAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, pk, *args, **kwargs):
-        company_current_id = request.user.company_current_data.get('id', None)
-        url = ApiURL.RESTORE_DEFAULT_OPPORTUNITY_CONFIG_STAGE.fill_key(pk=company_current_id)
-        resp = ServerAPI(user=request.user, url=url).put(request.data)
-        return resp.auto_return()
-
-
 class OpportunityCallLogList(View):
     permission_classes = [IsAuthenticated]
 

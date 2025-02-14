@@ -466,9 +466,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_CONFIG_STAGE = StringUrl('opportunity/config/stage')
     OPPORTUNITY_CONFIG_STAGE_DETAIL = StringUrl('opportunity/config/stage/{pk}')
 
-    # restore Opportunity Stage
-    RESTORE_DEFAULT_OPPORTUNITY_CONFIG_STAGE = StringUrl('company/default-opportunity-stage/{pk}')
-
     # Task
     OPPORTUNITY_TASK_CONFIG = StringUrl('task/config')
     OPPORTUNITY_TASK_STT_LIST = StringUrl('task/status')

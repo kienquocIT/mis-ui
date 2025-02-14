@@ -137,17 +137,15 @@ $(async function () {
                         prodTable.dataTablePW(dataPW);
                     }
 
-                    $scrollLot[0].setAttribute('hidden', 'true');
-                    $scrollSerial[0].setAttribute('hidden', 'true');
+                    $tableLot.DataTable().clear().draw();
+                    $tableSerial.DataTable().clear().draw();
                     if ([1, 2].includes(targetItemData?.['general_traceability_method'])) {
                         if ($scrollLot && $scrollSerial && $scrollLot.length > 0 && $scrollSerial.length > 0) {
                             if (targetItemData?.['general_traceability_method'] === 1) {
                                 $scrollLot[0].removeAttribute('hidden');
-                                prodTable.dataTableTableLot();
                             }
                             if (targetItemData?.['general_traceability_method'] === 2) {
                                 $scrollSerial[0].removeAttribute('hidden');
-                                prodTable.dataTableTableSerial();
                             }
                         }
                     }
@@ -1975,9 +1973,11 @@ $(async function () {
     // run get detail func
     getPageDetail()
     // init Dtb
-    prodTable.dataTablePW();
     prodTable.dataTableProductNew();
     prodTable.dataTableProductLeased();
+    prodTable.dataTablePW();
+    prodTable.dataTableTableLot();
+    prodTable.dataTableTableSerial();
     // event
     $tableProductNew.on('click', '.table-row-checkbox', function () {
         let row = this.closest('tr');

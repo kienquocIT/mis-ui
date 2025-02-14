@@ -56,6 +56,7 @@ $(async function () {
             // Kiểm tra giao hàng theo đơn hàng hay đơn cho thuê
             let targetItemData = prod_data?.['product_data'];
             if (prod_data?.['offset_data']?.['id']) {
+                $('#productLeasedDiv').removeAttr('hidden');
                 targetItemData = prod_data?.['offset_data'];
                 $tableProductLeased.DataTable().clear().draw();
                 $tableProductLeased.DataTable().rows.add(prod_data?.['product_quantity_leased_data'] ? prod_data?.['product_quantity_leased_data'] : []).draw();
@@ -1635,16 +1636,16 @@ $(async function () {
                     rowData['serial_data'] = serialData;
                     rowData['lot_data'] = lotData;
                 }
-                let picked = 0;
                 if (rowData?.['serial_data']) {
-                    picked = rowData?.['serial_data'].length;
+                    rowData['picked_quantity'] = rowData?.['serial_data'].length;
                 }
                 if (rowData?.['lot_data']) {
+                    let picked = 0;
                     for (let lotData of rowData?.['lot_data'] ? rowData?.['lot_data'] : []) {
                         picked += lotData?.['quantity_delivery'];
                     }
+                    rowData['picked_quantity'] = picked;
                 }
-                rowData['picked_quantity'] = picked;
 
                 $tablePW.DataTable().row(rowIndex).data(rowData).draw();
                 if (rowData?.['picked_quantity'] > 0) {

@@ -243,6 +243,7 @@ class POLoadDataHandle {
         }
         tablePurchaseRequestProduct.DataTable().clear().draw();
         if (checked_pr_id_list.length > 0) {
+            WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': frm.dataUrl,
                     'method': frm.dataMethod,
@@ -274,6 +275,7 @@ class POLoadDataHandle {
                             }
                         }
                     }
+                    WindowControl.hideLoading();
                 }
             )
         } else {

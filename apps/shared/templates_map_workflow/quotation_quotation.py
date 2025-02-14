@@ -7,8 +7,8 @@ QUOTATION_DATA_MAP = {
     'opportunity_id': FieldMapCommon(
         name_mapping=['opportunity_id'],
     ).data,
-    'customer': FieldMapCommon(
-        name_mapping=['customer'],
+    'customer_data__id': FieldMapCommon(
+        name_mapping=['customer_id', 'customer_data__id'],
     ).data,
     'contact': FieldMapCommon(
         name_mapping=['contact'],

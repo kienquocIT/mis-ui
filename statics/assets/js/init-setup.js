@@ -2703,9 +2703,12 @@ class WFRTControl {
                                     if (window.location.href.includes('/create')) {
                                         WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                                     }
-                                    if (window.location.href.includes('/update/') && !globeWFRuntimeID) {
-                                        WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
-                                    }
+                                    // if (window.location.href.includes('/update/')) {
+                                    //     WFRTControl.activeBtnOpenZone([], [], true);
+                                    //     if (!globeWFRuntimeID) {
+                                    //         WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
+                                    //     }
+                                    // }
                                     // association handler
                                     WFRTControl.setAssociateCreate(workflow_current['association']);
                                 }
@@ -8532,6 +8535,18 @@ class DiagramControl {
             return null;
         }
     };
+}
+
+class DataProcessorControl {
+
+    static sortArrayByObjectKey(array, key, isDescending = false) {
+        // sort list of object, using key of object to sort
+        return array.sort((a, b) => {
+            if (a[key] < b[key]) return isDescending ? 1 : -1; // Flip comparison for descending
+            if (a[key] > b[key]) return isDescending ? -1 : 1; // Flip comparison for descending
+            return 0; // a and b are equal
+        });
+    }
 }
 
 let $x = {

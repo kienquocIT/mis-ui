@@ -4,17 +4,17 @@ SALE_ORDER_DATA_MAP = {
     'title': FieldMapCommon(
         name_mapping=['title'],
     ).data,
-    'opportunity': FieldMapCommon(
-        name_mapping=['opportunity'],
+    'opportunity_id': FieldMapCommon(
+        name_mapping=['opportunity_id'],
     ).data,
-    'customer': FieldMapCommon(
-        name_mapping=['customer'],
+    'customer_data__id': FieldMapCommon(
+        name_mapping=['customer_id', 'customer_data__id'],
     ).data,
     'contact': FieldMapCommon(
         name_mapping=['contact'],
     ).data,
-    'sale_person': FieldMapCommon(
-        name_mapping=['sale_person'],
+    'employee_inherit_id': FieldMapCommon(
+        name_mapping=['employee_inherit_id'],
     ).data,
     'payment_term': FieldMapCommon(
         name_mapping=['payment_term'],
@@ -36,5 +36,8 @@ SALE_ORDER_DATA_MAP = {
     ).data,
     'sale_order_indicators_data': FieldMapCommon(
         name_mapping=['sale_order_indicators_data'],
+    ).data,
+    'print_document': FieldMapCommon(
+        id_mapping=['print_document'],
     ).data,
 }

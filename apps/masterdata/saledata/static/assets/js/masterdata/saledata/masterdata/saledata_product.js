@@ -259,9 +259,9 @@ $(document).ready(function () {
             ],
             initComplete: function () {
                 $('.code-span').each(function () {
-                    if ($(this).text() === 'ImportGroup') {
+                    if ($(this).text() === 'Import') {
                         $(this).closest('tr').find('.title-span').append(`
-                            <br><span class="text-muted small d-inline-block text-truncate">${trans_script.attr('data-trans-uom-group-info')}</span>
+                            <br><span class="text-muted small">${trans_script.attr('data-trans-uom-group-info')}</span>
                         `)
                     }
                 })
@@ -276,7 +276,7 @@ $(document).ready(function () {
             },
             callbackDataResp: function (resp, keyResp) {
                 return resp.data[keyResp].filter(function (item) {
-                    return item?.['code'] !== 'ImportGroup';
+                    return item?.['code'] !== 'Import';
                 });
             },
             data: (data ? data : {}),

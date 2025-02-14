@@ -252,7 +252,7 @@ function loadGeneralUoMGroup(unit_of_measure_group) {
         },
         callbackDataResp: function (resp, keyResp) {
             return resp.data[keyResp].filter(function (item) {
-                return Object.keys(item?.['referenced_unit']).length !== 0 && item?.['code'] !== 'ImportGroup';
+                return Object.keys(item?.['referenced_unit']).length !== 0 && item?.['code'] !== 'Import';
             });
         },
         data: (unit_of_measure_group ? unit_of_measure_group : null),

@@ -453,7 +453,7 @@ class LeaseOrderLoadDataHandle {
                     params['general_product_types_mapped__is_goods'] = true;
                 }
                 if ($(eleType).val() === "2") {
-                    params['general_product_types_mapped__is_asset_tool'] = true;
+                    params['general_product_types_mapped__is_tool'] = true;
                 }
                 WindowControl.showLoading();
                 $.fn.callAjax2({

@@ -511,6 +511,7 @@ $(document).ready(function () {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-new-tax').hide();
                         $('#modal-new-tax form')[0].reset();
+                        $('#select-box-type').val([0, 1])
                         loadTax()
                     }
                 },
@@ -555,6 +556,7 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-tax').modal('hide');
+                        $('#select-box-type').val([0, 1])
                         loadTax()
                     }
                 },

@@ -8512,6 +8512,18 @@ class DiagramControl {
     };
 }
 
+class DataProcessorControl {
+
+    static sortArrayByObjectKey(array, key, isDescending = false) {
+        // sort list of object, using key of object to sort
+        return array.sort((a, b) => {
+            if (a[key] < b[key]) return isDescending ? 1 : -1; // Flip comparison for descending
+            if (a[key] > b[key]) return isDescending ? -1 : 1; // Flip comparison for descending
+            return 0; // a and b are equal
+        });
+    }
+}
+
 let $x = {
     cls: {
         frm: SetupFormSubmit,

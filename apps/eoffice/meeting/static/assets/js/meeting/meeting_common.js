@@ -154,14 +154,14 @@ function loadInternalParticipantsTable() {
             },
             {
                 data: 'full_name',
-                className: 'wrap-text w-30',
+                className: 'wrap-text w-25',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary mr-1">${row?.['code']}</span><span data-id="${row?.['id']}" data-fullname="${row?.['full_name']}" class="text-primary emp-info">${row?.['full_name']}</span>`;
                 }
             },
             {
                 data: 'group',
-                className: 'wrap-text w-25',
+                className: 'wrap-text w-20',
                 render: (data, type, row) => {
                     if (row?.['group']?.['title']) {
                         return `<span class="text-secondary">${row?.['group']?.['title']}</span>`;
@@ -187,7 +187,25 @@ function loadInternalParticipantsTable() {
                             </div>` : ''
                 }
             },
+            {
+                className: 'wrap-text w-10 text-right',
+                render: (data, type, row) => {
+                    return '<span class="send-email-status small"></span>'
+                }
+            },
         ],
+        initComplete: function () {
+            let data_internal = JSON.parse(internalParticipantsEle.attr('data-select-internal')) || []
+            dtb.find('tbody tr').each(function () {
+                let internal_id = $(this).find('.emp-info').attr('data-id')
+                let exist = data_internal.filter(item => item?.['id'] === internal_id)
+                if (exist.length === 1) {
+                    $(this).find('.checkbox_internal_employees').prop('checked', true).prop('disabled', true)
+                    $(this).find('.checkbox_internal_send_notify_email').prop('checked', exist[0]?.['send_notify_email']).prop('disabled', exist[0]?.['send_notify_email'])
+                    $(this).find('.send-email-status').text(exist[0]?.['send_email_status'] ? translateScriptEle.attr('data-trans-send-email-ok') : translateScriptEle.attr('data-trans-send-email-err')).addClass(exist[0]?.['send_email_status'] ? 'text-success' : 'text-danger')
+                }
+            })
+        }
     });
 }
 
@@ -227,7 +245,7 @@ function loadExternalAccountParticipants(data) {
     }).on('change', function () {
         let account_selected = SelectDDControl.get_data_from_idx(externalParticipantsAccountEle, externalParticipantsAccountEle.val())
         if (account_selected) {
-            loadExternalParticipantsTable(null, account_selected?.['contact_mapped'])
+            loadExternalParticipantsTable(account_selected?.['contact_mapped'])
         }
     })
 }
@@ -242,7 +260,7 @@ function loadExternalParticipants(data) {
     externalParticipantsEle.attr('data-select-external', JSON.stringify(data))
 }
 
-function loadExternalParticipantsTable(data, contact_mapped_id=[]) {
+function loadExternalParticipantsTable(contact_mapped_id=[]) {
     let dtb = $('#external-contact-table');
     dtb.DataTable().clear().destroy()
     let frm = new SetupFormSubmit(dtb);
@@ -288,14 +306,14 @@ function loadExternalParticipantsTable(data, contact_mapped_id=[]) {
             },
             {
                 data: 'full_name',
-                className: 'wrap-text w-30',
+                className: 'wrap-text w-25',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary mr-1">${row?.['code']}</span><span data-id="${row?.['id']}" data-fullname="${row?.['fullname']}" class="text-primary emp-info">${row?.['fullname']}</span>`;
                 }
             },
             {
                 data: 'job_title',
-                className: 'wrap-text w-25',
+                className: 'wrap-text w-20',
                 render: (data, type, row) => {
                     if (row?.['job_title']) {
                         return `<span class="text-secondary">${row?.['job_title']}</span>`;
@@ -321,13 +339,38 @@ function loadExternalParticipantsTable(data, contact_mapped_id=[]) {
                             </div>` : ''
                 }
             },
+            {
+                className: 'wrap-text w-10 text-right',
+                render: (data, type, row) => {
+                    return '<span class="send-email-status small"></span>'
+                }
+            },
         ],
+        initComplete: function () {
+            let data_external = JSON.parse(externalParticipantsEle.attr('data-select-external')) || []
+            dtb.find('tbody tr').each(function () {
+                let external_id = $(this).find('.emp-info').attr('data-id')
+                let exist = data_external.filter(item => item?.['id'] === external_id)
+                if (exist.length === 1) {
+                    $(this).find('.checkbox_external_contacts').prop('checked', true).prop('disabled', true)
+                    $(this).find('.checkbox_external_send_notify_email').prop('checked', exist[0]?.['send_notify_email']).prop('disabled', exist[0]?.['send_notify_email'])
+                    $(this).find('.send-email-status').text(exist[0]?.['send_email_status'] ? translateScriptEle.attr('data-trans-send-email-ok') : translateScriptEle.attr('data-trans-send-email-err')).addClass(exist[0]?.['send_email_status'] ? 'text-success' : 'text-danger')
+                }
+            })
+        }
     });
 }
 
 $('#btn_load_external_participants_table').on('click', function () {
-    loadExternalAccountParticipants()
-    loadExternalParticipantsTable()
+    if (!internalParticipantsEle.val()) {
+        loadExternalAccountParticipants()
+        loadExternalParticipantsTable()
+    }
+    else {
+        let account_selected = SelectDDControl.get_data_from_idx(externalParticipantsAccountEle, externalParticipantsAccountEle.val())
+        loadExternalAccountParticipants(account_selected)
+        loadExternalParticipantsTable(account_selected?.['contact_mapped'])
+    }
 })
 
 $('#select-external-employees-btn').on('click', function () {
@@ -705,12 +748,13 @@ function LoadDetailMeetingSchedule() {
 
                 $('#name').val(data?.['title'])
                 $('#content').val(data?.['meeting_content'])
-                startDateEle.val(data?.['meeting_start_date'])
+                startDateEle.val(moment(data?.['meeting_start_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                 startTimeEle.val(data?.['meeting_start_time'])
                 $('#duration-hour').val(parseInt(data?.['meeting_duration']/60))
                 $('#duration-min').val(parseInt(data?.['meeting_duration']%60))
-                loadInternalParticipants(data?.['participants'].filter(entity => entity.is_external === false).map(entity => entity.internal))
-                loadExternalParticipants(data?.['participants'].filter(entity => entity.is_external === true).map(entity => entity.external))
+                loadInternalParticipants(data?.['participants'].filter(entity => entity?.['is_external'] === false).map(entity => entity?.['internal']))
+                loadExternalParticipants(data?.['participants'].filter(entity => entity?.['is_external'] === true).map(entity => entity?.['external']))
+                loadExternalAccountParticipants(data?.['account_external'])
                 $('#offline-meeting').prop('checked', data?.['meeting_type'])
                 $('.row-for-offline-meeting').prop('hidden', !data?.['meeting_type'])
                 $('#online-meeting-tab-space').prop('hidden', data?.['meeting_type'])

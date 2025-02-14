@@ -219,7 +219,6 @@ $('#btn-offcanvas-resend-email').on('click', function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                $.fn.notifyB({'description': 'Send email successfully!'}, 'success');
                 $('#offcanvas-detail-send-email').offcanvas('hide')
                 loadOpportunityEmailList()
                 WindowControl.hideLoading();

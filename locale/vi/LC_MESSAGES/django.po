@@ -1047,6 +1047,10 @@ msgid "Errors"
 msgstr "Lỗi"
 
 #
+msgid "Error"
+msgstr "Lỗi"
+
+#
 msgid "Current WF applied"
 msgstr "Quy trình được áp dụng hiện tại"
 
@@ -10270,6 +10274,10 @@ msgstr "Chỉ ghi lại"
 #
 msgid "Sent successfully"
 msgstr "Gửi thành công"
+
+#
+msgid "Sent"
+msgstr "Đã gửi"
 
 #
 msgid "Send failed"

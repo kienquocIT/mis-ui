@@ -24,6 +24,79 @@ $(document).ready(function () {
 
     const cls_tasks = new handle_tasks_cls();
     cls_tasks.init();
+
+    function submitHandleFunc(platform) {
+        let _form = new SetupFormSubmit(platform);
+        let formData = _form.dataForm
+        const start_date = new Date(formData.start_date).getTime()
+        const end_date = new Date(formData.end_date).getTime()
+        if (end_date < start_date) {
+            $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
+            return false
+        }
+        formData.remark = window.editor.getData();
+        if (formData.log_time === "")
+            delete formData.log_time
+        else {
+            let temp = formData.log_time.replaceAll("'", '"')
+            temp = JSON.parse(temp)
+            formData.log_time = temp
+        }
+        formData.priority = parseInt(formData.priority)
+        let tagsList = $('#inputLabel').attr('value')
+        if (tagsList) formData.label = JSON.parse(tagsList)
+        formData.employee_created = $('#inputAssigner').attr('value')
+
+        if (!formData.employee_inherit_id) {
+            $.fn.notifyB({'description': $('#trans-factory').attr('data-assignee_empty')}, 'failure')
+            return false
+        }
+        formData.checklist = []
+
+        $('.wrap-checklist .checklist_item').each(function () {
+            formData.checklist.push({
+                'name': $(this).find('label').text(),
+                'done': $(this).find('input').prop('checked'),
+            })
+        })
+
+        formData.attach = $x.cls.file.get_val(formData.attach, []);
+        formData.attach_assignee = $x.cls.file.get_val(formData.attach_assignee, []);
+
+        formData.work = $('input[name="work_id"]', platform).val()
+        formData.project = $('#project_id').val()
+        let method = 'POST', url = platform.attr('data-url')
+        if ($('input[name="id"]', platform).length)
+            if ($('input[name="id"]', platform).val().length) {
+                method = 'PUT'
+                url = $('#url-factory').attr('data-task-detail').format_url_with_uuid($('input[name="id"]', platform).val())
+            }
+
+        $.fn.callAjax2({
+            'url': url,
+            'method': method,
+            'data': formData,
+            'sweetAlertOpts': {
+                'allowOutsideClick': true
+            },
+        }).then(
+            (resp) => {
+                const data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: data.message}, 'success')
+                    $('.cancel-task').trigger('click')
+                }
+            },
+            (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+        )
+    }
+
+    // form submit
+    const $FormElm = $('#formOpportunityTask');
+    SetupFormSubmit.validate($FormElm, {
+        errorClass: 'is-invalid cl-red',
+        submitHandler: submitHandleFunc
+    })
 });
 
 class handle_tasks_cls {
@@ -69,27 +142,22 @@ class handle_tasks_cls {
             $table.DataTable().ajax.reload()
         else
             $table.DataTableDefault({
+                autoWidth: false,
+                scrollX: true,
                 useDataServer: true,
                 ajax: {
                     url: $('#url-factory').attr('data-task-list'),
                     type: 'get',
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        let res = []
-                        if (data) {
-                            let temp = resp.data['prj_task_list_all'] ? resp.data['prj_task_list_all'] : [];
-                            if (temp)
-                                res = temp.map((item) => item.task)
-                        }
-                        return res;
-                    },
+                    dataSrc: 'data.prj_task_list_all',
                     data: function (params) {
                         let txtSearch = $('#table_task_list_filter input[type="text"]').val();
                         if (txtSearch.length > 0)
                             params['search'] = txtSearch
-                        params['project_id'] = $('#filter_project_id').val() || ''
-                        params['task__task_status_id'] = $('#filter_task_status').val() || ''
-                        params['member_id'] = $('#filter_employee_id').val() || ''
+                        const prjID = $('#filter_project_id').val();
+                        if (prjID) params['project_id'] = prjID
+                        else params['project_id__isnull'] = false
+                        params['task_status_id'] = $('#filter_task_status').val() || ''
+                        params['employee_inherit_id'] = $('#filter_employee_id').val() || ''
                         params['is_ajax'] = true;
                         return params
                     },
@@ -127,7 +195,7 @@ class handle_tasks_cls {
                             const config = JSON.parse($('#task_config').text())
                             let html = $('<span class="badge text-dark font-2">')
                             for (let cf of config.list_status) {
-                                if (cf.id === row.id) {
+                                if (cf.id === row?.id) {
                                     html.css('background-color', cf.task_color).text(row.title)
                                     break;
                                 }
@@ -140,18 +208,18 @@ class handle_tasks_cls {
                         "class": "col-2 text-right",
                         render: (row, type, data) => {
                             let html = ''
-                            if (!data.employee_created?.full_name)
-                                data.employee_created.full_name = data.employee_created.last_name +
-                                    ' ' + data.employee_created.first_name
-                            const assigner = $x.fn.renderAvatar(data.employee_created).replace(
-                                'avatar-primary', 'avatar-' + $x.fn.randomColor())
-                            let assignee = ''
-                            if (row) {
-                                if (!row.full_name) row.full_name = row.last_name + ' ' + row.first_name
-                                assignee = $x.fn.renderAvatar(row).replace(
-                                    'avatar-primary', 'avatar-soft-' + $x.fn.randomColor())
-                            }
-                            html += assigner + '<supper>»</supper>' + assignee
+                            // if (!data.employee_created?.full_name)
+                            //     data.employee_created.full_name = data.employee_created.last_name +
+                            //         ' ' + data.employee_created.first_name
+                            // const assigner = $x.fn.renderAvatar(data.employee_created).replace(
+                            //     'avatar-primary', 'avatar-' + $x.fn.randomColor())
+                            // let assignee = ''
+                            // if (row) {
+                            //     if (!row.full_name) row.full_name = row.last_name + ' ' + row.first_name
+                            //     assignee = $x.fn.renderAvatar(row).replace(
+                            //         'avatar-primary', 'avatar-soft-' + $x.fn.randomColor())
+                            // }
+                            // html += assigner + '<supper>»</supper>' + assignee
                             return html
                         }
                     },
@@ -258,9 +326,9 @@ class handle_tasks_cls {
                     targets: 1,
                     width: "35%",
                     render: (row, type, data) => {
-                        let date = moment(row, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                        let date = moment(row, 'YYYY-MM-DDThh:mm:ss').format('DD/MM/YYYY')
                         date += ' ~ '
-                        date += moment(data.end_date, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                        date += moment(data.end_date, 'YYYY-MM-DDThh:mm:ss').format('DD/MM/YYYY')
 
                         return date;
                     }
@@ -361,16 +429,14 @@ class handle_tasks_cls {
                     const $form = $('#formOpportunityTask');
                     if (data.status === 200) {
                         $('#inputTextTitle', $form).val(data.title)
+                        $('.title-create').hide()
+                        $('.title-detail').show()
                         $('#inputTextCode', $form).val(data.code)
                         _this.initSelect($('#selectStatus', $form), data.task_status)
                         const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                         $form.append(taskIDElm).addClass('task_edit')
-                        $('#inputTextStartDate', $form).val(
-                            moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                        )
-                        $('#inputTextEndDate', $form).val(
-                            moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                        )
+                        $('#inputTextStartDate', $form)[0]._flatpickr.setDate(data.start_date)
+                        $('#inputTextEndDate', $form)[0]._flatpickr.setDate(data.end_date)
                         $('#inputTextEstimate', $form).val(data.estimate)
 
                         $('#selectPriority', $form).val(data.priority).trigger('change')
@@ -433,40 +499,24 @@ class handle_tasks_cls {
     init() {
         // first time load get and render data
         this.renderTable();
-        const _this = this;
-        // reset form create task khi click huỷ bỏ
-        $('.cancel-task, [data-drawer-target="#drawer_task_create"]').each((idx, elm) => {
-            $(elm).on('click', function () {
-                if ($(this).hasClass('cancel-task')) {
-                    $(this).closest('.ntt-drawer').toggleClass('open');
-                    $('.hk-wrapper').toggleClass('open');
-                }
-                const titCreate = $('.title-create'), titEdit = $('.title-detail');
-                if (titCreate.hasClass('hidden')) titCreate.removeClass("hidden")
-                if (!titEdit.hasClass('hidden')) titEdit.addClass("hidden")
-                _this.resetFormTask()
-            });
-        });
 
         // init attachment file
         new $x.cls.file($('#assigner_attachment')).init({'name': 'attach'});
         new $x.cls.file($('#assignee_attachment')).init({'name': 'attach_assignee'});
 
         //--BTN LOG-TIME-- action click to log-work
-        $('#startDateLogTime, #endDateLogTime').daterangepicker({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: false,
-            minYear: 2023,
-            locale: {
-                format: 'DD/MM/YYYY',
-            },
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            autoApply: true
+        $('#startDateLogTime, #endDateLogTime, #inputTextStartDate, #inputTextEndDate').flatpickr({
+            'allowInput': true,
+            'altInput': true,
+            'altFormat': 'd/m/Y',
+            'defaultDate': null,
+            'locale': globeLanguage === 'vi' ? 'vn' : 'default',
+            'shorthandCurrentMonth': true,
         });
         $('.btn-log_work').off().on('click', () => {
             $('#logWorkModal').modal('show')
-            $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
+            $('#EstLogtime').val(null)
+            $('#startDateLogTime, #endDateLogTime').each(function() {this._flatpickr.clear()})
             const taskID = $('.task_edit [name="id"]').val()
             if (taskID) $('#logtime_task_id').val(taskID)
             logworkSubmit()

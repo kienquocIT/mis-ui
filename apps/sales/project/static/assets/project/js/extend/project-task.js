@@ -292,9 +292,9 @@ class Task_in_project {
                     targets: 1,
                     width: "35%",
                     render: (row, type, data) => {
-                        let date = moment(row, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                        let date = moment(row, 'YYYY-MM-DDThh:mm:ss').format('DD/MM/YYYY')
                         date += ' ~ '
-                        date += moment(data.end_date, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                        date += moment(data.end_date, 'YYYY-MM-DDThh:mm:ss').format('DD/MM/YYYY')
 
                         return date;
                     }

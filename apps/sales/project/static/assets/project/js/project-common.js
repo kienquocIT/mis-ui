@@ -1509,17 +1509,16 @@ class TaskReport{
     set setData(datas){
         let temp = []
         let draft = []
-        for (let data of datas){
-            const task = data.task
-            if (draft.includes(task.employee_inherit.id)){
+        for (let task of datas){
+            if (draft.includes(task?.employee_inherit?.id)){
                 // nếu có
                 const idx = draft.indexOf(task.employee_inherit.id)
                 temp[idx]['total_time_received'] += ',' + task.estimate
                 temp[idx]['total_task'] += 1
                 temp[idx]['total_task_complete'] += task.percent_completed === 100 ? 1 : 0
-                temp[idx]['total_time_did'] = temp[idx]['total_time_did'].concat(task.log_time)
+                temp[idx]['total_time_did'] = temp[idx]['total_time_did'].concat(task?.log_time ? task.log_time : [])
             }
-            else{
+            else if (task?.employee_inherit){
                 // ko có
                 draft.push(task.employee_inherit.id)
                 temp.push({

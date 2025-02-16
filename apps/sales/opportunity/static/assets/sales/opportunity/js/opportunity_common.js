@@ -945,10 +945,10 @@ class OpportunityActivity {
                         targets: 1,
                         width: "35%",
                         render: (data, type, row) => {
-                            let date = moment(data, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                            let date = moment(data, 'YYYY-MM-DDThh:mm:ss').format('DD/MM/YYYY')
                             if (data !== row.end_date) {
                                 date += ' ~ '
-                                date += moment(row.end_date, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                                date += moment(row.end_date, 'YYYY-MM-DDThh:mm:ss').format('DD/MM/YYYY')
                             }
                             return date;
                         }

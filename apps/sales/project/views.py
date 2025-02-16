@@ -431,19 +431,6 @@ class ProjectTaskListAPI(APIView):
         resp = ServerAPI(user=request.user, url=url).get(params)
         return resp.auto_return(key_success='prj_task_list')
 
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        is_api=True,
-    )
-    def post(self, request, *args, **kwargs):
-        data = request.data
-        resp = ServerAPI(user=request.user, url=ApiURL.PROJECT_TASK_LIST.fill_key(pk_pj=data['project'])).post(data)
-        if resp.state:
-            resp.result['message'] = f'{SaleMsg.PROJECT_ASSIGN_TASK} {BaseMsg.SUCCESS}'
-            return resp.result, status.HTTP_200_OK
-        return resp.auto_return()
-
 
 class ProjectTaskDetailAPI(APIView):
     @mask_view(

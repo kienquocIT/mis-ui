@@ -231,7 +231,18 @@ class SetupFormSubmit {
                 {
                     submitHandler: function (form, event) {
                         event.preventDefault();
-                        submitHandler ? submitHandler($(form), event) : form.submit();
+                        const avtiveElement = $(document.activeElement).closest('.dataTables_filter').length
+                        if (avtiveElement === 1) {
+                            $(this).submit(false)
+                        }
+                        else{
+                            if (submitHandler){
+                                submitHandler($(form), event)
+                            }
+                            else{
+                                form.submit();
+                            }
+                        }
                     },
                     onsubmit: true, // !!submitHandler,
                     ...opts,

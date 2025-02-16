@@ -14,3 +14,9 @@
 .form-group-filter{
     align-items: center;
 }
+.clear-all-btn{
+    cursor: pointer;
+}
+.input-affix-wrapper .form-control:not(:first-child){
+    padding-left: 10.5px;
+}

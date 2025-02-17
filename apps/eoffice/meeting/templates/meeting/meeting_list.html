@@ -25,6 +25,14 @@
     ></script>
     <div class="row">
         <div class="col-12">
+            <a class="text-blue" href="{% url 'MeetingZoomConfigList' %}" data-bs-toggle="tooltip" title="{% trans 'Zoom account config here' %}">
+                <i class="fa-solid fa-user"></i>&nbsp;
+                <img style="height: 10px;"
+                     src="https://st1.zoom.us/fe-static/fe-signup-login-active/img/ZoomNewLogo.b2fd5c95.png"
+                     alt="Zoom Logo">
+            </a>
+        </div>
+        <div class="col-12">
             <table class="table w-100 nowrap" id="meeting-schedule-list" data-method="GET" data-url="{% url 'MeetingScheduleListAPI' %}" data-url-detail="{% url 'MeetingScheduleDetail' '0' %}">
                 <thead>
                 <tr>

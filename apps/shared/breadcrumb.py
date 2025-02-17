@@ -89,7 +89,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Master data config
     MASTER_DATA_PRICE_PAGE = BreadcrumbChildren(_('Master data price'), 'PriceMasterDataList')
-    MEETING_CONFIG_PAGE = BreadcrumbChildren(_('Meeting config'), 'MeetingConfigList')
+    MEETING_CONFIG_PAGE = BreadcrumbChildren(_('Meeting config'), 'MeetingScheduleMasterdataList')
 
     # Master Data
     CONTACT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Contact'), 'ContactMasterDataList')
@@ -324,6 +324,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ASSET_TOOLS_RETURN_LIST = BreadcrumbChildren(_('Asset, Tools return list'), 'AssetToolsReturnList')
 
     MEETING_SCHEDULE_LIST_PAGE = BreadcrumbChildren(_('Meeting schedule list'), 'MeetingScheduleList')
+    MEETING_ZOOM_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Zoom config'), 'MeetingZoomConfigList')
     MEETING_SCHEDULE_CREATE_PAGE = BreadcrumbChildren(_('Meeting schedule create'), 'MeetingScheduleCreate')
     MEETING_SCHEDULE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
@@ -989,6 +990,7 @@ class BreadcrumbView:
     ASSET_TOOLS_RETURN_EDIT = ASSET_TOOLS_RETURN_LIST + [BreadcrumbItem.BASTION_UPDATE]
 
     MEETING_SCHEDULE_LIST_PAGE = [BreadcrumbItem.MEETING_SCHEDULE_LIST_PAGE]
+    MEETING_ZOOM_CONFIG_LIST_PAGE = [BreadcrumbItem.MEETING_ZOOM_CONFIG_LIST_PAGE]
     MEETING_SCHEDULE_CREATE_PAGE = [BreadcrumbItem.MEETING_SCHEDULE_LIST_PAGE,
                                     BreadcrumbItem.MEETING_SCHEDULE_CREATE_PAGE]
     MEETING_SCHEDULE_DETAIL_PAGE = MEETING_SCHEDULE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]

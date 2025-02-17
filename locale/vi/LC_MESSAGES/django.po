@@ -10750,7 +10750,10 @@ msgstr "Mã truy cập sẽ được nhúng trong đường link mời. Người
 msgid "Chat with participants any time and access in-meeting chat in the same place. External users must be manually added to the Meeting Group Chat."
 msgstr "Trò chuyện với người tham gia bất cứ lúc nào và truy cập cuộc trò chuyện trong cuộc họp tại cùng một nơi. Người dùng bên ngoài phải được thêm thủ công vào nhóm trò chuyện của cuộc họp."
 
-
 #
 msgid "The Zoom meeting cannot be created because you have not configured a Zoom account. Go to settings to add it, then go here to create it again."
 msgstr "Cuộc họp trên Zoom chưa thể tạo vì bạn chưa cấu hình tài khoản Zoom. Hãy vào phần cài đặt để thêm, sau đó vào đây để tạo lại."
+
+#
+msgid "Zoom account config here"
+msgstr "Cấu hình tài khoản Zoom tại đây"

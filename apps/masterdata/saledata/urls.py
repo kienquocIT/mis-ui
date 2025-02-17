@@ -47,8 +47,8 @@ from apps.masterdata.saledata.views.warehouse import (
     WareHouseCreate, WareHouseDetail, WareHouseUpdate, WarehouseGetProductsListAPI, WarehouseLotListAPI,
     WarehouseSerialListAPI, ProductWarehouseAssetList, WarehouseGetProductsListAPIForGoodsTransfer,
 )
-from apps.masterdata.saledata.views.meeting_config import MeetingConfigList, MeetingRoomListAPI, \
-    MeetingRoomDetailAPI, MeetingZoomConfigListAPI, MeetingZoomConfigDetailAPI
+from apps.masterdata.saledata.views.meetingschedule import MeetingScheduleMasterdataList, MeetingRoomListAPI, \
+    MeetingRoomDetailAPI
 from apps.masterdata.saledata.views.invoice_sign import InvoiceSignList, InvoiceSignListAPI
 from apps.masterdata.saledata.views.inventory_interact_config import (
     InventoryInteractConfigList, InventoryInteractConfigListAPI, InventoryInteractConfigDetailAPI
@@ -87,8 +87,8 @@ urlpatterns = [
         name='AccountGroupDetailAPI'
     ),
     path(
-        'masterdata/meetingconfig', MeetingConfigList.as_view(),
-        name='MeetingConfigList'
+        'masterdata/meetingschedule', MeetingScheduleMasterdataList.as_view(),
+        name='MeetingScheduleMasterdataList'
     ),
     path(
         'masterdata/meetingroom/api', MeetingRoomListAPI.as_view(),
@@ -97,14 +97,6 @@ urlpatterns = [
     path(
         'masterdata/meetingroom/api/<str:pk>', MeetingRoomDetailAPI.as_view(),
         name='MeetingRoomDetailAPI'
-    ),
-    path(
-        'masterdata/meetingzoomconfig/api', MeetingZoomConfigListAPI.as_view(),
-        name='MeetingZoomConfigListAPI'
-    ),
-    path(
-        'masterdata/meetingzoomconfig/api/<str:pk>', MeetingZoomConfigDetailAPI.as_view(),
-        name='MeetingZoomConfigDetailAPI'
     ),
     path(
         'masterdata/periodsconfig', PeriodsConfigList.as_view(),

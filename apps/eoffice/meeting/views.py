@@ -82,3 +82,58 @@ class MeetingScheduleDetailAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.MEETING_SCHEDULE_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='meeting_schedule_detail')
+
+
+class MeetingZoomConfigList(View):
+    @mask_view(
+        auth_require=True,
+        template='meeting/zoomconfig.html',
+        breadcrumb='MEETING_ZOOM_CONFIG_LIST_PAGE',
+        menu_active='',
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.MEETING_ZOOM_CONFIG_LIST).get()
+        return {
+            'zoom_config': resp.result[0] if len(resp.result) > 0 else ''
+        }, status.HTTP_200_OK
+
+
+class MeetingZoomConfigListAPI(APIView):
+    permission_classes = [IsAuthenticated] # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.MEETING_ZOOM_CONFIG_LIST).get(params)
+        return resp.auto_return(key_success='meeting_zoom_config_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.MEETING_ZOOM_CONFIG_LIST).post(request.data)
+        return resp.auto_return()
+
+
+class MeetingZoomConfigDetailAPI(APIView):
+    permission_classes = [IsAuthenticated] # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.MEETING_ZOOM_CONFIG_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='meeting_zoom_config')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.MEETING_ZOOM_CONFIG_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='meeting_zoom_config')

@@ -168,6 +168,10 @@ class MenusCoreConfigurations:
                 name='Document', code='id_menu_master_data_document', view_name='DocumentTypeMasterDataList',
                 icon='<i class="fas fa-file"></i>',
             ),
+            MenuCommon(
+                name='Meeting', code='id_menu_master_data_meeting_schedule', view_name='MeetingScheduleMasterdataList',
+                icon='<i class="fas fa-chalkboard-teacher"></i>',
+            ),
         ]
     )
     TRANSITION_DATA_CONFIG = MenuCommon(
@@ -221,10 +225,6 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Asset, Tools', code='menu_asset_tools_config', view_name='AssetToolsConfigView',
                 icon='<i class="fa-solid fa-pen-ruler"></i>',
-            ),
-            MenuCommon(
-                name='Meeting', code='id_menu_master_data_meeting_config', view_name='MeetingConfigList',
-                icon='<i class="fas fa-chalkboard-teacher"></i>',
             ),
             MenuCommon(
                 name='Revenue plan config', code='id_menu_master_data_revenue_plan_config',

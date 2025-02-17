@@ -1468,8 +1468,11 @@ $(document).on("change", '.product_discount_value', function () {
 })
 
 $(document).on("click", '.delete-item-row', function () {
-    ARInvoiceAction.DeleteRow($(this).find('.picked_quantity').length === 0 ? tabLineDetailTableSimple : tabLineDetailTable, parseInt($(this).closest('tr').find('td:first-child').text()))
-    $(this).find('.picked_quantity').length === 0 ? ARInvoiceAction.CalculatePriceSimple() : ARInvoiceAction.CalculatePrice()
+    ARInvoiceAction.DeleteRow(
+        $(this).closest('tr').find('.picked_quantity').length === 0 ? tabLineDetailTableSimple : tabLineDetailTable,
+        parseInt($(this).closest('tr').find('td:first-child').text())
+    )
+    $(this).closest('tr').find('.picked_quantity').length === 0 ? ARInvoiceAction.CalculatePriceSimple() : ARInvoiceAction.CalculatePrice()
 })
 
 $(document).on("change", '.recalculate-field', function () {

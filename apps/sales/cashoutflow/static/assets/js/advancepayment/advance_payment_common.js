@@ -1425,22 +1425,13 @@ class APHandle {
 
         if (option === "create") {
             const {
-                create_open, from_opp,
-                opp_id,
-                opp_title,
-                opp_code,
-                process_id,
-                process_title,
-                process_stage_app_id,
-                process_stage_app_title,
-                inherit_id,
-                inherit_title
+                create_open, opp_id, opp_title, opp_code,
+                process_id, process_title, process_stage_app_id, process_stage_app_title,
+                inherit_id, inherit_title
             } = $x.fn.getManyUrlParameters([
-                'create_open', 'from_opp',
-                'opp_id', 'opp_title', 'opp_code',
-                'process_id', 'process_title',
-                'process_stage_app_id', 'process_stage_app_title',
-                'inherit_id', 'inherit_title',
+                'create_open', 'opp_id', 'opp_title', 'opp_code',
+                'process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title',
+                'inherit_id', 'inherit_title'
             ])
             const group$ = $('#bastion-space')
             if (create_open) {
@@ -1478,27 +1469,6 @@ class APHandle {
                     data_inherit: data_inherit,
                     data_process: data_process,
                     data_process_stage_app: data_process_stage_app,
-                }).init();
-
-                APHandle.LoadPageActionWithParams(opp_id)
-            }
-            else if (from_opp) {
-                const data_opp = [{
-                    "id": opp_id || '',
-                    "title": opp_title || '',
-                    "code": opp_code || '',
-                    "selected": true,
-                }];
-                new $x.cls.bastionField({
-                    list_from_app: "cashoutflow.advancepayment.create",
-                    app_id: "57725469-8b04-428a-a4b0-578091d0e4f5",
-                    mainDiv: group$,
-                    oppEle: group$.find('select[name=opportunity_id]'),
-                    prjEle: group$.find('select[name=project_id]'),
-                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
-                    processEle: group$.find('select[name=process]'),
-                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
-                    data_opp: data_opp,
                 }).init();
 
                 APHandle.LoadPageActionWithParams(opp_id)

@@ -210,7 +210,7 @@ $(document).ready(function () {
                     if (data_opp_detail) {
                         let goto_call_log = $('#goto-call-log')
                         let call_log_param_url = OpportunityLoadPage.push_param_to_url(goto_call_log.attr('data-url'), {
-                            'from_opp': true,
+                            'create_open': true,
                             'opp_id': data_opp_detail?.['id'],
                             'opp_title': data_opp_detail?.['title'],
                             'opp_code': data_opp_detail?.['code'],
@@ -220,7 +220,7 @@ $(document).ready(function () {
                         goto_call_log.attr('href', call_log_param_url)
                         let goto_email = $('#goto-email')
                         let email_param_url = OpportunityLoadPage.push_param_to_url(goto_email.attr('data-url'), {
-                            'from_opp': true,
+                            'create_open': true,
                             'opp_id': data_opp_detail?.['id'],
                             'opp_title': data_opp_detail?.['title'],
                             'opp_code': data_opp_detail?.['code'],
@@ -230,7 +230,7 @@ $(document).ready(function () {
                         goto_email.attr('href', email_param_url)
                         let goto_meeting = $('#goto-meeting')
                         let meeting_param_url = OpportunityLoadPage.push_param_to_url(goto_meeting.attr('data-url'), {
-                            'from_opp': true,
+                            'create_open': true,
                             'opp_id': data_opp_detail?.['id'],
                             'opp_title': data_opp_detail?.['title'],
                             'opp_code': data_opp_detail?.['code'],

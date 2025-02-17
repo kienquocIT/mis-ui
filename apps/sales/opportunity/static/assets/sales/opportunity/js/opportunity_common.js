@@ -2381,7 +2381,7 @@ class OpportunityLoadPage {
                     let create_ap_sc = $('#create-advance-payment-shortcut')
                     create_ap_sc.removeClass('disabled');
                     let param_url = OpportunityLoadPage.push_param_to_url(create_ap_sc.attr('data-url'), {
-                        'from_opp': true,
+                        'create_open': true,
                         'opp_id': results_perm_app[2]?.['id'],
                         'opp_code': results_perm_app[2]?.['code'],
                         'opp_title': results_perm_app[2]?.['title'],
@@ -2394,7 +2394,7 @@ class OpportunityLoadPage {
                     let create_payment_sc = $('#create-payment-shortcut')
                     create_payment_sc.removeClass('disabled');
                     let param_url = OpportunityLoadPage.push_param_to_url(create_payment_sc.attr('data-url'), {
-                        'from_opp': true,
+                        'create_open': true,
                         'opp_id': results_perm_app[3]?.['id'],
                         'opp_code': results_perm_app[3]?.['code'],
                         'opp_title': results_perm_app[3]?.['title'],
@@ -2407,11 +2407,12 @@ class OpportunityLoadPage {
                     let create_bom_sc = $('#create-project-bom-shortcut')
                     create_bom_sc.removeClass('disabled');
                     let param_url = OpportunityLoadPage.push_param_to_url(create_bom_sc.attr('data-url'), {
-                        'from_opp': true,
+                        'create_open': true,
                         'opp_id': results_perm_app[4]?.['id'],
                         'opp_code': results_perm_app[4]?.['code'],
                         'opp_title': results_perm_app[4]?.['title'],
-                        'sale_person_mapped': encodeURIComponent(JSON.stringify(results_perm_app[4]?.['sale_person'])),
+                        'inherit_id': results_perm_app[4]?.['sale_person']?.['id'],
+                        'inherit_title': results_perm_app[4]?.['sale_person']?.['full_name'],
                     })
                     create_bom_sc.attr('href', param_url)
                 }

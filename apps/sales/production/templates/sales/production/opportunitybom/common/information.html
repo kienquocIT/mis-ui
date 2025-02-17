@@ -10,9 +10,10 @@
     }
 </style>
 
-{% trans 'Select Sale Person' as inherit_title %}
-{% include 'extends/the-documents/bastion.html' with auto_select_current_employee=False show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True inherit_disabled=True %}
-
+<div id="bastion-space">
+    {% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
+    {% include 'extends/the-documents/bastion.html' with opp_title=opp_title has_process=False has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True inherit_disabled=True %}
+</div>
 <div class="row">
     <div class="col-12 text-right">
         <button type="button" id="btn-copy-bom" class="btn btn-outline-blue btn-xs" data-bs-toggle="modal" data-bs-target="#modal-select-BOM"><i class="fas fa-copy"></i> {% trans 'Copy BOM' %}</button>
@@ -134,127 +135,3 @@
         </div>
     </div>
 </div>
-
-{% block modalData %}
-    <div class="offcanvas offcanvas-end" style="width: 90%" tabindex="-1" id="select-material-modal" aria-labelledby="offcanvasTopLabel">
-        <div class="offcanvas-header">
-            <h5 id="offcanvasRightLabel">{% trans 'Select materials/components' %}</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <table id="select-material-table" data-url="{% url 'ProductMaterialListForBOMAPI' %}" class="table w-100 nowrap">
-                <thead class="bg-light">
-                    <tr>
-                        <th style="min-width: 30px"></th>
-                        <th style="min-width: 30px"></th>
-                        <th style="min-width: 100px">{% trans 'Code' %}</th>
-                        <th style="min-width: 200px">{% trans 'Material/Component' %}</th>
-                        <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                        <th style="min-width: 120px">{% trans 'UOM' %}</th>
-                        <th style="min-width: 150px">{% trans 'Standard cost' %}</th>
-                        <th style="min-width: 150px">{% trans 'Subtotal price' %}</th>
-                        <th style="min-width: 100px" class="text-center">{% trans 'Disassemble' %}</th>
-                        <th style="min-width: 200px">{% trans 'Note' %}</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <button type="button" class="btn btn-primary mt-5" id="btn-get-selected-material">{% trans 'Select' %}</button>
-        </div>
-    </div>
-
-    <div class="offcanvas offcanvas-end" style="width: 70%" tabindex="-1" id="select-tool-modal" aria-labelledby="offcanvasTopLabel">
-        <div class="offcanvas-header">
-            <h5 id="offcanvasRightLabel">{% trans 'Select tools' %}</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <table id="select-tool-table" data-url="{% url 'ProductToolListForBOMAPI' %}" class="table w-100 nowrap">
-                <thead class="bg-light">
-                    <tr>
-                        <th style="min-width: 30px"></th>
-                        <th style="min-width: 30px"></th>
-                        <th style="min-width: 100px">{% trans 'Code' %}</th>
-                        <th style="min-width: 250px">{% trans 'Tool' %}</th>
-                        <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                        <th style="min-width: 150px">{% trans 'UOM' %}</th>
-                        <th style="min-width: 200px">{% trans 'Note' %}</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <button type="button" class="btn btn-primary mt-5" id="btn-get-selected-tool">{% trans 'Select' %}</button>
-        </div>
-    </div>
-
-    <div class="modal fade" id="replacement-material-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Select replacement material/component' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="replacement-material-table-warning" class="alert alert-warning" role="alert">
-                        {% trans 'Please select main material/component first!' %}
-                    </div>
-                    <table id="replacement-material-table" data-url="{% url 'ProductMaterialListForBOMAPI' %}" class="table w-100 nowrap">
-                        <thead class="bg-light">
-                            <tr>
-                                <th style="min-width: 30px"></th>
-                                <th style="min-width: 30px"></th>
-                                <th style="min-width: 100px">{% trans 'Code' %}</th>
-                                <th style="min-width: 200px">{% trans 'Material/Component' %}</th>
-                                <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                                <th style="min-width: 120px">{% trans 'UOM' %}</th>
-                                <th style="min-width: 100px" class="text-center">{% trans 'Disassemble' %}</th>
-                                <th style="min-width: 200px">{% trans 'Note' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="button" class="btn btn-primary" id="btn-get-replacement-material">{% trans 'Select' %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modal-select-BOM" tabindex="-1" role="dialog" aria-labelledby="modal-select-BOM" aria-hidden="true">
-        <div class="modal-dialog modal-lg" style="min-width: 80%" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Select BOM to copy' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <table class="table table-hover nowrap w-100" id="table-select-bom-copy" data-url="{% url 'BOMListAPI' %}">
-                                <thead>
-                                <tr>
-                                    <th style="min-width: 30px"></th>
-                                    <th style="min-width: 30px"></th>
-                                    <th style="min-width: 100px">{% trans 'BOM' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Product' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Opportunity' %}</th>
-                                </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-                    <button type="button" id="btn-accept-copy-bom" class="btn btn-primary">{% trans 'Copy' %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endblock %}

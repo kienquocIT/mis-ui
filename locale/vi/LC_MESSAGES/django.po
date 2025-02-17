@@ -8082,7 +8082,7 @@ msgstr "Phiếu trình duyệt"
 
 #
 msgid "Quarter Day"
-msgstr "Ngày đầu Quý"
+msgstr "6 giờ"
 
 #
 msgid "Half Day"

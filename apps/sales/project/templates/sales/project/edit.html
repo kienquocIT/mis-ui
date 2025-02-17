@@ -4,6 +4,8 @@
     {% trans 'Project' %} {% trans 'Update' %}
 {% endblock %}
 {% block cssHeader %}
+
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/contextMenu/jquery.contextMenu.min.css' %}" rel="stylesheet" type="text/css"/>
@@ -85,7 +87,7 @@
                     <input type="text" name="employee_inherit" id="employeeInheritInput" class="form-control" readonly>
                 </div>
                 <div class="col-xs-12 col-md-6 form-group">
-                    <label for="select_project_pm" class="form-label required">{% trans 'Project PM' %}</label>
+                    <label for="select_project_pm" class="form-label">{% trans 'Project PM' %}</label>
                     <select class="form-select" name="project_pm" id="select_project_pm"
                             data-url="{% url 'EmployeeListAPI' %}"
                             data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
@@ -368,7 +370,6 @@
            data-member="{% url 'ProjectMemberAddAPI' 1 %}"
            data-member-delete="{% url 'ProjectMemberDeleteAPI' data.pk 1 %}"
            data-update-order="{% url 'ProjectUpdateOrderAPI' data.pk %}"
-           data-task="{% url 'ProjectTaskListAPI' %}"
            data-task-list="{% url 'ProjectTaskListAllAPI' %}"
            data-task-logtime="{% url 'OpportunityTaskLogTimeAPI' %}"
            data-expense="{% url 'ExpenseListAPI' %}"

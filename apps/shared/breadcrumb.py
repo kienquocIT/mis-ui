@@ -324,7 +324,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ASSET_TOOLS_RETURN_LIST = BreadcrumbChildren(_('Asset, Tools return list'), 'AssetToolsReturnList')
 
     MEETING_SCHEDULE_LIST_PAGE = BreadcrumbChildren(_('Meeting schedule list'), 'MeetingScheduleList')
-    MEETING_ZOOM_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Zoom config'), 'MeetingZoomConfigList')
+    MEETING_ZOOM_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Zoom account config'), 'MeetingZoomConfigList')
     MEETING_SCHEDULE_CREATE_PAGE = BreadcrumbChildren(_('Meeting schedule create'), 'MeetingScheduleCreate')
     MEETING_SCHEDULE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 

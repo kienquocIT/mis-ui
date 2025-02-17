@@ -206,7 +206,9 @@ function loadInternalParticipantsTable() {
                 if (exist.length === 1) {
                     $(this).find('.checkbox_internal_employees').prop('checked', true).prop('disabled', true)
                     $(this).find('.checkbox_internal_send_notify_email').prop('checked', exist[0]?.['send_notify_email']).prop('disabled', exist[0]?.['send_notify_email'])
-                    $(this).find('.send-email-status').text(exist[0]?.['send_email_status'] ? translateScriptEle.attr('data-trans-send-email-ok') : translateScriptEle.attr('data-trans-send-email-err')).addClass(exist[0]?.['send_email_status'] ? 'text-success' : 'text-danger')
+                    if (exist[0]?.['send_notify_email']) {
+                        $(this).find('.send-email-status').text(exist[0]?.['send_email_status'] ? translateScriptEle.attr('data-trans-send-email-ok') : translateScriptEle.attr('data-trans-send-email-err')).addClass(exist[0]?.['send_email_status'] ? 'text-success' : 'text-danger')
+                    }
                 }
             })
         }
@@ -358,7 +360,9 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
                 if (exist.length === 1) {
                     $(this).find('.checkbox_external_contacts').prop('checked', true).prop('disabled', true)
                     $(this).find('.checkbox_external_send_notify_email').prop('checked', exist[0]?.['send_notify_email']).prop('disabled', exist[0]?.['send_notify_email'])
-                    $(this).find('.send-email-status').text(exist[0]?.['send_email_status'] ? translateScriptEle.attr('data-trans-send-email-ok') : translateScriptEle.attr('data-trans-send-email-err')).addClass(exist[0]?.['send_email_status'] ? 'text-success' : 'text-danger')
+                    if (exist[0]?.['send_notify_email']) {
+                        $(this).find('.send-email-status').text(exist[0]?.['send_email_status'] ? translateScriptEle.attr('data-trans-send-email-ok') : translateScriptEle.attr('data-trans-send-email-err')).addClass(exist[0]?.['send_email_status'] ? 'text-success' : 'text-danger')
+                    }
                 }
             })
         }
@@ -746,7 +750,7 @@ function LoadDetailMeetingSchedule() {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['meeting_schedule_detail'];
-                console.log(data)
+                // console.log(data)
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 

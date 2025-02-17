@@ -27,12 +27,6 @@ $(function () {
 
                     // init workflow
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
-                    // get WF initial zones for change
-                    let appCode = 'quotation';
-                    if ($form[0].classList.contains('sale-order')) {
-                        appCode = 'saleorder';
-                    }
-                    WFRTControl.setWFInitialData(appCode);
 
                     // init diagram
                     if ($form[0].classList.contains('sale-order')) {

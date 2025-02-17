@@ -47,10 +47,17 @@ $(document).ready(function () {
                         }
                     },
                     {
+                        data: 'room_info',
+                        className: 'wrap-text text-center',
+                        render: (data, type, row) => {
+                            return `${row?.['room_info']?.['title']}`
+                        }
+                    },
+                    {
                         data: 'date_occur',
                         className: 'wrap-text w-25',
                         render: (data, type, row) => {
-                            return `${moment(row?.['date_occur'], 'YYYY-MM-DD hh:mm A').format('DD/MM/YYYY hh:mm A')}`
+                            return moment(row?.['date_occur'], 'YYYY-MM-DD hh:mm A').format('DD/MM/YYYY hh:mm A')
                         }
                     },
                     {
@@ -70,6 +77,20 @@ $(document).ready(function () {
                                     return `<i class="bi bi-clock-history"></i> ${hour} ${trans_script.attr('data-hour')} ${min} ${trans_script.attr('data-minute')}`
                                 }
                             }
+                        }
+                    },
+                    {
+                        data: 'system_status',
+                        className: 'wrap-text text-center',
+                        render: (row, type, data) => {
+                            const status_data = [
+                                {txt: "Draft", cls: "soft-light"},
+                                {txt: "Created", cls: "soft-primary"},
+                                {txt: "Added", cls: "soft-info"},
+                                {txt: "Finish", cls: "soft-success"},
+                                {txt: "Cancel", cls: "soft-danger"},
+                            ]
+                            return `<span class="badge badge-${status_data[row]['cls']}">${status_data[row]['txt']}</span>`;
                         }
                     },
                 ],

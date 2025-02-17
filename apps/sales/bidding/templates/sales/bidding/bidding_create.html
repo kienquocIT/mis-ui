@@ -32,11 +32,13 @@
             {% include 'comment/list.html' %}
         </div>
     </div>
+{% endblock %}
 
-
+{% block modalData %}
     <!-- modal !-->
     {% include 'sales/bidding/common/modal.html' %}
 {% endblock %}
+
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>

@@ -169,6 +169,10 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-file"></i>',
             ),
             MenuCommon(
+                name='Fixed Asset', code='id_menu_master_data_fixed_asset', view_name='FixedAssetMasterDataList',
+                icon='<i class="fas fa-warehouse"></i>',
+            ),
+            MenuCommon(
                 name='Meeting', code='id_menu_master_data_meeting_schedule', view_name='MeetingScheduleMasterdataList',
                 icon='<i class="fas fa-chalkboard-teacher"></i>',
             ),
@@ -818,6 +822,15 @@ class MenusFinancials:
             ),
         ],
     )
+    ASSET = MenuCommon(
+        name='Assets', code='menu_asset', view_name='', icon='<i class="fas fa-warehouse"></i>',
+        child=[
+            MenuCommon(
+                name='Fixed assets', code='menu_fixed_asset', view_name='FixedAssetList',
+                icon='<i class="fas fa-warehouse"></i>',
+            ),
+        ],
+    )
     GENERAL = MenuCommon(
         name='General', code='menu_general', view_name='', icon='<i class="bi bi-link"></i>',
         child=[
@@ -947,6 +960,8 @@ class SpaceItem:
                 MenusFinancials.ACCOUNTING_SETTING,
                 MenusFinancials.GENERAL,
                 MenusFinancials.CASHFLOW,
+                MenusFinancials.ASSET,
+                MenusFinancials.GENERAL,
                 # MenusFinancials.JOURNAL_ENTRY,
             ]
         ),

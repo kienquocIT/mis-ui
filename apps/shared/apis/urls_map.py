@@ -837,6 +837,16 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Advance Filter
     ADVANCE_FILTER_LIST = StringUrl('report/advance-filter/list')
     ADVANCE_FILTER_DETAIL = StringUrl('report/advance-filter/detail')
+
+    # masterdata/ fixed asset
+    FIXED_ASSET_CLASSIFICATION_GROUP_LIST = StringUrl('saledata/fixed-asset/classification-group/list')
+    FIXED_ASSET_CLASSIFICATION_LIST = StringUrl('saledata/fixed-asset/classification/list')
+
+    # asset/ fixed asset
+    FIXED_ASSET_LIST = StringUrl('asset/fixed-asset/list')
+    FIXED_ASSET_DETAIL = StringUrl('asset/fixed-asset/detail')
+
+    ADVANCE_FILTER_DETAIL = StringUrl('report/advance-filter/detail')
     CHART_OF_ACCOUNTS_LIST = StringUrl('accounting-setting/chart-of-accounts')
     CHART_OF_ACCOUNTS_DETAIL = StringUrl('accounting-setting/chart-of-accounts/{pk}')
     DEFAULT_ACCOUNT_DEFINITION_LIST = StringUrl('accounting-setting/default-account-definition')

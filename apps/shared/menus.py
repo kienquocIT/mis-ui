@@ -961,7 +961,6 @@ class SpaceItem:
                 MenusFinancials.GENERAL,
                 MenusFinancials.CASHFLOW,
                 MenusFinancials.ASSET,
-                MenusFinancials.GENERAL,
                 # MenusFinancials.JOURNAL_ENTRY,
             ]
         ),

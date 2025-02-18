@@ -11,10 +11,10 @@ class DepreciationControl {
         /*
         method: 0: line method || 1: adjust method
         months: total months depreciation
-        start_date: date start depreciation
-        end_date: date end depreciation
+        start_date: date start depreciation (DD/MM/YYYY)
+        end_date: date end depreciation (DD/MM/YYYY)
         price: origin price to depreciation
-        adjust: use for method is adjust method
+        adjust: use for method is adjustment method
         */
         let result = [];
         let totalMonths = months;
@@ -29,10 +29,10 @@ class DepreciationControl {
             let currentStartDateObj = DepreciationControl.parseToDateObj(currentStartDate);
             let currentEndDate;
             if (result.length === 0) {
-                // First range: ends at the last day of the starting month
+                // Tháng đầu: ngày bắt đầu là start_date và kết thúc vào ngày cuối cùng của tháng
                 currentEndDate = DepreciationControl.addOneMonthToLast(currentStartDate, true);
             } else {
-                // Other ranges: align to calendar months
+                // Các tháng giữa: ngày bắt đầu là ngày 1 và kết thúc vào ngày cuối cùng của tháng
                 currentStartDate = `01/${String(currentStartDateObj.getMonth() + 1).padStart(2, '0')}/${currentStartDateObj.getFullYear()}`;
                 currentEndDate = DepreciationControl.addOneMonthToLast(currentStartDate, true);
             }

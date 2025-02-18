@@ -308,12 +308,11 @@ def mask_view(**parent_kwargs):
                     data = view_return
                 # data['status'] = http_status
 
-                try:
-                    if isinstance(data, dict):
-                        data['status'] = http_status
-                except Exception as err:
-                    handle_exception_all_view(err, self)
+                if not isinstance(data, dict):
+                    handle_exception_all_view("Invalid data type: Expected dict", self)
                     return HttpResponse(status=500)
+
+                data['status'] = http_status
 
                 # [], 200 <--- accept
                 # {'results': [], 'status_tmp': 201} <--- accept

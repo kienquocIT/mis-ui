@@ -21,6 +21,7 @@ class CommonHandler{
         this.$depreciationTimeInput = $('#depreciation-time')
         this.$depreciationMethodSelect = $('#depreciation-method')
         this.$timeUnitSelect = $('#time-unit')
+        this.$depreciationValueInput = $('#depreciation-value')
     }
 
     init(isUpdate=false){
@@ -546,6 +547,9 @@ class CommonHandler{
         tmpData = this.$accDepreciationInput.attr('value')
         form.dataForm['accumulative_depreciation'] = tmpData
 
+        tmpData = this.$depreciationValueInput.attr('value')
+        form.dataForm['depreciation_value'] = tmpData
+
         tmpData = form.dataForm['depreciation_time']
         form.dataForm['depreciation_time'] = Number(tmpData)
 
@@ -594,6 +598,7 @@ class CommonHandler{
                     this.initMaskMoneyInput(this.$originalCostInput, data?.['original_cost'])
                     this.initMaskMoneyInput(this.$accDepreciationInput, data?.['accumulative_depreciation'])
                     this.initMaskMoneyInput(this.$netBookValueInput, data?.['net_book_value'])
+                    this.initMaskMoneyInput(this.$depreciationValueInput, data?.['depreciation_value'])
                     this.initDateInput(this.$depreciationStartDateInput, data?.['depreciation_start_date'])
                     this.initDateInput(this.$depreciationEndDateInput, data?.['depreciation_end_date'])
 

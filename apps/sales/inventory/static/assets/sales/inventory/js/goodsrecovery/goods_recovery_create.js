@@ -69,7 +69,7 @@ $(function () {
                         }
                     )
                 }
-                RecoveryLoadDataHandle.$canvasMain.modal('show');
+                RecoveryLoadDataHandle.$canvasMain.offcanvas('show');
             }
             return true;
         });

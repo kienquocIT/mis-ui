@@ -306,9 +306,9 @@
                 </div>
             </div>
 
-            <div class="offcanvas offcanvas-end w-80" tabindex="-1" id="viewDepreciationDetail" aria-labelledby="offcanvasTopLabel">
-                <div class="offcanvas-header">
-                    <h5 class="modal-title"><b>{% trans 'Depreciation detail' %}</b></h5>
+            <div class="offcanvas offcanvas-end w-85" tabindex="-1" id="viewDepreciationDetail" aria-labelledby="offcanvasTopLabel">
+                <div class="modal-header">
+                    <h5><b>{% trans 'Depreciation detail' %}</b></h5>
                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
                 </div>
                 <div class="offcanvas-body">
@@ -429,10 +429,9 @@
                         <tbody>
                         </tbody>
                     </table>
-
-                    <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas" data-zone="lease_costs_data">{% trans 'Close' %}</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas" data-zone="lease_costs_data">{% trans 'Close' %}</button>
                 </div>
             </div>
 
@@ -507,6 +506,7 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 
+    <script src="{% static 'assets/js/extends/depreciation/depreciation_common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goodsrecovery/goods_recovery_common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goodsrecovery/goods_recovery_create.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goodsrecovery/goods_recovery_detail.js' %}"></script>

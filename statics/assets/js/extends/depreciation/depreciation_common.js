@@ -6,24 +6,27 @@ DepreciationControl{}
 */
 
 class DepreciationControl {
-    static calDepreciation(method, months, start_date, end_date, price, adjust = null) {
-        // method: 0: line method || 1: adjust method
-
+    static calDepreciation(opts) {
+        let {method, months, start_date, end_date, price, adjust = null} = opts;
+        /*
+        method: 0: line method || 1: adjust method
+        months: total months depreciation
+        start_date: date start depreciation
+        end_date: date end depreciation
+        price: origin price to depreciation
+        adjust: use for method is adjust method
+        */
         let result = [];
         let totalMonths = months;
         let depreciationValue = Math.round(price / totalMonths); // Khấu hao đều
         let accumulativeValue = 0;
-
         let currentStartDate = start_date;
         let currentMonth = 1;
         let currentValue = price;
-
         let endDateObj = DepreciationControl.parseToDateObj(end_date);
 
         while (true) {
             let currentStartDateObj = DepreciationControl.parseToDateObj(currentStartDate);
-
-            // Determine the end date for the current range
             let currentEndDate;
             if (result.length === 0) {
                 // First range: ends at the last day of the starting month
@@ -35,11 +38,10 @@ class DepreciationControl {
             }
             let currentEndDateObj = DepreciationControl.parseToDateObj(currentEndDate);
             let daysEven = DepreciationControl.calDaysBetween(currentStartDateObj, currentEndDateObj);
-
+            // Tính khấu hao hệ số nếu method === 1
             if (method === 1 && adjust) {
                 let depreciationAdjustValue = Math.round(price / totalMonths * adjust); // Khấu hao hệ số
                 depreciationValue = depreciationAdjustValue;
-
                 if (result.length > 0) {
                     let last_end_value = 0;
                     let last = result[result.length - 1];

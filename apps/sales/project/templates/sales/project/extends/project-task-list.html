@@ -4,8 +4,8 @@
     {% trans 'Project task List' %}
 {% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
-
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/project/css/prj-task-lst.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
@@ -19,7 +19,7 @@
                     <span>{% trans 'Filter by' %}</span>:
                 </span>
                 <span class="col clear-all-btn hidden">
-                    <span class="text-uppercase font-2 p-1">{% trans 'Clear all' %} x</span>
+                    <span class="text-capitalize font-2">{% trans 'Clear all' %}</span>
                 </span>
             </div>
             <div class="col-xs-12 col-sm-3">
@@ -169,7 +169,10 @@
 {% endblock %}
 {% block jsFooter %}
     <!-- library -->
-    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/extend/common_task.js' %}"></script>
 

@@ -231,7 +231,18 @@ class SetupFormSubmit {
                 {
                     submitHandler: function (form, event) {
                         event.preventDefault();
-                        submitHandler ? submitHandler($(form), event) : form.submit();
+                        const avtiveElement = $(document.activeElement).closest('.dataTables_filter').length
+                        if (avtiveElement === 1) {
+                            $(this).submit(false)
+                        }
+                        else{
+                            if (submitHandler){
+                                submitHandler($(form), event)
+                            }
+                            else{
+                                form.submit();
+                            }
+                        }
                     },
                     onsubmit: true, // !!submitHandler,
                     ...opts,
@@ -2590,9 +2601,7 @@ class WFRTControl {
 
     static setWFRuntimeID(runtime_id) {
         if (runtime_id) {
-            // set runtime
             WFRTControl.setRuntimeWF(runtime_id);
-
             let btn = $('#btnLogShow');
             btn.removeClass('hidden');
             let url = SetupFormSubmit.getUrlDetailWithID(btn.attr('data-url-runtime-detail'), runtime_id);
@@ -2602,20 +2611,20 @@ class WFRTControl {
             }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if ($.fn.hasOwnProperties(data, ['runtime_detail'])) {
-                    // khi phiếu trong trạng thái đã tạo ( state > 1) thì button save không có hiệu lực
-                    if (data['runtime_detail']?.['state'] >= 1) $('#idxRealAction .btn[type="submit"][form]').not('.btn-wf-after-finish').addClass('hidden');
-                    // Finish with workflow non-apply -> show idxDataRuntimeNotFound
+                    let runtimeData = data?.['runtime_detail'];
+                    // Khi phiếu trong trạng thái đã tạo ( state > 1) thì button save không có hiệu lực
+                    if (runtimeData?.['state'] >= 1) $('#idxRealAction .btn[type="submit"][form]').not('.btn-wf-after-finish').addClass('hidden');
+                    // Phiếu tự động hoàn thành (không bật quy trình) -> hiển thị idxDataRuntimeNotFound
                     let $dataRTNotFound = $('#idxDataRuntimeNotFound');
-                    if (data['runtime_detail']?.['state'] === 3) $dataRTNotFound.removeClass('hidden');
+                    if (runtimeData?.['state'] === 3) $dataRTNotFound.removeClass('hidden');
                     $dataRTNotFound.empty().append(WFRTControl.setupHTMLNonWF(false));
-
-                    let eleStatus = $('#systemStatus');
+                    let appCode = runtimeData?.['app_code'].split(".").pop();
                     let docData = WFRTControl.getRuntimeDocData();
-
-                    if (docData?.['system_status'] === 4) {  // if canceled after finish with workflow non-apply
+                    // Nếu hủy phiếu sau khi tự động hoàn thành (không bật quy trình)
+                    if (docData?.['system_status'] === 4) {
                         $dataRTNotFound.empty().append(WFRTControl.setupHTMLNonWF(true));
                     }
-                    let actionMySelf = data['runtime_detail']['action_myself'];
+                    let actionMySelf = runtimeData['action_myself'];
                     if (actionMySelf) {
                         let grouAction = $('#idxGroupAction');
                         let taskID = actionMySelf['id'];
@@ -2641,38 +2650,32 @@ class WFRTControl {
                                 }
                             }
                         }
-                        // ZONES HANDLE
-                        if (window.location.href.includes('/update/')) {  // page update
-                            // active btn save change and back if current employee is owner, status is finished
-                            let isCR = false;
-                            let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            if (eleStatus.attr('data-status-cr') === '5' && docData?.['employee_inherit']?.['id'] === currentEmployee) {
-                                WFRTControl.setBtnWFAfterFinishUpdate();
-                                isCR = true;
-                            }
-                            if (isCR === false) {
-                                if (actionMySelf.hasOwnProperty('zones') && actionMySelf.hasOwnProperty('zones_hidden') && actionMySelf.hasOwnProperty('is_edit_all_zone')) {
+                        // XỬ LÝ ZONES
+                        if (window.location.href.includes('/update/')) {
+                            if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === $x.fn.getEmployeeCurrentID()) {
+                                WFRTControl.setBtnWFAfterFinishUpdate();  // Bật nút lưu CR
+                                WFRTControl.setWFInitialData(appCode, true);  // Bật zone initial
+                            } else {
+                                if (['zones', 'zones_hidden', 'is_edit_all_zone'].every(key => key in actionMySelf)) {
                                     WFRTControl.activeBtnOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
                                 } else {
-                                    WFRTControl.activeSetZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
+                                    WFRTControl.activeSetZoneHiddenMySelf(runtimeData['zones_hidden_myself']);
                                 }
                             }
                         }
-                        if (window.location.href.includes('/detail/')) {  // page detail
+                        if (window.location.href.includes('/detail/')) {
                             WFRTControl.checkAllowEditZones(actionMySelf);
-                            WFRTControl.activeSetZoneHiddenMySelf(data['runtime_detail']['zones_hidden_myself']);
-                            // active btn change and cancel if current employee is owner, status is finished
-                            let currentEmployee = $x.fn.getEmployeeCurrentID();
-                            if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === currentEmployee) {
-                                WFRTControl.setBtnWFAfterFinishDetail();
-                                // show print button
+                            WFRTControl.activeSetZoneHiddenMySelf(runtimeData['zones_hidden_myself']);
+                            if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === $x.fn.getEmployeeCurrentID()) {
+                                WFRTControl.setBtnWFAfterFinishDetail();  // Bật nút CR & Cancel (sau khi hoàn thành)
+                                // Bật nút in
                                 let $btnPrint = $('#print-document');
                                 if ($btnPrint && $btnPrint.length > 0) {
                                     $btnPrint.removeAttr('hidden');
                                 }
                             }
                         }
-                        // association handler
+                        // XỬ LÝ ASSOCIATION
                         WFRTControl.setAssociateRuntime(actionMySelf?.['association']);
                     }
                 }
@@ -2681,7 +2684,7 @@ class WFRTControl {
         globeWFRuntimeID = runtime_id;
     }
 
-    static setWFInitialData(app_code, data_method) {
+    static setWFInitialData(app_code, isCR = false) {
         if (app_code) {
             let btn = $('#btnLogShow');
             btn.removeClass('hidden');
@@ -2703,7 +2706,7 @@ class WFRTControl {
                                     if (window.location.href.includes('/create')) {
                                         WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                                     }
-                                    if (window.location.href.includes('/update/') && !globeWFRuntimeID) {
+                                    if (window.location.href.includes('/update/') && isCR === true) {
                                         WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                                     }
                                     // association handler
@@ -8532,6 +8535,18 @@ class DiagramControl {
             return null;
         }
     };
+}
+
+class DataProcessorControl {
+
+    static sortArrayByObjectKey(array, key, isDescending = false) {
+        // sort list of object, using key of object to sort
+        return array.sort((a, b) => {
+            if (a[key] < b[key]) return isDescending ? 1 : -1; // Flip comparison for descending
+            if (a[key] > b[key]) return isDescending ? -1 : 1; // Flip comparison for descending
+            return 0; // a and b are equal
+        });
+    }
 }
 
 let $x = {

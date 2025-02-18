@@ -38,6 +38,14 @@ class Conditions {
             'url': Conditions.$url.attr('data-md-product-category'),
             'keyResp': 'product_category_list',
         },
+        'saledata.expense': {
+            'url': Conditions.$url.attr('data-md-expense'),
+            'keyResp': 'expense_list',
+        },
+        'saledata.expenseitem': {
+            'url': Conditions.$url.attr('data-md-expense-item'),
+            'keyResp': 'expense_item_list',
+        },
     }
 
     /***

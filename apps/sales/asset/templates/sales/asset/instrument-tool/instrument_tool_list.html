@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Fixed Asset list' %}{% endblock %}
+{% block title %}{% trans 'Instrument Tool list' %}{% endblock %}
 {% block pageAction %}
-    <a href="{% url 'FixedAssetCreate' %}"
+    <a href="{% url 'InstrumentToolCreate' %}"
        data-bs-toggle="tooltip"
        data-bs-placement="top"
-       title="{% trans 'Create Fixed Asset' %}"
-       id="create-fixed-asset"
-       data-bs-original-title="Add Fixed Asset">
+       title="{% trans 'Create Instrument Tool' %}"
+       id="create-instrument-tool"
+       data-bs-original-title="Add Instrument Tool">
             <button type="button" class="btn btn-outline-primary">
                 <span>
                     <span>{% trans 'Add' %}</span>
@@ -20,18 +20,18 @@
 {% endblock %}
 {% block pageContent %}
     <table
-            id="table-fixed-asset-list"
+            id="table-instrument-tool-list"
             class="table nowrap w-100 mb-5"
-            data-url="{% url 'FixedAssetListAPI' %}"
+            data-url="{% url 'InstrumentToolListAPI' %}"
             data-method="get"
-            data-url-detail="{% url 'FixedAssetDetail' pk='0'%}"
+            data-url-detail="{% url 'InstrumentToolDetail' pk='0'%}"
     >
         <thead>
             <tr>
                 <th></th>
                 <th>{% trans 'Code' %}</th>
                 <th>{% trans 'Title' %}</th>
-                <th>{% trans 'Asset Number' %}</th>
+                <th>{% trans 'Tool Number' %}</th>
                 <th>{% trans 'Offset Item' %}</th>
                 <th>{% trans 'Status' %}</th>
                 <th>{% trans 'Managing Department' %}</th>
@@ -50,5 +50,5 @@
     {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/sales/asset/fixedasset/js/fixedasset_list.js' %}"></script>
+    <script src="{% static 'assets/sales/asset/instrument-tool/js/instrument_tool_list.js' %}"></script>
 {% endblock %}

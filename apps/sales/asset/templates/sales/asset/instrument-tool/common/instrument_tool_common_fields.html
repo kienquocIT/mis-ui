@@ -16,31 +16,31 @@
                         </span>
                     </label>
                     <select name="classification" class="form-select select2" id="classification" data-method="GET"
-                            data-keyResp="classification_list" data-url="{% url 'FixedAssetClassificationMasterDataListAPI' %}" required></select>
+                            data-keyResp="tool_classification_list" data-url="{% url 'ToolClassificationMasterDataListAPI' %}" required></select>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-10">
                 <div class="form-group">
-                    <label class="form-label required" for="asset-name">{% trans 'Asset name' %}</label>
-                    <input type="text" name="title" class="form-control" id="asset-name" required>
+                    <label class="form-label required" for="tool-name">{% trans 'Tool name' %}</label>
+                    <input type="text" name="title" class="form-control" id="tool-name" required>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-10">
                 <div class="form-group">
-                    <label class="form-label required" for="asset-code">{% trans 'Asset number' %}</label>
-                    <input type="text" name="asset_code" class="form-control" id="asset-code" required>
+                    <label class="form-label required" for="tool-code">{% trans 'Tool code' %}</label>
+                    <input type="text" name="asset_code" class="form-control" id="tool-code" required>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-10">
                 <div class="form-group">
-                    <label class="form-label required" for="asset-product-code">{% trans 'Offset item' %}</label>
-                    <select name="product" class="form-select select2" id="asset-product-code" data-method="GET"
+                    <label class="form-label required" for="tool-product-code">{% trans 'Offset item' %}</label>
+                    <select name="product" class="form-select select2" id="tool-product-code" data-method="GET"
                             data-keyResp="product_list" data-url="{% url 'ProductListAPI' %}" required></select>
                 </div>
             </div>
@@ -68,24 +68,35 @@
         <div class="row">
             <div class="col-10">
                 <div class="form-group">
-                    <label class="form-label required" for="original-cost">{% trans 'Original asset cost' %}</label>
-                    <input readonly required class="form-control mask-money" id="original-cost" name="original_cost">
+                    <label class="form-label required" for="unit-price">{% trans 'Unit Price' %}</label>
+                    <input required class="form-control mask-money" id="unit-price" name="unit_price">
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-10">
-                <div class="form-group">
-                    <label class="form-label required" for="accumulative-depreciation">{% trans 'Accumulative depreciation' %}</label>
-                    <input readonly required class="form-control mask-money" id="accumulative-depreciation" name="accumulative_depreciation">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="quantity">{% trans 'Quantity' %}</label>
+                            <input type="number" required class="form-control" id="quantity" name="quantity">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="measure-unit">{% trans 'UoM' %}</label>
+                            <input type="text" required class="form-control" id="measure-unit" name="measure_unit">
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
         <div class="row">
             <div class="col-10">
                 <div class="form-group">
-                    <label class="form-label required" for="net-book-value">{% trans 'Net book value' %}</label>
-                    <input readonly required class="form-control mask-money" id="net-book-value" name="net_book_value">
+                    <label class="form-label required" for="total-value">{% trans 'Total value' %}</label>
+                    <input required class="form-control mask-money" id="total-value" name="total_value">
                 </div>
             </div>
         </div>

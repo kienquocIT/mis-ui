@@ -306,7 +306,14 @@ def mask_view(**parent_kwargs):
                     data, http_status = view_return
                 else:
                     data = view_return
-                data['status'] = http_status
+                # data['status'] = http_status
+
+                try:
+                    if isinstance(data, dict):
+                        data['status'] = http_status
+                except Exception as err:
+                    handle_exception_all_view(err, self)
+                    return HttpResponse(status=500)
 
                 # [], 200 <--- accept
                 # {'results': [], 'status_tmp': 201} <--- accept

@@ -307,12 +307,11 @@ def mask_view(**parent_kwargs):
                 else:
                     data = view_return
                 # data['status'] = http_status
-
-                if not isinstance(data, dict):
-                    handle_exception_all_view("Invalid data type: Expected dict", self)
+                try:
+                    data['status'] = http_status
+                except Exception as err:
+                    handle_exception_all_view(err, self)  # Log the exact error and send telegram
                     return HttpResponse(status=500)
-
-                data['status'] = http_status
 
                 # [], 200 <--- accept
                 # {'results': [], 'status_tmp': 201} <--- accept

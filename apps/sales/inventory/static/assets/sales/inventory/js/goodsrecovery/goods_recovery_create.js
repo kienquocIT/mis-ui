@@ -116,19 +116,12 @@ $(function () {
             }
             let row = this.closest('tr');
             if (row) {
-                let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(row).index();
-                let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
-                let rowData = $row.data();
-                if ($(this).val()) {
-                    rowData['quantity_recovery'] = parseFloat($(this).val());
-                    RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData).draw();
-                    RecoveryStoreDataHandle.storeData();
+                let btnEle = row.querySelector('.btn-collapse-app-wf');
+                if (btnEle) {
+                    $(btnEle).trigger('click');
                 }
             }
-            let btnEle = row.querySelector('.btn-collapse-app-wf');
-            if (btnEle) {
-                $(btnEle).trigger('click');
-            }
+
         });
 
         RecoveryLoadDataHandle.$btnSaveProduct.on('click', function () {

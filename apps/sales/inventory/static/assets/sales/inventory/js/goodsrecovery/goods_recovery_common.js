@@ -189,7 +189,6 @@ class RecoveryLoadDataHandle {
                 dataDtb.push({'code': ''})
             }
 
-
             let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(trEle[0]).index();
             let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
             let rowData = $row.data();
@@ -198,7 +197,6 @@ class RecoveryLoadDataHandle {
                     dataDtb = rowData?.['lease_generate_data'];
                 }
             }
-
 
 
             if (!trEle.next().hasClass('child-workflow-list')) {
@@ -312,8 +310,6 @@ class RecoveryLoadDataHandle {
         RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(result).draw();
         return true;
     };
-
-
 
     // DEPRECIATION
     static loadShowDepreciation(ele) {
@@ -571,14 +567,6 @@ class RecoveryLoadDataHandle {
         }
         return true;
     };
-
-
-
-
-
-
-
-
 
     // LOAD DETAIL
     static loadDetailPage(data) {
@@ -1100,8 +1088,6 @@ class RecoveryDataTableHandle {
                                 if (serialData.length === 0) {
                                     serialEle.removeAttribute('hidden');
                                 }
-
-
                                 $(serialEle).on('change', function () {
                                     let $ele = $(this);
                                     let val = $ele.val();
@@ -1391,6 +1377,12 @@ class RecoveryStoreDataHandle {
                 let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
                 let rowData = $row.data();
 
+                let recoveryEle = row.querySelector('.table-row-quantity-recovery');
+                if (recoveryEle) {
+                    if ($(recoveryEle).val()) {
+                        rowData['quantity_recovery'] = parseFloat($(recoveryEle).val());
+                    }
+                }
                 let lease_generate_data = [];
                 let $child = $(row).next();
                 if ($child.length > 0) {

@@ -10444,7 +10444,7 @@ msgid "Instrument Tool"
 msgstr "Công cụ dụng cụ"
 
 #
-msgid "Instrument & Tools"
+msgid "Instruments & Tools"
 msgstr "Công cụ dụng cụ"
 
 #
@@ -10578,3 +10578,19 @@ msgstr "Phân loại tài sản cố định"
 #
 msgid "Tool Classification"
 msgstr "Phân loại công cụ dụng cụ"
+
+#
+msgid "Manage Department"
+msgstr "Bộ phận quản lí"
+
+#
+msgid "Use Department"
+msgstr "Bộ phận sử dụng"
+
+#
+msgid "Tool Name"
+msgstr "Tên công cụ"
+
+#
+msgid "Tool Number"
+msgstr "Mã công cụ"

@@ -31,7 +31,7 @@
         <div class="row">
             <div class="col-10">
                 <div class="form-group">
-                    <label class="form-label required" for="asset-code">{% trans 'Asset number' %}</label>
+                    <label class="form-label required" for="asset-code">{% trans 'Asset Number' %}</label>
                     <input type="text" name="asset_code" class="form-control" id="asset-code" required>
                 </div>
             </div>
@@ -39,7 +39,7 @@
         <div class="row">
             <div class="col-10">
                 <div class="form-group">
-                    <label class="form-label required" for="asset-product-code">{% trans 'Offset item' %}</label>
+                    <label class="form-label required" for="asset-product-code">{% trans 'Offset Item' %}</label>
                     <select name="product" class="form-select select2" id="asset-product-code" data-method="GET"
                             data-keyResp="product_list" data-url="{% url 'ProductListAPI' %}" required></select>
                 </div>
@@ -50,7 +50,7 @@
         <div class="row">
             <div class="col-10">
                 <div class="form-group">
-                    <label class="form-label required" for="manage-department">{% trans 'Manage department' %}</label>
+                    <label class="form-label required" for="manage-department">{% trans 'Manage Department' %}</label>
                     <select name="manage_department" class="form-select select2" id="manage-department" data-method="GET"
                             data-keyResp="group_list" data-url="{% url 'GroupListAPI' %}" required></select>
                 </div>
@@ -59,7 +59,7 @@
         <div class="row">
             <div class="col-10">
                 <div class="form-group">
-                    <label class="form-label required" for="use-department">{% trans 'Use department' %}</label>
+                    <label class="form-label required" for="use-department">{% trans 'Use Department' %}</label>
                     <select name="use_department" class="form-select select2" id="use-department" data-method="GET"
                             data-keyResp="group_list" data-url="{% url 'GroupListAPI' %}" required multiple></select>
                 </div>

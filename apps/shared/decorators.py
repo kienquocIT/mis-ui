@@ -307,7 +307,12 @@ def mask_view(**parent_kwargs):
                     data, http_status = view_return
                 else:
                     data = view_return
-                data['status'] = http_status
+                # data['status'] = http_status
+                try:
+                    data['status'] = http_status
+                except Exception as err:
+                    handle_exception_all_view(err, self)  # Log the exact error and send telegram
+                    return HttpResponse(status=500)
 
                 # [], 200 <--- accept
                 # {'results': [], 'status_tmp': 201} <--- accept

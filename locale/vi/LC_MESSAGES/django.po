@@ -10430,3 +10430,167 @@ msgstr "Chỉ được làm Yêu cầu mua hàng cho Đơn hàng của bản th�
 #
 msgid "Configured to create Purchase request for all Sale order"
 msgstr "Được cấu hình để làm Yêu cầu mua hàng cho mọi Đơn hàng"
+
+#
+msgid "Assets"
+msgstr "Tài sản"
+
+#
+msgid "Fixed assets"
+msgstr "Tài sản cố định"
+
+#
+msgid "Instrument Tool"
+msgstr "Công cụ dụng cụ"
+
+#
+msgid "Instruments & Tools"
+msgstr "Công cụ dụng cụ"
+
+#
+msgid "Asset Number"
+msgstr "Mã tài sản"
+
+#
+msgid "Offset Item"
+msgstr "Sản phẩm đối ứng"
+
+#
+msgid "Managing Department"
+msgstr "Bộ phận quản lí"
+
+#
+msgid "Using Department"
+msgstr "Bộ phận sử dụng"
+
+#
+msgid "Using Customer"
+msgstr "Khách hàng sử dụng"
+
+#
+msgid "Depreciation Time"
+msgstr "Thời gian khấu hao"
+
+#
+msgid "Classification"
+msgstr "Phân loại"
+
+#
+msgid "Define in settings"
+msgstr "Khai báo trong cài đặt"
+
+#
+msgid "Asset name"
+msgstr "Tên tài sản"
+
+#
+msgid "Original asset cost"
+msgstr "Nguyên giá tài sản"
+
+#
+msgid "Accumulative depreciation"
+msgstr "Khấu hao luỹ kế"
+
+#
+msgid "Net book value"
+msgstr "Giá trị còn lại"
+
+#
+msgid "Source type"
+msgstr "Loại nguồn"
+
+#
+msgid "AP Invoice Detail"
+msgstr "Thông tin hoá đơn mua hàng"
+
+#
+msgid "Total Value"
+msgstr "Tổng giá trị"
+
+#
+msgid "Prior FA Increase"
+msgstr "Tăng tài sản trước đó"
+
+#
+msgid "Current FA Increase"
+msgstr "Tăng tài sản hiện tại"
+
+#
+msgid "Choose source from"
+msgstr "Chọn nguồn từ"
+
+#
+msgid "Choose AP Invoice"
+msgstr "Chọn hoá đơn mua hàng"
+
+#
+msgid "New Purchase"
+msgstr "Mua mới"
+
+#
+msgid "Financial Lease"
+msgstr "Thuê tài chính"
+
+#
+msgid "Taken from Goods, Finished Products"
+msgstr "Lấy từ hàng hoá, thành phẩm"
+
+#
+msgid "Capital Construction Investment"
+msgstr "Đầu tư xây dựng cơ bản"
+
+#
+msgid "Capital Contribution, Sponsorship, Donation"
+msgstr "Góp vốn, tài trợ, biếu tặng"
+
+#
+msgid "Exchange"
+msgstr "Trao đổi"
+
+#
+msgid "Depreciation"
+msgstr "Khấu hao"
+
+#
+msgid "Straight line depreciation"
+msgstr "Khấu hao đuường thẳng"
+
+#
+msgid "Adjusted reducing balance"
+msgstr "Khấu hao số dư giảm dần có điều chỉnh"
+
+#
+msgid "Adjustment factor"
+msgstr "Hệ số điều chỉnh"
+
+#
+msgid "Fixed Asset"
+msgstr "Tài sản cố định"
+
+#
+msgid "Fixed Asset Classification Group"
+msgstr "Nhóm phân loại tài sản cố định"
+
+#
+msgid "Fixed Asset Classification"
+msgstr "Phân loại tài sản cố định"
+
+#
+msgid "Tool Classification"
+msgstr "Phân loại công cụ dụng cụ"
+
+#
+msgid "Manage Department"
+msgstr "Bộ phận quản lí"
+
+#
+msgid "Use Department"
+msgstr "Bộ phận sử dụng"
+
+#
+msgid "Tool Name"
+msgstr "Tên công cụ"
+
+#
+msgid "Tool Number"
+msgstr "Mã công cụ"

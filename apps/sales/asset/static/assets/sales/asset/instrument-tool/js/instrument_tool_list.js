@@ -1,6 +1,6 @@
 $(document).ready(function () {
     function loadDataTable() {
-        let $table = $('#table-fixed-asset-list')
+        let $table = $('#table-instrument-tool-list')
         let urlDetail = $table.attr('data-url-detail');
         let frm = new SetupFormSubmit($table);
         $table.DataTableDefault({
@@ -10,8 +10,8 @@ $(document).ready(function () {
                 type: frm.dataMethod,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    if (data && resp.data.hasOwnProperty('fixed_asset_list')) {
-                        return resp.data['fixed_asset_list'] ? resp.data['fixed_asset_list'] : []
+                    if (data && resp.data.hasOwnProperty('instrument_tool_list')) {
+                        return resp.data['instrument_tool_list'] ? resp.data['instrument_tool_list'] : []
                     }
                     throw Error('Call data raise errors.')
                 },
@@ -30,8 +30,7 @@ $(document).ready(function () {
                     width: '10%',
                     render: (data, type, row) => {
                         const link = urlDetail.replace('0', row.id);
-                        const code = row?.['code'] ? row?.['code'] : '_'
-                        return `<a href=${link} class="badge badge-primary w-7">${code}</a> ${$x.fn.buttonLinkBlank(link)}`
+                        return `<a href=${link} class="badge badge-primary w-7">${row?.['code']}</a> ${$x.fn.buttonLinkBlank(link)}`
                     }
                 },
                 {

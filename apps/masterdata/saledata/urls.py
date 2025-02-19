@@ -20,8 +20,9 @@ from apps.masterdata.saledata.views.document import DocumentTypeMasterDataListAP
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
     ExpenseDetailAPI, ExpenseForSaleListAPI, ExpenseUpdate
 from apps.masterdata.saledata.views.expense_item import ExpenseItemList, ExpenseItemListAPI, ExpenseItemDetailAPI
-from apps.masterdata.saledata.views.fixed_asset import FixedAssetMasterDataList, \
-    FixedAssetClassificationGroupMasterDataListAPI, FixedAssetClassificationMasterDataListAPI
+from apps.masterdata.saledata.views.asset import FixedAssetMasterDataList, \
+    FixedAssetClassificationGroupMasterDataListAPI, FixedAssetClassificationMasterDataListAPI, \
+    ToolClassificationMasterDataListAPI, ToolClassificationMasterDateDetailAPI
 from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
     GoodReceiptDetailAPI, GoodReceiptDetail, GoodReceiptEdit
 from apps.masterdata.saledata.views.import_data import SaleDataImportDataList
@@ -385,5 +386,7 @@ urlpatterns += [
 
     #api
     path('masterdata/fixed-asset/classification-group/api', FixedAssetClassificationGroupMasterDataListAPI.as_view(), name='FixedAssetClassificationGroupMasterDataListAPI'),
-    path('masterdata/fixed-asset/classification/api', FixedAssetClassificationMasterDataListAPI.as_view(), name='FixedAssetClassificationMasterDataListAPI')
+    path('masterdata/fixed-asset/classification/api', FixedAssetClassificationMasterDataListAPI.as_view(), name='FixedAssetClassificationMasterDataListAPI'),
+    path('masterdata/tool/classification/api', ToolClassificationMasterDataListAPI.as_view(), name='ToolClassificationMasterDataListAPI'),
+    path('masterdata/tool/classification/api/<str:pk>', ToolClassificationMasterDateDetailAPI.as_view(), name='ToolClassificationMasterDateDetailAPI')
 ]

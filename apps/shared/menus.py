@@ -831,6 +831,11 @@ class MenusFinancials:
                 name='Fixed assets', code='menu_fixed_asset', view_name='FixedAssetList',
                 icon='<i class="fas fa-warehouse"></i>',
             ),
+            MenuCommon(
+                name='Instruments & Tools', code='menu_instrument_tool',
+                view_name='InstrumentToolList',
+                icon='<i class="fas fa-tools"></i>',
+            ),
         ],
     )
     GENERAL = MenuCommon(

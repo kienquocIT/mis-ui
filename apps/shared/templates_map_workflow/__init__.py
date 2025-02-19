@@ -23,7 +23,7 @@ from .leaseorder_lease_order import LEASE_ORDER_DATA_MAP
 from .financial_cashinflow import CASHINFLOW_DATA_MAP
 from .reconciliation import RECON_DATA_MAP
 from .asset_fixedasset import FIXED_ASSET_DATA_MAP
-
+from .asset_instrumenttool import INSTRUMENT_TOOL_DATA_MAP
 __all__ = [
     'InputMappingProperties',
 ]
@@ -57,3 +57,4 @@ class InputMappingProperties:
     CASHINFLOW_DATA_MAP = CASHINFLOW_DATA_MAP
     RECON_DATA_MAP = RECON_DATA_MAP
     FIXED_ASSET_DATA_MAP = FIXED_ASSET_DATA_MAP
+    INSTRUMENT_TOOL_DATA_MAP = INSTRUMENT_TOOL_DATA_MAP

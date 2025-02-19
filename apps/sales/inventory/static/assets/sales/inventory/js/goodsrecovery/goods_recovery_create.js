@@ -47,7 +47,7 @@ $(function () {
 
         RecoveryLoadDataHandle.$boxLeaseOrder.on('change', function () {
             RecoveryDataTableHandle.$tableDelivery.DataTable().clear().draw();
-            RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().clear().draw();
+            RecoveryDataTableHandle.$tableProductNew.DataTable().clear().draw();
             if (RecoveryLoadDataHandle.$boxLeaseOrder.val()) {
                 let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.$boxLeaseOrder, RecoveryLoadDataHandle.$boxLeaseOrder.val());
                 if (data) {
@@ -69,6 +69,7 @@ $(function () {
                         }
                     )
                 }
+                RecoveryLoadDataHandle.loadEventRadio(RecoveryLoadDataHandle.$scrollProduct);
                 RecoveryLoadDataHandle.$canvasMain.offcanvas('show');
             }
             return true;
@@ -80,9 +81,14 @@ $(function () {
         });
 
         RecoveryDataTableHandle.$tableDeliveryProduct.on('click', '.table-row-checkbox', function () {
+            RecoveryLoadDataHandle.$scrollProduct.removeClass('hidden');
+            RecoveryLoadDataHandle.loadCheckDeliveryProduct();
+        });
+
+        RecoveryDataTableHandle.$tableProductNew.on('click', '.table-row-checkbox', function () {
             let warehouseArea = RecoveryLoadDataHandle.$canvasMain[0].querySelector('.dtb-warehouse-area');
             if (warehouseArea) {
-                RecoveryLoadDataHandle.loadCheckDeliveryProduct();
+                RecoveryLoadDataHandle.loadCheckNewLeasedProduct();
 
                 warehouseArea.removeAttribute('hidden');
             }

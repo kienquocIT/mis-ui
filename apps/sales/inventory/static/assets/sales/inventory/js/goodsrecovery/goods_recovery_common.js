@@ -6,6 +6,7 @@ class RecoveryLoadDataHandle {
     static $boxCustomer = $('#customer_id');
     static $boxLeaseOrder = $('#lease_order_id');
     static $canvasMain = $('#productCanvas');
+    static $scrollProduct = $('#scroll-new-leased-product');
     static $btnSaveProduct = $('#btn-save-product');
     static $depreciationModal = $('#viewDepreciationDetail');
     static $btnSaveDepreciation = $('#btn-save-depreciation-detail');
@@ -17,11 +18,6 @@ class RecoveryLoadDataHandle {
         {'id': 1, 'title': RecoveryLoadDataHandle.transEle.attr('data-status-2')},
         {'id': 2, 'title': RecoveryLoadDataHandle.transEle.attr('data-status-3')},
     ];
-    static dataAssetType = {
-        1: RecoveryLoadDataHandle.transEle.attr('data-asset-type-1'),
-        2: RecoveryLoadDataHandle.transEle.attr('data-asset-type-2'),
-        3: RecoveryLoadDataHandle.transEle.attr('data-asset-type-3'),
-    };
     static dataDepreciationMethod = [
         {'id': 0, 'title': RecoveryLoadDataHandle.transEle.attr('data-depreciation-method-1')},
         {'id': 1, 'title': RecoveryLoadDataHandle.transEle.attr('data-depreciation-method-2')},
@@ -127,6 +123,8 @@ class RecoveryLoadDataHandle {
         RecoveryDataTableHandle.dataTableProduct();
         RecoveryDataTableHandle.dataTableDelivery();
         RecoveryDataTableHandle.dataTableDeliveryProduct();
+        RecoveryDataTableHandle.dataTableProductNew();
+        RecoveryDataTableHandle.dataTableProductLeased();
         RecoveryDataTableHandle.dataTableWareHouse();
         RecoveryDataTableHandle.dataTableDepreciationDetail();
         return true;
@@ -225,7 +223,7 @@ class RecoveryLoadDataHandle {
     };
 
     static loadCheckRecovery() {
-        let productChecked = RecoveryDataTableHandle.$tableDeliveryProduct[0].querySelector('.table-row-checkbox:checked');
+        let productChecked = RecoveryDataTableHandle.$tableProductNew[0].querySelector('.table-row-checkbox:checked');
         if (productChecked) {
             let rowTarget = productChecked.closest('tr');
             if (rowTarget) {
@@ -275,6 +273,24 @@ class RecoveryLoadDataHandle {
             if (row) {
                 let rowIndex = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(row).index();
                 let $row = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex);
+                let rowData = $row.data();
+
+                RecoveryDataTableHandle.$tableProductNew.DataTable().clear().draw();
+                RecoveryDataTableHandle.$tableProductNew.DataTable().rows.add([rowData]).draw();
+
+                RecoveryDataTableHandle.$tableProductLeased.DataTable().clear().draw();
+                RecoveryDataTableHandle.$tableProductLeased.DataTable().rows.add(rowData?.['product_quantity_leased_data'] ? rowData?.['product_quantity_leased_data'] : []).draw();
+            }
+        }
+    };
+
+    static loadCheckNewLeasedProduct() {
+        let checkedEle = RecoveryDataTableHandle.$tableProductNew[0].querySelector('.table-row-checkbox:checked');
+        if (checkedEle) {
+            let row = checkedEle.closest('tr');
+            if (row) {
+                let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(row).index();
+                let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
                 let rowData = $row.data();
 
                 RecoveryDataTableHandle.$tableWarehouse.DataTable().destroy();
@@ -685,6 +701,8 @@ class RecoveryDataTableHandle {
     static $tableProduct = $('#datable-product');
     static $tableDelivery = $('#datable-delivery');
     static $tableDeliveryProduct = $('#datable-deli-product');
+    static $tableProductNew = $('#datable-deli-product-new');
+    static $tableProductLeased = $('#datable-deli-product-leased');
     static $tableWarehouse = $('#datable-warehouse');
     static $tableDepreciationDetail = $('#table-depreciation-detail');
 
@@ -918,7 +936,7 @@ class RecoveryDataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: '80%',
+                    width: '40%',
                     render: (data, type, row) => {
                         return `<div class="form-check form-check-lg">
                                     <input 
@@ -933,36 +951,28 @@ class RecoveryDataTableHandle {
                 },
                 {
                     targets: 1,
+                    width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-asset-type">${RecoveryLoadDataHandle.dataAssetType?.[row?.['asset_type']] ? RecoveryLoadDataHandle.dataAssetType?.[row?.['asset_type']] : ''}</span>`;
+                        return `<span class="table-row-quantity-ordered">${row?.['product_quantity'] ? row?.['product_quantity'] : '0'}</span>`;
                     }
                 },
                 {
                     targets: 2,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['offset_data']?.['sale_information']?.['default_uom']?.['title'] ? row?.['offset_data']?.['sale_information']?.['default_uom']?.['title'] : ''}</span>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-ordered">${row?.['quantity_ordered'] ? row?.['quantity_ordered'] : '0'}</span>`;
-                    }
-                },
-                {
-                    targets: 4,
+                    width: '20%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-delivered">${row?.['quantity_delivered'] ? row?.['quantity_delivered'] : '0'}</span>`;
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 3,
+                    width: '20%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-recovered">${row?.['quantity_recovered'] ? row?.['quantity_recovered'] : '0'}</span>`;
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 4,
+                    width: '20%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-recovery">${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : '0'}</span>`;
                     }
@@ -972,6 +982,192 @@ class RecoveryDataTableHandle {
                 // add css to Dtb
                 RecoveryLoadDataHandle.loadCssToDtb('datable-deli-product');
                 RecoveryLoadDataHandle.loadEventRadio(RecoveryDataTableHandle.$tableDeliveryProduct);
+            },
+        });
+    };
+
+    static dataTableProductNew(data) {
+        RecoveryDataTableHandle.$tableProductNew.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            searching: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    width: '25%',
+                    render: (data, type, row) => {
+                        return `<div class="d-flex align-items-center">
+                                    <div class="form-check form-check-lg">
+                                        <input 
+                                            type="radio" 
+                                            class="form-check-input table-row-checkbox" 
+                                            id="deli-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}"
+                                            data-id="${row?.['offset_data']?.['id']}"
+                                        >
+                                    </div>
+                                    <textarea class="form-control table-row-item-show" rows="2" readonly>${row?.['offset_data']?.['code']}</textarea>
+                                </div>
+                                <div class="row table-row-item-area hidden">
+                                    <div class="col-12 col-md-12 col-lg-12">
+                                        <select
+                                            class="form-select table-row-item"
+                                            data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-product')}"
+                                            data-method="GET"
+                                            data-keyResp="product_sale_list"
+                                            data-product-id="${row?.['offset_data']?.['id']}"
+                                            readonly
+                                        >
+                                        </select>
+                                    </div>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '20%',
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control table-row-name" rows="2" readonly>${row?.['offset_data']?.['title'] ? row?.['offset_data']?.['title'] : ''}</textarea>`;
+                    },
+                },
+                {
+                    targets: 2,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-ordered">${row?.['product_quantity_new'] ? row?.['product_quantity_new'] : '0'}</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '15%',
+                    render: (data, type, row) => {
+                        let value = 0;
+                        if (row?.['quantity_delivered'] && row?.['quantity_delivered']) {
+                            value = row?.['quantity_delivered'] - row?.['product_quantity_leased'];
+                        }
+                        return `<span class="table-row-quantity-delivered">${value}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-recovered">${row?.['quantity_recovered'] ? row?.['quantity_recovered'] : '0'}</span>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-recovery">${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : '0'}</span>`;
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+                let itemEle = row.querySelector('.table-row-item');
+                if (itemEle) {
+                    let dataS2 = [];
+                    if (data?.['offset_data']) {
+                        dataS2 = [data?.['offset_data']];
+                    }
+                    RecoveryLoadDataHandle.loadInitS2($(itemEle), dataS2);
+                    $(itemEle).attr('data-product-id', data?.['offset_data']?.['id']);
+                }
+            },
+            drawCallback: function () {
+                RecoveryDataTableHandle.dtbProductNewHDCustom();
+            },
+        });
+    };
+
+    static dataTableProductLeased(data) {
+        RecoveryDataTableHandle.$tableProductLeased.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            searching: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    width: '25%',
+                    render: (data, type, row) => {
+                        return `<div class="d-flex align-items-center">
+                                    <div class="form-check form-check-lg">
+                                        <input 
+                                            type="radio" 
+                                            class="form-check-input table-row-checkbox" 
+                                            id="deli-product-${row?.['product_data']?.['id'].replace(/-/g, "")}"
+                                            data-id="${row?.['product_data']?.['id']}"
+                                        >
+                                    </div>
+                                    <textarea class="form-control table-row-item-show" rows="2" readonly>${row?.['product_data']?.['code']}</textarea>
+                                </div>
+                                <div class="row table-row-item-area hidden">
+                                    <div class="col-12 col-md-12 col-lg-12">
+                                        <select
+                                            class="form-select table-row-item"
+                                            data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-product')}"
+                                            data-method="GET"
+                                            data-keyResp="product_sale_list"
+                                            data-product-id="${row?.['product_data']?.['id']}"
+                                            readonly
+                                        >
+                                        </select>
+                                    </div>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '20%',
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control table-row-name" rows="2" readonly>${row?.['product_data']?.['title'] ? row?.['product_data']?.['title'] : ''}</textarea>`;
+                    },
+                },
+                {
+                    targets: 2,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-ordered">${row?.['quantity_ordered'] ? row?.['quantity_ordered'] : '0'}</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '15%',
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-delivered">${row?.['quantity_delivered'] ? row?.['quantity_delivered'] : '0'}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-recovered">${row?.['quantity_recovered'] ? row?.['quantity_recovered'] : '0'}</span>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity-recovery">${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : '0'}</span>`;
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+                let itemEle = row.querySelector('.table-row-item');
+                if (itemEle) {
+                    let dataS2 = [];
+                    if (data?.['product_data']) {
+                        dataS2 = [data?.['product_data']];
+                    }
+                    RecoveryLoadDataHandle.loadInitS2($(itemEle), dataS2);
+                    $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
+                }
+            },
+            drawCallback: function () {
+                RecoveryDataTableHandle.dtbProductLeasedHDCustom();
             },
         });
     };
@@ -1063,12 +1259,12 @@ class RecoveryDataTableHandle {
                 let serialEle = row.querySelector('.table-row-serial');
                 let remarkEle = row.querySelector('.table-row-remark');
                 if (serialEle) {
-                    let productChecked = RecoveryDataTableHandle.$tableDeliveryProduct[0].querySelector('.table-row-checkbox:checked');
+                    let productChecked = RecoveryDataTableHandle.$tableProductNew[0].querySelector('.table-row-checkbox:checked');
                     if (productChecked) {
                         let rowTarget = productChecked.closest('tr');
                         if (rowTarget) {
-                            let rowIndex = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowTarget).index();
-                            let $row = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex);
+                            let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowTarget).index();
+                            let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
                             let rowData = $row.data();
                             if (rowData?.['delivery_data']) {
                                 let serialData = [{'id': '', 'title': 'Select...',},];
@@ -1233,6 +1429,42 @@ class RecoveryDataTableHandle {
             }
         }
     };
+
+    static dtbProductNewHDCustom() {
+        let wrapper$ = RecoveryDataTableHandle.$tableProductNew.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#label-new-product').length) {
+                let $group = $(`<b id="label-new-product">New products</b>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+            }
+        }
+    };
+
+    static dtbProductLeasedHDCustom() {
+            let wrapper$ = RecoveryDataTableHandle.$tableProductLeased.closest('.dataTables_wrapper');
+            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+            headerToolbar$.prepend(textFilter$);
+
+            if (textFilter$.length > 0) {
+                textFilter$.css('display', 'flex');
+                // Check if the button already exists before appending
+                if (!$('#label-leased-product').length) {
+                    let $group = $(`<b id="label-leased-product">Leased products</b>`);
+                    textFilter$.append(
+                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                    );
+                }
+            }
+        };
 
 }
 
@@ -1437,10 +1669,10 @@ class RecoveryStoreDataHandle {
             }
         });
 
-        RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows().every(function () {
+        RecoveryDataTableHandle.$tableProductNew.DataTable().rows().every(function () {
             let row = this.node();
-            let rowIndex = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(row).index();
-            let $row = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex);
+            let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(row).index();
+            let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
             let rowData = $row.data();
 
             let checked = row.querySelector('.table-row-checkbox:checked');
@@ -1455,7 +1687,7 @@ class RecoveryStoreDataHandle {
             }
             rowData['quantity_recovery'] = recovery;
 
-            RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex).data(rowData);
+            RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex).data(rowData);
             delivery_product_data.push(rowData);
 
             if (checked) {

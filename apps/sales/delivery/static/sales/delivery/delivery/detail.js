@@ -662,46 +662,6 @@ $(async function () {
             return true;
         };
 
-        setupTotal() {
-            let eleTotalPicked = $tablePW[0].querySelector('.total-picked');
-            let totalAvailable = 0;
-            let totalPicked = 0;
-            let undelivered = 0;
-            let $eleUndelivered = $('#undelivered');
-            if ($eleUndelivered.html()) {
-                undelivered = parseFloat($eleUndelivered.html());
-            }
-            if (eleTotalPicked) {
-                $tablePW.DataTable().rows().every(function () {
-                    let row = this.node();
-                    let eleCl = row.querySelector('.cl-parent');
-                    let eleAvailable = row.querySelector('.table-row-available');
-                    let elePicked = row.querySelector('.table-row-picked');
-                    if (eleCl && eleAvailable) {
-                        totalAvailable += parseFloat(eleAvailable.innerHTML);
-                    }
-                    if (elePicked) {
-                        totalPicked += parseFloat(elePicked.value);
-                    }
-                });
-                eleTotalPicked.innerHTML = String(totalPicked);
-                if (totalPicked > undelivered) {
-                    let eleWHChecked = $tablePW[0].querySelector('.table-row-checkbox:checked');
-                    if (eleWHChecked) {
-                        if (eleWHChecked.closest('tr')) {
-                            if (eleWHChecked.closest('tr').querySelector('.table-row-picked')) {
-                                eleWHChecked.closest('tr').querySelector('.table-row-picked').value = '0';
-                                prodTable.setupTotal();
-                            }
-                        }
-                    }
-                    $.fn.notifyB({description: $trans.attr('data-exceed-undelivered-quantity')}, 'failure');
-                    return false;
-                }
-            }
-            return true;
-        };
-
         getRegisConfig() {
             let isRegis = false;
             if (dataCompanyConfig?.['config']?.['cost_per_project'] === true && $eleSO.attr('data-so')) {
@@ -1098,7 +1058,11 @@ $(async function () {
                         targets: 2,
                         width: '20%',
                         render: (data, type, row) => {
-                            return `<b class="table-row-picked">${row?.['picked_quantity'] ? row?.['picked_quantity'] : 0}</b>`;
+                            let value = 0;
+                            if (row?.['picked_quantity'] && row?.['product_quantity_leased']) {
+                                value = row?.['picked_quantity'] - row?.['product_quantity_leased'];
+                            }
+                            return `<b class="table-row-picked">${value}</b>`;
                         },
                     },
                 ],

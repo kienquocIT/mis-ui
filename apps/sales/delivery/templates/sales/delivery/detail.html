@@ -246,93 +246,116 @@
             </div>
         </div>
 
-        <div class="modal fade" id="warehouseStockModal" tabindex="-1" role="dialog" aria-labelledby="warehouseStockModal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title ml-4"><b class="title-mdl"></b></h5>
-                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-12 col-md-6 col-lg-6 border-right">
-                                <span><b class="ml-5">{% trans 'Undelivered' %}: </b><b id="undelivered"></b></span>
-                                <div data-simplebar class="h-750p nicescroll-bar" id="scroll-table-wh">
-                                    <table id="productStockDetail" class="table w-100">
-                                        <thead>
-                                        <tr class="bg-light">
-                                            <th>{% trans 'Warehouse' %}</th>
-                                            <th>{% trans 'UOM' %}</th>
-                                            <th>{% trans 'Stock' %}</th>
-                                            <th>{% trans 'Deliver' %}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th colspan="3"><p style="text-align:right">{% trans 'Total' %}:</p></th>
-                                                <th><b><i class="total-picked">0</i></b></th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-6">
-                                <div class="row">
-                                    <div data-simplebar class="nicescroll-bar" id="scroll-table-lot" hidden>
-                                        <table
-                                            id="datable-delivery-wh-lot"
-                                            class="table nowrap w-100"
-                                            data-url="{% url "WarehouseLotListAPI" %}"
-                                            data-url-regis="{% url "GReItemProductWarehouseLotListAPI" %}"
-                                            data-method="GET"
-                                        >
-                                            <thead>
-                                            <tr class="bg-light">
-                                                <th>{% trans 'Lot number' %}</th>
-                                                <th>{% trans 'Quantity' %}</th>
-                                                <th>{% trans 'UOM' %}</th>
-                                                <th>{% trans 'Exp date' %}</th>
-                                                <th>{% trans 'Mfg date' %}</th>
-                                                <th>{% trans 'Deliver' %}</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div data-simplebar class="nicescroll-bar" id="scroll-table-serial" hidden>
-                                        <table
-                                            id="datable-delivery-wh-serial"
-                                            class="table nowrap w-100"
-                                            data-url="{% url "WarehouseSerialListAPI" %}"
-                                            data-url-regis="{% url "GReItemProductWarehouseSerialListAPI" %}"
-                                            data-method="GET"
-                                        >
-                                            <thead>
-                                            <tr class="bg-light">
-                                                <th></th>
-                                                <th>{% trans 'Vendor serial no.' %}</th>
-                                                <th>{% trans 'Serial no.' %}</th>
-                                                <th>{% trans 'Warranty start' %}</th>
-                                                <th>{% trans 'Warranty end' %}</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+        <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="warehouseStockCanvas" aria-labelledby="offcanvasTopLabel">
+            <div class="modal-header">
+                <h5><b class="title-mdl"></b></h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6 border-right">
+                        <div data-simplebar class="h-700p nicescroll-bar" id="scroll-new-leased-product">
+                            <table id="productNew" class="table w-100">
+                                <thead>
+                                <tr class="bg-light">
+                                    <th>{% trans 'Code' %}</th>
+                                    <th>{% trans 'Name' %}</th>
+                                    <th>{% trans 'Undelivered' %}</th>
+                                    <th>{% trans 'Deliver' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <div id="productLeasedDiv" hidden>
+                                <table id="productLeased" class="table w-100">
+                                    <thead>
+                                    <tr class="bg-light">
+                                        <th>{% trans 'Lease code' %}</th>
+                                        <th>{% trans 'Name' %}</th>
+                                        <th>{% trans 'Undelivered' %}</th>
+                                        <th>{% trans 'Deliver' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="products">{% trans 'Close' %}</button>
-                        <button type="button" class="btn btn-primary" id="save-stock" data-zone="products" hidden>{% trans 'Get' %}</button>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div data-simplebar class="h-250p nicescroll-bar" id="scroll-table-wh">
+                            <table id="productStockDetail" class="table w-100">
+                                <thead>
+                                <tr class="bg-light">
+                                    <th>{% trans 'Warehouse' %}</th>
+                                    <th>{% trans 'UOM' %}</th>
+                                    <th>{% trans 'Stock' %}</th>
+                                    <th>{% trans 'Deliver' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div data-simplebar class="h-500p nicescroll-bar" id="scroll-table-lot" hidden>
+                            <table
+                                id="datable-delivery-wh-lot"
+                                class="table nowrap w-100"
+                                data-url="{% url "WarehouseLotListAPI" %}"
+                                data-url-regis="{% url "GReItemProductWarehouseLotListAPI" %}"
+                                data-method="GET"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th>{% trans 'Lot number' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    <th>{% trans 'Exp date' %}</th>
+                                    <th>{% trans 'Mfg date' %}</th>
+                                    <th>{% trans 'Deliver' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div data-simplebar class="h-500p nicescroll-bar" id="scroll-table-serial" hidden>
+                            <table
+                                id="datable-delivery-wh-serial"
+                                class="table nowrap w-100"
+                                data-url="{% url "WarehouseSerialListAPI" %}"
+                                data-url-regis="{% url "GReItemProductWarehouseSerialListAPI" %}"
+                                data-method="GET"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th>
+                                        <div class="form-check form-check-lg">
+                                            <input
+                                                type="checkbox"
+                                                name="row-checkbox"
+                                                class="form-check-input table-row-checkbox-all"
+                                                id="checkbox-all-serial"
+                                            >
+                                            <label class="form-check-label" for="checkbox-all-serial"></label>
+                                        </div>
+                                    </th>
+                                    <th>{% trans 'Vendor serial no.' %}</th>
+                                    <th>{% trans 'Serial no.' %}</th>
+                                    <th>{% trans 'Warranty start' %}</th>
+                                    <th>{% trans 'Warranty end' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-primary" id="save-stock" data-bs-dismiss="offcanvas" hidden>{% trans 'Get' %}</button>
+            </div>
         </div>
+
         <div class="modal fade" id="modal_choise_logistics">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">

@@ -1698,6 +1698,35 @@ class RecoveryStoreDataHandle {
             }
         });
 
+        RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(row).index();
+            let $row = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex);
+            let rowData = $row.data();
+
+            let checked = row.querySelector('.table-row-checkbox:checked');
+            if (checked) {  // update data hiện tại cho dòng được chọn
+                rowData['product_warehouse_data'] = product_warehouse_data;
+            }
+            let recovery = 0;
+            if (rowData?.['product_warehouse_data']) {
+                for (let dataPW of rowData?.['product_warehouse_data'] ? rowData?.['product_warehouse_data'] : []) {
+                    recovery += dataPW?.['quantity_recovery'];
+                }
+            }
+            rowData['quantity_recovery'] = recovery;
+
+            RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex).data(rowData);
+            delivery_product_data.push(rowData);
+
+            if (checked) {
+                let checkEle = row.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
+            }
+        });
+
         RecoveryDataTableHandle.$tableDelivery.DataTable().rows().every(function () {
             let row = this.node();
             let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();

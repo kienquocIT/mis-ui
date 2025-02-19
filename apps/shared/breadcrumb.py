@@ -203,7 +203,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
 
     # Document
-    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Document'), 'DocumentTypeMasterDataList')
+    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Document'), 'DocumentTypeMasterDataList')
 
     # Bidding Result config
     BIDDING_RESULT_CONFIG_PAGE = BreadcrumbChildren(_('Bidding'), 'BiddingResultConfigList')
@@ -458,7 +458,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('Lists'), 'ListList')
 
     # Fixed asset
-    ASSET_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Asset'), 'FixedAssetMasterDataList')
+    ASSET_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Asset'), 'FixedAssetMasterDataList')
     FIXED_ASSET_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetList')
 
     # Instrument tool

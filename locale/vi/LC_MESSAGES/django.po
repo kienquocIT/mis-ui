@@ -10594,3 +10594,11 @@ msgstr "Tên công cụ"
 #
 msgid "Tool Number"
 msgstr "Mã công cụ"
+
+#
+msgid "Master Data Document"
+msgstr "Dữ liệu tài liệu dùng chung"
+
+#
+msgid "Master Data Asset"
+msgstr "Dữ liệu tài sản dùng chung"

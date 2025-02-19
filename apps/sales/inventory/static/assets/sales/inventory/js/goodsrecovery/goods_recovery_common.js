@@ -118,6 +118,7 @@ class RecoveryLoadDataHandle {
     };
 
     static loadInit() {
+        RecoveryLoadDataHandle.$date.val(DateTimeControl.getCurrentDate("DMY", "/")).trigger('change');
         RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxStatus, RecoveryLoadDataHandle.dataStatus);
         RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxCustomer);
         RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxLeaseOrder);
@@ -325,7 +326,6 @@ class RecoveryLoadDataHandle {
                 }
             }
 
-
             let depreciationMethodEle = row.querySelector('.table-row-depreciation-method');
             let $methodEle = $('#depreciation_method');
             if (depreciationMethodEle && $methodEle.length > 0) {
@@ -407,7 +407,7 @@ class RecoveryLoadDataHandle {
             let leaseEndDateEle = row.querySelector('.table-row-lease-end-date');
             let $leaseEndDateEle = $('#lease_end_date');
             if (leaseEndDateEle && $leaseEndDateEle.length > 0) {
-                $leaseEndDateEle.val("").trigger('change');
+                $leaseEndDateEle.val(RecoveryLoadDataHandle.$date.val()).trigger('change');
                 if ($(leaseEndDateEle).val()) {
                     $leaseEndDateEle.val(moment($(leaseEndDateEle).val()).format('DD/MM/YYYY'));
                 }

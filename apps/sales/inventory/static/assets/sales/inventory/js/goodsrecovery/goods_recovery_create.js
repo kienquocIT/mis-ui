@@ -2,9 +2,6 @@ $(function () {
 
     $(document).ready(function () {
 
-        // Load init
-        RecoveryLoadDataHandle.loadInit();
-
         // run datetimepicker
         $('.date-picker').each(function () {
             $(this).daterangepicker({
@@ -39,6 +36,9 @@ $(function () {
 
         // workflow init
         WFRTControl.setWFInitialData("goodsrecovery");
+
+        // Load init
+        RecoveryLoadDataHandle.loadInit();
 
 
         RecoveryLoadDataHandle.$form.on('change', '.validated-number', function () {
@@ -134,20 +134,6 @@ $(function () {
             if (row) {
                 RecoveryCalculateHandle.calculateMain(RecoveryDataTableHandle.$tableProduct, row);
             }
-        });
-
-
-        RecoveryLoadDataHandle.$date.on('change', function () {
-            RecoveryDataTableHandle.$tableProduct.DataTable().rows().every(function () {
-                let row = this.node();
-                if (row) {
-                    let leaseEndDateEle = row.querySelector('.table-row-lease-end-date');
-                    if (leaseEndDateEle) {
-                        $(leaseEndDateEle).val(moment(RecoveryLoadDataHandle.$date.val(),
-                            'DD/MM/YYYY').format('YYYY-MM-DD'));
-                    }
-                }
-            });
         });
 
         RecoveryDataTableHandle.$tableProduct.on('click', '.btn-depreciation-detail', function () {

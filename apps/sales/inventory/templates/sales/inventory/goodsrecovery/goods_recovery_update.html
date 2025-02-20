@@ -237,7 +237,7 @@
                 <div class="offcanvas-body">
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6 border-right">
-                            <div data-simplebar class="h-300p nicescroll-bar">
+                            <div data-simplebar class="h-200p nicescroll-bar">
                                 <table
                                     id="datable-delivery"
                                     class="table nowrap w-100"
@@ -252,19 +252,56 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div data-simplebar class="h-300p nicescroll-bar">
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div data-simplebar class="h-200p nicescroll-bar">
                                 <table
                                     id="datable-deli-product"
                                     class="table nowrap w-100"
                                 >
                                     <thead>
                                     <tr class="bg-light">
-                                        <th class="w-25">{% trans 'Product' %}</th>
-                                        <th class="w-15">{% trans 'Asset type' %}</th>
-                                        <th class="w-10">{% trans 'UOM' %}</th>
-                                        <th class="w-10">{% trans 'Ordered' %}</th>
+                                        <th>{% trans 'Product' %}</th>
+                                        <th>{% trans 'Delivered' %}</th>
+                                        <th>{% trans 'Remain recevery' %}</th>
+                                        <th>{% trans 'Recovery' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6 border-right">
+                            <div data-simplebar class="h-700p nicescroll-bar hidden" id="scroll-new-leased-product">
+                                <table
+                                    id="datable-deli-product-new"
+                                    class="table nowrap w-100"
+                                >
+                                    <thead>
+                                    <tr class="bg-light">
+                                        <th class="w-35">{% trans 'Code' %}</th>
+                                        <th class="w-25">{% trans 'Name' %}</th>
                                         <th class="w-10">{% trans 'Delivered' %}</th>
-                                        <th class="w-10">{% trans 'Recovered' %}</th>
+                                        <th class="w-10">{% trans 'Remain recevery' %}</th>
+                                        <th class="w-10">{% trans 'Recovery' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                                <table
+                                    id="datable-deli-product-leased"
+                                    class="table nowrap w-100"
+                                >
+                                    <thead>
+                                    <tr class="bg-light">
+                                        <th class="w-35">{% trans 'lease code' %}</th>
+                                        <th class="w-25">{% trans 'Name' %}</th>
+                                        <th class="w-10">{% trans 'Delivered' %}</th>
+                                        <th class="w-10">{% trans 'Remain recevery' %}</th>
                                         <th class="w-10">{% trans 'Recovery' %}</th>
                                     </tr>
                                     </thead>
@@ -273,7 +310,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-6">
+                        <div class="col-12 col-md-6 col-lg-6 border-right">
                             <div data-simplebar class="h-700p nicescroll-bar dtb-warehouse-area" hidden>
                                 <table
                                         id="datable-warehouse"
@@ -286,9 +323,7 @@
                                     <thead>
                                     <tr class="bg-light">
                                         <th>{% trans 'Warehouse' %}</th>
-                                        <th>{% trans 'Delivered' %}</th>
-                                        <th>{% trans 'Recovered' %}</th>
-                                        <th>{% trans 'This time' %}</th>
+                                        <th>{% trans 'Recovery' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>

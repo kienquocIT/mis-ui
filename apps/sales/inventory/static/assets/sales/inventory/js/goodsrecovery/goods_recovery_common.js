@@ -1107,7 +1107,11 @@ class RecoveryDataTableHandle {
                     targets: 4,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-recovery">${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : '0'}</span>`;
+                        let value = 0;
+                            if (row?.['quantity_recovery'] && row?.['product_quantity_leased']) {
+                                value = row?.['quantity_recovery'] - row?.['product_quantity_leased'];
+                            }
+                        return `<span class="table-row-quantity-recovery">${value}</span>`;
                     }
                 },
             ],

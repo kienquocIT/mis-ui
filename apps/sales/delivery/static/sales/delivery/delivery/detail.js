@@ -1589,8 +1589,9 @@ $(async function () {
                 let $row = $tablePW.DataTable().row(rowIndex);
                 let rowData = $row.data();
 
+                // update serial_data & lot_data cho dòng đang được chọn
                 let checkedEle = row.querySelector('.table-row-checkbox:checked');
-                if (checkedEle) {  // update data hiện tại cho dòng được chọn
+                if (checkedEle) {
                     rowData['serial_data'] = serialData;
                     rowData['lot_data'] = lotData;
                 }
@@ -1628,8 +1629,9 @@ $(async function () {
                 let $row = $tableProductNew.DataTable().row(rowIndex);
                 let rowData = $row.data();
 
+                // update delivery_data cho dòng đang được chọn
                 let checkedEle = row.querySelector('.table-row-checkbox:checked');
-                if (checkedEle) {  // update data hiện tại cho dòng được chọn
+                if (checkedEle) {
                     rowData['delivery_data'] = pwData;
                 }
                 let picked = 0;
@@ -1657,8 +1659,9 @@ $(async function () {
                 let $row = $tableProductLeased.DataTable().row(rowIndex);
                 let rowData = $row.data();
 
+                // update delivery_data cho dòng đang được chọn
                 let checkedEle = row.querySelector('.table-row-checkbox:checked');
-                if (checkedEle) {  // update data hiện tại cho dòng được chọn
+                if (checkedEle) {
                     rowData['delivery_data'] = pwData;
                 }
                 let picked = 0;

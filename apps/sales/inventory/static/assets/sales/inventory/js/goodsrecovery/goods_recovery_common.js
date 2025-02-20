@@ -285,24 +285,61 @@ class RecoveryLoadDataHandle {
     };
 
     static loadCheckNewLeasedProduct() {
-        let checkedEle = RecoveryDataTableHandle.$tableProductNew[0].querySelector('.table-row-checkbox:checked');
-        if (checkedEle) {
-            let row = checkedEle.closest('tr');
-            if (row) {
-                let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(row).index();
-                let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
-                let rowData = $row.data();
-
-                RecoveryDataTableHandle.$tableWarehouse.DataTable().destroy();
-                if (rowData?.['product_warehouse_data']) {
-                    RecoveryDataTableHandle.dataTableWareHouse(rowData?.['product_warehouse_data'] ? rowData?.['product_warehouse_data'] : []);
-                } else {
-                    RecoveryDataTableHandle.dataTableWareHouse();
-                }
-            }
-        }
+        RecoveryLoadDataHandle.loadDtbPW();
         return true;
     };
+
+    static loadDtbPW() {
+        WindowControl.showLoading();
+        $.fn.callAjax2({
+                'url': RecoveryLoadDataHandle.urlEle.attr('data-warehouse'),
+                'method': 'GET',
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('warehouse_inventory_list') && Array.isArray(data.warehouse_inventory_list)) {
+
+                        let checkedNewEle = RecoveryDataTableHandle.$tableProductNew[0].querySelector('.table-row-checkbox:checked');
+                        if (checkedNewEle) {
+                            let row = checkedNewEle.closest('tr');
+                            if (row) {
+                                let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(row).index();
+                                let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
+                                let dataRow = $row.data();
+                                let dataCheck = {};
+                                for (let dataPW of dataRow?.['product_warehouse_data'] ? dataRow?.['product_warehouse_data'] : []) {
+                                    dataCheck[dataPW?.['warehouse_id']] = dataPW;
+                                }
+                                for (let dataObj of data?.['warehouse_inventory_list']) {
+                                    if (dataCheck.hasOwnProperty(dataObj?.['warehouse_id'])) {
+                                        dataObj['quantity_recovery'] = dataCheck[dataObj?.['warehouse_id']]?.['quantity_recovery'];
+                                        dataObj['lease_generate_data'] = dataCheck[dataObj?.['warehouse_id']]?.['lease_generate_data'];
+                                    }
+                                }
+                            }
+                        }
+
+                        let checkedLeasedEle = RecoveryDataTableHandle.$tableProductLeased[0].querySelector('.table-row-checkbox:checked');
+                        if (checkedLeasedEle) {
+                            let row = checkedLeasedEle.closest('tr');
+                            if (row) {
+                                let rowIndex = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(row).index();
+                                let $row = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(rowIndex);
+                                let dataRow = $row.data();
+                            }
+                        }
+
+                        RecoveryDataTableHandle.$tableWarehouse.DataTable().clear().draw();
+                        RecoveryDataTableHandle.$tableWarehouse.DataTable().rows.add(data?.['warehouse_inventory_list']).draw();
+                        WindowControl.hideLoading();
+                    }
+                }
+            }
+        )
+    }
 
     static loadLineDetail() {
         let dataJSON = {};
@@ -949,29 +986,29 @@ class RecoveryDataTableHandle {
                                 </div>`;
                     }
                 },
+                // {
+                //     targets: 1,
+                //     width: '20%',
+                //     render: (data, type, row) => {
+                //         return `<span class="table-row-quantity-ordered">${row?.['product_quantity'] ? row?.['product_quantity'] : '0'}</span>`;
+                //     }
+                // },
                 {
                     targets: 1,
-                    width: '20%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-ordered">${row?.['product_quantity'] ? row?.['product_quantity'] : '0'}</span>`;
-                    }
-                },
-                {
-                    targets: 2,
                     width: '20%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-delivered">${row?.['quantity_delivered'] ? row?.['quantity_delivered'] : '0'}</span>`;
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-recovered">${row?.['quantity_recovered'] ? row?.['quantity_recovered'] : '0'}</span>`;
+                        return `<span class="table-row-quantity-recovered">${row?.['quantity_remain_recovery'] ? row?.['quantity_remain_recovery'] : '0'}</span>`;
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     width: '20%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-recovery">${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : '0'}</span>`;
@@ -1031,15 +1068,15 @@ class RecoveryDataTableHandle {
                         return `<textarea class="form-control table-row-name" rows="2" readonly>${row?.['offset_data']?.['title'] ? row?.['offset_data']?.['title'] : ''}</textarea>`;
                     },
                 },
+                // {
+                //     targets: 2,
+                //     width: '10%',
+                //     render: (data, type, row) => {
+                //         return `<span class="table-row-quantity-ordered">${row?.['product_quantity_new'] ? row?.['product_quantity_new'] : '0'}</span>`;
+                //     }
+                // },
                 {
                     targets: 2,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-ordered">${row?.['product_quantity_new'] ? row?.['product_quantity_new'] : '0'}</span>`;
-                    }
-                },
-                {
-                    targets: 3,
                     width: '15%',
                     render: (data, type, row) => {
                         let value = 0;
@@ -1050,14 +1087,14 @@ class RecoveryDataTableHandle {
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 3,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-recovered">${row?.['quantity_recovered'] ? row?.['quantity_recovered'] : '0'}</span>`;
+                        return `<span class="table-row-quantity-recovered">${row?.['quantity_new_remain_recovery'] ? row?.['quantity_new_remain_recovery'] : '0'}</span>`;
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 4,
                     width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-recovery">${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : '0'}</span>`;
@@ -1126,29 +1163,29 @@ class RecoveryDataTableHandle {
                         return `<textarea class="form-control table-row-name" rows="2" readonly>${row?.['product_data']?.['title'] ? row?.['product_data']?.['title'] : ''}</textarea>`;
                     },
                 },
+                // {
+                //     targets: 2,
+                //     width: '10%',
+                //     render: (data, type, row) => {
+                //         return `<span class="table-row-quantity-ordered">${row?.['quantity_ordered'] ? row?.['quantity_ordered'] : '0'}</span>`;
+                //     }
+                // },
                 {
                     targets: 2,
-                    width: '10%',
+                    width: '15%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-ordered">${row?.['quantity_ordered'] ? row?.['quantity_ordered'] : '0'}</span>`;
+                        return `<span class="table-row-quantity-delivered">${row?.['picked_quantity'] ? row?.['picked_quantity'] : '0'}</span>`;
                     }
                 },
                 {
                     targets: 3,
-                    width: '15%',
+                    width: '10%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-delivered">${row?.['quantity_delivered'] ? row?.['quantity_delivered'] : '0'}</span>`;
+                        return `<span class="table-row-quantity-recovered">${row?.['quantity_leased_remain_recovery'] ? row?.['quantity_leased_remain_recovery'] : '0'}</span>`;
                     }
                 },
                 {
                     targets: 4,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-recovered">${row?.['quantity_recovered'] ? row?.['quantity_recovered'] : '0'}</span>`;
-                    }
-                },
-                {
-                    targets: 5,
                     width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-recovery">${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : '0'}</span>`;
@@ -1191,27 +1228,13 @@ class RecoveryDataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: "20%",
+                    width: "80%",
                     render: (data, type, row) => {
                         return `<button class="btn-collapse-app-wf btn btn-icon btn-rounded mr-1"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['warehouse_data']?.['title'] ? row?.['warehouse_data']?.['title'] : ""}</b>`;
                     }
                 },
                 {
-                    targets: 0,
-                    width: "20%",
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-delivered">${row?.['quantity_delivered'] ? row?.['quantity_delivered'] : '0'}</span>`;
-                    }
-                },
-                {
-                    targets: 0,
-                    width: "20%",
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-recovered">${row?.['quantity_recovered'] ? row?.['quantity_recovered'] : '0'}</span>`;
-                    }
-                },
-                {
-                    targets: 0,
+                    targets: 1,
                     width: "20%",
                     render: (data, type, row) => {
                         return `<input type="text" class="form-control table-row-quantity-recovery validated-number" value="${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : 0}">`;
@@ -1600,6 +1623,8 @@ class RecoveryStoreDataHandle {
         // dtb data cố định => store hết, dtb data động callAjax => store data có thay đổi
 
         let product_warehouse_data = [];
+        let product_new_data = {};
+        let product_leased_data = [];
         let delivery_product_data = [];
 
         RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
@@ -1675,8 +1700,9 @@ class RecoveryStoreDataHandle {
             let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
             let rowData = $row.data();
 
+            // update data product_warehouse_data cho dòng đang được chọn
             let checked = row.querySelector('.table-row-checkbox:checked');
-            if (checked) {  // update data hiện tại cho dòng được chọn
+            if (checked) {
                 rowData['product_warehouse_data'] = product_warehouse_data;
             }
             let recovery = 0;
@@ -1688,7 +1714,37 @@ class RecoveryStoreDataHandle {
             rowData['quantity_recovery'] = recovery;
 
             RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex).data(rowData);
-            delivery_product_data.push(rowData);
+            product_new_data = rowData;
+
+            if (checked) {
+                let checkEle = row.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
+            }
+        });
+
+        RecoveryDataTableHandle.$tableProductLeased.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(row).index();
+            let $row = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(rowIndex);
+            let rowData = $row.data();
+
+            // update data product_warehouse_data cho dòng đang được chọn
+            let checked = row.querySelector('.table-row-checkbox:checked');
+            if (checked) {
+                rowData['product_warehouse_data'] = product_warehouse_data;
+            }
+            let recovery = 0;
+            if (rowData?.['product_warehouse_data']) {
+                for (let dataPW of rowData?.['product_warehouse_data'] ? rowData?.['product_warehouse_data'] : []) {
+                    recovery += dataPW?.['quantity_recovery'];
+                }
+            }
+            rowData['quantity_recovery'] = recovery;
+
+            RecoveryDataTableHandle.$tableProductLeased.DataTable().row(rowIndex).data(rowData);
+            product_leased_data.push(rowData);
 
             if (checked) {
                 let checkEle = row.querySelector('.table-row-checkbox');
@@ -1704,17 +1760,19 @@ class RecoveryStoreDataHandle {
             let $row = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex);
             let rowData = $row.data();
 
+            // update data row cho dòng đang được chọn
             let checked = row.querySelector('.table-row-checkbox:checked');
-            if (checked) {  // update data hiện tại cho dòng được chọn
-                rowData['product_warehouse_data'] = product_warehouse_data;
+            if (checked) {
+                rowData = product_new_data;
+                rowData['product_quantity_leased_data'] = product_leased_data;
             }
-            let recovery = 0;
-            if (rowData?.['product_warehouse_data']) {
-                for (let dataPW of rowData?.['product_warehouse_data'] ? rowData?.['product_warehouse_data'] : []) {
-                    recovery += dataPW?.['quantity_recovery'];
+            let recoveryLeased = 0;
+            if (rowData?.['product_quantity_leased_data']) {
+                for (let dataLeased of rowData?.['product_quantity_leased_data']) {
+                    recoveryLeased += dataLeased?.['quantity_recovery'];
                 }
             }
-            rowData['quantity_recovery'] = recovery;
+            rowData['quantity_recovery'] += recoveryLeased;
 
             RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex).data(rowData);
             delivery_product_data.push(rowData);

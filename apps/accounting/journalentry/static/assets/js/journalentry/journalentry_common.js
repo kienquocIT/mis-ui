@@ -10,7 +10,10 @@ const $journal_entry_table = $('#journal-entry-table')
 
 class JELoadPage {
     static LoadJETable(datalist=[]) {
+        let has_fc_value = false
+        let has_lc_value = false
         $journal_entry_table.DataTableDefault({
+            styleDom: 'hide-foot',
             useDataServer: false,
             rowIdx: true,
             reloadCurrency: true,
@@ -44,6 +47,7 @@ class JELoadPage {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
                         if (!row?.['is_fc'] && row?.['debit'] !== 0) {
+                            has_lc_value = true
                             return `<span class="fw-bold mask-money" data-init-money="${row?.['debit']}"></span>`;
                         }
                         return ``;
@@ -52,6 +56,7 @@ class JELoadPage {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
                         if (!row?.['is_fc'] && row?.['credit'] !== 0) {
+                            has_lc_value = true
                             return `<span class="fw-bold mask-money" data-init-money="${row?.['credit']}"></span>`;
                         }
                         return ``;
@@ -60,6 +65,7 @@ class JELoadPage {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
                         if (row?.['is_fc'] && row?.['debit'] !== 0) {
+                            has_fc_value = true
                             return `<span class="fw-bold mask-money" data-init-money="${row?.['debit']}"></span>`;
                         }
                         return ``;
@@ -68,6 +74,7 @@ class JELoadPage {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
                         if (row?.['is_fc'] && row?.['credit'] !== 0) {
+                            has_fc_value = true
                             return `<span class="fw-bold mask-money" data-init-money="${row?.['credit']}"></span>`;
                         }
                         return ``;
@@ -75,10 +82,23 @@ class JELoadPage {
                 }, {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
-                        return `<span class="mask-money" data-init-money="${row?.['taxable_value']}"></span>`;
+                        if (row?.['taxable_value'] !== 0) {
+                            return `<span class="mask-money" data-init-money="${row?.['taxable_value']}"></span>`;
+                        }
+                        return ''
                     }
                 },
             ],
+            initComplete: function(settings, json) {
+                if (!has_fc_value) {
+                    this.api().column(6).visible(false);
+                    this.api().column(7).visible(false);
+                }
+                if (!has_lc_value) {
+                    this.api().column(4).visible(false);
+                    this.api().column(5).visible(false);
+                }
+            }
         });
     }
 }

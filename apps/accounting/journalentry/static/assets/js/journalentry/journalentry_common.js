@@ -31,24 +31,24 @@ class JELoadPage {
                 }, {
                     className: 'wrap-text w-10',
                     render: (data, type, row) => {
-                        return `<span class="fw-bold">${row?.['account_data']?.['acc_code']}</span>`;
+                        return `<span class="text-primary fw-bold">${row?.['account_data']?.['acc_code']}</span>`;
                     }
                 }, {
                     className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<span>${row?.['account_data']?.['acc_name']}</span><br><span class="small">(${row?.['account_data']?.['foreign_acc_name']})</span>`;
+                        return `<span class="text-primary">${row?.['account_data']?.['acc_name']}</span><br><span class="text-primary small">(${row?.['account_data']?.['foreign_acc_name']})</span>`;
                     }
                 }, {
                     className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<span>${row?.['business_partner_data']?.['name'] || ''}</span>`;
+                        return `<span class="text-primary">${row?.['business_partner_data']?.['name'] || ''}</span>`;
                     }
                 }, {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
                         if (!row?.['is_fc'] && row?.['debit'] !== 0) {
                             has_lc_value = true
-                            return `<span class="fw-bold mask-money" data-init-money="${row?.['debit']}"></span>`;
+                            return `<span class="text-primary fw-bold mask-money" data-init-money="${row?.['debit']}"></span>`;
                         }
                         return ``;
                     }
@@ -57,7 +57,7 @@ class JELoadPage {
                     render: (data, type, row) => {
                         if (!row?.['is_fc'] && row?.['credit'] !== 0) {
                             has_lc_value = true
-                            return `<span class="fw-bold mask-money" data-init-money="${row?.['credit']}"></span>`;
+                            return `<span class="text-primary fw-bold mask-money" data-init-money="${row?.['credit']}"></span>`;
                         }
                         return ``;
                     }
@@ -66,7 +66,7 @@ class JELoadPage {
                     render: (data, type, row) => {
                         if (row?.['is_fc'] && row?.['debit'] !== 0) {
                             has_fc_value = true
-                            return `<span class="fw-bold mask-money" data-init-money="${row?.['debit']}"></span>`;
+                            return `<span class="text-primary fw-bold mask-money" data-init-money="${row?.['debit']}"></span>`;
                         }
                         return ``;
                     }
@@ -75,7 +75,7 @@ class JELoadPage {
                     render: (data, type, row) => {
                         if (row?.['is_fc'] && row?.['credit'] !== 0) {
                             has_fc_value = true
-                            return `<span class="fw-bold mask-money" data-init-money="${row?.['credit']}"></span>`;
+                            return `<span class="text-primary fw-bold mask-money" data-init-money="${row?.['credit']}"></span>`;
                         }
                         return ``;
                     }
@@ -83,7 +83,7 @@ class JELoadPage {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
                         if (row?.['taxable_value'] !== 0) {
-                            return `<span class="mask-money" data-init-money="${row?.['taxable_value']}"></span>`;
+                            return `<span class="text-primary mask-money" data-init-money="${row?.['taxable_value']}"></span>`;
                         }
                         return ''
                     }
@@ -114,6 +114,7 @@ class JEHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     data = data['journal_entry_detail'];
+                    $x.fn.renderCodeBreadcrumb(data);
                     console.log(data)
 
                     if (data?.['system_auto_create'])

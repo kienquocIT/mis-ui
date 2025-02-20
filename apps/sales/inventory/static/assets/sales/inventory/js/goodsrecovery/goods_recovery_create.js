@@ -86,12 +86,12 @@ $(function () {
         });
 
         RecoveryDataTableHandle.$tableProductNew.on('click', '.table-row-checkbox', function () {
-            let warehouseArea = RecoveryLoadDataHandle.$canvasMain[0].querySelector('.dtb-warehouse-area');
-            if (warehouseArea) {
-                RecoveryLoadDataHandle.loadCheckNewLeasedProduct();
+            RecoveryLoadDataHandle.loadCheckNewLeasedProduct();
+            return true;
+        });
 
-                warehouseArea.removeAttribute('hidden');
-            }
+        RecoveryDataTableHandle.$tableProductLeased.on('click', '.table-row-checkbox', function () {
+            RecoveryLoadDataHandle.loadCheckNewLeasedProduct();
             return true;
         });
 

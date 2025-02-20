@@ -34,16 +34,9 @@ $(document).ready(function () {
                 value_list.push(`${option_month}/${option_year}`)
             }
             for (let i = 0; i < value_list.length; i++) {
-                if (parseInt(value_list[i].split('/')[0]) > new Date().getMonth() + 1 || parseInt(value_list[i].split('/')[1]) > fiscal_year) {
-                    ele.append(`
-                        <option disabled value="${i}}">${value_list[i]}</option>
-                    `)
-                }
-                else {
-                    ele.append(`
-                        <option value="${i}}">${value_list[i]}</option>
-                    `)
-                }
+                ele.append(`
+                    <option value="${i}}">${value_list[i]}</option>
+                `)
             }
         }
     }

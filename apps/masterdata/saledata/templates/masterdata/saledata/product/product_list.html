@@ -44,6 +44,16 @@
         </table>
     </div>
 {% endblock %}
+
+{% block dataHiddenGroup %}
+    <script id="trans-script"
+        data-fifo = "{% trans 'FIFO' %}"
+        data-weighted-average = "{% trans 'Weighted average' %}"
+        data-specific-eval-method = "{% trans 'Specific identification method' %}"
+    >
+    </script>
+{% endblock %}
+
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/product/product_list.js' %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>

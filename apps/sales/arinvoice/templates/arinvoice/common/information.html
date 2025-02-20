@@ -76,8 +76,9 @@
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="bank-code">{% trans "Method" %}</label>
-                    <select class="form-select" id="bank-code" readonly disabled>
-                        <option value="3">{% trans 'Cash' %}/{% trans 'Bank transfer' %}</option>
+                    <select class="form-select" id="bank-code">
+                        <option value="1">{% trans 'Cash' %}</option>
+                        <option value="2">{% trans 'Bank transfer' %}</option>
                     </select>
                 </div>
             </div>

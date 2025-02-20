@@ -961,7 +961,7 @@ class SpaceItem:
                 MenusFinancials.GENERAL,
                 MenusFinancials.CASHFLOW,
                 MenusFinancials.ASSET,
-                # MenusFinancials.JOURNAL_ENTRY,
+                MenusFinancials.JOURNAL_ENTRY,
             ]
         ),
         'forms': SpaceCommon(

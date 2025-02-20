@@ -5,8 +5,8 @@ from apps.accounting.accountingsettings.views import (
 )
 
 urlpatterns = [
-    path('chart-of-accounts', ChartOfAccountsList.as_view(), name='ChartOfAccountsList'),
-    path('chart-of-accounts/api', ChartOfAccountsListAPI.as_view(), name='ChartOfAccountsListAPI'),
-    path('default-account-definition', DefaultAccountDefinitionList.as_view(), name='DefaultAccountDefinitionList'),
-    path('default-account-definition/api', DefaultAccountDefinitionListAPI.as_view(), name='DefaultAccountDefinitionListAPI'),
+    path('chart-of-accounts/list', ChartOfAccountsList.as_view(), name='ChartOfAccountsList'),
+    path('chart-of-accounts/list/api', ChartOfAccountsListAPI.as_view(), name='ChartOfAccountsListAPI'),
+    path('default-account-definition/list', DefaultAccountDefinitionList.as_view(), name='DefaultAccountDefinitionList'),
+    path('default-account-definition/list/api', DefaultAccountDefinitionListAPI.as_view(), name='DefaultAccountDefinitionListAPI'),
 ]

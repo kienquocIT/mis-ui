@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Chart of accounts' %}{% endblock %}
+{% block title %}{% trans 'Journal entry' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-{#    <a href="{% url "AdvancePaymentCreate" %}">#}
-{#        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">#}
+{#    <a href="{% url "JournalEntryCreate" %}">#}
+{#        <button class="btn btn-outline-primary" type="button">#}
 {#            <span>#}
 {#                <span>{% trans 'Add' %}</span>#}
 {#                <span class="icon">#}
@@ -19,16 +19,27 @@
 {#    </a>#}
 {% endblock %}
 {% block pageContent %}
-    <script id="trans-script"
-            data-trans-all="{% trans 'Default all' %}"
-    ></script>
-    <script id="url-script"
-            data-url-journal-entry-list="{% url 'JournalEntryListAPI' %}"
-    ></script>
-
-    {% include 'journalentry/common/information.html' %}
-{% endblock %}
-{% block modalData %}
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100"
+                   id="je-table-list"
+                   data-method="GET"
+                   data-url="{% url 'JournalEntryListAPI' %}"
+                   data-url-detail="{% url 'JournalEntryDetail' '0' %}"
+            >
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Number' %}</th>
+                    <th>{% trans 'Original transaction' %}</th>
+                    <th>{% trans 'Transaction' %}</th>
+                    <th>{% trans 'Type' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/journalentry/journalentry_list.js' %}"></script>

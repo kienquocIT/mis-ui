@@ -67,7 +67,17 @@ $(document).ready(function() {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             let data_list = resp.data['default_account_definition_list'] ? resp.data['default_account_definition_list'] : []
-
+                            data_list.sort((a, b) => {
+                                const codeA = a?.['account_mapped']?.['acc_code'];
+                                const codeB = b?.['account_mapped']?.['acc_code'];
+                                if (codeA < codeB) {
+                                    return -1;
+                                }
+                                if (codeA > codeB) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
                             if (data_param?.['default_account_definition_type'] === 0) {
                                 sale_table_data.text(JSON.stringify(data_list))
                             }

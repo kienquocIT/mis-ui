@@ -33,7 +33,7 @@ $(document).ready(function() {
                 useDataServer: false,
                 rowIdx: true,
                 reloadCurrency: true,
-                scrollY: '65vh',
+                scrollY: '60vh',
                 scrollX: true,
                 scrollCollapse: true,
                 paging: false,

@@ -296,3 +296,11 @@ msgstr "Huỷ bỏ"
 #
 msgid "Delete item successfully"
 msgstr "Xoá thành công"
+
+#
+msgid "Create manually"
+msgstr "Tạo thủ công"
+
+#
+msgid "Create automatically"
+msgstr "Tạo tự động"

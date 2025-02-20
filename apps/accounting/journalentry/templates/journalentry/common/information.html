@@ -1,78 +1,58 @@
 {% load i18n %}
 
-<div class="accordion accordion-card accordion-soft accordion-icon" id="accordionPanelsStayOpenExampleOne">
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                <span class="d-flex align-items-center">
-                    <i class="fas fa-info-circle mr-2 text-primary"></i>
-                    <span>
-                        <span>{% trans 'Information' %}</span>
-                    </span>
-                </span>
-            </button>
-        </h2>
-        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-            <div class="accordion-body">
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="row">
-                            <div class="col-12 col-md-5 col-lg-5">
-                                <div class="form-group">
-                                    <label class="form-label required" for="type">{% trans "Type" %}</label>
-                                    <select required name="type" class="form-select" id="type">
-                                        <option value="0" selected>{% trans 'Auto' %}</option>
-                                        <option value="1">{% trans 'Manual' %}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-7 col-lg-7">
-                                <div class="form-group">
-                                    <label class="form-label required" for="number">{% trans "Number" %}</label>
-                                    <input disabled readonly required name="number" class="form-control form-control-line" id="number">
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-5 col-lg-5">
-                                <div class="form-group">
-                                    <label class="form-label required" for="ori-trans">{% trans "Original transaction" %}</label>
-                                    <select required name="ori-trans" class="form-select" id="ori-trans">
-                                        <option value="0" selected>{% trans 'AR invoice' %}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-7 col-lg-7">
-                                <div class="form-group">
-                                    <label class="form-label required" for="ar-invoice-code">{% trans "Code" %}</label>
-                                    <select required name="code" class="form-select select2" id="ar-invoice-code" data-method="GET" data-url="{% url 'ARInvoiceListAPI' %}"></select>
-                                </div>
-                            </div>
-                        </div>
+<div class="row">
+    <div class="col-12 col-md-7 col-lg-7">
+        <div class="row">
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label required" for="ori-trans">{% trans "Original transaction" %}</label>
+                    <select disabled required class="form-select select2" id="ori-trans">
+                        <option value="0" selected>{% trans 'Delivery' %}</option>
+                        <option value="1">{% trans 'AR invoice' %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label required" for="transaction-code">{% trans "Transaction code" %}</label>
+                    <input required readonly disabled class="form-control form-control-line" id="transaction-code">
+                </div>
+            </div>
+            <div class="col-12 col-md-8 col-lg-8">
+                <div class="form-group">
+                    <label class="form-label required" for="transaction-name">{% trans "Transaction name" %}</label>
+                    <input required readonly disabled class="form-control form-control-line" id="transaction-name">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-5 col-lg-5">
+        <div class="row">
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label" for="type">{% trans "Type" %}</label>
+                    <input disabled readonly class="form-control form-control-line" id="type">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required" for="je-posting-date">{% trans "Posting date" %}</label>
+                    <div class="input-group">
+                        <span class="input-affix-wrapper">
+                            <input type="text" class="form-control" id="je-posting-date">
+                            <span class="input-suffix"><i class="far fa-calendar-alt"></i></span>
+                        </span>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label required" for="posting-date">{% trans "Posting date" %}</label>
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <input disabled readonly type="text" name="posting-date" class="form-control form-control-line" id="posting-date">
-                                            <span class="input-suffix"><i class="far fa-calendar-alt"></i></span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label required" for="doc-date">{% trans "Document date" %}</label>
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <input disabled readonly type="text" name="doc-date" class="form-control form-control-line" id="doc-date">
-                                            <span class="input-suffix"><i class="far fa-calendar-alt"></i></span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required" for="je-doc-date">{% trans "Document date" %}</label>
+                    <div class="input-group">
+                        <span class="input-affix-wrapper">
+                            <input type="text" class="form-control" id="je-doc-date">
+                            <span class="input-suffix"><i class="far fa-calendar-alt"></i></span>
+                        </span>
                     </div>
                 </div>
             </div>

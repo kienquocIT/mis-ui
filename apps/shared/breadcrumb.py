@@ -452,7 +452,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Accounting
     CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of accounts'), 'ChartOfAccountsList')
     DEFAULT_ACCOUNT_DEFINITION_LIST_PAGE = BreadcrumbChildren(_('Default account definition'), 'DefaultAccountDefinitionList')
+
+    # Journal entry
     JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry'), 'JournalEntryList')
+    JOURNAL_ENTRY_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'JournalEntryCreate')
+    JOURNAL_ENTRY_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    JOURNAL_ENTRY_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     #Consulting
     CONSULTING_LIST_PAGE = BreadcrumbChildren(_('Consulting list'), 'ConsultingList')
@@ -1237,6 +1242,8 @@ class BreadcrumbView:
     DEFAULT_ACCOUNT_DEFINITION_LIST_PAGE = [
         BreadcrumbItem.DEFAULT_ACCOUNT_DEFINITION_LIST_PAGE
     ]
-    JOURNAL_ENTRY_LIST_PAGE = [
-        BreadcrumbItem.JOURNAL_ENTRY_LIST_PAGE
-    ]
+
+    JOURNAL_ENTRY_LIST_PAGE = [BreadcrumbItem.JOURNAL_ENTRY_LIST_PAGE]
+    JOURNAL_ENTRY_CREATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    JOURNAL_ENTRY_DETAIL_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    JOURNAL_ENTRY_UPDATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

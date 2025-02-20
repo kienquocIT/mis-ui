@@ -1,6 +1,7 @@
 $(document).ready(function () {
     let tbl = $('#datatable_product_list');
     let url_detail = tbl.attr('data-url-detail');
+    const $transScript = $('#trans-script')
     tbl.DataTableDefault({
         useDataServer: true,
         reloadCurrency: true,
@@ -59,7 +60,12 @@ $(document).ready(function () {
             }, {
                 className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    let trans_valuation_method = ['FIFO', 'Weighted average', ''][row?.['valuation_method']]
+                    const valuation_method_mapped = {
+                        0: $transScript.attr('data-fifo'),
+                        1: $transScript.attr('data-weighted-average'),
+                        2: $transScript.attr('data-specific-eval-method'),
+                    }
+                    let trans_valuation_method = valuation_method_mapped[row?.['valuation_method']]
                     return `<span class="text-muted span-product-category">${trans_valuation_method}</span>`
                 }
             }, {

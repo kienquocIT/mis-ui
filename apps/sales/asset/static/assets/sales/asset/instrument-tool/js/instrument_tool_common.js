@@ -1,27 +1,27 @@
-class CommonHandler{
+class ToolCommonHandler{
     constructor(){
         this.$classificationSelect = $('#classification')
-        this.$offsetItemSelect = $('#asset-product-code')
+        this.$toolNameInput = $('#tool-name')
+        this.$toolCodeInput = $('#tool-code')
+        this.$offsetItemSelect = $('#tool-product-code')
         this.$manageDepartmentSelect = $('#manage-department')
         this.$useDepartmentSelect = $('#use-department')
-        this.$depreciationStartDateInput = $('#depreciation-start-date')
-        this.$depreciationEndDateInput = $('#depreciation-end-date')
+        this.$unitPriceInput = $('#unit-price')
+        this.$quantityInput = $('#quantity')
+        this.$measureUnitInput = $('#measure-unit')
+        this.$totalValueInput = $('#total-value')
+
         this.$APInvoiceDatatable = $('#modal-datatable-ap-invoice')
         this.$sourceDatatable = $('#datatable-asset-source')
-        this.$APInvoiceModal = $('#modal-ap-invoice')
         this.$APInvoiceDetailDatatable = $('#modal-datatable-ap-invoice-detail')
-        this.$originalCostInput = $('#original-cost')
-        this.$netBookValueInput = $('#net-book-value')
+
         this.$updateAPInvoiceValueBtn = $('#btn-update-ap-invoice-value')
-        this.$accDepreciationInput = $('#accumulative-depreciation')
-        this.$adjustmentFactorSelect = $('#adjustment-factor')
-        this.$assetNameInput = $('#asset-name')
-        this.$assetCodeInput = $('#asset-code')
-        this.$sourceTypeSelect = $('#source-type')
+
+        this.$depreciationStartDateInput = $('#depreciation-start-date')
+        this.$depreciationEndDateInput = $('#depreciation-end-date')
         this.$depreciationTimeInput = $('#depreciation-time')
-        this.$depreciationMethodSelect = $('#depreciation-method')
-        this.$timeUnitSelect = $('#time-unit')
-        this.$depreciationValueInput = $('#depreciation-value')
+
+        this.$APInvoiceModal = $('#modal-ap-invoice')
     }
 
     init(isUpdate=false){
@@ -33,7 +33,6 @@ class CommonHandler{
 
         this.initDateInput(this.$depreciationStartDateInput, null)
         this.initDateInput(this.$depreciationEndDateInput, null)
-        this.initMaskMoneyInput(this.$accDepreciationInput, 0)
 
         this.initAPInvoiceDataTable()
         if(!isUpdate){
@@ -51,30 +50,29 @@ class CommonHandler{
         this.changeDepreciationTimeEventBinding()
         this.changeDepreciationStartDateEventBinding()
         this.changeTimeUnitEventBinding()
-        this.changeDepreciationMethodEventBinding()
     }
 
     loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
         $ele.empty();
         if (data.length > 0) {
-            opts['data'] = data;
+            opts['data'] = data
         }
         if (Object.keys(dataParams).length !== 0) {
-            opts['dataParams'] = dataParams;
+            opts['dataParams'] = dataParams
         }
         if ($modal) {
-            opts['dropdownParent'] = $modal;
+            opts['dropdownParent'] = $modal
         }
         if (Object.keys(customRes).length !== 0) {
             opts['templateResult'] = function (state) {
                 let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
                 let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
-                return $(`<span>${res1} ${res2}</span>`);
+                return $(`<span>${res1} ${res2}</span>`)
             }
         }
-        $ele.initSelect2(opts);
-        return true;
+        $ele.initSelect2(opts)
+        return true
     }
 
     // ----selects----
@@ -262,7 +260,6 @@ class CommonHandler{
         const apInvoiceId = this.$APInvoiceDetailDatatable.attr('data-id')
         const dataScript = $('#data-script')
         const dataApInvoiceDetailList = JSON.parse(dataScript.attr('data-apinvoice-detail-list'))
-        console.log(dataApInvoiceDetailList)
         const apDetailData = dataApInvoiceDetailList[apInvoiceId]
         if (apInvoiceId){
             let url = this.$APInvoiceDetailDatatable.attr('data-url').format_url_with_uuid(apInvoiceId)
@@ -322,16 +319,16 @@ class CommonHandler{
                         width: '20%',
                         render: (data, type, row) => {
                             const apInvoiceProdId = row?.['id']
-                            let dataFADetail = $('#data-script').attr('data-fixed-asset-detail')
+                            let dataFADetail = $('#data-script').attr('data-instrument-tool-detail')
                             if (dataFADetail){
                                 dataFADetail = JSON.parse(dataFADetail)
                             }
                             let increasedFA = row?.['increased_FA_value'] ? Number(row?.['increased_FA_value']) : 0
 
                             if(dataFADetail?.['ap_invoice_items']){
-                                const fixedAssetAPInvoiceItem = dataFADetail?.['ap_invoice_items'].find(item=>item.ap_invoice_item_id=apInvoiceProdId)
-                                if(fixedAssetAPInvoiceItem){
-                                    increasedFA = increasedFA - fixedAssetAPInvoiceItem?.['increased_FA_value']
+                                const instrumentToolAPInvoiceItem = dataFADetail?.['ap_invoice_items'].find(item=>item.ap_invoice_item_id=apInvoiceProdId)
+                                if(instrumentToolAPInvoiceItem){
+                                    increasedFA = increasedFA - instrumentToolAPInvoiceItem?.['increased_FA_value']
                                 }
                             }
 
@@ -445,18 +442,6 @@ class CommonHandler{
             let updatedSourceValue = $('.source-value[data-id="' + apInvoiceId + '"]')
             updatedSourceValue.text(valueText)
             updatedSourceValue.attr('value',valueNumber)
-
-            // update original cost
-            let $sourceValues = $('.source-value')
-            $sourceValues.each((id, ele)=>{
-                const cost = $(ele).attr('value')
-                originalCost += Number(cost)
-            })
-            this.$originalCostInput.attr('value', originalCost).focus({preventScroll: true}).blur()
-
-            // update net book value
-            let netBookValue = this.$originalCostInput.attr('value') - this.$accDepreciationInput.attr('value')
-            this.$netBookValueInput.attr('value', netBookValue).focus({preventScroll: true}).blur()
         })
     }
 
@@ -497,29 +482,18 @@ class CommonHandler{
 
     }
 
-    changeDepreciationMethodEventBinding(){
-        $(document).on('change', '#depreciation-method', (e)=>{
-            const methodValue = $(e.currentTarget).val();
-            if (methodValue === '0') {
-                this.$adjustmentFactorSelect.val(0).trigger('change')
-                this.$adjustmentFactorSelect.attr('readonly', true)
-            } else {
-                this.$adjustmentFactorSelect.attr('readonly', false)
-                this.$adjustmentFactorSelect.attr('disabled', false)
-            }
-        })
-    }
-
     // setup form
-    setupFormData(form) {
+    setupFormData(form){
         let tmpData = form.dataForm['depreciation_start_date'];
         form.dataForm['depreciation_start_date'] = tmpData.split('-').reverse().join('-');
         tmpData = this.$depreciationEndDateInput.val()
 
         form.dataForm['depreciation_end_date'] = tmpData.split('-').reverse().join('-');
 
-        form.dataForm['increase_fa_list'] = JSON.parse($('#data-script').attr('data-apinvoice-detail-list'))
+        tmpData = form.dataForm['depreciation_time']
+        form.dataForm['depreciation_time'] = Number(tmpData)
 
+        form.dataForm['increase_fa_list'] = JSON.parse($('#data-script').attr('data-apinvoice-detail-list'))
         let result=[]
         this.$sourceDatatable.DataTable().rows().every(function(){
             let row = $(this.node());
@@ -538,24 +512,11 @@ class CommonHandler{
         })
         form.dataForm['asset_sources'] = result
 
-        tmpData = this.$originalCostInput.attr('value')
-        form.dataForm['original_cost'] = tmpData
+        tmpData = this.$unitPriceInput.attr('value')
+        form.dataForm['unit_price'] = tmpData
 
-        tmpData = this.$netBookValueInput.attr('value')
-        form.dataForm['net_book_value'] = tmpData
-
-        tmpData = this.$accDepreciationInput.attr('value')
-        form.dataForm['accumulative_depreciation'] = tmpData
-
-        tmpData = this.$depreciationValueInput.attr('value')
-        form.dataForm['depreciation_value'] = tmpData
-
-        tmpData = form.dataForm['depreciation_time']
-        form.dataForm['depreciation_time'] = Number(tmpData)
-
-        if (form.dataForm['depreciation_method']===0){
-            delete form.dataForm['adjustment_factor']
-        }
+        tmpData = this.$totalValueInput.attr('value')
+        form.dataForm['total_value'] = tmpData
     }
 
     setupFormSubmit($formSubmit) {
@@ -569,9 +530,8 @@ class CommonHandler{
         })
     }
 
-    // detail page
     disableFields(){
-        const $fields = $('#form-fixed-asset').find('input, select, button')
+        const $fields = $('#form-instrument-tool').find('input, select, button')
         $fields.attr('disabled', true)
         $fields.attr('readonly', true)
 
@@ -591,14 +551,14 @@ class CommonHandler{
                     $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data);
 
-                    $('#data-script').attr('data-fixed-asset-detail', JSON.stringify(data))
-                    this.initInput(this.$assetNameInput, data?.['title'])
-                    this.initInput(this.$assetCodeInput, data?.['asset_code'])
+                    $('#data-script').attr('data-instrument-tool-detail', JSON.stringify(data))
+                    this.initInput(this.$toolNameInput, data?.['title'])
+                    this.initInput(this.$toolCodeInput, data?.['asset_code'])
                     this.initInput(this.$depreciationTimeInput, data?.['depreciation_time'])
-                    this.initMaskMoneyInput(this.$originalCostInput, data?.['original_cost'])
-                    this.initMaskMoneyInput(this.$accDepreciationInput, data?.['accumulative_depreciation'])
-                    this.initMaskMoneyInput(this.$netBookValueInput, data?.['net_book_value'])
-                    this.initMaskMoneyInput(this.$depreciationValueInput, data?.['depreciation_value'])
+                    this.initInput(this.$quantityInput, data?.['quantity'])
+                    this.initInput(this.$measureUnitInput, data?.['measure_unit'])
+                    this.initMaskMoneyInput(this.$totalValueInput, data?.['total_value'])
+                    this.initMaskMoneyInput(this.$unitPriceInput, data?.['unit_price'])
                     this.initDateInput(this.$depreciationStartDateInput, data?.['depreciation_start_date'])
                     this.initDateInput(this.$depreciationEndDateInput, data?.['depreciation_end_date'])
 
@@ -606,11 +566,6 @@ class CommonHandler{
                     this.initManageDepartmentSelect([data?.['manage_department']])
                     this.initUseDepartmentSelect(data?.['use_department'])
                     this.initClassificationSelect([data?.['classification']])
-
-                    this.triggerChangeSelect(this.$sourceTypeSelect, data?.['source_type'])
-                    this.triggerChangeSelect(this.$depreciationMethodSelect, data?.['depreciation_method'])
-                    this.triggerChangeSelect(this.$adjustmentFactorSelect, data?.['adjustment_factor'])
-                    this.triggerChangeSelect(this.$timeUnitSelect, data?.['depreciation_time_unit'])
 
                     this.initSourceListDataTable(data?.['asset_sources'])
                     this.openModalAPInvoiceDetailEventBinding()
@@ -626,7 +581,7 @@ class CommonHandler{
                 }
             })
             .then(() => {
-                if (disabledFields) {
+                if(disabledFields) {
                     this.disableFields();
                 }
             })

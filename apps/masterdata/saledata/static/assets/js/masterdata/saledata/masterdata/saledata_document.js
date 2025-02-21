@@ -14,6 +14,7 @@ $(document).ready(function () {
             this.formUpdateDocTypeId = options.formUpdateDocTypeId
 
             this.docTypeCategory = options.docTypeCategory
+
             this.init()
         }
 
@@ -107,14 +108,15 @@ $(document).ready(function () {
         handleOpenUpdateModal(modalUpdateDocTypeId, btnUpdateDocTypeClass, formUpdateDocTypeId){
             let btnUpdateDocTypeClassSelector = '.'+btnUpdateDocTypeClass
             $(document).on('click', btnUpdateDocTypeClassSelector, function () {
-                console.log($(this).attr('data-code'))
                 let modal = $(modalUpdateDocTypeId)
                 modal.find('#inp_code').val($(this).attr('data-code'))
                 modal.find('#inp_name').val($(this).attr('data-title'))
-                let raw_url = $(formUpdateDocTypeId).attr('data-url-update-document-type')
-                $(formUpdateDocTypeId).attr('data-url-update-document-type', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
-            })
+                const id = $(this).attr('data-id')
+                const urlUpdate = $('#update-url-script').attr('data-url-update-document-type')
+                $(formUpdateDocTypeId).attr('data-url-update-document-type', urlUpdate.replace('/0', `/${id}`))
+            });
         }
+
 
         handleSubmitForm(formCreateDocTypeId, formUpdateDocTypeId, modalDocTypeId, modalUpdateDocTypeId, docTypeCategory, dataTableDocTypeListId ){
             this.handleSubmitFormCreate(formCreateDocTypeId, modalDocTypeId, docTypeCategory, dataTableDocTypeListId)
@@ -169,7 +171,10 @@ $(document).ready(function () {
                             }
                         },
                         (errs) => {
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+                            if(errs.data){
+                                $.fn.notifyB({description: errs.data.errors}, 'failure');
+                            }
+                            $.fn.notifyB({description: 'Error'}, 'failure');
                         }
                     )
                 }

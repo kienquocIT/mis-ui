@@ -124,7 +124,10 @@
             </div>
         </div>
     </form>
-    <form id="form_update_document_type_bidding" data-method="PUT" data-url-update-document-type="{% url "DocumentTypeMasterDataDetailAPI" pk=0 %}">
+
+    <form
+            id="form_update_document_type_bidding" data-method="PUT"
+    >
         {% csrf_token %}
         <div class="modal fade" id="modal_update_document_type_bidding" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -196,7 +199,10 @@
             </div>
         </div>
     </form>
-    <form id="form_update_document_type_consulting" data-method="PUT" data-url-update-document-type="{% url "DocumentTypeMasterDataDetailAPI" pk=0 %}">
+
+    <form
+            id="form_update_document_type_consulting" data-method="PUT"
+    >
         {% csrf_token %}
         <div class="modal fade" id="modal_update_document_type_consulting" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -233,6 +239,15 @@
         </div>
     </form>
 {% endblock %}
+
+{% block dataHiddenGroup %}
+    <script
+            id="update-url-script"
+            data-url-update-document-type="{% url "DocumentTypeMasterDataDetailAPI" pk=0 %}"
+    >
+    </script>
+{% endblock %}
+
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/masterdata/saledata_document.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>

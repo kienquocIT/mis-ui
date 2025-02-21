@@ -542,6 +542,21 @@ COLUMNS_SALEDATA_PRODUCT.add_column(
 )
 
 COLUMNS_SALEDATA_PRODUCT.add_column(
+    name=_('General Price'), data={
+        'name': _('General Price'),
+        'input_name': 'sale_general_price',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': [],
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT.add_column(
     name=_('Inventory UOM'), data={
         'name': _('Inventory UOM'),
         'input_name': 'inventory_uom',
@@ -549,6 +564,41 @@ COLUMNS_SALEDATA_PRODUCT.add_column(
         'is_foreign_key': SHEET_SALEDATA_PRODUCT_UOM,
         'remarks': [],
         'input_attrs': {
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT.add_column(
+    name=_('Inventory Valuation Method'), data={
+        'name': _('Inventory Valuation Method'),
+        'input_name': 'valuation_method',
+        'type': 'string',
+        'remarks': [
+            _(
+                "Valuation method selection, chosen from: 0 (FIFO), 1 (weighted average), 2 (Specific identification method)"
+            ),
+        ],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'pattern': '[0-1-2]'
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT.add_column(
+    name=_('Standard Cost'), data={
+        'name': _('Standard Cost'),
+        'input_name': 'standard_price',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': [],
             'kwargs': {
                 'type': 'text',
             },

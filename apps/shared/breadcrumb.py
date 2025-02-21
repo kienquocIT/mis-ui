@@ -470,8 +470,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('Lists'), 'ListList')
 
     # Fixed asset
-    FIXED_ASSET_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetMasterDataList')
+    ASSET_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Asset'), 'FixedAssetMasterDataList')
     FIXED_ASSET_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetList')
+
+    # Instrument tool
+    INSTRUMENT_TOOL_PAGE = BreadcrumbChildren(_('Instrument Tool'), 'InstrumentToolList')
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -1226,7 +1229,7 @@ class BreadcrumbView:
     PARTNER_CENTER_LIST_UPDATE_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_UPDATE]
 
     # Fixed asset
-    FIXED_ASSET_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.FIXED_ASSET_MASTER_DATA_LIST_PAGE]
+    FIXED_ASSET_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.ASSET_MASTER_DATA_LIST_PAGE]
     FIXED_ASSET_LIST = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.FIXED_ASSET_PAGE
@@ -1235,6 +1238,17 @@ class BreadcrumbView:
     FIXED_ASSET_CREATE_PAGE = FIXED_ASSET_LIST + [BreadcrumbItem.BASTION_CREATE]
     FIXED_ASSET_DETAIL_PAGE = FIXED_ASSET_LIST + [BreadcrumbItem.BASTION_DETAIL]
     FIXED_ASSET_UPDATE_PAGE = FIXED_ASSET_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Instrument Tool
+    INSTRUMENT_TOOL_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.INSTRUMENT_TOOL_PAGE
+    ]
+    INSTRUMENT_TOOL_LIST_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_LIST]
+    INSTRUMENT_TOOL_CREATE_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_CREATE]
+    INSTRUMENT_TOOL_DETAIL_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    INSTRUMENT_TOOL_UPDATE_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
 
     CHART_OF_ACCOUNTS_LIST_PAGE = [
         BreadcrumbItem.CHART_OF_ACCOUNTS_LIST_PAGE

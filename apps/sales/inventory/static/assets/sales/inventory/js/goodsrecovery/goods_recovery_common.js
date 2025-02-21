@@ -1108,8 +1108,8 @@ class RecoveryDataTableHandle {
                     width: '10%',
                     render: (data, type, row) => {
                         let value = 0;
-                            if (row?.['quantity_recovery'] && row?.['product_quantity_leased']) {
-                                value = row?.['quantity_recovery'] - row?.['product_quantity_leased'];
+                            if (row?.['quantity_recovery'] && row?.['product_quantity_leased_data']) {
+                                value = row?.['quantity_recovery'] - row?.['product_quantity_leased_data'].length;
                             }
                         return `<span class="table-row-quantity-recovery">${value}</span>`;
                     }
@@ -1730,36 +1730,6 @@ class RecoveryStoreDataHandle {
             }
         });
 
-        RecoveryDataTableHandle.$tableProductNew.DataTable().rows().every(function () {
-            let row = this.node();
-            let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(row).index();
-            let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
-            let rowData = $row.data();
-
-            // update data product_warehouse_data cho dòng đang được chọn
-            let checked = row.querySelector('.table-row-checkbox:checked');
-            if (checked) {
-                rowData['product_warehouse_data'] = product_warehouse_data;
-            }
-            let recovery = 0;
-            if (rowData?.['product_warehouse_data']) {
-                for (let dataPW of rowData?.['product_warehouse_data'] ? rowData?.['product_warehouse_data'] : []) {
-                    recovery += dataPW?.['quantity_recovery'];
-                }
-            }
-            rowData['quantity_recovery'] = recovery;
-
-            RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex).data(rowData);
-            product_new_data = rowData;
-
-            if (checked) {
-                let checkEle = row.querySelector('.table-row-checkbox');
-                if (checkEle) {
-                    checkEle.checked = true;
-                }
-            }
-        });
-
         RecoveryDataTableHandle.$tableProductLeased.DataTable().rows().every(function () {
             let row = this.node();
             let rowIndex = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(row).index();
@@ -1790,6 +1760,42 @@ class RecoveryStoreDataHandle {
             }
         });
 
+        RecoveryDataTableHandle.$tableProductNew.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(row).index();
+            let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
+            let rowData = $row.data();
+
+            // update data product_warehouse_data cho dòng đang được chọn
+            let checked = row.querySelector('.table-row-checkbox:checked');
+            if (checked) {
+                rowData['product_warehouse_data'] = product_warehouse_data;
+                rowData['product_quantity_leased_data'] = product_leased_data
+            }
+            let recovery = 0;
+            if (rowData?.['product_warehouse_data']) {
+                for (let dataPW of rowData?.['product_warehouse_data'] ? rowData?.['product_warehouse_data'] : []) {
+                    recovery += dataPW?.['quantity_recovery'];
+                }
+            }
+            if (rowData?.['product_quantity_leased_data']) {
+                for (let dataLeased of rowData?.['product_quantity_leased_data']) {
+                    recovery += dataLeased?.['quantity_recovery'];
+                }
+            }
+            rowData['quantity_recovery'] = recovery;
+
+            RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex).data(rowData);
+            product_new_data = rowData;
+
+            if (checked) {
+                let checkEle = row.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
+            }
+        });
+
         RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows().every(function () {
             let row = this.node();
             let rowIndex = RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(row).index();
@@ -1800,15 +1806,7 @@ class RecoveryStoreDataHandle {
             let checked = row.querySelector('.table-row-checkbox:checked');
             if (checked) {
                 rowData = product_new_data;
-                rowData['product_quantity_leased_data'] = product_leased_data;
             }
-            let recoveryLeased = 0;
-            if (rowData?.['product_quantity_leased_data']) {
-                for (let dataLeased of rowData?.['product_quantity_leased_data']) {
-                    recoveryLeased += dataLeased?.['quantity_recovery'];
-                }
-            }
-            rowData['quantity_recovery'] += recoveryLeased;
 
             RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex).data(rowData);
             delivery_product_data.push(rowData);

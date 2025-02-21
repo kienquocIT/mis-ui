@@ -254,6 +254,11 @@ class MenusCoreConfigurations:
                 name='Bidding Result Config', code='menu_bidding_result_config', view_name='BiddingResultConfigList',
                 icon='<i class="fas fa-gavel"></i>',
             ),
+            MenuCommon(
+                name='Inventory interact config', code='menu_inventory_interact_config',
+                view_name='InventoryInteractConfigList',
+                icon='<i class="fa-solid fa-arrow-right-to-bracket"></i>'
+            )
         ]
     )
     TEMPLATES_DATA_CONFIG = MenuCommon(
@@ -277,11 +282,6 @@ class MenusCoreConfigurations:
                 icon='<i class="fa-solid fa-file-contract"></i>'
             ),
         ]
-    )
-    INVENTORY_DATA_CONFIG = MenuCommon(
-        name='Inventory interact config', code='menu_inventory_interact_config',
-        view_name='InventoryInteractConfigList',
-        icon='<i class="fa-solid fa-arrow-right-to-bracket"></i>'
     )
 
 
@@ -797,6 +797,7 @@ class MenusHRM:
         ]
     )
 
+
 class MenusPartnerCenter:
     HOME = MenuCommon(
         name='Home', code='id_menu_partner_center_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
@@ -804,6 +805,7 @@ class MenusPartnerCenter:
     LISTS = MenuCommon(
         name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fa-solid fa-search"></i>',
     )
+
 
 class MenusFinancials:
     HOME = MenuCommon(
@@ -1030,6 +1032,7 @@ class SpaceItem:
             icon='<i class="fas fa-table"></i>',
             menus=[
                 MenusReport.HOME,
+                MenusCRM.DASHBOARD,
                 MenusReport.SALE_REPORT,
                 MenusReport.INVENTORY_REPORT,
                 MenusReport.PURCHASING_REPORT,
@@ -1067,7 +1070,6 @@ class SpaceItem:
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
                 MenusCoreConfigurations.TRANSITION_DATA_CONFIG,
                 MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,
-                MenusCoreConfigurations.INVENTORY_DATA_CONFIG
             ],
         ),
         'partner-center': SpaceCommon(

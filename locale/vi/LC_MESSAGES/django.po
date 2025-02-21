@@ -8850,7 +8850,7 @@ msgstr "SDDK nên được tạo trước khi các hoạt động nhập - xuấ
 
 #
 msgid "The initial balance will be inserted from the month of starting to use the software."
-msgstr "SDDK sẽ được chèn bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
+msgstr "SDDK sẽ được nhập bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
 
 #
 msgid "Pretax value"

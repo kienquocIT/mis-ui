@@ -329,8 +329,8 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            let btn_edit = `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover table-row-save" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-floppy-disk"></i></span></button>`;
-                            let btn_delete = `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                            let btn_edit = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover table-row-save" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-floppy-disk"></i></span></button>`;
+                            let btn_delete = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
                             if (is_sale_order === false) {
                                 return btn_edit + btn_delete;
                             } else {
@@ -400,7 +400,7 @@ $(function () {
         tableIndicator.on('change', '.table-row-title, .table-row-description, .table-row-order', function() {
             $(this)[0].closest('tr').querySelector('.table-row-save').removeAttribute('disabled');
             $(this)[0].closest('tr').querySelector('.table-row-save').classList.remove('flush-soft-hover');
-            $(this)[0].closest('tr').querySelector('.table-row-save').classList.add('btn-soft-warning');
+            $(this)[0].closest('tr').querySelector('.table-row-save').classList.add('btn-soft-success');
         });
 
         tableIndicator.on('click', '.modal-edit-formula', function() {

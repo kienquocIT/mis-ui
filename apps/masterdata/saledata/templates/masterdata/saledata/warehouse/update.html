@@ -22,8 +22,10 @@
 {% block pageContent %}
     <form id="frmUpdate" data-method="GET" data-url-detail="{% url 'WareHouseDetailAPI' pk=0 %}" data-url-redirect="{% url 'WareHouseDetail' pk=0 %}">
         {% include 'masterdata/saledata/warehouse/common/information.html' %}
-        {% include 'masterdata/saledata/warehouse/common/bin_location.html' %}
+        {% include 'masterdata/saledata/warehouse/common/tabs.html' %}
     </form>
+{% endblock %}
+{% block modalData %}
     {% include 'masterdata/saledata/warehouse/common/modals.html' %}
 {% endblock %}
 {% block jsFooterUnCompress %}

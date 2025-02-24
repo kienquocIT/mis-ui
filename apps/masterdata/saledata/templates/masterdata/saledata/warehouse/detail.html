@@ -24,7 +24,7 @@
 {% block pageContent %}
     <form id="frmDetail" data-method="GET" data-url-detail="{% url 'WareHouseDetailAPI' pk=0 %}" data-url-redirect="{% url 'WareHouseList' %}">
         {% include 'masterdata/saledata/warehouse/common/information.html' %}
-        {% include 'masterdata/saledata/warehouse/common/bin_location.html' %}
+        {% include 'masterdata/saledata/warehouse/common/tabs.html' %}
     </form>
     {% include 'masterdata/saledata/warehouse/common/modals.html' %}
 {% endblock %}

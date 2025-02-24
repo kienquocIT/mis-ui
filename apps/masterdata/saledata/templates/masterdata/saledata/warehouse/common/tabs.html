@@ -1,0 +1,62 @@
+{% load i18n %}
+
+<div class="row mt-5">
+    <div class="col-12">
+        <ul class="nav nav-line nav-tabs nav-light" id="tab-select-table">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_bin_location">
+                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-link-text">{% trans 'Bin Location' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_account_determination" id="link-tab-sale">
+                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-link-text">{% trans 'Account determination' %}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="tab_bin_location">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-check form-switch form-switch-xl">
+                    <input type="checkbox" id="checkBinLocation" class="form-check-input checkType">
+                    <label class="form-check-label text-primary fw-bold" for="checkBinLocation">{% trans 'Bin Location' %}</label>
+                </div>
+            </div>
+        </div>
+        <div hidden class="row mt-5 bin-location-area">
+            <div class="col-12 col-md-6 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label" for="new-shelf-title">{% trans 'Shelf title' %}</label>
+                    <input type="text" class="form-control" id="new-shelf-title">
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label required" for="new-shelf-row">{% trans 'Shelf row' %}</label>
+                    <input class="form-control" id="new-shelf-row" type="number" placeholder="shelf row" value="1">
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label required" for="new-shelf-col">{% trans 'Shelf column' %}</label>
+                    <input class="form-control" id="new-shelf-col" type="number" placeholder="shelf column" value="1">
+                </div>
+            </div>
+            <div class="col-12">
+                <button type="button" class="btn btn-primary btn-xs" id="new-shelf">{% trans 'Add shelf' %}</button>
+            </div>
+        </div>
+        <div hidden class="row bin-location-area mt-3">
+            <div class="col-12">
+                <div id="shelf-map" class="p-2 w-100 border rounded-3 min-h-350p"></div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tab_account_determination">
+    </div>
+</div>

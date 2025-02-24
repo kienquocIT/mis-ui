@@ -105,7 +105,7 @@ class WarehouseLoadPage {
 
                 $('#checkDropShip').prop('checked', detail?.['is_dropship']);
                 $('#checkBinLocation').prop('checked', detail?.['is_bin_location']);
-                $('#bin-location-area').prop('hidden', !detail?.['is_bin_location']);
+                $('.bin-location-area').prop('hidden', !detail?.['is_bin_location']);
                 $('#checkAgencyLocation').prop('checked', detail?.['is_agency_location']);
                 $('#hidden-place').prop('hidden', !detail?.['is_agency_location']);
                 WarehouseLoadPage.loadAgency(detail.agency);
@@ -181,7 +181,7 @@ function eventPage() {
     })
 
     $('#checkBinLocation').on('change', function () {
-        $('#bin-location-area').prop('hidden', !$(this).is(':checked'));
+        $('.bin-location-area').prop('hidden', !$(this).is(':checked'));
     })
 }
 

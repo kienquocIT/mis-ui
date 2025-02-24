@@ -10971,3 +10971,23 @@ msgstr "Tạo thủ công"
 #
 msgid "Create automatically"
 msgstr "Tạo tự động"
+
+#
+msgid "Bin Location"
+msgstr "Quản lý vị trí"
+
+#
+msgid "Shelf title"
+msgstr "Tên kệ"
+
+#
+msgid "Shelf row"
+msgstr "SL ngăn"
+
+#
+msgid "Shelf column"
+msgstr "SL tầng"
+
+#
+msgid "Add shelf"
+msgstr "Thêm kệ"

@@ -23,8 +23,10 @@
     <form id="frmCreate" data-method="POST" data-url="{% url 'WareHouseListAPI' %}"
           data-url-redirect="{% url 'WareHouseList' %}">
         {% include 'masterdata/saledata/warehouse/common/information.html' %}
-        {% include 'masterdata/saledata/warehouse/common/bin_location.html' %}
+        {% include 'masterdata/saledata/warehouse/common/tabs.html' %}
     </form>
+{% endblock %}
+{% block modalData %}
     {% include 'masterdata/saledata/warehouse/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}

@@ -192,11 +192,10 @@ class RecoveryLoadDataHandle {
             let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
             let rowData = $row.data();
             if (rowData?.['lease_generate_data']) {
-                if (rowData?.['lease_generate_data'].length > 0) {
+                if (rowData?.['lease_generate_data'].length > 0 && rowData?.['lease_generate_data'].length === dataDtb.length) {
                     dataDtb = rowData?.['lease_generate_data'];
                 }
             }
-
 
             if (!trEle.next().hasClass('child-workflow-list')) {
                 let dtlSub = `<table id="${idTbl}" class="table table-child nowrap w-100 mb-5"><thead></thead><tbody></tbody></table>`
@@ -223,19 +222,19 @@ class RecoveryLoadDataHandle {
     };
 
     static loadCheckRecovery() {
-        let productChecked = RecoveryDataTableHandle.$tableProductNew[0].querySelector('.table-row-checkbox:checked');
+        let productChecked = RecoveryLoadDataHandle.$scrollProduct[0].querySelector('.table-row-checkbox:checked');
         if (productChecked) {
             let rowTarget = productChecked.closest('tr');
             if (rowTarget) {
                 let recoveryEle = rowTarget.querySelector('.table-row-quantity-recovery');
-                let deliveryEle = rowTarget.querySelector('.table-row-quantity-delivered');
-                if (recoveryEle && deliveryEle) {
+                let remainEle = rowTarget.querySelector('.table-row-quantity-remain_recovery');
+                if (recoveryEle && remainEle) {
                     let fnRecovery = 0;
                     for (let eleRec of RecoveryDataTableHandle.$tableWarehouse[0].querySelectorAll('.table-row-quantity-recovery')) {
                         fnRecovery += parseFloat($(eleRec).val());
                     }
-                    if (deliveryEle.innerHTML) {
-                        if (fnRecovery > parseFloat(deliveryEle.innerHTML)) {
+                    if (remainEle.innerHTML) {
+                        if (fnRecovery > parseFloat(remainEle.innerHTML)) {
                             $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-exceed-quantity')}, 'failure');
                             return false;
                         }
@@ -336,7 +335,7 @@ class RecoveryLoadDataHandle {
                 }
             }
         )
-    }
+    };
 
     static loadSetupDataPW(data, dataRow) {
         let dataCheck = {};
@@ -349,7 +348,52 @@ class RecoveryLoadDataHandle {
                 dataObj['lease_generate_data'] = dataCheck[dataObj?.['warehouse_id']]?.['lease_generate_data'];
             }
         }
-    }
+    };
+
+    static loadSerial() {
+        let data = [{'id': '', 'title': 'Select...',},];
+        let checkedNewEle = RecoveryDataTableHandle.$tableProductNew[0].querySelector('.table-row-checkbox:checked');
+        if (checkedNewEle) {
+            let rowTarget = checkedNewEle.closest('tr');
+            if (rowTarget) {
+                let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowTarget).index();
+                let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
+                let rowData = $row.data();
+                if (rowData?.['delivery_data']) {
+                    for (let deli_data of rowData?.['delivery_data']) {
+                        if (deli_data?.['serial_data']) {
+                            for (let serial_data of deli_data?.['serial_data']) {
+                                if (serial_data?.['product_warehouse_serial_data']) {
+                                    data.push(serial_data?.['product_warehouse_serial_data']);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        let checkedLeasedEle = RecoveryDataTableHandle.$tableProductLeased[0].querySelector('.table-row-checkbox:checked');
+        if (checkedLeasedEle) {
+            let rowTarget = checkedLeasedEle.closest('tr');
+            if (rowTarget) {
+                let rowIndex = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(rowTarget).index();
+                let $row = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(rowIndex);
+                let rowData = $row.data();
+                if (rowData?.['delivery_data']) {
+                    for (let deli_data of rowData?.['delivery_data']) {
+                        if (deli_data?.['serial_data']) {
+                            for (let serial_data of deli_data?.['serial_data']) {
+                                if (serial_data?.['product_warehouse_serial_data']) {
+                                    data.push(serial_data?.['product_warehouse_serial_data']);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return data;
+    };
 
     static loadLineDetail() {
         let dataJSON = {};
@@ -470,10 +514,10 @@ class RecoveryLoadDataHandle {
             let leaseEndDateEle = row.querySelector('.table-row-lease-end-date');
             let $leaseEndDateEle = $('#lease_end_date');
             if (leaseEndDateEle && $leaseEndDateEle.length > 0) {
-                $leaseEndDateEle.val(RecoveryLoadDataHandle.$date.val()).trigger('change');
                 if ($(leaseEndDateEle).val()) {
                     $leaseEndDateEle.val(moment($(leaseEndDateEle).val()).format('DD/MM/YYYY'));
                 }
+                $leaseEndDateEle.val(RecoveryLoadDataHandle.$date.val()).trigger('change');
             }
         }
         RecoveryLoadDataHandle.loadDataTableDepreciation();
@@ -1078,13 +1122,6 @@ class RecoveryDataTableHandle {
                         return `<textarea class="form-control table-row-name" rows="2" readonly>${row?.['offset_data']?.['title'] ? row?.['offset_data']?.['title'] : ''}</textarea>`;
                     },
                 },
-                // {
-                //     targets: 2,
-                //     width: '10%',
-                //     render: (data, type, row) => {
-                //         return `<span class="table-row-quantity-ordered">${row?.['product_quantity_new'] ? row?.['product_quantity_new'] : '0'}</span>`;
-                //     }
-                // },
                 {
                     targets: 2,
                     width: '15%',
@@ -1100,7 +1137,7 @@ class RecoveryDataTableHandle {
                     targets: 3,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-recovered">${row?.['quantity_new_remain_recovery'] ? row?.['quantity_new_remain_recovery'] : '0'}</span>`;
+                        return `<span class="table-row-quantity-remain_recovery">${row?.['quantity_new_remain_recovery'] ? row?.['quantity_new_remain_recovery'] : '0'}</span>`;
                     }
                 },
                 {
@@ -1177,13 +1214,6 @@ class RecoveryDataTableHandle {
                         return `<textarea class="form-control table-row-name" rows="2" readonly>${row?.['product_data']?.['title'] ? row?.['product_data']?.['title'] : ''}</textarea>`;
                     },
                 },
-                // {
-                //     targets: 2,
-                //     width: '10%',
-                //     render: (data, type, row) => {
-                //         return `<span class="table-row-quantity-ordered">${row?.['quantity_ordered'] ? row?.['quantity_ordered'] : '0'}</span>`;
-                //     }
-                // },
                 {
                     targets: 2,
                     width: '15%',
@@ -1195,7 +1225,7 @@ class RecoveryDataTableHandle {
                     targets: 3,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-recovered">${row?.['quantity_leased_remain_recovery'] ? row?.['quantity_leased_remain_recovery'] : '0'}</span>`;
+                        return `<span class="table-row-quantity-remain_recovery">${row?.['quantity_leased_remain_recovery'] ? row?.['quantity_leased_remain_recovery'] : '0'}</span>`;
                     }
                 },
                 {
@@ -1296,55 +1326,46 @@ class RecoveryDataTableHandle {
                 let serialEle = row.querySelector('.table-row-serial');
                 let remarkEle = row.querySelector('.table-row-remark');
                 if (serialEle) {
-                    let serialData = [{'id': '', 'title': 'Select...',},];
+                    let serialData = RecoveryLoadDataHandle.loadSerial();
+                    // call ajax để lọc ra các serial của các phiếu thu hồi trước đó (đã duyệt) cho cùng phiếu cho thuê hiện tại
+                    WindowControl.showLoading();
+                    $.fn.callAjax2({
+                            'url': RecoveryLoadDataHandle.urlEle.attr('data-recovery-lease-generate'),
+                            'method': 'GET',
+                            'data': {
+                                'goods_recovery__lease_order_id': RecoveryLoadDataHandle.$boxLeaseOrder.val(),
+                                'goods_recovery__system_status': 3,
+                            },
+                            'isDropdown': true,
+                        }
+                    ).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (data.hasOwnProperty('recovery_lease_generate_list') && Array.isArray(data.recovery_lease_generate_list)) {
+                                    let checkList = [];
+                                    for (let dataGen of data?.['recovery_lease_generate_list']) {
+                                        checkList.push(dataGen?.['serial_id']);
+                                    }
+                                    let fnData = [];
+                                    for (let serial of serialData) {
+                                        if (!checkList.includes(serial?.['id'])) {
+                                            fnData.push(serial);
+                                        }
+                                    }
+                                    RecoveryLoadDataHandle.loadInitS2($(serialEle), fnData, {}, RecoveryLoadDataHandle.$canvasMain, false, {'res2': 'serial_number'});
+                                    if (fnData.length === 0) {
+                                        serialEle.removeAttribute('hidden');
+                                    }
+                                    if (data?.['serial_id']) {
+                                        $(serialEle).val(data?.['serial_id']).trigger('change');
+                                    }
 
-                    let checkedNewEle = RecoveryDataTableHandle.$tableProductNew[0].querySelector('.table-row-checkbox:checked');
-                    if (checkedNewEle) {
-                        let rowTarget = checkedNewEle.closest('tr');
-                        if (rowTarget) {
-                            let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowTarget).index();
-                            let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
-                            let rowData = $row.data();
-                            if (rowData?.['delivery_data']) {
-                                for (let deli_data of rowData?.['delivery_data']) {
-                                    if (deli_data?.['serial_data']) {
-                                        for (let serial_data of deli_data?.['serial_data']) {
-                                            if (serial_data?.['product_warehouse_serial_data']) {
-                                                serialData.push(serial_data?.['product_warehouse_serial_data']);
-                                            }
-                                        }
-                                    }
+                                    WindowControl.hideLoading();
                                 }
                             }
                         }
-                    }
-                    let checkedLeasedEle = RecoveryDataTableHandle.$tableProductLeased[0].querySelector('.table-row-checkbox:checked');
-                    if (checkedLeasedEle) {
-                        let rowTarget = checkedLeasedEle.closest('tr');
-                        if (rowTarget) {
-                            let rowIndex = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(rowTarget).index();
-                            let $row = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(rowIndex);
-                            let rowData = $row.data();
-                            if (rowData?.['delivery_data']) {
-                                for (let deli_data of rowData?.['delivery_data']) {
-                                    if (deli_data?.['serial_data']) {
-                                        for (let serial_data of deli_data?.['serial_data']) {
-                                            if (serial_data?.['product_warehouse_serial_data']) {
-                                                serialData.push(serial_data?.['product_warehouse_serial_data']);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    RecoveryLoadDataHandle.loadInitS2($(serialEle), serialData, {}, RecoveryLoadDataHandle.$canvasMain, false, {'res2': 'serial_number'});
-                    if (serialData.length === 0) {
-                        serialEle.removeAttribute('hidden');
-                    }
-                    if (data?.['serial_id']) {
-                        $(serialEle).val(data?.['serial_id']).trigger('change');
-                    }
+                    )
 
                     $(serialEle).on('change', function () {
                         let $ele = $(this);

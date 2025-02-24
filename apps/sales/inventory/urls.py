@@ -28,7 +28,7 @@ from apps.sales.inventory.views import (
     GoodsDetailListImportDBAPI, GoodsDetailSerialDataAPI
 )
 from apps.sales.inventory.views.goods_recovery import GoodsRecoveryCreate, GoodsRecoveryList, GoodsRecoveryListAPI, \
-    GoodsRecoveryDetail, GoodsRecoveryDetailAPI, GoodsRecoveryUpdate
+    GoodsRecoveryDetail, GoodsRecoveryDetailAPI, GoodsRecoveryUpdate, GoodsRecoveryLeaseGenerateListAPI
 
 urlpatterns = [
     # good receipt
@@ -41,6 +41,11 @@ urlpatterns = [
     # good recovery
     path('goods-recovery/list', GoodsRecoveryList.as_view(), name='GoodsRecoveryList'),
     path('goods-recovery/api/list', GoodsRecoveryListAPI.as_view(), name='GoodsRecoveryListAPI'),
+    path(
+        'goods-recovery-lease-generate/api/list',
+        GoodsRecoveryLeaseGenerateListAPI.as_view(),
+        name='GoodsRecoveryLeaseGenerateListAPI'
+    ),
     path('goods-recovery/create', GoodsRecoveryCreate.as_view(), name='GoodsRecoveryCreate'),
     path('goods-recovery/detail/<str:pk>', GoodsRecoveryDetail.as_view(), name='GoodsRecoveryDetail'),
     path('goods-recovery/detail-api/<str:pk>', GoodsRecoveryDetailAPI.as_view(), name='GoodsRecoveryDetailAPI'),

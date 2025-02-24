@@ -115,3 +115,14 @@ class GoodsRecoveryDetailAPI(APIView):
             pk=pk,
             msg=SaleMsg.GOODS_RECOVERY_UPDATE
         )
+
+
+class GoodsRecoveryLeaseGenerateListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RECOVERY_LEASE_GENERATE_LIST).get(data)
+        return resp.auto_return(key_success='recovery_lease_generate_list')

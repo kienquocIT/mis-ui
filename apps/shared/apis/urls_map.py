@@ -835,6 +835,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LIST_ACCOUNT_LIST = StringUrl('partner-center/list/account-list')
     # Goods recovery
     GOODS_RECOVERY_LIST = StringUrl('inventory/goods-recovery/list')
+    GOODS_RECOVERY_LEASE_GENERATE_LIST = StringUrl('inventory/goods-recovery-lease-generate/list')
     GOODS_RECOVERY_DETAIL = StringUrl('inventory/goods-recovery')
 
     # Advance Filter

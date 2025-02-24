@@ -18,14 +18,6 @@ $(function () {
             {'id': 2, 'title': eleTrans.attr('data-plan')},
             {'id': 1, 'title': eleTrans.attr('data-none')},
         ];
-        let dataAcceptanceAffectJSON = {
-            1: {'id': 1, 'title': eleTrans.attr('data-none')},
-            2: {'id': 2, 'title': eleTrans.attr('data-plan')},
-            3: {'id': 3, 'title': eleTrans.attr('data-delivery')},
-            4: {'id': 4, 'title': eleTrans.attr('data-payment')},
-            5: {'id': 5, 'title': eleTrans.attr('data-invoice')},
-            6: {'id': 6, 'title': eleTrans.attr('data-project')},
-        }
         let boxSRole = $('#box-ss-role');
         let boxLRole = $('#box-ls-role');
 
@@ -160,6 +152,7 @@ $(function () {
                 },
                 paging: false,
                 info: false,
+                searching: false,
                 columnDefs: [],
                 columns: [
                     {
@@ -207,12 +200,7 @@ $(function () {
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title">${transEle.attr('data-edit-formula')}</h5>
-                                                    <button
-                                                            type="button" class="btn-close"
-                                                            data-bs-dismiss="modal" aria-label="Close"
-                                                    >
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
+                                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="row">

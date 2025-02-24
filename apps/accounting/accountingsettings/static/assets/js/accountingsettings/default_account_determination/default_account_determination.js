@@ -25,7 +25,9 @@ $(document).ready(function() {
         {
             className: 'wrap-text w-30',
             'render': (data, type, row) => {
-                return `<span class="${row?.['is_default'] ? 'text-secondary' : 'text-primary'}">${row?.['account_mapped']?.['acc_name']}</span>`;
+                return `<span class="${row?.['is_default'] ? 'text-secondary' : 'text-primary'}">${row?.['account_mapped']?.['acc_name']}</span>
+                        <br>
+                        <span class="small text-muted">(${row?.['account_mapped']?.['foreign_acc_name']})</span>`;
             }
         },
         {

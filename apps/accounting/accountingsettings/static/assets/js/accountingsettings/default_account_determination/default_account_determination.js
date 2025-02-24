@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    const definition_table = $('#definition-table')
+    const account_determination_table = $('#account-determination-table')
     const sale_table_data = $('#sale-table-data')
     const purchasing_table_data = $('#purchasing-table-data')
     const inventory_table_data = $('#inventory-table-data')
@@ -52,10 +52,10 @@ $(document).ready(function() {
     });
 
     function loadDefinitionTable(data_param={}, data_list={}) {
-        let frm = new SetupFormSubmit(definition_table);
-        definition_table.DataTable().clear().destroy()
+        let frm = new SetupFormSubmit(account_determination_table);
+        account_determination_table.DataTable().clear().destroy()
         if (Object.keys(data_list).length === 0) {
-            definition_table.DataTableDefault({
+            account_determination_table.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
                 reloadCurrency: true,
@@ -97,7 +97,7 @@ $(document).ready(function() {
             });
         }
         else {
-            definition_table.DataTableDefault({
+            account_determination_table.DataTableDefault({
                 rowIdx: true,
                 reloadCurrency: true,
                 data: data_list,

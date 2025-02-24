@@ -185,6 +185,7 @@ function eventPage() {
     })
 }
 
+// for bin location
 $('#shelf-map').resizable()
 
 $('#new-shelf').on('click', function () {
@@ -259,4 +260,90 @@ $(document).on('click', '.detail-shelf', function () {
     $('.popover-bin:first-child').trigger('hover')
     $('#new-shelf-row').val(1)
     $('#new-shelf-col').val(1)
+})
+
+// for account determination
+const account_determination_table = $('#account-determination-table')
+const columns_cfg = [
+    {
+        className: 'wrap-text w-5',
+        'render': () => {
+            return ``;
+        }
+    },
+    {
+        className: 'wrap-text w-15',
+        'render': (data, type, row) => {
+            return `<span class="text-muted">${row?.['default_account_determination_type_convert']}</span>`;
+        }
+    },
+    {
+        className: 'wrap-text w-35',
+        'render': (data, type, row) => {
+            return `<span class="${row?.['is_default'] ? 'text-muted' : 'text-primary'}">${row?.['title']}</span>`;
+        }
+    },
+    {
+        className: 'wrap-text w-20',
+        'render': (data, type, row) => {
+            return `<span class="${row?.['is_default'] ? 'text-muted' : 'text-primary'}">${row?.['account_mapped']?.['acc_code']}</span>`;
+        }
+    },
+    {
+        className: 'wrap-text w-25',
+        'render': (data, type, row) => {
+            return `<span class="${row?.['is_default'] ? 'text-muted' : 'text-primary'}">${row?.['account_mapped']?.['acc_name']}</span>`;
+        }
+    },
+]
+
+function loadDefinitionTable() {
+    let frm = new SetupFormSubmit(account_determination_table);
+    account_determination_table.DataTable().clear().destroy()
+    account_determination_table.DataTableDefault({
+        useDataServer: true,
+        rowIdx: true,
+        reloadCurrency: true,
+        paging: false,
+        scrollX: '100vw',
+        scrollY: '18vw',
+        scrollCollapse: true,
+        ajax: {
+            url: frm.dataUrl,
+            type: frm.dataMethod,
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let data_list = resp.data['default_account_determination_list'] ? resp.data['default_account_determination_list'] : []
+                    data_list.sort((a, b) => {
+                        const typeA = a?.['default_account_determination_type_convert'];
+                        const typeB = b?.['default_account_determination_type_convert'];
+                        if (typeA < typeB) return -1;
+                        if (typeA > typeB) return 1;
+
+                        const accCodeA = parseInt(a?.['account_mapped']?.['acc_code'], 10);
+                        const accCodeB = parseInt(b?.['account_mapped']?.['acc_code'], 10);
+                        return accCodeA - accCodeB;
+                    });
+
+                    return data_list ? data_list : [];
+                }
+                return [];
+            },
+        },
+        columns: columns_cfg,
+        rowGroup: {
+            dataSrc: 'default_account_determination_type_convert'
+        },
+        columnDefs: [
+            {
+                "visible": false,
+                "targets": [1]
+            }
+        ],
+    });
+}
+
+$('#accounting-determination-tab').on('click', function () {
+    loadDefinitionTable()
 })

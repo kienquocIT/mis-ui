@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Warehouse Update' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -29,6 +30,7 @@
     {% include 'masterdata/saledata/warehouse/common/modals.html' %}
 {% endblock %}
 {% block jsFooterUnCompress %}
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/warehouse/shelf_draw.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/warehouse/common.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/warehouse/update.js' %}"></script>

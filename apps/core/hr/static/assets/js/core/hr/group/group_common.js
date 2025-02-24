@@ -291,3 +291,31 @@ function dataTableEmployeeShow(data) {
         },
     });
 }
+
+function dtbGroupHDCustom() {
+        let $table = $('#datable_employee_show_list');
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-zone').length) {
+                let $group = $(`<button
+                                        type="button"
+                                        class="btn btn-outline-secondary btn-floating"
+                                        id="btn-add-zone"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#add_zone"
+                                        data-required-text="${$trans.attr('data-required-application')}"
+                                >
+                                    <span><span>${$trans.attr('data-add-zone')}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+            }
+        }
+    };

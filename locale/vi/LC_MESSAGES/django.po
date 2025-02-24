@@ -720,31 +720,31 @@ msgstr "Thêm nhân viên"
 
 #
 msgid "1st Manager System Title"
-msgstr "Tiêu Đề Của Quản lý hệ thống thứ nhất"
+msgstr "Tiêu đề hệ thống của quản lý thứ nhất"
 
 #
 msgid "2nd Manager System Title"
-msgstr "Tiêu Đề Của Quản lý hệ thống thứ hai"
+msgstr "Tiêu đề hệ thống của quản lý thứ hai"
 
 #
 msgid "Input Display 1st Manager Title"
-msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Nhất"
+msgstr "Nhập tên hiển thị của quản lý thứ nhất"
 
 #
 msgid "Title of 1st manager"
-msgstr "Tiêu Đề Của Quản Lý Thứ Nhất"
+msgstr "Tiêu đề của quản lý thứ nhất"
 
 #
 msgid "Input Display 2nd Manager Title"
-msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Hai"
+msgstr "Nhập tên hiển thị của quản lý thứ hai"
 
 #
 msgid "Title of 2nd manager"
-msgstr "Tiêu Đề Của Quản Lý Thứ Hai"
+msgstr "Tiêu đề của quản lý thứ hai"
 
 #
 msgid "First Manager Assign To"
-msgstr "Quản Lý Đầu Tiên Chỉ Định Cho"
+msgstr "Quản lý thứ nhất chỉ định cho"
 
 #
 msgid "Assign to one employee"
@@ -752,7 +752,7 @@ msgstr "Chỉ định cho một nhân viên"
 
 #
 msgid "Second Manager Assign To"
-msgstr "Quản Lý Thứ Hai Chỉ Định Cho"
+msgstr "Quản lý thứ hai chỉ định cho"
 
 #
 msgid "Active organization group after created"
@@ -760,23 +760,23 @@ msgstr "Kích hoạt nhóm tổ chức sau khi tạo"
 
 #
 msgid "Display 1st Manager Title"
-msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Nhất"
+msgstr "Nhập tên hiển thị của quản lý thứ nhất"
 
 #
 msgid "Display 2nd Manager Title"
-msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Hai"
+msgstr "Nhập tên hiển thị của quản lý thứ hai"
 
 #
 msgid "Name of Reference Group"
-msgstr "Tên Của Nhóm Liên Quan"
+msgstr "Tên của nhóm liên quan"
 
 #
 msgid "System title of 1st manager"
-msgstr "Tiêu Đề Hệ Thống Của Quản Lý Thứ Nhất"
+msgstr "Tiêu đề hệ thống của quản lý thứ nhất"
 
 #
 msgid "Assign To"
-msgstr "Chỉ Định"
+msgstr "Chỉ định"
 
 #
 msgid "Role name"

@@ -91,17 +91,6 @@
                             <label class="form-check-label" for="id-define_zone">{% trans 'Define zone' %}</label>
                         </div>
                     </div>
-                    <div class="col-12">
-                        <button
-                                type="button"
-                                class="btn btn-outline-primary"
-                                title="{% trans 'Add zone' %}"
-                                data-bs-target="#add_zone"
-                                data-required-text="{% trans 'Please select Function Applied first' %}"
-                        >
-                            <span><span>{% trans 'Add zone' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
-                        </button>
-                    </div>
                 </div>
                 <br>
                 <div class="row">
@@ -109,11 +98,6 @@
                         <table id="table_workflow_zone" class="table nowrap w-100 mb-5">
                             <thead>
                             <tr class="bg-light">
-                                <th>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input">
-                                    </div>
-                                </th>
                                 <th class="required">{% trans 'Zone name' %}</th>
                                 <th>{% trans 'Description' %}</th>
                                 <th>{% trans 'Actions' %}</th>
@@ -251,7 +235,7 @@
                                         </button>
                                         <div class="dropdown-menu action-list w-160p h-120p"></div>
                                     </div>
-                                    <div class="form-control div-input action-show w-30" readonly></div>
+                                    <div class="form-control div-input action-show w-25" readonly></div>
                                 </div>
                             </div>
                             <br>
@@ -511,7 +495,8 @@
                     <input type="hidden" name="zone_id">
                     <input type="hidden" name="order">
                     <div class="modal-header">
-                        <h6 class="modal-title">{% trans 'Zone information' %}</h6>
+                        <h5 class="modal-title">{% trans 'Zone information' %}</h5>
+                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -534,14 +519,25 @@
                             </div>
                         </div>
                         <label for="property_list_choices">{% trans 'Select property' %}:</label>
-                        <select class="form-control dropdown-select_two"
-                                data-placeholder="{% trans 'Nothing selected' %}"
+{#                        <select class="form-control dropdown-select_two"#}
+{#                                data-placeholder="{% trans 'Nothing selected' %}"#}
+{#                                name="property_list"#}
+{#                                id="property_list_choices"#}
+{#                                data-multiple="true"#}
+{#                                data-prefix="application_property_list"#}
+{#                                data-url="{% url 'ApplicationPropertyListAPI' %}"#}
+{#                                data-select2-closeOnSelect="true"#}
+{#                        ></select>#}
+
+                        <select
+                                class="form-select"
                                 name="property_list"
                                 id="property_list_choices"
-                                data-multiple="true"
-                                data-prefix="application_property_list"
-                                data-url="{% url 'ApplicationPropertyListAPI' %}"
-                                data-select2-closeOnSelect="true"
+                                data-url="{% url "ApplicationPropertyListAPI" %}"
+                                data-method="GET"
+                                data-keyResp="application_property_list"
+                                data-keyText="title_i18n"
+                                multiple
                         ></select>
                     </div>
                     <div class="modal-footer">
@@ -730,6 +726,8 @@
         data-config="{% trans "Configuration" %}"
         data-delete="{% trans "Delete" %}"
         data-check-collab="{% trans "Collaborator configuration conflict with the association node" %}"
+        data-add-zone="{% trans "Add zone" %}"
+        data-required-application="{% trans "Please select Function Applied first" %}"
     >
 
     <input

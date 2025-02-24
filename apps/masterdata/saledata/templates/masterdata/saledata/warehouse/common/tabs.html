@@ -2,16 +2,16 @@
 
 <div class="row mt-5">
     <div class="col-12">
-        <ul class="nav nav-line nav-tabs nav-light" id="tab-select-table">
+        <ul class="nav nav-icon nav-primary-custom" id="tab-select-table">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_bin_location">
-                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-pin-map"></i></span></span>
                     <span class="nav-link-text">{% trans 'Bin Location' %}</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_account_determination" id="link-tab-sale">
-                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal"></i></span></span>
                     <span class="nav-link-text">{% trans 'Account determination' %}</span>
                 </a>
             </li>
@@ -22,7 +22,7 @@
     <div class="tab-pane fade show active" id="tab_bin_location">
         <div class="row">
             <div class="col-12">
-                <div class="form-check form-switch form-switch-xl">
+                <div class="form-check form-switch">
                     <input type="checkbox" id="checkBinLocation" class="form-check-input checkType">
                     <label class="form-check-label text-primary fw-bold" for="checkBinLocation">{% trans 'Bin Location' %}</label>
                 </div>

@@ -25,14 +25,16 @@
         {% csrf_token %}
         <div class="row">
             <div class="col-12">
-                <ul class="nav nav-light nav-line nav-tabs">
+                <ul class="nav nav-icon nav-primary-custom">
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-globe"></i></span></span>
                             <span class="nav-link-text">{% trans 'General' %}</span>
                         </a>
                     </li>
                     <li class="nav-item" id="tab-indicator">
                         <a class="nav-link" data-bs-toggle="tab" href="#tab_stage">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-stairs"></i></span></span>
                             <span class="nav-link-text">{% trans 'Stage' %}</span>
                         </a>
                     </li>

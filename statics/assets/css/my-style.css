@@ -1255,3 +1255,33 @@ ul.dm-uploader-result-list li:hover .btn-download-file {
     top: 0;
     z-index: 9999;
 }
+
+.nav-primary-custom {
+    display: flex;
+    padding: 5px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    gap: 5px;
+}
+.nav-primary-custom .nav-item {
+    text-align: center;
+}
+.nav-primary-custom .nav-link {
+    padding: 5px 25px;
+    border-radius: 10px;
+    color: #706f6f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #c8c8c8;
+}
+.nav-primary-custom .nav-link.active {
+    background-color: white;
+    color: #007D88;
+    font-weight: bold;
+    border: 1px double #007D88;
+}
+
+.nav-primary-custom .nav-link:hover {
+    transform: scale(1.05);
+}

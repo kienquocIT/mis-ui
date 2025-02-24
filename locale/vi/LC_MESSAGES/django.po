@@ -10705,7 +10705,7 @@ msgstr "Danh sách tài khoản"
 
 #
 msgid "Default account determination"
-msgstr "Định nghĩa TK kế toán mặc định"
+msgstr "Xác định TK kế toán mặc định"
 
 #
 msgid "Trading account type"
@@ -10965,7 +10965,7 @@ msgstr "Tạo tự động"
 
 #
 msgid "Bin Location"
-msgstr "Quản lý vị trí"
+msgstr "Vị trí Bin"
 
 #
 msgid "Shelf title"
@@ -10982,3 +10982,7 @@ msgstr "SL tầng"
 #
 msgid "Add shelf"
 msgstr "Thêm kệ"
+
+#
+msgid "Account determination"
+msgstr "Xác định TK kế toán"

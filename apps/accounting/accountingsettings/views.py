@@ -9,7 +9,7 @@ class ChartOfAccountsList(View):
 
     @mask_view(
         auth_require=True,
-        template='accountingsettings/chartofaccounts/chartofaccounts_list.html',
+        template='accountingsettings/chart_of_accounts/chart_of_accounts_list.html',
         breadcrumb='CHART_OF_ACCOUNTS_LIST_PAGE',
         menu_active='menu_chart_of_accounts_list',
     )
@@ -45,7 +45,7 @@ class DefaultAccountDeterminationList(View):
 
     @mask_view(
         auth_require=True,
-        template='accountingsettings/DefaultAccountDetermination/DefaultAccountDetermination.html',
+        template='accountingsettings/default_account_determination/default_account_determination.html',
         breadcrumb='DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE',
         menu_active='menu_DEFAULT_ACCOUNT_DETERMINATION_LIST',
     )

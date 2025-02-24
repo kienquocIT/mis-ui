@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Default account definition' %}{% endblock %}
+{% block title %}{% trans 'Default account determination' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/dragula/dragula.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
@@ -26,8 +26,8 @@
     ></script>
     <div class="row">
         <div class="col-12">
-            {% include 'accountingsettings/defaultaccountdefinition/common/btn-list.html' %}
-            {% include 'accountingsettings/defaultaccountdefinition/common/table.html' %}
+            {% include 'accountingsettings/default_account_determination/common/btn-list.html' %}
+            {% include 'accountingsettings/default_account_determination/common/table.html' %}
         </div>
     </div>
 {% endblock %}
@@ -35,5 +35,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/dragula/dragula.min.js' %}"></script>
-    <script src="{% static 'assets/js/accountingsettings/defaultacountdefinition/defaultacountdefinition.js' %}"></script>
+    <script src="{% static 'assets/js/accountingsettings/default_account_determination/default_account_determination.js' %}"></script>
 {% endblock %}

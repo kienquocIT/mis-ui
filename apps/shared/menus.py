@@ -819,7 +819,7 @@ class MenusFinancials:
                 icon='<i class="fas fa-list-alt"></i>',
             ),
             MenuCommon(
-                name='Default account definition', code='menu_default_account_definition_list', view_name='DefaultAccountDefinitionList',
+                name='Default account determination', code='menu_default_account_determination_list', view_name='DefaultAccountDeterminationList',
                 icon='<i class="fas fa-shield-alt"></i>',
             ),
         ],

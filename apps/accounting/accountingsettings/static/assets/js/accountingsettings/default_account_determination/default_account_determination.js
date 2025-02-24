@@ -66,7 +66,7 @@ $(document).ready(function() {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            let data_list = resp.data['default_account_definition_list'] ? resp.data['default_account_definition_list'] : []
+                            let data_list = resp.data['default_account_determination_list'] ? resp.data['default_account_determination_list'] : []
                             data_list.sort((a, b) => {
                                 const codeA = a?.['account_mapped']?.['acc_code'];
                                 const codeB = b?.['account_mapped']?.['acc_code'];

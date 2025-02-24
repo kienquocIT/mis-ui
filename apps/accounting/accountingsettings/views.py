@@ -41,19 +41,19 @@ class ChartOfAccountsListAPI(APIView):
     #     return resp.auto_return()
 
 
-class DefaultAccountDefinitionList(View):
+class DefaultAccountDeterminationList(View):
 
     @mask_view(
         auth_require=True,
-        template='accountingsettings/defaultaccountdefinition/defaultaccountdefinition.html',
-        breadcrumb='DEFAULT_ACCOUNT_DEFINITION_LIST_PAGE',
-        menu_active='menu_default_account_definition_list',
+        template='accountingsettings/DefaultAccountDetermination/DefaultAccountDetermination.html',
+        breadcrumb='DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE',
+        menu_active='menu_DEFAULT_ACCOUNT_DETERMINATION_LIST',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
-class DefaultAccountDefinitionListAPI(APIView):
+class DefaultAccountDeterminationListAPI(APIView):
     permission_classes = [IsAuthenticated]  # noqa
 
     @mask_view(
@@ -62,5 +62,5 @@ class DefaultAccountDefinitionListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.DEFAULT_ACCOUNT_DEFINITION_LIST).get(params)
-        return resp.auto_return(key_success='default_account_definition_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.DEFAULT_ACCOUNT_DETERMINATION_LIST).get(params)
+        return resp.auto_return(key_success='default_account_determination_list')

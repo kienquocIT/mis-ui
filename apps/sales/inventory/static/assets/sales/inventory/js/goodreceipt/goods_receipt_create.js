@@ -85,54 +85,21 @@ $(function () {
             }
         });
 
+        GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
+            GRLoadDataHandle.loadCheckPR();
+        });
+
+        GRDataTableHandle.tablePR.on('change', '.table-row-import', function () {
+            let result = GRLoadDataHandle.loadQuantityImport();
+            if (result === false) {
+                this.value = 0;
+                GRLoadDataHandle.loadQuantityImport();
+            }
+            GRStoreDataHandle.storeDataProduct();
+        });
+
         GRLoadDataHandle.$isNoWHEle.on('click', function () {
-            let checked = this.checked;
-
-            GRDataTableHandle.tablePR.DataTable().rows().every(function () {
-                let row = this.node();
-                let importEle = row.querySelector('.table-row-checkbox');
-                if (importEle) {
-                    importEle.setAttribute('readonly', 'true');
-                }
-            });
-            GRDataTableHandle.tablePOProduct.DataTable().rows().every(function () {
-                let row = this.node();
-                let importEle = row.querySelector('.table-row-checkbox');
-                if (importEle) {
-                    importEle.setAttribute('readonly', 'true');
-                }
-                let checkedPOEle = row.querySelector('.table-row-checkbox:checked');
-                if (checkedPOEle) {
-                    let rowChecked = checkedPOEle.closest('tr');
-                    let rowIndex = GRDataTableHandle.tablePOProduct.DataTable().row(rowChecked).index();
-                    let $row = GRDataTableHandle.tablePOProduct.DataTable().row(rowIndex);
-                    let dataRow = $row.data();
-                    if (dataRow?.['pr_products_data'].length > 0) {
-                        if (checked === true) {
-                            GRDataTableHandle.tablePR.DataTable().rows().every(function () {
-                                let row = this.node();
-                                let importEle = row.querySelector('.table-row-checkbox');
-                                if (importEle) {
-                                    importEle.removeAttribute('readonly');
-                                }
-                            });
-                        }
-                    } else {
-
-                    }
-                }
-            });
-
-
-            if (checked === true) {
-                GRLoadDataHandle.$scrollWarehouse[0].setAttribute('hidden', 'true');
-                GRLoadDataHandle.$scrollLot[0].setAttribute('hidden', 'true');
-                GRLoadDataHandle.$scrollSerial[0].setAttribute('hidden', 'true');
-            }
-            if (checked === false) {
-                GRLoadDataHandle.$scrollWarehouse[0].removeAttribute('hidden');
-            }
-
+            GRLoadDataHandle.loadCheckIsNoWH();
         });
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {

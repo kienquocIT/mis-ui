@@ -12,8 +12,13 @@ class GRLoadDataHandle {
     static $boxProductionReport = $('#box-production-report');
     static initPOProductEle = $('#data-init-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
+    static $scrollPR = $('#scroll-pr');
+    static $scrollWarehouse = $('#scroll-warehouse');
+    static $scrollLot = $('#scroll-lot');
+    static $scrollSerial = $('#scroll-serial');
     static btnAddLot = $('#btn-add-manage-lot');
     static btnAddSerial = $('#btn-add-manage-serial');
+    static $isNoWHEle = $('#is_no_warehouse');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#url-factory');
     static dataTypeGr = [
@@ -392,12 +397,13 @@ class GRLoadDataHandle {
         let dataRow = $row.data();
         GRDataTableHandle.tableLot.DataTable().clear().draw();
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
-        $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
+        GRLoadDataHandle.$scrollLot[0].setAttribute('hidden', 'true');
+        GRLoadDataHandle.$scrollSerial[0].setAttribute('hidden', 'true');
         GRDataTableHandle.tableWH.DataTable().clear().draw();
         GRDataTableHandle.tablePR.DataTable().clear().draw();
         if (dataRow?.['pr_products_data'].length > 0) { // If PO have PR
             GRDataTableHandle.tablePR.DataTable().rows.add(dataRow?.['pr_products_data']).draw();
-            $('#scroll-table-pr')[0].removeAttribute('hidden');
+            GRLoadDataHandle.$scrollPR[0].removeAttribute('hidden');
         } else { // If PO doesn't have PR
             // Check if product have inventory choice
             if (dataRow?.['product_data']?.['product_choice'].includes(1)) {
@@ -417,7 +423,8 @@ class GRLoadDataHandle {
     static loadCheckPR() {
         GRDataTableHandle.tableLot.DataTable().clear().draw();
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
-        $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
+        GRLoadDataHandle.$scrollLot[0].setAttribute('hidden', 'true');
+        GRLoadDataHandle.$scrollSerial[0].setAttribute('hidden', 'true');
         GRDataTableHandle.tableWH.DataTable().clear().draw();
         GRLoadDataHandle.loadCallAjaxWareHouse();
         return true;
@@ -588,22 +595,21 @@ class GRLoadDataHandle {
     };
 
     static loadAreaLotSerial(type) {
-        $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
         GRDataTableHandle.tableLot.DataTable().clear().draw();
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
         if (type === 1) {  // lot
-            $('#table-good-receipt-manage-lot-area')[0].removeAttribute('hidden');
+            GRLoadDataHandle.$scrollLot[0].removeAttribute('hidden');
             if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 $('#btn-add-manage-lot')[0].removeAttribute('disabled');
             }
-            $('#table-good-receipt-manage-serial-area')[0].setAttribute('hidden', 'true');
+            GRLoadDataHandle.$scrollSerial[0].setAttribute('hidden', 'true');
         }
         if (type === 2) {  // serial
-            $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
+            GRLoadDataHandle.$scrollSerial[0].removeAttribute('hidden');
             if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 $('#btn-add-manage-serial')[0].removeAttribute('disabled');
             }
-            $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
+            GRLoadDataHandle.$scrollLot[0].setAttribute('hidden', 'true');
         }
         return true;
     };
@@ -1188,9 +1194,10 @@ class GRLoadDataHandle {
     static loadClearModal() {
         GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
         GRDataTableHandle.tablePR.DataTable().clear().draw();
-        $('#scroll-table-pr')[0].setAttribute('hidden', 'true');
+        GRLoadDataHandle.$scrollPR[0].setAttribute('hidden', 'true');
         GRDataTableHandle.tableWH.DataTable().clear().draw();
-        $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
+        GRLoadDataHandle.$scrollLot[0].setAttribute('hidden', 'true');
+        GRLoadDataHandle.$scrollSerial[0].setAttribute('hidden', 'true');
         return true;
     };
 

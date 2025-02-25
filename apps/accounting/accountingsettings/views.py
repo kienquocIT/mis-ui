@@ -64,3 +64,42 @@ class DefaultAccountDeterminationListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.DEFAULT_ACCOUNT_DETERMINATION_LIST).get(params)
         return resp.auto_return(key_success='default_account_determination_list')
+
+
+class WarehouseAccountDeterminationListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_ACCOUNT_DETERMINATION_LIST).get(params)
+        return resp.auto_return(key_success='warehouse_account_determination_list')
+
+
+class ProductTypeAccountDeterminationListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_ACCOUNT_DETERMINATION_LIST).get(params)
+        return resp.auto_return(key_success='product_type_account_determination_list')
+
+
+class ProductAccountDeterminationListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_ACCOUNT_DETERMINATION_LIST).get(params)
+        return resp.auto_return(key_success='product_account_determination_list')

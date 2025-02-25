@@ -13,37 +13,21 @@ $(document).ready(function() {
         {
             className: 'wrap-text w-35',
             'render': (data, type, row) => {
-                return `<span class="${row?.['is_default'] ? 'text-secondary' : 'text-primary'}">${row?.['title']}</span>`;
+                return `<span class="text-muted">${row?.['title']}</span>`;
             }
         },
         {
             className: 'wrap-text w-20',
             'render': (data, type, row) => {
-                return `<span class="${row?.['is_default'] ? 'text-secondary' : 'text-primary'}">${row?.['account_mapped']?.['acc_code']}</span>`;
+                return `<span class="text-muted">${row?.['account_mapped']?.['acc_code']}</span>`;
             }
         },
         {
-            className: 'wrap-text w-30',
+            className: 'wrap-text w-40',
             'render': (data, type, row) => {
-                return `<span class="${row?.['is_default'] ? 'text-secondary' : 'text-primary'}">${row?.['account_mapped']?.['acc_name']}</span>
+                return `<span class="text-muted">${row?.['account_mapped']?.['acc_name']}</span>
                         <br>
-                        <span class="small text-muted">(${row?.['account_mapped']?.['foreign_acc_name']})</span>`;
-            }
-        },
-        {
-            className: 'wrap-text text-right w-10',
-            'render': (data, type, row) => {
-                let btn_edit = `<button class="btn btn-icon btn-rounded btn-flush-primary btn-sm btn-edit-row">
-                    <span class="icon">
-                        <i class="fas fa-edit"></i>
-                    </span>
-                </button>`
-                let btn_delete = `<button class="btn btn-icon btn-rounded btn-flush-secondary btn-sm btn-delete-row">
-                    <span class="icon">
-                        <i class="fas fa-trash-alt"></i>
-                    </span>
-                </button>`
-                return row?.['is_default'] ? '' : btn_edit + btn_delete;
+                        <span class="small text-primary">(${row?.['account_mapped']?.['foreign_acc_name']})</span>`;
             }
         },
     ]

@@ -263,7 +263,7 @@ $(document).on('click', '.detail-shelf', function () {
 })
 
 // for account determination
-const account_determination_table = $('#account-determination-table')
+const $warehouse_account_determination_table = $('#warehouse-account-determination-table')
 const columns_cfg = [
     {
         className: 'wrap-text w-5',
@@ -274,7 +274,7 @@ const columns_cfg = [
     {
         className: 'wrap-text',
         'render': (data, type, row) => {
-            return `<span class="text-muted">${row?.['default_account_determination_type_convert']}</span>`;
+            return `<span class="text-muted">${row?.['account_determination_type_convert']}</span>`;
         }
     },
     {
@@ -287,7 +287,7 @@ const columns_cfg = [
         className: 'wrap-text w-20',
         'render': (data, type, row) => {
             return `<select class="form-select select2">
-                        <option selected>${row?.['account_mapped']?.['acc_code']}</option>
+                        <option value="${row?.['account_mapped']?.['id']}" selected>${row?.['account_mapped']?.['acc_code']}</option>
                     </select>`;
         }
     },
@@ -301,9 +301,9 @@ const columns_cfg = [
 ]
 
 function loadDefinitionTable() {
-    if (!$.fn.DataTable.isDataTable('#account-determination-table')) {
-        let frm = new SetupFormSubmit(account_determination_table);
-        account_determination_table.DataTableDefault({
+    if (!$.fn.DataTable.isDataTable('#warehouse-account-determination-table')) {
+        let frm = new SetupFormSubmit($warehouse_account_determination_table);
+        $warehouse_account_determination_table.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
             reloadCurrency: true,
@@ -313,14 +313,15 @@ function loadDefinitionTable() {
             scrollCollapse: true,
             ajax: {
                 url: frm.dataUrl,
+                data: {'warehouse_mapped_id': $.fn.getPkDetail()},
                 type: frm.dataMethod,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        let data_list = resp.data['default_account_determination_list'] ? resp.data['default_account_determination_list'] : []
+                        let data_list = resp.data['warehouse_account_determination_list'] ? resp.data['warehouse_account_determination_list'] : []
                         data_list.sort((a, b) => {
-                            const typeA = a?.['default_account_determination_type_convert'];
-                            const typeB = b?.['default_account_determination_type_convert'];
+                            const typeA = a?.['account_determination_type_convert'];
+                            const typeB = b?.['account_determination_type_convert'];
                             if (typeA < typeB) return -1;
                             if (typeA > typeB) return 1;
 
@@ -329,6 +330,7 @@ function loadDefinitionTable() {
                             return accCodeA - accCodeB;
                         });
 
+                        console.log(data_list)
                         return data_list ? data_list : [];
                     }
                     return [];
@@ -336,7 +338,7 @@ function loadDefinitionTable() {
             },
             columns: columns_cfg,
             rowGroup: {
-                dataSrc: 'default_account_determination_type_convert'
+                dataSrc: 'account_determination_type_convert'
             },
             columnDefs: [
                 {

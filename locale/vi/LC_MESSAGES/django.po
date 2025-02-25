@@ -10986,3 +10986,7 @@ msgstr "Thêm kệ"
 #
 msgid "Account determination"
 msgstr "Xác định TK kế toán"
+
+#
+msgid "Transactions referencing this warehouse will use the following accounts to create Journal Entry. By default, the accounts are taken from Setting. After creating the warehouse, you can go to the detail page to update it."
+msgstr "Các giao dịch tham chiếu đến kho này sẽ sử dụng các tài khoản dưới đây để tạo Bút toán. Mặc định các tài khoản được lấy theo Cài đặt. Sau khi tạo kho xong, bạn có thể vào trang chi tiết để thiết lập lại."

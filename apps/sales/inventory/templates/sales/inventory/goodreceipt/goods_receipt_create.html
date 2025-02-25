@@ -340,6 +340,15 @@
                 </div>
                 <div class="offcanvas-body">
                     <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6"></div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-check form-check-lg">
+                                <input type="checkbox" class="form-check-input" id="is_no_warehouse">
+                                <label class="form-check-label" for="is_no_warehouse">{% trans 'No warehouse' %}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-12 col-md-6 col-lg-6 border-right">
                             <div data-simplebar class="h-350p nicescroll-bar">
                                 <table
@@ -350,12 +359,11 @@
                                 >
                                     <thead>
                                     <tr class="bg-light">
-                                        <th class="w-25">{% trans 'Product' %}</th>
-                                        <th class="w-20">{% trans 'UOM' %}(PO)</th>
-                                        <th class="w-10">{% trans 'Quantity' %}(PO)</th>
-                                        <th class="w-15">{% trans 'Received before' %}</th>
-                                        <th class="w-15">{% trans 'Remain' %}</th>
-                                        <th class="w-15">{% trans 'This time' %}</th>
+                                        <th>{% trans 'Product' %}</th>
+                                        <th>{% trans 'UOM' %}</th>
+                                        <th>{% trans 'Total' %}</th>
+                                        <th>{% trans 'Remain' %}</th>
+                                        <th>{% trans 'This time' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -371,12 +379,11 @@
                                 >
                                     <thead>
                                     <tr class="bg-light">
-                                        <th class="w-25 th-custom"></th>
-                                        <th class="w-20">{% trans 'UOM' %}</th>
-                                        <th class="w-10">{% trans 'Quantity' %}</th>
-                                        <th class="w-15">{% trans 'Received before' %}</th>
-                                        <th class="w-15">{% trans 'Remain' %}</th>
-                                        <th class="w-15">{% trans 'This time' %}</th>
+                                        <th class="th-custom"></th>
+                                        <th>{% trans 'UOM' %}</th>
+                                        <th>{% trans 'Total' %}</th>
+                                        <th>{% trans 'Remain' %}</th>
+                                        <th>{% trans 'This time' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>

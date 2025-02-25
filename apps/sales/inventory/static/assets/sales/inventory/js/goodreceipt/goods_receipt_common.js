@@ -1035,7 +1035,7 @@ class GRLoadDataHandle {
                     if (valuePRNew <= valuePROrderRemain) {
                         let prImport = elePRChecked.closest('tr').querySelector('.table-row-import');
                         if (prImport) {
-                            elePRChecked.closest('tr').querySelector('.table-row-import').innerHTML = String(valuePRNew);
+                            elePRChecked.closest('tr').querySelector('.table-row-import').value = String(valuePRNew);
                         }
                     } else {
                         $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
@@ -1062,7 +1062,7 @@ class GRLoadDataHandle {
                         is_inventory = false;
                     }
                     if (is_inventory === true) { // If Product PO have inventory choice
-                        valuePONew += parseFloat(eleImport.innerHTML) / ratioUOMFinal;
+                        valuePONew += parseFloat(eleImport.value) / ratioUOMFinal;
                     } else { // If Product PO doesn't have inventory choice
                         valuePONew += parseFloat(eleImport.value) / ratioUOMFinal;
                     }
@@ -1074,7 +1074,7 @@ class GRLoadDataHandle {
             }
             if (valuePOOrderRemain >= 0) {
                 if (valuePONew <= valuePOOrderRemain) {
-                    elePOChecked.closest('tr').querySelector('.table-row-import').innerHTML = String(valuePONew);
+                    elePOChecked.closest('tr').querySelector('.table-row-import').value = String(valuePONew);
                 } else {
                     $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
                     return false;
@@ -1517,6 +1517,7 @@ class GRDataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '20%',
                     render: (data, type, row) => {
                         let targetID = row?.['purchase_order_product_id'];  // PO
                         if (row?.['ia_item_id']) {  // IA
@@ -1541,32 +1542,31 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 1,
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<span class="table-row-uom">${row?.['uom_data']?.['title']}</span>`;
                     }
                 },
                 {
                     targets: 2,
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity">${row?.['product_quantity_order_actual'] ? row?.['product_quantity_order_actual'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 3,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-gr-completed">${row?.['gr_completed_quantity'] ? row?.['gr_completed_quantity'] : 0}</span>`;
-                    }
-                },
-                {
-                    targets: 4,
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<span class="table-row-gr-remain">${row?.['gr_remain_quantity'] ? row?.['gr_remain_quantity'] : 0}</span>`;
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 4,
+                    width: '15%',
                     render: (data, type, row) => {
-                        return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
+                        // return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
+                        return `<input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" readonly>`;
                     }
                 },
             ],
@@ -1587,6 +1587,7 @@ class GRDataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '20%',
                     render: (data, type, row) => {
                         let typeGR = GRLoadDataHandle.typeSelectEle.val();
                         let prTxt = GRLoadDataHandle.transEle.attr('data-stock');
@@ -1616,32 +1617,31 @@ class GRDataTableHandle {
                 },
                 {
                     targets: 1,
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<span class="table-row-uom">${row?.['uom_data']?.['title'] ? row?.['uom_data']?.['title'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 2,
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity">${row?.['quantity_order']}</span>`;
                     }
                 },
                 {
                     targets: 3,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-gr-completed">${row?.['gr_completed_quantity'] ? row?.['gr_completed_quantity'] : 0}</span>`;
-                    }
-                },
-                {
-                    targets: 4,
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<span class="table-row-gr-remain">${row?.['gr_remain_quantity'] ? row?.['gr_remain_quantity'] : 0}</span>`;
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 4,
+                    width: '15%',
                     render: (data, type, row) => {
-                        return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
+                        // return `<b><span class="table-row-import text-primary">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span></b>`;
+                        return `<input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" readonly>`;
                     }
                 },
             ],
@@ -2354,8 +2354,11 @@ class GRStoreDataHandle {
             if (checked) {
                 rowData['gr_warehouse_data'] = gr_warehouse_data;
             }
-            if (row.querySelector('.table-row-import')) {
-                rowData['quantity_import'] = parseFloat(row.querySelector('.table-row-import').innerHTML);
+            let importEle = row.querySelector('.table-row-import');
+            if (importEle) {
+                if ($(importEle).val()) {
+                    rowData['quantity_import'] = parseFloat($(importEle).val());
+                }
             }
             tablePR.DataTable().row(rowIndex).data(rowData);
             pr_products_data.push(rowData);
@@ -2369,28 +2372,58 @@ class GRStoreDataHandle {
         });
 
 
-        let elePOChecked = tablePO[0]?.querySelector('.table-row-checkbox:checked');
-        if (elePOChecked) {
-            let rowChecked = elePOChecked.closest('tr');
-            // store new row data & redraw row
-            let rowIndex = tablePO.DataTable().row(rowChecked).index();
+        tablePO.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = tablePO.DataTable().row(row).index();
             let $row = tablePO.DataTable().row(rowIndex);
             let rowData = $row.data();
-            if (rowChecked.querySelector('.table-row-import')) {
+            let checked = row.querySelector('.table-row-checkbox:checked');
+            if (checked) {
                 rowData['pr_products_data'] = pr_products_data;
                 rowData['gr_warehouse_data'] = gr_warehouse_data;
                 if (pr_products_data.length > 0) {
                     rowData['gr_warehouse_data'] = [];
                 }
-                rowData['quantity_import'] = parseFloat(rowChecked.querySelector('.table-row-import').innerHTML);
-                tablePO.DataTable().row(rowIndex).data(rowData);
+            }
+            let importEle = row.querySelector('.table-row-import');
+            if (importEle) {
+                if ($(importEle).val()) {
+                    rowData['quantity_import'] = parseFloat($(importEle).val());
+                }
+            }
+            tablePO.DataTable().row(rowIndex).data(rowData);
 
-                let checkEle = rowChecked.querySelector('.table-row-checkbox');
+            if (checked) {
+                let checkEle = row.querySelector('.table-row-checkbox');
                 if (checkEle) {
                     checkEle.checked = true;
                 }
             }
-        }
+        });
+
+
+        // let elePOChecked = tablePO[0]?.querySelector('.table-row-checkbox:checked');
+        // if (elePOChecked) {
+        //     let rowChecked = elePOChecked.closest('tr');
+        //     // store new row data & redraw row
+        //     let rowIndex = tablePO.DataTable().row(rowChecked).index();
+        //     let $row = tablePO.DataTable().row(rowIndex);
+        //     let rowData = $row.data();
+        //     if (rowChecked.querySelector('.table-row-import')) {
+        //         rowData['pr_products_data'] = pr_products_data;
+        //         rowData['gr_warehouse_data'] = gr_warehouse_data;
+        //         if (pr_products_data.length > 0) {
+        //             rowData['gr_warehouse_data'] = [];
+        //         }
+        //         rowData['quantity_import'] = parseFloat(rowChecked.querySelector('.table-row-import').innerHTML);
+        //         tablePO.DataTable().row(rowIndex).data(rowData);
+        //
+        //         let checkEle = rowChecked.querySelector('.table-row-checkbox');
+        //         if (checkEle) {
+        //             checkEle.checked = true;
+        //         }
+        //     }
+        // }
         return true;
     };
 
@@ -2442,7 +2475,7 @@ class GRSubmitHandle {
                 order++;
                 let quantityImport = 0;
                 if (dataRow?.['product_data']?.['product_choice'].includes(1) || dataRow?.['pr_products_data'].length > 0) { // If PO Product have inventory choice or PO have PR
-                    quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
+                    quantityImport = parseFloat(row.querySelector('.table-row-import').value);
                 } else { // If PO Product doesn't have inventory choice and PO doesn't have PR
                     quantityImport = parseFloat(row.querySelector('.table-row-import').value);
                 }

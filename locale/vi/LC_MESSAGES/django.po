@@ -10594,3 +10594,7 @@ msgstr "Tên công cụ"
 #
 msgid "Tool Number"
 msgstr "Mã công cụ"
+
+#
+msgid "No warehouse"
+msgstr "Không qua kho"

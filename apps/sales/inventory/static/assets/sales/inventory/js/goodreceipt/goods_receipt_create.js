@@ -68,11 +68,20 @@ $(function () {
         });
 
         GRDataTableHandle.tablePOProduct.on('change', '.table-row-import', function () {
-            let remain = parseFloat(this.closest('tr').querySelector('.table-row-gr-remain').innerHTML);
-            let valid_import = GRValidateHandle.validateImportProductNotInventory(this, remain);
-            let eleCheck = this?.closest('tr')?.querySelector('.table-row-checkbox');
-            if (eleCheck) {
-                eleCheck.checked = valid_import;
+            let row = this.closest('tr');
+            if (row) {
+                let remainEle = row.querySelector('.table-row-gr-remain');
+                if (remainEle) {
+                    if (remainEle.innerHTML) {
+                        let remain = parseFloat(remainEle.innerHTML);
+                        let valid_import = GRValidateHandle.validateImportProductNotInventory(this, remain);
+                        let checkEle = row?.querySelector('.table-row-checkbox');
+                        if (checkEle) {
+                            checkEle.checked = valid_import;
+                        }
+                    }
+                }
+
             }
         });
 

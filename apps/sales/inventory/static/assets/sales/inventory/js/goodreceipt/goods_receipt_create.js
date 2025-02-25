@@ -70,18 +70,24 @@ $(function () {
         GRDataTableHandle.tablePOProduct.on('change', '.table-row-import', function () {
             let row = this.closest('tr');
             if (row) {
-                let remainEle = row.querySelector('.table-row-gr-remain');
-                if (remainEle) {
-                    if (remainEle.innerHTML) {
-                        let remain = parseFloat(remainEle.innerHTML);
-                        let valid_import = GRValidateHandle.validateImportProductNotInventory(this, remain);
-                        let checkEle = row?.querySelector('.table-row-checkbox');
-                        if (checkEle) {
-                            checkEle.checked = valid_import;
-                        }
-                    }
+                let checkEle = row.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
                 }
-
+                GRStoreDataHandle.storeDataProduct();
+                let check = GRLoadDataHandle.loadCheckExceedQuantity();
+                if (check === false) {
+                    let rowIndex = GRDataTableHandle.tablePOProduct.DataTable().row(row).index();
+                    let $row = GRDataTableHandle.tablePOProduct.DataTable().row(rowIndex);
+                    let rowData = $row.data();
+                    rowData['quantity_import'] = 0;
+                    GRDataTableHandle.tablePOProduct.DataTable().row(rowIndex).data(rowData);
+                    let checkEle = row.querySelector('.table-row-checkbox');
+                    if (checkEle) {
+                        checkEle.checked = true;
+                    }
+                    GRStoreDataHandle.storeDataProduct();
+                }
             }
         });
 
@@ -90,16 +96,32 @@ $(function () {
         });
 
         GRDataTableHandle.tablePR.on('change', '.table-row-import', function () {
-            let result = GRLoadDataHandle.loadQuantityImport();
-            if (result === false) {
-                this.value = 0;
-                GRLoadDataHandle.loadQuantityImport();
+            let row = this.closest('tr');
+            if (row) {
+                let checkEle = row.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
+                GRStoreDataHandle.storeDataProduct();
+                let check = GRLoadDataHandle.loadCheckExceedQuantity();
+                if (check === false) {
+                    let rowIndex = GRDataTableHandle.tablePR.DataTable().row(row).index();
+                    let $row = GRDataTableHandle.tablePR.DataTable().row(rowIndex);
+                    let rowData = $row.data();
+                    rowData['quantity_import'] = 0;
+                    GRDataTableHandle.tablePR.DataTable().row(rowIndex).data(rowData);
+                    let checkEle = row.querySelector('.table-row-checkbox');
+                    if (checkEle) {
+                        checkEle.checked = true;
+                    }
+                    GRStoreDataHandle.storeDataProduct();
+                }
             }
-            GRStoreDataHandle.storeDataProduct();
         });
 
         GRLoadDataHandle.$isNoWHEle.on('click', function () {
             GRLoadDataHandle.loadCheckIsNoWH();
+            GRStoreDataHandle.storeDataProduct();
         });
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {
@@ -107,15 +129,27 @@ $(function () {
         });
 
         GRDataTableHandle.tableWH.on('change', '.table-row-import', function () {
-            if (this.closest('tr').querySelector('.table-row-checkbox').checked === false) {
-                $(this.closest('tr').querySelector('.table-row-checkbox')).click();
+            let row = this.closest('tr');
+            if (row) {
+                let checkEle = row.querySelector('.table-row-checkbox');
+                if (checkEle) {
+                    checkEle.checked = true;
+                }
+                GRStoreDataHandle.storeDataProduct();
+                let check = GRLoadDataHandle.loadCheckExceedQuantity();
+                if (check === false) {
+                    let rowIndex = GRDataTableHandle.tableWH.DataTable().row(row).index();
+                    let $row = GRDataTableHandle.tableWH.DataTable().row(rowIndex);
+                    let rowData = $row.data();
+                    rowData['quantity_import'] = 0;
+                    GRDataTableHandle.tableWH.DataTable().row(rowIndex).data(rowData);
+                    let checkEle = row.querySelector('.table-row-checkbox');
+                    if (checkEle) {
+                        checkEle.checked = true;
+                    }
+                    GRStoreDataHandle.storeDataProduct();
+                }
             }
-            let result = GRLoadDataHandle.loadQuantityImport();
-            if (result === false) {
-                this.value = 0;
-                GRLoadDataHandle.loadQuantityImport();
-            }
-            GRStoreDataHandle.storeDataProduct();
         });
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox-additional', function () {
@@ -128,8 +162,11 @@ $(function () {
 
         GRDataTableHandle.tableLot.on('click', '.dropdown-item-lot', function () {
             let row = this.closest('tr');
-            GRLoadDataHandle.loadUnCheckLotDDItem(row);
-            GRLoadDataHandle.loadCheckLotDDItem(this, row);
+            if (row) {
+                GRLoadDataHandle.loadUnCheckLotDDItem(row);
+                GRLoadDataHandle.loadCheckLotDDItem(this, row);
+                GRStoreDataHandle.storeDataProduct();
+            }
         });
 
         GRDataTableHandle.tableLot.on('change', '.table-row-lot-number', function () {
@@ -137,14 +174,14 @@ $(function () {
         });
 
         GRDataTableHandle.tableLot.on('change', '.table-row-import', function () {
-            let result = GRLoadDataHandle.loadQuantityImport();
-            if (result === false) {
+            GRStoreDataHandle.storeDataProduct();
+            let check = GRLoadDataHandle.loadCheckExceedQuantity();
+            if (check === false) {
                 let rowIndex = GRDataTableHandle.tableLot.DataTable().row(this.closest('tr')).index();
                 let row = GRDataTableHandle.tableLot.DataTable().row(rowIndex);
                 row.remove().draw();
-                GRLoadDataHandle.loadQuantityImport();
+                GRStoreDataHandle.storeDataProduct();
             }
-            GRStoreDataHandle.storeDataProduct();
         });
 
         GRDataTableHandle.tableLot.on('change', '.date-picker', function () {

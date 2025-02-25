@@ -25,7 +25,7 @@
     >
         {% csrf_token %}
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-6 col-lg-6 border-right">
                 <div class="row">
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
@@ -174,11 +174,12 @@
                 </div>
                 <div class="row">
                     <div
-                            class="offcanvas offcanvas-end w-70" tabindex="-1" id="offcanvasRight"
+                            class="offcanvas offcanvas-end w-80" tabindex="-1" id="offcanvasRight"
                             aria-labelledby="offcanvasTopLabel"
                     >
-                        <div class="offcanvas-header">
-                            <h5 id="offcanvasRightLabel">{% trans "Add Employee" %}</h5>
+                        <div class="modal-header">
+                            <h5><b>{% trans "Add Employee" %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
 
                         <div class="offcanvas-body form-group">
@@ -205,17 +206,10 @@
                                 <tbody>
                                 </tbody>
                             </table>
-                            <div class="modal-footer">
-                                <button
-                                        type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas"
-                                >{% trans 'Cancel' %}</button>
-                                <button
-                                        type="button" class="btn btn-primary"
-                                        data-bs-dismiss="offcanvas"
-                                        id="button-add-group-employee"
-                                >{% trans 'Add' %}</button>
-                            </div>
-
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">{% trans 'Cancel' %}</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="offcanvas" id="button-add-group-employee">{% trans 'Add' %}</button>
                         </div>
                     </div>
                     <table
@@ -245,6 +239,7 @@
         type="text"
         id="app-trans-factory"
         data-level="{% trans 'Level' %}"
+        data-add-emp-group="{% trans 'Add employee to group' %}"
     >
     <input
         type="text"

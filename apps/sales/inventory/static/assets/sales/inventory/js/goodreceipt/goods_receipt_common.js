@@ -1018,7 +1018,7 @@ class GRLoadDataHandle {
         });
 
         return check;
-    }
+    };
 
     static loadDataShowPR(data) {
         let elePR = $('#good-receipt-purchase-request');

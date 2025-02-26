@@ -760,19 +760,18 @@ $(async function () {
         };
 
         loadDeliverByLot(ele) {
-            let value = parseFloat(ele.value);
             let row = ele.closest('tr');
             let rowIndex = $tableLot.DataTable().row(row).index();
             let $row = $tableLot.DataTable().row(rowIndex);
             let rowData = $row.data();
-            if (value > rowData?.['available_stock']) {
-                $.fn.notifyB({description: $trans.attr('data-exceed-available-quantity')}, 'failure');
-                ele.value = '0';
-                prodTable.loadDeliverByLot(ele);
-                return false;
+
+            DeliveryStoreDataHandle.storeData();
+            let check = prodTable.loadCheckExceedQuantity();
+            if (check === false) {
+                rowData['quantity_delivery'] = 0;
+                $tableLot.DataTable().row(rowIndex).data(rowData).draw();
+                DeliveryStoreDataHandle.storeData();
             }
-            rowData['quantity_delivery'] = value;
-            $tableLot.DataTable().row(rowIndex).data(rowData).draw();
             let rowChecked = $tablePW[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
             if (rowChecked) {
                 let deliver = 0;
@@ -789,29 +788,17 @@ $(async function () {
                 if (deliver <= valStock && deliver <= valAvb) {
                     // store data
                     DeliveryStoreDataHandle.storeData();
-                    // check exceed
-                    let targetEle = $scrollProduct[0].querySelector('.table-row-checkbox:checked');
-                    if (targetEle) {
-                        let targetRow = targetEle.closest('tr');
-                        if (targetRow) {
-                            let undeliveredEle = targetRow.querySelector('.table-row-undelivered');
-                            let deliverEle = targetRow.querySelector('.table-row-picked');
-                            if (undeliveredEle && deliverEle) {
-                                if (undeliveredEle.innerHTML && deliverEle.innerHTML) {
-                                    if (parseFloat(undeliveredEle.innerHTML) < parseFloat(deliverEle.innerHTML)) {
-                                        $.fn.notifyB({description: $trans.attr('data-exceed-available-quantity')}, 'failure');
-                                        ele.value = '0';
-                                        prodTable.loadDeliverByLot(ele);
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
+                    let check = prodTable.loadCheckExceedQuantity();
+                    if (check === false) {
+                        rowData['quantity_delivery'] = 0;
+                        $tableLot.DataTable().row(rowIndex).data(rowData).draw();
+                        DeliveryStoreDataHandle.storeData();
                     }
                 } else {
                     $.fn.notifyB({description: $trans.attr('data-exceed-available-quantity')}, 'failure');
-                    ele.value = '0';
-                    prodTable.loadDeliverByLot(ele);
+                    rowData['quantity_delivery'] = 0;
+                    $tableLot.DataTable().row(rowIndex).data(rowData).draw();
+                    DeliveryStoreDataHandle.storeData();
                     return false;
                 }
             }
@@ -924,29 +911,15 @@ $(async function () {
                 if (deliver <= valStock && deliver <= valAvb) {  // Kiểm tra <= tồn kho và <= khả dụng (mượn hàng)
                     // store data
                     DeliveryStoreDataHandle.storeData();
-                    // check exceed
-                    let targetEle = $scrollProduct[0].querySelector('.table-row-checkbox:checked');
-                    if (targetEle) {
-                        let targetRow = targetEle.closest('tr');
-                        if (targetRow) {
-                            let undeliveredEle = targetRow.querySelector('.table-row-undelivered');
-                            let deliverEle = targetRow.querySelector('.table-row-picked');
-                            if (undeliveredEle && deliverEle) {
-                                if (undeliveredEle.innerHTML && deliverEle.innerHTML) {
-                                    if (parseFloat(undeliveredEle.innerHTML) < parseFloat(deliverEle.innerHTML)) {
-                                        $.fn.notifyB({description: $trans.attr('data-exceed-available-quantity')}, 'failure');
-                                        ele.checked = false;
-                                        prodTable.loadDeliverBySerial(ele);
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
+                    let check = prodTable.loadCheckExceedQuantity();
+                    if (check === false) {
+                        ele.checked = false;
+                        DeliveryStoreDataHandle.storeData();
                     }
                 } else {
                     $.fn.notifyB({description: $trans.attr('data-exceed-available-quantity')}, 'failure');
                     ele.checked = false;
-                    prodTable.loadDeliverBySerial(ele);
+                    DeliveryStoreDataHandle.storeData();
                     return false;
                 }
             }
@@ -1051,7 +1024,7 @@ $(async function () {
                         targets: 1,
                         width: '20%',
                         render: (data, type, row) => {
-                            return `<span class="table-row-undelivered">${row?.['remaining_quantity_new'] ? row?.['remaining_quantity_new'] : 0}</span>`;
+                            return `<span class="table-row-remain">${row?.['remaining_quantity_new'] ? row?.['remaining_quantity_new'] : 0}</span>`;
                         },
                     },
                     {
@@ -1059,8 +1032,14 @@ $(async function () {
                         width: '20%',
                         render: (data, type, row) => {
                             let value = 0;
-                            if (row?.['picked_quantity'] && row?.['product_quantity_leased']) {
-                                value = row?.['picked_quantity'] - row?.['product_quantity_leased'];
+                            if (row?.['offset_data']?.['id']) {
+                                if (row?.['picked_quantity'] && row?.['product_quantity_leased']) {
+                                    value = row?.['picked_quantity'] - row?.['product_quantity_leased'];
+                                }
+                            } else {
+                                if (row?.['picked_quantity']) {
+                                    value = row?.['picked_quantity'];
+                                }
                             }
                             return `<b class="table-row-picked">${value}</b>`;
                         },
@@ -1137,7 +1116,7 @@ $(async function () {
                         targets: 2,
                         width: '20%',
                         render: (data, type, row) => {
-                            return `<span class="table-row-undelivered">${row?.['remaining_quantity_leased'] ? row?.['remaining_quantity_leased'] : 0}</span>`;
+                            return `<span class="table-row-remain">${row?.['remaining_quantity_leased'] ? row?.['remaining_quantity_leased'] : 0}</span>`;
                         },
                     },
                     {
@@ -1497,6 +1476,76 @@ $(async function () {
             }
         };
 
+        loadCheckExceedQuantity() {
+            let check = true;
+            $tableLot.DataTable().rows().every(function () {
+                let row = this.node();
+                let availableELe = row.querySelector('.table-row-quantity-init');
+                let deliverELe = row.querySelector('.table-row-quantity-delivery');
+                if (availableELe && deliverELe) {
+                    if (availableELe.innerHTML && deliverELe.value) {
+                        let available = parseFloat(availableELe.innerHTML);
+                        let delivered = parseFloat(deliverELe.value);
+                        if (delivered > available) {
+                            check = false;
+                            $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
+                            return false;
+                        }
+                    }
+                }
+            });
+            $tablePW.DataTable().rows().every(function () {
+                let row = this.node();
+                let availableELe = row.querySelector('.table-row-available');
+                let deliverELe = row.querySelector('.table-row-picked');
+                if (availableELe && deliverELe) {
+                    if (availableELe.innerHTML && deliverELe.value) {
+                        let available = parseFloat(availableELe.innerHTML);
+                        let delivered = parseFloat(deliverELe.value);
+                        if (delivered > available) {
+                            check = false;
+                            $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
+                            return false;
+                        }
+                    }
+                }
+            });
+            $tableProductNew.DataTable().rows().every(function () {
+                let row = this.node();
+                let remainELe = row.querySelector('.table-row-remain');
+                let deliverELe = row.querySelector('.table-row-picked');
+                if (remainELe && deliverELe) {
+                    if (remainELe.innerHTML && deliverELe.innerHTML) {
+                        let remain = parseFloat(remainELe.innerHTML);
+                        let delivered = parseFloat(deliverELe.innerHTML);
+                        if (delivered > remain) {
+                            check = false;
+                            $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
+                            return false;
+                        }
+                    }
+                }
+            });
+            $tableProductLeased.DataTable().rows().every(function () {
+                let row = this.node();
+                let remainELe = row.querySelector('.table-row-remain');
+                let deliverELe = row.querySelector('.table-row-picked');
+                if (remainELe && deliverELe) {
+                    if (remainELe.innerHTML && deliverELe.innerHTML) {
+                        let remain = parseFloat(remainELe.innerHTML);
+                        let delivered = parseFloat(deliverELe.innerHTML);
+                        if (delivered > remain) {
+                            check = false;
+                            $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
+                            return false;
+                        }
+                    }
+                }
+            });
+
+            return check;
+        };
+
         static modalLogistics(customerID) {
             $.fn.callAjax2({
                 url: $url.attr('data-customer-detail').format_url_with_uuid(customerID),
@@ -1557,6 +1606,13 @@ $(async function () {
                 let $row = $tableLot.DataTable().row(rowIndex);
                 let rowData = $row.data();
 
+                let deliverEle = row.querySelector('.table-row-quantity-delivery');
+                if (deliverEle) {
+                    if (deliverEle.value) {
+                        rowData['quantity_delivery'] = parseFloat(deliverEle.value);
+                    }
+                }
+
                 if (rowData?.['quantity_delivery'] > 0) {
                     lotData.push({
                         'product_warehouse_lot_id': rowData?.['id'],
@@ -1595,6 +1651,14 @@ $(async function () {
                     rowData['serial_data'] = serialData;
                     rowData['lot_data'] = lotData;
                 }
+                // SP không quản lý lô hay serial thì số lượng nhập lấy số nhập trực tiếp
+                let deliverEle = row.querySelector('.table-row-picked');
+                if (deliverEle) {
+                    if (deliverEle.value) {
+                        rowData['picked_quantity'] = parseFloat(deliverEle.value);
+                    }
+                }
+                // Kiểm tra SP có quản lý lô hay serial thì số lượng nhập lấy tổng nhập của lô hay serial
                 if (rowData?.['product_data']?.['general_traceability_method'] === 1) {
                     if (rowData?.['lot_data']) {
                         let picked = 0;
@@ -1977,18 +2041,14 @@ $(async function () {
     $tablePW.on('change', '.table-row-picked', function () {
         let row = this.closest('tr');
         if (row) {
-            let availableEle = row.querySelector('.table-row-available');
-            if (parseFloat(this.value) > 0 && availableEle) {
-                if (parseFloat(this.value) > parseFloat(availableEle.innerHTML)) {
-                    $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
-                    this.value = 0;
-                }
+            DeliveryStoreDataHandle.storeData();
+            let check = prodTable.loadCheckExceedQuantity();
+            if (check === false) {
                 let rowIndex = $tablePW.DataTable().row(row).index();
                 let $row = $tablePW.DataTable().row(rowIndex);
                 let rowData = $row.data();
-
-                rowData['picked_quantity'] = parseFloat(this.value);
-                $tablePW.DataTable().row(rowIndex).data(rowData).draw();
+                rowData['picked_quantity'] = 0;
+                $tablePW.DataTable().row(rowIndex).data(rowData);
                 DeliveryStoreDataHandle.storeData();
             }
         }

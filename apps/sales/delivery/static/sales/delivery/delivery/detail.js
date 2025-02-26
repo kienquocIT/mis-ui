@@ -1032,14 +1032,12 @@ $(async function () {
                         width: '20%',
                         render: (data, type, row) => {
                             let value = 0;
+                            let picked = row?.['picked_quantity'] ? row?.['picked_quantity'] : 0;
+                            let leased = row?.['product_quantity_leased'] ? row?.['product_quantity_leased'] : 0;
                             if (row?.['offset_data']?.['id']) {
-                                if (row?.['picked_quantity'] && row?.['product_quantity_leased']) {
-                                    value = row?.['picked_quantity'] - row?.['product_quantity_leased'];
-                                }
+                                value = picked - leased;
                             } else {
-                                if (row?.['picked_quantity']) {
-                                    value = row?.['picked_quantity'];
-                                }
+                                value = picked;
                             }
                             return `<b class="table-row-picked">${value}</b>`;
                         },

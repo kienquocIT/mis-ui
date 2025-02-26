@@ -10184,8 +10184,8 @@ msgid "Reconciliation total must be 0"
 msgstr "Tổng cấn trừ phải bằng 0"
 
 #
-msgid "Click the button behind the box to select or input here"
-msgstr "Nhấn nút phía sau ô nhập để lựa chọn hoặc nhập tại đây"
+msgid "Click the button behind the box to select"
+msgstr "Nhấn nút phía sau ô nhập để lựa chọn"
 
 #
 msgid "View payment term information"

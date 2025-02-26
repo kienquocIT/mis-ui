@@ -12,7 +12,7 @@
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="customer-code">{% trans "Customer code" %}</label>
-                    <input class="form-control" id="customer-code">
+                    <input disabled readonly class="form-control" id="customer-code">
                 </div>
             </div>
             <div class="col-12 col-md-8 col-lg-8">
@@ -20,7 +20,7 @@
                     <label class="form-label" for="customer-name">{% trans "Customer" %}</label>
                     <div class="input-group">
                         <span class="input-affix-wrapper">
-                            <input type="text" placeholder="{% trans 'Click the button behind the box to select or input here' %}" class="form-control" id="customer-name">
+                            <input disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="customer-name">
                         </span>
                         <button type="button" class="btn btn-outline-secondary rounded" id="customer-select-btn" data-bs-toggle="modal" data-bs-target="#customer-select-modal">
                             <i class="bi bi-check2-circle" data-bs-toggle="tooltip" title="{% trans 'Select customer' %}"></i>

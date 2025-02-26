@@ -98,10 +98,6 @@ $(function () {
         GRDataTableHandle.tablePR.on('change', '.table-row-import', function () {
             let row = this.closest('tr');
             if (row) {
-                let checkEle = row.querySelector('.table-row-checkbox');
-                if (checkEle) {
-                    checkEle.checked = true;
-                }
                 GRStoreDataHandle.storeDataProduct();
                 let check = GRLoadDataHandle.loadCheckExceedQuantity();
                 if (check === false) {
@@ -110,10 +106,6 @@ $(function () {
                     let rowData = $row.data();
                     rowData['quantity_import'] = 0;
                     GRDataTableHandle.tablePR.DataTable().row(rowIndex).data(rowData);
-                    let checkEle = row.querySelector('.table-row-checkbox');
-                    if (checkEle) {
-                        checkEle.checked = true;
-                    }
                     GRStoreDataHandle.storeDataProduct();
                 }
             }
@@ -322,6 +314,8 @@ $(function () {
                 'total_tax',
                 'total',
                 'total_revenue_before_tax',
+                // is_no_warehouse
+                'is_no_warehouse',
                 // attachment
                 'attachment',
                 // abstract

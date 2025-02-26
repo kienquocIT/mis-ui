@@ -339,6 +339,15 @@
                 </div>
                 <div class="offcanvas-body">
                     <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6"></div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-check form-check-lg">
+                                <input type="checkbox" class="form-check-input" id="is_no_warehouse" name="is_no_warehouse">
+                                <label class="form-check-label" for="is_no_warehouse">{% trans 'No warehouse' %}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-12 col-md-6 col-lg-6 border-right">
                             <div data-simplebar class="h-350p nicescroll-bar">
                                 <table
@@ -349,19 +358,18 @@
                                 >
                                     <thead>
                                     <tr class="bg-light">
-                                        <th class="w-25">{% trans 'Product' %}</th>
-                                        <th class="w-20">{% trans 'UOM' %}(PO)</th>
-                                        <th class="w-10">{% trans 'Quantity' %}(PO)</th>
-                                        <th class="w-15">{% trans 'Received before' %}</th>
-                                        <th class="w-15">{% trans 'Remain' %}</th>
-                                        <th class="w-15">{% trans 'This time' %}</th>
+                                        <th>{% trans 'Product' %}</th>
+                                        <th>{% trans 'UOM' %}</th>
+                                        <th>{% trans 'Total' %}</th>
+                                        <th>{% trans 'Remain' %}</th>
+                                        <th>{% trans 'This time' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     </tbody>
                                 </table>
                             </div>
-                            <div data-simplebar class="h-350p nicescroll-bar" id="scroll-table-pr" hidden>
+                            <div data-simplebar class="h-350p nicescroll-bar" id="scroll-pr" hidden>
                                 <table
                                     id="datable-good-receipt-purchase-request"
                                     class="table nowrap w-100"
@@ -370,12 +378,11 @@
                                 >
                                     <thead>
                                     <tr class="bg-light">
-                                        <th class="w-25 th-custom"></th>
-                                        <th class="w-20">{% trans 'UOM' %}</th>
-                                        <th class="w-10">{% trans 'Quantity' %}</th>
-                                        <th class="w-15">{% trans 'Received before' %}</th>
-                                        <th class="w-15">{% trans 'Remain' %}</th>
-                                        <th class="w-15">{% trans 'This time' %}</th>
+                                        <th class="th-custom"></th>
+                                        <th>{% trans 'UOM' %}</th>
+                                        <th>{% trans 'Total' %}</th>
+                                        <th>{% trans 'Remain' %}</th>
+                                        <th>{% trans 'This time' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -384,7 +391,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div data-simplebar class="h-350p nicescroll-bar">
+                            <div data-simplebar class="h-350p nicescroll-bar" id="scroll-warehouse">
                                 <table
                                     id="datable-good-receipt-warehouse"
                                     class="table nowrap w-100"
@@ -403,8 +410,8 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div id="scroll-table-lot-serial" hidden>
-                                <div data-simplebar class="h-350p nicescroll-bar" id="table-good-receipt-manage-lot-area" hidden>
+                            <div>
+                                <div data-simplebar class="h-350p nicescroll-bar" id="scroll-lot" hidden>
                                     <table
                                         id="datable-good-receipt-manage-lot"
                                         class="table nowrap min-w-800p w-100"
@@ -427,7 +434,7 @@
                                         <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
                                     </button>
                                 </div>
-                                <div data-simplebar class="h-350p nicescroll-bar" id="table-good-receipt-manage-serial-area" hidden>
+                                <div data-simplebar class="h-350p nicescroll-bar" id="scroll-serial" hidden>
                                     <table
                                         id="datable-good-receipt-manage-serial"
                                         class="table nowrap min-w-800p w-100"
@@ -458,6 +465,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+                    <button type="button" class="btn btn-primary" id="btn-confirm-add-product" data-bs-dismiss="offcanvas">{% trans 'Save' %}</button>
                 </div>
             </div>
 

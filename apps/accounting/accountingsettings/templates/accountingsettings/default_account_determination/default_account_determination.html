@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Default account determination' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{#    <a href="{% url "AdvancePaymentCreate" %}">#}
+{#        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">#}
+{#            <span>#}
+{#                <span>{% trans 'Add' %}</span>#}
+{#                <span class="icon">#}
+{#                    <i class="fa-solid fa-plus"></i>#}
+{#                </span>#}
+{#            </span>#}
+{#        </button>#}
+{#    </a>#}
+{% endblock %}
+{% block pageContent %}
+    <script id="trans-script"
+    ></script>
+    <script id="url-script"
+    ></script>
+    <div class="row">
+        <div class="col-12">
+            {% include 'accountingsettings/default_account_determination/common/btn-list.html' %}
+            {% include 'accountingsettings/default_account_determination/common/table.html' %}
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/accountingsettings/default_account_determination/default_account_determination.js' %}"></script>
+{% endblock %}

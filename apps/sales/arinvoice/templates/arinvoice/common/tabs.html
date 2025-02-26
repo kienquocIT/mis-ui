@@ -1,17 +1,17 @@
 {% load i18n %}
 
-<div class="row mt-3">
+<div class="row mt-3 mb-10">
     <div class="col-12">
-        <ul class="nav nav-line nav-tabs nav-light" id="tab-select-table">
+        <ul class="nav nav-icon nav-primary-custom" id="tab-select-table">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-list"></i></span></span>
                     <span class="nav-link-text">{% trans 'Line Detail' %}</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
-                    <span class="nav-icon-wrap"></span>
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-file-earmark-arrow-up"></i></span></span>
                     <span class="nav-link-text">{% trans 'Attachment' %}</span>
                 </a>
             </li>
@@ -60,19 +60,24 @@
                 </div>
                 <div class="row">
                     <div class="col-12 col-lg-7 mt-3">
-                        <div class="btn-group dropdown" id="add_row_dropdown">
+                        <button type="button" id="add_row_items_btn" class="btn btn-primary btn-sm">
+                            {% trans 'Add new row' %}
+                        </button>
+                        <div hidden class="btn-group dropdown" id="add_row_dropdown">
                             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {% trans 'Add new row' %}
+                                {% trans 'Edit' %}
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" id="add_row_items_btn"><i class="dropdown-icon bi bi-box"></i><span>{% trans 'Add new product row' %}</span></a>
-                                <a class="dropdown-item" id="add_row_items_btn_without_prd"><i class="dropdown-icon bi bi-blockquote-left"></i><span>{% trans 'Add new description row' %}</span></a>
+                                <a class="dropdown-item" id="edit_items_btn">
+                                    <i class="dropdown-icon far fa-edit"></i>
+                                    <span>{% trans 'Edit items' %}</span>
+                                </a>
+                                <a class="dropdown-item" id="add_item_des">
+                                    <i class="dropdown-icon fas fa-quote-right"></i>
+                                    <span>{% trans 'Add new description' %}</span>
+                                </a>
                             </div>
                         </div>
-                        <button hidden type="button" id="edit_items_btn" class="btn btn-primary btn-sm">
-                            <i class="far fa-edit"></i>
-                            {% trans 'Edit items' %}
-                        </button>
                     </div>
                     <div class="col-12 col-lg-5 mt-3 text-right">
                         <div class="row">
@@ -86,7 +91,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label for="taxes-value" class="col-4 col-form-label text-danger">{% trans 'Discount' %}</label>
+                            <label for="discount-all" class="col-4 col-form-label text-danger">{% trans 'Discount' %}</label>
                             <div class="col-8">
                                 <input disabled
                                        class="text-danger text-right form-control form-control-line mask-money zone-readonly mb-1"

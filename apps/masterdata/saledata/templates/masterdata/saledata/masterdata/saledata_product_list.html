@@ -15,6 +15,7 @@
             data-trans-notify="{% trans 'This action can not be undo!' %}"
             data-trans-delete="{% trans 'Delete' %}"
             data-trans-cancel="{% trans 'Cancel' %}"
+            data-trans-uom-group-info="{% trans 'This group is to manage Units of measure not created from Blow in one place. For example: Units of measure imported from excel file in Quotation function, ...' %}"
     ></script>
     <div class="row">
         <div class="col-12 col-lg-2 col-md-2">
@@ -152,7 +153,8 @@
             </div>
         </div>
     </div>
-
+{% endblock %}
+{% block modalData %}
     <div class="modal fade" id="modal-new-product-type" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">

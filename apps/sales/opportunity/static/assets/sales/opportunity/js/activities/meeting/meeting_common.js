@@ -225,7 +225,12 @@ $('#btn-offcanvas-resend-email').on('click', function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                $.fn.notifyB({'description': 'Send email successfully!'}, 'success');
+                if (data?.['opportunity_meeting_detail']?.['send_success']) {
+                    $.fn.notifyB({description: trans_script.attr('data-sent')}, 'success')
+                }
+                else {
+                    $.fn.notifyB({description: trans_script.attr('data-err')}, 'failure')
+                }
                 $('#offcanvas-meeting-detail').offcanvas('hide')
                 loadOpportunityMeetingList()
                 WindowControl.hide();
@@ -308,22 +313,13 @@ class MeetingHandle {
         loadOpportunityMeetingList();
         loadEmployeeAttended();
         const {
-            create_open,from_opp,
-            opp_id,
-            opp_title,
-            opp_code,
-            process_id,
-            process_title,
-            process_stage_app_id,
-            process_stage_app_title,
-            inherit_id,
-            inherit_title,
+            create_open, opp_id, opp_title, opp_code,
+            process_id, process_title, process_stage_app_id, process_stage_app_title,
+            inherit_id, inherit_title
         } = $x.fn.getManyUrlParameters([
-            'create_open', 'from_opp',
-            'opp_id', 'opp_title', 'opp_code',
-            'process_id', 'process_title',
-            'process_stage_app_id', 'process_stage_app_title',
-            'inherit_id', 'inherit_title',
+            'create_open', 'opp_id', 'opp_title', 'opp_code',
+            'process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title',
+            'inherit_id', 'inherit_title'
         ])
         const group$ = $('#offcanvas-meeting')
         if (create_open) {
@@ -361,27 +357,6 @@ class MeetingHandle {
                 data_inherit: data_inherit,
                 data_process: data_process,
                 data_process_stage_app: data_process_stage_app,
-            }).init();
-
-            MeetingHandle.LoadPageActionWithParams(opp_id)
-        }
-        else if (from_opp) {
-            const data_opp = [{
-                "id": opp_id || '',
-                "title": opp_title || '',
-                "code": opp_code || '',
-                "selected": true,
-            }];
-            new $x.cls.bastionField({
-                list_from_app: "opportunity.meetingwithcustomer.create",
-                app_id: "2fe959e3-9628-4f47-96a1-a2ef03e867e3",
-                mainDiv: group$,
-                oppEle: group$.find('select[name=opportunity_id]'),
-                prjEle: group$.find('select[name=project_id]'),
-                empInheritEle: group$.find('select[name=employee_inherit_id]'),
-                processEle: group$.find('select[name=process]'),
-                processStageAppEle$: group$.find('select[name=process_stage_app]'),
-                data_opp: data_opp,
             }).init();
 
             MeetingHandle.LoadPageActionWithParams(opp_id)

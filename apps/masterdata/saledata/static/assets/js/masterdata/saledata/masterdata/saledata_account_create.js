@@ -29,7 +29,7 @@ $(document).ready(function () {
                     className: 'wrap-text w-10',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
-                            return `<span class="badge badge-secondary w-70">${data}</span>`
+                            return `<span class="badge badge-light w-70">${data}</span>`
                         }
                         return `<span class="badge badge-primary w-70">${data}</span>`
                     }

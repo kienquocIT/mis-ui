@@ -23,25 +23,30 @@
             data-hour="{% trans 'hour(s)' %}"
             data-minute="{% trans 'min(s)' %}"
     ></script>
-    <table class="table w-100 nowrap"
-           id="meeting-schedule-list"
-           data-method="GET"
-           data-url="{% url 'MeetingScheduleListAPI' %}"
-           data-url-detail="{% url 'MeetingScheduleDetail' '0' %}"
-    >
-    <thead>
-    <tr>
-        <td></td>
-        <td>{% trans 'Name' %}</td>
-        <td>{% trans 'Type' %}</td>
-        <td>{% trans 'Room' %}</td>
-        <td>{% trans 'Date occur' %}</td>
-        <td>{% trans 'Duration' %}</td>
-        <td>{% trans 'Status' %}</td>
-    </tr>
-    </thead>
-    <tbody></tbody>
-    </table>
+    <div class="row">
+        <div class="col-12">
+            <a class="text-blue" href="{% url 'MeetingZoomConfigList' %}" data-bs-toggle="tooltip" title="{% trans 'Zoom account config here' %}">
+                <i class="fa-solid fa-user"></i>&nbsp;
+                <img style="height: 10px;"
+                     src="https://st1.zoom.us/fe-static/fe-signup-login-active/img/ZoomNewLogo.b2fd5c95.png"
+                     alt="Zoom Logo">
+            </a>
+        </div>
+        <div class="col-12">
+            <table class="table w-100 nowrap" id="meeting-schedule-list" data-method="GET" data-url="{% url 'MeetingScheduleListAPI' %}" data-url-detail="{% url 'MeetingScheduleDetail' '0' %}">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Name' %}</th>
+                    <th>{% trans 'Type' %}</th>
+                    <th>{% trans 'Date occur' %}</th>
+                    <th>{% trans 'Duration' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/meeting/meeting_list.js' %}"></script>

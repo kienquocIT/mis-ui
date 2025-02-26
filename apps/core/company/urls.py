@@ -1,5 +1,5 @@
 from django.urls import path
-from apps.core.company.views import CompanyUserNotMapEmployeeListAPI, CompanyLogoUpload, CompanyBankAccountListAPI
+from apps.core.company.views import CompanyUserNotMapEmployeeListAPI, CompanyLogoUpload, CompanyBankAccountListAPI, AccountingPoliciesConfigDetailAPI
 
 from apps.core.company.views import (
     CompanyList, CompanyListAPI, CompanyListOverviewList, CompanyListOverviewListAPI,
@@ -10,6 +10,7 @@ from apps.core.company.views import (
 
 urlpatterns = [
     path('config', CompanyConfigDetailAPI.as_view(), name='CompanyConfigDetailAPI'),
+    path('accounting-policies-config', AccountingPoliciesConfigDetailAPI.as_view(), name='AccountingPoliciesConfigDetailAPI'),
     path('list', CompanyList.as_view(), name='CompanyList'),
     path('create', CompanyCreate.as_view(), name='CompanyCreate'),
     path('detail/<str:pk>', CompanyDetail.as_view(), name='CompanyDetail'),

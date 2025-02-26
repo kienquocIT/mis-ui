@@ -100,9 +100,9 @@
                         <th style="min-width: 30px"></th>
                         <th style="min-width: 200px">{% trans 'Product' %}</th>
                         <th style="min-width: 120px">{% trans 'Goods receipt' %}</th>
-                        <th style="min-width: 120px">{% trans 'Purchase request' %}</th>
+                        <th style="min-width: 100px">{% trans 'Purchase request' %}</th>
                         <th style="min-width: 100px">{% trans 'Date' %}</th>
-                        <th style="min-width: 200px">{% trans 'PIC' %}</th>
+                        <th style="min-width: 180px">{% trans 'PIC' %}</th>
                         <th style="min-width: 150px">{% trans 'Warehouse' %}</th>
                         <th style="min-width: 100px">{% trans 'Quantity' %}</th>
                         <th style="min-width: 80px">{% trans 'Serial' %}/{% trans 'Lot' %}</th>
@@ -112,7 +112,8 @@
             </table>
         </div>
     </div>
-
+{% endblock %}
+{% block modalData %}
     <div class="modal fade" id="modal-serial" tabindex="-1" role="dialog" aria-labelledby="modal-serial" aria-hidden="true">
         <div class="modal-dialog modal-lg min-w-1280p" role="document">
             <div class="modal-content">

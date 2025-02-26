@@ -52,6 +52,7 @@ urlpatterns = \
         path('', include('apps.core.urls')),
         path('', include('apps.masterdata.urls')),
         path('', include('apps.sales.urls')),
+        path('', include('apps.accounting.urls')),
         path('', include('apps.eoffice.urls')),
         path('hrm/', include('apps.hrm.urls')),
         path('site/', include('apps.web_builder.urls.viewer')),

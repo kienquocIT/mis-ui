@@ -289,6 +289,7 @@ class MaskMoney2 {
         let strDataParsed = parseFloat(strAttrValue);
         if (strAttrValue !== null && Number.isFinite(strDataParsed)) {
             strAttrValue = strDataParsed.toString();
+            // strAttrValue = (strDataParsed >= 0 ? strDataParsed : strDataParsed * (-1)).toString();
 
             // apply mask-money config
             let prefix = this.configData?.['prefix'];
@@ -312,6 +313,7 @@ class MaskMoney2 {
                     } else result = rs.reverse().join("");
                 }
                 return (prefix ? prefix : "") + result + (suffix ? suffix : "");
+                // return strDataParsed >= 0 ? (prefix ? prefix : "") + result + (suffix ? suffix : "") :  '(' + (prefix ? prefix : "") + result + (suffix ? suffix : "") + ')';
             }
         }
     }

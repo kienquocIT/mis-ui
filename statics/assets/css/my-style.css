@@ -1255,3 +1255,45 @@ ul.dm-uploader-result-list li:hover .btn-download-file {
     top: 0;
     z-index: 9999;
 }
+
+/*for custom table group*/
+table.dataTable tr.dtrg-group th {
+    background-color: white !important;
+    color: #007D88 !important;
+    font-size: large !important;
+    text-align: left !important
+}
+/*end*/
+
+/*for custom nav*/
+.nav-primary-custom {
+    display: flex;
+    border-bottom: 1px solid #c8c8c8;
+}
+
+.nav-primary-custom .nav-item {
+    text-align: center !important;
+}
+
+.nav-primary-custom .nav-link {
+    color: #6c757d;
+    background-color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.nav-primary-custom .nav-link.active {
+    color: #007D88;
+    border-bottom: 3px solid #007D88;
+}
+
+.nav-primary-custom .nav-link .nav-icon-wrap {
+    transition: transform 0.2s ease-in-out;
+}
+
+.nav-primary-custom .nav-link:hover .nav-icon-wrap {
+    transform: rotate(10deg) translateX(3px) translateY(-3px);
+}
+/*end*/

@@ -31,7 +31,7 @@ $(document).ready(function () {
     const table_timeline = $('#table-timeline');
 
     // variable for auto select stage
-    let condition_is_quotation_confirm = false;
+    let condition_quotation_approved = false;
     let condition_sale_oder_approved = false;
     let condition_sale_oder_delivery_status = false;
     let list_stage = [];
@@ -173,8 +173,8 @@ $(document).ready(function () {
                         let quotation_id = opportunity_detail.quotation.id;
                         let link = quotation_id !== undefined ? urlEle.data('url-related-quotation').format_url_with_uuid(quotation_id) : '#';
                         $('#item-related-quotation').attr('href', link)
-                        if (opportunity_detail.quotation.is_customer_confirm === true) {
-                            condition_is_quotation_confirm = true;
+                        if (opportunity_detail.quotation.system_status === 3) {
+                            condition_quotation_approved = true;
                         }
                     }
 
@@ -203,7 +203,7 @@ $(document).ready(function () {
                         list_stage_condition,
                         list_stage,
                         condition_sale_oder_approved,
-                        condition_is_quotation_confirm,
+                        condition_quotation_approved,
                         condition_sale_oder_delivery_status,
                         config_is_input_rate,
                         dict_stage
@@ -226,7 +226,7 @@ $(document).ready(function () {
                     if (data_opp_detail) {
                         let goto_call_log = $('#goto-call-log')
                         let call_log_param_url = OpportunityLoadPage.push_param_to_url(goto_call_log.attr('data-url'), {
-                            'from_opp': true,
+                            'create_open': true,
                             'opp_id': data_opp_detail?.['id'],
                             'opp_title': data_opp_detail?.['title'],
                             'opp_code': data_opp_detail?.['code'],
@@ -236,7 +236,7 @@ $(document).ready(function () {
                         goto_call_log.attr('href', call_log_param_url)
                         let goto_email = $('#goto-email')
                         let email_param_url = OpportunityLoadPage.push_param_to_url(goto_email.attr('data-url'), {
-                            'from_opp': true,
+                            'create_open': true,
                             'opp_id': data_opp_detail?.['id'],
                             'opp_title': data_opp_detail?.['title'],
                             'opp_code': data_opp_detail?.['code'],
@@ -246,7 +246,7 @@ $(document).ready(function () {
                         goto_email.attr('href', email_param_url)
                         let goto_meeting = $('#goto-meeting')
                         let meeting_param_url = OpportunityLoadPage.push_param_to_url(goto_meeting.attr('data-url'), {
-                            'from_opp': true,
+                            'create_open': true,
                             'opp_id': data_opp_detail?.['id'],
                             'opp_title': data_opp_detail?.['title'],
                             'opp_code': data_opp_detail?.['code'],
@@ -582,7 +582,7 @@ $(document).ready(function () {
                         list_stage_condition,
                         list_stage,
                         condition_sale_oder_approved,
-                        condition_is_quotation_confirm,
+                        condition_quotation_approved,
                         condition_sale_oder_delivery_status,
                         config_is_input_rate,
                         dict_stage

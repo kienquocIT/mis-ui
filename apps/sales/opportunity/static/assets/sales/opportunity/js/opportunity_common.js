@@ -388,8 +388,7 @@ class OpportunityLoadDetail {
         $.fn.compareStatusShowPageAction(opportunity_detail);
         // console.log(opportunity_detail)
         let stage_obj = await OpportunityLoadDetail.loadStage(opportunity_detail.stage, opportunity_detail.is_close_lost, opportunity_detail.is_deal_close);
-        let ele_header = $('#header-title');
-        ele_header.text(opportunity_detail.title);
+        $('#header-title').text(opportunity_detail.title);
         $('#span-code').text(opportunity_detail.code);
         $('#rangeInput').val(opportunity_detail.win_rate);
         let ele_input_rate = $('#input-rate');
@@ -1402,7 +1401,7 @@ class LoadConfigAndLoadStage {
         list_stage_condition,
         list_stage,
         condition_sale_oder_approved,
-        condition_is_quotation_confirm,
+        condition_quotation_approved,
         condition_sale_oder_delivery_status,
         config_is_input_rate,
         dict_stage
@@ -1518,14 +1517,14 @@ class LoadConfigAndLoadStage {
         let ele_decision_maker = $('#input-decision-maker');
         if (ele_decision_maker.attr('data-id') === '') {
             list_property_config.push({
-                'property': 'Decision maker',
+                'property': 'Decision Maker',
                 'comparison_operator': '=',
                 'compare_data': '0',
             })
         }
         else {
             list_property_config.push({
-                'property': 'Decision maker',
+                'property': 'Decision Maker',
                 'comparison_operator': '≠',
                 'compare_data': '0',
             })
@@ -1533,14 +1532,14 @@ class LoadConfigAndLoadStage {
 
         if (OpportunityLoadDetail.productTableEle.DataTable().data().length === 0) {
             list_property_config.push({
-                'property': 'Product.Line.Detail',
+                'property': 'Product Line Detail',
                 'comparison_operator': '=',
                 'compare_data': '0',
             })
         }
         else {
             list_property_config.push({
-                'property': 'Product.Line.Detail',
+                'property': 'Product Line Detail',
                 'comparison_operator': '≠',
                 'compare_data': '0',
             })
@@ -1549,14 +1548,14 @@ class LoadConfigAndLoadStage {
         let ele_competitor_win = $('.input-win-deal:checked');
         if (ele_competitor_win.length === 0) {
             list_property_config.push({
-                'property': 'Competitor.Win',
+                'property': 'Competitor Win',
                 'comparison_operator': '≠',
                 'compare_data': '0',
             })
         }
         else {
             list_property_config.push({
-                'property': 'Competitor.Win',
+                'property': 'Competitor Win',
                 'comparison_operator': '=',
                 'compare_data': '0',
             })
@@ -1578,16 +1577,16 @@ class LoadConfigAndLoadStage {
             })
         }
 
-        if (condition_is_quotation_confirm) {
+        if (condition_quotation_approved) {
             list_property_config.push({
-                'property': 'Quotation.confirm',
+                'property': 'Quotation Status',
                 'comparison_operator': '=',
                 'compare_data': '0',
             })
         }
         else {
             list_property_config.push({
-                'property': 'Quotation.confirm',
+                'property': 'Quotation Status',
                 'comparison_operator': '≠',
                 'compare_data': '0',
             })
@@ -1595,14 +1594,14 @@ class LoadConfigAndLoadStage {
 
         if (condition_sale_oder_approved) {
             list_property_config.push({
-                'property': 'SaleOrder.status',
+                'property': 'SaleOrder Status',
                 'comparison_operator': '=',
                 'compare_data': '0',
             })
         }
         else {
             list_property_config.push({
-                'property': 'SaleOrder.status',
+                'property': 'SaleOrder Status',
                 'comparison_operator': '≠',
                 'compare_data': '0',
             })
@@ -1610,15 +1609,15 @@ class LoadConfigAndLoadStage {
 
         if (condition_sale_oder_delivery_status) {
             list_property_config.push({
-                'property': 'SaleOrder.Delivery.Status',
-                'comparison_operator': '≠',
+                'property': 'SaleOrder Delivery Status',
+                'comparison_operator': '=',
                 'compare_data': '0',
             })
         }
         else {
             list_property_config.push({
-                'property': 'SaleOrder.Delivery.Status',
-                'comparison_operator': '=',
+                'property': 'SaleOrder Delivery Status',
+                'comparison_operator': '≠',
                 'compare_data': '0',
             })
         }
@@ -2382,7 +2381,7 @@ class OpportunityLoadPage {
                     let create_ap_sc = $('#create-advance-payment-shortcut')
                     create_ap_sc.removeClass('disabled');
                     let param_url = OpportunityLoadPage.push_param_to_url(create_ap_sc.attr('data-url'), {
-                        'from_opp': true,
+                        'create_open': true,
                         'opp_id': results_perm_app[2]?.['id'],
                         'opp_code': results_perm_app[2]?.['code'],
                         'opp_title': results_perm_app[2]?.['title'],
@@ -2395,7 +2394,7 @@ class OpportunityLoadPage {
                     let create_payment_sc = $('#create-payment-shortcut')
                     create_payment_sc.removeClass('disabled');
                     let param_url = OpportunityLoadPage.push_param_to_url(create_payment_sc.attr('data-url'), {
-                        'from_opp': true,
+                        'create_open': true,
                         'opp_id': results_perm_app[3]?.['id'],
                         'opp_code': results_perm_app[3]?.['code'],
                         'opp_title': results_perm_app[3]?.['title'],
@@ -2408,11 +2407,12 @@ class OpportunityLoadPage {
                     let create_bom_sc = $('#create-project-bom-shortcut')
                     create_bom_sc.removeClass('disabled');
                     let param_url = OpportunityLoadPage.push_param_to_url(create_bom_sc.attr('data-url'), {
-                        'from_opp': true,
+                        'create_open': true,
                         'opp_id': results_perm_app[4]?.['id'],
                         'opp_code': results_perm_app[4]?.['code'],
                         'opp_title': results_perm_app[4]?.['title'],
-                        'sale_person_mapped': encodeURIComponent(JSON.stringify(results_perm_app[4]?.['sale_person'])),
+                        'inherit_id': results_perm_app[4]?.['sale_person']?.['id'],
+                        'inherit_title': results_perm_app[4]?.['sale_person']?.['full_name'],
                     })
                     create_bom_sc.attr('href', param_url)
                 }

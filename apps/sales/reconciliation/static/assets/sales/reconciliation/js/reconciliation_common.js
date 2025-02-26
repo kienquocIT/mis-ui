@@ -29,23 +29,17 @@ const table_recon_column_opts_ar = [
         }
     },
     {
-        className: 'wrap-text w-10',
+        className: 'wrap-text w-15',
         render: (data, type, row) => {
             let document_code = ''
             if (row?.['ar_invoice_data'] ? Object.keys(row?.['ar_invoice_data']).length > 0 : false) {
                 document_code = row?.['ar_invoice_data']?.['code'] ? row?.['ar_invoice_data']?.['code'] : ''
             }
-            return `<span class="badge badge-soft-primary document_code">${document_code}</span>`;
-        }
-    },
-    {
-        className: 'wrap-text w-10',
-        render: (data, type, row) => {
             let document_type = ''
             if (row?.['ar_invoice_data'] ? Object.keys(row?.['ar_invoice_data']).length > 0 : false) {
                 document_type = $trans_script.attr('data-trans-ar')
             }
-            return `<span class="document_type">${document_type}</span>`;
+            return `<span class="badge badge-soft-primary document_code mr-2">${document_code}</span><span class="document_type small">(${document_type})</span>`;
         }
     },
     {
@@ -59,7 +53,7 @@ const table_recon_column_opts_ar = [
         }
     },
     {
-        className: 'wrap-text text-right w-10',
+        className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
             if (row?.['ar_invoice_data'] ? Object.keys(row?.['ar_invoice_data']).length > 0 : false) {
                 let sum_total_value = row?.['ar_invoice_data']?.['sum_total_value'] ? row?.['ar_invoice_data']?.['sum_total_value'] : 0
@@ -69,7 +63,7 @@ const table_recon_column_opts_ar = [
         }
     },
     {
-        className: 'wrap-text text-right w-10',
+        className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
             let recon_balance = row?.['recon_balance'] ? row?.['recon_balance'] : 0
             if (row?.['ar_invoice_data'] ? Object.keys(row?.['ar_invoice_data']).length > 0 : false) {
@@ -89,7 +83,7 @@ const table_recon_column_opts_ar = [
         }
     },
     {
-        className: 'wrap-text w-20',
+        className: 'wrap-text w-15',
         render: (data, type, row) => {
             return `<textarea disabled ${row?.['id'] ? 'disabled readonly' : ''} rows="1" class="form-control note"></textarea>`;
         }
@@ -123,23 +117,18 @@ const table_recon_column_opts_cif = [
         }
     },
     {
-        className: 'wrap-text w-10',
+        className: 'wrap-text w-15',
         render: (data, type, row) => {
             let document_code = ''
             if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
                 document_code = row?.['cash_inflow_data']?.['code'] ? row?.['cash_inflow_data']?.['code'] : ''
             }
-            return `<span class="badge badge-soft-danger document_code">${document_code}</span>`;
-        }
-    },
-    {
-        className: 'wrap-text w-10',
-        render: (data, type, row) => {
+
             let document_type = ''
             if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
                 document_type = $trans_script.attr('data-trans-cif')
             }
-            return `<span class="document_type">${document_type}</span>`;
+            return `<span class="badge badge-soft-danger document_code mr-2">${document_code}</span><span class="document_type small">(${document_type})</span>`;
         }
     },
     {
@@ -153,7 +142,7 @@ const table_recon_column_opts_cif = [
         }
     },
     {
-        className: 'wrap-text text-right w-10',
+        className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
             if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
                 let sum_total_value = row?.['cash_inflow_data']?.['sum_total_value'] ? row?.['cash_inflow_data']?.['sum_total_value'] : 0
@@ -163,7 +152,7 @@ const table_recon_column_opts_cif = [
         }
     },
     {
-        className: 'wrap-text text-right w-10',
+        className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
             let recon_balance = row?.['recon_balance'] ? row?.['recon_balance'] : 0
             if (row?.['cash_inflow_data'] ? Object.keys(row?.['cash_inflow_data']).length > 0 : false) {
@@ -183,7 +172,7 @@ const table_recon_column_opts_cif = [
         }
     },
     {
-        className: 'wrap-text w-20',
+        className: 'wrap-text w-15',
         render: (data, type, row) => {
             return `<textarea disabled ${row?.['id'] ? 'disabled readonly' : ''} rows="1" class="form-control note"></textarea>`;
         }
@@ -299,6 +288,8 @@ class ReconAction {
 
         Promise.all([ar_items_ajax, cif_items_ajax]).then(
             (results) => {
+                console.log(results)
+
                 let ar_items_data_list = []
                 let ar_items_data = results[0]
                 for (let i=0; i < ar_items_data.length; i++) {
@@ -323,7 +314,15 @@ class ReconAction {
                         })
                     }
                 }
-                ReconLoadPage.LoadTableReconAR($table_recon_ar, ar_items_data_list.concat(ar_items_data_list))
+                ReconLoadPage.LoadTableReconAR(
+                    $table_recon_ar,
+                    ar_items_data_list.reduce((acc, item) => { // lọc trùng khi lấy payment term của SO có nhiều AR Invoice
+                        if (!acc.some(existingItem => existingItem.ar_invoice_data.id === item.ar_invoice_data.id)) {
+                            acc.push(item);
+                        }
+                        return acc;
+                    }, [])
+                )
 
                 let cif_items_data_list = []
                 let cif_items_data = results[1]
@@ -472,11 +471,17 @@ class ReconHandle {
     }
 }
 
+$(document).on('change', '.negative-no', function () {
+    let old_val = $(this).val()
+    $(this).val('('+ old_val +')')
+})
+
 $(document).on('change', '.selected_document', function () {
     $(this).closest('tr').find('.recon_amount').attr(
         'value',
-        $(this).prop('checked') ? $(this).closest('tr').find('.balance_value').attr('data-init-money') : 0
+        $(this).prop('checked') ? parseFloat($(this).closest('tr').find('.balance_value').attr('data-init-money')) : 0
     ).prop('disabled', !$(this).prop('checked'))
+
     $(this).closest('tr').find('.note').prop('disabled', !$(this).prop('checked'))
     ReconAction.RecalculateReconTotal()
 })
@@ -489,4 +494,29 @@ $(document).on('change', '.recon_amount', function () {
         $(this).attr('value', balance_value)
     }
     ReconAction.RecalculateReconTotal()
+})
+
+$(document).on('mouseenter', '#table-recon-ar tbody tr', function () {
+    let row_index = parseFloat($(this).closest('tr').find('td:eq(0)').text())
+    if ($.fn.getPkDetail()) {
+        $table_recon_ar.find('tbody tr').removeClass('bg-primary-light-5')
+        $(this).closest('tr').addClass('bg-primary-light-5')
+        $table_recon_cif.find('tbody tr').removeClass('bg-danger-light-5')
+        $table_recon_cif.find(`tbody tr:eq(${row_index - 1})`).addClass('bg-danger-light-5')
+    }
+})
+
+$(document).on('mouseenter', '#table-recon-cif tbody tr', function () {
+    let row_index = parseFloat($(this).closest('tr').find('td:eq(0)').text())
+    if ($.fn.getPkDetail()) {
+        $table_recon_cif.find('tbody tr').removeClass('bg-danger-light-5')
+        $(this).closest('tr').addClass('bg-danger-light-5')
+        $table_recon_ar.find('tbody tr').removeClass('bg-primary-light-5')
+        $table_recon_ar.find(`tbody tr:eq(${row_index - 1})`).addClass('bg-primary-light-5')
+    }
+})
+
+$(document).on('mouseleave', 'table tbody tr', function () {
+    $table_recon_ar.find('tbody tr').removeClass('bg-primary-light-5')
+    $table_recon_cif.find('tbody tr').removeClass('bg-danger-light-5')
 })

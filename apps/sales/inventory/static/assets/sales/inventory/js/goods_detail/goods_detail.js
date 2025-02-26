@@ -382,7 +382,7 @@ $(document).ready(function () {
                 LoadDate($(this), $(this).val() === '')
             })
             $table_serial.DataTable().page('last').draw('page');
-            $.fn.notifyB({description: '1 row added on the last page!'}, 'success');
+            $(row_added).find('.vendor_serial_number').focus()
         }
     })
 

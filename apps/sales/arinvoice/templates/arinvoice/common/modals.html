@@ -1,0 +1,120 @@
+{% load i18n %}
+
+<div class="modal fade" id="customer-select-modal" tabindex="-1" role="dialog" aria-labelledby="customer-select-modal" aria-hidden="true">
+    <div class="modal-dialog" style="min-width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Select customer' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table nowrap w-100"
+                           id="table-select-customer"
+                           data-method="GET" data-url="{% url 'AccountListAPI' %}"
+                    >
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th>{% trans 'Customer' %}</th>
+                                <th>{% trans 'Tax number' %}</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="select-customer-btn" class="btn btn-primary">{% trans 'Select' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="view-payment-term-modal" tabindex="-1" role="dialog" aria-labelledby="view-payment-term-modal" aria-hidden="true">
+    <div class="modal-dialog" style="min-width: 80%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Payment term information' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <table id="payment-term-info-table" class="table nowrap w-100">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>{% trans 'Term' %}</th>
+                                <th>{% trans 'Remark' %}</th>
+                                <th>{% trans 'Date' %}</th>
+                                <th>% {% trans 'Payment' %}</th>
+                                <th>{% trans 'Value before tax' %}</th>
+                                <th>{% trans 'Total payment' %}</th>
+                                <th>{% trans 'Due date' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="offcanvas offcanvas-end w-80" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">{% trans 'Select Delivery' %}</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive" style="max-height: 250px;">
+                        <table class="table w-100 nowrap" id="table-select-delivery">
+                            <thead class="bg-primary-light-5">
+                            <tr>
+                                <th class="w-10"></th>
+                                <th class="w-20">{% trans 'Code' %}</th>
+                                <th class="w-40">{% trans 'Name' %}</th>
+                                <th class="w-15 text-center">{% trans 'Already' %}</th>
+                                <th class="w-15 text-center">{% trans 'Select' %}</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="table-responsive mt-5" style="max-height: 250px;">
+                        <table class="table w-100 nowrap" id="table-product-detail">
+                            <thead class="bg-secondary-light-5">
+                            <tr>
+                                <th class="w-10"></th>
+                                <th class="w-30">{% trans 'Product' %}</th>
+                                <th class="w-15">{% trans 'UOM' %}</th>
+                                <th class="w-15">{% trans 'Total' %}</th>
+                                <th class="w-15">{% trans 'Already' %}</th>
+                                <th class="w-15">{% trans 'This time' %}</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-12 text-right mt-5">
+                    <button type="button" id="add-product-btn" class="btn btn-custom btn-primary btn-wth-icon">
+                        <span>
+                            <span>{% trans 'Add' %}</span>
+                            <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -49,10 +49,12 @@
         {% include 'sales/production/opportunitybom/common/information.html' %}
     </form>
 {% endblock %}
+{% block modalData %}
+    {% include 'sales/production/opportunitybom/common/modals.html' %}
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/tinymce/jquery.tinymce.min.js' %}"></script>
-    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/sales/production/js/opportunitybom/oppbom_common.js' %}"></script>
     <script src="{% static 'assets/sales/production/js/opportunitybom/oppbom_create.js' %}"></script>
 {% endblock %}

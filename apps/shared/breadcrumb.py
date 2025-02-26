@@ -89,7 +89,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Master data config
     MASTER_DATA_PRICE_PAGE = BreadcrumbChildren(_('Master data price'), 'PriceMasterDataList')
-    MEETING_CONFIG_PAGE = BreadcrumbChildren(_('Meeting config'), 'MeetingConfigList')
+    MEETING_CONFIG_PAGE = BreadcrumbChildren(_('Meeting config'), 'MeetingScheduleMasterdataList')
 
     # Master Data
     CONTACT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Contact'), 'ContactMasterDataList')
@@ -203,7 +203,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
 
     # Document
-    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Document'), 'DocumentTypeMasterDataList')
+    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Document'), 'DocumentTypeMasterDataList')
 
     # Bidding Result config
     BIDDING_RESULT_CONFIG_PAGE = BreadcrumbChildren(_('Bidding'), 'BiddingResultConfigList')
@@ -324,6 +324,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ASSET_TOOLS_RETURN_LIST = BreadcrumbChildren(_('Asset, Tools return list'), 'AssetToolsReturnList')
 
     MEETING_SCHEDULE_LIST_PAGE = BreadcrumbChildren(_('Meeting schedule list'), 'MeetingScheduleList')
+    MEETING_ZOOM_CONFIG_LIST_PAGE = BreadcrumbChildren(_('Zoom account config'), 'MeetingZoomConfigList')
     MEETING_SCHEDULE_CREATE_PAGE = BreadcrumbChildren(_('Meeting schedule create'), 'MeetingScheduleCreate')
     MEETING_SCHEDULE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
@@ -332,6 +333,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DASHBOARD_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline dashboard'), 'DashboardPipelineList')
 
     PERIODS_CONFIG_PAGE = BreadcrumbChildren(_('Periods config'), 'PeriodsConfigList')
+    ACCOUNTING_POLICIES_PAGE = BreadcrumbChildren(_('Accounting policies'), 'AccountingPoliciesList')
 
     BALANCE_INIT_PAGE = BreadcrumbChildren(_('Balance initialization'), 'BalanceInitList')
 
@@ -447,6 +449,16 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     CONTRACT_TEMPLATE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     CONTRACT_TEMPLATE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    # Accounting
+    CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of accounts'), 'ChartOfAccountsList')
+    DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(_('Default account determination'), 'DefaultAccountDeterminationList')
+
+    # Journal entry
+    JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry'), 'JournalEntryList')
+    JOURNAL_ENTRY_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'JournalEntryCreate')
+    JOURNAL_ENTRY_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    JOURNAL_ENTRY_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     #Consulting
     CONSULTING_LIST_PAGE = BreadcrumbChildren(_('Consulting list'), 'ConsultingList')
     CONSULTING_CREATE_PAGE = BreadcrumbChildren(_('Consulting create'), 'ConsultingCreate')
@@ -458,7 +470,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('Lists'), 'ListList')
 
     # Fixed asset
-    ASSET_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Asset'), 'FixedAssetMasterDataList')
+    ASSET_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Asset'), 'FixedAssetMasterDataList')
     FIXED_ASSET_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetList')
 
     # Instrument tool
@@ -989,6 +1001,7 @@ class BreadcrumbView:
     ASSET_TOOLS_RETURN_EDIT = ASSET_TOOLS_RETURN_LIST + [BreadcrumbItem.BASTION_UPDATE]
 
     MEETING_SCHEDULE_LIST_PAGE = [BreadcrumbItem.MEETING_SCHEDULE_LIST_PAGE]
+    MEETING_ZOOM_CONFIG_LIST_PAGE = [BreadcrumbItem.MEETING_ZOOM_CONFIG_LIST_PAGE]
     MEETING_SCHEDULE_CREATE_PAGE = [BreadcrumbItem.MEETING_SCHEDULE_LIST_PAGE,
                                     BreadcrumbItem.MEETING_SCHEDULE_CREATE_PAGE]
     MEETING_SCHEDULE_DETAIL_PAGE = MEETING_SCHEDULE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
@@ -998,6 +1011,7 @@ class BreadcrumbView:
     DASHBOARD_PIPELINE_LIST_PAGE = [BreadcrumbItem.DASHBOARD_PIPELINE_LIST_PAGE]
 
     PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
+    ACCOUNTING_POLICIES_PAGE = [BreadcrumbItem.ACCOUNTING_POLICIES_PAGE]
 
     BALANCE_INIT_PAGE = [BreadcrumbItem.BALANCE_INIT_PAGE]
 
@@ -1234,3 +1248,16 @@ class BreadcrumbView:
     INSTRUMENT_TOOL_CREATE_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_CREATE]
     INSTRUMENT_TOOL_DETAIL_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_DETAIL]
     INSTRUMENT_TOOL_UPDATE_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+
+    CHART_OF_ACCOUNTS_LIST_PAGE = [
+        BreadcrumbItem.CHART_OF_ACCOUNTS_LIST_PAGE
+    ]
+    DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE = [
+        BreadcrumbItem.DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE
+    ]
+
+    JOURNAL_ENTRY_LIST_PAGE = [BreadcrumbItem.JOURNAL_ENTRY_LIST_PAGE]
+    JOURNAL_ENTRY_CREATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    JOURNAL_ENTRY_DETAIL_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    JOURNAL_ENTRY_UPDATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

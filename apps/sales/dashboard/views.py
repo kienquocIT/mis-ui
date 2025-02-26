@@ -22,6 +22,7 @@ class DashboardGeneralList(View):
             return {
                 'data': {'current_period': resp1.result[0]},
             }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class DashboardPipelineList(View):

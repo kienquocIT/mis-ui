@@ -80,7 +80,7 @@ $(function () {
             let row = $(this)[0].closest('tr');
             row.querySelector('.table-row-save').removeAttribute('disabled');
             row.querySelector('.table-row-save').classList.remove('flush-soft-hover');
-            row.querySelector('.table-row-save').classList.add('btn-soft-warning');
+            row.querySelector('.table-row-save').classList.add('btn-soft-success');
         });
 
 // Action on btn cancel

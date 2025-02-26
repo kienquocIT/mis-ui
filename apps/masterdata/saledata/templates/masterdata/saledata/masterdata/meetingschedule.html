@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Master Data Meeting Schedule' %}{% endblock %}
+{% block cssHeader %}
+    <!-- Select2 -->
+    <link
+            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/masterdata/saledata/config.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12 col-lg-2 col-md-2">
+            <ul class="nav flex-column nav-light nav-pills nav-vertical">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_meeting_room">
+                        <span class="nav-link-text">{% trans 'Meeting room' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-12 col-lg-10 col-md-10">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab_block_meeting_room">
+                    <div class="row">
+                        <div class="col-12">
+                            <a href="#" id="btn-add-mew-meeting-room" data-bs-toggle="modal" data-bs-target="#createMeetingRoomModal">
+                                <button class="btn btn-sm btn-outline-primary btn-modal">
+                                    <span>
+                                        <span>{% trans 'Add new meeting room' %}</span>
+                                        <span class="icon">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </span>
+                                    </span>
+                                </button>
+                            </a>
+                            <table class="table w-100 nowrap" id="table-meeting-room" data-url="{% url 'MeetingRoomListAPI' %}" data-method="GET">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>{% trans 'Code' %}</th>
+                                    <th>{% trans 'Name' %}</th>
+                                    <th>{% trans 'Description' %}</th>
+                                    <th>{% trans 'Room location' %}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="createMeetingRoomModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Create meeting room' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-create-meeting-room"
+                          data-url="{% url 'MeetingRoomListAPI' %}"
+                          data-url-redirect="{% url 'MeetingScheduleMasterdataList' %}"
+                          data-method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-code">{% trans 'Code' %}</label>
+                                    <input type="text" class="form-control" id="room-code">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-title">{% trans 'Name' %}</label>
+                                    <input type="text" class="form-control" id="room-title">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-description">{% trans 'Description' %}</label>
+                                    <textarea type="text" class="form-control" id="room-description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-location">{% trans 'Room location' %}</label>
+                                    <textarea type="text" class="form-control" id="room-location"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" form="form-create-meeting-room">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="updateMeetingRoomModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Update meeting room' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-meeting-room"
+                          data-url-detail="{% url 'MeetingRoomDetailAPI' '0' %}"
+                          data-url-redirect="{% url 'MeetingScheduleMasterdataList' %}"
+                          data-method="PUT">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-code">{% trans 'Code' %}</label>
+                                    <input disabled readonly type="text" class="form-control form-control-line" id="room-code">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-title">{% trans 'Name' %}</label>
+                                    <input type="text" class="form-control" id="room-title">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-description">{% trans 'Description' %}</label>
+                                    <textarea type="text" class="form-control" id="room-description"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="room-location">{% trans 'Room location' %}</label>
+                                    <textarea type="text" class="form-control" id="room-location"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" form="form-update-meeting-room">{% trans 'Update' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/masterdata/meetingschedule.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+{% endblock %}
+

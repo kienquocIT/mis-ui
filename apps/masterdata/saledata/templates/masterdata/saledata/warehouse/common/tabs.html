@@ -24,7 +24,7 @@
             <div class="col-12">
                 <div class="form-check form-switch">
                     <input type="checkbox" id="checkBinLocation" class="form-check-input">
-                    <label class="form-check-label" for="checkBinLocation">{% trans 'Active' %}</label>
+                    <label class="form-check-label" for="checkBinLocation">{% trans 'Enable tab' %}</label>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
                     </table>
                 {% else %}
                     <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
-                        <span class="alert-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Transactions referencing this warehouse will use the following accounts to create Journal Entry. By default, the accounts are taken from Setting. After creating the warehouse, you can go to the detail page to update it.' %}
+                        <span class="alert-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Transactions referencing this warehouse will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting. After creating the warehouse, you can go to the detail page to update it.' %}
                     </div>
                 {% endif %}
             </div>

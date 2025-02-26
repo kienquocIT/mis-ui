@@ -1268,32 +1268,25 @@ table.dataTable tr.dtrg-group th {
 /*for custom nav*/
 .nav-primary-custom {
     display: flex;
-    background: #f8f9fa;
-    border-radius: 0.375rem;
-    gap: 5px;
+    border-bottom: 1px solid #c8c8c8;
 }
 
 .nav-primary-custom .nav-item {
-    text-align: center;
+    text-align: center !important;
 }
 
 .nav-primary-custom .nav-link {
-    padding: 5px 15px;
-    color: #706f6f;
+    color: #6c757d;
+    background-color: white;
+    font-weight: bold;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #c8c8c8;
-    border-radius: 0.375rem;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 .nav-primary-custom .nav-link.active {
-    background-color: white;
     color: #007D88;
-    font-weight: bold;
-    border: 1px solid #c8c8c8;
-    border-left: 3px solid #007D88;
-    transition: transform 0.2s ease-in-out;
+    border-bottom: 3px solid #007D88;
 }
 
 .nav-primary-custom .nav-link .nav-icon-wrap {
@@ -1301,6 +1294,6 @@ table.dataTable tr.dtrg-group th {
 }
 
 .nav-primary-custom .nav-link:hover .nav-icon-wrap {
-    transform: rotate(10deg) translateX(2px) translateY(-2px);
+    transform: rotate(10deg) translateX(3px) translateY(-3px);
 }
 /*end*/

@@ -2,11 +2,6 @@ $(function () {
     $(document).ready(function () {
 
         let formSubmit = $('#form-create_workflow');
-        // init select function applied
-        let $select_box = $("#select-box-features");
-        $select_box.initSelect2({
-            'allowClear': true,
-        });
 
         initTableZone();
 

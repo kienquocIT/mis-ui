@@ -299,6 +299,7 @@ class GRLoadDataHandle {
         let frm = new SetupFormSubmit(GRDataTableHandle.tablePOProduct);
         if (GRLoadDataHandle.POSelectEle.val()) {
             if (GRDataTableHandle.tablePOProduct[0].querySelector('.dataTables_empty')) {
+                WindowControl.showLoading();
                 $.fn.callAjax2({
                         'url': frm.dataUrl,
                         'method': frm.dataMethod,
@@ -322,6 +323,7 @@ class GRLoadDataHandle {
                                 GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                                 GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataValid).draw();
                             }
+                            WindowControl.hideLoading();
                         }
                     }
                 )
@@ -481,6 +483,7 @@ class GRLoadDataHandle {
             if (Object.keys(dataStore).length !== 0) {
                 let tableWH = GRDataTableHandle.tableWH;
                 let frm = new SetupFormSubmit(tableWH);
+                WindowControl.showLoading();
                 $.fn.callAjax2({
                         'url': frm.dataUrl,
                         'method': frm.dataMethod,
@@ -522,6 +525,7 @@ class GRLoadDataHandle {
                                 tableWH.DataTable().rows.add(data.warehouse_list).draw();
                                 GRLoadDataHandle.loadAreaLotOrAreaSerial();
                             }
+                            WindowControl.hideLoading();
                         }
                     }
                 )
@@ -2272,9 +2276,13 @@ class GRStoreDataHandle {
                 rowData['lot_data'] = lot_data;
             }
             // SP không quản lý lô hay serial thì số lượng nhập lấy số nhập trực tiếp
-            if (row.querySelector('.table-row-import') && row.querySelector('.table-row-checkbox-additional')) {
-                rowData['quantity_import'] = parseFloat(row.querySelector('.table-row-import').value);
-                rowData['is_additional'] = row.querySelector('.table-row-checkbox-additional').checked;
+            let importEle = row.querySelector('.table-row-import');
+            let additionalEle = row.querySelector('.table-row-checkbox-additional');
+            if (importEle && additionalEle) {
+                if (importEle.value) {
+                    rowData['quantity_import'] = parseFloat(importEle.value);
+                }
+                rowData['is_additional'] = additionalEle.checked;
             }
             // Kiểm tra SP có quản lý lô hay serial thì số lượng nhập lấy tổng nhập của lô hay serial
             if (rowData['is_additional'] === false) {

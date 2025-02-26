@@ -215,7 +215,8 @@ function dtbZoneHDCustom() {
                 });
             }
         }
-    };
+    }
+
 
 $(document).ready(function () {
     // declare global scope variable
@@ -223,6 +224,8 @@ $(document).ready(function () {
     let $next_btn = $('#nav-next-prev-step .next-btn');
     let $select_box = $("#select-box-features");
     WF_DATATYPE = JSON.parse($('#wf_data_type').text());
+
+    loadInitS2($select_box);
 
     // handle event on click prev next btn
     $("#nav-next-prev-step button").off().on('click', function (e) {

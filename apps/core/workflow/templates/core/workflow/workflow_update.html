@@ -53,7 +53,7 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_function">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label class="form-label required" for="form-create-title">{% trans 'Workflow name' %}</label>
                             <input class="form-control" type="text"
@@ -65,25 +65,23 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label class="form-label" for="select-box-features">{% trans 'Select Function Applied' %}
-                                <sup class="field-required">(*)</sup>
-                            </label>
+                            <label class="form-label required" for="select-box-features">{% trans 'Select Function Applied' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="select-box-features"
+                                    data-url="{% url "TenantApplicationListAPI" %}"
+                                    data-params='{"is_workflow":true,"pageSize":-1}'
+                                    data-method="GET"
+                                    name="application"
+                                    data-keyResp="tenant_application_list"
+                                    data-keyText="title_i18n"
+                                    required
+                            ></select>
                         </div>
-                        <select
-                                class="form-select"
-                                id="select-box-features"
-                                data-url="{% url "TenantApplicationListAPI" %}"
-                                data-params='{"is_workflow":true,"pageSize":-1}'
-                                data-method="GET"
-                                name="application"
-                                data-keyResp="tenant_application_list"
-                                required
-                        ></select>
                     </div>
                 </div>
-                <br>
                 <div class="row">
                     <div class="col-12 mb-1">
                         <div class="form-check" hidden>

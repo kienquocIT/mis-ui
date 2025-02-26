@@ -70,10 +70,6 @@ $(function () {
         GRDataTableHandle.tablePOProduct.on('change', '.table-row-import', function () {
             let row = this.closest('tr');
             if (row) {
-                let checkEle = row.querySelector('.table-row-checkbox');
-                if (checkEle) {
-                    checkEle.checked = true;
-                }
                 GRStoreDataHandle.storeDataProduct();
                 let check = GRLoadDataHandle.loadCheckExceedQuantity();
                 if (check === false) {
@@ -82,10 +78,6 @@ $(function () {
                     let rowData = $row.data();
                     rowData['quantity_import'] = 0;
                     GRDataTableHandle.tablePOProduct.DataTable().row(rowIndex).data(rowData);
-                    let checkEle = row.querySelector('.table-row-checkbox');
-                    if (checkEle) {
-                        checkEle.checked = true;
-                    }
                     GRStoreDataHandle.storeDataProduct();
                 }
             }
@@ -123,10 +115,6 @@ $(function () {
         GRDataTableHandle.tableWH.on('change', '.table-row-import', function () {
             let row = this.closest('tr');
             if (row) {
-                let checkEle = row.querySelector('.table-row-checkbox');
-                if (checkEle) {
-                    checkEle.checked = true;
-                }
                 GRStoreDataHandle.storeDataProduct();
                 let check = GRLoadDataHandle.loadCheckExceedQuantity();
                 if (check === false) {
@@ -135,10 +123,6 @@ $(function () {
                     let rowData = $row.data();
                     rowData['quantity_import'] = 0;
                     GRDataTableHandle.tableWH.DataTable().row(rowIndex).data(rowData);
-                    let checkEle = row.querySelector('.table-row-checkbox');
-                    if (checkEle) {
-                        checkEle.checked = true;
-                    }
                     GRStoreDataHandle.storeDataProduct();
                 }
             }

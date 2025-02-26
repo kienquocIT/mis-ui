@@ -7,9 +7,10 @@ $(function () {
     function prepareDataAndRenderHTML(res){
         if(res.title) $('[name="title"]').val(res.title);
         if (res.application) {
-            $("#select-box-features").initSelect2({
-                data: res.application,
-            });
+            // $("#select-box-features").initSelect2({
+            //     data: res.application,
+            // });
+            loadInitS2($("#select-box-features"), [res.application]);
             // load data-params select property zone modal
             loadInitS2($('#property_list_choices'), [], {'application': res.application.id, 'is_wf_zone': true});
         }

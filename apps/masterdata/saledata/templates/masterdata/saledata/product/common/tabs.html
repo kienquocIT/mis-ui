@@ -33,6 +33,12 @@
                     <span class="nav-link-text">{% trans 'Variants' %}</span>
                 </a>
             </li>
+            <li class="nav-item" id="accounting-determination-tab">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_account_determination">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal-text"></i></span></span>
+                    <span class="nav-link-text">{% trans 'Account determination' %}</span>
+                </a>
+            </li>
         </ul>
     </div>
 </div>
@@ -385,6 +391,33 @@
                     </thead>
                     <tbody></tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tab_account_determination">
+        <div class="row">
+            <div class="col-12">
+                {% if pk %}
+                    <table class="table nowrap w-100"
+                           id="product-account-determination-table"
+                           data-method="GET"
+                           data-url="{% url 'ProductAccountDeterminationListAPI' %}">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>{% trans 'Type' %}</th>
+                            <th>{% trans 'Trading account type' %}</th>
+                            <th>{% trans 'Account code' %}</th>
+                            <th>{% trans 'Account name' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                {% else %}
+                    <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
+                        <span class="alert-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Transactions referencing this product will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting, you can update it.' %}
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

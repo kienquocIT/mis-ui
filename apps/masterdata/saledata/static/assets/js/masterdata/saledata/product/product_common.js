@@ -1857,3 +1857,96 @@ $(document).on("click", '.delete-value', function () {
     LoadVariantItemsTable();
     ReloadAttributeValueListSpan();
 })
+
+// for account determination
+
+const $product_account_determination_table = $('#product-account-determination-table')
+
+const columns_cfg = [
+    {
+        className: 'wrap-text w-5',
+        'render': () => {
+            return ``;
+        }
+    },
+    {
+        className: 'wrap-text',
+        'render': (data, type, row) => {
+            return `<span class="text-muted">${row?.['account_determination_type_convert']}</span>`;
+        }
+    },
+    {
+        className: 'wrap-text w-30',
+        'render': (data, type, row) => {
+            return `<span class="text-muted">${row?.['title']}</span>`;
+        }
+    },
+    {
+        className: 'wrap-text w-20',
+        'render': (data, type, row) => {
+            return `<select disabled readonly class="form-select select2">
+                        <option value="${row?.['account_mapped']?.['id']}" selected>${row?.['account_mapped']?.['acc_code']}</option>
+                    </select>`;
+        }
+    },
+    {
+        className: 'wrap-text w-45',
+        'render': (data, type, row) => {
+            return `<span class="text-muted">${row?.['account_mapped']?.['acc_name']}</span>
+                    <span class="small text-primary">(${row?.['account_mapped']?.['foreign_acc_name']})</span>`;
+        }
+    },
+]
+
+function loadAccountDeterminationTable() {
+    if (!$.fn.DataTable.isDataTable('#product-account-determination-table')) {
+        let frm = new SetupFormSubmit($product_account_determination_table);
+        $product_account_determination_table.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            scrollX: '100vw',
+            scrollY: '18vw',
+            scrollCollapse: true,
+            ajax: {
+                url: frm.dataUrl,
+                data: {'product_mapped_id': $.fn.getPkDetail()},
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        let data_list = resp.data['product_account_determination_list'] ? resp.data['product_account_determination_list'] : []
+                        data_list.sort((a, b) => {
+                            const typeA = a?.['account_determination_type_convert'];
+                            const typeB = b?.['account_determination_type_convert'];
+                            if (typeA < typeB) return -1;
+                            if (typeA > typeB) return 1;
+
+                            const accCodeA = parseInt(a?.['account_mapped']?.['acc_code'], 10);
+                            const accCodeB = parseInt(b?.['account_mapped']?.['acc_code'], 10);
+                            return accCodeA - accCodeB;
+                        });
+
+                        return data_list ? data_list : [];
+                    }
+                    return [];
+                },
+            },
+            columns: columns_cfg,
+            rowGroup: {
+                dataSrc: 'account_determination_type_convert'
+            },
+            columnDefs: [
+                {
+                    "visible": false,
+                    "targets": [1]
+                }
+            ],
+        });
+    }
+}
+
+$('#accounting-determination-tab').on('click', function () {
+    loadAccountDeterminationTable()
+})

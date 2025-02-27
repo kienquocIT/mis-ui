@@ -156,7 +156,7 @@
 {% endblock %}
 {% block modalData %}
     <div class="modal fade" id="modal-new-product-type" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog" style="min-width: 75%" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans "Product Type" %}</h5>
@@ -165,29 +165,56 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="form-create-product-type" data-method="POST" data-url="{% url "ProductTypeListAPI" %}">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label for="inp-code-product-type" class="form-label required">{% trans "Code" %}</label>
-                                    <input id="inp-code-product-type" required class="form-control" type="text" name="code" oninput="this.value=this.value.toUpperCase()">
+                    <div class="row">
+                        <div class="col-12">
+                            <ul class="nav nav-icon nav-primary-custom">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_info_create">
+                                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-info-circle"></i></span></span>
+                                        <span class="nav-link-text">{% trans 'Information' %}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_account_determination_create">
+                                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal-text"></i></span></span>
+                                        <span class="nav-link-text">{% trans 'Account determination' %}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tab_info_create">
+                            <form id="form-create-product-type" data-method="POST" data-url="{% url "ProductTypeListAPI" %}">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label for="inp-code-product-type" class="form-label required">{% trans "Code" %}</label>
+                                            <input id="inp-code-product-type" required class="form-control" type="text" name="code" oninput="this.value=this.value.toUpperCase()">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <div class="form-group">
+                                            <label for="inp-title-product-type" class="form-label required">{% trans "Name" %}</label>
+                                            <input id="inp-title-product-type" required class="form-control" type="text" name="title">
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label for="inp-description-product-type" class="form-label">{% trans "Description" %}</label>
+                                            <textarea id="inp-description-product-type" class="form-control" type="text" name="description"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-9">
-                                <div class="form-group">
-                                    <label for="inp-title-product-type" class="form-label required">{% trans "Name" %}</label>
-                                    <input id="inp-title-product-type" required class="form-control" type="text" name="title">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="inp-description-product-type" class="form-label">{% trans "Description" %}</label>
-                                    <textarea id="inp-description-product-type" class="form-control" type="text" name="description"></textarea>
-                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="tab_account_determination_create">
+                            <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
+                                <span class="alert-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Transactions referencing this product type will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting, you can update it.' %}
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
@@ -196,7 +223,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="modal-new-product-category" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -238,7 +264,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="modal-new-uom-group" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -274,149 +299,6 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="modal-update-uom-group" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Edit" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-update-uom-group"
-                          data-method="PUT"
-                          data-url-raw="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
-                          data-url="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
-                          >
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="form-group">
-                                    <label for="inp-edit-code-uom-group" class="form-label required">{% trans "Code" %}</label>
-                                    <input readonly class="form-control form-control-line" type="text" name="code" id="inp-edit-code-uom-group" oninput="this.value=this.value.toUpperCase()">
-                                </div>
-                            </div>
-                            <div class="col-9">
-                                <div class="form-group">
-                                    <label for="inp-edit-name-uom-group" class="form-label required">{% trans "Name" %}</label>
-                                    <input required class="form-control" type="text" name="title" id="inp-edit-name-uom-group">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="select-referenced-unit" class="form-label">{% trans "Referenced unit" %}</label>
-                                    <select class="form-select select2"
-                                            data-method="GET"
-                                            data-url="{% url 'UnitOfMeasureListAPI' %}"
-                                            name="uom_reference"
-                                            id="select-referenced-unit"
-                                    ></select>
-                                    <span class="small text-danger">{% trans 'Check all ratio in this group again when referenced uom is changed' %}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" class="btn btn-primary" form="form-update-uom-group">{% trans 'Save' %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modal-update-product-type" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Edit" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-update-product-type"
-                          data-method="PUT"
-                          data-url-raw="{% url "ProductTypeDetailAPI" pk=0 %}"
-                          data-url="{% url "ProductTypeDetailAPI" pk=0 %}">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="form-group">
-                                    <label for="inp-edit-code-product-type" class="form-label required">{% trans "Code" %}</label>
-                                    <input readonly class="form-control form-control-line" type="text" name="code" id="inp-edit-code-product-type" oninput="this.value=this.value.toUpperCase()">
-                                </div>
-                            </div>
-                            <div class="col-9">
-                                <div class="form-group">
-                                    <label for="inp-edit-name-product-type" class="form-label required">{% trans "Name" %}</label>
-                                    <input required class="form-control" type="text" name="title" id="inp-edit-name-product-type">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="inp-edit-description-product-type" class="form-label">{% trans "Description" %}</label>
-                                    <textarea class="form-control" type="text" name="description" id="inp-edit-description-product-type"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" form="form-update-product-type" class="btn btn-primary">{% trans 'Save' %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modal-update-product-category" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Edit" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-update-product-category"
-                          data-method="PUT"
-                          data-url-raw="{% url "ProductCategoryDetailAPI" pk=0 %}"
-                          data-url="{% url "ProductCategoryDetailAPI" pk=0 %}">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="form-group">
-                                    <label for="inp-edit-code-product-category" class="form-label required">{% trans "Code" %}</label>
-                                    <input readonly class="form-control form-control-line" type="text" name="code" id="inp-edit-code-product-category" oninput="this.value=this.value.toUpperCase()">
-                                </div>
-                            </div>
-                            <div class="col-9">
-                                <div class="form-group">
-                                    <label for="inp-edit-name-product-category" class="form-label required">{% trans "Name" %}</label>
-                                    <input required class="form-control" type="text" name="title" id="inp-edit-name-product-category">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="inp-edit-description-product-category" class="form-label">{% trans "Description" %}</label>
-                                    <textarea class="form-control" type="text" name="description" id="inp-edit-description-product-category"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" form="form-update-product-category" class="btn btn-primary">{% trans 'Save' %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal fade" id="modal-new-uom" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -488,6 +370,188 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modal-update-product-type" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog" style="min-width: 80%" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Edit" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <ul class="nav nav-icon nav-primary-custom">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_info_detail">
+                                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-info-circle"></i></span></span>
+                                        <span class="nav-link-text">{% trans 'Information' %}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="accounting-determination-tab">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_account_determination_detail">
+                                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal-text"></i></span></span>
+                                        <span class="nav-link-text">{% trans 'Account determination' %}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tab_info_detail">
+                            <form id="form-update-product-type"
+                                  data-method="PUT"
+                                  data-url-raw="{% url "ProductTypeDetailAPI" pk=0 %}"
+                                  data-url="{% url "ProductTypeDetailAPI" pk=0 %}">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="inp-edit-code-product-type" class="form-label required">{% trans "Code" %}</label>
+                                            <input readonly class="form-control form-control-line" type="text" name="code" id="inp-edit-code-product-type" oninput="this.value=this.value.toUpperCase()">
+                                        </div>
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="form-group">
+                                            <label for="inp-edit-name-product-type" class="form-label required">{% trans "Name" %}</label>
+                                            <input required class="form-control" type="text" name="title" id="inp-edit-name-product-type">
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label for="inp-edit-description-product-type" class="form-label">{% trans "Description" %}</label>
+                                            <textarea class="form-control" type="text" name="description" id="inp-edit-description-product-type"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="tab_account_determination_detail">
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table nowrap w-100"
+                                           id="warehouse-account-determination-table"
+                                           data-method="GET"
+                                           data-url="{% url 'ProductTypeAccountDeterminationListAPI' %}">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>{% trans 'Type' %}</th>
+                                            <th>{% trans 'Trading account type' %}</th>
+                                            <th>{% trans 'Account code' %}</th>
+                                            <th>{% trans 'Account name' %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" form="form-update-product-type" class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-update-product-category" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Edit" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-product-category"
+                          data-method="PUT"
+                          data-url-raw="{% url "ProductCategoryDetailAPI" pk=0 %}"
+                          data-url="{% url "ProductCategoryDetailAPI" pk=0 %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="inp-edit-code-product-category" class="form-label required">{% trans "Code" %}</label>
+                                    <input readonly class="form-control form-control-line" type="text" name="code" id="inp-edit-code-product-category" oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="form-group">
+                                    <label for="inp-edit-name-product-category" class="form-label required">{% trans "Name" %}</label>
+                                    <input required class="form-control" type="text" name="title" id="inp-edit-name-product-category">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="inp-edit-description-product-category" class="form-label">{% trans "Description" %}</label>
+                                    <textarea class="form-control" type="text" name="description" id="inp-edit-description-product-category"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" form="form-update-product-category" class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-update-uom-group" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Edit" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-uom-group"
+                          data-method="PUT"
+                          data-url-raw="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
+                          data-url="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
+                          >
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="inp-edit-code-uom-group" class="form-label required">{% trans "Code" %}</label>
+                                    <input readonly class="form-control form-control-line" type="text" name="code" id="inp-edit-code-uom-group" oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="form-group">
+                                    <label for="inp-edit-name-uom-group" class="form-label required">{% trans "Name" %}</label>
+                                    <input required class="form-control" type="text" name="title" id="inp-edit-name-uom-group">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="select-referenced-unit" class="form-label">{% trans "Referenced unit" %}</label>
+                                    <select class="form-select select2"
+                                            data-method="GET"
+                                            data-url="{% url 'UnitOfMeasureListAPI' %}"
+                                            name="uom_reference"
+                                            id="select-referenced-unit"
+                                    ></select>
+                                    <span class="small text-danger">{% trans 'Check all ratio in this group again when referenced uom is changed' %}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary" form="form-update-uom-group">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="modal-update-uom" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">

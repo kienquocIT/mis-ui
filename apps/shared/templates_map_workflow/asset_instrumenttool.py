@@ -26,3 +26,9 @@ INSTRUMENT_TOOL_DATA_MAP = {
         name_mapping=['total_value'],
     ).data,
 }
+
+INSTRUMENT_TOOL_WRITEOFF_DATA_MAP = {
+    'title': FieldMapCommon(
+        name_mapping=['title'],
+    ).data,
+}

@@ -1,0 +1,62 @@
+{% load i18n %}
+
+<div class="row mb-5">
+    <div class="col-12 col-lg-6 col-md-6">
+        <div class="row">
+            <div class="col-10">
+                <div class="form-group">
+                    <label class="form-label required" for="type">{% trans 'Type' %}</label>
+                    <select name="type" class="form-select select2" id="type" required>
+                        <option value="0">{% trans 'Disposal or sale' %}</option>
+                        <option value="1">{% trans 'Inventory adjustment' %}</option>
+                        <option value="2">{% trans 'Return instruments and tools to inventory' %}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10">
+                <div class="form-group">
+                    <label class="form-label required" for="title">{% trans 'Title' %}</label>
+                    <input type="text" name="title" class="form-control" id="title" required>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6 col-md-6">
+        <div class="row">
+            <div class="col-10">
+                <div class="form-group">
+                    <label class="form-label required" for="posting-date">{% trans 'Posting Date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input required type="text" name="posting_date"
+                               class="form-control" autocomplete="off" id="posting-date">
+                        <div class="input-suffix">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10">
+                <div class="form-group">
+                    <label class="form-label required" for="document-date">{% trans 'Document Date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input required type="text" name="document_date"
+                               class="form-control" autocomplete="off" id="document-date">
+                        <div class="input-suffix">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-11">
+        <div class="form-group">
+            <label class="form-label required" for="note">{% trans 'Note' %}</label>
+            <textarea type="text" name="note" class="form-control" id="note" required></textarea>
+        </div>
+    </div>
+</div>

@@ -460,9 +460,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Fixed asset
     ASSET_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Asset'), 'FixedAssetMasterDataList')
     FIXED_ASSET_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetList')
+    FIXED_ASSET_WRITE_OFF_PAGE = BreadcrumbChildren(_('Fixed Asset Write-off'), 'FixedAssetWriteOffList')
 
     # Instrument tool
     INSTRUMENT_TOOL_PAGE = BreadcrumbChildren(_('Instrument Tool'), 'InstrumentToolList')
+    INSTRUMENT_TOOL_WRITE_OFF_PAGE = BreadcrumbChildren(_('Instrument Tool Write-off'), 'InstrumentToolWriteOffList')
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -1225,6 +1227,15 @@ class BreadcrumbView:
     FIXED_ASSET_DETAIL_PAGE = FIXED_ASSET_LIST + [BreadcrumbItem.BASTION_DETAIL]
     FIXED_ASSET_UPDATE_PAGE = FIXED_ASSET_LIST + [BreadcrumbItem.BASTION_UPDATE]
 
+    FIXED_ASSET_WRITE_OFF_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.FIXED_ASSET_WRITE_OFF_PAGE
+    ]
+    FIXED_ASSET_WRITE_OFF_LIST_PAGE = FIXED_ASSET_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_LIST]
+    FIXED_ASSET_WRITE_OFF_CREATE_PAGE = FIXED_ASSET_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_CREATE]
+    FIXED_ASSET_WRITE_OFF_DETAIL_PAGE = FIXED_ASSET_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    FIXED_ASSET_WRITE_OFF_UPDATE_PAGE = FIXED_ASSET_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
     # Instrument Tool
     INSTRUMENT_TOOL_LIST = [
         BreadcrumbItem.HOME_PAGE,
@@ -1234,3 +1245,12 @@ class BreadcrumbView:
     INSTRUMENT_TOOL_CREATE_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_CREATE]
     INSTRUMENT_TOOL_DETAIL_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_DETAIL]
     INSTRUMENT_TOOL_UPDATE_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    INSTRUMENT_TOOL_WRITE_OFF_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.INSTRUMENT_TOOL_WRITE_OFF_PAGE
+    ]
+    INSTRUMENT_TOOL_WRITE_OFF_LIST_PAGE = INSTRUMENT_TOOL_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_LIST]
+    INSTRUMENT_TOOL_WRITE_OFF_CREATE_PAGE = INSTRUMENT_TOOL_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_CREATE]
+    INSTRUMENT_TOOL_WRITE_OFF_DETAIL_PAGE = INSTRUMENT_TOOL_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    INSTRUMENT_TOOL_WRITE_OFF_UPDATE_PAGE = INSTRUMENT_TOOL_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_UPDATE]

@@ -826,10 +826,20 @@ class MenusFinancials:
                 icon='<i class="fas fa-warehouse"></i>',
             ),
             MenuCommon(
+                name='Fixed asset write-off', code='menu_fixed_asset_writeoff', view_name='FixedAssetWriteOffList',
+                icon='<i class="fas fa-warehouse"></i>',
+            ),
+            MenuCommon(
                 name='Instruments & Tools', code='menu_instrument_tool',
                 view_name='InstrumentToolList',
                 icon='<i class="fas fa-tools"></i>',
             ),
+            MenuCommon(
+                name='Instrument tool write-off', code='menu_instrument_tool_write_off',
+                view_name='InstrumentToolWriteOffList',
+                icon='<i class="fas fa-tools"></i>',
+            ),
+
         ],
     )
     GENERAL = MenuCommon(

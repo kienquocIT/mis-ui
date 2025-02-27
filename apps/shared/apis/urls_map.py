@@ -855,3 +855,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # asset/ instrument tool
     INSTRUMENT_TOOL_LIST = StringUrl('asset/instrument-tool/list')
     INSTRUMENT_TOOL_DETAIL = StringUrl('asset/instrument-tool/detail')
+
+    # asset/ fixed asset write off
+    FIXED_ASSET_WRITE_OFF_LIST = StringUrl('asset/fixed-asset-writeoff/list')
+    FIXED_ASSET_WRITE_OFF_DETAIL = StringUrl('asset/fixed-asset-writeoff/detail')
+
+    # asset/ instrument write off
+    INSTRUMENT_TOOL_WRITE_OFF_LIST = StringUrl('asset/instrument-tool-writeoff/list')
+    INSTRUMENT_TOOL_WRITE_OFF_DETAIL = StringUrl('asset/instrument-tool-writeoff/detail')

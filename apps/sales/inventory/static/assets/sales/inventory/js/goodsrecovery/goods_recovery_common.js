@@ -543,7 +543,7 @@ class RecoveryLoadDataHandle {
                 let dataFn = [];
                 let dataDepreciation = [];
                 if ($radioFinanceEle[0].checked === true) {
-                    dataDepreciation = DepreciationControl.calDepreciation({
+                    dataDepreciation = DepreciationControl.callDepreciation({
                         "method": parseInt($methodEle.val()),
                         "months": parseInt($timeEle.val()),
                         "start_date": $startEle.val(),

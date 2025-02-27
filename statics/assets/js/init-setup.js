@@ -2642,7 +2642,7 @@ class WFRTControl {
                                     if (priorityAdded === false) {
                                         if (item === 0 || item === 1 || item === 4) {
                                             priorityAdded = true;
-                                            $('#btnMainAction').attr('data-value', item).attr('data-bs-original-title', liFound.find('.dropdown-item').text()).removeClass('hidden').find('.icon').html(iconFound.clone());
+                                            $('#btnMainApprove').attr('data-value', item).removeClass('hidden').find('.icon').html(iconFound.clone());
                                         }
                                     }
                                     liFound.removeClass('hidden');

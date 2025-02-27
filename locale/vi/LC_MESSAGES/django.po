@@ -11026,3 +11026,11 @@ msgstr "Thời gian khấu hao"
 #
 msgid "Update depreciation time"
 msgstr "Thời gian khấu hao mới"
+
+#
+msgid "Save edit zone"
+msgstr "Lưu chỉnh sửa vùng"
+
+#
+msgid "Save edit zone and approve"
+msgstr "Lưu chỉnh sửa vùng và phê duyệt"

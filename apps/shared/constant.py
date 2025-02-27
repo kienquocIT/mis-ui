@@ -64,8 +64,8 @@ DELIVERY_STATE = (
 WORKFLOW_ACTION = {
     0: [WorkflowMsg.ACTION_CREATE, 'fas fa-plus'],
     1: [WorkflowMsg.ACTION_APPROVED, 'fas fa-check text-success'],
-    2: [WorkflowMsg.ACTION_REJECT, 'fas fa-times'],
-    3: [WorkflowMsg.ACTION_RETURN, 'fas fa-fast-backward'],
+    2: [WorkflowMsg.ACTION_REJECT, 'fas fa-times text-danger'],
+    3: [WorkflowMsg.ACTION_RETURN, 'fas fa-fast-backward text-secondary'],
     4: [WorkflowMsg.ACTION_RECEIVE, 'fas fa-check text-success'],
     5: [WorkflowMsg.ACTION_TODO, 'far fa-list-alt'],
 }

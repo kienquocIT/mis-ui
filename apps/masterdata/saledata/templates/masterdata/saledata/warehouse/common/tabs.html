@@ -10,8 +10,8 @@
                 </a>
             </li>
             <li class="nav-item" id="accounting-determination-tab">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_account_determination" id="link-tab-sale">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal"></i></span></span>
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_account_determination">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal-text"></i></span></span>
                     <span class="nav-link-text">{% trans 'Account determination' %}</span>
                 </a>
             </li>
@@ -57,7 +57,6 @@
             </div>
         </div>
     </div>
-
     <div class="tab-pane fade" id="tab_account_determination">
         <div class="row">
             <div class="col-12">
@@ -79,7 +78,7 @@
                     </table>
                 {% else %}
                     <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
-                        <span class="alert-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Transactions referencing this warehouse will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting. After creating the warehouse, you can go to the detail page to update it.' %}
+                        <span class="alert-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Transactions referencing this warehouse will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting, you can update it.' %}
                     </div>
                 {% endif %}
             </div>

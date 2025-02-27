@@ -1,5 +1,115 @@
 $(document).ready(function () {
     const trans_script = $('#trans-script')
+    const $warehouse_account_determination_table = $('#warehouse-account-determination-table')
+    const columns_cfg = [
+        {
+            className: 'wrap-text w-5',
+            'render': () => {
+                return ``;
+            }
+        },
+        {
+            className: 'wrap-text',
+            'render': (data, type, row) => {
+                return `<span class="text-muted">${row?.['account_determination_type_convert']}</span>`;
+            }
+        },
+        {
+            className: 'wrap-text w-30',
+            'render': (data, type, row) => {
+                return `<span class="text-muted">${row?.['title']}</span>`;
+            }
+        },
+        {
+            className: 'wrap-text w-20',
+            'render': (data, type, row) => {
+                return `<select disabled readonly class="form-select select2">
+                            <option value="${row?.['account_mapped']?.['id']}" selected>${row?.['account_mapped']?.['acc_code']}</option>
+                        </select>`;
+            }
+        },
+        {
+            className: 'wrap-text w-45',
+            'render': (data, type, row) => {
+                return `<span class="text-muted">${row?.['account_mapped']?.['acc_name']}</span>
+                        <span class="small text-primary">(${row?.['account_mapped']?.['foreign_acc_name']})</span>`;
+            }
+        },
+    ]
+    let account_determination_data_list = {}
+
+    function loadAccountDeterminationTable(product_type_mapped_id=null) {
+        if (product_type_mapped_id) {
+            $warehouse_account_determination_table.DataTable().clear().destroy();
+            if (account_determination_data_list[product_type_mapped_id]) {
+                $warehouse_account_determination_table.DataTableDefault({
+                    rowIdx: true,
+                    reloadCurrency: true,
+                    paging: false,
+                    scrollX: '100vw',
+                    scrollY: '18vw',
+                    scrollCollapse: true,
+                    data: account_determination_data_list[product_type_mapped_id],
+                    columns: columns_cfg,
+                    rowGroup: {
+                        dataSrc: 'account_determination_type_convert'
+                    },
+                    columnDefs: [
+                        {
+                            "visible": false,
+                            "targets": [1]
+                        }
+                    ],
+                });
+            }
+            else {
+                let frm = new SetupFormSubmit($warehouse_account_determination_table);
+                $warehouse_account_determination_table.DataTableDefault({
+                    useDataServer: true,
+                    rowIdx: true,
+                    reloadCurrency: true,
+                    paging: false,
+                    scrollX: '100vw',
+                    scrollY: '18vw',
+                    scrollCollapse: true,
+                    ajax: {
+                        url: frm.dataUrl,
+                        data: {'product_type_mapped_id': product_type_mapped_id},
+                        type: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                let data_list = resp.data['product_type_account_determination_list'] ? resp.data['product_type_account_determination_list'] : []
+                                data_list.sort((a, b) => {
+                                    const typeA = a?.['account_determination_type_convert'];
+                                    const typeB = b?.['account_determination_type_convert'];
+                                    if (typeA < typeB) return -1;
+                                    if (typeA > typeB) return 1;
+
+                                    const accCodeA = parseInt(a?.['account_mapped']?.['acc_code'], 10);
+                                    const accCodeB = parseInt(b?.['account_mapped']?.['acc_code'], 10);
+                                    return accCodeA - accCodeB;
+                                });
+                                account_determination_data_list[product_type_mapped_id] = data_list
+                                return data_list ? data_list : [];
+                            }
+                            return [];
+                        },
+                    },
+                    columns: columns_cfg,
+                    rowGroup: {
+                        dataSrc: 'account_determination_type_convert'
+                    },
+                    columnDefs: [
+                        {
+                            "visible": false,
+                            "targets": [1]
+                        }
+                    ],
+                });
+            }
+        }
+    }
 
     function loadProductType() {
         let tbl = $('#datatable-product-type-list');
@@ -28,7 +138,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-20',
+                    className: 'wrap-text w-30',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<span class="badge badge-light w-70">${row?.['code']}</span>`
@@ -39,7 +149,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-30',
+                    className: 'wrap-text w-25',
                     render: (data, type, row) => {
                         if (!row?.['is_default']) {
                             return `${data}`
@@ -49,12 +159,11 @@ $(document).ready(function () {
                 },
                 {
                     data: 'description',
-                    className: 'wrap-text w-35',
+                    className: 'wrap-text w-30',
                     render: (data) => {
                         return `<span class="initial-wrap">${data}</span>`
                     }
-                },
-                {
+                }, {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
                         let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-product-type"
@@ -79,7 +188,7 @@ $(document).ready(function () {
                         if (!row?.['is_default']) {
                             return `${edit_btn}${delete_btn}`
                         }
-                        return ``
+                        return `${edit_btn}`
                     }
                 }
             ],
@@ -486,6 +595,7 @@ $(document).ready(function () {
         modal.find('#inp-edit-description-product-type').val($(this).attr('data-description'))
         let raw_url = frm_update_product_type.attr('data-url-raw')
         frm_update_product_type.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
+        loadAccountDeterminationTable($(this).attr('data-id'))
     })
 
     new SetupFormSubmit(frm_create_product_type).validate({

@@ -3520,7 +3520,7 @@ msgid "User can input win rate of Opportunity"
 msgstr "Người dùng có thể tự nhập tỷ lệ thành công của cơ hội kinh doanh"
 
 #
-msgid "Factors that customer decision to buy your product"
+msgid "Factors that influence a customer's decision to buy your product."
 msgstr "Các yếu tố quyết định khách hàng sẽ mua sản phẩm"
 
 #
@@ -10184,10 +10184,6 @@ msgid "Reconciliation total must be 0"
 msgstr "Tổng cấn trừ phải bằng 0"
 
 #
-msgid "Click the button behind the box to select"
-msgstr "Nhấn nút phía sau ô nhập để lựa chọn"
-
-#
 msgid "View payment term information"
 msgstr "Xem thông tin điều khoản thanh toán"
 
@@ -10988,8 +10984,16 @@ msgid "Account determination"
 msgstr "Xác định TK kế toán"
 
 #
-msgid "Transactions referencing this warehouse will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting. After creating the warehouse, you can go to the detail page to update it."
-msgstr "Các giao dịch tham chiếu đến kho này sẽ sử dụng các tài khoản tại đây để tạo Bút toán. Mặc định các tài khoản được lấy theo Cài đặt. Sau khi tạo kho xong, bạn có thể vào trang chi tiết để thiết lập lại."
+msgid "Transactions referencing this warehouse will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting, you can update it."
+msgstr "Các giao dịch tham chiếu đến kho này sẽ sử dụng các tài khoản tại đây để tạo Bút toán. Mặc định các tài khoản được lấy theo Cài đặt, bạn có thể thiết lập lại."
+
+#
+msgid "Transactions referencing this product type will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting, you can update it."
+msgstr "Các giao dịch tham chiếu đến loại sản phẩm này sẽ sử dụng các tài khoản tại đây để tạo Bút toán. Mặc định các tài khoản được lấy theo Cài đặt, bạn có thể thiết lập lại."
+
+#
+msgid "Transactions referencing this product will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting, you can update it."
+msgstr "Các giao dịch tham chiếu đến sản phẩm này sẽ sử dụng các tài khoản tại đây để tạo Bút toán. Mặc định các tài khoản được lấy theo Cài đặt, bạn có thể thiết lập lại."
 
 #
 msgid "Enable tab"

@@ -820,7 +820,7 @@ class MenusFinancials:
             ),
             MenuCommon(
                 name='Default account determination', code='menu_default_account_determination_list', view_name='DefaultAccountDeterminationList',
-                icon='<i class="bi bi-journal"></i>',
+                icon='<i class="bi bi-journal-text"></i>',
             ),
         ],
     )

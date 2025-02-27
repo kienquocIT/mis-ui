@@ -221,28 +221,64 @@ class RecoveryLoadDataHandle {
         return true;
     };
 
-    static loadCheckRecovery() {
-        let productChecked = RecoveryLoadDataHandle.$scrollProduct[0].querySelector('.table-row-checkbox:checked');
-        if (productChecked) {
-            let rowTarget = productChecked.closest('tr');
-            if (rowTarget) {
-                let recoveryEle = rowTarget.querySelector('.table-row-quantity-recovery');
-                let remainEle = rowTarget.querySelector('.table-row-quantity-remain_recovery');
-                if (recoveryEle && remainEle) {
-                    let fnRecovery = 0;
-                    for (let eleRec of RecoveryDataTableHandle.$tableWarehouse[0].querySelectorAll('.table-row-quantity-recovery')) {
-                        fnRecovery += parseFloat($(eleRec).val());
-                    }
-                    if (remainEle.innerHTML) {
-                        if (fnRecovery > parseFloat(remainEle.innerHTML)) {
-                            $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-exceed-quantity')}, 'failure');
-                            return false;
-                        }
+    static loadCheckExceedQuantity() {
+        let check = true;
+        RecoveryDataTableHandle.$tableProductLeased.DataTable().rows().every(function () {
+            let row = this.node();
+            let remainELe = row.querySelector('.table-row-quantity-remain-recovery');
+            let recoveryELe = row.querySelector('.table-row-quantity-recovery');
+            if (remainELe && recoveryELe) {
+                if (remainELe.innerHTML && recoveryELe.innerHTML) {
+                    let remain = parseFloat(remainELe.innerHTML);
+                    let recovered = parseFloat(recoveryELe.innerHTML);
+                    if (recovered > remain) {
+                        check = false;
                     }
                 }
             }
+        });
+        if (check === false) {
+            $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-exceed-quantity')}, 'failure');
+            return check;
         }
-        return true;
+        RecoveryDataTableHandle.$tableProductNew.DataTable().rows().every(function () {
+            let row = this.node();
+            let remainELe = row.querySelector('.table-row-quantity-remain-recovery');
+            let recoveryELe = row.querySelector('.table-row-quantity-recovery');
+            if (remainELe && recoveryELe) {
+                if (remainELe.innerHTML && recoveryELe.innerHTML) {
+                    let remain = parseFloat(remainELe.innerHTML);
+                    let recovered = parseFloat(recoveryELe.innerHTML);
+                    if (recovered > remain) {
+                        check = false;
+                    }
+                }
+            }
+        });
+        if (check === false) {
+            $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-exceed-quantity')}, 'failure');
+            return check;
+        }
+        RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows().every(function () {
+            let row = this.node();
+            let remainELe = row.querySelector('.table-row-quantity-remain-recovery');
+            let recoveryELe = row.querySelector('.table-row-quantity-recovery');
+            if (remainELe && recoveryELe) {
+                if (remainELe.innerHTML && recoveryELe.innerHTML) {
+                    let remain = parseFloat(remainELe.innerHTML);
+                    let recovered = parseFloat(recoveryELe.innerHTML);
+                    if (recovered > remain) {
+                        check = false;
+                    }
+                }
+            }
+        });
+        if (check === false) {
+            $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-exceed-quantity')}, 'failure');
+            return check;
+        }
+
+        return check;
     };
 
     static loadCheckDelivery() {
@@ -1126,10 +1162,9 @@ class RecoveryDataTableHandle {
                     targets: 2,
                     width: '15%',
                     render: (data, type, row) => {
-                        let value = 0;
-                        if (row?.['quantity_delivered'] && row?.['quantity_delivered']) {
-                            value = row?.['quantity_delivered'] - row?.['product_quantity_leased'];
-                        }
+                        let delivered = row?.['quantity_delivered'] ? row?.['quantity_delivered'] : 0;
+                        let leased = row?.['product_quantity_leased'] ? row?.['product_quantity_leased'] : 0;
+                        let value = delivered - leased;
                         return `<span class="table-row-quantity-delivered">${value}</span>`;
                     }
                 },
@@ -1137,7 +1172,7 @@ class RecoveryDataTableHandle {
                     targets: 3,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-remain_recovery">${row?.['quantity_new_remain_recovery'] ? row?.['quantity_new_remain_recovery'] : '0'}</span>`;
+                        return `<span class="table-row-quantity-remain-recovery">${row?.['quantity_new_remain_recovery'] ? row?.['quantity_new_remain_recovery'] : '0'}</span>`;
                     }
                 },
                 {
@@ -1225,7 +1260,7 @@ class RecoveryDataTableHandle {
                     targets: 3,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-remain_recovery">${row?.['quantity_leased_remain_recovery'] ? row?.['quantity_leased_remain_recovery'] : '0'}</span>`;
+                        return `<span class="table-row-quantity-remain-recovery">${row?.['quantity_leased_remain_recovery'] ? row?.['quantity_leased_remain_recovery'] : '0'}</span>`;
                     }
                 },
                 {

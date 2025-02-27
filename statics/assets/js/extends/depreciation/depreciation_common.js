@@ -9,7 +9,7 @@ class DepreciationControl {
     static callDepreciation(opts) {
         let {method, months, start_date, end_date, price, adjust = null} = opts;
         /*
-        method: 0: line method || 1: adjust method
+        method: 0: line method || 1: adjustment method
         months: total months depreciation
         start_date: date start depreciation (DD/MM/YYYY)
         end_date: date end depreciation (DD/MM/YYYY)

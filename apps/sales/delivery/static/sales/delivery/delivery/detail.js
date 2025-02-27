@@ -1448,7 +1448,7 @@ $(async function () {
                 textFilter$.css('display', 'flex');
                 // Check if the button already exists before appending
                 if (!$('#label-new-product').length) {
-                    let $group = $(`<b id="label-new-product">New products</b>`);
+                    let $group = $(`<b id="label-new-product">${$trans.attr('data-new-products')}</b>`);
                     textFilter$.append(
                         $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                     );
@@ -1466,7 +1466,7 @@ $(async function () {
                 textFilter$.css('display', 'flex');
                 // Check if the button already exists before appending
                 if (!$('#label-leased-product').length) {
-                    let $group = $(`<b id="label-leased-product">Leased products</b>`);
+                    let $group = $(`<b id="label-leased-product">${$trans.attr('data-leased-products')}</b>`);
                     textFilter$.append(
                         $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                     );

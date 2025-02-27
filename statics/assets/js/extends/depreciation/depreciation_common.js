@@ -6,10 +6,10 @@ DepreciationControl{}
 */
 
 class DepreciationControl {
-    static calDepreciation(opts) {
+    static callDepreciation(opts) {
         let {method, months, start_date, end_date, price, adjust = null} = opts;
         /*
-        method: 0: line method || 1: adjust method
+        method: 0: line method || 1: adjustment method
         months: total months depreciation
         start_date: date start depreciation (DD/MM/YYYY)
         end_date: date end depreciation (DD/MM/YYYY)
@@ -40,7 +40,8 @@ class DepreciationControl {
             let daysEven = DepreciationControl.calDaysBetween(currentStartDateObj, currentEndDateObj);
             // Tính khấu hao hệ số nếu method === 1
             if (method === 1 && adjust) {
-                let depreciationAdjustValue = Math.round(price / totalMonths * adjust); // Khấu hao hệ số
+                // Khấu hao hệ số
+                let depreciationAdjustValue = Math.round(price / totalMonths * adjust);
                 depreciationValue = depreciationAdjustValue;
                 if (result.length > 0) {
                     let last_end_value = 0;
@@ -50,7 +51,8 @@ class DepreciationControl {
                     for (let data of result) {
                         total_accumulative_month += data?.['accumulative_month'];
                     }
-                    depreciationAdjustValue = Math.round(last_end_value / totalMonths * adjust);  // Khấu hao hệ số
+                    // Khấu hao hệ số
+                    depreciationAdjustValue = Math.round(last_end_value / totalMonths * adjust);
                     // Kiểm tra nếu khấu hao theo hệ số mà lớn hơn khấu hao chia đều số tháng còn lại thì lấy theo khấu hao hệ số còn ngược lại thì lấy theo khấu hao chia đều.
                     let monthsRemain = totalMonths - total_accumulative_month;
                     let depreciationValueCompare = last_end_value / monthsRemain;

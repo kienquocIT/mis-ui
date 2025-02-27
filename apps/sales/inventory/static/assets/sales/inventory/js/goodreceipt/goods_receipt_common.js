@@ -994,12 +994,14 @@ class GRLoadDataHandle {
                     let imported = parseFloat(importELe.value);
                     if (imported > remain) {
                         check = false;
-                        $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
-                        return false;
                     }
                 }
             }
         });
+        if (check === false) {
+            $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
+            return check;
+        }
         GRDataTableHandle.tablePOProduct.DataTable().rows().every(function () {
             let row = this.node();
             let remainELe = row.querySelector('.table-row-gr-remain');
@@ -1010,12 +1012,14 @@ class GRLoadDataHandle {
                     let imported = parseFloat(importELe.value);
                     if (imported > remain) {
                         check = false;
-                        $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
-                        return false;
                     }
                 }
             }
         });
+        if (check === false) {
+            $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
+            return check;
+        }
 
         return check;
     };

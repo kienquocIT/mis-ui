@@ -1448,7 +1448,7 @@ $(async function () {
                 textFilter$.css('display', 'flex');
                 // Check if the button already exists before appending
                 if (!$('#label-new-product').length) {
-                    let $group = $(`<b id="label-new-product">New products</b>`);
+                    let $group = $(`<b id="label-new-product">${$trans.attr('data-new-products')}</b>`);
                     textFilter$.append(
                         $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                     );
@@ -1466,7 +1466,7 @@ $(async function () {
                 textFilter$.css('display', 'flex');
                 // Check if the button already exists before appending
                 if (!$('#label-leased-product').length) {
-                    let $group = $(`<b id="label-leased-product">Leased products</b>`);
+                    let $group = $(`<b id="label-leased-product">${$trans.attr('data-leased-products')}</b>`);
                     textFilter$.append(
                         $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                     );
@@ -1486,12 +1486,14 @@ $(async function () {
                         let delivered = parseFloat(deliverELe.value);
                         if (delivered > available) {
                             check = false;
-                            $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
-                            return false;
                         }
                     }
                 }
             });
+            if (check === false) {
+                $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
+                return check;
+            }
             $tablePW.DataTable().rows().every(function () {
                 let row = this.node();
                 let availableELe = row.querySelector('.table-row-available');
@@ -1508,6 +1510,10 @@ $(async function () {
                     }
                 }
             });
+            if (check === false) {
+                $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
+                return check;
+            }
             $tableProductNew.DataTable().rows().every(function () {
                 let row = this.node();
                 let remainELe = row.querySelector('.table-row-remain');
@@ -1524,6 +1530,10 @@ $(async function () {
                     }
                 }
             });
+            if (check === false) {
+                $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
+                return check;
+            }
             $tableProductLeased.DataTable().rows().every(function () {
                 let row = this.node();
                 let remainELe = row.querySelector('.table-row-remain');
@@ -1540,6 +1550,10 @@ $(async function () {
                     }
                 }
             });
+            if (check === false) {
+                $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
+                return check;
+            }
 
             return check;
         };

@@ -11046,3 +11046,59 @@ msgstr "Nhập số lượng sản phẩm mua mới"
 #
 msgid "Select leased products"
 msgstr "Chọn sản phẩm đã cho thuê trước đó"
+
+#
+msgid "New products"
+msgstr "Sản phẩm mua mới"
+
+#
+msgid "Leased products"
+msgstr "Sản phẩm đã cho thuê trước đó"
+
+#
+msgid "Recovery"
+msgstr "Thu hồi"
+
+#
+msgid "Start depreciation"
+msgstr "Bắt đầu khấu hao"
+
+#
+msgid "End depreciation"
+msgstr "Kết thúc khấu hao"
+
+#
+msgid "Start lease"
+msgstr "Bắt đầu cho thuê"
+
+#
+msgid "End lease"
+msgstr "Kết thúc cho thuê"
+
+#
+msgid "Begin"
+msgstr "Bắt đầu"
+
+#
+msgid "Start net value"
+msgstr "Giá trị ban đầu"
+
+#
+msgid "Depreciation value"
+msgstr "Giá trị khấu hao"
+
+#
+msgid "End net value"
+msgstr "Giá trị cuối"
+
+#
+msgid "Allocated"
+msgstr "Phân bổ"
+
+#
+msgid "Accumulative"
+msgstr "Tích lũy"
+
+#
+msgid "Depreciation detail"
+msgstr "Chi tiết khấu hao"

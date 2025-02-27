@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Warehouse Update' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -22,11 +23,14 @@
 {% block pageContent %}
     <form id="frmUpdate" data-method="GET" data-url-detail="{% url 'WareHouseDetailAPI' pk=0 %}" data-url-redirect="{% url 'WareHouseDetail' pk=0 %}">
         {% include 'masterdata/saledata/warehouse/common/information.html' %}
-        {% include 'masterdata/saledata/warehouse/common/bin_location.html' %}
+        {% include 'masterdata/saledata/warehouse/common/tabs.html' %}
     </form>
+{% endblock %}
+{% block modalData %}
     {% include 'masterdata/saledata/warehouse/common/modals.html' %}
 {% endblock %}
 {% block jsFooterUnCompress %}
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/warehouse/shelf_draw.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/warehouse/common.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/warehouse/update.js' %}"></script>

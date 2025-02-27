@@ -7,11 +7,12 @@ $(function () {
     function prepareDataAndRenderHTML(res){
         if(res.title) $('[name="title"]').val(res.title);
         if (res.application) {
-            $("#select-box-features").initSelect2({
-                data: res.application,
-            });
+            // $("#select-box-features").initSelect2({
+            //     data: res.application,
+            // });
+            loadInitS2($("#select-box-features"), [res.application]);
             // load data-params select property zone modal
-            $('#property_list_choices').attr('data-params', JSON.stringify({application: res.application.id, is_wf_zone: true}));
+            loadInitS2($('#property_list_choices'), [], {'application': res.application.id, 'is_wf_zone': true});
         }
         if (res.is_define_zone) $('[name="define_zone"]').val(res.is_define_zone);
         if (res.zone){

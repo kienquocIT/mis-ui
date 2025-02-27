@@ -137,6 +137,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # home/company
     COMPANY_CONFIG = StringUrl('company/config')
+    ACCOUNTING_POLICIES_CONFIG = StringUrl('company/accounting-policies-config')
     COMPANY_LIST = StringUrl('company/list')
     COMPANY_DETAIL = StringUrl('company')
     COMPANY_DETAIL_LOGO = StringUrl('company/{pk}/logo')
@@ -429,6 +430,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_SERIAL_LIST = StringUrl('saledata/warehouses-serials')
     WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouses/check/{product_id}/{uom_id}')
     WAREHOUSE_PRODUCT_ASSET_LIST = StringUrl('saledata/warehouses/product-asset/list')
+    WAREHOUSE_FOR_INVENTORY_LIST = StringUrl('saledata/warehouses-for-inventory')
 
     # shipping unit
     ITEM_UNIT_LIST = StringUrl('base/item-units')
@@ -464,9 +466,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/config/decision-factor/{pk}')
     OPPORTUNITY_CONFIG_STAGE = StringUrl('opportunity/config/stage')
     OPPORTUNITY_CONFIG_STAGE_DETAIL = StringUrl('opportunity/config/stage/{pk}')
-
-    # restore Opportunity Stage
-    RESTORE_DEFAULT_OPPORTUNITY_CONFIG_STAGE = StringUrl('company/default-opportunity-stage/{pk}')
 
     # Task
     OPPORTUNITY_TASK_CONFIG = StringUrl('task/config')
@@ -834,6 +833,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LIST_ACCOUNT_LIST = StringUrl('partner-center/list/account-list')
     # Goods recovery
     GOODS_RECOVERY_LIST = StringUrl('inventory/goods-recovery/list')
+    GOODS_RECOVERY_LEASE_GENERATE_LIST = StringUrl('inventory/goods-recovery-lease-generate/list')
     GOODS_RECOVERY_DETAIL = StringUrl('inventory/goods-recovery')
 
     # Advance Filter
@@ -855,6 +855,17 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # asset/ instrument tool
     INSTRUMENT_TOOL_LIST = StringUrl('asset/instrument-tool/list')
     INSTRUMENT_TOOL_DETAIL = StringUrl('asset/instrument-tool/detail')
+    CHART_OF_ACCOUNTS_LIST = StringUrl('accounting-setting/chart-of-accounts/list')
+    CHART_OF_ACCOUNTS_DETAIL = StringUrl('accounting-setting/chart-of-accounts/{pk}')
+
+    DEFAULT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/default-account-determination/list')
+    WAREHOUSE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/warehouse-account-determination/list')
+    PRODUCT_TYPE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-type-account-determination/list')
+    PRODUCT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-account-determination/list')
+
+    JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
+    JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
+
 
     # asset/ fixed asset write off
     FIXED_ASSET_WRITE_OFF_LIST = StringUrl('asset/fixed-asset-writeoff/list')

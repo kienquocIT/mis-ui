@@ -37,6 +37,7 @@ class DocumentTypeMasterDataListAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.DOCUMENT_TYPE_LIST).post(request.data)
         return resp.auto_return(key_success='document_type_list')
 
+
 class DocumentTypeMasterDataDetailAPI(APIView):
     @mask_view(
         auth_require=True,

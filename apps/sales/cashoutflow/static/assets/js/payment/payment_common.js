@@ -1734,23 +1734,14 @@ class PaymentHandle {
         PaymentLoadPage.LoadCreator(initEmployee)
 
         if (option === "create") {
-            const {
-                create_open, from_opp,
-                opp_id,
-                opp_title,
-                opp_code,
-                process_id,
-                process_title,
-                process_stage_app_id,
-                process_stage_app_title,
-                inherit_id,
-                inherit_title
+                        const {
+                create_open, opp_id, opp_title, opp_code,
+                process_id, process_title, process_stage_app_id, process_stage_app_title,
+                inherit_id, inherit_title
             } = $x.fn.getManyUrlParameters([
-                'create_open', 'from_opp',
-                'opp_id', 'opp_title', 'opp_code',
-                'process_id', 'process_title',
-                'process_stage_app_id', 'process_stage_app_title',
-                'inherit_id', 'inherit_title',
+                'create_open', 'opp_id', 'opp_title', 'opp_code',
+                'process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title',
+                'inherit_id', 'inherit_title'
             ])
             const group$ = $('#bastion-space')
             if (create_open) {
@@ -1788,27 +1779,6 @@ class PaymentHandle {
                     data_inherit: data_inherit,
                     data_process: data_process,
                     data_process_stage_app: data_process_stage_app,
-                }).init();
-
-                PaymentHandle.LoadPageActionWithParams(opp_id)
-            }
-            else if (from_opp) {
-                const data_opp = [{
-                    "id": opp_id || '',
-                    "title": opp_title || '',
-                    "code": opp_code || '',
-                    "selected": true,
-                }];
-                new $x.cls.bastionField({
-                    list_from_app: "cashoutflow.payment.create",
-                    app_id: "1010563f-7c94-42f9-ba99-63d5d26a1aca",
-                    mainDiv: group$,
-                    oppEle: group$.find('select[name=opportunity_id]'),
-                    prjEle: group$.find('select[name=project_id]'),
-                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
-                    processEle: group$.find('select[name=process]'),
-                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
-                    data_opp: data_opp,
                 }).init();
 
                 PaymentHandle.LoadPageActionWithParams(opp_id)

@@ -720,31 +720,31 @@ msgstr "Thêm nhân viên"
 
 #
 msgid "1st Manager System Title"
-msgstr "Tiêu Đề Của Quản lý hệ thống thứ nhất"
+msgstr "Tiêu đề hệ thống của quản lý thứ nhất"
 
 #
 msgid "2nd Manager System Title"
-msgstr "Tiêu Đề Của Quản lý hệ thống thứ hai"
+msgstr "Tiêu đề hệ thống của quản lý thứ hai"
 
 #
 msgid "Input Display 1st Manager Title"
-msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Nhất"
+msgstr "Nhập tên hiển thị của quản lý thứ nhất"
 
 #
 msgid "Title of 1st manager"
-msgstr "Tiêu Đề Của Quản Lý Thứ Nhất"
+msgstr "Tiêu đề của quản lý thứ nhất"
 
 #
 msgid "Input Display 2nd Manager Title"
-msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Hai"
+msgstr "Nhập tên hiển thị của quản lý thứ hai"
 
 #
 msgid "Title of 2nd manager"
-msgstr "Tiêu Đề Của Quản Lý Thứ Hai"
+msgstr "Tiêu đề của quản lý thứ hai"
 
 #
 msgid "First Manager Assign To"
-msgstr "Quản Lý Đầu Tiên Chỉ Định Cho"
+msgstr "Quản lý thứ nhất chỉ định cho"
 
 #
 msgid "Assign to one employee"
@@ -752,7 +752,7 @@ msgstr "Chỉ định cho một nhân viên"
 
 #
 msgid "Second Manager Assign To"
-msgstr "Quản Lý Thứ Hai Chỉ Định Cho"
+msgstr "Quản lý thứ hai chỉ định cho"
 
 #
 msgid "Active organization group after created"
@@ -760,23 +760,23 @@ msgstr "Kích hoạt nhóm tổ chức sau khi tạo"
 
 #
 msgid "Display 1st Manager Title"
-msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Nhất"
+msgstr "Nhập tên hiển thị của quản lý thứ nhất"
 
 #
 msgid "Display 2nd Manager Title"
-msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Hai"
+msgstr "Nhập tên hiển thị của quản lý thứ hai"
 
 #
 msgid "Name of Reference Group"
-msgstr "Tên Của Nhóm Liên Quan"
+msgstr "Tên của nhóm liên quan"
 
 #
 msgid "System title of 1st manager"
-msgstr "Tiêu Đề Hệ Thống Của Quản Lý Thứ Nhất"
+msgstr "Tiêu đề hệ thống của quản lý thứ nhất"
 
 #
 msgid "Assign To"
-msgstr "Chỉ Định"
+msgstr "Chỉ định"
 
 #
 msgid "Role name"
@@ -1008,7 +1008,7 @@ msgstr "Hoàn tất"
 
 #
 msgid "Restore default"
-msgstr "khôi phục mặc định"
+msgstr "Khôi phục mặc định"
 
 #
 msgid "Workflow detail"
@@ -1044,6 +1044,10 @@ msgstr "Chế độ áp dụng quy trình"
 
 #
 msgid "Errors"
+msgstr "Lỗi"
+
+#
+msgid "Error"
 msgstr "Lỗi"
 
 #
@@ -2313,7 +2317,7 @@ msgstr "Tạo cơ hội kinh doanh"
 
 #
 msgid "Select Customer"
-msgstr "Khách hàng"
+msgstr "Chọn khách hàng"
 
 #
 msgid "title of quotation"
@@ -3516,10 +3520,6 @@ msgid "User can input win rate of Opportunity"
 msgstr "Người dùng có thể tự nhập tỷ lệ thành công của cơ hội kinh doanh"
 
 #
-msgid "Add Factor"
-msgstr "Thêm yếu tố"
-
-#
 msgid "Factors that customer decision to buy your product"
 msgstr "Các yếu tố quyết định khách hàng sẽ mua sản phẩm"
 
@@ -3825,7 +3825,7 @@ msgstr "Tổng trước thuế"
 
 #
 msgid "Money gave/transferred"
-msgstr "Tiền đã nhận / đã chi"
+msgstr "Tiền đã nhận/chi"
 
 #
 msgid "Supplier name"
@@ -6665,8 +6665,8 @@ msgid "Tax number"
 msgstr "Mã số thuế"
 
 #
-msgid "Click the button to select"
-msgstr "Nhấn vào nút để lựa chọn"
+msgid "Click the button behind the box to select"
+msgstr "Nhấn vào nút phía sau ô nhập để lựa chọn"
 
 #
 msgid "Supplier code"
@@ -6710,7 +6710,7 @@ msgstr "Người tham dự bên ngoài"
 
 #
 msgid "Start time"
-msgstr "Thời gian bắt đầu"
+msgstr "Bắt đầu lúc"
 
 #
 msgid "Duration"
@@ -6725,20 +6725,20 @@ msgid "min(s)"
 msgstr "phút"
 
 #
-msgid "Online meeting changes will be updated after saving this page"
-msgstr "Cuộc họp trực tuyến sẽ được thay đổi sau khi Lưu trang này"
+msgid "Zoom meeting changes will be updated after saving this page"
+msgstr "Cuộc họp Zoom sẽ được thay đổi sau khi Lưu trang này"
 
 #
-msgid "Online meeting will be created after saving this page"
-msgstr "Cuộc họp trực tuyến sẽ được tạo sau khi Lưu trang này"
+msgid "Zoom meeting will be created after saving this page"
+msgstr "Cuộc họp Zoom sẽ được tạo sau khi Lưu trang này"
 
 #
-msgid "Online meeting"
-msgstr "Cuộc họp trực tuyến"
+msgid "Online"
+msgstr "Trực tuyến"
 
 #
-msgid "Offline meeting"
-msgstr "Cuộc họp trực tiếp"
+msgid "Offline"
+msgstr "Trực tiếp"
 
 #
 msgid "Date occur"
@@ -6821,8 +6821,8 @@ msgid "Last"
 msgstr "Cuối cùng"
 
 #
-msgid "By"
-msgstr "Trước"
+msgid "Before the date"
+msgstr "Trước ngày"
 
 #
 msgid "occurrences"
@@ -6830,7 +6830,7 @@ msgstr "lần lặp"
 
 #
 msgid "Enable continuous meeting chat"
-msgstr "Cho phép tiếp tục cuộc hội thoại trong cộc họp"
+msgstr "Cho phép tiếp tục cuộc hội thoại trong cuộc họp"
 
 #
 msgid "Added attendees will have access to the Meeting Group Chat before and after the meeting"
@@ -6843,6 +6843,10 @@ msgstr "Bảo mật"
 #
 msgid "Only users who have the invite link OR passcode can join the meeting"
 msgstr "Chỉ những người có liên kết HOẶC passcode mới có thể tham dự cuộc họp"
+
+#
+msgid "Meeting ID"
+msgstr "ID cuộc họp"
 
 #
 msgid "Waiting room"
@@ -7127,6 +7131,10 @@ msgstr "Tạo chuyến công tác"
 #
 msgid "Schedule a meeting"
 msgstr "Lên lịch cuộc họp"
+
+#
+msgid "Meeting schedule"
+msgstr "Lịch họp"
 
 #
 msgid "Create leave"
@@ -8221,10 +8229,6 @@ msgid "Source"
 msgstr "Nguồn"
 
 #
-msgid "Lead source"
-msgstr "Nguồn lead"
-
-#
 msgid "Lead status"
 msgstr "Trạng thái lead"
 
@@ -8241,8 +8245,8 @@ msgid "Lead create"
 msgstr "Tạo mới lead"
 
 #
-msgid "Qualify Lead"
-msgstr "Đánh giá lead"
+msgid "Qualify"
+msgstr "Đánh giá"
 
 #
 msgid "Convert to a new Contact"
@@ -8846,7 +8850,7 @@ msgstr "SDDK nên được tạo trước khi các hoạt động nhập - xuấ
 
 #
 msgid "The initial balance will be inserted from the month of starting to use the software."
-msgstr "SDDK sẽ được chèn bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
+msgstr "SDDK sẽ được nhập bắt đầu từ tháng sử dụng phần mềm đã cài đặt."
 
 #
 msgid "Pretax value"
@@ -10180,16 +10184,12 @@ msgid "Reconciliation total must be 0"
 msgstr "Tổng cấn trừ phải bằng 0"
 
 #
-msgid "Click the button to select or input here"
-msgstr "Nhấn nút để lựa chọn hoặc nhập tại đây"
-
-#
 msgid "View payment term information"
 msgstr "Xem thông tin điều khoản thanh toán"
 
 #
-msgid "Check tax number information"
-msgstr "Kiểm tra thông tin mã số thuế"
+msgid "View tax number information"
+msgstr "Xem thông tin mã số thuế"
 
 #
 msgid "Select customer"
@@ -10200,8 +10200,8 @@ msgid "Add new product row"
 msgstr "Thêm dòng sản phẩm"
 
 #
-msgid "Add new description row"
-msgstr "Thêm dòng mô tả"
+msgid "Add new description"
+msgstr "Thêm mô tả"
 
 #
 msgid "Expand to view detail"
@@ -10274,6 +10274,10 @@ msgstr "Chỉ ghi lại"
 #
 msgid "Sent successfully"
 msgstr "Gửi thành công"
+
+#
+msgid "Sent"
+msgstr "Đã gửi"
 
 #
 msgid "Send failed"
@@ -10602,3 +10606,443 @@ msgstr "Dữ liệu tài liệu dùng chung"
 #
 msgid "Master Data Asset"
 msgstr "Dữ liệu tài sản dùng chung"
+
+#
+msgid "Liabilities"
+msgstr "Nợ phải trả"
+
+#
+msgid "Owner's equity"
+msgstr "Vốn chủ sở hữu"
+
+#
+msgid "Costs of production, business"
+msgstr "Chi phí sản xuất, kinh doanh"
+
+#
+msgid "Other incomes"
+msgstr "Thu nhập khác"
+
+#
+msgid "Other expenses"
+msgstr "Chi phí khác"
+
+#
+msgid "Income summary"
+msgstr "Xác định kết quả kinh doanh"
+
+#
+msgid "Account code"
+msgstr "Số hiệu tài khoản"
+
+#
+msgid "Account name"
+msgstr "Tên tài khoản"
+
+#
+msgid "Foreign name"
+msgstr "Tên quốc tế"
+
+#
+msgid "account"
+msgstr "tài khoản"
+
+#
+msgid "title"
+msgstr "tiêu đề"
+
+#
+msgid "Parent account"
+msgstr "Tài khoản cha"
+
+#
+msgid "Auto"
+msgstr "Tự động"
+
+#
+msgid "Original transaction"
+msgstr "Giao dịch gốc"
+
+#
+msgid "Auto load according to config"
+msgstr "Tự động load theo cấu hình"
+
+#
+msgid "Tax number is not valid"
+msgstr "MST không hợp lệ"
+
+#
+msgid "Tax number is valid"
+msgstr "MST hợp lệ"
+
+#
+msgid "Payment term information"
+msgstr "Thông tin Điều khoản thanh toán"
+
+#
+msgid "Remark"
+msgstr "Mô tả"
+
+#
+msgid "Term"
+msgstr "Điều khoản"
+
+#
+msgid "Invoice status"
+msgstr "TT hoá đơn"
+
+#
+msgid "Accounting setting"
+msgstr "Thiết lập kế toán"
+
+#
+msgid "Chart of accounts"
+msgstr "Danh sách tài khoản"
+
+#
+msgid "Default account determination"
+msgstr "Xác định TK kế toán mặc định"
+
+#
+msgid "Trading account type"
+msgstr "Loại tài khoản giao dịch"
+
+#
+msgid "Add same level account"
+msgstr "Thêm tài khoản cùng cấp"
+
+#
+msgid "Add sub level account"
+msgstr "Thêm tài khoản cấp dưới"
+
+#
+msgid "Select an account for these actions"
+msgstr "Chọn một tài khoản cho các hành động này"
+
+#
+msgid "This group is to manage Units of measure not created from Blow in one place. For example: Units of measure imported from excel file in Quotation function, ..."
+msgstr "Nhóm này để quản lý các đơn vị tính không được tạo từ Blow về một chỗ. Ví dụ: các Đơn vị tính nhập từ file excel trong chức năng Báo Giá, ..."
+
+#
+msgid "Activities"
+msgstr "Hoạt động"
+
+#
+msgid "Convert to"
+msgstr "Chuyển đổi thành"
+
+#
+msgid "Go to this Stage"
+msgstr "Nhảy đến trạng thái này"
+
+#
+msgid "Add Stage"
+msgstr "Thêm giai đoạn"
+
+#
+msgid "The system will restore the initial configuration stages"
+msgstr "Hệ thống sẽ khôi phục các giai đoạn về cài đặt ban đầu"
+
+#
+msgid "Decision factor"
+msgstr "Yếu tố quyết định"
+
+#
+msgid "Create New Factor"
+msgstr "Tạo yếu tố mới"
+
+#
+msgid "Condition"
+msgstr "Điều kiện"
+
+#
+msgid "Create New Stage"
+msgstr "Thêm chỉ tiêu mới"
+
+#
+msgid "Logical operator"
+msgstr "Toán tử logic"
+
+#
+msgid "You can not delete default stages!"
+msgstr "Bạn không thể xóa các giai đoạn mặc định!"
+
+#
+msgid "Accounting policies"
+msgstr "Chính sách kế toán"
+
+#
+msgid "Meeting room"
+msgstr "Phòng họp"
+
+#
+msgid "Create meeting room"
+msgstr "Tạo phòng họp"
+
+#
+msgid "Zoom account config"
+msgstr "Cấu hình tài khoản Zoom"
+
+#
+msgid "Add new meeting room"
+msgstr "Thêm phòng họp"
+
+#
+msgid "See instruction here"
+msgstr "Xem hướng dẫn tại đây"
+
+#
+msgid "1 existing config"
+msgstr "1 cấu hình đang tồn tại"
+
+#
+msgid "Instruction"
+msgstr "Hướng dẫn"
+
+#
+msgid "Enter Account email"
+msgstr "Nhập Account email"
+
+#
+msgid "Enter your email, which you use to connect to Zoom API."
+msgstr "Nhập email của bạn, cái được sử dụng để kết nối với Zoom API"
+
+#
+msgid "Build app"
+msgstr "Xây dựng ứng dụng"
+
+#
+msgid "Go to"
+msgstr "Đi đến"
+
+#
+msgid "here"
+msgstr "đây"
+
+#
+msgid "Login your Zoom account with email in last step."
+msgstr "Đăng nhập tài khoản Zoom với email ở bước trước."
+
+#
+msgid "Click Develop button > Select Build Server-to-Server App > Enter App name."
+msgstr "Nhấn vào nút Develop > Chọn Build Server-to-Server App > Nhập App name."
+
+#
+msgid "In tab App Credentials: click Next button."
+msgstr "Ở tab App Credentials: chọn Next"
+
+#
+msgid "In tab Information: fill in all fields (required)."
+msgstr "Ở tab Information: điền vào tất cả các trường (bắt buộc)."
+
+#
+msgid "In tab Feature: click Next button."
+msgstr "Ở tab Feature: nhấn vào nút Next."
+
+#
+msgid "In tab Scopes: click Add Scopes button > In tab Meeting, select 2 rows:  (Get a meetings encoded SIP URL) and (View and manage all user meetings) > Click Continue button."
+msgstr "Ở tab Scopes: nhấn vào nút Add Scopes > Ở tab Meeting, chọn  2 hàng: (Get a meetings encoded SIP URL) và (View and manage all user meetings) > nhấn vào nút Continue."
+
+#
+msgid "Finally, in tab Activation: click Activate your app button to active your app."
+msgstr "Cuối cùng, ở tab Activation: nhấn vào nút Activate your app để kích hoạt ứng ựng của bạn."
+
+#
+msgid "Get Account ID, Client ID, Client secret"
+msgstr "Lấy Account ID, Client ID, Client secret"
+
+#
+msgid "Open your app in last step, then go to App Credentials tab. You will see your Account ID, Client ID and Client secret."
+msgstr "Mở ứng ụng của bạn ở bước trước lên, sau đó đi đến tab App Credentials. Bạn sẽ thấy Account ID, Client ID và Client secret."
+
+#
+msgid "Get Personal meeting ID"
+msgstr "Lấy ID Cuộc họp cá nhân"
+
+#
+msgid "Login to your Zoom Account"
+msgstr "Đăng nhập vào tài khoản Zoom của bạn"
+
+#
+msgid "Go to Profile tab, your Personal meeting ID here."
+msgstr "Đi tới tab Profile (Cá nhân), ID Cuộc họp cá nhân cảu bạn ở đây."
+
+#
+msgid "Sync with Vietcombank"
+msgstr "Đồng bộ với Vietcombank"
+
+#
+msgid "Send notify email"
+msgstr "Gửi email thông báo"
+
+#
+msgid "Meeting schedule list"
+msgstr "Danh sách lịch họp"
+
+#
+msgid "Meeting schedule create"
+msgstr "Lên lich cuộc họp"
+
+#
+msgid "Meeting schedule detail"
+msgstr "Chi tiết cuộc họp"
+
+#
+msgid "Only available with online meeting!"
+msgstr "Chỉ khả dụng với Cuộc họp trực tuyến!"
+
+#
+msgid "Generate automatically"
+msgstr "Tạo tự động"
+
+#
+msgid "Personal meeting ID"
+msgstr "ID cuộc họp cá nhân"
+
+#
+msgid "The passcode will be embedded in the invite link. Users joining with the invite link will not have to enter the passcode manually. A numeric passcode will be generated for users who dial in from a phone or a room system"
+msgstr "Mã truy cập sẽ được nhúng trong đường link mời. Người dùng tham gia qua đường link này sẽ không cần nhập mã truy cập thủ công. Một mã số sẽ được tạo ra cho những ai tham gia bằng điện thoại hoặc hệ thống phòng họp."
+
+#
+msgid "Chat with participants any time and access in-meeting chat in the same place. External users must be manually added to the Meeting Group Chat."
+msgstr "Trò chuyện với người tham gia bất cứ lúc nào và truy cập cuộc trò chuyện trong cuộc họp tại cùng một nơi. Người dùng bên ngoài phải được thêm thủ công vào nhóm trò chuyện của cuộc họp."
+
+#
+msgid "The Zoom meeting cannot be created because you have not configured a Zoom account. Go to settings to add it, then go here to create it again."
+msgstr "Cuộc họp trên Zoom chưa thể tạo vì bạn chưa cấu hình tài khoản Zoom. Hãy vào phần cài đặt để thêm, sau đó vào đây để tạo lại."
+
+#
+msgid "Zoom account config here"
+msgstr "Cấu hình tài khoản Zoom tại đây"
+
+#
+msgid "Journal entry"
+msgstr "Bút toán"
+
+#
+msgid "Debit (FC)"
+msgstr "Bên nợ (NT)"
+
+#
+msgid "Credit (FC)"
+msgstr "Bên có (NT)"
+
+#
+msgid "Debit"
+msgstr "Bên nợ"
+
+#
+msgid "Credit"
+msgstr "Bên có"
+
+#
+msgid "Taxable value"
+msgstr "Giá trị chịu thuế"
+
+#
+msgid "Business partner"
+msgstr "Đối tác kinh doanh"
+
+#
+msgid "Transaction code"
+msgstr "Mã giao dịch"
+
+#
+msgid "Transaction name"
+msgstr "Tên giao dịch"
+
+#
+msgid "Create manually"
+msgstr "Tạo thủ công"
+
+#
+msgid "Create automatically"
+msgstr "Tạo tự động"
+
+#
+msgid "Bin Location"
+msgstr "Vị trí Bin"
+
+#
+msgid "Shelf title"
+msgstr "Tên kệ"
+
+#
+msgid "Shelf row"
+msgstr "SL ngăn"
+
+#
+msgid "Shelf column"
+msgstr "SL tầng"
+
+#
+msgid "Add shelf"
+msgstr "Thêm kệ"
+
+#
+msgid "Account determination"
+msgstr "Xác định TK kế toán"
+
+#
+msgid "Transactions referencing this warehouse will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting. After creating the warehouse, you can go to the detail page to update it."
+msgstr "Các giao dịch tham chiếu đến kho này sẽ sử dụng các tài khoản tại đây để tạo Bút toán. Mặc định các tài khoản được lấy theo Cài đặt. Sau khi tạo kho xong, bạn có thể vào trang chi tiết để thiết lập lại."
+
+#
+msgid "Enable tab"
+msgstr "Kích hoạt tab"
+
+#
+msgid "No warehouse"
+msgstr "Không qua kho"
+
+#
+msgid "Lease time"
+msgstr "Thời gian thuê"
+
+#
+msgid "Final cost"
+msgstr "Giá vốn cuối"
+
+#
+msgid "Lease code"
+msgstr "Mã thuê"
+
+#
+msgid "Original cost"
+msgstr "Giá vốn gốc"
+
+#
+msgid "Net value"
+msgstr "Giá trị ròng"
+
+#
+msgid "Previous lease time"
+msgstr "Thời gian thuê trước"
+
+#
+msgid "Depreciation time"
+msgstr "Thời gian khấu hao"
+
+#
+msgid "Update depreciation time"
+msgstr "Thời gian khấu hao mới"
+
+#
+msgid "Save edit zone"
+msgstr "Lưu chỉnh sửa vùng"
+
+#
+msgid "Save edit zone and approve"
+msgstr "Lưu chỉnh sửa vùng và phê duyệt"
+
+#
+msgid "Goods recovery"
+msgstr "Thu hồi"
+
+#
+msgid "Input quantity new products"
+msgstr "Nhập số lượng sản phẩm mua mới"
+
+#
+msgid "Select leased products"
+msgstr "Chọn sản phẩm đã cho thuê trước đó"

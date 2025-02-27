@@ -7,47 +7,44 @@ $(document).ready(function () {
     }, {});
 
     function loadFactorTable() {
-        if (!$.fn.DataTable.isDataTable('#table-opportunity-customer-decision-factor')) {
-            let $table = $('#table-opportunity-customer-decision-factor')
-            let frm = new SetupFormSubmit($table);
-            $table.DataTableDefault({
-                rowIdx: true,
-                ajax: {
-                    url: frm.dataUrl,
-                    type: frm.dataMethod,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-
-                        if (data && resp.data.hasOwnProperty('opportunity_decision_factor')) {
-                            return resp.data['opportunity_decision_factor'] ? resp.data['opportunity_decision_factor'] : [];
-                        }
-                        throw Error('Call data raise errors.')
-                    },
+        let $table = $('#table-opportunity-customer-decision-factor')
+        $table.DataTable().clear().destroy()
+        let frm = new SetupFormSubmit($table);
+        $table.DataTableDefault({
+            rowIdx: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('opportunity_decision_factor')) {
+                        return resp.data['opportunity_decision_factor'] ? resp.data['opportunity_decision_factor'] : [];
+                    }
+                    throw Error('Call data raise errors.')
                 },
-                columnDefs: [],
-                columns: [
-                    {
-                        targets: 0,
-                        render: () => {
-                            return ``
-                        }
-                    },
-                    {
-                        targets: 1,
-                        className: 'text-center',
-                        render: (data, type, row) => {
-                            return `<p>${row.title}</p>`
-                        }
-                    },
-                    {
-                        targets: 2,
-                        render: (data, type, row) => {
-                            return `<a class="btn btn-icon btn-del-factor" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
-                        }
-                    },
-                ],
-            });
-        }
+            },
+            columnDefs: [],
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return ``
+                    }
+                },
+                {
+                    className: 'wrap-text w-90',
+                    render: (data, type, row) => {
+                        return `<i class="fa-regular fa-hand-point-right mr-2"></i><span class="text-muted">${row.title}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text w-5 text-right',
+                    render: (data, type, row) => {
+                        return `<a class="btn btn-icon btn-del-factor" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
+                    }
+                },
+            ],
+        });
     }
 
     function loadDetail() {
@@ -89,12 +86,12 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                            $.fn.notifyB({'description': $.fn.gettext('Successful')}, 'success')
                             $.fn.redirectUrl(window.location, 1000);
                         }
                     },
                     (errs) => {
-                        console.log(errs)
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 )
         }
@@ -118,12 +115,14 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
-                        $.fn.redirectUrl(window.location, 1000);
+                        $.fn.notifyB({'description': $.fn.gettext('Successful')}, 'success')
+                        $('#frm-create-factor')[0].reset()
+                        $('#modalCreateFactor').modal('hide');
+                        loadFactorTable()
                     }
                 },
                 (errs) => {
-                    console.log(errs)
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -147,12 +146,12 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
-                        $.fn.redirectUrl(window.location, 1000);
+                        $.fn.notifyB({'description': $.fn.gettext('Successful')}, 'success')
+                        loadFactorTable()
                     }
                 },
                 (errs) => {
-                    console.log(errs)
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -216,86 +215,70 @@ $(document).ready(function () {
     }
 
     function loadStage() {
-        if (!$.fn.DataTable.isDataTable('#table-opportunity-config-stage')) {
-            let $table = $('#table-opportunity-config-stage')
-            let frm = new SetupFormSubmit($table);
-            $table.DataTableDefault({
-                rowIdx: true,
-                ajax: {
-                    url: frm.dataUrl,
-                    type: frm.dataMethod,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-
-                        if (data && resp.data.hasOwnProperty('opportunity_config_stage')) {
-                            return resp.data['opportunity_config_stage'] ? LoadConfigAndLoadStage.sortStage(resp.data['opportunity_config_stage']) : [];
-                        }
-                        throw Error('Call data raise errors.')
-                    },
+        let $table = $('#table-opportunity-config-stage')
+        $table.DataTable().clear().destroy()
+        let frm = new SetupFormSubmit($table);
+        $table.DataTableDefault({
+            rowIdx: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('opportunity_config_stage')) {
+                        return resp.data['opportunity_config_stage'] ? LoadConfigAndLoadStage.sortStage(resp.data['opportunity_config_stage']) : [];
+                    }
+                    throw Error('Call data raise errors.')
                 },
-                columns: [
-                    {
-                        targets: 0,
-                        render: () => {
-                            return ``
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return ``
+                    }
+                },
+                {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<span class="text-primary fw-bold">${row.indicator}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text w-50',
+                    render: (data, type, row) => {
+                        return `<span class="fst-italic">${row.description}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<div class="input-group">
+                                    <input type="number" step="0.1" class="form-control input-win-rate" data-id="${row.id}" value="${row.win_rate}">
+                                    <span class="input-group-text">%</span>
+                                </div>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-center w-10',
+                    render: (data, type, row) => {
+                        return `<a class="btn btn-icon btn-detail-stage" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#modalStageCondition"><span class="btn-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-sitemap"></i></span></span></a>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-5',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `<a class="btn btn-icon btn-del-stage" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
                         }
-                    },
-                    {
-                        targets: 1,
-                        className: 'text-center',
-                        render: (data, type, row) => {
-                            return `<p>${row.indicator}</p>`
-                        }
-                    },
-                    {
-                        targets: 2,
-                        className: 'text-center',
-                        render: (data, type, row) => {
-                            return `<p>${row.description}</p>`
-                        }
-                    },
-                    {
-                        targets: 3,
-                        className: 'text-center',
-                        render: (data, type, row) => {
-                            return `<div class="input-group mb-3">
-                                        <div class="input-affix-wrapper affix-wth-text">
-                                            <input type="number" step="0.1" class="form-control input-win-rate" data-id="${row.id}" value="${row.win_rate}">
-                                            <span class="input-suffix">%</span>
-                                        </div>
-                                        <span></span>
-                                    </div>`
-                        }
-                    },
-                    {
-                        targets: 4,
-                        render: (data, type, row) => {
-                            return `<a class="btn btn-icon btn-detail-stage" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#modalDetailStage"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`
-                        }
-                    },
-                    {
-                        targets: 5,
-                        render: (data, type, row) => {
-                            if (row?.['is_delete'] === false) {
-                                return `<a class="btn btn-icon btn-del-stage disabled" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
-                            } else {
-                                return `<a class="btn btn-icon btn-del-stage" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
-                            }
-                        }
-                    },
-                ],
-            });
-        }
+                        return ''
+                    }
+                },
+            ],
+        });
     }
 
-    $(document).on('click', '.nav-link', function () {
-        if ($(this).attr('href') === '#tab_stage') {
-            loadStage();
-            $('.btn-save-config').hide();
-        } else {
-            $('.btn-save-config').show();
-        }
-    })
+    loadStage();
 
     function loadRowCondition(ele, data) {
         ele.find('.box-select-attr').val(data.condition_property.id);
@@ -306,7 +289,7 @@ $(document).ready(function () {
     }
 
     $(document).on('click', '.btn-detail-stage', function () {
-        let modal = $('#modalDetailStage');
+        let modal = $('#modalStageCondition');
         let pk = $(this).data('id');
         let method = modal.data('method');
         let url = modal.data('url').format_url_with_uuid(pk);
@@ -323,6 +306,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     modal.find('.header-title').text(data.indicator);
+                    modal.find('.header-title-des').text(data.description);
                     if (data.indicator === 'Closed Lost') {
                         modal.find('#box-select-logic-operator').prop('hidden', true)
                         modal.find('#btn-add-condition').prop('hidden', true)
@@ -354,7 +338,7 @@ $(document).ready(function () {
                 }
             },
             (errs) => {
-                console.log(errs)
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
             }
         )
     })
@@ -386,14 +370,14 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: "Create successfully"}, 'success')
+                        $.fn.notifyB({'description': $.fn.gettext('Successful')}, 'success')
                         let table = $('#table-opportunity-config-stage').DataTable();
                         table.ajax.reload();
                         $('#modalCreateStage').modal('hide');
                     }
                 },
                 (errs) => {
-                    console.log(errs)
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
@@ -417,13 +401,13 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyB({description: "Delete successfully"}, 'success')
+                            $.fn.notifyB({'description': $.fn.gettext('Successful')}, 'success')
                             let table = $('#table-opportunity-config-stage').DataTable();
                             table.ajax.reload();
                         }
                     },
                     (errs) => {
-                        console.log(errs)
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 )
         }
@@ -458,46 +442,15 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: 'Success'}, 'success')
-                        $('#modalDetailStage').modal('hide');
+                        $.fn.notifyB({'description': $.fn.gettext('Successful')}, 'success')
+                        $('#modalStageCondition').modal('hide');
                     }
                 },
                 (errs) => {
-                    console.log(errs)
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }
-    })
-
-    $(document).on('click', '#btn-restore-default-stage', function () {
-        let method = $(this).data('method');
-        let url = $(this).data('url');
-        $.fn.callAjax2({
-            url: url,
-            method: method,
-            data: {}
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    let modal = $('#modalRestoreDefault');
-                    modal.find('.modal-body h4').prop('hidden', true);
-                    modal.find('.modal-body .div-loading').prop('hidden', false);
-                    setTimeout(function () {
-                        let table = $('#table-opportunity-config-stage').DataTable();
-                        table.ajax.reload();
-                        modal.modal('hide');
-                        $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
-                        modal.find('.modal-body h4').prop('hidden', false);
-                        modal.find('.modal-body .div-loading').prop('hidden', true);
-                    }, 2000);
-
-                }
-            },
-            (errs) => {
-                console.log(errs)
-            }
-        )
     })
 
     $(document).on('change', '.input-win-rate', function () {
@@ -525,7 +478,7 @@ $(document).ready(function () {
                         }
                     },
                     (errs) => {
-                        console.log(errs)
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 )
             }

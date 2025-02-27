@@ -161,7 +161,7 @@ class ContractLoadDataHandle {
                                 'file_size': parseFloat(fileSize.innerHTML.replace(" KB", "")),
                                 'remarks': fileRemark.value,
                             },
-                            'date_created': ContractCommonHandle.getCurrentDate(),
+                            'date_created': DateTimeControl.getCurrentDate(),
                             'is_current': is_current,
                         };
                         result.push(dataAdd);
@@ -194,11 +194,11 @@ class ContractLoadDataHandle {
                     }
                     if (mediaBody.querySelector('.custom-file-data')) {
                         $(mediaBody.querySelector('.custom-file-data')).empty();
-                        $(mediaBody.querySelector('.custom-file-data')).append(`<div class="mt-2"><span class="file-date-created mr-2">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="text-${badge} file-is-current">${txt}</span></div>
+                        $(mediaBody.querySelector('.custom-file-data')).append(`<div class="mt-2"><span class="file-date-created mr-2">${DateTimeControl.getCurrentDate("DMY", "/")}</span><span class="text-${badge} file-is-current">${txt}</span></div>
                                                                         ${btn}`);
                     } else {
                         $(mediaBody).append(`<div class="d-flex custom-file-data">
-                                        <div class="mt-2"><span class="file-date-created mr-2">${moment(ContractCommonHandle.getCurrentDate()).format('DD/MM/YYYY')}</span><span class="text-${badge} file-is-current">${txt}</span></div>
+                                        <div class="mt-2"><span class="file-date-created mr-2">${DateTimeControl.getCurrentDate("DMY", "/")}</span><span class="text-${badge} file-is-current">${txt}</span></div>
                                         ${btn}
                                     </div>`);
                     }
@@ -556,14 +556,6 @@ class ContractCommonHandle {
         row.remove().draw();
         return true;
     };
-
-    static getCurrentDate() {
-        let currentDate = new Date();
-        let day = String(currentDate.getDate()).padStart(2, '0');
-        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        let year = currentDate.getFullYear();
-        return `${year}-${month}-${day}`;
-    }
 
     static filterFieldList(field_list, data_json) {
         for (let key in data_json) {

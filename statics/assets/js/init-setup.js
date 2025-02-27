@@ -289,6 +289,7 @@ class MaskMoney2 {
         let strDataParsed = parseFloat(strAttrValue);
         if (strAttrValue !== null && Number.isFinite(strDataParsed)) {
             strAttrValue = strDataParsed.toString();
+            // strAttrValue = (strDataParsed >= 0 ? strDataParsed : strDataParsed * (-1)).toString();
 
             // apply mask-money config
             let prefix = this.configData?.['prefix'];
@@ -312,6 +313,7 @@ class MaskMoney2 {
                     } else result = rs.reverse().join("");
                 }
                 return (prefix ? prefix : "") + result + (suffix ? suffix : "");
+                // return strDataParsed >= 0 ? (prefix ? prefix : "") + result + (suffix ? suffix : "") :  '(' + (prefix ? prefix : "") + result + (suffix ? suffix : "") + ')';
             }
         }
     }
@@ -2640,7 +2642,7 @@ class WFRTControl {
                                     if (priorityAdded === false) {
                                         if (item === 0 || item === 1 || item === 4) {
                                             priorityAdded = true;
-                                            $('#btnMainAction').attr('data-value', item).attr('data-bs-original-title', liFound.find('.dropdown-item').text()).removeClass('hidden').find('.icon').html(iconFound.clone());
+                                            $('#btnMainApprove').attr('data-value', item).removeClass('hidden').find('.icon').html(iconFound.clone());
                                         }
                                     }
                                     liFound.removeClass('hidden');
@@ -6445,6 +6447,23 @@ class DateTimeControl {
 
         const timeDifference = Math.abs(rDate2 - rDate1);
         return Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+    }
+
+    static getCurrentDate(dateType = "YMD", separate = "-") {
+        let currentDate = new Date();
+        let day = String(currentDate.getDate()).padStart(2, '0');
+        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        let year = currentDate.getFullYear();
+        switch (dateType) {
+            case "YMD":
+                return `${year}${separate}${month}${separate}${day}`;
+            case "DMY":
+                return `${day}${separate}${month}${separate}${year}`;
+            case "MDY":
+                return `${month}${separate}${day}${separate}${year}`;
+            default:
+                throw new Error("Invalid dateType. Use 'YMD', 'DMY', or 'MDY'.");
+        }
     }
 }
 

@@ -1,0 +1,60 @@
+{% load i18n %}
+
+<div class="row mt-5">
+    <div class="col-12">
+        <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_app_meeting">
+                    <span class="nav-link-text">{% trans 'Online app meeting' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                    <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_app_meeting">
+                <div class="row" id="online-meeting-tab-space" hidden>
+                    <div class="col-12">
+                        <div id="meeting-card-div" class="row"></div>
+                        <div class="row">
+                            <div hidden class="col-12" id="zoom-cfg-not-found-noti">
+                                <span class="text-danger">{% trans 'The Zoom meeting cannot be created because you have not configured a Zoom account. Go to settings to add it, then go here to create it again.' %}</span>
+                            </div>
+                            <div class="col-12">
+                                <button type="button"
+                                        id="btn-add-app-meeting-schedule"
+                                        class="btn btn-primary btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal_add_meeting_app_schedule"
+                                >
+                                    <span data-bs-toggle="tooltip" title="{% trans 'Zoom meeting will be created after saving this page' %}">
+                                        {% trans 'Create meeting schedule' %}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="offline-meeting-tab-space">
+                    <div class="col-12">
+                        <h6 class="text-muted">
+                            <i class="fa-solid fa-circle-info"></i> {% trans 'Only available with online meeting!' %}
+                        </h6>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_attachment">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="w-100" id="attachment">
+                            {% include 'extends/files/all.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

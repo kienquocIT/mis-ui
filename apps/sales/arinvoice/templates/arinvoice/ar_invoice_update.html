@@ -54,9 +54,8 @@
     </script>
     {{ data.data.employee_current | json_script:"employee_current" }}
     <form id="form-detail-ar-invoice" data-method="PUT"
-          data-url-detail-api="{% url 'ARInvoiceDetailAPI' '0' %}"
-          data-url-redirect="{% url "ARInvoiceDetail" pk=0 %}"
-          data-url-detail="{% url 'ARInvoiceDetailAPI' pk=0 %}"
+          data-url-redirect="{% url "ARInvoiceDetail" pk=pk %}"
+          data-url="{% url 'ARInvoiceDetailAPI' pk=pk %}"
     >
         {% csrf_token %}
         {% include 'arinvoice/common/information.html' %}
@@ -64,94 +63,14 @@
     </form>
 {% endblock %}
 {% block modalData %}
-    <div class="modal fade" id="customer-select-modal" tabindex="-1" role="dialog" aria-labelledby="customer-select-modal" aria-hidden="true">
-        <div class="modal-dialog" style="min-width: 50%" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Select Customer' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table nowrap w-100"
-                               id="table-select-customer"
-                               data-method="GET" data-url="{% url 'AccountListAPI' %}"
-                    >
-                        <thead>
-                        <tr>
-                            <th class="w-5"></th>
-                            <th class="w-70">{% trans 'Customer' %}</th>
-                            <th class="w-20">{% trans 'Tax number' %}</th>
-                        </tr>
-                        </thead>
-                    </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="button" id="select-customer-btn" class="btn btn-primary">{% trans 'Select' %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="offcanvas offcanvas-end w-80" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
-        <div class="offcanvas-header">
-            <h5 id="offcanvasRightLabel">{% trans 'Select Delivery' %}</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="row">
-                <div class="col-12">
-                    <div class="table-responsive" style="max-height: 250px;">
-                        <table class="table w-100 nowrap" id="table-select-delivery">
-                            <thead class="bg-primary-light-5">
-                            <tr>
-                                <th class="w-10"></th>
-                                <th class="w-20">{% trans 'Code' %}</th>
-                                <th class="w-40">{% trans 'Name' %}</th>
-                                <th class="w-15 text-center">{% trans 'Already' %}</th>
-                                <th class="w-15 text-center">{% trans 'Select' %}</th>
-                            </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="table-responsive mt-5" style="max-height: 250px;">
-                        <table class="table w-100 nowrap" id="table-product-detail">
-                            <thead class="bg-secondary-light-5">
-                            <tr>
-                                <th class="w-10"></th>
-                                <th class="w-30">{% trans 'Product' %}</th>
-                                <th class="w-15">{% trans 'UOM' %}</th>
-                                <th class="w-15">{% trans 'Total' %}</th>
-                                <th class="w-15">{% trans 'Already' %}</th>
-                                <th class="w-15">{% trans 'This time' %}</th>
-                            </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-12 text-right mt-5">
-                    <button type="button" id="add-product-btn" class="btn btn-custom btn-primary btn-wth-icon">
-                        <span>
-                            <span>{% trans 'Add' %}</span>
-                            <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
-                        </span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'arinvoice/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
+    <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
     <script src="{% static "assets/js/arinvoice/ar_invoice_common.js" %}"></script>
     <script src="{% static "assets/js/arinvoice/ar_invoice_update.js" %}"></script>
 {% endblock %}

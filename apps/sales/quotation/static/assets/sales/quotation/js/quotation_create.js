@@ -36,6 +36,7 @@ $(function () {
             QuotationDataTableHandle.dataTableQuotationIndicator();
         } else {  // sale order
             QuotationDataTableHandle.dataTableSaleOrderIndicator();
+            // QuotationDataTableHandle.dataTableInvoice();
             QuotationDataTableHandle.dataTablePaymentStage();
         }
         // init config
@@ -135,7 +136,7 @@ $(function () {
             QuotationLoadDataHandle.loadInitS2($boxPUom, [], {'group': $(this).val()}, $modal);
         });
 
-        $('#btn-save-product').on('click', function () {
+        $('#btn-save-quick-product').on('click', function () {
             let dataSubmit = {};
             dataSubmit['title'] = $('#add-product-title').val();
             dataSubmit['code'] = $('#add-product-code').val();
@@ -239,9 +240,6 @@ $(function () {
         tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
             if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
-                if ($(this).hasClass('table-row-item')) {
-                    QuotationLoadDataHandle.loadDataProductSelect($(this));
-                }
                 if ($(this).hasClass('validated-number')) {
                     validateNumber(this);
                 }

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Goods recovery list' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'GoodsRecoveryCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create goods recovery' %}"
+       id="create_goods_recovery_button"
+       data-bs-original-title="Add Goods Recovery">
+            <button type="button" class="btn btn-outline-primary">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                </span>
+            </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <table
+            id="table_goods_recovery_list"
+            class="table nowrap w-100 mb-5"
+            data-url="{% url 'GoodsRecoveryListAPI' %}"
+            data-method="get"
+    >
+        <thead>
+        <tr>
+            <th></th>
+            <th>{% trans 'Code' %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input
+            type="text" id="app-urls-factory"
+            data-link-detail="{% url 'GoodsRecoveryDetail' 1 %}"
+            data-link-update="{% url 'GoodsRecoveryUpdate' 1 %}"
+            data-link-list="{% url 'GoodsRecoveryList' %}"
+    >
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-edit="{% trans 'Edit' %}"
+            data-change="{% trans 'Change' %}"
+            data-cancel="{% trans 'Cancel' %}"
+    >
+    {{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}
+{% block jsFooter %}
+
+
+    <script src="{% static 'assets/sales/inventory/js/goodsrecovery/goods_recovery_list.js' %}"></script>
+{% endblock %}

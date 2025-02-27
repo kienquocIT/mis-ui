@@ -177,3 +177,14 @@ class ProductWarehouseAssetList(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_ASSET_LIST).get({'is_asset': True})
         return resp.auto_return(key_success='warehouse_product_asset_list')
+
+
+class WareHouseForInventoryListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_FOR_INVENTORY_LIST).get(params)
+        return resp.auto_return(key_success='warehouse_inventory_list')

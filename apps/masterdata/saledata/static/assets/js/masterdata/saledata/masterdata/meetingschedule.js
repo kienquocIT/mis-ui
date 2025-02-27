@@ -1,19 +1,4 @@
 $(document).ready(function () {
-    let zoomConfigEle = $('#zoom_config')
-    const zoom_config = zoomConfigEle.text() ? JSON.parse(zoomConfigEle.text()) : {};
-
-    if (Object.keys(zoom_config).length !== 0) {
-        $('#1-existing-config').prop('hidden', false)
-    }
-
-    $('#reset-config').on('click', function () {
-        $('#zoom-account-email').val('');
-        $('#zoom-account-id').val('');
-        $('#zoom-client-id').val('');
-        $('#zoom-client-secret').val('');
-        $('#zoom-personal-meeting-id').val('')
-    })
-
     function loadMeetingRoomList() {
         let tbl = $('#table-meeting-room');
         tbl.DataTable().clear().destroy()
@@ -41,37 +26,37 @@ $(document).ready(function () {
                         }
                     },
                     {
+                        data: 'code',
+                        className: 'wrap-text w-10',
+                        render: (data, type, row, meta) => {
+                            return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
+                        }
+                    },
+                    {
                         data: 'name',
                         className: 'wrap-text w-20',
                         render: (data, type, row, meta) => {
-                            return `<span class="text-primary">${row.title}</span>`
-                        }
-                    },
-                    {
-                        data: 'code',
-                        className: 'wrap-text w-15',
-                        render: (data, type, row, meta) => {
-                            return `<b class="badge badge-primary">${row.code}</b>`
-                        }
-                    },
-                    {
-                        data: 'location',
-                        className: 'wrap-text w-25',
-                        render: (data, type, row, meta) => {
-                            return `<span class="initial-wrap">${row.location}</span>`
+                            return `<span class="text-muted">${row?.['title']}</span>`
                         }
                     },
                     {
                         data: 'description',
-                        className: 'wrap-text w-25',
+                        className: 'wrap-text w-30',
                         render: (data, type, row, meta) => {
-                            return `<span class="initial-wrap">${row.description}</span>`
+                            return `<span class="text-muted">${row?.['description']}</span>`
                         }
                     },
                     {
-                        className: 'wrap-text w-10 text-center',
+                        data: 'location',
+                        className: 'wrap-text w-30',
                         render: (data, type, row, meta) => {
-                            return `<button data-id="${row.id}" data-title="${row.title}" data-code="${row.code}" data-location="${row.location}" data-des="${row.description}"
+                            return `<span class="text-primary"><i class="bi bi-geo-alt-fill"></i> ${row?.['location']}</span>`
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-5 text-center',
+                        render: (data, type, row, meta) => {
+                            return `<button data-id="${row?.['id']}" data-title="${row?.['title']}" data-code="${row?.['code']}" data-location="${row?.['location']}" data-des="${row?.['description']}"
                                             class="btn btn-icon btn-rounded btn-flush-primary edit-meeting-room" type="button" data-bs-toggle="modal" data-bs-target="#updateMeetingRoomModal">
                                         <span class="icon"><i class="bi bi-pencil-square"></i></span>
                                     </button>`
@@ -93,33 +78,6 @@ $(document).ready(function () {
 
         console.log(frm.dataForm)
         if (for_update) {
-            return {
-                url: frmEle.attr('data-url-detail').format_url_with_uuid(pk),
-                method: frm.dataMethod,
-                data: frm.dataForm,
-                urlRedirect: frm.dataUrlRedirect,
-            };
-        }
-        return {
-            url: frm.dataUrl,
-            method: frm.dataMethod,
-            data: frm.dataForm,
-            urlRedirect: frm.dataUrlRedirect,
-        };
-    }
-
-    function combinesDataCreateMeetingZoomConfig(frmEle, for_update=false) {
-        let frm = new SetupFormSubmit($(frmEle));
-
-        frm.dataForm['account_email'] = $('#zoom-account-email').val();
-        frm.dataForm['account_id'] = $('#zoom-account-id').val();
-        frm.dataForm['client_id'] = $('#zoom-client-id').val();
-        frm.dataForm['client_secret'] = $('#zoom-client-secret').val();
-        frm.dataForm['personal_meeting_id'] = $('#zoom-personal-meeting-id').val();
-
-        console.log(frm.dataForm)
-        if (for_update) {
-            let pk = $.fn.getPkDetail();
             return {
                 url: frmEle.attr('data-url-detail').format_url_with_uuid(pk),
                 method: frm.dataMethod,
@@ -193,41 +151,6 @@ $(document).ready(function () {
                     }
                 )
         }
-    })
-
-    $('#form-create-zoom-config').submit(function (event) {
-        event.preventDefault();
-        let combinesData = combinesDataCreateMeetingZoomConfig($(this));
-        if (combinesData) {
-            WindowControl.showLoading();
-            $.fn.callAjax2(combinesData)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
-                                location.reload.bind(location);
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        setTimeout(
-                            () => {
-                                WindowControl.hideLoading();
-                            },
-                            1000
-                        )
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
-        }
-    })
-
-    $('#zoom-app-instruction-hidden-btn').on('click', function () {
-        let zoom_app_instruction = $('#zoom-app-instruction')
-        zoom_app_instruction.prop('hidden', !zoom_app_instruction.prop('hidden'))
     })
 
     $(document).on("click", '.edit-meeting-room', function () {

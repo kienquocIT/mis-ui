@@ -60,7 +60,7 @@
             <div class="tab-content">
                 <div class="tab-pane fade show active lookup-data" id="section-currency">
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-6">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#modal-new-currency">
                                 <button class="btn btn-sm btn-outline-primary btn-modal">
                                     <span>
@@ -71,16 +71,12 @@
                                     </span>
                                 </button>
                             </a>
-                            <button data-bs-toggle="tooltip" title="{% trans 'Sync with VCB' %}"
-                                    id="sync-from-VCB-button" type="button" data-method="PUT"
-                                    data-url="{% url "SyncSellingRateWithVCB" pk=0 %}"
-                                    class="btn btn-icon btn-flush-success flush-soft-hover btn-sm">
-                                <span class="icon">
-                                    <img style="height: 20px; width: 20px"
-                                         src="https://th.bing.com/th?id=ODLS.e7251d40-a200-429a-b20a-69524cf4921d"
-                                         alt="">
-                                </span>
-                            </button>
+                        </div>
+                        <div class="col-6 text-right">
+                            <img style="height: 30px;" data-bs-toggle="tooltip" title="{% trans 'Sync with Vietcombank' %}"
+                                 id="sync-from-VCB-button" data-method="PUT" data-url="{% url "SyncSellingRateWithVCB" pk=0 %}"
+                                 src="https://www.vietcombank.com.vn/-/media/Project/VCB-Sites/VCB/Home-page/VCB-Logo/Logo-VCB-no-60.png?ts=20240605031450"
+                                 alt="VCB Logo">
                         </div>
                     </div>
                     <table id="datatable-currency"
@@ -257,7 +253,8 @@
             </div>
         </div>
     </div>
-
+{% endblock %}
+{% block modalData %}
     <div class="modal fade" id="modal-new-currency" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">

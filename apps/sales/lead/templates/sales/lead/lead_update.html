@@ -29,9 +29,10 @@
             data-trans-note="{% trans 'Note' %}"
             data-trans-convert="{% trans 'Convert' %}"
             data-trans-cancel="{% trans 'Cancel' %}"
-            data-trans-convert-contact-confirm="{% trans 'Convert to a new Contact?' %}"
-            data-trans-convert-opp-confirm="{% trans 'Convert to Opportunity? Related to:' %}"
-            data-trans-goto-confirm="{% trans 'Go to this Stage?' %}"
+            data-trans-convert-contact-confirm="{% trans 'Convert to a new Contact' %}?"
+            data-trans-convert-opp-confirm="{% trans 'Convert to Opportunity' %}?"
+            data-trans-goto-confirm="{% trans 'Go to this Stage' %}?"
+            data-trans-goto-confirm-noti="{% trans 'This action can not be undo!' %}"
     ></script>
     <script id="script-url" hidden
             data-url-config="{% url 'OpportunityConfigAPI' %}"
@@ -42,9 +43,11 @@
         <div id="main-space">
             {% include 'sales/lead/common/stage.html' %}
             {% include 'sales/lead/common/information.html' %}
-            {% include 'sales/lead/common/comments.html' %}
         </div>
     </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'sales/lead/common/modals.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
 {% endblock %}

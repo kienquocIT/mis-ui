@@ -1,0 +1,61 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12 col-md-7 col-lg-7">
+        <div class="row">
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label required" for="ori-trans">{% trans "Original transaction" %}</label>
+                    <select disabled required class="form-select select2" id="ori-trans">
+                        <option value="0" selected>{% trans 'Delivery' %}</option>
+                        <option value="1">{% trans 'AR invoice' %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label required" for="transaction-code">{% trans "Transaction code" %}</label>
+                    <input required readonly disabled class="form-control form-control-line" id="transaction-code">
+                </div>
+            </div>
+            <div class="col-12 col-md-8 col-lg-8">
+                <div class="form-group">
+                    <label class="form-label required" for="transaction-name">{% trans "Transaction name" %}</label>
+                    <input required readonly disabled class="form-control form-control-line" id="transaction-name">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-5 col-lg-5">
+        <div class="row">
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label" for="type">{% trans "Type" %}</label>
+                    <input disabled readonly class="form-control form-control-line" id="type">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required" for="je-posting-date">{% trans "Posting date" %}</label>
+                    <div class="input-group">
+                        <span class="input-affix-wrapper">
+                            <input type="text" class="form-control" id="je-posting-date">
+                            <span class="input-suffix"><i class="far fa-calendar-alt"></i></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required" for="je-doc-date">{% trans "Document date" %}</label>
+                    <div class="input-group">
+                        <span class="input-affix-wrapper">
+                            <input type="text" class="form-control" id="je-doc-date">
+                            <span class="input-suffix"><i class="far fa-calendar-alt"></i></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

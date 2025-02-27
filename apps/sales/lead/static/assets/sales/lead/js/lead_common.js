@@ -54,18 +54,32 @@ $create_contact_btn.on('click', function () {
     if ($create_contact_btn.attr('id')) {
         Swal.fire({
             html:
-                `<p class="text-center text-secondary fw-bold">${$trans_script.attr('data-trans-convert-contact-confirm')}</p>`,
+            `<div class="d-flex align-items-center">
+                <div class="avatar avatar-icon avatar-soft-blue me-3"><span class="initial-wrap"><i class="bi bi-journal-bookmark-fill"></i></span></div>
+                <div>
+                    <h4 class="text-blue">${$trans_script.attr('data-trans-convert-contact-confirm')}</h4>
+                    <span class="small">${$trans_script.attr('data-trans-goto-confirm-noti')}</span>
+                </div>
+            </div>`,
             customClass: {
-                confirmButton: 'btn btn-outline-primary text-primary',
-                cancelButton: 'btn btn-outline-secondary text-secondary',
+                confirmButton: 'btn btn-outline-secondary text-blue',
+                cancelButton: 'btn btn-outline-secondary',
                 container: 'swal2-has-bg',
+                htmlContainer: 'bg-transparent text-start',
                 actions: 'w-100'
+            },
+            showClass: {
+                popup: 'animated fadeInDown faster'
+            },
+            hideClass: {
+                popup: 'animated fadeOutUp faster'
             },
             showCancelButton: true,
             buttonsStyling: false,
+            showCloseButton:true,
             confirmButtonText: $trans_script.attr('data-trans-convert'),
             cancelButtonText: $trans_script.attr('data-trans-cancel'),
-            reverseButtons: true
+            reverseButtons: true,
         }).then((result) => {
             if (result.value) {
                 WindowControl.showLoading();
@@ -112,7 +126,13 @@ function find_opp_checked() {
 $convert_opp_btn.on('click', function () {
     if ($convert_opp_btn.attr('id')) {
         let flag = true
-        let alert_html = `<p class="text-center text-secondary fw-bold">${$trans_script.attr('data-trans-convert-opp-confirm')}</p><br>`
+        let alert_html = `<div class="d-flex align-items-center">
+            <div class="avatar avatar-icon avatar-soft-blue me-3"><span class="initial-wrap"><i class="far fa-lightbulb"></i></span></div>
+            <div>
+                <h4 class="text-blue">${$trans_script.attr('data-trans-convert-opp-confirm')}</h4>
+                <span class="small">${$trans_script.attr('data-trans-goto-confirm-noti')}</span>
+            </div>
+        </div>`
         if ($convert_opp_create.prop('checked')) {
             alert_html += `<h6>1. Convert to new Opportunity</h6>`
             if ($account_existing.val()) {
@@ -144,16 +164,24 @@ $convert_opp_btn.on('click', function () {
                 Swal.fire({
                     html: alert_html,
                     customClass: {
-                        confirmButton: 'btn btn-outline-primary text-primary',
-                        cancelButton: 'btn btn-outline-secondary text-secondary',
+                        confirmButton: 'btn btn-outline-secondary text-blue',
+                        cancelButton: 'btn btn-outline-secondary',
                         container: 'swal2-has-bg',
+                        htmlContainer: 'bg-transparent text-start',
                         actions: 'w-100'
+                    },
+                    showClass: {
+                        popup: 'animated fadeInDown faster'
+                    },
+                    hideClass: {
+                        popup: 'animated fadeOutUp faster'
                     },
                     showCancelButton: true,
                     buttonsStyling: false,
+                    showCloseButton:true,
                     confirmButtonText: $trans_script.attr('data-trans-convert'),
                     cancelButtonText: $trans_script.attr('data-trans-cancel'),
-                    reverseButtons: true
+                    reverseButtons: true,
                 }).then((result) => {
                     if (result.value) {
                         WindowControl.showLoading();
@@ -194,16 +222,24 @@ $convert_opp_btn.on('click', function () {
                 Swal.fire({
                     html: alert_html,
                     customClass: {
-                        confirmButton: 'btn btn-outline-primary text-primary',
-                        cancelButton: 'btn btn-outline-secondary text-secondary',
+                        confirmButton: 'btn btn-outline-secondary text-blue',
+                        cancelButton: 'btn btn-outline-secondary',
                         container: 'swal2-has-bg',
+                        htmlContainer: 'bg-transparent text-start',
                         actions: 'w-100'
+                    },
+                    showClass: {
+                        popup: 'animated fadeInDown faster'
+                    },
+                    hideClass: {
+                        popup: 'animated fadeOutUp faster'
                     },
                     showCancelButton: true,
                     buttonsStyling: false,
+                    showCloseButton:true,
                     confirmButtonText: $trans_script.attr('data-trans-convert'),
                     cancelButtonText: $trans_script.attr('data-trans-cancel'),
-                    reverseButtons: true
+                    reverseButtons: true,
                 }).then((result) => {
                     if (result.value) {
                         WindowControl.showLoading();
@@ -263,6 +299,7 @@ $btn_add_note.on('click', function () {
     let index = $('#note-area textarea').length
     note_html.attr('placeholder', `${$trans_script.attr('data-trans-note')} ${index + 1}`)
     $('#note-area').append(note_html)
+    note_html.focus()
 })
 
 function Disable(option) {
@@ -344,7 +381,6 @@ function LoadDetailLead(option) {
                     $convert_to_opp_radio_group.prop('disabled', true)
                     $convert_to_opp_option_radio_group.prop('disabled', true)
                     $('#create-to-new-account-btn').remove()
-                    $('.config-opp-row').prop('hidden', true)
                     $lead_status.prop('disabled', true)
                 }
                 $convert_opp_create.prop('checked', data?.['config_data']?.['convert_opp_create'])
@@ -486,7 +522,7 @@ function LoadStage(stage_list, level, page='create') {
                                     class="btn btn-icon ${stage?.['level'] <= level ? 'text-white' : 'text-blue'} btn-rounded btn-xs btn-goto"
                                     data-bs-toggle="tooltip"
                                     data-bs-placement="top"
-                                    title="Go to this stage"
+                                    title="Go to this Stage"
                             >
                                 <span class="icon"><i class="fas fa-forward"></i></span>
                             </button>`
@@ -494,18 +530,32 @@ function LoadStage(stage_list, level, page='create') {
             $(document).on("click", '.btn-goto', function () {
                 Swal.fire({
                     html:
-                        `<p class="text-center text-secondary fw-bold">${$trans_script.attr('data-trans-goto-confirm')}</p>`,
+                    `<div class="d-flex align-items-center">
+                        <div class="avatar avatar-icon avatar-soft-blue me-3"><span class="initial-wrap"><i class="fa-solid fa-person-walking"></i></span></div>
+                        <div>
+                            <h4 class="text-blue">${$trans_script.attr('data-trans-goto-confirm')}</h4>
+                            <span class="small">${$trans_script.attr('data-trans-goto-confirm-noti')}</span>
+                        </div>
+                    </div>`,
                     customClass: {
-                        confirmButton: 'btn btn-outline-primary text-primary',
-                        cancelButton: 'btn btn-outline-secondary text-secondary',
+                        confirmButton: 'btn btn-outline-secondary text-blue',
+                        cancelButton: 'btn btn-outline-secondary',
                         container: 'swal2-has-bg',
+                        htmlContainer: 'bg-transparent text-start',
                         actions: 'w-100'
+                    },
+                    showClass: {
+                        popup: 'animated fadeInDown faster'
+                    },
+                    hideClass: {
+                        popup: 'animated fadeOutUp faster'
                     },
                     showCancelButton: true,
                     buttonsStyling: false,
+                    showCloseButton:true,
                     confirmButtonText: 'OK',
                     cancelButtonText: $trans_script.attr('data-trans-cancel'),
-                    reverseButtons: true
+                    reverseButtons: true,
                 }).then((result) => {
                     if (result.value) {
                         WindowControl.showLoading();
@@ -560,8 +610,8 @@ function LoadLeadRelatedList(data) {
     $related_leads_table.html('')
     for (const opp of data) {
         $related_leads_table.append(`
-            <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                <span class="badge badge-primary badge-sm">${opp?.['code']}</span> <span class="text-secondary">${opp?.['title']}</span>
+            <div class="alert alert-light alert-dismissible fade show" role="alert">
+                <span class="badge badge-light badge-sm">${opp?.['code']}</span> <span class="text-muted">${opp?.['title']}</span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         `)

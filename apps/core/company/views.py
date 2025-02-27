@@ -259,3 +259,21 @@ class CompanyBankAccountListAPI(APIView):
     def post(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_BANK_ACCOUNT_LIST).post(request.data)
         return resp.auto_return()
+
+
+class AccountingPoliciesConfigDetailAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def put(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.ACCOUNTING_POLICIES_CONFIG).put(data=request.data)
+        if resp.state:
+            sub_domain = request.data.get('sub_domain', None)
+            if sub_domain:
+                company_id = request.user.company_current_data.get('id', None)
+                if company_id:
+                    try:
+                        company_obj = Company.objects.get(pk=company_id)
+                        company_obj.sub_domain = sub_domain
+                        company_obj.save()
+                    except Company.DoesNotExist:
+                        pass
+        return resp.auto_return()

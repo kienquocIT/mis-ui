@@ -1,0 +1,22 @@
+{% load i18n %}
+
+<div class="row mt-5">
+    <div class="col-12">
+        <table id="journal-entry-table" class="table nowrap w-100 table-hover">
+            <thead class="bg-secondary-light-5">
+            <tr>
+                <th style="min-width: 30px"></th>
+                <th style="min-width: 100px">{% trans 'Account code' %}</th>
+                <th style="min-width: 300px">{% trans 'Account name' %}</th>
+                <th style="min-width: 150px">{% trans 'Business partner' %}</th>
+                <th style="min-width: 150px">{% trans 'Debit' %}</th>
+                <th style="min-width: 150px">{% trans 'Credit' %}</th>
+                <th style="min-width: 150px">{% trans 'Debit (FC)' %}</th>
+                <th style="min-width: 150px">{% trans 'Credit (FC)' %}</th>
+                <th style="min-width: 150px">{% trans 'Taxable value' %}</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>

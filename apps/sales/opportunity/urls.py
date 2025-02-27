@@ -4,7 +4,7 @@ from apps.sales.opportunity.views import (
     OpportunityList, OpportunityListAPI,
     OpportunityDetail, OpportunityDetailAPI, OpportunityCustomerDecisionFactorListAPI, OpportunityConfig,
     OpportunityConfigAPI, OpportunityCustomerDecisionFactorDetailAPI, OpportunityConfigStageListAPI,
-    OpportunityConfigStageDetailAPI, RestoreDefaultStageAPI,
+    OpportunityConfigStageDetailAPI,
     OpportunityCallLogList, OpportunityCallLogListAPI, OpportunityCallLogDetailAPI,
     OpportunityEmailList, OpportunityEmailListAPI, OpportunityEmailDetailAPI,
     OpportunityMeetingList, OpportunityMeetingListAPI, OpportunityMeetingDetailAPI, OpportunityActivityLogListAPI,
@@ -56,11 +56,6 @@ urlpatterns = [
                       OpportunityConfigStageDetailAPI.as_view(),
                       name='OpportunityConfigStageDetailAPI'
                   ),
-                  path(
-                      'config/stage/restore-default/<str:pk>',
-                      RestoreDefaultStageAPI.as_view(),
-                      name='RestoreDefaultStageAPI'
-                  )
               ] + [
                   path('call-log/lists', OpportunityCallLogList.as_view(), name='OpportunityCallLogList'),
                   path('api/call-log/lists', OpportunityCallLogListAPI.as_view(), name='OpportunityCallLogListAPI'),

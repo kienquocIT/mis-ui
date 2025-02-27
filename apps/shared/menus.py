@@ -135,6 +135,10 @@ class MenusCoreConfigurations:
         icon='<i class="fas fa-cogs"></i>',
         child=[
             MenuCommon(
+                name='Accounting policies', code='id_menu_master_data_accounting_policies', view_name='AccountingPoliciesList',
+                icon='<i class="bi bi-calculator"></i>',
+            ),
+            MenuCommon(
                 name='Posting periods', code='id_menu_master_data_periods_config', view_name='PeriodsConfigList',
                 icon='<i class="far fa-calendar-alt"></i>',
             ),
@@ -167,6 +171,10 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Fixed Asset', code='id_menu_master_data_fixed_asset', view_name='FixedAssetMasterDataList',
                 icon='<i class="fas fa-warehouse"></i>',
+            ),
+            MenuCommon(
+                name='Meeting', code='id_menu_master_data_meeting_schedule', view_name='MeetingScheduleMasterdataList',
+                icon='<i class="fas fa-chalkboard-teacher"></i>',
             ),
         ]
     )
@@ -223,10 +231,6 @@ class MenusCoreConfigurations:
                 icon='<i class="fa-solid fa-pen-ruler"></i>',
             ),
             MenuCommon(
-                name='Meeting', code='id_menu_master_data_meeting_config', view_name='MeetingConfigList',
-                icon='<i class="fas fa-chalkboard-teacher"></i>',
-            ),
-            MenuCommon(
                 name='Revenue plan config', code='id_menu_master_data_revenue_plan_config',
                 view_name='RevenuePlanConfigList',
                 icon='<i class="fas fa-hand-holding-usd"></i>',
@@ -250,6 +254,11 @@ class MenusCoreConfigurations:
                 name='Bidding Result Config', code='menu_bidding_result_config', view_name='BiddingResultConfigList',
                 icon='<i class="fas fa-gavel"></i>',
             ),
+            MenuCommon(
+                name='Inventory interact config', code='menu_inventory_interact_config',
+                view_name='InventoryInteractConfigList',
+                icon='<i class="fa-solid fa-arrow-right-to-bracket"></i>'
+            )
         ]
     )
     TEMPLATES_DATA_CONFIG = MenuCommon(
@@ -273,11 +282,6 @@ class MenusCoreConfigurations:
                 icon='<i class="fa-solid fa-file-contract"></i>'
             ),
         ]
-    )
-    INVENTORY_DATA_CONFIG = MenuCommon(
-        name='Inventory interact config', code='menu_inventory_interact_config',
-        view_name='InventoryInteractConfigList',
-        icon='<i class="fa-solid fa-arrow-right-to-bracket"></i>'
     )
 
 
@@ -580,6 +584,12 @@ class MenusInventory:
                 view_name='InventoryAdjustmentList',
                 icon='<i class="bi bi-sliders"></i>',
             ),
+            MenuCommon(
+                name='Goods recovery',
+                code='menu_goods_recovery_list',
+                view_name='GoodsRecoveryList',
+                icon='<i class="fas fa-reply"></i>',
+            ),
         ],
     )
 
@@ -630,7 +640,7 @@ class MenuEOffice:
         ]
     )
     MEETING = MenuCommon(
-        name='Meeting', code='menu_meeting_list', view_name='MeetingScheduleList',
+        name='Meeting schedule', code='menu_meeting_list', view_name='MeetingScheduleList',
         icon='<i class="fas fa-chalkboard-teacher"></i>',
     )
 
@@ -793,6 +803,7 @@ class MenusHRM:
         ]
     )
 
+
 class MenusPartnerCenter:
     HOME = MenuCommon(
         name='Home', code='id_menu_partner_center_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
@@ -801,21 +812,22 @@ class MenusPartnerCenter:
         name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fa-solid fa-search"></i>',
     )
 
+
 class MenusFinancials:
     HOME = MenuCommon(
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
-    CASHFLOW = MenuCommon(
-        name='Cashflow', code='menu_cashflow', view_name='', icon='<i class="fas fa-exchange-alt"></i>',
+    ACCOUNTING_SETTING = MenuCommon(
+        name='Accounting setting', code='', view_name='', icon='<i class="fas fa-cog"></i>',
         child=[
             MenuCommon(
-                name='Cash inflow', code='menu_cash_inflow', view_name='CashInflowList',
-                icon='<i class="fas fa-share"></i>',
+                name='Chart of accounts', code='menu_chart_of_accounts_list', view_name='ChartOfAccountsList',
+                icon='<i class="fas fa-list-alt"></i>',
             ),
-            # MenuCommon(
-            #     name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
-            #     icon='<i class="fas fa-reply"></i>',
-            # ),
+            MenuCommon(
+                name='Default account determination', code='menu_default_account_determination_list', view_name='DefaultAccountDeterminationList',
+                icon='<i class="bi bi-journal"></i>',
+            ),
         ],
     )
     ASSET = MenuCommon(
@@ -850,6 +862,22 @@ class MenusFinancials:
                 icon='<i class="bi bi-ui-checks"></i>',
             ),
         ],
+    )
+    CASHFLOW = MenuCommon(
+        name='Cashflow', code='menu_cashflow', view_name='', icon='<i class="fas fa-exchange-alt"></i>',
+        child=[
+            MenuCommon(
+                name='Cash inflow', code='menu_cash_inflow', view_name='CashInflowList',
+                icon='<i class="fas fa-reply"></i>',
+            ),
+            # MenuCommon(
+            #     name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
+            #     icon='<i class="fas fa-share"></i>',
+            # ),
+        ],
+    )
+    JOURNAL_ENTRY = MenuCommon(
+        name='Journal entry', code='menu_journal_entry_list', view_name='JournalEntryList', icon='<i class="bi bi-journal-text"></i>',
     )
 
 
@@ -952,9 +980,11 @@ class SpaceItem:
             icon='<i class="fas fa-balance-scale"></i>',
             menus=[
                 MenusFinancials.HOME,
+                MenusFinancials.ACCOUNTING_SETTING,
+                MenusFinancials.GENERAL,
                 MenusFinancials.CASHFLOW,
                 MenusFinancials.ASSET,
-                MenusFinancials.GENERAL,
+                MenusFinancials.JOURNAL_ENTRY,
             ]
         ),
         'forms': SpaceCommon(
@@ -1018,6 +1048,7 @@ class SpaceItem:
             icon='<i class="fas fa-table"></i>',
             menus=[
                 MenusReport.HOME,
+                MenusCRM.DASHBOARD,
                 MenusReport.SALE_REPORT,
                 MenusReport.INVENTORY_REPORT,
                 MenusReport.PURCHASING_REPORT,
@@ -1055,7 +1086,6 @@ class SpaceItem:
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
                 MenusCoreConfigurations.TRANSITION_DATA_CONFIG,
                 MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,
-                MenusCoreConfigurations.INVENTORY_DATA_CONFIG
             ],
         ),
         'partner-center': SpaceCommon(

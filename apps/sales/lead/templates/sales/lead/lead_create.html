@@ -31,8 +31,10 @@
         {% csrf_token %}
         {% include 'sales/lead/common/stage.html' %}
         {% include 'sales/lead/common/information.html' %}
-        {% include 'sales/lead/common/comments.html' %}
     </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'sales/lead/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>

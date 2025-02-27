@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Accounting Policies' %}{% endblock %}
+{% block cssHeader %}
+    <!-- Select2 -->
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/masterdata/saledata/config.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-accounting-policies">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    {{ data.company_config | json_script:"company_config" }}
+    <form id="form-accounting-policies"
+          data-method="PUT"
+          data-url="{% url 'AccountingPoliciesConfigDetailAPI' %}"
+          data-url-redirect="{% url 'AccountingPoliciesList' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="vas" name="type" checked>
+                    <label class="form-check-label" for="vas">{% trans 'VAS' %}</label>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="ias" name="type" disabled>
+                    <label class="form-check-label" for="ias">{% trans 'IAS (IFRS)' %}</label>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12">
+                <label>{% trans 'Select applicable circular' %}</label>
+            </div>
+            <div class="col-12">
+                <div class="form-check ml-3 mt-1">
+                    <input type="radio" class="form-check-input" id="circular200" name="circular" checked>
+                    <label class="form-check-label" for="circular200">{% trans 'Regulated by circular' %} <span class="fw-bold">200/2014/TT-BTC</span> ({% trans 'accounting policies for ...' %})</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-check ml-3 mt-1">
+                    <input type="radio" class="form-check-input" id="circular133" name="circular" disabled>
+                    <label class="form-check-label" for="circular133">{% trans 'Regulated by circular' %} <span class="fw-bold">133/2015/TT-BTC</span> ({% trans 'accounting policies for small and medium enterprises' %})</label>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/masterdata/accounting_policies.js' %}"></script>
+{% endblock %}

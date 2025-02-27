@@ -252,7 +252,7 @@ function loadGeneralUoMGroup(unit_of_measure_group) {
         },
         callbackDataResp: function (resp, keyResp) {
             return resp.data[keyResp].filter(function (item) {
-                return Object.keys(item?.['referenced_unit']).length !== 0;
+                return Object.keys(item?.['referenced_unit']).length !== 0 && item?.['code'] !== 'Import';
             });
         },
         data: (unit_of_measure_group ? unit_of_measure_group : null),
@@ -694,10 +694,8 @@ function loadWareHouseOverViewDetail(data_overview=[]) {
 
 function Disable(option) {
     if (option === 'detail') {
-        $('.form-control').prop('disabled', true).css({color: 'black'});
-        $('.form-select').prop('disabled', true).css({color: 'black'});
-        $('.select2').prop('disabled', true);
-        $('form input').prop('disabled', true);
+        $('form select').prop('disabled', true);
+        $('form input').prop('disabled', true).prop('readonly', true);
         btn_Add_Line_Variant_Attributes.prop('disabled', true);
     }
 }

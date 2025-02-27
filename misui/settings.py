@@ -130,6 +130,9 @@ INSTALLED_APPS = \
         'apps.sales.financialcashflow',
         'apps.sales.reconciliation',
         'apps.sales.asset'
+    ] + [
+        'apps.accounting.accountingsettings',
+        'apps.accounting.journalentry'
     ]
 
 INSTALLED_APPS += [
@@ -453,6 +456,11 @@ if os.environ.get('ENABLE_PROD', '0') in [1, '1']:
     # Replace API DOMAIN
     API_DOMAIN = os.environ.get('API_DOMAIN', None)
     API_DOMAIN_SIMPLE = os.environ.get('API_DOMAIN_SIMPLE', API_DOMAIN.replace("/api/", ""))
+
+    # SECURITY : https://docs.djangoproject.com/en/5.1/ref/settings/#secure-proxy-ssl-header
+    USE_PROXY_FORWARD = os.environ.get('USE_PROXY_FORWARD', '')
+    if USE_PROXY_FORWARD in ['http', 'https']:
+        SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', USE_PROXY_FORWARD)
 
 #
 USE_S3 = os.getenv('USE_S3', '0') == '1'

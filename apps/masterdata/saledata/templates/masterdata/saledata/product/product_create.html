@@ -20,16 +20,15 @@
 {% endblock %}
 {% block pageContent %}
     <script hidden id="direct-btn-group-url"
-        data-url-list-api="{% url 'ProductListAPI' %}"
-        data-url-create="{% url 'ProductCreate' %}"
-        data-url-detail="{% url 'ProductDetail' '0' %}"
-        data-key-return="product_list"
+            data-url-list-api="{% url 'ProductListAPI' %}"
+            data-url-create="{% url 'ProductCreate' %}"
+            data-url-detail="{% url 'ProductDetail' '0' %}"
+            data-key-return="product_list"
     ></script>
     <script id="url_script"
             data-url-currency="{% url 'CurrencyListAPI' %}"
             data-url-unit="{% url 'BaseUnitListAPI' %}"
-    >
-    </script>
+    ></script>
     <form id="form-create-product"
           data-method="POST"
           data-url="{% url "ProductListAPI" %}"
@@ -38,8 +37,9 @@
         {% include 'masterdata/saledata/product/common/information.html' %}
         {% include 'masterdata/saledata/product/common/tabs.html' %}
     </form>
-    {{ data.unit | json_script:"id-unit-list" }}
-    {{ data.currency_list | json_script:"currency_list" }}
+{% endblock %}
+{% block modalData %}
+    {% include 'masterdata/saledata/product/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static "vendors/dropify/dist/js/dropify.min.js" %}"></script>

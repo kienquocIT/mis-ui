@@ -443,11 +443,6 @@ $(function () {
             }
         });
 
-
-
-
-
-
         tableCost.on('click', '.btn-depreciation-detail', function () {
             LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target', 'new-product-fn-cost');
             LeaseOrderLoadDataHandle.loadShowDepreciation(this);
@@ -479,11 +474,6 @@ $(function () {
         LeaseOrderLoadDataHandle.$btnSaveDepreciation.on('click', function () {
             LeaseOrderLoadDataHandle.loadSaveDepreciation();
         });
-
-
-
-
-
 
         $('#btn-collapse').click(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');

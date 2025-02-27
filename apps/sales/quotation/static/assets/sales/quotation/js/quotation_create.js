@@ -136,7 +136,7 @@ $(function () {
             QuotationLoadDataHandle.loadInitS2($boxPUom, [], {'group': $(this).val()}, $modal);
         });
 
-        $('#btn-save-product').on('click', function () {
+        $('#btn-save-quick-product').on('click', function () {
             let dataSubmit = {};
             dataSubmit['title'] = $('#add-product-title').val();
             dataSubmit['code'] = $('#add-product-code').val();

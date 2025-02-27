@@ -4197,12 +4197,40 @@ class QuotationDataTableHandle {
                 },
             ],
             drawCallback: function () {
+                if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    QuotationDataTableHandle.dtbSProductHDCustom();
+                }
                 QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSProduct);
             },
         });
     };
 
     // Custom dtb
+    static dtbSProductHDCustom() {
+        let $table = $('#table-select-product');
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-quick-product').length) {
+                let dataZone = "quotation_products_data";
+                if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                    dataZone = "sale_order_products_data";
+                }
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-quick-product" data-bs-toggle="modal" data-bs-target="#addQuickProduct" data-zone="${dataZone}">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-new')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+            }
+        }
+    };
+
     static dtbProductHDCustom() {
         let $table = QuotationDataTableHandle.$tableProduct;
         let wrapper$ = $table.closest('.dataTables_wrapper');

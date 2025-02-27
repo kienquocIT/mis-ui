@@ -2264,12 +2264,14 @@ class LeaseOrderLoadDataHandle {
                 if ($(depreciationEndDateEle).val()) {
                     $endDateEle.val(moment($(depreciationEndDateEle).val()).format('DD/MM/YYYY'));
                 }
+                // Kiểm tra nếu bảng khấu hao lấy giá vốn cuối của sản phẩm mới thì end depreciation tự lấy theo số tháng khấu hao
                 if (LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'new-product-fn-cost') {
                     if ($startDateEle.val() && $timeEle.val()) {
                         let monthsRange = DepreciationControl.getMonthsRange($startDateEle.val(), parseFloat($timeEle.val()));
                         $endDateEle.val(monthsRange[monthsRange.length - 1]).trigger('change');
                     }
                 }
+                // Kiểm tra nếu bảng khấu hao lấy giá trị ròng của sản phẩm đã thuê thì end depreciation tự lấy theo ngày hiện tại
                 if (LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-net-value') {
                     let rowIndex = LeaseOrderDataTableHandle.$tableCostLeased.DataTable().row(row).index();
                     let $row = LeaseOrderDataTableHandle.$tableCostLeased.DataTable().row(rowIndex);
@@ -2279,6 +2281,7 @@ class LeaseOrderLoadDataHandle {
                         $endDateEle.attr('disabled', 'true');
                     }
                 }
+                // Kiểm tra nếu bảng khấu hao lấy giá vốn cuối của sản phẩm đã thuê thì end depreciation tự lấy theo ngày end depreciation trước đó
                 if (LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-fn-cost') {
                     let rowIndex = LeaseOrderDataTableHandle.$tableCostLeased.DataTable().row(row).index();
                     let $row = LeaseOrderDataTableHandle.$tableCostLeased.DataTable().row(rowIndex);

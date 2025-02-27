@@ -11034,3 +11034,15 @@ msgstr "Lưu chỉnh sửa vùng"
 #
 msgid "Save edit zone and approve"
 msgstr "Lưu chỉnh sửa vùng và phê duyệt"
+
+#
+msgid "Goods recovery"
+msgstr "Thu hồi"
+
+#
+msgid "Input quantity new products"
+msgstr "Nhập số lượng sản phẩm mua mới"
+
+#
+msgid "Select leased products"
+msgstr "Chọn sản phẩm đã cho thuê trước đó"

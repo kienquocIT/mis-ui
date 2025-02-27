@@ -638,6 +638,7 @@
             </div>
         </div>
 
+
         <div class="modal-area">
             <div
                     class="modal fade" id="quotationModalCenter" tabindex="-1"
@@ -698,10 +699,153 @@
                     </div>
                 </div>
             </div>
-        </div>
 
+            <div
+                    class="modal fade" id="addQuickProduct" tabindex="-1" role="dialog"
+                    aria-labelledby="addQuickProduct" aria-hidden="true" data-zone="quotation_products_data"
+            >
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">{% trans 'New product' %}</h5>
+                            <button
+                                    type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                    data-bs-dismiss="modal"
+                            ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="form-label required" for="add-product-title">{% trans 'Title' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        id="add-product-title"
+                                        required
+                                >
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <div class="form-group">
+                                        <label
+                                                class="form-label required" for="add-product-code"
+                                        >{% trans 'Code' %}</label>
+                                        <input
+                                                type="text" class="form-control"
+                                                id="add-product-code"
+                                                required
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <div class="mt-4" id="quick-product-choice">
+                                        <div class="form-check form-check-lg form-check-inline d-flex align-items-center">
+                                            <input
+                                                    class="form-check-input" type="checkbox" id="inlineCheckbox2"
+                                                    value="2"
+                                            >
+                                            <label
+                                                    class="form-check-label" for="inlineCheckbox2"
+                                            >{% trans 'For Purchase' %}</label>
+                                        </div>
+                                        <div class="form-check form-check-lg form-check-inline d-flex align-items-center">
+                                            <input
+                                                    class="form-check-input" type="checkbox" id="inlineCheckbox1"
+                                                    value="1"
+                                            >
+                                            <label
+                                                    class="form-check-label" for="inlineCheckbox1"
+                                            >{% trans 'For Inventory' %}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="add-product-remark">{% trans 'Description' %}</label>
+                                <textarea class="form-control" id="add-product-remark" rows="2"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                        class="form-label" for="add-product-part-number"
+                                >{% trans 'Part number' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        id="add-product-part-number"
+                                        required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required" for="add-product-type">{% trans 'Type' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="add-product-type"
+                                        data-url="{% url "ProductTypeListAPI" %}"
+                                        data-method="GET"
+                                        data-keyResp="product_type_list"
+                                        multiple
+                                ></select>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                        class="form-label required" for="add-product-category"
+                                >{% trans 'Category' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="add-product-category"
+                                        data-url="{% url "ProductCategoryListAPI" %}"
+                                        data-method="GET"
+                                        data-keyResp="product_category_list"
+                                ></select>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                        class="form-label required" for="add-product-uom-group"
+                                >{% trans 'UOM group' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="add-product-uom-group"
+                                        data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                                        data-method="GET"
+                                        data-keyResp="unit_of_measure_group"
+                                ></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required" for="add-product-uom">{% trans 'UOM' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="add-product-uom"
+                                        data-url="{% url "UnitOfMeasureListAPI" %}"
+                                        data-method="GET"
+                                        data-keyResp="unit_of_measure"
+                                ></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required" for="add-product-tax">{% trans 'Tax' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="add-product-tax"
+                                        data-url="{% url "TaxListAPI" %}"
+                                        data-method="GET"
+                                        data-keyResp="tax_list"
+                                ></select>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                        class="form-label" for="add-product-method"
+                                >{% trans 'Traceability method' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="add-product-method"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="quotation_products_data">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-save-quick-product" data-zone="quotation_products_data">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="modal-area">
             <div
                     class="modal fade" id="selectProductModal" tabindex="-1"
                     role="dialog" aria-labelledby="selectProductModal"
@@ -831,10 +975,12 @@
         data-add-group="{% trans "Add group" %}"
         data-add-expense="{% trans "Add Expense" %}"
         data-add-labor="{% trans "Add Labor" %}"
+        data-new="{% trans "New" %}"
     >
     <input
         type="text"
         id="app-url-factory"
+        data-url-quick-product="{% url 'ProductQuickCreateAPI' %}"
         data-md-product="{% url 'ProductForSaleListAPI' %}"
         data-md-product-detail="{% url 'ProductForSaleDetailAPI' 1 %}"
         data-md-bom="{% url 'BOMOrderListAPI' %}"

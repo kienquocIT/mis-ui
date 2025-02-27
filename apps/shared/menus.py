@@ -584,6 +584,12 @@ class MenusInventory:
                 view_name='InventoryAdjustmentList',
                 icon='<i class="bi bi-sliders"></i>',
             ),
+            MenuCommon(
+                name='Goods recovery',
+                code='menu_goods_recovery_list',
+                view_name='GoodsRecoveryList',
+                icon='<i class="fas fa-reply"></i>',
+            ),
         ],
     )
 

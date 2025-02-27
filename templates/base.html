@@ -180,34 +180,6 @@
                                             {% block pageAction %}{% endblock %}
                                         </div>
                                         <button
-                                                type="submit"
-                                                class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                form=""
-                                                data-value=""
-                                                id="idxSaveInZoneWF"
-                                        >
-                                        <span
-                                                class="icon"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="bottom"
-                                                data-bs-original-title="{% trans 'Save in Zone' %}"
-                                        ><i class="fa-solid fa-floppy-disk"></i></span>
-                                        </button>
-                                        <button
-                                                class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                type="submit"
-                                                form=""
-                                                data-wf-action=""
-                                                id="idxSaveInZoneWFThenNext"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="bottom"
-                                                data-bs-original-title="{% trans 'Save in zone then call next station' %}"
-                                        >
-                                            <span class="icon">
-                                                <i class="fa-solid fa-check-double text-success"></i>
-                                            </span>
-                                        </button>
-                                        <button
                                                 type="button"
                                                 class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                                 id="btn-active-edit-zone-wf"
@@ -221,17 +193,34 @@
                                                 <i class="fa-solid fa-unlock"></i>
                                             </span>
                                         </button>
-                                        <button
-                                                type="button"
-                                                class="hidden btn-action-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-value=""
-                                                id="btnMainAction"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="bottom"
-                                                data-bs-original-title="{% trans 'Approval' %}"
-                                        >
-                                            <span class="icon"></span>
-                                        </button>
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <span id="tooltip-btn-save-zone" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Save edit zone' %}">
+                                                <button
+                                                        class="hidden btn-action-wf btn btn-outline-primary btn-square"
+                                                        type="submit"
+                                                        form=""
+                                                        data-value=""
+                                                        id="idxSaveInZoneWF"
+                                                ><i class="fa-solid fa-floppy-disk"></i></button>
+                                            </span>
+                                            <span id="tooltip-btn-save-zone-approve" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Save edit zone and approve' %}">
+                                                <button
+                                                        class="hidden btn-action-wf btn btn-outline-primary btn-square"
+                                                        type="submit"
+                                                        form=""
+                                                        data-wf-action=""
+                                                        id="idxSaveInZoneWFThenNext"
+                                                ><i class="fa-solid fa-check-double"></i></button>
+                                            </span>
+                                            <span id="tooltip-btn-approve" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Approval' %}">
+                                                <button
+                                                        type="button"
+                                                        class="hidden btn-action-wf btn btn-outline-primary btn-square"
+                                                        data-value=""
+                                                        id="btnMainApprove"
+                                                ><i class="fas fa-check"></i></button>
+                                            </span>
+                                        </div>
                                         <div class="dropdown hidden">
                                             <button
                                                     aria-expanded="false" data-bs-toggle="dropdown"
@@ -247,7 +236,7 @@
                                                 ...
                                             </span>
                                             </button>
-                                            <div role="menu" class="dropdown-menu" id="idxGroupAction">
+                                            <div role="menu" class="dropdown-menu dropdown-bordered" id="idxGroupAction">
                                                 {% for key, value in base_workflow.items %}
                                                     <li class="hidden btn-action-wf" data-value="{{ key }}">
                                                         <div class="dropdown-item"><i

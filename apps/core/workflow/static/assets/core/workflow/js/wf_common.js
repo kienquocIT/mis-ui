@@ -1,5 +1,29 @@
 let ZONE_INDEX = 0;
 let WF_DATATYPE = [];
+let $trans = $('#node-trans-factory');
+
+function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
+                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
+    };
 
 // handle btn modal zone save
 function modalFormSubmit($form, is_edit=false) {
@@ -40,22 +64,6 @@ function modalFormSubmit($form, is_edit=false) {
     });
 }
 
-// handle event add new zone
-function addZoneBtn(ElmSelectbox) {
-    // show modal add zone
-    $('[data-bs-target="#add_zone"]').on('click', function (e) {
-        e.preventDefault();
-        let getApp = ElmSelectbox.select2('data')
-        if (getApp.length === 0) {
-            $.fn.notifyB({description: $(this).attr('data-required-text')}, 'failure');
-            return true
-        } else
-            $($(this).attr('data-bs-target')).modal('show')
-        let $form = $($(this).attr('data-bs-target')).find('form')
-        modalFormSubmit($form)
-    });
-}
-
 // handle event table zone actions on click (edit, delete)
 function actionsClick(elm, data, iEvent) {
     let isAction = $(iEvent.currentTarget).attr('data-action');
@@ -64,11 +72,11 @@ function actionsClick(elm, data, iEvent) {
         let $form = $add_zone_modal.find('form');
         $form.find('[name="title"]').val(data.title)
         $form.find('[name="remark"]').val(data.remark)
-        $form.find('#property_list_choices').val(data.property_list).trigger('change')
-        // load data detail to Select2
-        for (let prop of data.property_list) {
-            if (typeof prop === 'object' && prop !== null) {
-                $form.find('#property_list_choices').append(`<option value="${prop?.['id']}" selected>${prop?.['title']}</option>`);
+        if (data?.['property_list'].length > 0) {
+            if (typeof data?.['property_list'][0] === 'object' && data?.['property_list'][0] !== null) {
+                loadInitS2($('#property_list_choices'), data.property_list, {'application': $("#select-box-features").val(), 'is_wf_zone': true});
+            } else {
+                $form.find('#property_list_choices').val(data.property_list).trigger('change');
             }
         }
         $form.find('[name="order"]').val(data.order)
@@ -92,7 +100,7 @@ function initTableZone(data) {
     // init dataTable
     let listData = data ? data : []
     let $tables = $('#table_workflow_zone');
-    $tables.DataTable({
+    $tables.DataTableDefault({
         data: listData,
         searching: false,
         ordering: false,
@@ -107,6 +115,7 @@ function initTableZone(data) {
                 let newIndex = api.row(row).index()
                 data['order'] = newIndex + 1
             }
+            dtbZoneHDCustom();
         },
         rowCallback: function (row, data) {
             // handle onclick btn
@@ -118,25 +127,22 @@ function initTableZone(data) {
         columns: [
             {
                 targets: 0,
-                render: () => {
-                    return `<div class="form-check"><input type="checkbox" class="form-check-input"></div>`
-                }
-            },
-            {
-                targets: 1,
+                width: '40%',
                 render: (data, type, row) => {
                     let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                     return `<p class="table-row-title" data-row="${dataRow}">${row.title}</p>`
                 }
             },
             {
-                targets: 2,
+                targets: 1,
+                width: '50%',
                 render: (data, type, row) => {
                     return `<p>${row.remark}</p>`
                 }
             },
             {
-                targets: 3,
+                targets: 2,
+                width: '10%',
                 render: (data, type, row) => {
                     let _id = row.order
                     if (row.hasOwnProperty('id') && row.id)
@@ -172,12 +178,54 @@ function initTableZone(data) {
     });
 }
 
+function dtbZoneHDCustom() {
+        let $table = $('#table_workflow_zone');
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-zone').length) {
+                let $group = $(`<button
+                                        type="button"
+                                        class="btn btn-outline-secondary btn-floating"
+                                        id="btn-add-zone"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#add_zone"
+                                        data-required-text="${$trans.attr('data-required-application')}"
+                                >
+                                    <span><span>${$trans.attr('data-add-zone')}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-zone').on('click', function () {
+                    let getApp = $("#select-box-features").select2('data')
+                    if (getApp.length === 0) {
+                        $.fn.notifyB({description: $(this).attr('data-required-text')}, 'failure');
+                        return true
+                    } else
+                        $($(this).attr('data-bs-target')).modal('show')
+                    let $form = $($(this).attr('data-bs-target')).find('form')
+                    modalFormSubmit($form)
+                });
+            }
+        }
+    }
+
+
 $(document).ready(function () {
     // declare global scope variable
     let $prev_btn = $('#nav-next-prev-step .prev-btn');
     let $next_btn = $('#nav-next-prev-step .next-btn');
     let $select_box = $("#select-box-features");
     WF_DATATYPE = JSON.parse($('#wf_data_type').text());
+
+    loadInitS2($select_box);
 
     // handle event on click prev next btn
     $("#nav-next-prev-step button").off().on('click', function (e) {
@@ -208,8 +256,6 @@ $(document).ready(function () {
         // catch if next tab is display config condition
         if (btn_href === '#tab_next_node') {
             FlowJsP.init()
-        } else if (btn_href === '#tab_node') {
-            // NodeLoadDataHandle.loadZoneDDAllTable();
         }
     })
 
@@ -217,11 +263,11 @@ $(document).ready(function () {
     $select_box.on("select2:select", function (e) {
         $next_btn.prop('disabled', false);
         $next_btn.on('click', () => $prev_btn.prop('disabled', false))
-        $('#property_list_choices').attr('data-params', JSON.stringify({application: e.params.data.id, is_wf_zone: true}))
+        loadInitS2($('#property_list_choices'), [], {'application': e.params.data.id, 'is_wf_zone': true});
     });
 
     // button create new zone
-    addZoneBtn($select_box)
+    // addZoneBtn($select_box)
 
     // action reset default of modal
     $('#id-restore_default').on('change', function () {

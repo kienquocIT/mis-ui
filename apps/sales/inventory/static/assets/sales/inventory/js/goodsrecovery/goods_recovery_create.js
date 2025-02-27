@@ -2,12 +2,6 @@ $(function () {
 
     $(document).ready(function () {
 
-        // Elements Case PO
-        let btnConfirmAdd = $('#btn-confirm-add-product');
-
-        // Load init
-        RecoveryLoadDataHandle.loadInit();
-
         // run datetimepicker
         $('.date-picker').each(function () {
             $(this).daterangepicker({
@@ -22,7 +16,7 @@ $(function () {
                 autoApply: true,
                 autoUpdateInput: false,
             }).on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                $(this).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
             });
             $(this).val('').trigger('change');
         });
@@ -43,6 +37,9 @@ $(function () {
         // workflow init
         WFRTControl.setWFInitialData("goodsrecovery");
 
+        // Load init
+        RecoveryLoadDataHandle.loadInit();
+
 
         RecoveryLoadDataHandle.$form.on('change', '.validated-number', function () {
             RecoveryValidateHandle.validateNumber(this);
@@ -50,7 +47,7 @@ $(function () {
 
         RecoveryLoadDataHandle.$boxLeaseOrder.on('change', function () {
             RecoveryDataTableHandle.$tableDelivery.DataTable().clear().draw();
-            RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().clear().draw();
+            RecoveryDataTableHandle.$tableProductNew.DataTable().clear().draw();
             if (RecoveryLoadDataHandle.$boxLeaseOrder.val()) {
                 let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.$boxLeaseOrder, RecoveryLoadDataHandle.$boxLeaseOrder.val());
                 if (data) {
@@ -72,7 +69,8 @@ $(function () {
                         }
                     )
                 }
-                RecoveryLoadDataHandle.$modalMain.modal('show');
+                RecoveryLoadDataHandle.loadEventRadio(RecoveryLoadDataHandle.$scrollProduct);
+                RecoveryLoadDataHandle.$canvasMain.offcanvas('show');
             }
             return true;
         });
@@ -83,12 +81,17 @@ $(function () {
         });
 
         RecoveryDataTableHandle.$tableDeliveryProduct.on('click', '.table-row-checkbox', function () {
-            let warehouseArea = RecoveryLoadDataHandle.$modalMain[0].querySelector('.dtb-warehouse-area');
-            if (warehouseArea) {
-                RecoveryLoadDataHandle.loadCheckDeliveryProduct();
+            RecoveryLoadDataHandle.$scrollProduct.removeClass('hidden');
+            RecoveryLoadDataHandle.loadCheckDeliveryProduct();
+        });
 
-                warehouseArea.removeAttribute('hidden');
-            }
+        RecoveryDataTableHandle.$tableProductNew.on('click', '.table-row-checkbox', function () {
+            RecoveryLoadDataHandle.loadCheckNewLeasedProduct();
+            return true;
+        });
+
+        RecoveryDataTableHandle.$tableProductLeased.on('click', '.table-row-checkbox', function () {
+            RecoveryLoadDataHandle.loadCheckNewLeasedProduct();
             return true;
         });
 
@@ -112,25 +115,28 @@ $(function () {
         });
 
         RecoveryDataTableHandle.$tableWarehouse.on('change', '.table-row-quantity-recovery', function () {
-            let check = RecoveryLoadDataHandle.loadQuantityRecovery();
-            if (check === false) {
-                $(this).val('0');
-                return false;
-            }
-
             let row = this.closest('tr');
             if (row) {
+                RecoveryStoreDataHandle.storeData();
+                let check = RecoveryLoadDataHandle.loadCheckExceedQuantity();
+                if (check === false) {
+                    let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(row).index();
+                    let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
+                    let rowData = $row.data();
+                    rowData['quantity_recovery'] = 0;
+                    RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData);
+                    RecoveryStoreDataHandle.storeData();
+                }
+
                 let btnEle = row.querySelector('.btn-collapse-app-wf');
                 if (btnEle) {
                     $(btnEle).trigger('click');
                 }
             }
 
-            RecoveryStoreDataHandle.storeData();
-            return true;
         });
 
-        RecoveryLoadDataHandle.$btnSaveModal.on('click', function () {
+        RecoveryLoadDataHandle.$btnSaveProduct.on('click', function () {
             RecoveryLoadDataHandle.loadLineDetail();
             RecoveryCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);
         });
@@ -142,13 +148,11 @@ $(function () {
             }
         });
 
-
-
         RecoveryDataTableHandle.$tableProduct.on('click', '.btn-depreciation-detail', function () {
-            RecoveryLoadDataHandle.loadShowModalDepreciation(this);
+            RecoveryLoadDataHandle.loadShowDepreciation(this);
         });
 
-        RecoveryLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment', function () {
+        RecoveryLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .lease-start-date, .lease-end-date', function () {
             if (this.classList.contains('depreciation-method')) {
                 let $adjustEle = $('#depreciation_adjustment');
                 if ($adjustEle.length > 0) {
@@ -164,6 +168,7 @@ $(function () {
 
         RecoveryLoadDataHandle.$btnSaveDepreciation.on('click', function () {
             RecoveryLoadDataHandle.loadSaveDepreciation();
+            RecoveryCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);
         });
 
 
@@ -201,7 +206,13 @@ $(function () {
                 'customer_data',
                 'lease_order_id',
                 'lease_order_data',
+                'remark',
                 'recovery_delivery_data',
+                // total
+                'total_pretax',
+                'total_tax',
+                'total',
+                'total_revenue_before_tax',
                 // attachment
                 // 'attachment',
                 // abstract

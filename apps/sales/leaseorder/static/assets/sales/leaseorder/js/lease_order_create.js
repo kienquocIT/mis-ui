@@ -34,6 +34,7 @@ $(function () {
         LeaseOrderDataTableHandle.dataTableSelectLeasedProduct();
         LeaseOrderDataTableHandle.dataTableProduct();
         LeaseOrderDataTableHandle.dataTableCost();
+        LeaseOrderDataTableHandle.dataTableCostLeased();
         LeaseOrderDataTableHandle.dataTableDepreciationDetail();
         LeaseOrderDataTableHandle.dataTableExpense();
         LeaseOrderDataTableHandle.dataTableSaleOrderIndicator();
@@ -97,6 +98,7 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
@@ -242,9 +244,6 @@ $(function () {
         tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-uom-time, .table-row-quantity-time, .table-row-price, .table-row-tax, .table-row-discount', function () {
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = $(this)[0].closest('tr');
-                if ($(this).hasClass('table-row-item')) {
-                    LeaseOrderLoadDataHandle.loadDataProductSelect($(this));
-                }
                 if ($(this).hasClass('validated-number')) {
                     validateNumber(this);
                 }
@@ -325,12 +324,21 @@ $(function () {
             LeaseOrderCalculateCaseHandle.updateTotal(tableProduct[0])
         });
 
+        LeaseOrderDataTableHandle.$tableSLeasedProduct.on('click', '.table-row-checkbox', function () {
+            let checkedCount = LeaseOrderDataTableHandle.$tableSLeasedProduct[0].querySelectorAll('.table-row-checkbox:checked').length;
+            let leasedEle = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-leased');
+            if (leasedEle) {
+                $(leasedEle).val(checkedCount);
+            }
+        });
+
 // EXPENSE
         $quotationTabs.on('click', '.tab-expense', function () {
             LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         tableExpense.on('click', '.del-row', function (e) {
@@ -382,8 +390,10 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderStoreDataHandle.storeDtbData(5);
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 LeaseOrderLoadDataHandle.loadDataTableCost();
+                LeaseOrderLoadDataHandle.loadDataTableCostLeased();
             }
         });
 
@@ -433,16 +443,22 @@ $(function () {
             }
         });
 
-
-
-
-
-
         tableCost.on('click', '.btn-depreciation-detail', function () {
-            LeaseOrderLoadDataHandle.loadShowModalDepreciation(this);
+            LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target', 'new-product-fn-cost');
+            LeaseOrderLoadDataHandle.loadShowDepreciation(this);
         });
 
-        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .depreciation-for-sale, .depreciation-for-finance', function () {
+        LeaseOrderDataTableHandle.$tableCostLeased.on('click', '.btn-depreciation-detail', function () {
+            if (this.closest('.net-value-area')) {
+                LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target', 'leased-product-net-value');
+            }
+            if (this.closest('.depreciation-area')) {
+                LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target', 'leased-product-fn-cost');
+            }
+            LeaseOrderLoadDataHandle.loadShowDepreciation(this);
+        });
+
+        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .lease-start-date, .lease-end-date', function () {
             if (this.classList.contains('depreciation-method')) {
                 let $adjustEle = $('#depreciation_adjustment');
                 if ($adjustEle.length > 0) {
@@ -452,18 +468,12 @@ $(function () {
                     }
                 }
             }
-
             LeaseOrderLoadDataHandle.loadDataTableDepreciation();
         });
 
         LeaseOrderLoadDataHandle.$btnSaveDepreciation.on('click', function () {
             LeaseOrderLoadDataHandle.loadSaveDepreciation();
         });
-
-
-
-
-
 
         $('#btn-collapse').click(function () {
             $(this.querySelector('.collapse-icon')).toggleClass('fa-angle-double-up fa-angle-double-down');
@@ -765,6 +775,7 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         $('#btn-add-payment-stage').on('click', function () {
@@ -937,6 +948,7 @@ $(function () {
                 'customer_shipping',
                 'customer_billing',
                 'lease_costs_data',
+                'lease_costs_leased_data',
                 'lease_expenses_data',
                 // indicator tab
                 'lease_indicators_data',

@@ -119,7 +119,7 @@ class ProdOrderLoadDataHandle {
 
     static loadInitPage() {
         // date
-        ProdOrderLoadDataHandle.$dateCreated.val(ProdOrderCommonHandle.getCurrentDate());
+        ProdOrderLoadDataHandle.$dateCreated.val(DateTimeControl.getCurrentDate("DMY", "/"));
         // select2
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxType, ProdOrderLoadDataHandle.dataType);
         ProdOrderLoadDataHandle.loadInitS2(ProdOrderLoadDataHandle.$boxStatus, ProdOrderLoadDataHandle.dataStatus);
@@ -949,14 +949,6 @@ class ProdOrderCommonHandle {
         let row = $table.DataTable().row(rowIdx);
         row.remove().draw();
         return true;
-    };
-
-    static getCurrentDate() {
-        let currentDate = new Date();
-        let day = String(currentDate.getDate()).padStart(2, '0');
-        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        let year = currentDate.getFullYear();
-        return `${day}/${month}/${year}`;
     };
 
     static filterFieldList(field_list, data_json) {

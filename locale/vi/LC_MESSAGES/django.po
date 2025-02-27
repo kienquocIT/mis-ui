@@ -720,31 +720,31 @@ msgstr "Thêm nhân viên"
 
 #
 msgid "1st Manager System Title"
-msgstr "Tiêu Đề Của Quản lý hệ thống thứ nhất"
+msgstr "Tiêu đề hệ thống của quản lý thứ nhất"
 
 #
 msgid "2nd Manager System Title"
-msgstr "Tiêu Đề Của Quản lý hệ thống thứ hai"
+msgstr "Tiêu đề hệ thống của quản lý thứ hai"
 
 #
 msgid "Input Display 1st Manager Title"
-msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Nhất"
+msgstr "Nhập tên hiển thị của quản lý thứ nhất"
 
 #
 msgid "Title of 1st manager"
-msgstr "Tiêu Đề Của Quản Lý Thứ Nhất"
+msgstr "Tiêu đề của quản lý thứ nhất"
 
 #
 msgid "Input Display 2nd Manager Title"
-msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Hai"
+msgstr "Nhập tên hiển thị của quản lý thứ hai"
 
 #
 msgid "Title of 2nd manager"
-msgstr "Tiêu Đề Của Quản Lý Thứ Hai"
+msgstr "Tiêu đề của quản lý thứ hai"
 
 #
 msgid "First Manager Assign To"
-msgstr "Quản Lý Đầu Tiên Chỉ Định Cho"
+msgstr "Quản lý thứ nhất chỉ định cho"
 
 #
 msgid "Assign to one employee"
@@ -752,7 +752,7 @@ msgstr "Chỉ định cho một nhân viên"
 
 #
 msgid "Second Manager Assign To"
-msgstr "Quản Lý Thứ Hai Chỉ Định Cho"
+msgstr "Quản lý thứ hai chỉ định cho"
 
 #
 msgid "Active organization group after created"
@@ -760,23 +760,23 @@ msgstr "Kích hoạt nhóm tổ chức sau khi tạo"
 
 #
 msgid "Display 1st Manager Title"
-msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Nhất"
+msgstr "Nhập tên hiển thị của quản lý thứ nhất"
 
 #
 msgid "Display 2nd Manager Title"
-msgstr "Nhập Tên Hiển Thị Của Quản Lý Thứ Hai"
+msgstr "Nhập tên hiển thị của quản lý thứ hai"
 
 #
 msgid "Name of Reference Group"
-msgstr "Tên Của Nhóm Liên Quan"
+msgstr "Tên của nhóm liên quan"
 
 #
 msgid "System title of 1st manager"
-msgstr "Tiêu Đề Hệ Thống Của Quản Lý Thứ Nhất"
+msgstr "Tiêu đề hệ thống của quản lý thứ nhất"
 
 #
 msgid "Assign To"
-msgstr "Chỉ Định"
+msgstr "Chỉ định"
 
 #
 msgid "Role name"
@@ -10998,3 +10998,115 @@ msgstr "Các giao dịch tham chiếu đến sản phẩm này sẽ sử dụng 
 #
 msgid "Enable tab"
 msgstr "Kích hoạt tab"
+
+#
+msgid "No warehouse"
+msgstr "Không qua kho"
+
+#
+msgid "Lease time"
+msgstr "Thời gian thuê"
+
+#
+msgid "Final cost"
+msgstr "Giá vốn cuối"
+
+#
+msgid "Lease code"
+msgstr "Mã thuê"
+
+#
+msgid "Original cost"
+msgstr "Giá vốn gốc"
+
+#
+msgid "Net value"
+msgstr "Giá trị ròng"
+
+#
+msgid "Previous lease time"
+msgstr "Thời gian thuê trước"
+
+#
+msgid "Depreciation time"
+msgstr "Thời gian khấu hao"
+
+#
+msgid "Update depreciation time"
+msgstr "Thời gian khấu hao mới"
+
+#
+msgid "Save edit zone"
+msgstr "Lưu chỉnh sửa vùng"
+
+#
+msgid "Save edit zone and approve"
+msgstr "Lưu chỉnh sửa vùng và phê duyệt"
+
+#
+msgid "Goods recovery"
+msgstr "Thu hồi"
+
+#
+msgid "Input quantity new products"
+msgstr "Nhập số lượng sản phẩm mua mới"
+
+#
+msgid "Select leased products"
+msgstr "Chọn sản phẩm đã cho thuê trước đó"
+
+#
+msgid "New products"
+msgstr "Sản phẩm mua mới"
+
+#
+msgid "Leased products"
+msgstr "Sản phẩm đã cho thuê trước đó"
+
+#
+msgid "Recovery"
+msgstr "Thu hồi"
+
+#
+msgid "Start depreciation"
+msgstr "Bắt đầu khấu hao"
+
+#
+msgid "End depreciation"
+msgstr "Kết thúc khấu hao"
+
+#
+msgid "Start lease"
+msgstr "Bắt đầu cho thuê"
+
+#
+msgid "End lease"
+msgstr "Kết thúc cho thuê"
+
+#
+msgid "Begin"
+msgstr "Bắt đầu"
+
+#
+msgid "Start net value"
+msgstr "Giá trị ban đầu"
+
+#
+msgid "Depreciation value"
+msgstr "Giá trị khấu hao"
+
+#
+msgid "End net value"
+msgstr "Giá trị cuối"
+
+#
+msgid "Allocated"
+msgstr "Phân bổ"
+
+#
+msgid "Accumulative"
+msgstr "Tích lũy"
+
+#
+msgid "Depreciation detail"
+msgstr "Chi tiết khấu hao"

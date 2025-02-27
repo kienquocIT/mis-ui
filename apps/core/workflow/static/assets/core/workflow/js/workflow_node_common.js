@@ -447,7 +447,7 @@ class NodeLoadDataHandle {
             for (let eleChecked of NodeLoadDataHandle.$modalNode[0].querySelectorAll('.checkbox-action:checked')) {
                 if (eleChecked.closest('.form-check')) {
                     if (eleChecked.closest('.form-check').querySelector('.action-title')) {
-                        htmlShow += `<div class="chip chip-outline-primary bg-green-light-5 mr-1 mb-1">
+                        htmlShow += `<div class="chip chip-outline-secondary bg-white mr-1 mb-1">
                                         <span><span class="chip-text">${eleChecked.closest('.form-check').querySelector('.action-title').innerHTML}</span></span>
                                     </div>`;
                     }
@@ -463,7 +463,10 @@ class NodeLoadDataHandle {
         let i = 1;
         $('#table_workflow_zone').DataTable().rows().every(function () {
             let row = this.node();
-            result[i] = row.children[1].children[0].innerHTML;
+            let titleEle = row.querySelector('.table-row-title');
+            if (titleEle) {
+                result[i] = titleEle.innerHTML;
+            }
             i++;
         });
         return result;
@@ -588,7 +591,7 @@ class NodeLoadDataHandle {
                 if (row.querySelector('.table-row-checkbox:checked')) {
                     if (row.querySelector('.table-row-checkbox').getAttribute('data-row')) {
                         let dataRow = JSON.parse(row.querySelector('.table-row-checkbox').getAttribute('data-row'));
-                        htmlShow += `<div class="chip chip-outline-primary mr-1 mb-1 out-form-emp-show" data-id="${dataRow?.['id']}">
+                        htmlShow += `<div class="chip chip-outline-secondary bg-white mr-1 mb-1 out-form-emp-show" data-id="${dataRow?.['id']}">
                                         <span><span class="chip-text">${dataRow?.['full_name']}</span></span>
                                     </div>`;
                     }

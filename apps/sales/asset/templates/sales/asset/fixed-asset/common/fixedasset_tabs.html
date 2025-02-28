@@ -174,6 +174,38 @@
                 </div>
             </div>
         </div>
+        <div class="row mb-2">
+            <div class="col-2">
+                <button class="btn btn-outline-primary" type="button" id="load-depreciation-btn">
+                    <span>
+                        <span>{% trans 'Load Preview Of Depreciation' %}</span>
+                        <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10" id="table-depreciation-area" hidden>
+                <table
+                    id="datatable-depreciation"
+                    class="table nowrap w-100 mb-20"
+                    style="min-width: 768px"
+                >
+                    <thead>
+                        <tr class="bg-light">
+                            <th>{% trans 'Month' %}</th>
+                            <th>{% trans 'Begin date' %}</th>
+                            <th>{% trans 'End date' %}</th>
+                            <th>{% trans 'Begin net value' %}</th>
+                            <th>{% trans 'Depreciation value' %}</th>
+                            <th>{% trans 'End net value' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 

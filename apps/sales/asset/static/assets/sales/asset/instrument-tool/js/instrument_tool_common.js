@@ -10,6 +10,7 @@ class ToolCommonHandler{
         this.$quantityInput = $('#quantity')
         this.$measureUnitInput = $('#measure-unit')
         this.$totalValueInput = $('#total-value')
+        this.$timeUnitSelect = $('#time-unit')
 
         this.$APInvoiceDatatable = $('#modal-datatable-ap-invoice')
         this.$sourceDatatable = $('#datatable-asset-source')
@@ -22,6 +23,10 @@ class ToolCommonHandler{
         this.$depreciationTimeInput = $('#depreciation-time')
 
         this.$APInvoiceModal = $('#modal-ap-invoice')
+
+        this.$depreciationDatatable = $('#datatable-depreciation')
+        this.$loadDepreciationBtn = $('#load-depreciation-btn')
+        this.$depreciationTableArea = $('#table-depreciation-area')
     }
 
     init(isUpdate=false){
@@ -50,6 +55,7 @@ class ToolCommonHandler{
         this.changeDepreciationTimeEventBinding()
         this.changeDepreciationStartDateEventBinding()
         this.changeTimeUnitEventBinding()
+        this.loadDepreciationEventBinding()
     }
 
     loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -353,6 +359,72 @@ class ToolCommonHandler{
         }
     }
 
+    initDepreciationDatable(){
+        const data = this.getDepreciationData()
+
+        if ($.fn.DataTable.isDataTable(this.$depreciationDatatable)){
+            this.$depreciationDatatable.DataTable().destroy()
+        }
+
+        this.$depreciationDatatable.DataTableDefault({
+            reloadCurrency: true,
+            data: data,
+            columns: [
+                {
+                    targets: 0,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<div>${row?.['month']}</div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<div>${row?.['begin']}</div>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<div>${row?.['end']}</div>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        let beginNetValue = row?.['start_value']
+                        return `<span class="mask-money" data-init-money="${beginNetValue}"></span>`
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        let depreciationValue = row?.['depreciation_value']
+                        return `<span class="mask-money" data-init-money="${depreciationValue}"></span>`
+                    }
+                },
+                {
+                    targets: 5,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        let endNetValue = row?.['end_value']
+                        return `<span class="mask-money" data-init-money="${endNetValue}"></span>`
+                    }
+                },
+            ],
+            drawCallback: ()=>{
+                this.$depreciationTableArea.prop('hidden', false)
+                $.fn.initMaskMoney2()
+            }
+        })
+
+
+    }
+
     // event handler
     addSourceAPInvoiceEventBinding(){
         $(document).on('click', '#btn-add-ap-invoice', ()=>{
@@ -438,10 +510,13 @@ class ToolCommonHandler{
                 return
             }
             dataScript.attr('data-apinvoice-detail-list', JSON.stringify(dataApInvoiceDetailList))
-            const valueText = valueNumber.toString() + ' VND'
+            // const valueText = valueNumber.toString() + ' VND'
             let updatedSourceValue = $('.source-value[data-id="' + apInvoiceId + '"]')
-            updatedSourceValue.text(valueText)
+            // updatedSourceValue.text(valueText)
             updatedSourceValue.attr('value',valueNumber)
+
+            updatedSourceValue.attr('data-init-money', valueNumber)
+            $.fn.initMaskMoney2()
         })
     }
 
@@ -477,9 +552,22 @@ class ToolCommonHandler{
                 startDate.add(timeValue, 'years');
             }
 
+            startDate.subtract(1, 'days')
+
             $('#depreciation-end-date').val(startDate.format('DD-MM-YYYY')).trigger('change');
         }
 
+    }
+
+    loadDepreciationEventBinding(){
+        $(document).on('click', '#load-depreciation-btn', (e)=>{
+            let isValid = this.isInputEmpty(this.$totalValueInput)
+                        && this.isInputEmpty(this.$depreciationStartDateInput)
+                        && this.isInputEmpty(this.$depreciationEndDateInput)
+            if (isValid){
+                this.initDepreciationDatable()
+            }
+        })
     }
 
     // setup form
@@ -517,6 +605,9 @@ class ToolCommonHandler{
 
         tmpData = this.$totalValueInput.attr('value')
         form.dataForm['total_value'] = tmpData
+
+        tmpData = this.getDepreciationData()
+        form.dataForm['depreciation_data'] =  tmpData
     }
 
     setupFormSubmit($formSubmit) {
@@ -531,7 +622,7 @@ class ToolCommonHandler{
     }
 
     disableFields(){
-        const $fields = $('#form-instrument-tool').find('input, select, button')
+        const $fields = $('#form-instrument-tool').find('input, select, button:not(#load-depreciation-btn)')
         $fields.attr('disabled', true)
         $fields.attr('readonly', true)
 
@@ -569,6 +660,7 @@ class ToolCommonHandler{
 
                     this.initSourceListDataTable(data?.['asset_sources'])
                     this.openModalAPInvoiceDetailEventBinding()
+                    this.loadDepreciationEventBinding()
                 }
             },
             (errs) => {
@@ -585,5 +677,30 @@ class ToolCommonHandler{
                     this.disableFields();
                 }
             })
+    }
+
+    isInputEmpty($ele){
+        return !!$ele.val()
+    }
+
+    getDepreciationData(){
+        let depreciationTime = 0
+        const depreciationTimeUnit = this.$timeUnitSelect.val()
+        if (depreciationTimeUnit == 0){
+            depreciationTime = this.$depreciationTimeInput.val()
+        } else {
+            depreciationTime = Number(this.$depreciationTimeInput.val())*12
+        }
+        let startDate = this.$depreciationStartDateInput.val().split('-').join('/')
+        let endDate = this.$depreciationEndDateInput.val().split('-').join('/')
+        const totalValue = this.$totalValueInput.attr('value')
+        const data = DepreciationControl.callDepreciation({
+            method: 0,
+            months: Number(depreciationTime),
+            start_date: startDate,
+            end_date: endDate,
+            price: Number(totalValue),
+        })
+        return data
     }
 }

@@ -865,3 +865,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
+
+
+    # asset/ fixed asset write off
+    FIXED_ASSET_WRITE_OFF_LIST = StringUrl('asset/fixed-asset-writeoff/list')
+    FIXED_ASSET_WRITE_OFF_DETAIL = StringUrl('asset/fixed-asset-writeoff/detail')
+
+    # asset/ instrument write off
+    INSTRUMENT_TOOL_WRITE_OFF_LIST = StringUrl('asset/instrument-tool-writeoff/list')
+    INSTRUMENT_TOOL_WRITE_OFF_DETAIL = StringUrl('asset/instrument-tool-writeoff/detail')

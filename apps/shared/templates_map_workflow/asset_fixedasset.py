@@ -32,3 +32,9 @@ FIXED_ASSET_DATA_MAP = {
         name_mapping=['asset_sources'],
     ).data,
 }
+
+FIXED_ASSET_WRITEOFF_DATA_MAP = {
+    'title': FieldMapCommon(
+        name_mapping=['title'],
+    ).data,
+}

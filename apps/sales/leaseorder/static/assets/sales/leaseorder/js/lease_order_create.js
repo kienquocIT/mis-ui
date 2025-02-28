@@ -472,8 +472,26 @@ $(function () {
                 let $endDateEle = $('#depreciation_end_date');
                 let $timeEle = $('#depreciation_time');
                 if ($endDateEle.length > 0 && $timeEle.length > 0) {
-                    let endDate = DepreciationControl.getEndDateDepreciation($(this).val(), parseFloat($timeEle.val()));
+                    let endDate = DepreciationControl.getEndDateDepreciation($(this).val(), parseInt($timeEle.val()));
                     $endDateEle.val(endDate).trigger('change');
+                }
+            }
+            if (this.classList.contains('lease-start-date')) {
+                let $leaseEndDateEle = $('#lease_end_date');
+                let $table = LeaseOrderDataTableHandle.$tableCost;
+                if (LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-net-value' || LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-fn-cost') {
+                    $table = LeaseOrderDataTableHandle.$tableCostLeased;
+                }
+                let target = $table[0].querySelector(`.table-row-item[data-product-id="${LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
+                if (target) {
+                    let targetRow = target.closest('tr');
+                    if ($leaseEndDateEle.length > 0 && targetRow) {
+                        let leaseTimeEle = targetRow.querySelector('.table-row-quantity-time');
+                        if (leaseTimeEle) {
+                            let endDate = DepreciationControl.getEndDateDepreciation($(this).val(), parseInt($(leaseTimeEle).val()));
+                            $leaseEndDateEle.val(endDate).trigger('change');
+                        }
+                    }
                 }
             }
             LeaseOrderLoadDataHandle.loadDataTableDepreciation();

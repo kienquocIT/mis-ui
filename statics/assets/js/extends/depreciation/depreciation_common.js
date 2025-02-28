@@ -8,6 +8,9 @@ DepreciationControl{}
 class DepreciationControl {
     static callDepreciation(opts) {
         let {method, months, start_date, end_date, price, adjust = null} = opts;
+        months = parseInt(months);
+        price = parseFloat(price);
+        adjust = parseFloat(adjust);
         /*
         method: 0: line method || 1: adjustment method
         months: total months depreciation
@@ -37,7 +40,6 @@ class DepreciationControl {
                 currentEndDate = DepreciationControl.addOneMonthToLast(currentStartDate, true);
             }
             let currentEndDateObj = DepreciationControl.parseToDateObj(currentEndDate);
-            let daysEven = DepreciationControl.calDaysBetween(currentStartDateObj, currentEndDateObj);
             // Tính khấu hao hệ số nếu method === 1
             if (method === 1 && adjust) {
                 // Khấu hao hệ số
@@ -53,7 +55,10 @@ class DepreciationControl {
                     }
                     // Khấu hao hệ số
                     depreciationAdjustValue = Math.round(last_end_value / totalMonths * adjust);
-                    // Kiểm tra nếu khấu hao theo hệ số mà lớn hơn khấu hao chia đều số tháng còn lại thì lấy theo khấu hao hệ số còn ngược lại thì lấy theo khấu hao chia đều.
+                    /*
+                    Kiểm tra nếu khấu hao theo hệ số mà lớn hơn khấu hao chia đều số tháng còn lại thì lấy theo khấu hao hệ số
+                    còn ngược lại thì lấy theo khấu hao chia đều.
+                     */
                     let monthsRemain = totalMonths - total_accumulative_month;
                     let depreciationValueCompare = last_end_value / monthsRemain;
                     if (depreciationAdjustValue > depreciationValueCompare) {
@@ -67,7 +72,12 @@ class DepreciationControl {
             if (currentEndDateObj > endDateObj) {
                 if (currentStartDateObj < endDateObj) {
                     let daysOdd = DepreciationControl.calDaysBetween(currentStartDateObj, endDateObj);
+                    let daysEven = DepreciationControl.calDaysBetween(currentStartDateObj, currentEndDateObj);
                     // depreciationValue = depreciationValue * (daysOdd + 1) / (daysEven + 1);
+                    /*
+                    Kiểm tra nếu là tháng cuối (ngày kết thúc của tháng bằng ngày kết thúc khấu hao)
+                    thì khấu hao gán bằng giá trị đầu để khấu hao hết về 0
+                     */
                     depreciationValue = currentValue;
                     accumulativeValue += depreciationValue;
                     result.push({
@@ -78,8 +88,7 @@ class DepreciationControl {
                         start_value: Math.round(currentValue),
                         depreciation_value: Math.round(depreciationValue),
                         accumulative_value: Math.round(accumulativeValue),
-                        // end_value: Math.round(currentValue - depreciationValue),
-                        end_value: 0,
+                        end_value: Math.round(currentValue - depreciationValue),
                     });
                 }
                 break;
@@ -90,6 +99,13 @@ class DepreciationControl {
                     let totalDays = new Date(year, month, 0).getDate();
                     let daysOdd = DepreciationControl.calDaysBetween(currentStartDateObj, currentEndDateObj);
                     depreciationValue = depreciationValue / totalDays * (daysOdd + 1);
+                }
+                /*
+                Kiểm tra nếu là tháng cuối (ngày kết thúc của tháng bằng ngày kết thúc khấu hao)
+                thì khấu hao gán bằng giá trị đầu để khấu hao hết về 0
+                 */
+                if (currentEndDate === end_date) {
+                    depreciationValue = currentValue;
                 }
                 accumulativeValue += depreciationValue;
                 result.push({

@@ -468,6 +468,14 @@ $(function () {
                     }
                 }
             }
+            if (this.classList.contains('depreciation-start-date')) {
+                let $endDateEle = $('#depreciation_end_date');
+                let $timeEle = $('#depreciation_time');
+                if ($endDateEle.length > 0 && $timeEle.length > 0) {
+                    let endDate = DepreciationControl.getEndDateDepreciation($(this).val(), parseFloat($timeEle.val()));
+                    $endDateEle.val(endDate).trigger('change');
+                }
+            }
             LeaseOrderLoadDataHandle.loadDataTableDepreciation();
         });
 

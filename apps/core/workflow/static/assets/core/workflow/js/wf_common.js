@@ -217,6 +217,28 @@ function dtbZoneHDCustom() {
         }
     }
 
+function callAjaxApps() {
+    let $ele = $("#select-box-features");
+    WindowControl.showLoading();
+    $.fn.callAjax2({
+            'url': $('#app-url-factory').attr('data-application'),
+            'method': 'GET',
+            'data': {"is_workflow": true},
+            'isDropdown': true,
+        }
+    ).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('tenant_application_list') && Array.isArray(data.tenant_application_list)) {
+                    let fnData = [{'id': '', 'title': 'Select...',}];
+                    loadInitS2($ele, fnData.concat(DataProcessorControl.sortArrayByObjectKey(data?.['tenant_application_list'], "title_i18n")));
+                    WindowControl.hideLoading();
+                }
+            }
+        }
+    )
+}
 
 $(document).ready(function () {
     // declare global scope variable
@@ -224,8 +246,8 @@ $(document).ready(function () {
     let $next_btn = $('#nav-next-prev-step .next-btn');
     let $select_box = $("#select-box-features");
     WF_DATATYPE = JSON.parse($('#wf_data_type').text());
+    callAjaxApps();
 
-    loadInitS2($select_box);
 
     // handle event on click prev next btn
     $("#nav-next-prev-step button").off().on('click', function (e) {
@@ -265,9 +287,6 @@ $(document).ready(function () {
         $next_btn.on('click', () => $prev_btn.prop('disabled', false))
         loadInitS2($('#property_list_choices'), [], {'application': e.params.data.id, 'is_wf_zone': true});
     });
-
-    // button create new zone
-    // addZoneBtn($select_box)
 
     // action reset default of modal
     $('#id-restore_default').on('change', function () {

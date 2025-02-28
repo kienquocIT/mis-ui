@@ -396,11 +396,7 @@ $(function () {
             let eleIndicatorListShow = row.querySelector('.indicator-list');
             loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), row);
             let elePropertyListShow = $(this)[0].closest('tr').querySelector('.property-list');
-            if (!$form.hasClass('sale-order')) {
-                loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow));
-            } else {
-                loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow), true);
-            }
+            loadInitPropertyList($(elePropertyListShow));
             let eleParamFunctionListShow = $(this)[0].closest('tr').querySelector('.function-list');
             loadInitParamList('init-indicator-param-list', $(eleParamFunctionListShow));
             // load final acceptance
@@ -1187,13 +1183,12 @@ $(function () {
             }
         }
 
-        function loadInitPropertyList(property_id, eleShow, is_sale_order = false) {
-            let jqueryId = '#' + property_id;
-            let ele = $(jqueryId);
+        function loadInitPropertyList(eleShow) {
+            let ele = $('#init-indicator-property-param');
             let url = ele.attr('data-url');
             let method = ele.attr('data-method');
             let code_app = "quotation";
-            if (is_sale_order === true) {
+            if ($form.hasClass('sale-order')) {
                 code_app = "saleorder";
             }
             let data_filter = {
@@ -1220,7 +1215,7 @@ $(function () {
                                                         <button type="button" class="btn btn-flush-light">
                                                             <div class="float-left">
                                                                 <div class="d-flex justify-content-between">
-                                                                    <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title mr-2">${item.title}</span>${iconMD}</span>
+                                                                    <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title mr-2">${item?.['title']}</span>${iconMD}</span>
                                                                 </div>
                                                             </div>
                                                             <input type="hidden" class="data-show" value="${dataStr}">
@@ -1284,16 +1279,6 @@ $(function () {
             }
             result['is_require_payment'] = $('#is-require-payment')[0].checked
             return result
-        }
-
-        function loadBoxAcceptanceAffect(ele, data = null) {
-            if (!data) {
-                data = dataAcceptanceAffect;
-            }
-            ele.initSelect2({
-                data: data,
-            });
-            return true;
         }
 
         function dataTableZone(data) {

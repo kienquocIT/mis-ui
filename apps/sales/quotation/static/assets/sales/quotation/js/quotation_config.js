@@ -827,22 +827,31 @@ $(function () {
             let method = "put";
             let data_submit = {};
             setupFormula(data_submit, $(this));
-            let csr = $("[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(url, method, data_submit, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: data.message}, 'success');
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': url,
+                    'method': method,
+                    'data': data_submit,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        setTimeout(() => {
                             $('#table_indicator_list').DataTable().destroy();
                             loadIndicatorDbl();
-                            // $.fn.redirectUrl(url_redirect, 1000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
+                            WindowControl.hideLoading();
+                        }, 2000);
                     }
-                )
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
         });
 
         // submit restore indicator

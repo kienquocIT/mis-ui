@@ -360,26 +360,12 @@ class ToolCommonHandler{
     }
 
     initDepreciationDatable(){
-        let depreciationTime = 0
-        const depreciationTimeUnit = this.$timeUnitSelect.val()
-        if (depreciationTimeUnit == 0){
-            depreciationTime = this.$depreciationTimeInput.val()
-        } else {
-            depreciationTime = Number(this.$depreciationTimeInput.val())*12
-        }
-        let startDate = this.$depreciationStartDateInput.val().split('-').join('/')
-        let endDate = this.$depreciationEndDateInput.val().split('-').join('/')
-        const totalValue = this.$totalValueInput.attr('value')
-        const data = DepreciationControl.callDepreciation({
-            method: 0,
-            months: depreciationTime,
-            start_date: startDate,
-            end_date: endDate,
-            price: totalValue
-        })
+        const data = this.getDepreciationData()
+
         if ($.fn.DataTable.isDataTable(this.$depreciationDatatable)){
             this.$depreciationDatatable.DataTable().destroy()
         }
+
         this.$depreciationDatatable.DataTableDefault({
             reloadCurrency: true,
             data: data,
@@ -619,6 +605,9 @@ class ToolCommonHandler{
 
         tmpData = this.$totalValueInput.attr('value')
         form.dataForm['total_value'] = tmpData
+
+        tmpData = this.getDepreciationData()
+        form.dataForm['depreciation_data'] =  tmpData
     }
 
     setupFormSubmit($formSubmit) {
@@ -633,7 +622,7 @@ class ToolCommonHandler{
     }
 
     disableFields(){
-        const $fields = $('#form-instrument-tool').find('input, select, button')
+        const $fields = $('#form-instrument-tool').find('input, select, button:not(#load-depreciation-btn)')
         $fields.attr('disabled', true)
         $fields.attr('readonly', true)
 
@@ -671,6 +660,7 @@ class ToolCommonHandler{
 
                     this.initSourceListDataTable(data?.['asset_sources'])
                     this.openModalAPInvoiceDetailEventBinding()
+                    this.loadDepreciationEventBinding()
                 }
             },
             (errs) => {
@@ -691,5 +681,26 @@ class ToolCommonHandler{
 
     isInputEmpty($ele){
         return !!$ele.val()
+    }
+
+    getDepreciationData(){
+        let depreciationTime = 0
+        const depreciationTimeUnit = this.$timeUnitSelect.val()
+        if (depreciationTimeUnit == 0){
+            depreciationTime = this.$depreciationTimeInput.val()
+        } else {
+            depreciationTime = Number(this.$depreciationTimeInput.val())*12
+        }
+        let startDate = this.$depreciationStartDateInput.val().split('-').join('/')
+        let endDate = this.$depreciationEndDateInput.val().split('-').join('/')
+        const totalValue = this.$totalValueInput.attr('value')
+        const data = DepreciationControl.callDepreciation({
+            method: 0,
+            months: Number(depreciationTime),
+            start_date: startDate,
+            end_date: endDate,
+            price: Number(totalValue),
+        })
+        return data
     }
 }

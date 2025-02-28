@@ -361,24 +361,8 @@ class CommonHandler{
     }
 
     initDepreciationDatable(){
-        const depreciationMethod = this.$depreciationMethodSelect.val()
-        let depreciationTime = 0
-        const depreciationTimeUnit = this.$timeUnitSelect.val()
-        if (depreciationTimeUnit == 0){
-            depreciationTime = this.$depreciationTimeInput.val()
-        } else {
-            depreciationTime = Number(this.$depreciationTimeInput.val())*12
-        }
-        let startDate = this.$depreciationStartDateInput.val().split('-').join('/')
-        let endDate = this.$depreciationEndDateInput.val().split('-').join('/')
-        const netBookValue = this.$netBookValueInput.attr('value')
-        const data = DepreciationControl.callDepreciation({
-            method: depreciationMethod,
-            months: depreciationTime,
-            start_date: startDate,
-            end_date: endDate,
-            price: netBookValue
-        })
+        const data = this.getDepreciationData()
+
         if ($.fn.DataTable.isDataTable(this.$depreciationDatatable)){
             this.$depreciationDatatable.DataTable().destroy()
         }
@@ -640,6 +624,9 @@ class CommonHandler{
         if (form.dataForm['depreciation_method']===0){
             delete form.dataForm['adjustment_factor']
         }
+
+        tmpData = this.getDepreciationData()
+        form.dataForm['depreciation_data'] =  tmpData
     }
 
     setupFormSubmit($formSubmit) {
@@ -655,13 +642,15 @@ class CommonHandler{
 
     // detail page
     disableFields(){
-        const $fields = $('#form-fixed-asset').find('input, select, button')
+        const $fields = $('#form-fixed-asset').find('input, select, button:not(#load-depreciation-btn)')
         $fields.attr('disabled', true)
         $fields.attr('readonly', true)
 
         $('#datatable-asset-source').on('draw.dt', function() {
             $(this).find('input, button').attr('disabled', true).attr('readonly', true);
         });
+
+
     }
 
     fetchDetailData(disabledFields=false){
@@ -698,6 +687,7 @@ class CommonHandler{
 
                     this.initSourceListDataTable(data?.['asset_sources'])
                     this.openModalAPInvoiceDetailEventBinding()
+                    this.loadDepreciationEventBinding()
                 }
             },
             (errs) => {
@@ -739,5 +729,29 @@ class CommonHandler{
 
     isInputEmpty($ele){
         return !!$ele.val()
+    }
+
+    getDepreciationData(){
+        const depreciationMethod = this.$depreciationMethodSelect.val()
+        let depreciationTime = 0
+        const depreciationTimeUnit = this.$timeUnitSelect.val()
+        if (depreciationTimeUnit == 0){
+            depreciationTime = this.$depreciationTimeInput.val()
+        } else {
+            depreciationTime = Number(this.$depreciationTimeInput.val())*12
+        }
+        let startDate = this.$depreciationStartDateInput.val().split('-').join('/')
+        let endDate = this.$depreciationEndDateInput.val().split('-').join('/')
+        const netBookValue = this.$netBookValueInput.attr('value')
+        const adjustmentFactor = depreciationMethod == 1 ? this.$adjustmentFactorSelect.val() : null
+        const data = DepreciationControl.callDepreciation({
+            method: Number(depreciationMethod),
+            months: Number(depreciationTime),
+            start_date: startDate,
+            end_date: endDate,
+            price: Number(netBookValue),
+            adjust: Number(adjustmentFactor)
+        })
+        return data
     }
 }

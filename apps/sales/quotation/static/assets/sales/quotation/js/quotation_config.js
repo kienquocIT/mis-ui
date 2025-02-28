@@ -199,7 +199,7 @@ $(function () {
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">${transEle.attr('data-edit-formula')}</h5>
+                                                    <h5 class="modal-title"><b>${transEle.attr('data-edit-formula')}</b></h5>
                                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -396,11 +396,7 @@ $(function () {
             let eleIndicatorListShow = row.querySelector('.indicator-list');
             loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), row);
             let elePropertyListShow = $(this)[0].closest('tr').querySelector('.property-list');
-            if (!$form.hasClass('sale-order')) {
-                loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow));
-            } else {
-                loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow), true);
-            }
+            loadInitPropertyList($(elePropertyListShow));
             let eleParamFunctionListShow = $(this)[0].closest('tr').querySelector('.function-list');
             loadInitParamList('init-indicator-param-list', $(eleParamFunctionListShow));
             // load final acceptance
@@ -483,7 +479,7 @@ $(function () {
                         eleDescription.innerHTML = "";
                         $(eleDescription).append(`<div data-simplebar class="nicescroll-bar h-250p">
                                                 <div class="row mb-3">
-                                                    <h5>${dataShow?.['title'] ? dataShow?.['title'] : ''}</h5>
+                                                    <h5>${dataShow?.['title_i18n'] ? dataShow?.['title_i18n'] : ''}</h5>
                                                     <p class="mb-2">${dataShow?.['remark'] ? dataShow?.['remark'] : ''}</p>
                                                     ${htmlBoxMD}
                                                 </div>
@@ -831,22 +827,31 @@ $(function () {
             let method = "put";
             let data_submit = {};
             setupFormula(data_submit, $(this));
-            let csr = $("[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(url, method, data_submit, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: data.message}, 'success');
+            WindowControl.showLoading();
+            $.fn.callAjax2(
+                {
+                    'url': url,
+                    'method': method,
+                    'data': data_submit,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && (data['status'] === 201 || data['status'] === 200)) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        setTimeout(() => {
                             $('#table_indicator_list').DataTable().destroy();
                             loadIndicatorDbl();
-                            // $.fn.redirectUrl(url_redirect, 1000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
+                            WindowControl.hideLoading();
+                        }, 2000);
                     }
-                )
+                }, (err) => {
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 1000)
+                    $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                }
+            )
         });
 
         // submit restore indicator
@@ -1187,21 +1192,25 @@ $(function () {
             }
         }
 
-        function loadInitPropertyList(property_id, eleShow, is_sale_order = false) {
-            let jqueryId = '#' + property_id;
-            let ele = $(jqueryId);
+        function loadInitPropertyList(eleShow) {
+            let ele = $('#init-indicator-property-param');
             let url = ele.attr('data-url');
             let method = ele.attr('data-method');
             let code_app = "quotation";
-            if (is_sale_order === true) {
+            if ($form.hasClass('sale-order')) {
                 code_app = "saleorder";
             }
-            let data_filter = {
-                'application__code': code_app,
-                'is_sale_indicator': true,
-            };
             if (eleShow.is(':empty')) {
-                $.fn.callAjax(url, method, data_filter).then(
+                $.fn.callAjax2({
+                        'url': url,
+                        'method': method,
+                        'data': {
+                            'application__code': code_app,
+                            'is_sale_indicator': true,
+                        },
+                        'isDropdown': true,
+                    }
+                ).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
@@ -1220,7 +1229,7 @@ $(function () {
                                                         <button type="button" class="btn btn-flush-light">
                                                             <div class="float-left">
                                                                 <div class="d-flex justify-content-between">
-                                                                    <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title mr-2">${item.title}</span>${iconMD}</span>
+                                                                    <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title mr-2">${item?.['title_i18n']}</span>${iconMD}</span>
                                                                 </div>
                                                             </div>
                                                             <input type="hidden" class="data-show" value="${dataStr}">
@@ -1284,16 +1293,6 @@ $(function () {
             }
             result['is_require_payment'] = $('#is-require-payment')[0].checked
             return result
-        }
-
-        function loadBoxAcceptanceAffect(ele, data = null) {
-            if (!data) {
-                data = dataAcceptanceAffect;
-            }
-            ele.initSelect2({
-                data: data,
-            });
-            return true;
         }
 
         function dataTableZone(data) {

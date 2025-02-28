@@ -67,7 +67,8 @@ class DepreciationControl {
             if (currentEndDateObj > endDateObj) {
                 if (currentStartDateObj < endDateObj) {
                     let daysOdd = DepreciationControl.calDaysBetween(currentStartDateObj, endDateObj);
-                    depreciationValue = depreciationValue * (daysOdd + 1) / (daysEven + 1);
+                    // depreciationValue = depreciationValue * (daysOdd + 1) / (daysEven + 1);
+                    depreciationValue = currentValue;
                     accumulativeValue += depreciationValue;
                     result.push({
                         month: currentMonth.toString(),
@@ -77,7 +78,8 @@ class DepreciationControl {
                         start_value: Math.round(currentValue),
                         depreciation_value: Math.round(depreciationValue),
                         accumulative_value: Math.round(accumulativeValue),
-                        end_value: Math.round(currentValue - depreciationValue),
+                        // end_value: Math.round(currentValue - depreciationValue),
+                        end_value: 0,
                     });
                 }
                 break;
@@ -168,6 +170,14 @@ class DepreciationControl {
         return totalDaysBetween / totalDaysInMonth;
     };
 
+    static getEndDateDepreciation(startDate, months) {
+        let [day, month, year] = startDate.split('/').map(Number);
+        let date = new Date(year, month - 1, day); // Convert to Date object
+        date.setMonth(date.getMonth() + months); // Add months
+        date.setDate(date.getDate() - 1); // Subtract one day
+        return date.toLocaleDateString('en-GB').split('/').join('/');
+    };
+
     static getMonthsRange(start_date, months) {
         let result = [];
         let currentStartDate = start_date;
@@ -194,7 +204,7 @@ class DepreciationControl {
         }
 
         return result;
-    }
+    };
 
     static findMatchingRange(lease_from, lease_to, data) {
         let leaseFromDate = new Date(lease_from.split('/').reverse().join('-'));

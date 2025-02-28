@@ -2471,7 +2471,8 @@ class WFRTControl {
 
     static submitCheckCollabNextNode(_form) {
         let collabOutForm = WFRTControl.getCollabOutFormData();
-        if (collabOutForm && collabOutForm.length > 0) {  // Have collaborator -> select collaborator then submit
+        // Have collaborator -> show select collaborator before submit
+        if (collabOutForm && collabOutForm.length > 0) {
             if (_form.dataForm['system_status'] === 0) {
                 WFRTControl.callAjaxWFCreate(_form);
             }
@@ -2571,8 +2572,7 @@ class WFRTControl {
     }
 
     static setupHTMLNonWF(is_cancel = false) {
-        let htmlBody = "";
-        let htmlFinish = `<div class="row">
+        let htmlBody = `<div class="row">
                             <div class="d-flex">
                                 <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
                                 <span class="fs-7">${$.fn.transEle.attr('data-finish-wf-non-apply')}</span><i class="fas fa-check text-green ml-2 mt-1"></i>
@@ -2584,9 +2584,8 @@ class WFRTControl {
                                 <span class="fs-7">${$.fn.transEle.attr('data-canceled-by-creator')}</span><i class="fas fa-times text-red ml-2 mt-1"></i>
                             </div>
                         </div>`;
-        htmlBody = htmlFinish;
         if (is_cancel === true) {
-            htmlBody = htmlCancel + htmlFinish;
+            htmlBody = htmlBody + htmlCancel;
         }
         return `<div class="row">
                     <div class="col-12">
@@ -2615,11 +2614,15 @@ class WFRTControl {
                 if ($.fn.hasOwnProperties(data, ['runtime_detail'])) {
                     let runtimeData = data?.['runtime_detail'];
                     // Khi phiếu trong trạng thái đã tạo ( state > 1) thì button save không có hiệu lực
-                    if (runtimeData?.['state'] >= 1) $('#idxRealAction .btn[type="submit"][form]').not('.btn-wf-after-finish').addClass('hidden');
-                    // Phiếu tự động hoàn thành (không bật quy trình) -> hiển thị idxDataRuntimeNotFound
+                    if (runtimeData?.['state'] >= 1) {
+                        $('#idxRealAction .btn[type="submit"][form]').not('.btn-wf-after-finish').addClass('hidden');
+                    }
                     let $dataRTNotFound = $('#idxDataRuntimeNotFound');
-                    if (runtimeData?.['state'] === 3) $dataRTNotFound.removeClass('hidden');
-                    $dataRTNotFound.empty().append(WFRTControl.setupHTMLNonWF(false));
+                    // Phiếu tự động hoàn thành (không bật quy trình) -> hiển thị idxDataRuntimeNotFound
+                    if (runtimeData?.['state'] === 3) {
+                        $dataRTNotFound.removeClass('hidden');
+                        $dataRTNotFound.empty().append(WFRTControl.setupHTMLNonWF(false));
+                    }
                     let appCode = runtimeData?.['app_code'].split(".").pop();
                     let docData = WFRTControl.getRuntimeDocData();
                     // Nếu hủy phiếu sau khi tự động hoàn thành (không bật quy trình)
@@ -2655,8 +2658,10 @@ class WFRTControl {
                         // XỬ LÝ ZONES
                         if (window.location.href.includes('/update/')) {
                             if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === $x.fn.getEmployeeCurrentID()) {
-                                WFRTControl.setBtnWFAfterFinishUpdate();  // Bật nút lưu CR
-                                WFRTControl.setWFInitialData(appCode, true);  // Bật zone initial
+                                // Bật nút lưu CR
+                                WFRTControl.setBtnWFAfterFinishUpdate();
+                                // Bật zone initial
+                                WFRTControl.setWFInitialData(appCode, true);
                             } else {
                                 if (['zones', 'zones_hidden', 'is_edit_all_zone'].every(key => key in actionMySelf)) {
                                     WFRTControl.activeBtnOpenZone(actionMySelf['zones'], actionMySelf['zones_hidden'], actionMySelf['is_edit_all_zone']);
@@ -2669,7 +2674,8 @@ class WFRTControl {
                             WFRTControl.checkAllowEditZones(actionMySelf);
                             WFRTControl.activeSetZoneHiddenMySelf(runtimeData['zones_hidden_myself']);
                             if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === $x.fn.getEmployeeCurrentID()) {
-                                WFRTControl.setBtnWFAfterFinishDetail();  // Bật nút CR & Cancel (sau khi hoàn thành)
+                                // Bật nút CR & Cancel (sau khi hoàn thành)
+                                WFRTControl.setBtnWFAfterFinishDetail();
                                 // Bật nút in
                                 let $btnPrint = $('#print-document');
                                 if ($btnPrint && $btnPrint.length > 0) {
@@ -2699,19 +2705,18 @@ class WFRTControl {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('app_list') && Array.isArray(data.app_list)) {
-                        if (data?.['app_list'].length === 1) {  // check only 1 wf config for application
+                        // Check only 1 wf config for application
+                        if (data?.['app_list'].length === 1) {
                             let WFconfig = data?.['app_list'][0];
-                            if (WFconfig?.['mode'] !== 0) {  // check if wf mode is not unapply (!== 0)
+                            // Check if wf mode is apply (!== 0)
+                            if (WFconfig?.['mode'] !== 0) {
                                 let workflow_current = WFconfig?.['workflow_currently'];
                                 if (workflow_current) {
-                                    // zones handler
-                                    if (window.location.href.includes('/create')) {
+                                    // Zones handler
+                                    if (window.location.href.includes('/create') || (window.location.href.includes('/update/') && isCR === true)) {
                                         WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
                                     }
-                                    if (window.location.href.includes('/update/') && isCR === true) {
-                                        WFRTControl.activeBtnOpenZone(workflow_current['initial_zones'], workflow_current['initial_zones_hidden'], workflow_current['is_edit_all_zone']);
-                                    }
-                                    // association handler
+                                    // Association handler
                                     WFRTControl.setAssociateCreate(workflow_current['association']);
                                 }
                             }

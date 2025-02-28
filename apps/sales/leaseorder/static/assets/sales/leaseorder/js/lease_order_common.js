@@ -2158,7 +2158,6 @@ class LeaseOrderLoadDataHandle {
                 }
             }
 
-
             let depreciationMethodEle = row.querySelector('.table-row-depreciation-method');
             let $methodEle = $('#depreciation_method');
             if (depreciationMethodEle && $methodEle.length > 0) {
@@ -2267,7 +2266,7 @@ class LeaseOrderLoadDataHandle {
                 // Kiểm tra nếu bảng khấu hao lấy giá vốn cuối của sản phẩm mới thì end depreciation tự lấy theo số tháng khấu hao
                 if (LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'new-product-fn-cost') {
                     if ($startDateEle.val() && $timeEle.val()) {
-                        let endDate = DepreciationControl.getEndDateDepreciation($startDateEle.val(), parseFloat($timeEle.val()));
+                        let endDate = DepreciationControl.getEndDateDepreciation($startDateEle.val(), parseInt($timeEle.val()));
                         $endDateEle.val(endDate).trigger('change');
                     }
                 }
@@ -5072,48 +5071,56 @@ class LeaseOrderDataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '5%',
                     render: (data, type, row) => {
                         return `<span class="table-row-month">${row?.['month']}</span>`;
                     }
                 },
                 {
                     targets: 1,
+                    width: '5%',
                     render: (data, type, row) => {
                         return `<span class="table-row-start-date">${row?.['begin'] ? row?.['begin'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 2,
+                    width: '5%',
                     render: (data, type, row) => {
                         return `<span class="table-row-end-date">${row?.['end'] ? row?.['end'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 3,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="mask-money table-row-start-net-value" data-init-money="${parseFloat(row?.['start_value'] ? row?.['start_value'] : '0')}"></span>`;
                     }
                 },
                 {
                     targets: 4,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="mask-money table-row-depreciation-value" data-init-money="${parseFloat(row?.['depreciation_value'] ? row?.['depreciation_value'] : '0')}"></span>`;
                     }
                 },
                 {
                     targets: 5,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="mask-money table-row-end-net-value" data-init-money="${parseFloat(row?.['end_value'] ? row?.['end_value'] : '0')}"></span>`;
                     }
                 },
                 {
                     targets: 6,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-lease-time">${row?.['lease_time'] ? row?.['lease_time'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 7,
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['lease_allocated']) {
                             return `<span class="mask-money table-row-lease-allocated" data-init-money="${parseFloat(row?.['lease_allocated'] ? row?.['lease_allocated'] : '0')}"></span>`;
@@ -5123,6 +5130,7 @@ class LeaseOrderDataTableHandle {
                 },
                 {
                     targets: 8,
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['lease_accumulative_allocated']) {
                             return `<span class="mask-money table-row-lease-accumulative-allocated" data-init-money="${parseFloat(row?.['lease_accumulative_allocated'] ? row?.['lease_accumulative_allocated'] : '0')}"></span>`;
@@ -5195,7 +5203,7 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#label-new-product').length) {
-                let $group = $(`<b id="label-new-product">New products</b>`);
+                let $group = $(`<b id="label-new-product">${LeaseOrderLoadDataHandle.transEle.attr('data-new-products')}</b>`);
                 textFilter$.append(
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                 );
@@ -5214,7 +5222,7 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#label-leased-product').length) {
-                let $group = $(`<b id="label-leased-product">Leased products</b>`);
+                let $group = $(`<b id="label-leased-product">${LeaseOrderLoadDataHandle.transEle.attr('data-leased-products')}</b>`);
                 textFilter$.append(
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                 );

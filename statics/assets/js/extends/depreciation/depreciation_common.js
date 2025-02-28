@@ -194,34 +194,6 @@ class DepreciationControl {
         return date.toLocaleDateString('en-GB').split('/').join('/');
     };
 
-    static getMonthsRange(start_date, months) {
-        let result = [];
-        let currentStartDate = start_date;
-        let currentMonth = 1;
-
-        while (true) {
-            let currentStartDateObj = DepreciationControl.parseToDateObj(currentStartDate);
-            let currentEndDate;
-            if (result.length === 0) {
-                // First range: ends at the last day of the starting month
-                currentEndDate = DepreciationControl.addOneMonthToLast(currentStartDate, true);
-            } else {
-                // Other ranges: align to calendar months
-                currentStartDate = `01/${String(currentStartDateObj.getMonth() + 1).padStart(2, '0')}/${currentStartDateObj.getFullYear()}`;
-                currentEndDate = DepreciationControl.addOneMonthToLast(currentStartDate, true);
-            }
-            if (currentMonth > months) {
-                break;
-            }
-            result.push(currentEndDate);
-
-            currentStartDate = DepreciationControl.addOneDay(currentEndDate);
-            currentMonth++;
-        }
-
-        return result;
-    };
-
     static findMatchingRange(lease_from, lease_to, data) {
         let leaseFromDate = new Date(lease_from.split('/').reverse().join('-'));
         let leaseToDate = new Date(lease_to.split('/').reverse().join('-'));

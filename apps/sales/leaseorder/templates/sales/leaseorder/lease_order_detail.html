@@ -998,15 +998,15 @@
                     >
                         <thead>
                         <tr class="bg-light">
-                            <th class="w-5">{% trans 'Month' %}</th>
-                            <th class="w-5">{% trans 'Begin' %}</th>
-                            <th class="w-5">{% trans 'End' %}</th>
-                            <th class="w-10">{% trans 'Start net value' %}</th>
-                            <th class="w-10">{% trans 'Depreciation value' %}</th>
-                            <th class="w-10">{% trans 'End net value' %}</th>
-                            <th class="w-5">{% trans 'Lease time' %}</th>
-                            <th class="w-10">{% trans 'Allocated' %}</th>
-                            <th class="w-10">{% trans 'Accumulative' %}</th>
+                            <th>{% trans 'Month' %}</th>
+                            <th>{% trans 'Begin' %}</th>
+                            <th>{% trans 'End' %}</th>
+                            <th>{% trans 'Start net value' %}</th>
+                            <th>{% trans 'Depreciation value' %}</th>
+                            <th>{% trans 'End net value' %}</th>
+                            <th>{% trans 'Lease time' %}</th>
+                            <th>{% trans 'Allocated' %}</th>
+                            <th>{% trans 'Accumulative' %}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -1078,6 +1078,8 @@
         data-required-asset-type="{% trans 'Please select asset type' %}"
         data-depreciation-method-1="{% trans 'Line method' %}"
         data-depreciation-method-2="{% trans 'Adjustment method' %}"
+        data-new-products="{% trans 'New products' %}"
+        data-leased-products="{% trans 'Leased products' %}"
     >
     <input
         type="text"

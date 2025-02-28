@@ -199,7 +199,7 @@ $(function () {
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">${transEle.attr('data-edit-formula')}</h5>
+                                                    <h5 class="modal-title"><b>${transEle.attr('data-edit-formula')}</b></h5>
                                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -479,7 +479,7 @@ $(function () {
                         eleDescription.innerHTML = "";
                         $(eleDescription).append(`<div data-simplebar class="nicescroll-bar h-250p">
                                                 <div class="row mb-3">
-                                                    <h5>${dataShow?.['title'] ? dataShow?.['title'] : ''}</h5>
+                                                    <h5>${dataShow?.['title_i18n'] ? dataShow?.['title_i18n'] : ''}</h5>
                                                     <p class="mb-2">${dataShow?.['remark'] ? dataShow?.['remark'] : ''}</p>
                                                     ${htmlBoxMD}
                                                 </div>
@@ -1191,12 +1191,17 @@ $(function () {
             if ($form.hasClass('sale-order')) {
                 code_app = "saleorder";
             }
-            let data_filter = {
-                'application__code': code_app,
-                'is_sale_indicator': true,
-            };
             if (eleShow.is(':empty')) {
-                $.fn.callAjax(url, method, data_filter).then(
+                $.fn.callAjax2({
+                        'url': url,
+                        'method': method,
+                        'data': {
+                            'application__code': code_app,
+                            'is_sale_indicator': true,
+                        },
+                        'isDropdown': true,
+                    }
+                ).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
@@ -1215,7 +1220,7 @@ $(function () {
                                                         <button type="button" class="btn btn-flush-light">
                                                             <div class="float-left">
                                                                 <div class="d-flex justify-content-between">
-                                                                    <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title mr-2">${item?.['title']}</span>${iconMD}</span>
+                                                                    <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title mr-2">${item?.['title_i18n']}</span>${iconMD}</span>
                                                                 </div>
                                                             </div>
                                                             <input type="hidden" class="data-show" value="${dataStr}">

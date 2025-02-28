@@ -22,6 +22,9 @@ class CommonHandler{
         this.$depreciationMethodSelect = $('#depreciation-method')
         this.$timeUnitSelect = $('#time-unit')
         this.$depreciationValueInput = $('#depreciation-value')
+        this.$depreciationDatatable = $('#datatable-depreciation')
+        this.$loadDepreciationBtn = $('#load-depreciation-btn')
+        this.$depreciationTableArea = $('#table-depreciation-area')
     }
 
     init(isUpdate=false){
@@ -52,6 +55,7 @@ class CommonHandler{
         this.changeDepreciationStartDateEventBinding()
         this.changeTimeUnitEventBinding()
         this.changeDepreciationMethodEventBinding()
+        this.loadDepreciationEventBinding()
     }
 
     loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -356,6 +360,87 @@ class CommonHandler{
         }
     }
 
+    initDepreciationDatable(){
+        const depreciationMethod = this.$depreciationMethodSelect.val()
+        let depreciationTime = 0
+        const depreciationTimeUnit = this.$timeUnitSelect.val()
+        if (depreciationTimeUnit == 0){
+            depreciationTime = this.$depreciationTimeInput.val()
+        } else {
+            depreciationTime = Number(this.$depreciationTimeInput.val())*12
+        }
+        let startDate = this.$depreciationStartDateInput.val().split('-').join('/')
+        let endDate = this.$depreciationEndDateInput.val().split('-').join('/')
+        const netBookValue = this.$netBookValueInput.attr('value')
+        const data = DepreciationControl.callDepreciation({
+            method: depreciationMethod,
+            months: depreciationTime,
+            start_date: startDate,
+            end_date: endDate,
+            price: netBookValue
+        })
+        if ($.fn.DataTable.isDataTable(this.$depreciationDatatable)){
+            this.$depreciationDatatable.DataTable().destroy()
+        }
+        this.$depreciationDatatable.DataTableDefault({
+            reloadCurrency: true,
+            data: data,
+            columns: [
+                {
+                    targets: 0,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<div>${row?.['month']}</div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<div>${row?.['begin']}</div>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<div>${row?.['end']}</div>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        let beginNetValue = row?.['start_value']
+                        return `<span class="mask-money" data-init-money="${beginNetValue}"></span>`
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        let depreciationValue = row?.['depreciation_value']
+                        return `<span class="mask-money" data-init-money="${depreciationValue}"></span>`
+                    }
+                },
+                {
+                    targets: 5,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        let endNetValue = row?.['end_value']
+                        return `<span class="mask-money" data-init-money="${endNetValue}"></span>`
+                    }
+                },
+            ],
+            drawCallback: ()=>{
+                this.$depreciationTableArea.prop('hidden', false)
+                $.fn.initMaskMoney2()
+            }
+        })
+
+
+    }
+
     // event handler
     addSourceAPInvoiceEventBinding(){
         $(document).on('click', '#btn-add-ap-invoice', ()=>{
@@ -443,13 +528,19 @@ class CommonHandler{
             dataScript.attr('data-apinvoice-detail-list', JSON.stringify(dataApInvoiceDetailList))
             const valueText = valueNumber.toString() + ' VND'
             let updatedSourceValue = $('.source-value[data-id="' + apInvoiceId + '"]')
-            updatedSourceValue.text(valueText)
-            updatedSourceValue.attr('value',valueNumber)
+            // updatedSourceValue.text(valueText)
+            //
+            // updatedSourceValue.attr('value',valueNumber)
+
+            updatedSourceValue.attr('data-init-money', valueNumber)
+            updatedSourceValue.attr('value', valueNumber)
+            $.fn.initMaskMoney2()
 
             // update original cost
             let $sourceValues = $('.source-value')
             $sourceValues.each((id, ele)=>{
-                const cost = $(ele).attr('value')
+                // const cost = $(ele).attr('value')
+                const cost = $(ele).attr('data-init-money')
                 originalCost += Number(cost)
             })
             this.$originalCostInput.attr('value', originalCost).focus({preventScroll: true}).blur()
@@ -457,44 +548,26 @@ class CommonHandler{
             // update net book value
             let netBookValue = this.$originalCostInput.attr('value') - this.$accDepreciationInput.attr('value')
             this.$netBookValueInput.attr('value', netBookValue).focus({preventScroll: true}).blur()
+            $.fn.initMaskMoney2()
         })
     }
 
     changeDepreciationTimeEventBinding(){
         $(document).on('input', '#depreciation-time', (e)=>{
-            this.updateEndDate();
+            this.updateEndDate()
         })
     }
 
     changeDepreciationStartDateEventBinding(){
         $(document).on('change', '#depreciation-start-date', (e)=>{
-            this.updateEndDate();
+            this.updateEndDate()
         })
     }
 
     changeTimeUnitEventBinding(){
         $(document).on('change', '#time-unit', (e)=>{
-            this.updateEndDate();
+            this.updateEndDate()
         })
-    }
-
-    updateEndDate(){
-        const startDateStr = $('#depreciation-start-date').val();
-        const timeValue = parseInt($('#depreciation-time').val(), 10);
-        const timeUnit = $('#time-unit').val(); // 0 = Months, 1 = Years
-
-        if (startDateStr && timeValue > 0) {
-            const startDate = moment(startDateStr, 'DD-MM-YYYY');
-
-            if (timeUnit === '0') {
-                startDate.add(timeValue, 'months');
-            } else {
-                startDate.add(timeValue, 'years');
-            }
-
-            $('#depreciation-end-date').val(startDate.format('DD-MM-YYYY')).trigger('change');
-        }
-
     }
 
     changeDepreciationMethodEventBinding(){
@@ -506,6 +579,17 @@ class CommonHandler{
             } else {
                 this.$adjustmentFactorSelect.attr('readonly', false)
                 this.$adjustmentFactorSelect.attr('disabled', false)
+            }
+        })
+    }
+
+    loadDepreciationEventBinding(){
+        $(document).on('click', '#load-depreciation-btn', (e)=>{
+            let isValid = this.isInputEmpty(this.$netBookValueInput)
+                        && this.isInputEmpty(this.$depreciationStartDateInput)
+                        && this.isInputEmpty(this.$depreciationEndDateInput)
+            if (isValid){
+                this.initDepreciationDatable()
             }
         })
     }
@@ -630,5 +714,30 @@ class CommonHandler{
                     this.disableFields();
                 }
             })
+    }
+
+    //common function
+    updateEndDate(){
+        const startDateStr = $('#depreciation-start-date').val();
+        const timeValue = parseInt($('#depreciation-time').val(), 10)
+        const timeUnit = $('#time-unit').val(); // 0 = Months, 1 = Years
+
+        if (startDateStr && timeValue > 0) {
+            const startDate = moment(startDateStr, 'DD-MM-YYYY');
+
+            if (timeUnit === '0') {
+                startDate.add(timeValue, 'months');
+            } else {
+                startDate.add(timeValue, 'years');
+            }
+
+            startDate.subtract(1, 'days')
+
+            $('#depreciation-end-date').val(startDate.format('DD-MM-YYYY')).trigger('change');
+        }
+    }
+
+    isInputEmpty($ele){
+        return !!$ele.val()
     }
 }

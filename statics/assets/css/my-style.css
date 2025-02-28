@@ -1289,11 +1289,11 @@ table.dataTable tr.dtrg-group th {
     border-bottom: 3px solid #007D88;
 }
 
-.nav-primary-custom .nav-link .nav-icon-wrap {
-    transition: transform 0.2s ease-in-out;
+.nav-primary-custom .nav-link {
+    transition: transform 0.1s ease-in-out;
 }
 
-.nav-primary-custom .nav-link:hover .nav-icon-wrap {
-    transform: rotate(10deg) translateX(3px) translateY(-3px);
+.nav-primary-custom .nav-link:hover {
+    transform: translateY(-3px);
 }
 /*end*/

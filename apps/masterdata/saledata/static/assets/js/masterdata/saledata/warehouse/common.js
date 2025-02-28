@@ -286,7 +286,7 @@ const columns_cfg = [
     {
         className: 'wrap-text w-20',
         'render': (data, type, row) => {
-            return `<select class="form-select select2">
+            return `<select disabled readonly class="form-select select2">
                         <option value="${row?.['account_mapped']?.['id']}" selected>${row?.['account_mapped']?.['acc_code']}</option>
                     </select>`;
         }
@@ -300,7 +300,7 @@ const columns_cfg = [
     },
 ]
 
-function loadDefinitionTable() {
+function loadAccountDeterminationTable() {
     if (!$.fn.DataTable.isDataTable('#warehouse-account-determination-table')) {
         let frm = new SetupFormSubmit($warehouse_account_determination_table);
         $warehouse_account_determination_table.DataTableDefault({
@@ -330,7 +330,6 @@ function loadDefinitionTable() {
                             return accCodeA - accCodeB;
                         });
 
-                        console.log(data_list)
                         return data_list ? data_list : [];
                     }
                     return [];
@@ -351,5 +350,5 @@ function loadDefinitionTable() {
 }
 
 $('#accounting-determination-tab').on('click', function () {
-    loadDefinitionTable()
+    loadAccountDeterminationTable()
 })

@@ -71,9 +71,6 @@
                             <select
                                     class="form-select"
                                     id="select-box-features"
-                                    data-url="{% url "TenantApplicationListAPI" %}"
-                                    data-params='{"is_workflow":true,"pageSize":-1}'
-                                    data-method="GET"
                                     name="application"
                                     data-keyResp="tenant_application_list"
                                     data-keyText="title_i18n"
@@ -516,16 +513,6 @@
                             </div>
                         </div>
                         <label for="property_list_choices">{% trans 'Select property' %}:</label>
-{#                        <select class="form-control dropdown-select_two"#}
-{#                                data-placeholder="{% trans 'Nothing selected' %}"#}
-{#                                name="property_list"#}
-{#                                id="property_list_choices"#}
-{#                                data-multiple="true"#}
-{#                                data-prefix="application_property_list"#}
-{#                                data-url="{% url 'ApplicationPropertyListAPI' %}"#}
-{#                                data-select2-closeOnSelect="true"#}
-{#                        ></select>#}
-
                         <select
                                 class="form-select"
                                 name="property_list"
@@ -653,6 +640,7 @@
 
 {% block dataHiddenGroup %}
     <input type="text" id="app-url-factory"
+           data-application="{% url "TenantApplicationListAPI" %}"
            data-employees="{% url 'EmployeeListAPI' %}"
            data-node="{% url 'NodeSystemListAPI' %}"
            data-app-property="{% url 'ApplicationPropertyListAPI' %}"

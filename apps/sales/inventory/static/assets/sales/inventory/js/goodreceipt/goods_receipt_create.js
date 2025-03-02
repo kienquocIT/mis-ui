@@ -197,14 +197,6 @@ $(function () {
             deleteRowGR(this.closest('tr'), GRDataTableHandle.tableSerial);
         });
 
-        $('#productCanvas').on('change', '.validated-number', function () {
-            GRValidateHandle.validateNumber(this);
-        });
-
-        $('#productIAModalCenter').on('change', '.validated-number', function () {
-            GRValidateHandle.validateNumber(this);
-        });
-
         // IA BEGIN
         GRLoadDataHandle.IASelectEle.on('change', function () {
             if ($(this).val()) {

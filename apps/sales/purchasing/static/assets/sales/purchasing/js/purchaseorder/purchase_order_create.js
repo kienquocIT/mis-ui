@@ -122,7 +122,6 @@ $(function () {
 
         // Action on change quantity order of tablePurchaseRequestProduct
         tablePurchaseRequestProduct.on('change', '.table-row-quantity-order', function () {
-            POValidateHandle.validateNumber(this);
             let remain = parseFloat(this.closest('tr').querySelector('.table-row-remain').innerHTML);
             let valid_quantity = POValidateHandle.validateQuantityOrderRequest(this, remain);
             let eleCheck = this?.closest('tr')?.querySelector('.table-row-checkbox');
@@ -219,7 +218,6 @@ $(function () {
             let row = $(this)[0].closest('tr');
             // Change quantity
             if ($(this).hasClass('table-row-quantity-order-actual')) {
-                POValidateHandle.validateNumber(this);
                 POValidateHandle.validateQuantityOrderActualAndUpdateStock(row);
             }
             // Change uom

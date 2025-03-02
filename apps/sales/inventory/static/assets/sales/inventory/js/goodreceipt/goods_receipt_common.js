@@ -1514,7 +1514,7 @@ class GRDataTableHandle {
                                 readonly = "";
                             }
                         }
-                        return `<input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" ${readonly}>`;
+                        return `<input type="text" class="form-control table-row-import valid-num" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" ${readonly}>`;
                     }
                 },
             ],
@@ -1593,7 +1593,7 @@ class GRDataTableHandle {
                         if (GRLoadDataHandle.$isNoWHEle[0].checked === true) {
                             readonly = "";
                         }
-                        return `<input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" ${readonly}>`;
+                        return `<input type="text" class="form-control table-row-import valid-num" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" ${readonly}>`;
                     }
                 },
             ],
@@ -1673,7 +1673,7 @@ class GRDataTableHandle {
                             disabled = '';
                         }
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" ${disabled}>
+                                    <input type="text" class="form-control table-row-import valid-num" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" ${disabled}>
                                 </div>`;
                     }
                 },
@@ -1716,7 +1716,7 @@ class GRDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : ''}" required>
+                                    <input type="text" class="form-control table-row-import valid-num" value="${row?.['quantity_import'] ? row?.['quantity_import'] : ''}" required>
                                 </div>`;
                     }
                 },
@@ -1907,7 +1907,7 @@ class GRDataTableHandle {
                     targets: 4,
                     width: '9.11458333333%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" required readonly>`;
+                        return `<input type="text" class="form-control table-row-import valid-num" value="${row.quantity_import}" required readonly>`;
                     }
                 },
                 {
@@ -2430,30 +2430,6 @@ class GRStoreDataHandle {
         });
 
         return true;
-    };
-
-}
-
-// Validate
-class GRValidateHandle {
-
-    static validateImportProductNotInventory(ele, remain) {
-        if (parseFloat(ele.value) > remain) {
-            ele.value = '0';
-            $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
-            return false;
-        }
-        return true;
-    };
-
-    static validateNumber(ele) {
-        let value = ele.value;
-        // Replace non-digit characters with an empty string
-        value = value.replace(/[^0-9.]/g, '');
-        // Remove unnecessary zeros from the integer part
-        value = value.replace("-", "").replace(/^0+(?=\d)/, '');
-        // Update value of input
-        ele.value = value;
     };
 
 }

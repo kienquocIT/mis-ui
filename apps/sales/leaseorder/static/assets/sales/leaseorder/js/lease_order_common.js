@@ -3451,9 +3451,9 @@ class LeaseOrderDataTableHandle {
                         let dataZone = "lease_products_data";
 
                         return `<div class="input-group">
-                                    <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" data-zone="${dataZone}" readonly required>
-                                    <input type="text" class="form-control table-row-quantity-new validated-number hidden" value="${row?.['product_quantity_new'] ? row?.['product_quantity_new'] : "0"}">
-                                    <input type="text" class="form-control table-row-quantity-leased validated-number hidden" value="${row?.['product_quantity_leased'] ? row?.['product_quantity_leased'] : "0"}">
+                                    <input type="text" class="form-control table-row-quantity valid-num" value="${row?.['product_quantity']}" data-zone="${dataZone}" readonly required>
+                                    <input type="text" class="form-control table-row-quantity-new valid-num hidden" value="${row?.['product_quantity_new'] ? row?.['product_quantity_new'] : "0"}">
+                                    <input type="text" class="form-control table-row-quantity-leased valid-num hidden" value="${row?.['product_quantity_leased'] ? row?.['product_quantity_leased'] : "0"}">
                                     <input type="text" class="form-control table-row-quantity-leased-data hidden">
                                     <button
                                         type="button"
@@ -3476,7 +3476,7 @@ class LeaseOrderDataTableHandle {
                         let dataZone = "lease_products_data";
                         return `<div class="row">
                                         <div class="input-group">
-                                            <input type="text" class="form-control table-row-quantity-time validated-number" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" data-zone="${dataZone}" required>
+                                            <input type="text" class="form-control table-row-quantity-time valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" data-zone="${dataZone}" required>
                                             <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
                                         </div>
                                         <div hidden>
@@ -3780,7 +3780,7 @@ class LeaseOrderDataTableHandle {
                         let dataZone = "lease_costs_data";
                         return `<div class="row">
                                         <div class="input-group">
-                                            <input type="text" class="form-control table-row-quantity-time text-black validated-number" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" data-zone="${dataZone}" required readonly>
+                                            <input type="text" class="form-control table-row-quantity-time text-black valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" data-zone="${dataZone}" required readonly>
                                             <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
                                         </div>
                                         <div hidden>
@@ -3961,7 +3961,7 @@ class LeaseOrderDataTableHandle {
                         let dataZone = "lease_costs_data";
                         return `<div class="row">
                                         <div class="input-group">
-                                            <input type="text" class="form-control table-row-quantity-time text-black validated-number" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" data-zone="${dataZone}" required readonly>
+                                            <input type="text" class="form-control table-row-quantity-time text-black valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" data-zone="${dataZone}" required readonly>
                                             <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
                                         </div>
                                         <div hidden>
@@ -4012,7 +4012,7 @@ class LeaseOrderDataTableHandle {
                         let dataZone = "lease_costs_data";
                         return `<div class="row">
                                         <div class="input-group">
-                                            <input type="text" class="form-control table-row-quantity-time-previous text-black validated-number" value="${row?.['product_data']?.['lease_time_previous'] ? row?.['product_data']?.['lease_time_previous'] : "0"}" data-zone="${dataZone}" required readonly>
+                                            <input type="text" class="form-control table-row-quantity-time-previous text-black valid-num" value="${row?.['product_data']?.['lease_time_previous'] ? row?.['product_data']?.['lease_time_previous'] : "0"}" data-zone="${dataZone}" required readonly>
                                             <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
                                         </div>
                                 </div>`;
@@ -4205,7 +4205,7 @@ class LeaseOrderDataTableHandle {
                     width: '10%',
                     render: (data, type, row) => {
                         let dataZone = "lease_expenses_data";
-                        return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['expense_quantity']}" data-zone="${dataZone}" required>`;
+                        return `<input type="text" class="form-control table-row-quantity valid-num" value="${row?.['expense_quantity']}" data-zone="${dataZone}" required>`;
                     }
                 },
                 {
@@ -4670,7 +4670,7 @@ class LeaseOrderDataTableHandle {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-ratio validated-number" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
+                                        <input type="text" class="form-control table-row-ratio valid-num" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
                                         <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                     </div>
                                 </div>`;
@@ -8053,18 +8053,6 @@ function parseDate(dateString) {
     // Note: months are 0-based in JavaScript Dates, so subtract 1
     const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
     return new Date(formattedDate);
-}
-
-// validate
-function validateNumber(ele) {
-    let value = ele.value;
-    // Replace non-digit characters with an empty string
-    value = value.replace(/[^0-9.]/g, '');
-    // Remove unnecessary zeros from the integer part
-    value = value.replace("-", "").replace(/^0+(?=\d)/, '');
-    // Update value of input
-    ele.value = value;
-    return true;
 }
 
 function validatePSValue(ele) {

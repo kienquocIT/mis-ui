@@ -2799,7 +2799,7 @@ class QuotationDataTableHandle {
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-                        return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" data-zone="${dataZone}" required>`;
+                        return `<input type="text" class="form-control table-row-quantity valid-num" value="${row?.['product_quantity']}" data-zone="${dataZone}" required>`;
                     }
                 },
                 {
@@ -2851,7 +2851,7 @@ class QuotationDataTableHandle {
                         return `<div class="row">
                                     <div class="input-group">
                                         <div class="input-affix-wrapper">
-                                            <input type="text" class="form-control table-row-discount validated-number zone-readonly" value="${row?.['product_discount_value']}" data-zone="${dataZone}">
+                                            <input type="text" class="form-control table-row-discount valid-num zone-readonly" value="${row?.['product_discount_value']}" data-zone="${dataZone}">
                                             <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                         </div>
                                     </div>
@@ -3344,7 +3344,7 @@ class QuotationDataTableHandle {
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_expenses_data";
                         }
-                        return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['expense_quantity']}" data-zone="${dataZone}" required>`;
+                        return `<input type="text" class="form-control table-row-quantity valid-num" value="${row?.['expense_quantity']}" data-zone="${dataZone}" required>`;
                     }
                 },
                 {
@@ -3951,7 +3951,7 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-ratio validated-number" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
+                                        <input type="text" class="form-control table-row-ratio valid-num" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
                                         <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                     </div>
                                 </div>`;
@@ -7140,17 +7140,6 @@ function parseDate(dateString) {
 }
 
 // validate
-function validateNumber(ele) {
-    let value = ele.value;
-    // Replace non-digit characters with an empty string
-    value = value.replace(/[^0-9.]/g, '');
-    // Remove unnecessary zeros from the integer part
-    value = value.replace("-", "").replace(/^0+(?=\d)/, '');
-    // Update value of input
-    ele.value = value;
-    return true;
-}
-
 function validatePSValue(ele) {
     let row = ele.closest('tr');
     let tablePS = $('#datable-quotation-payment-stage');

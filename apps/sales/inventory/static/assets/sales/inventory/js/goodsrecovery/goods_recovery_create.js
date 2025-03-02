@@ -40,11 +40,6 @@ $(function () {
         // Load init
         RecoveryLoadDataHandle.loadInit();
 
-
-        RecoveryLoadDataHandle.$form.on('change', '.validated-number', function () {
-            RecoveryValidateHandle.validateNumber(this);
-        });
-
         RecoveryLoadDataHandle.$boxLeaseOrder.on('change', function () {
             RecoveryDataTableHandle.$tableDelivery.DataTable().clear().draw();
             RecoveryDataTableHandle.$tableProductNew.DataTable().clear().draw();

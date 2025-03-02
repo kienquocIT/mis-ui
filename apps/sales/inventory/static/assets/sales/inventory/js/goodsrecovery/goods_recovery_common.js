@@ -896,7 +896,7 @@ class RecoveryDataTableHandle {
                     targets: 4,
                     width: '9.11458333333%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-quantity validated-number" value="${row?.['quantity_recovery']}" required readonly>`;
+                        return `<input type="text" class="form-control table-row-quantity valid-num" value="${row?.['quantity_recovery']}" required readonly>`;
                     }
                 },
                 {
@@ -1316,7 +1316,7 @@ class RecoveryDataTableHandle {
                     targets: 1,
                     width: "20%",
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-quantity-recovery validated-number" value="${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : 0}">`;
+                        return `<input type="text" class="form-control table-row-quantity-recovery valid-num" value="${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : 0}">`;
                     }
                 },
             ],
@@ -1906,30 +1906,6 @@ class RecoveryStoreDataHandle {
         });
 
         return true;
-    };
-
-}
-
-// Validate
-class RecoveryValidateHandle {
-
-    static validateImportProductNotInventory(ele, remain) {
-        if (parseFloat(ele.value) > remain) {
-            ele.value = '0';
-            $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
-            return false;
-        }
-        return true;
-    };
-
-    static validateNumber(ele) {
-        let value = ele.value;
-        // Replace non-digit characters with an empty string
-        value = value.replace(/[^0-9.]/g, '');
-        // Remove unnecessary zeros from the integer part
-        value = value.replace("-", "").replace(/^0+(?=\d)/, '');
-        // Update value of input
-        ele.value = value;
     };
 
 }

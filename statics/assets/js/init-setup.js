@@ -1879,6 +1879,20 @@ class ListeningEventController {
         })
     }
 
+    formatEle() {
+        // Listen event on element and format to right type (number, code,...)
+        $(document).on('input', '.valid-num', function () {
+            let value = this.value;
+            // Replace non-digit characters with an empty string
+            value = value.replace(/[^0-9.]/g, '');
+            // Remove unnecessary zeros from the integer part
+            value = value.replace("-", "").replace(/^0+(?=\d)/, '');
+            // Update value of input
+            this.value = value;
+            return true;
+        })
+    }
+
     // main
     active() {
         this.switchCompany();
@@ -1896,6 +1910,7 @@ class ListeningEventController {
         this.tabHashUrl();  // keep it run after nttDrawer and log
         this.setValidatorDefaults();
         this.dropdownInAccordion();
+        this.formatEle();
         ListeningEventController.listenImageLoad();
     }
 }

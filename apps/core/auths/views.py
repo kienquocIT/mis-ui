@@ -18,6 +18,7 @@ import jwt
 
 from apps.shared import ServerAPI, ApiURL, mask_view, AuthMsg, TypeCheck, CustomizeEncoder, CacheController
 from apps.core.account.models import User
+from .auth_login_injection import inject_override_tenant_code
 
 from .forms import AuthLoginForm, ForgotPasswordForm, ForgotPasswordValidOTPForm, ForgotPasswordResendOTP
 from apps.shared.csrf import CSRFCheckSessionAuthentication, APIAllowAny
@@ -84,7 +85,8 @@ class AuthLogin(APIView):
         if is_oauth2 == 'true' or is_oauth2 == '1':
             is_oauth2 = True
 
-        frm = AuthLoginForm(data=request.data)
+        request_data = inject_override_tenant_code(request.data)
+        frm = AuthLoginForm(data=request_data)
         frm.is_valid()
         resp = ServerAPI(request=request, user=None, url=ApiURL.login).post(frm.cleaned_data)
         if resp.state is True:

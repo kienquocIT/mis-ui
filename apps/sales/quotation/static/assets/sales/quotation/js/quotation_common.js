@@ -3521,12 +3521,9 @@ class QuotationDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         if (row?.['title'] && row?.['code']) {
-                            return `<div class="d-flex align-items-center ml-2">
-                                        <div class="form-check form-check-lg">
-                                            <input type="radio" name="row-check" class="form-check-input table-row-check" id="copy-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}">
-                                            <label class="form-check-label table-row-title" for="copy-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
-                                            <span class="badge badge-light badge-outline">${row?.['code'] ? row?.['code'] : ''}</span>
-                                        </div>
+                            return `<div class="form-check form-check-lg d-flex align-items-center">
+                                        <input type="radio" name="row-check" class="form-check-input table-row-check" id="copy-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}">
+                                        <label class="form-check-label table-row-title" for="copy-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
                                     </div>`;
                         }
                         return ``;
@@ -3535,14 +3532,20 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
+                        return `<span class="table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
                         if (row?.['opportunity']?.['title'] && row?.['opportunity']?.['code']) {
-                            return `<span class="table-row-customer mr-1">${row?.['opportunity']?.['title']}</span><span class="badge badge-light badge-outline">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>`;
+                            return `<span class="table-row-customer mr-1">${row?.['opportunity']?.['title']}</span>`;
                         }
                         return ``;
                     },
                 },
                 {
-                    targets: 2,
+                    targets: 3,
                     render: (data, type, row) => {
                         if (row?.['customer']?.['title']) {
                             return `<p class="table-row-customer">${row?.['customer']?.['title']}</p>`;
@@ -4125,8 +4128,6 @@ class QuotationDataTableHandle {
                         if ($form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         let disabled = '';
                         let checked = '';
                         if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
@@ -4141,12 +4142,9 @@ class QuotationDataTableHandle {
                             clsZoneReadonly = 'zone-readonly';
                         }
                         if (row?.['title'] && row?.['code']) {
-                            return `<div class="d-flex align-items-center ml-2">
-                                        <div class="form-check form-check-lg">
-                                            <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
-                                            <label class="form-check-label table-row-title" for="s-product-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
-                                            <span class="badge badge-light badge-outline">${row?.['code'] ? row?.['code'] : ''}</span>
-                                        </div>
+                            return `<div class="form-check form-check-lg d-flex align-items-center">
+                                        <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
+                                        <label class="form-check-label table-row-title" for="s-product-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
                                     </div>`;
                         }
                         return `<span>--</span>`;
@@ -4155,17 +4153,23 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-description" rows="2" readonly>${row?.['description'] ? row?.['description'] : ''}</textarea>`
+                        return `<span class="table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['sale_information']?.['default_uom']?.['title'] ? row?.['sale_information']?.['default_uom']?.['title'] : ''}</span>`;
+                        return `<textarea class="form-control table-row-description" rows="2" readonly>${row?.['description'] ? row?.['description'] : ''}</textarea>`
                     }
                 },
                 {
                     targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-uom">${row?.['sale_information']?.['default_uom']?.['title'] ? row?.['sale_information']?.['default_uom']?.['title'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
                     render: (data, type, row) => {
                         let txt = QuotationLoadDataHandle.transEle.attr('data-available');
                         let badge = 'success';
@@ -4182,7 +4186,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 5,
                     render: (data, type, row) => {
                         let txt = '';
                         if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {

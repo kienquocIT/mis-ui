@@ -880,6 +880,8 @@ function getDataForm() {
         data['purchase_tax'] = null
     }
 
+    data['account_deter_referenced_by'] = $('#account-deter-referenced-by').val()
+
     if (!data['product_types_mapped_list'].length > 0 || !data['general_product_category'] || !data['general_uom_group']) {
         $.fn.notifyB({description: 'Some fields in General tab is missing'}, 'failure');
         return false
@@ -1223,6 +1225,9 @@ function LoadDetailProduct(option) {
                 if (product_detail['product_variant_item_list'].length > 0) {
                  $('#table-variant-items-div').prop('hidden', false);
                 }
+
+                $('#account-deter-referenced-by').val(product_detail['account_deter_referenced_by']).prop('disabled', true)
+                $product_account_determination_table.prop('hidden', product_detail['account_deter_referenced_by'] !== 2)
 
                 $.fn.initMaskMoney2();
 
@@ -1927,7 +1932,7 @@ function loadAccountDeterminationTable() {
                             const accCodeB = parseInt(b?.['account_mapped']?.['acc_code'], 10);
                             return accCodeA - accCodeB;
                         });
-
+                        console.log(data_list)
                         return data_list ? data_list : [];
                     }
                     return [];
@@ -1948,5 +1953,7 @@ function loadAccountDeterminationTable() {
 }
 
 $('#accounting-determination-tab').on('click', function () {
-    loadAccountDeterminationTable()
+    if (Detail_data?.['account_deter_referenced_by'] === 2) {
+        loadAccountDeterminationTable()
+    }
 })

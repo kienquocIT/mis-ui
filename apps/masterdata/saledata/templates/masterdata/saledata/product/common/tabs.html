@@ -396,9 +396,19 @@
     </div>
     <div class="tab-pane fade" id="tab_account_determination">
         <div class="row">
+            <div class="col-12 col-md-4 col-lg-2">
+                <div class="form-group">
+                    <label for="account-deter-referenced-by" class="form-label required">{% trans "Referenced by" %}</label>
+                    <select id="account-deter-referenced-by" class="form-select">
+                        <option value="0">{% trans 'Warehouse' %}</option>
+                        <option value="1">{% trans 'Product type' %}</option>
+                        <option value="2" disabled>{% trans 'This product' %}</option>
+                    </select>
+                </div>
+            </div>
             <div class="col-12">
                 {% if pk %}
-                    <table class="table nowrap w-100"
+                    <table class="table nowrap w-100" hidden
                            id="product-account-determination-table"
                            data-method="GET"
                            data-url="{% url 'ProductAccountDeterminationListAPI' %}">
@@ -414,7 +424,7 @@
                     </table>
                 {% else %}
                     <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
-                        <span class="alert-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Transactions referencing this product will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting, you can update it.' %}
+                        <span class="alert-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Transactions referencing this product will use the accounts here to create Journal Entry. By default, the accounts are taken by Warehouse, you can update it.' %}
                     </div>
                 {% endif %}
             </div>

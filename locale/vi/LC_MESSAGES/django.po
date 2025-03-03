@@ -10992,8 +10992,8 @@ msgid "Transactions referencing this product type will use the accounts here to 
 msgstr "Các giao dịch tham chiếu đến loại sản phẩm này sẽ sử dụng các tài khoản tại đây để tạo Bút toán. Mặc định các tài khoản được lấy theo Cài đặt, bạn có thể thiết lập lại."
 
 #
-msgid "Transactions referencing this product will use the accounts here to create Journal Entry. By default, the accounts are taken from Setting, you can update it."
-msgstr "Các giao dịch tham chiếu đến sản phẩm này sẽ sử dụng các tài khoản tại đây để tạo Bút toán. Mặc định các tài khoản được lấy theo Cài đặt, bạn có thể thiết lập lại."
+msgid "Transactions referencing this product will use the accounts here to create Journal Entry. By default, the accounts are taken by Warehouse, you can update it."
+msgstr "Các giao dịch tham chiếu đến sản phẩm này sẽ sử dụng các tài khoản tại đây để tạo Bút toán. Mặc định các tài khoản được lấy theo Kho, bạn có thể thiết lập lại."
 
 #
 msgid "Enable tab"
@@ -11110,3 +11110,11 @@ msgstr "Tích lũy"
 #
 msgid "Depreciation detail"
 msgstr "Chi tiết khấu hao"
+
+#
+msgid "Referenced by"
+msgstr "Tham chiếu theo"
+
+#
+msgid "This product"
+msgstr "Sản phẩm này"

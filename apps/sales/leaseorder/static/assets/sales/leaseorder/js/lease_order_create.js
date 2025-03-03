@@ -31,6 +31,7 @@ $(function () {
         // init dataTable
         LeaseOrderDataTableHandle.dataTableSelectProduct();
         LeaseOrderDataTableHandle.dataTableSelectOffset();
+        LeaseOrderDataTableHandle.dataTableSelectAsset();
         LeaseOrderDataTableHandle.dataTableSelectLeasedProduct();
         LeaseOrderDataTableHandle.dataTableProduct();
         LeaseOrderDataTableHandle.dataTableCost();
@@ -107,6 +108,10 @@ $(function () {
 
         LeaseOrderLoadDataHandle.$btnSaveSelectOffset.on('click', function () {
             LeaseOrderLoadDataHandle.loadOffset(this);
+        });
+
+        LeaseOrderLoadDataHandle.$btnSaveSelectAsset.on('click', function () {
+            LeaseOrderLoadDataHandle.loadAsset(this);
         });
 
         LeaseOrderLoadDataHandle.$btnSaveSelectQuantity.on('click', function () {
@@ -241,9 +246,12 @@ $(function () {
             }
         });
 
-        tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-uom-time, .table-row-quantity-time, .table-row-price, .table-row-tax, .table-row-discount', function () {
+        tableProduct.on('change', '.table-row-item, .table-row-asset-type, .table-row-uom, .table-row-quantity, .table-row-uom-time, .table-row-quantity-time, .table-row-price, .table-row-tax', function () {
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
-                let row = $(this)[0].closest('tr');
+                let row = this.closest('tr');
+                if ($(this).hasClass('table-row-asset-type')) {
+                    LeaseOrderLoadDataHandle.loadChangeAssetType(this);
+                }
                 if ($(this).hasClass('table-row-price')) {
                     $(this).removeClass('text-primary');
                 }
@@ -278,18 +286,50 @@ $(function () {
             }
         });
 
-        tableProduct.on('click', '.table-row-group', function () {
+        tableProduct.on('click', '.btn-select-offset', function () {
             let row = this.closest('tr');
+            if (row) {
+                let rowIndex = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(row).index();
+                let $row = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(rowIndex);
+                let dataRow = $row.data();
+
+                let typeEle = row.querySelector('.table-row-asset-type');
+                if (typeEle) {
+                    if ($(typeEle).val()) {
+                        if ($(typeEle).val() === '1') {
+                            LeaseOrderLoadDataHandle.$btnSaveSelectOffset.attr('data-product-id', dataRow?.['product_data']?.['id']);
+                            LeaseOrderLoadDataHandle.loadModalSOffset(this);
+                        }
+                        if ($(typeEle).val() === '3') {
+                            LeaseOrderLoadDataHandle.$btnSaveSelectAsset.attr('data-product-id', dataRow?.['product_data']?.['id']);
+                            LeaseOrderLoadDataHandle.loadModalSAsset(this);
+                        }
+                    }
+                }
+            }
+        });
+
+        tableProduct.on('click', '.btn-select-quantity', function () {
+            let row = this.closest('tr');
+            if (row) {
+                let rowIndex = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(row).index();
+                let $row = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(rowIndex);
+                let dataRow = $row.data();
+
+                LeaseOrderLoadDataHandle.$btnSaveSelectQuantity.attr('data-product-id', dataRow?.['product_data']?.['id']);
+                LeaseOrderLoadDataHandle.loadModalSQuantity(this);
+            }
+        });
+
+        tableProduct.on('click', '.table-row-group', function () {
             $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
         });
 
         tableProduct.on('blur', '.table-row-group-title-edit', function () {
-            let row = this.closest('tr');
             LeaseOrderLoadDataHandle.loadOnBlurGroupTitleEdit(this);
         });
 
         tableProduct.on('click', '.btn-edit-group', function () {
-            let row = this.closest('tr');
             LeaseOrderLoadDataHandle.loadOnClickBtnEditGroup(this);
         });
 

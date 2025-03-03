@@ -984,15 +984,15 @@ $(async function () {
                                 checked = 'checked';
                             }
                             return `<div class="d-flex align-items-center">
-                                        <div class="form-check form-check-lg">
+                                        <div class="form-check form-check-lg d-flex align-items-center">
                                             <input
                                                 type="radio"
                                                 class="form-check-input table-row-checkbox"
                                                 id="new-product-${targetData?.['id'].replace(/-/g, "")}"
                                                 ${checked}
                                             >
+                                            <label class="form-check-label" for="new-product-${targetData?.['id'].replace(/-/g, "")}">${targetData?.['title'] ? targetData?.['title'] : ''}</label>
                                         </div>
-                                        <textarea class="form-control table-row-item-show" rows="2" readonly>${targetData?.['code']}</textarea>
                                     </div>
                                     <div class="row table-row-item-area hidden">
                                         <div class="col-12 col-md-12 col-lg-12">
@@ -1017,7 +1017,7 @@ $(async function () {
                             if (row?.['offset_data']?.['id']) {
                                 targetData = row?.['offset_data'];
                             }
-                            return `<textarea class="form-control table-row-name" rows="2" readonly>${targetData?.['title'] ? targetData?.['title'] : ''}</textarea>`;
+                            return `<span class="table-row-code">${targetData?.['code'] ? targetData?.['code'] : ''}</span>`;
                         },
                     },
                     {
@@ -1086,7 +1086,7 @@ $(async function () {
                                                 id="leased-product-${row?.['product_data']?.['id'].replace(/-/g, "")}"
                                             >
                                         </div>
-                                        <textarea class="form-control table-row-item-show" rows="2" readonly>${row?.['product_data']?.['lease_code']}</textarea>
+                                        <label class="form-check-label" for="leased-product-${row?.['product_data']?.['id'].replace(/-/g, "")}">${row?.['product_data']?.['title'] ? row?.['product_data']?.['title'] : ''}</label>
                                     </div>
                                     <div class="row table-row-item-area hidden">
                                         <div class="col-12 col-md-12 col-lg-12">
@@ -1107,7 +1107,7 @@ $(async function () {
                         targets: 1,
                         width: '30%',
                         render: (data, type, row) => {
-                            return `<textarea class="form-control table-row-name" rows="2" readonly>${row?.['product_data']?.['title'] ? row?.['product_data']?.['title'] : ''}</textarea>`;
+                            return `<span class="table-row-code">${row?.['product_data']?.['lease_code'] ? row?.['product_data']?.['lease_code'] : ''}</span>`;
                         },
                     },
                     {
@@ -1155,7 +1155,7 @@ $(async function () {
                 columns: [
                     {
                         targets: 0,
-                        class: 'w-35',
+                        width: '30%',
                         render: (data, type, row) => {
                             if (row?.['is_regis_so'] === true) {
                                 let project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-other-order')}: ${row?.['sale_order']?.['code']}</span>`;
@@ -1208,7 +1208,7 @@ $(async function () {
                             if (row?.['product']?.['general_traceability_method'] === 0) {
                                 hidden = 'hidden';
                             }
-                            return `<div class="form-check form-check-lg">
+                            return `<div class="form-check form-check-lg d-flex align-items-center">
                                         <input
                                             type="radio"
                                             class="form-check-input table-row-checkbox cl-child"
@@ -1218,13 +1218,19 @@ $(async function () {
                                             ${hidden}
                                         >
                                         <label class="form-check-label" for="pw-${row?.['id'].replace(/-/g, "")}">${row?.['warehouse']?.['title']}</label>
-                                        <span class="badge badge-light badge-outline">${row?.['warehouse']?.['code']}</span>
                                     </div>`;
                         }
                     },
                     {
                         targets: 1,
-                        class: 'w-15',
+                        width: '20%',
+                        render: (data, type, row) => {
+                            return `<span class="table-row-code">${row?.['warehouse']?.['code'] ? row?.['warehouse']?.['code'] : ''}</span>`;
+                        }
+                    },
+                    {
+                        targets: 2,
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
                                 return ``;
@@ -1233,8 +1239,8 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 2,
-                        class: 'w-20',
+                        targets: 3,
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
                                 return ``;
@@ -1243,8 +1249,8 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 3,
-                        class: 'w-25',
+                        targets: 4,
+                        width: '20%',
                         render: (data, type, row, meta) => {
                             if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
                                 return ``;

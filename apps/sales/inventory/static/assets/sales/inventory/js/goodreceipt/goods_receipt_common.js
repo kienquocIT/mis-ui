@@ -1615,7 +1615,7 @@ class GRDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<div class="form-check form-check-lg">
+                        return `<div class="form-check form-check-lg d-flex align-items-center">
                                     <input 
                                         type="radio" 
                                         class="form-check-input table-row-checkbox"
@@ -1623,12 +1623,17 @@ class GRDataTableHandle {
                                         data-id="${row?.['warehouse_id']}" 
                                     >
                                     <label class="form-check-label table-row-title" for="wh-${row?.['warehouse_id'].replace(/-/g, "")}">${row?.['title'] ? row?.['title'] : ''}</label>
-                                    <span class="badge badge-light badge-outline table-row-code">${row?.['title'] ? row?.['title'] : ''}</span>
                                 </div>`;
                     }
                 },
                 {
                     targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
                     render: (data, type, row) => {
                         let checked = ``;
                         if (row?.['is_additional'] === true) {
@@ -1652,7 +1657,7 @@ class GRDataTableHandle {
                     }
                 },
                 {
-                    targets: 2,
+                    targets: 3,
                     render: (data, type, row) => {
                         let disabled = '';
                         if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
@@ -1673,12 +1678,12 @@ class GRDataTableHandle {
                             disabled = '';
                         }
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-import valid-num" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" ${disabled}>
+                                    <input type="text" class="form-control table-row-import valid-num text-black" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" ${disabled}>
                                 </div>`;
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     render: (data, type, row) => {
                         return `<span class="table-row-uom">${row?.['uom_data']?.['title'] ? row?.['uom_data']?.['title'] : ''}</span>`;
                     }

@@ -11110,3 +11110,23 @@ msgstr "Tích lũy"
 #
 msgid "Depreciation detail"
 msgstr "Chi tiết khấu hao"
+
+#
+msgid "Product code"
+msgstr "Mã sản phẩm"
+
+#
+msgid "Asset code"
+msgstr "Mã tài sản"
+
+#
+msgid "Select asset"
+msgstr "Chọn tài sản"
+
+#
+msgid "Warehouse name"
+msgstr "Tên kho"
+
+#
+msgid "Warehouse code"
+msgstr "Mã kho"

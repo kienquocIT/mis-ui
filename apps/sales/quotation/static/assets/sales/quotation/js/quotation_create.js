@@ -275,17 +275,14 @@ $(function () {
         });
 
         tableProduct.on('click', '.table-row-group', function () {
-            let row = this.closest('tr');
             $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
         });
 
         tableProduct.on('blur', '.table-row-group-title-edit', function () {
-            let row = this.closest('tr');
             QuotationLoadDataHandle.loadOnBlurGroupTitleEdit(this);
         });
 
         tableProduct.on('click', '.btn-edit-group', function () {
-            let row = this.closest('tr');
             QuotationLoadDataHandle.loadOnClickBtnEditGroup(this);
         });
 

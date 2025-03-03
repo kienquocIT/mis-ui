@@ -284,18 +284,18 @@ const columns_cfg = [
         }
     },
     {
-        className: 'wrap-text w-20',
+        className: 'wrap-text w-65',
         'render': (data, type, row) => {
-            return `<select disabled readonly class="form-select select2">
-                        <option value="${row?.['account_mapped']?.['id']}" selected>${row?.['account_mapped']?.['acc_code']}</option>
-                    </select>`;
-        }
-    },
-    {
-        className: 'wrap-text w-45',
-        'render': (data, type, row) => {
-            return `<span class="text-muted">${row?.['account_mapped']?.['acc_name']}</span>
-                    <span class="small text-primary">(${row?.['account_mapped']?.['foreign_acc_name']})</span>`;
+            let html = ''
+            for (let i = 0; i < row?.['account_number_list'].length; i++) {
+                html += `
+                    <div class="row account_number_list_div">
+                        <div class="col-2"><span class="badge badge-outline badge-secondary w-100">${row?.['account_number_list'][i]?.['acc_code']}</span></div>
+                        <div class="col-10"><span class="text-muted">${row?.['account_number_list'][i]?.['acc_name']}</span> <span class="small text-primary">(${row?.['account_number_list'][i]?.['foreign_acc_name']})</span></div>
+                    </div>
+                `
+            }
+            return html;
         }
     },
 ]

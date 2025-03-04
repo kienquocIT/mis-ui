@@ -241,7 +241,7 @@ class ToolCommonHandler{
                     width: '10%',
                     render: (data, type, row) => {
                         const value =  row?.['value'] ? row?.['value'] : '0';
-                        return `<span class="mask-money source-value" data-id="${row?.['source_id']}" value="${value}">${value} VND</span>`
+                        return `<span class="mask-money source-value" data-id="${row?.['source_id']}" value="${value}" data-init-money="${value}"></span>`
                     }
                 },
                 {

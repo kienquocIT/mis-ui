@@ -993,19 +993,6 @@ $(async function () {
                                             >
                                             <label class="form-check-label" for="new-product-${targetData?.['id'].replace(/-/g, "")}">${targetData?.['title'] ? targetData?.['title'] : ''}</label>
                                         </div>
-                                    </div>
-                                    <div class="row table-row-item-area hidden">
-                                        <div class="col-12 col-md-12 col-lg-12">
-                                            <select
-                                                class="form-select table-row-item"
-                                                data-url="${$url.attr('data-md-product')}"
-                                                data-method="GET"
-                                                data-keyResp="product_sale_list"
-                                                data-product-id="${targetData?.['id']}"
-                                                readonly
-                                            >
-                                            </select>
-                                        </div>
                                     </div>`;
                         }
                     },
@@ -1046,17 +1033,6 @@ $(async function () {
                         },
                     },
                 ],
-                rowCallback: function (row, data, index) {
-                    let itemEle = row.querySelector('.table-row-item');
-                    if (itemEle) {
-                        let dataS2 = [];
-                        if (data?.['product_data']) {
-                            dataS2 = [data?.['product_data']];
-                        }
-                        prodTable.loadInitS2($(itemEle), dataS2);
-                        $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
-                    }
-                },
                 drawCallback: function () {
                     if ($eleSO.attr('data-lo')) {
                         prodTable.dtbProductNewHDCustom();
@@ -1086,23 +1062,10 @@ $(async function () {
                                             <input
                                                 type="radio"
                                                 class="form-check-input table-row-checkbox"
-                                                id="leased-product-${row?.['product_data']?.['id'].replace(/-/g, "")}"
+                                                id="leased-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}"
                                             >
                                         </div>
-                                        <label class="form-check-label" for="leased-product-${row?.['product_data']?.['id'].replace(/-/g, "")}">${row?.['product_data']?.['title'] ? row?.['product_data']?.['title'] : ''}</label>
-                                    </div>
-                                    <div class="row table-row-item-area hidden">
-                                        <div class="col-12 col-md-12 col-lg-12">
-                                            <select
-                                                class="form-select table-row-item"
-                                                data-url="${$url.attr('data-md-product')}"
-                                                data-method="GET"
-                                                data-keyResp="product_sale_list"
-                                                data-product-id="${row?.['product_data']?.['id']}"
-                                                readonly
-                                            >
-                                            </select>
-                                        </div>
+                                        <label class="form-check-label" for="leased-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}">${row?.['offset_data']?.['title'] ? row?.['offset_data']?.['title'] : ''}</label>
                                     </div>`;
                         }
                     },
@@ -1110,7 +1073,7 @@ $(async function () {
                         targets: 1,
                         width: '30%',
                         render: (data, type, row) => {
-                            return `<span class="table-row-code">${row?.['product_data']?.['lease_code'] ? row?.['product_data']?.['lease_code'] : ''}</span>`;
+                            return `<span class="table-row-code">${row?.['offset_data']?.['lease_code'] ? row?.['offset_data']?.['lease_code'] : ''}</span>`;
                         },
                     },
                     {
@@ -1128,17 +1091,6 @@ $(async function () {
                         },
                     },
                 ],
-                rowCallback: function (row, data, index) {
-                    let itemEle = row.querySelector('.table-row-item');
-                    if (itemEle) {
-                        let dataS2 = [];
-                        if (data?.['product_data']) {
-                            dataS2 = [data?.['product_data']];
-                        }
-                        prodTable.loadInitS2($(itemEle), dataS2);
-                        $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
-                    }
-                },
                 drawCallback: function () {
                     if ($eleSO.attr('data-lo')) {
                         prodTable.dtbProductLeasedHDCustom();
@@ -1754,6 +1706,7 @@ $(async function () {
                     picked += deliData?.['picked_quantity'];
                 }
                 rowData['picked_quantity'] = picked;
+                rowData['quantity_leased_remain_recovery'] = picked;
 
                 $tableProductLeased.DataTable().row(rowIndex).data(rowData);
                 deliveryData.push(rowData);
@@ -2054,7 +2007,7 @@ $(async function () {
             let $row = $tableProductLeased.DataTable().row(rowIndex);
             let rowData = $row.data();
 
-            prodTable.loadCallAjaxPW(rowData?.['product_data'], rowData);
+            prodTable.loadCallAjaxPW(rowData?.['offset_data'], rowData);
         }
         return true;
     });

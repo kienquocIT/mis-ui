@@ -1649,8 +1649,6 @@ class QuotationLoadDataHandle {
                             "tax_id": dataRow?.['tax_data']?.['id'],
                             "tax_data": dataRow?.['tax_data'],
                             "product_quantity": dataRow?.['product_quantity'],
-                            "product_tax_amount": dataRow?.['product_tax_amount'],
-                            "product_subtotal_price": dataRow?.['product_subtotal_price'],
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['product_data']?.['id']];

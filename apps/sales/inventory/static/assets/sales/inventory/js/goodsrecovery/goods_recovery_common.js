@@ -1123,18 +1123,17 @@ class RecoveryDataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: '25%',
                     render: (data, type, row) => {
                         return `<div class="d-flex align-items-center">
                                     <div class="form-check form-check-lg">
                                         <input 
                                             type="radio" 
                                             class="form-check-input table-row-checkbox" 
-                                            id="deli-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}"
+                                            id="new-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}"
                                             data-id="${row?.['offset_data']?.['id']}"
                                         >
+                                        <label class="form-check-label" for="new-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}">${row?.['offset_data']?.['title'] ? row?.['offset_data']?.['title'] : ''}</label>
                                     </div>
-                                    <textarea class="form-control table-row-item-show" rows="2" readonly>${row?.['offset_data']?.['code']}</textarea>
                                 </div>
                                 <div class="row table-row-item-area hidden">
                                     <div class="col-12 col-md-12 col-lg-12">
@@ -1153,14 +1152,12 @@ class RecoveryDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '20%',
                     render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-name" rows="2" readonly>${row?.['offset_data']?.['title'] ? row?.['offset_data']?.['title'] : ''}</textarea>`;
+                        return `<span class="table-row-code">${row?.['offset_data']?.['code'] ? row?.['offset_data']?.['code'] : ''}</span>`;
                     },
                 },
                 {
                     targets: 2,
-                    width: '15%',
                     render: (data, type, row) => {
                         let delivered = row?.['quantity_delivered'] ? row?.['quantity_delivered'] : 0;
                         let leased = row?.['product_quantity_leased'] ? row?.['product_quantity_leased'] : 0;
@@ -1170,14 +1167,12 @@ class RecoveryDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-remain-recovery">${row?.['quantity_new_remain_recovery'] ? row?.['quantity_new_remain_recovery'] : '0'}</span>`;
                     }
                 },
                 {
                     targets: 4,
-                    width: '10%',
                     render: (data, type, row) => {
                         let value = 0;
                             if (row?.['quantity_recovery'] && row?.['product_quantity_leased_data']) {
@@ -1221,11 +1216,11 @@ class RecoveryDataTableHandle {
                                         <input 
                                             type="radio" 
                                             class="form-check-input table-row-checkbox" 
-                                            id="deli-product-${row?.['product_data']?.['id'].replace(/-/g, "")}"
-                                            data-id="${row?.['product_data']?.['id']}"
+                                            id="leased-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}"
+                                            data-id="${row?.['offset_data']?.['id']}"
                                         >
+                                        <label class="form-check-label" for="leased-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}">${row?.['offset_data']?.['title'] ? row?.['offset_data']?.['title'] : ''}</label>
                                     </div>
-                                    <textarea class="form-control table-row-item-show" rows="2" readonly>${row?.['product_data']?.['code']}</textarea>
                                 </div>
                                 <div class="row table-row-item-area hidden">
                                     <div class="col-12 col-md-12 col-lg-12">
@@ -1234,7 +1229,7 @@ class RecoveryDataTableHandle {
                                             data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-product')}"
                                             data-method="GET"
                                             data-keyResp="product_sale_list"
-                                            data-product-id="${row?.['product_data']?.['id']}"
+                                            data-product-id="${row?.['offset_data']?.['id']}"
                                             readonly
                                         >
                                         </select>
@@ -1246,7 +1241,7 @@ class RecoveryDataTableHandle {
                     targets: 1,
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-name" rows="2" readonly>${row?.['product_data']?.['title'] ? row?.['product_data']?.['title'] : ''}</textarea>`;
+                        return `<span class="table-row-code">${row?.['offset_data']?.['lease_code'] ? row?.['offset_data']?.['lease_code'] : ''}</span>`;
                     },
                 },
                 {

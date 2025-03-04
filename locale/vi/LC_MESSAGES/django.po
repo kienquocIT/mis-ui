@@ -11110,3 +11110,75 @@ msgstr "Tích lũy"
 #
 msgid "Depreciation detail"
 msgstr "Chi tiết khấu hao"
+
+#
+msgid "Load Preview Of Depreciation"
+msgstr "Xem khấu hao"
+
+#
+msgid "Only for adjusted reducing balance method"
+msgstr "Chỉ dùng cho phương pháp khấu hao giảm dần"
+
+#
+msgid "Fixed asset write-off"
+msgstr "Ghi giảm tài sản"
+
+#
+msgid "Fixed Asset Write-off"
+msgstr "Ghi giảm tài sản"
+
+#
+msgid "Write-off type"
+msgstr "Loại ghi giảm"
+
+#
+msgid "Disposal or sale"
+msgstr "Thanh lí, nhượng bán"
+
+#
+msgid "Return of leased financial assets"
+msgstr "Trả tài sản thuê tài chính"
+
+#
+msgid "Converse fixed assets into instruments and tools"
+msgstr "Chuyển TSCD thành CCDC"
+
+#
+msgid "Capital contribution to a subsidiary"
+msgstr "Góp vốn công ty con"
+
+#
+msgid "Capital contribution to a joint venture"
+msgstr "Góp vốn công ty liên doanh"
+
+#
+msgid "Capital contribution to an associate company"
+msgstr "Góp vốn công ty liên kết"
+
+#
+msgid "Instrument tool write-off"
+msgstr "Ghi giảm công cụ dụng cụ"
+
+#
+msgid "Instrument Tool Write-off"
+msgstr "Ghi giảm công cụ dụng cụ"
+
+#
+msgid "Write-off quantity"
+msgstr "Số lượng ghi giảm"
+
+#
+msgid "Using quantity"
+msgstr "Số lượng đang sử dụng"
+
+#
+msgid "Writing off quantity"
+msgstr "Số lượng ghi giảm"
+
+#
+msgid "Current FA increase must be bigger than 0"
+msgstr "Giá trị tăng tài sản phải lớn hơn 0"
+
+#
+msgid "The sum of current increased FA and existing increased FA exceeds the total value"
+msgstr "Tổng của giá trị tài sản đã tăng và giá trị tài sản tăng hiện tại lớn hơn tổng giá trị tài sản"

@@ -17,6 +17,7 @@ $(document).ready(function () {
                 },
             },
             rowIdx: true,
+            scrollX: true,
             columns: [
                 {
                     targets: 0,
@@ -43,7 +44,7 @@ $(document).ready(function () {
                 },
                 {
                     targets: 3,
-                    width: '10%',
+                    width: '5%',
                     render: (data, type, row) => {
                         return `<div>${row?.['asset_code']}</div>`
                     }
@@ -57,7 +58,7 @@ $(document).ready(function () {
                 },
                 {
                     targets: 5,
-                    width: '10%',
+                    width: '5%',
                     render: (data, type, row) => {
                         const statusMap = {
                             0: 'Using',
@@ -68,14 +69,14 @@ $(document).ready(function () {
                 },
                 {
                     targets: 6,
-                    width: '10%',
+                    width: '8%',
                     render: (data, type, row) => {
                         return `<div class="w-100 badge badge-soft-success badge-outline mb-1">${row?.['manage_department']?.['title']}</div>`
                     }
                 },
                 {
                     targets: 7,
-                    width: '10%',
+                    width: '8%',
                     render: (data, type, row) => {
                         const useDepartments = row?.['use_department']
                         let element = ''
@@ -87,7 +88,7 @@ $(document).ready(function () {
                 },
                 {
                     targets: 8,
-                    width: '10%',
+                    width: '8%',
                     render: (data, type, row) => {
                         const customerName = row?.['use_customer']?.['name'] ? row?.['use_customer']?.['name'] : 'no data'
                         return `<div>${customerName}</div>`
@@ -95,7 +96,7 @@ $(document).ready(function () {
                 },
                 {
                     targets: 9,
-                    width: '10%',
+                    width: '8%',
                     render: (data, type, row) => {
                         const date =row?.['date_created'] ? moment(row?.['date_created'].split(' ')[0], 'YYYY-MM-DD').format('DD-MM-YYYY') : ''
                         return `<div>${date}</div>`
@@ -103,7 +104,7 @@ $(document).ready(function () {
                 },
                 {
                     targets: 10,
-                    width: '10%',
+                    width: '8%',
                     render: (data, type, row) => {
                         const depreciationTimeUnitMap = {
                             0: 'Month',
@@ -114,7 +115,14 @@ $(document).ready(function () {
                 },
                 {
                     targets: 11,
-                    width: '10%',
+                    width: '8%',
+                    render: (data, type, row) => {
+                        return `<div>${row?.['write_off_quantity']}</div>`
+                    }
+                },
+                {
+                    targets: 12,
+                    width: '8%',
                     render: (data, type, row) => {
                         let sttTxt = JSON.parse($('#stt_sys').text())
                         let sttData = [

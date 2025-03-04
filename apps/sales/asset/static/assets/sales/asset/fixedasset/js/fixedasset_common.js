@@ -23,8 +23,9 @@ class CommonHandler{
         this.$timeUnitSelect = $('#time-unit')
         this.$depreciationValueInput = $('#depreciation-value')
         this.$depreciationDatatable = $('#datatable-depreciation')
-        this.$loadDepreciationBtn = $('#load-depreciation-btn')
         this.$depreciationTableArea = $('#table-depreciation-area')
+
+        this.$transScript = $('#trans-script')
     }
 
     init(isUpdate=false){
@@ -277,6 +278,7 @@ class CommonHandler{
             this.$APInvoiceDetailDatatable.DataTableDefault({
                 useDataServer: true,
                 reloadCurrency: true,
+                scrollX: true,
                 ajax: {
                     url: url,
                     type: 'GET',
@@ -301,7 +303,7 @@ class CommonHandler{
                     },
                     {
                         targets: 1,
-                        width: '10%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<div>${row?.['quantity_import']}</div>`
                         }
@@ -315,15 +317,23 @@ class CommonHandler{
                     },
                     {
                         targets: 3,
-                        width: '20%',
+                        width: '15%',
                         render: (data, type, row) => {
-                            const totalValue = Number(row?.['product_subtotal_price']) + Number(row?.['product_tax_value'])
+                            const totalValue = Number(row?.['product_subtotal_price'])
                             return `<span class="mask-money total-value" data-init-money="${totalValue}"></span>`
                         }
                     },
                     {
                         targets: 4,
-                        width: '20%',
+                        width: '15%',
+                        render: (data, type, row) => {
+                            const totalValueAfterTax = Number(row?.['product_subtotal_price']) + Number(row?.['product_tax_value'])
+                            return `<span class="mask-money total-value-after-tax" data-init-money="${totalValueAfterTax}"></span>`
+                        }
+                    },
+                    {
+                        targets: 5,
+                        width: '15%',
                         render: (data, type, row) => {
                             const apInvoiceProdId = row?.['id']
                             let dataFADetail = $('#data-script').attr('data-fixed-asset-detail')
@@ -343,8 +353,8 @@ class CommonHandler{
                         }
                     },
                     {
-                        targets: 5,
-                        width: '20%',
+                        targets: 6,
+                        width: '15%',
                         render: (data, type, row) => {
                             const apInvoiceProdId = row?.['id']
                             let value = 0
@@ -486,19 +496,28 @@ class CommonHandler{
             let dataApInvoiceDetailList = JSON.parse(dataScript.attr('data-apinvoice-detail-list'))
             let isValid = true
 
+            // validate currFAVAlue
             currIncreasedFA.each((id, ele) => {
                 const currIncreaseValue = Number($(ele).attr('value'))
                 const apInvoiceProdId = $(ele).attr('data-apinvoice-prod-id')
                 const increasedFA = Number($(ele).closest('tr').find('.prior-increased-fa').attr('data-init-money')) || 0
                 const totalValue = Number($(ele).closest('tr').find('.total-value').attr('data-init-money')) || 0
 
-                //  check if value + increasedFA > totalValue
-                if ((currIncreaseValue + increasedFA) > totalValue) {
-                    const text = `The sum of current increased FA (${currIncreaseValue}) and existing increased FA (${increasedFA}) exceeds the total value (${totalValue})`
+                if(currIncreaseValue<=0){
+                    const text = this.$transScript.attr('data-increase-must-positive')
                     $.fn.notifyB({'title': '','description': text}, 'failure')
                     isValid = false
                     return false
                 }
+
+                //  check if value + increasedFA > totalValue
+                if ((currIncreaseValue + increasedFA) > totalValue) {
+                    const text = this.$transScript.attr('data-sum-exceed-total-value')
+                    $.fn.notifyB({'title': '','description': text}, 'failure')
+                    isValid = false
+                    return false
+                }
+
                 if (!dataApInvoiceDetailList[apInvoiceId]) {
                     dataApInvoiceDetailList[apInvoiceId] = {}
                 }
@@ -506,16 +525,12 @@ class CommonHandler{
 
                 valueNumber += currIncreaseValue
             })
+
             if (!isValid) {
                 return
             }
             dataScript.attr('data-apinvoice-detail-list', JSON.stringify(dataApInvoiceDetailList))
-            const valueText = valueNumber.toString() + ' VND'
             let updatedSourceValue = $('.source-value[data-id="' + apInvoiceId + '"]')
-            // updatedSourceValue.text(valueText)
-            //
-            // updatedSourceValue.attr('value',valueNumber)
-
             updatedSourceValue.attr('data-init-money', valueNumber)
             updatedSourceValue.attr('value', valueNumber)
             $.fn.initMaskMoney2()
@@ -523,7 +538,6 @@ class CommonHandler{
             // update original cost
             let $sourceValues = $('.source-value')
             $sourceValues.each((id, ele)=>{
-                // const cost = $(ele).attr('value')
                 const cost = $(ele).attr('data-init-money')
                 originalCost += Number(cost)
             })

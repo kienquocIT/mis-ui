@@ -28,7 +28,7 @@
                         <th>{% trans 'Name' %}</th>
                         <th>{% trans 'Status' %}</th>
                         <th>{% trans 'Use Department' %}</th>
-                        <th>{% trans 'Use Customer' %}</th>
+                        <th>{% trans 'Using Customer' %}</th>
                         <th>{% trans 'Depreciation Time' %}</th>
                         <th>{% trans 'Original asset cost' %}</th>
                         <th>{% trans 'Accumulative depreciation' %}</th>
@@ -54,7 +54,6 @@
             data-apinvoice-detail-list="{}"
             data-fixed-asset-detail=""
     ></script>
-
     <script id="url-script"
             data-fixed-asset-list-api="{% url 'FixedAssetListAPI' %}"
             data-fixed-asset-detail-api="{% url 'FixedAssetDetailAPI' pk=0%}"

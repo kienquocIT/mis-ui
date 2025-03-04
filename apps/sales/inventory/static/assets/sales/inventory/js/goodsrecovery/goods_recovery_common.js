@@ -1454,48 +1454,56 @@ class RecoveryDataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '5%',
                     render: (data, type, row) => {
                         return `<span class="table-row-month">${row?.['month']}</span>`;
                     }
                 },
                 {
                     targets: 1,
+                    width: '5%',
                     render: (data, type, row) => {
                         return `<span class="table-row-start-date">${row?.['begin'] ? row?.['begin'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 2,
+                    width: '5%',
                     render: (data, type, row) => {
                         return `<span class="table-row-end-date">${row?.['end'] ? row?.['end'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 3,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="mask-money table-row-start-net-value" data-init-money="${parseFloat(row?.['start_value'] ? row?.['start_value'] : '0')}"></span>`;
                     }
                 },
                 {
                     targets: 4,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="mask-money table-row-depreciation-value" data-init-money="${parseFloat(row?.['depreciation_value'] ? row?.['depreciation_value'] : '0')}"></span>`;
                     }
                 },
                 {
                     targets: 5,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="mask-money table-row-end-net-value" data-init-money="${parseFloat(row?.['end_value'] ? row?.['end_value'] : '0')}"></span>`;
                     }
                 },
                 {
                     targets: 6,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-lease-time">${row?.['lease_time'] ? row?.['lease_time'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 7,
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['lease_allocated']) {
                             return `<span class="mask-money table-row-lease-allocated" data-init-money="${parseFloat(row?.['lease_allocated'] ? row?.['lease_allocated'] : '0')}"></span>`;
@@ -1505,6 +1513,7 @@ class RecoveryDataTableHandle {
                 },
                 {
                     targets: 8,
+                    width: '10%',
                     render: (data, type, row) => {
                         if (row?.['lease_accumulative_allocated']) {
                             return `<span class="mask-money table-row-lease-accumulative-allocated" data-init-money="${parseFloat(row?.['lease_accumulative_allocated'] ? row?.['lease_accumulative_allocated'] : '0')}"></span>`;

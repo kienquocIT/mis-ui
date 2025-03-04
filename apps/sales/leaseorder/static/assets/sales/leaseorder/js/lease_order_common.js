@@ -1729,53 +1729,37 @@ class LeaseOrderLoadDataHandle {
                     break;
                 }
             }
-            if (isHidden === true) {  // product is zone hidden
+            if (isHidden === true) {  // product is zone hidden => use data product from data detail
                 let storeDetail = JSON.parse(LeaseOrderLoadDataHandle.$eleStoreDetail.val());
                 for (let data of storeDetail?.[dataZone]) {
                     let valueQuantity = 0;
-                    let valueQuantityTime = 0;
                     let valueTaxAmount = 0;
                     let valueSubtotal = 0;
-                    let dataProduct = {};
-                    let dataUOM = {};
-                    let dataUOMTime = {};
-                    let dataTax = {};
                     if (data?.['product_data']?.['id']) { // PRODUCT
-                        dataProduct = data?.['product_data'] ? data?.['product_data'] : {};
-                        dataUOM = data?.['uom_data'] ? data?.['uom_data'] : {};
-                        valueQuantity = data?.['product_quantity_new'] ? data?.['product_quantity_new'] : 0;
-                        dataUOMTime = data?.['uom_time_data'] ? data?.['uom_time_data'] : {};
-                        valueQuantityTime = data?.['product_quantity_time'] ? data?.['product_quantity_time'] : 0;
-                        dataTax = data?.['tax_data'] ? data?.['tax_data'] : {};
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
-                            "product_id": dataProduct?.['id'],
-                            "product_data": dataProduct,
-                            "uom_id": dataUOM?.['id'],
-                            "uom_data": dataUOM,
-                            "uom_time_id": dataUOMTime?.['id'],
-                            "uom_time_data": dataUOMTime,
-                            "tax_id": dataTax?.['id'],
-                            "tax_data": dataTax,
-                            "product_quantity": valueQuantity,
-                            "product_quantity_time": valueQuantityTime,
-                            "product_uom_code": "",
-                            "product_tax_title": "",
-                            "product_tax_value": 0,
-                            "product_uom_title": "",
-                            "product_cost_price": 0,
-                            "product_tax_amount": valueTaxAmount,
-                            "product_subtotal_price": valueSubtotal,
+                            "product_id": data?.['product_data']?.['id'],
+                            "product_data": data?.['product_data'],
+                            "uom_id": data?.['uom_data']?.['id'],
+                            "uom_data": data?.['uom_data'],
+                            "uom_time_id": data?.['uom_time_data']?.['id'],
+                            "uom_time_data": data?.['uom_time_data'],
+                            "tax_id": data?.['tax_data']?.['id'],
+                            "tax_data": data?.['tax_data'],
+                            "product_quantity": data?.['product_quantity_new'],
+                            "product_quantity_time": data?.['product_quantity_time'],
+                            "product_tax_amount": data?.['product_tax_amount'],
+                            "product_subtotal_price": data?.['product_subtotal_price'],
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
-                            dataAdd['product_quantity'] = valueQuantity;
-                            dataAdd['product_quantity_time'] = valueQuantityTime;
-                            dataAdd['uom_id'] = dataUOM?.['id'];
-                            dataAdd['uom_data'] = dataUOM;
+                            dataAdd['product_quantity'] = data?.['product_quantity_new'];
+                            dataAdd['product_quantity_time'] = data?.['product_quantity_time'];
+                            dataAdd['uom_id'] = data?.['uom_data']?.['id'];
+                            dataAdd['uom_data'] = data?.['uom_data'];
                         }
-                        if (valueQuantity > 0) {
+                        if (dataAdd?.['product_quantity'] > 0) {
                             $table.DataTable().row.add(dataAdd).draw().node();
                         }
                     }
@@ -1793,101 +1777,55 @@ class LeaseOrderLoadDataHandle {
                         let dataAdd = {
                             "order": valueOrder,
                             "product_quantity": valueQuantity,
-                            "product_uom_code": "",
-                            "product_tax_title": "",
-                            "product_tax_value": 0,
-                            "product_uom_title": "",
                             "product_cost_price": valueSubtotal,
                             "product_tax_amount": valueTaxAmount,
                             "product_subtotal_price": valueSubtotal,
                             "is_shipping": true,
                             "shipping_id": dataShipping?.['id'],
                             "shipping_data": dataShipping,
-                            "uom_id": dataUOM?.['id'],
-                            "uom_data": dataUOM,
-                            "tax_id": dataTax?.['id'],
-                            "tax_data": dataTax,
+                            "uom_id": data?.['uom_data']?.['id'],
+                            "uom_data": data?.['uom_data'],
+                            "tax_id": data?.['tax_data']?.['id'],
+                            "tax_data": data?.['tax_data'],
                         }
                         $table.DataTable().row.add(dataAdd).draw().node();
                     }
                 }
-            } else {  // product is not zone hidden
+            } else {  // product is not zone hidden => use realtime data product from $tableProduct
                 $tableProduct.DataTable().rows().every(function () {
                     let row = this.node();
-                    let valueTaxAmount = 0;
+                    let rowIndex = $tableProduct.DataTable().row(row).index();
+                    let $row = $tableProduct.DataTable().row(rowIndex);
+                    let dataRow = $row.data();
+
                     let valueSubtotal = 0;
-                    let dataProduct = {};
-                    let dataUOM = {};
                     let valueQuantity = 0;
-                    let dataUOMTime = {};
-                    let valueQuantityTime = 0;
-                    let dataTax = {};
-                    let itemEle = row.querySelector('.table-row-item');
-                    let uomEle = row.querySelector('.table-row-uom');
-                    let quantityEle = row.querySelector('.table-row-quantity-new');
-                    let uomTimeEle = row.querySelector('.table-row-uom-time');
-                    let quantityTimeEle = row.querySelector('.table-row-quantity-time');
-                    let taxEle = row.querySelector('.table-row-tax');
                     let shipping = row.querySelector('.table-row-shipping');
-                    //
-                    if (itemEle) { // PRODUCT
-                        if ($(itemEle).val()) {
-                            dataProduct = SelectDDControl.get_data_from_idx($(itemEle), $(itemEle).val());
-                        }
-                        if (uomEle) {
-                            if ($(uomEle).val()) {
-                                dataUOM = SelectDDControl.get_data_from_idx($(uomEle), $(uomEle).val());
-                            }
-                        }
-                        if (quantityEle) {
-                            if ($(quantityEle).val()) {
-                                valueQuantity = parseFloat($(quantityEle).val());
-                            }
-                        }
-                        if (uomTimeEle) {
-                            if ($(uomTimeEle).val()) {
-                                dataUOMTime = SelectDDControl.get_data_from_idx($(uomTimeEle), $(uomTimeEle).val());
-                            }
-                        }
-                        if (quantityTimeEle) {
-                            if ($(quantityTimeEle).val()) {
-                                valueQuantityTime = parseFloat($(quantityTimeEle).val());
-                            }
-                        }
-                        if (taxEle) {
-                            if ($(taxEle).val()) {
-                                dataTax = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
-                            }
-                        }
+                    if (dataRow?.['offset_data']?.['id']) { // PRODUCT
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
-                            "product_id": dataProduct?.['id'],
-                            "product_data": dataProduct,
-                            "uom_id": dataUOM?.['id'],
-                            "uom_data": dataUOM,
-                            "uom_time_id": dataUOMTime?.['id'],
-                            "uom_time_data": dataUOMTime,
-                            "tax_id": dataTax?.['id'],
-                            "tax_data": dataTax,
-                            "product_quantity": valueQuantity,
-                            "product_quantity_time": valueQuantityTime,
-                            "product_uom_code": "",
-                            "product_tax_title": "",
-                            "product_tax_value": 0,
-                            "product_uom_title": "",
-                            "product_cost_price": 0,
-                            "product_tax_amount": valueTaxAmount,
-                            "product_subtotal_price": valueSubtotal,
+                            "product_id": dataRow?.['offset_data']?.['id'],
+                            "product_data": dataRow?.['offset_data'],
+                            "uom_id": dataRow?.['uom_data']?.['id'],
+                            "uom_data": dataRow?.['uom_data'],
+                            "uom_time_id": dataRow?.['uom_time_data']?.['id'],
+                            "uom_time_data": dataRow?.['uom_time_data'],
+                            "tax_id": dataRow?.['tax_data']?.['id'],
+                            "tax_data": dataRow?.['tax_data'],
+                            "product_quantity": dataRow?.['product_quantity_new'],
+                            "product_quantity_time": dataRow?.['product_quantity_time'],
+                            "product_tax_amount": dataRow?.['product_tax_amount'],
+                            "product_subtotal_price": dataRow?.['product_subtotal_price'],
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
-                            dataAdd['product_quantity'] = valueQuantity;
-                            dataAdd['product_quantity_time'] = valueQuantityTime;
-                            dataAdd['uom_id'] = dataUOM?.['id'];
-                            dataAdd['uom_data'] = dataUOM;
+                            dataAdd['product_quantity'] = dataRow?.['product_quantity_new'];
+                            dataAdd['product_quantity_time'] = dataRow?.['product_quantity_time'];
+                            dataAdd['uom_id'] = dataRow?.['uom_data']?.['id'];
+                            dataAdd['uom_data'] = dataRow?.['uom_data'];
                         }
-                        if (valueQuantity > 0) {
+                        if (dataAdd?.['product_quantity'] > 0) {
                             $table.DataTable().row.add(dataAdd).draw().node();
                         }
                     }
@@ -1906,20 +1844,16 @@ class LeaseOrderLoadDataHandle {
                             let dataAdd = {
                                 "order": valueOrder,
                                 "product_quantity": valueQuantity,
-                                "product_uom_code": "",
-                                "product_tax_title": "",
-                                "product_tax_value": 0,
-                                "product_uom_title": "",
                                 "product_cost_price": valueSubtotal,
-                                "product_tax_amount": valueTaxAmount,
+                                "product_tax_amount": dataRow?.['product_tax_amount'],
                                 "product_subtotal_price": valueSubtotal,
                                 "is_shipping": true,
                                 "shipping_id": dataShipping?.['id'],
                                 "shipping_data": dataShipping,
-                                "uom_id": dataUOM?.['id'],
-                                "uom_data": dataUOM,
-                                "tax_id": dataTax?.['id'],
-                                "tax_data": dataTax,
+                                "uom_id": dataRow?.['uom_data']?.['id'],
+                                "uom_data": dataRow?.['uom_data'],
+                                "tax_id": dataRow?.['tax_data']?.['id'],
+                                "tax_data": dataRow?.['tax_data'],
                             }
                             $table.DataTable().row.add(dataAdd).draw().node();
                         }
@@ -1966,27 +1900,21 @@ class LeaseOrderLoadDataHandle {
             if (isHidden === true) {  // product is zone hidden => use data product from data detail
                 let storeDetail = JSON.parse(LeaseOrderLoadDataHandle.$eleStoreDetail.val());
                 for (let data of storeDetail?.[dataZone]) {
-                    let valueQuantityTime = 0;
-                    let valueSubtotal = 0;
-                    let dataProduct = {};
-                    let dataUOMTime = {};
-                    let dataParseList = data?.['product_quantity_leased_data'];
-                    for (let dataParse of dataParseList) {
-                        dataProduct = dataParse?.['product_data'];
+                    for (let dataLeased of data?.['product_quantity_leased_data']) {
                         valueOrder++;
                         let dataAdd = {
                             "order": valueOrder,
-                            "product_id": dataProduct?.['id'],
-                            "product_data": dataProduct,
-                            "product_quantity_time": valueQuantityTime,
-                            "uom_time_id": dataUOMTime?.['id'],
-                            "uom_time_data": dataUOMTime,
-                            "product_depreciation_time": dataProduct?.['depreciation_time'] ? dataProduct?.['depreciation_time'] : 0,
-                            "product_subtotal_price": valueSubtotal,
+                            "product_id": dataLeased?.['product_data']?.['id'],
+                            "product_data": dataLeased?.['product_data'],
+                            "product_quantity_time": data?.['product_quantity_time'],
+                            "uom_time_id": data?.['uom_time_data']?.['id'],
+                            "uom_time_data": data?.['uom_time_data'],
+                            "product_depreciation_time": dataLeased?.['product_data']?.['depreciation_time'] ? dataLeased?.['product_data']?.['depreciation_time'] : 0,
+                            "product_subtotal_price": 0,
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
-                            dataAdd['product_quantity_time'] = valueQuantityTime;
+                            dataAdd['product_quantity_time'] = data?.['product_quantity_time'];
                         }
                         $tableLeased.DataTable().row.add(dataAdd).draw().node();
                     }
@@ -1994,47 +1922,27 @@ class LeaseOrderLoadDataHandle {
             } else {  // product is not zone hidden => use realtime data product from $tableProduct
                 $tableProduct.DataTable().rows().every(function () {
                     let row = this.node();
-                    let valueSubtotal = 0;
-                    let dataProduct = {};
-                    let dataUOMTime = {};
-                    let valueQuantityTime = 0;
-                    let quantityTimeEle = row.querySelector('.table-row-quantity-time');
-                    let uomTimeEle = row.querySelector('.table-row-uom-time');
-                    //
-                    if (quantityTimeEle) {
-                        if ($(quantityTimeEle).val()) {
-                            valueQuantityTime = parseFloat($(quantityTimeEle).val());
+                    let rowIndex = $tableProduct.DataTable().row(row).index();
+                    let $row = $tableProduct.DataTable().row(rowIndex);
+                    let dataRow = $row.data();
+
+                    for (let dataLeased of dataRow?.['product_quantity_leased_data']) {
+                        valueOrder++;
+                        let dataAdd = {
+                            "order": valueOrder,
+                            "product_id": dataLeased?.['product_data']?.['id'],
+                            "product_data": dataLeased?.['product_data'],
+                            "product_quantity_time": dataRow?.['product_quantity_time'],
+                            "uom_time_id": dataRow?.['uom_time_data']?.['id'],
+                            "uom_time_data": dataRow?.['uom_time_data'],
+                            "product_depreciation_time": dataLeased?.['product_data']?.['depreciation_time'] ? dataLeased?.['product_data']?.['depreciation_time'] : 0,
+                            "product_subtotal_price": 0,
                         }
-                    }
-                    if (uomTimeEle) {
-                        if ($(uomTimeEle).val()) {
-                            dataUOMTime = SelectDDControl.get_data_from_idx($(uomTimeEle), $(uomTimeEle).val());
+                        if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
+                            dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                            dataAdd['product_quantity_time'] = dataRow?.['product_quantity_time'];
                         }
-                    }
-                    let quantityLeasedDataEle = row.querySelector('.table-row-quantity-leased-data');
-                    if (quantityLeasedDataEle) {
-                        if ($(quantityLeasedDataEle).val()) {
-                            let dataParseList = JSON.parse($(quantityLeasedDataEle).val());
-                            for (let dataParse of dataParseList) {
-                                dataProduct = dataParse?.['product_data'];
-                                valueOrder++;
-                                let dataAdd = {
-                                    "order": valueOrder,
-                                    "product_id": dataProduct?.['id'],
-                                    "product_data": dataProduct,
-                                    "product_quantity_time": valueQuantityTime,
-                                    "uom_time_id": dataUOMTime?.['id'],
-                                    "uom_time_data": dataUOMTime,
-                                    "product_depreciation_time": dataProduct?.['depreciation_time'] ? dataProduct?.['depreciation_time'] : 0,
-                                    "product_subtotal_price": valueSubtotal,
-                                }
-                                if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
-                                    dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
-                                    dataAdd['product_quantity_time'] = valueQuantityTime;
-                                }
-                                $tableLeased.DataTable().row.add(dataAdd).draw().node();
-                            }
-                        }
+                        $tableLeased.DataTable().row.add(dataAdd).draw().node();
                     }
                 })
             }
@@ -3789,7 +3697,7 @@ class LeaseOrderDataTableHandle {
                                     <input 
                                         type="text" 
                                         class="form-control mask-money table-row-price disabled-custom-show" 
-                                        value="${row?.['product_cost_price']}"
+                                        value="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"
                                         data-return-type="number"
                                         data-zone="${dataZone}"
                                     >
@@ -5057,7 +4965,7 @@ class LeaseOrderDataTableHandle {
             ],
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderDataTableHandle.$tableSAsset);
+                LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableSAsset);
             },
         });
     };
@@ -5243,7 +5151,7 @@ class LeaseOrderDataTableHandle {
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
-                                    <a class="dropdown-item" href="#" id="btn-add-product-quotation-create" data-bs-toggle="modal" data-bs-target="#selectProductModal"><i class="dropdown-icon fas fa-cube"></i><span class="mt-2">${LeaseOrderLoadDataHandle.transEle.attr('data-add-product')}</span></a>
+                                    <a class="dropdown-item" href="#" id="btn-add-product-quotation-create" data-bs-toggle="modal" data-bs-target="#selectProductModal"><i class="dropdown-icon fas fa-cube"></i><span class="mt-2">${LeaseOrderLoadDataHandle.transEle.attr('data-add-service')}</span></a>
                                     <a class="dropdown-item hidden" href="#" id="btn-add-product-group-quotation"><i class="dropdown-icon fas fa-layer-group"></i><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add-group')}</span></a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="#" id="btn-add-shipping" data-bs-toggle="modal" data-bs-target="#shippingFeeModalCenter"><i class="dropdown-icon fas fa-shipping-fast"></i><span class="mt-2">${LeaseOrderLoadDataHandle.transEle.attr('data-shipping')}</span></a>

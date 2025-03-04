@@ -1031,13 +1031,16 @@ $(async function () {
                         targets: 2,
                         width: '20%',
                         render: (data, type, row) => {
-                            let value = 0;
                             let picked = row?.['picked_quantity'] ? row?.['picked_quantity'] : 0;
-                            let leased = row?.['product_quantity_leased'] ? row?.['product_quantity_leased'] : 0;
-                            if (row?.['offset_data']?.['id']) {
+                            let leased = 0;
+                            for (let leasedData of row?.['product_quantity_leased_data'] ? row?.['product_quantity_leased_data'] : []) {
+                                if (leasedData?.['picked_quantity'] > 0) {
+                                    leased++;
+                                }
+                            }
+                            let value = picked;
+                            if (row?.['offset_data']?.['id'] && picked > 0) {
                                 value = picked - leased;
-                            } else {
-                                value = picked;
                             }
                             return `<b class="table-row-picked">${value}</b>`;
                         },

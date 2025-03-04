@@ -11130,3 +11130,11 @@ msgstr "Tên kho"
 #
 msgid "Warehouse code"
 msgstr "Mã kho"
+
+#
+msgid "Add service"
+msgstr "Thêm dịch vụ"
+
+#
+msgid "Select service"
+msgstr "Chọn dịch vụ"

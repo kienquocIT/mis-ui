@@ -1129,10 +1129,32 @@ selectCustomerBtn.on('click', async function () {
     }
 })
 
-tax_codeEle.on('change', async function () {
-    let [tax_code_status, responseData] = await ARInvoiceAction.CheckTaxCode()
-    $('#invalid-tax').prop('hidden', tax_code_status)
-    $('#valid-tax').prop('hidden', !tax_code_status)
+$('#view-tax-code-info').on('click', async function () {
+    if (tax_codeEle.val()) {
+        let [tax_code_status, responseData] = await ARInvoiceAction.CheckTaxCode()
+        $('#invalid-tax').prop('hidden', tax_code_status)
+        $('#valid-tax').prop('hidden', !tax_code_status)
+        if (tax_code_status) {
+            $('#tax-code-info-international-name').val(responseData?.['data']?.['internationalName'])
+            $('#tax-code-info-name').val(responseData?.['data']?.['name'])
+            $('#tax-code-info-short-name').val(responseData?.['data']?.['shortName'])
+            $('#tax-code-info-tax-code').val(responseData?.['data']?.['id'])
+            $('#tax-code-info-address').val(responseData?.['data']?.['address'])
+        } else {
+            Swal.fire({
+                html: `<p class="text-danger mt-3">${responseData.desc}</p>`,
+                customClass: {
+                    confirmButton: 'btn btn-xs btn-secondary',
+                    cancelButton: 'btn btn-xs btn-secondary',
+                },
+                showCancelButton: false,
+                buttonsStyling: false,
+                confirmButtonText: 'Cancel',
+                cancelButtonText: 'No',
+                reverseButtons: false
+            })
+        }
+    }
 })
 
 viewPaymentTermEle.on('click', function () {
@@ -1338,75 +1360,6 @@ add_item_des.on('click', function () {
     ARInvoiceAction.AddRow(tabLineDetailTableSimple, {})
     $.fn.initMaskMoney2()
     ARInvoiceAction.CalculatePriceSimple()
-})
-
-$('#view-tax-code-info').on('click', async function () {
-    if (tax_codeEle.val()) {
-        let [tax_code_status, responseData] = await ARInvoiceAction.CheckTaxCode()
-        $('#invalid-tax').prop('hidden', tax_code_status)
-        $('#valid-tax').prop('hidden', !tax_code_status)
-        if (tax_code_status) {
-            Swal.fire({
-                html: `<div class="text-left">
-                <div class="col-12">
-                    <div class="form-group">
-                        <label class="form-label">International Name</label>
-                        <p class="text-primary">${responseData?.['data']?.['internationalName']}</p>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="form-group">
-                        <label class="form-label">Name</label>
-                        <p class="text-primary">${responseData?.['data']?.['name']}</p>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="form-group">
-                        <label class="form-label">Short Name</label>
-                        <p class="text-primary">${responseData?.['data']?.['shortName']}</p>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="form-group">
-                        <label class="form-label">Tax Number</label>
-                        <p class="text-primary">${responseData?.['data']?.['id']}</p>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="form-group">
-                        <label class="form-label">Address</label>
-                        <p class="text-primary">${responseData?.['data']?.['address']}</p>
-                    </div>
-                </div>
-            </div>`,
-                customClass: {
-                    confirmButton: 'btn btn-xs btn-primary',
-                    cancelButton: 'btn btn-xs btn-secondary',
-                },
-                showCancelButton: false,
-                buttonsStyling: false,
-                confirmButtonText: 'OK',
-                cancelButtonText: 'Cancel',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                }
-            })
-        } else {
-            Swal.fire({
-                html: `<p class="text-danger mt-3">${responseData.desc}</p>`,
-                customClass: {
-                    confirmButton: 'btn btn-xs btn-secondary',
-                    cancelButton: 'btn btn-xs btn-secondary',
-                },
-                showCancelButton: false,
-                buttonsStyling: false,
-                confirmButtonText: 'Cancel',
-                cancelButtonText: 'No',
-                reverseButtons: false
-            })
-        }
-    }
 })
 
 $(document).on("change", '.selected-delivery', function () {

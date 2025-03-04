@@ -11118,3 +11118,7 @@ msgstr "Tham chiếu theo"
 #
 msgid "This product"
 msgstr "Sản phẩm này"
+
+#
+msgid "Confirm this change?"
+msgstr "Xác nhận thay đổi?"

@@ -402,7 +402,7 @@
                     <select id="account-deter-referenced-by" class="form-select">
                         <option value="0">{% trans 'Warehouse' %}</option>
                         <option value="1">{% trans 'Product type' %}</option>
-                        <option value="2" disabled>{% trans 'This product' %}</option>
+                        <option value="2">{% trans 'This product' %}</option>
                     </select>
                 </div>
             </div>
@@ -411,19 +411,25 @@
                     <table class="table nowrap w-100" hidden
                            id="product-account-determination-table"
                            data-method="GET"
+                           data-trans-change-confirm="{% trans 'Confirm this change?' %}"
+                           data-trans-change-noti="{% trans 'This action can not be undo!' %}"
+                           data-chart-of-account-url="{% url 'ChartOfAccountsListAPI' %}"
+                           data-url-detail="{% url 'ProductAccountDeterminationDetailAPI' pk=0 %}"
                            data-url="{% url 'ProductAccountDeterminationListAPI' %}">
-                        <thead>
+                        <thead class="bg-secondary-light-5">
                         <tr>
                             <th></th>
                             <th>{% trans 'Type' %}</th>
                             <th>{% trans 'Trading account type' %}</th>
                             <th>{% trans 'Account' %}</th>
+                            <th>{% trans 'Description' %}</th>
+                            <th>{% trans 'Change' %}</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 {% else %}
-                    <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
+                    <div hidden class="alert alert-warning alert-wth-icon alert-dismissible fade show" id="account-deter-create-noti" role="alert">
                         <span class="alert-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Transactions referencing this product will use the accounts here to create Journal Entry. By default, the accounts are taken by Warehouse, you can update it.' %}
                     </div>
                 {% endif %}

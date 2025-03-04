@@ -79,6 +79,17 @@ class WarehouseAccountDeterminationListAPI(APIView):
         return resp.auto_return(key_success='warehouse_account_determination_list')
 
 
+class WarehouseAccountDeterminationDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_ACCOUNT_DETERMINATION_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='detail')
+
+
 class ProductTypeAccountDeterminationListAPI(APIView):
     permission_classes = [IsAuthenticated]  # noqa
 
@@ -92,6 +103,17 @@ class ProductTypeAccountDeterminationListAPI(APIView):
         return resp.auto_return(key_success='product_type_account_determination_list')
 
 
+class ProductTypeAccountDeterminationDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_ACCOUNT_DETERMINATION_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='detail')
+
+
 class ProductAccountDeterminationListAPI(APIView):
     permission_classes = [IsAuthenticated]  # noqa
 
@@ -103,3 +125,14 @@ class ProductAccountDeterminationListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_ACCOUNT_DETERMINATION_LIST).get(params)
         return resp.auto_return(key_success='product_account_determination_list')
+
+
+class ProductAccountDeterminationDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_ACCOUNT_DETERMINATION_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='detail')

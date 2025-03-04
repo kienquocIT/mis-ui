@@ -284,18 +284,30 @@ const columns_cfg = [
         }
     },
     {
-        className: 'wrap-text w-65',
+        className: 'wrap-text w-20',
         'render': (data, type, row) => {
-            let html = ''
-            for (let i = 0; i < row?.['account_number_list'].length; i++) {
-                html += `
-                    <div class="row account_number_list_div">
-                        <div class="col-2"><span class="badge badge-outline badge-secondary w-100">${row?.['account_number_list'][i]?.['acc_code']}</span></div>
-                        <div class="col-10"><span class="text-muted">${row?.['account_number_list'][i]?.['acc_name']}</span> <span class="small text-primary">(${row?.['account_number_list'][i]?.['foreign_acc_name']})</span></div>
-                    </div>
-                `
-            }
-            return html;
+            return `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped_data'])}' class="form-select select2 selected-accounts"></select>`;
+        }
+    },
+    {
+        className: 'wrap-text w-35',
+        'render': (data, type, row) => {
+            return `<div class="selected-accounts-des"><span class="text-muted">${row?.['account_mapped_data']?.['acc_name']}</span> <span class="small text-primary">(${row?.['account_mapped_data']?.['foreign_acc_name']})</span></div>`;
+        }
+    },
+    {
+        className: 'wrap-text text-right w-10',
+        'render': (data, type, row) => {
+            let change_btn = `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-xs btn-change-account">
+               <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i class="fa-solid fa-pen-to-square"></i></span></span>
+            </a>`;
+            let save_btn = `<button type="button" data-id="${row?.['id']}" hidden class="btn btn-custom btn-primary btn-xs btn-save-change-account">
+                <span>
+                    <span class="icon"><span class="feather-icon"><i class="fa-solid fa-file-pen"></i></span></span>
+                    <span>${$.fn.gettext('Update')}</span>
+                </span>
+            </button>`;
+            return change_btn + save_btn
         }
     },
 ]
@@ -329,7 +341,6 @@ function loadAccountDeterminationTable() {
                             const accCodeB = parseInt(b?.['account_mapped']?.['acc_code'], 10);
                             return accCodeA - accCodeB;
                         });
-
                         return data_list ? data_list : [];
                     }
                     return [];
@@ -345,9 +356,95 @@ function loadAccountDeterminationTable() {
                     "targets": [1]
                 }
             ],
+            initComplete: function () {
+                $warehouse_account_determination_table.find('tbody tr .selected-accounts').each(function () {
+                    let account_mapped_data = $(this).attr('data-account-mapped')
+                    if (account_mapped_data) {
+                        account_mapped_data = JSON.parse(account_mapped_data)
+                    }
+                    $(this).initSelect2({
+                        data: (account_mapped_data ? account_mapped_data : null),
+                        ajax: {
+                            url: $warehouse_account_determination_table.attr('data-chart-of-account-url'),
+                            method: 'GET',
+                        },
+                        keyResp: 'chart_of_accounts_list',
+                        keyId: 'id',
+                        keyText: 'acc_code',
+                        templateResult: function (state) {
+                            return $(`<span class="badge badge-light">${state.data?.['acc_code']}</span> <span>${state.data?.['acc_name']}</span> <span class="small">(${state.data?.['foreign_acc_name']})</span>`);
+                        },
+                    })
+                })
+            }
         });
     }
 }
+
+$(document).on('change', '.selected-accounts', function () {
+    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+    $(this).closest('tr').find('.selected-accounts-des').html(`<span class="text-muted">${selected?.['acc_name']}</span> <span class="small text-primary">(${selected?.['foreign_acc_name']})</span>`)
+    $(this).closest('tr').find('.btn-change-account').prop('hidden', true)
+    $(this).closest('tr').find('.btn-save-change-account').prop('hidden', false)
+    $(this).closest('tr').addClass('bg-primary-light-5')
+})
+
+$(document).on('click', '.btn-save-change-account', function () {
+    let row_id = $(this).attr('data-id')
+    let row_replace_account_id = $(this).closest('tr').find('.selected-accounts').val()
+    Swal.fire({
+        html:
+        `<div class="d-flex align-items-center">
+			<div class="avatar avatar-icon avatar-soft-blue me-3"><span class="initial-wrap"><i class="fa-solid fa-repeat"></i></span></div>
+			<div>
+				<h4 class="text-blue">${$warehouse_account_determination_table.attr('data-trans-change-confirm')}</h4>
+				<p>${$warehouse_account_determination_table.attr('data-trans-change-noti')}</p>
+			</div>
+		</div>`,
+        customClass: {
+            confirmButton: 'btn btn-outline-secondary text-blue',
+            cancelButton: 'btn btn-outline-secondary text-gray',
+            container: 'swal2-has-bg',
+            htmlContainer: 'bg-transparent text-start',
+            actions:'w-100'
+        },
+        showCancelButton: true,
+        buttonsStyling: false,
+        confirmButtonText: $.fn.gettext('Confirm'),
+        cancelButtonText: $.fn.gettext('Cancel'),
+        reverseButtons: true
+    }).then((result) => {
+        if (result.value) {
+            let ajax_update_account_wh = $.fn.callAjax2({
+                url: $warehouse_account_determination_table.attr('data-url-detail').replace('/0', `/${row_id}`),
+                data: {'replace_account': row_replace_account_id},
+                method: 'PUT'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('detail')) {
+                        $.fn.notifyB({description: 'Update account determination successfully!'}, 'success');
+                        return data?.['detail'];
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+
+            Promise.all([ajax_update_account_wh]).then(
+                (results) => {
+                    $warehouse_account_determination_table.DataTable().clear().destroy()
+                    loadAccountDeterminationTable()
+                }
+            )
+        }
+    })
+})
+
+$(document).on('click', '.btn-change-account', function () {
+    $(this).closest('tr').find('.selected-accounts').prop('disabled', false)
+})
 
 $('#accounting-determination-tab').on('click', function () {
     loadAccountDeterminationTable()

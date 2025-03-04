@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.core.contract_template.views import ContractTemplateList, ContractTemplateCreate, ContractTemplateCreateAPI, \
+from .views import ContractTemplateList, ContractTemplateCreate, ContractTemplateCreateAPI, \
     ContractTemplateListAPI, ContractTemplateDetail, ContractTemplateDetailAPI, ContractTemplateUpdate, \
     ContractTemplateUpdateAPI, ContractTemplateConfigAPI
 
@@ -13,5 +13,6 @@ urlpatterns = [
     path('detail-api/<str:pk>', ContractTemplateDetailAPI.as_view(), name='ContractTemplateDetailAPI'),
     path('update/<str:pk>', ContractTemplateUpdate.as_view(), name='ContractTemplateUpdate'),
     path('update-api/<str:pk>', ContractTemplateUpdateAPI.as_view(), name='ContractTemplateUpdateAPI'),
+    # config template contract
     path('template-list', ContractTemplateConfigAPI.as_view(), name='ContractTemplateConfigAPI'),
 ]

@@ -190,6 +190,12 @@ class AppsCodeToList:
                 'title': _('Project activities'),
                 'is_active': True
             }
+        },
+        'employeeinfo': {
+            'employeecontractruntime': {
+                'title': _('HRM Signing request'),
+                'is_active': True
+            }
         }
     }
 

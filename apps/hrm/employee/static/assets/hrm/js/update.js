@@ -23,7 +23,9 @@ $(document).ready(function () {
     const _clsContract = new contract_data()
     const _editor = new editor_handle()
     $(document).on('detail.DetailLoaded', () =>{
+        // load list of employee contract
         _clsContract.load_list()
+        // load CKEditor plugin
         _editor.init()
     })
 
@@ -32,7 +34,6 @@ $(document).ready(function () {
         $('#frm_employee_hrm'),
         {
             submitHandler: function (form) {
-
                 let employeeData = {};
                 const serializerArray = SetupFormSubmit.serializerObject(form);
                 for (let key in serializerArray) {
@@ -42,7 +43,7 @@ $(document).ready(function () {
                 let contract = _clsContract.valid_data()
                 if (contract) employeeData.contract = contract
                 employeeData.last_name = `${serializerArray.last_name} ${serializerArray['middle_name']}`
-                const AttVal = $('input[name="attach_sign"]').val()
+                const AttVal = $('input[name="attachment"]').val()
                 const attachLst = AttVal.indexOf(',') !== -1 ? AttVal.split(',') : []
                 if(attachLst && attachLst.length)
                     employeeData.attachment = attachLst
@@ -57,7 +58,8 @@ $(document).ready(function () {
                         $.fn.notifyB({description: data.message}, 'success')
                         $(form)[0].reset();
                         setTimeout(() => {
-                            window.location.replace($(form).attr('data-url-redirect'));
+                            // window.location.replace($(form).attr('data-url-redirect'));
+                            window.location.reload();
                         }, 1000)
                     }
                 }, (errs) => {

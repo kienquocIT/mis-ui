@@ -1,0 +1,50 @@
+{% load static i18n %}
+<section class="draw-sign">
+    <div class="draw-wrap">
+        <div class="draw-header">
+            <h5 class="modal-title">{% trans "Employee signature" %}</h5>
+            <button type="button" class="btn-close" aria-label="Close">
+                <span>&times;</span>
+            </button>
+        </div>
+        <div class="draw-body">
+            <div class="img-draw">
+            </div>
+            <ul class="nav nav-line nav-tabs nav-light">
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_1">
+                        <span class="nav-link-text">{% trans 'From file' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                        <span class="nav-link-text">{% trans 'Draw' %}</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade" id="tab_block_1">
+                    <div id="attach_sign">
+                        <div class="custom-file">
+                            <label class="custom-file-label" for="fileInput">📂 {% trans 'Choose File' %}</label>
+                            <input class="custom-file-input" type="file" id="fileInput"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tab_block_2">
+                    <canvas id="signature_element"></canvas>
+                    <div class="clearfix mt-2"></div>
+                    <div class="navigation_signature">
+                        <button class="btn btn-sm btn-outline-danger" id="sign_clear"
+                                type="button">{% trans 'Clear, Redraw' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="draw-footer justify-content-end">
+            <button type="button" class="btn btn-primary" id="submit_runtime">
+                {% trans 'Agree' %}
+            </button>
+        </div>
+    </div>
+</section>

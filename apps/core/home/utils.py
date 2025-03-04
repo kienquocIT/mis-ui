@@ -246,9 +246,18 @@ PLAN_APP_OF_E_OFFICE = {
     }
 }
 
+PLAN_APP_OF_E_HRM = {
+    'employeeinfo': {
+        'employeecontractruntime': ReverseUrlCommon(
+            list_view_name='HRMEmployeeList', detail_view_name='HRMRuntimeSignatureDetail'
+        ).data,
+    },
+}
+
 PLAN_APP_MAP_VIEW = {
     **PLAN_APP_OF_SALE,
     **PLAN_APP_OF_E_OFFICE,
+    **PLAN_APP_OF_E_HRM,
 }
 
 APP_ID_MAP_PLAN_APP = {

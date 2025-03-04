@@ -87,7 +87,6 @@ INSTALLED_APPS = \
         'apps.core.attachment',
         'apps.core.form',
         'apps.core.recurrence',
-        'apps.core.online_sign',
         'apps.core.contract_template',
     ] + [  # Another Application
         'apps.masterdata.saledata',

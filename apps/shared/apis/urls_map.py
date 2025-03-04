@@ -791,6 +791,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     HRM_EMPLOYEE_CONTRACT_DETAIL = StringUrl('hrm/employee-info/contract/detail/{pk}')
     HRM_EMPLOYEE_SIGNATURE_LIST = StringUrl('hrm/employee-info/signature/list')
     HRM_EMPLOYEE_SIGNATURE_UPDATE = StringUrl('hrm/employee-info/signature/update/{pk}')
+    # HRM CONTRACT RUNTIME
+    HRM_CONTRACT_RUNTIME = StringUrl('hrm/employee-info/contract-signing/create')
+    HRM_CONTRACT_RUNTIME_DETAIL = StringUrl('hrm/employee-info/contract-signing/detail/{pk}')
 
     # Lease order
     LEASE_ORDER_LIST = StringUrl('leaseorder/list')
@@ -807,6 +810,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # CONTRACT TEMPLATE
     CORE_CONTRACT_TEMPLATE_LIST = StringUrl('contract-template/list')
+    CORE_CONTRACT_TEMPLATE_LIST_DD = StringUrl('contract-template/dd-list')
     CORE_CONTRACT_TEMPLATE_DETAIL = StringUrl('contract-template/detail/{pk}')
 
     # Cash inflow

@@ -18,25 +18,17 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
-msgid "Unsigned"
-msgstr "Chưa ký"
+msgid "Signature and employee not equal"
+msgstr "Số lượng chữ ký và nhân viên không khớp"
 
 #
-msgid "Signed"
-msgstr "Đã ký"
+msgid "User Signature Definition"
+msgstr "Định nghĩa chữ ký người dùng"
 
 #
-msgid "Signing"
-msgstr "Đang ký"
+msgid "keyword"
+msgstr "Từ khoá"
 
 #
-msgid "Page Not Found"
-msgstr "Trang không tồn tại"
-
-#
-msgid "Rejected"
-msgstr "Từ chối"
-
-#
-msgid "Upcoming"
-msgstr "Sắp tới"
+msgid "User assign"
+msgstr "Người dùng được chỉ định"

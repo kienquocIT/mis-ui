@@ -3,6 +3,9 @@
 {% block title %}{% trans 'Contract tempate detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'assets/core/contract-template/css/contract-template.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+    .table-bordered>:not(caption)>*{border-width: 1px;}
+    </style>
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'ContractTemplateUpdate' data.pk %}" class="btn-edit-page">
@@ -43,13 +46,11 @@
                             required
                     ></select>
             </div>
-            <div class="col-lg-6 col-md-12 form-group">
-                <label class="form-label" for="from_signatures">{% trans 'Signature replacement character' %}</label>
-                <div id="signatures"></div>
-            </div>
-            <div class="col-lg-6 col-md-12">
+            <div class="col-lg-12 col-xs-12 user_assign mb-3">
+                <label class="form-label" for="txt_template">{% trans 'User Signature Definitioned' %}</label>
             </div>
             <div class="col-lg-12 col-xs-12">
+                <label class="form-label" for="txt_template">{% trans 'Template' %}</label>
                 <textarea id="txt_template" type="text"
                         name="template"
                         class="form-control"
@@ -60,11 +61,8 @@
 {% endblock %}
 
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory" data-employee="{% url 'EmployeeListAPI' %}"
-    data-template="{% url 'ContractTemplateConfigAPI' %}">
+    <input type="text" id="url-factory" data-template="{% url 'ContractTemplateConfigAPI' %}">
 {% endblock %}
-
-{#    https://daynhauhoc.com/t/cach-in-website-ra-giay-a4/28821/10 #}
 {% block jsFooter %}
     <script src="{% static 'assets/core/contract-template/js/common.js' %}"></script>
     <script src="{% static 'assets/core/contract-template/js/detail.js' %}"></script>

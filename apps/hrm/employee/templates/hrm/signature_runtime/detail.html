@@ -1,193 +1,151 @@
-{% extends 'base.html' %}
-{% load static i18n %}
-{% block title %}{% trans 'HRM Signing request detail' %}{% endblock %}
-{% block cssHeader %}
-    <link rel="stylesheet" href="{% static 'assets/hrm/css/signing-request.css' %}" type="text/css">
-{% endblock %}
-{% block pageAction %}
-{% endblock %}
+{% load static i18n compress string_utils person_utils %}
+<!DOCTYPE html>
+<html lang="{{ base.language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}{% trans 'HRM Signing request' %} {% trans 'detail' %}{% endblock %}
+        &#8901; {{ base.tenant_current_data|parsed_title_page|safe }}
+    </title>
+    <meta name="description" content="Management Information System"/>
 
-{% block pageContent %}
-    <form id="form_signing_request" class="hidden" method="POST" data-url="{% url 'HRMRuntimeSignatureDetailAPI' pk %}">
-        {% csrf_token %}
-    </form>
-    <div class="wrap-hd-review A4">
-{#        <div class="spinner-border" role="status">#}
-{#            <span class="sr-only">Loading...</span>#}
-{#        </div>#}
-        <section class="sheet padding-20mm with-A4">
-{#            <p>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>#}
-{#            <p>Độc lập – Tự do – Hạnh phúc</p>#}
-{#            <p>__________________</p>#}
-{#            <h3>HỢP ĐỒNG MUA BÁN HÀNG HÓA[1]</h3>#}
-{#            <p>Số:…/2024/HĐMB</p>#}
-{#            <ul>#}
-{#                <li>Căn cứ Bộ luật Dân sự 2015</li>#}
-{#                <li>Căn cứ Luật Thương mại 2005 (đã được sửa đổi, bổ sung bởi Luật số 05/2017/QH14 và Luật số 44/2019/QH14)</li>#}
-{#                <li>Căn cứ nhu cầu và khả năng thực tế của các bên.</li>#}
-{#            </ul>#}
-{#            <p>Hôm nay, ngày…tháng…năm 2024, tại địa chỉ[2]:...........................................................</p>#}
-{#            <p>Chúng tôi, gồm có:</p>#}
-{#            <p>BÊN BÁN (Bên A)</p>#}
-{#            <p>Tên doanh nghiệp:........................................................................................................................</p>#}
-{#            <p>Mã số doanh nghiệp:....................................................................................................................</p>#}
-{#            <p>Địa chỉ trụ sở chính:.....................................................................................................................</p>#}
-{#            <p>Người đại diện theo pháp luật[3]: …………………………………Chức danh[4]:....................</p>#}
-{#            <p>CMND/CCCD/Hộ chiếu số[5]: ……………………cấp ngày……………nơi cấp..................</p>#}
-{#            <p>Số điện thoại: …………………………………Fax:................................................................</p>#}
-{#            <p>Tài khoản ngân hàng số[6]: ……………………….Mở tại ngân hàng:....................................</p>#}
-{#            <p>BÊN MUA (Bên B)</p>#}
-{#            <p>Tên doanh nghiệp:........................................................................................................................</p>#}
-{#            <p>Mã số doanh nghiệp:....................................................................................................................</p>#}
-{#            <p>Địa chỉ trụ sở chính:.....................................................................................................................</p>#}
-{#            <p>Người đại diện theo pháp luật[7]: …………………………………Chức danh[8]:....................</p>#}
-{#            <p>CMND/CCCD/Hộ chiếu số[9]: ……………………cấp ngày……………nơi cấp..................</p>#}
-{#            <p>Số điện thoại:…………………………………Fax:.................................................................</p>#}
-{#            <p>Tài khoản ngân hàng số[10]:……………………….Mở tại ngân hàng:....................................</p>#}
-{#            <p>Trên cơ sở thỏa thuận hoàn toàn tự nguyện, hai bên thống nhất ký kết hợp đồng mua bán hàng hóa với các điều khoản như sau:</p>#}
-{#            <p>Điều 1: Tên hàng hóa, số lượng, chất lượng, giá trị hợp đồng</p>#}
-{#            <p>Bên A bán cho bên B hàng hóa sau đây:</p>#}
-{#            <table>#}
-{#                <tr>#}
-{#                    <td><p>STT</p></td>#}
-{#                    <td><p>Tên hàng hóa</p></td>#}
-{#                    <td><p>Đơn vị</p></td>#}
-{#                    <td><p>Số lượng</p></td>#}
-{#                    <td><p>Đơn giá[11]</p></td>#}
-{#                    <td><p>Thành tiền[12]</p></td>#}
-{#                    <td><p>(VNĐ đồng)</p></td>#}
-{#                    <td><p>Ghi chú</p></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <td><p>1</p></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <td><p>2</p></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <td><p>3</p></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <td><p>4</p></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                </tr>#}
-{#                <pre><tr>#}
-{#                    <td><p>5</p></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                </tr></pre>#}
-{#                <tr>#}
-{#                    <td><p>6</p></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <td><p>7</p></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <td><p>8</p></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <td><p>9</p></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <td><p>...</p></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                    <td></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <td colspan="8"><p>Tổng cộng[13]: ………………………………………………………</p></td></tr>#}
-{#                <tr>#}
-{#                    <td colspan="8"><p>Bằng chữ:[14]………………………………………………………</p></td></tr>#}
-{#            </table>#}
-        </section>
+    <meta property="og:url" content="www.bflow.vn"/>
+    <meta property="og:type" content="website"/>
+    <meta
+            property="og:title"
+            content="{{ base.tenant_current_data.code|upper }} &#8901; {{ base.tenant_current_data|parsed_title_page|safe }}"
+    />
+    <meta property="og:description" content="Bflow - Giải pháp toàn diện cho doanh nghiệp"/>
+
+    <link rel="shortcut icon" href="{{ request.user.company_icon_uri }}">
+    <link rel="icon" href="{{ request.user.company_icon_uri }}" type="image/x-icon">
+    <meta property="og:image" content="{{ request.user.company_icon_uri }}"/>
+    <!---- CSS ---->
+    <link href="{% static 'vendors/bootstrap@4.0.0/dist/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="{% static 'assets/fonts/inter/Inter-VariableFont_slnt,wght.ttf' %}">
+    {% compress css %}
+        <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
+    {% endcompress %}
+    <link rel="stylesheet" href="{% static 'assets/hrm/css/signing-request.css' %}">
+    <!---- END CSS ----->
+
+    <!---- JS ------>
+    <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'assets/js/cdn-clone/jquery-validation/customize-add-method.js' %}"></script>
+    <!---- END JS ---------->
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <form id="form_signing_request" class="hidden" method="POST"
+                      data-url="{% url 'HRMRuntimeSignatureDetailAPI' pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" id="id">
+                </form>
+                <div class="wrap-hd-review A4">
+                    <section id="content">
+                    </section>
+                </div>
+                <div class="history-sign">
+                    <button class="btn btn-outline-blue"><i class="fa-regular fa-file-lines"></i></button>
+                    <div class="history_wrap_content">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-{% endblock %}
-{% block modalData %}
+
     <!-- Float wrap button -->
     <div class="wrap_action">
         <div class="container">
             <div class="row">
                 <div class="col text-right">
                     <button class="btn btn-lg btn-primary w-150p" type="button" id="btn_allow_signing">
-                        <span>{% trans 'Sign' %}</span>
+                        <span>{% trans 'Image Sign' %}</span>
                     </button>
-                    <button class="btn btn-lg btn-warning ml-4 w-150p" type="button">
+                    <button class="btn btn-lg btn-warning ml-4 w-150p" type="button" id="btn_reject_signing">
                         <span>{% trans 'Reject' %}</span>
                     </button>
                 </div>
             </div>
         </div>
     </div>
+
     <!-- Modal Draw -->
     {% include 'hrm/contract/modal-draw-signature.html' %}
-{% endblock %}
-{% block dataHiddenGroup %}
-    <input type="text" id="url-factory">
-{% endblock %}
-{% block jsFooter %}
+    <div hidden>
+        <a id="idx-link-to-current-employee" href="{% url 'EmployeeDetail' pk=base.employee_current_data.id %}"
+        data-value-id="{{ base.employee_current_data.id }}" title="{% trans 'Profile' %}"
+        ></a>
+        <img class="reject_url_img" src="
+    {% if base.language == 'vi' %}
+        {% static 'assets/hrm/img/contract_runtime/tu_choi.png' %}
+    {% else %}
+        {% static 'assets/hrm/img/contract_runtime/reject.png' %}
+    {% endif %}
+    ">
+    </div>
+    {% block jsCatalog %}
+        {% if jsi18n %}
+            <script src="{% url 'javascript-catalog' packages=jsi18n %}"></script>
+        {% else %}
+            <script src="{% url 'javascript-catalog' packages='null' %}"></script>
+        {% endif %}
+    {% endblock %}
+    <!------GLOBAL VARIABLE ------>
+    <script>
+        const globeFileNotFoundImg = "{% static 'assets/images/systems/file-not-found.png' %}";
+        const globeApiStatusOfRender = "{{ data.render_api_status }}";
+        let isDenied = false;
+        const globePK = "{{ pk }}";
+        switch (globeApiStatusOfRender) {
+            case "1401":
+                isDenied = true;
+                WindowControl.showUnauthenticated();
+                break;
+            case "1403":
+                isDenied = true;
+                WindowControl.showForbidden();
+                break;
+            case "1404":
+                isDenied = true;
+                WindowControl.showNotFound();
+                break;
+            case "1500":
+                isDenied = true;
+                WindowControl.showSVErrors();
+                break;
+        }
+    </script>
+    <!------GLOBAL VARIABLE ------>
+
+    <!------LIBRARY ------>
+    <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/sweetalert2/dist/sweetalert2.min.js' %}"></script>
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'assets/js/notify.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/bastion_field.js' %}"></script>
+    <script src="{% static 'assets/js/init-setup.js' %}"></script>
+    <script src="{% static 'assets/js/init-loader.js' %}"></script>
+    <script src="{% static 'vendors/fabric/index.min.js' %}"></script>
+    <!------LIBRARY ------>
+
+    <!------LIBRARY DEV EXTEND------>
+    <script src="{% static 'assets/js/cdn-clone/jquery-validation/localization/message_vi.js' %}"></script>
+    <!------LIBRARY DEV EXTEND------>
+
+    <script src="{% static 'assets/hrm/js/extend/render_review.js' %}"></script>
+
     <script src="{% static 'assets/hrm/js/extend/detail-signing-request.js' %}"></script>
-{% endblock %}
+{% if is_ga_enabled %}
+    <script async src="{{ ga_config.script }}"></script>
+{% endif %}
+</body>
+</html>

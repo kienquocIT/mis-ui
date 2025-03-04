@@ -5,7 +5,6 @@
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{% static 'assets/hrm/css/common.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/core/contract-template/css/extend/modal-submit.css' %}">
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'HRMEmployeeUpdate' data.pk %}" class="btn-edit-page">
@@ -342,7 +341,6 @@
     {% endif %}
 
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
-    <script src="{% static 'assets/hrm/js/extend/runtime-signature.js' %}"></script>
 
     <script src="{% static 'assets/hrm/js/detail.js' %}"></script>
 {% endblock %}

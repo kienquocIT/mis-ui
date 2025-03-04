@@ -1,5 +1,5 @@
 HTML_LABOR = \
-    f'<div class="mceTmpl"><table style="border-collapse: collapse; width: 100%;">' \
+    f'<table style="border-collapse: collapse; width: 100%;">' \
     f'<tbody>' \
     f'<tr>' \
     f'<td style="width: 50%; text-align: center;">' \
@@ -27,7 +27,6 @@ HTML_LABOR = \
     f'<p>Điện thoại: &hellip;</p>' \
     f'<p>Số CCCD: &hellip;</p>' \
     f'<p>Cấp ng&agrave;y: &hellip; Cấp tại: Cục Trưởng Cục cảnh s&aacute;t quản l&yacute; h&agrave;nh ch&iacute;nh về trật tự x&atilde; hội</p>' \
-    f'<p><em> </em></p>' \
     f'<p>Sau đ&acirc;y gọi l&agrave; &ldquo;<strong>Người lao động</strong>&rdquo;</p>' \
     f'<p><strong>Thoả thuận k&yacute; kết Hợp đồng Lao động (&ldquo;HĐLĐ&rdquo;) v&agrave; cam kết thực hiện đ&uacute;ng theo những điều khoản sau đ&acirc;y:</strong></p>' \
     f'<p><strong>Điều 1: Thời hạn v&agrave; C&ocirc;ng việc hợp đồng</strong></p>' \
@@ -39,7 +38,6 @@ HTML_LABOR = \
     f'<li>M&ocirc; tả C&ocirc;ng việc : Theo bảng m&ocirc; tả c&ocirc;ng việc đ&iacute;nh k&egrave;m</li>' \
     f'</ul>' \
     f'<p><strong>Điều 2: Chế độ l&agrave;m việc</strong></p>' \
-    f'<p><em> </em></p>' \
     f'<ul>' \
     f'<li>Thời gian l&agrave;m việc : Thời gian l&agrave;m việc b&igrave;nh thường từ Thứ hai đến Thứ s&aacute;u l&agrave; 40 giờ (s&aacute;ng từ 08h30 đến 12h00; chiều từ 13h00 đến 17h30)</li>' \
     f'<li>Thời gian l&agrave;m việc 4 giờ c&ograve;n lại trong tuần t&ugrave;y theo y&ecirc;u cầu c&ocirc;ng việc Cty c&oacute; quyền y&ecirc;u cầu người lao động l&agrave;m việc v&agrave;o Thứ Bảy, Chủ Nhật hoặc v&agrave;o c&aacute;c ng&agrave;y l&agrave;m việc trong tuần ngo&agrave;i thời gian l&agrave;m việc n&ecirc;u tr&ecirc;n.</li>' \
@@ -49,7 +47,6 @@ HTML_LABOR = \
     f'<ol>' \
     f'<li><strong> Quyền lợi:</strong></li>' \
     f'</ol>' \
-    f'<p><strong><em> </em></strong></p>' \
     f'<ul>' \
     f'<li style="list-style-type: none;">' \
     f'<ul>' \
@@ -75,7 +72,6 @@ HTML_LABOR = \
     f'<ol start="2">' \
     f'<li><strong> Nghĩa vụ:</strong></li>' \
     f'</ol>' \
-    f'<p><strong> </strong></p>' \
     f'<ul>' \
     f'<li style="list-style-type: none;">' \
     f'<ul>' \
@@ -89,7 +85,6 @@ HTML_LABOR = \
     f'<ol start="3">' \
     f'<li><strong> Chấm dứt HĐLĐ:</strong></li>' \
     f'</ol>' \
-    f'<p><strong> </strong></p>' \
     f'<ul>' \
     f'<li style="list-style-type: none;">' \
     f'<ul>' \
@@ -102,7 +97,6 @@ HTML_LABOR = \
     f'</li>' \
     f'</ul>' \
     f'<p><strong>Điều 4: Nghĩa vụ v&agrave; Quyền hạn của Người sử dụng lao động</strong></p>' \
-    f'<p><strong> </strong></p>' \
     f'<ol>' \
     f'<li><strong> Nghĩa vụ:</strong></li>' \
     f'</ol>' \
@@ -127,13 +121,11 @@ HTML_LABOR = \
     f'</li>' \
     f'</ul>' \
     f'<p><strong>Điều 5: Bảo mật v&agrave; Quyền Sở hữu Tr&iacute; tuệ</strong></p>' \
-    f'<p><strong> </strong></p>' \
     f'<ul>' \
     f'<li>Người lao động cam kết bảo mật tuyệt đối bất kỳ v&agrave; mọi th&ocirc;ng tin li&ecirc;n quan đến C&ocirc;ng ty, bao gồm nhưng kh&ocirc;ng giới hạn, th&ocirc;ng tin li&ecirc;n quan đến t&agrave;i ch&iacute;nh, kế to&aacute;n, kế hoạch kinh doanh, quy tr&igrave;nh hoạt động, c&aacute;c nguy&ecirc;n tắc hoặc kh&aacute;ch h&agrave;ng của C&ocirc;ng ty m&agrave; Người lao động c&oacute; được một c&aacute;ch trực tiếp hoặc gi&aacute;n tiếp trong suốt qu&aacute; tr&igrave;nh l&agrave;m việc cũng như sau khi ngừng l&agrave;m việc tại C&ocirc;ng ty. Người lao động đồng &yacute; sẽ kh&ocirc;ng tiết lộ hoặc sử dụng bất kỳ th&ocirc;ng tin n&agrave;o như vậy cho bất kỳ người, c&ocirc;ng ty hoặc đơn vị n&agrave;o kh&aacute;c v&igrave; bất cứ l&yacute; do hoặc cho bất kỳ mục đ&iacute;ch n&agrave;o, ngoại trừ trong trường hợp cần thiết để tiến h&agrave;nh c&ocirc;ng việc kinh doanh của C&ocirc;ng ty, hoặc c&oacute; sự đồng &yacute; trước bằng văn bản của C&ocirc;ng ty, hoặc việc sử dụng hoặc tiết lộ theo qui định của ph&aacute;p luật v&agrave;/hoặc theo y&ecirc;u cầu của cơ quan nh&agrave; nước c&oacute; thẩm quyền v&agrave; việc tiết lộ hoặc sử dụng n&agrave;y chỉ được thực hiện trong giới hạn m&agrave; ph&aacute;p luật hoặc cơ quan nh&agrave; nước c&oacute; thẩm quyền y&ecirc;u cầu. Trong trường hợp n&agrave;y, Người lao động sẽ th&ocirc;ng b&aacute;o cho C&ocirc;ng ty biết trước việc tiết lộ m&agrave; ph&aacute;p luật hoặc cơ quan nh&agrave; nước c&oacute; thẩm quyền y&ecirc;u cầu v&agrave; hỗ trợ C&ocirc;ng ty trong việc hạn chế đến mức tối đa việc tiết lộ n&agrave;y. Người lao động cũng được y&ecirc;u cầu tu&acirc;n thủ v&agrave; cung cấp đầy đủ những dữ liệu bảo mật của c&aacute; nh&acirc;n, &aacute;p dụng những biện ph&aacute;p bảo mật được chỉ định bởi C&ocirc;ng ty.</li>' \
     f'<li>Người lao động c&ocirc;ng nhận v&agrave; đồng &yacute; rằng mọi c&ocirc;ng việc được thực hiện v&agrave; mọi &yacute; kiến, &yacute; tưởng, vật liệu, sản phẩm, phần mềm, t&agrave;i liệu, thiết kế, bản vẽ sản phẩm, sơ đồ, kiến tr&uacute;c, quy c&aacute;ch kỹ thuật, biểu đồ, dữ liệu thử nghiệm, c&aacute;c ghi ch&uacute; của nh&agrave; lập tr&igrave;nh, c&aacute;c t&agrave;i liệu cần chuyển giao, cải tiến, kh&aacute;m ph&aacute;, phương ph&aacute;p, quy tr&igrave;nh, s&aacute;ng chế, b&iacute; mật thương mại hoặc c&aacute;c đối tượng kh&aacute;c li&ecirc;n quan đến c&ocirc;ng việc kinh doanh hoặc v&igrave; lợi &iacute;ch của C&ocirc;ng ty do Người lao động (cho d&ugrave; l&agrave; một m&igrave;nh hoặc c&ugrave;ng người kh&aacute;c) tạo lập, ph&aacute;t triển hoặc chuẩn bị trong thời hạn của HĐLĐ, bằng văn bản, bằng miệng, bằng h&igrave;nh thức điện tử, ảnh, h&igrave;nh thức quang học, hoặc bất kỳ h&igrave;nh thức n&agrave;o kh&aacute;c, đều l&agrave; t&agrave;i sản của C&ocirc;ng ty, v&agrave; tất cả c&aacute;c quyền, quyền sở hữu, quyền sở hữu tr&iacute; tuệ v&agrave; lợi &iacute;ch li&ecirc;n quan đến c&aacute;c đối tượng đ&oacute; đều thuộc về C&ocirc;ng ty v&agrave; tất cả c&aacute;c đối tượng đ&oacute; sẽ được coi l&agrave; những c&ocirc;ng việc được thu&ecirc; l&agrave;m v&agrave; được thực hiện trong qu&aacute; tr&igrave;nh Người lao động l&agrave;m việc cho C&ocirc;ng ty<em>.</em> Người lao động cam kết k&yacute; v&agrave; thực hiện c&aacute;c t&agrave;i liệu, giấy tờ cần thiết để x&aacute;c nhận hoặc chuyển giao c&aacute;c quyền n&oacute;i tr&ecirc;n cho C&ocirc;ng ty. Người lao động cũng cam kết thực hiện đ&uacute;ng v&agrave; đồng &yacute; bị r&agrave;ng buộc bởi c&aacute;c cam kết quy định tại Thỏa thuận Về Quyền Sở Hữu Tr&iacute; Tuệ được k&yacute; kết giữa Người lao động v&agrave; C&ocirc;ng ty, nếu c&oacute;.</li>' \
     f'<li>Việc Người lao động vi phạm nghĩa vụ bảo mật theo quy định tại Điều n&agrave;y sẽ cấu th&agrave;nh một vi phạm nghi&ecirc;m trọng v&agrave; l&agrave; cơ sở cho việc chấm dứt ngay lập tức HĐLĐ n&agrave;y. C&aacute;c nghĩa vụ bồi thường trong trường hợp vi phạm y&ecirc;u cầu n&agrave;y sẽ thực hiện ph&ugrave; hợp với c&aacute;c quy định tại HĐLĐ n&agrave;y v&agrave; ph&aacute;p luật hiện h&agrave;nh.</li>' \
     f'</ul>' \
-    f'<p><strong> </strong></p>' \
     f'<p><strong>Điều 6: Điều khoản Thi h&agrave;nh</strong></p>' \
     f'<ul>' \
     f'<li>Những vấn đề lao động kh&ocirc;ng ghi trong HĐLĐ n&agrave;y th&igrave; sẽ &aacute;p dụng quy định của Thoả ước lao động tập thể, trường hợp chưa c&oacute; Thoả ước lao động tập thể th&igrave; &aacute;p dụng quy định của Ph&aacute;p luật lao động.</li>' \
@@ -163,7 +155,7 @@ HTML_LABOR = \
     f'<strong>Tổng Gi&aacute;m đốc</strong></td>' \
     f'</tr>' \
     f'</tbody>' \
-    f'</table></div>'
+    f'</table>'
 
 HTML_PROBATION = \
     f'<table style="border-collapse: collapse; width: 100%;">' \

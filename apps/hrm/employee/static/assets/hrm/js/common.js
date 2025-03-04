@@ -197,7 +197,7 @@ class editor_handle {
             templateList = JSON.parse($tempLst.text())
         const isReadonly = $txtArea.hasClass('contract-readonly')
         $txtArea.tinymce({
-            height: 500,
+            height: 1123,
             menubar: false,
             plugins: ['columns', 'print', 'preview', 'paste', 'importcss', 'searchreplace', 'autolink', 'autosave',
                 'save', 'directionality', 'code', 'visualblocks', 'visualchars', 'fullscreen', 'image', 'link', 'media',
@@ -302,10 +302,11 @@ class contract_data {
                     class: 'text-center',
                     render: (data) => {
                         const stt = [
-                            $.fn.gettext('unsigned'),
-                            $.fn.gettext('signed'),
+                            $.fn.gettext('Unsigned'),
+                            $.fn.gettext('Signing'),
+                            $.fn.gettext('Signed'),
                         ]
-                        return `<span class="badge badge-${data === 0 ? 'soft-danger' : 'soft-green'}">${stt[data]}</span>`;
+                        return `<span class="badge badge-${data === 0 ? 'soft-danger': data === 1 ? 'soft-warning' : 'soft-green'}">${stt[data]}</span>`;
                     }
                 },
             ],
@@ -341,6 +342,64 @@ class contract_data {
             tinyMCE.activeEditor.setContent('');
         })
 
+        // user click button REQUEST SIGNING
+        const $requestElm = $('.request_sign');
+        $('button', $requestElm).off().on('click', function(e){
+            let dataRuntime = $('#extra_data').val();
+            if (dataRuntime)
+                dataRuntime = JSON.parse(dataRuntime);
+            let data_prepare_submit = {
+                'csrfmiddlewaretoken': $('#frm_employee_hrm input[name="csrfmiddlewaretoken"]').val(),
+                'employee_contract': $('#contract_id').val(),
+                'contract': tinymce.activeEditor.getContent(),
+                'members': []
+            }
+            let matches = data_prepare_submit.contract.match(/{{(.*?)}}/g);
+            if (matches)
+                matches = matches.map(function (item) {
+                    return item.replace(/{{|}}/g, '').trim();
+                });
+            // check data có user assign mặc định khi chọn template chưa
+            if(Object.keys(dataRuntime).length){
+                let signature_list = {}
+                let check_flag = false
+                for (let idx in dataRuntime){
+                    const item = dataRuntime[idx]
+                    if (!('id' in item)){
+                        // nếu keyword ko có user thì mở popup add user
+                        check_flag = true
+                        break
+                    }
+                    else{
+                        // kiểm tra xem keyword trong data template có trùng với keyword trong contract ko
+                        if (matches.indexOf(idx) === -1){
+                            check_flag = true
+                            break
+                        }
+                        // lấy keyword add vào signature list
+                        signature_list[idx] = {
+                            'assignee': item,
+                            'stt': false
+                        }
+                        data_prepare_submit['members'] = data_prepare_submit['members']
+                            .concat(signature_list[idx]['assignee'])
+                    }
+                }
+                if(check_flag) _this.modal_add_user_signing(matches);
+                else{
+                    data_prepare_submit['signatures'] = signature_list
+                    _this.call_sign_request(data_prepare_submit)
+                }
+            }
+            else {
+                // nếu chưa có data user assign mặc định kiểm tra trong content
+                if (matches) _this.modal_add_user_signing(matches)
+                else{
+                    $.fn.notifyB({description: $.fn.gettext('The assigned employee is missing, please verify again')}, 'failure');
+                    return false
+                }
+            }
+        });
     }
 
     load_detail(url=''){
@@ -374,12 +433,14 @@ class contract_data {
                     $('#extra_data').attr('value', data?.['content_info'] ? JSON.stringify(data.content_info) : '{}')
 
                     const signStt = [
-                        {'text': $.fn.gettext('Unsigned'), 'class': 'badge-soft-secondary'},
-                        {'text': $.fn.gettext('Signing'), 'class': 'badge-soft-primary'},
-                        {'text': $.fn.gettext('Signed'), 'class': 'badge-soft-danger'}
+                        {'text': $.fn.gettext('Unsigned'), 'class': 'badge-soft-danger'},
+                        {'text': $.fn.gettext('Signing'), 'class': 'badge-soft-warning'},
+                        {'text': $.fn.gettext('Signed'), 'class': 'badge-soft-green'}
                     ]
                     $('.sign_check span').text(signStt[data['sign_status']]['text'])
                         .addClass(signStt[data['sign_status']]['class'])
+                    $('.sign_check').removeClass('hidden')
+
                     let attachElm = $('#attachment');
                     if (data.attachment) {
                         attachElm.find('.dm-uploader-results input[name="attachment"]').remove()
@@ -399,8 +460,12 @@ class contract_data {
                             data: data.attachment,
                         })
                     }
+
+                    if (data['sign_status'] >= 1) tinymce.activeEditor.setMode('readonly');
                     tinymce.activeEditor.setContent(data.content)
-                    $('.sign_check').removeClass('hidden')
+
+                    if (data['sign_status'] === 0)
+                        $('.request_sign').removeClass('hidden')
                 }
             });
     }
@@ -426,6 +491,20 @@ class contract_data {
             catch {
                 console.log('parse data error')
             }
+            let temp = []
+            let matches = dataList.content.match(/{{(.*?)}}/g);
+            if (matches) {
+                matches = matches.map(function (item) {
+                    return item.replace(/{{|}}/g, '').trim();
+                });
+                for (let key in dataParse) {
+                    if (matches.indexOf(key) === -1) temp.push(key)
+                }
+            } else if (!matches && Object.keys(dataParse).length > 0) dataParse = {}
+            for (let idx in temp) {
+                const value = temp[idx]
+                delete dataParse[value]
+            }
             dataList.content_info = dataParse
         }
         if (formSer['attachment'] && dataList.file_type === 0)
@@ -434,100 +513,83 @@ class contract_data {
             return {}
         return dataList
     }
-}
 
-/** RUNTIME REQUEST SIGNATURE HANDLE **/
-
-class signaturesHandle {
-    template (idx=null){
-        return `<div class="block-index-${idx}" tabindex="${idx}" >` +
-                `<div class="wrap-param">` +
-                    `<input class="form-control"><b> : </b>` +
-                    `<div><select
-                        class="select2 form-select"
-                        data-method="GET"
-                        data-keyResp="employee_list"
-                        data-keyText="full_name" data-keyId="id"
-                        data-allowClear="true"
-                        multiple
-                        data-closeOnSelect="false"
-                    ></select></div>` +
-                `</div>` +
-                `<div class="wrap-action">` +
-                    `<span class="text-danger del-row font-5" title="delete param"><i class="bi bi-x-octagon"></i></span>` +
-                `</div>` +
-            `</div>`
-    }
-
-    active_action(elm){
-        const idx = elm.attr('class').slice("block-index-".length);
-        const _this = this;
-        // delete row
-        $('.del-row:not(.disabled)', elm).on('click', function(){
-            $(this).closest(`div[class*="block-index-${idx}"]`).remove()
-        })
-
-        // on focus add new row
-        $('.select2', elm).initSelect2({
-            ajax: {
-                url: $('#url-factory').attr('data-employee'),
-                method: 'GET',
-            },
-        }).on('select2:select', function(e){
-            const sltData = e.params.data.data
-            let old = $('input', elm).data('data-key') || []
-            old.push({
-                "id": sltData.id,
-                "full_name": sltData.full_name,
-                "first_name": sltData.first_name,
-                "last_name": sltData.last_name,
-                "selected": true
+    modal_add_user_signing(data){
+        const $ModalElm = $('#modal_prepare_sign');
+        const _this = this
+        if (data){
+            let html = ''
+            for (let item of data) {
+                html += `<div class="item_sign">` +
+                    `<input type="text" class="form-control" readonly value="${item}"><strong> : </strong>` +
+                    `<div><select class="form-select" id="sign_emp_${item}" multiple data-allowClear="true" data-closeOnSelect="false"></select></div></div>`
+            }
+            $ModalElm.find('.modal-body').html('').append(html)
+            $('.modal-body select', $ModalElm).each(function () {
+                $(this).initSelect2({
+                    ajax: {
+                        url: $('#url-factory').attr('data-employee'),
+                        method: 'GET',
+                    },
+                    keyResp: 'employee_list',
+                    keyText: 'full_name',
+                    keyId: "id",
+                })
+            });
+            $ModalElm.modal('show')
+            $('#submit_runtime').off().on('click', function(e){
+                e.preventDefault();
+                let data_form = {
+                    'employee_contract': $('#contract_id').val(),
+                    'contract': data,
+                }
+                let signature_list = {}
+                let value_count = 0
+                $('.item_sign').each(function () {
+                    const key = $(this).find('input').val();
+                    const value = $(this).find('select').val() || []
+                    const old = data_form.members || []
+                    if (!value.length) return false
+                    value_count++
+                    signature_list[key] = {}
+                    signature_list[key]['assignee'] = value
+                    signature_list[key]['stt'] = false
+                    data_form.members = old.concat(value)
+                });
+                data_form['signatures'] = signature_list
+                if (value_count !== data.length) {
+                    $('#modal_prepare_sign').prepend(`<ul><li><p class="text-warning">${
+                        $.fn.gettext('Signature and employee not equal')}</p></li></ul>`)
+                    return false
+                }
+                _this.call_sign_request(data);
+                $ModalElm.modal('hide');
             })
-            $('input', elm).data('data-key', old)
-        });
-
-        $('#signatures > div:last-child').on('click', function(e){
-            // kiểm tra nếu last child mới tiếp tục check
-            if (!$(this).is(":last-child")) return false
-            const t_val = $(this).find('.wrap-param > input').val();
-            if (!t_val && e.target.parentElement.classList.value.indexOf('del-row') === -1){
-                let newElm = $(_this.template($('#signatures > div').length + 1))
-                $('#signatures').append(newElm)
-                _this.active_action(newElm)
-            }
-        })
-
-        // on type first child
-        $('.wrap-param > input', elm).on('keyup', function (){
-            const regex = /[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]/g;
-            this.value = this.value.replace(regex, '')
-        })
+        }
     }
 
-    init(data=[], is_detail=false){
-        const $signElm = $('#signatures')
-        // nếu không phải là detail page thì load template đầu tiên
-        if (Object.keys(data).length === 0 && !is_detail){
-            let html = $(this.template(1))
-            html.find('.del-row').addClass('disabled')
-            $signElm.html('').append(html)
-            this.active_action(html)
-        }
-        else if (Object.keys(data).length > 0){
-            let idx = 1
-            $signElm.html('')
-            for (let key in data){
-                const item = data[key]
-                let html = $(this.template(idx))
-                html.find('input').val(key)
-                html.find('select').attr('data-onload', JSON.stringify(item))
-                if (idx === 1) html.find('.del-row').addClass('disabled')
-                $signElm.append(html)
-                html.find('input').data('data-key', item)
-                if (!is_detail) this.active_action(html)
-                else $('.select2', html).prop('disabled', true).initSelect2()
-                idx++
-            }
-        }
+    call_sign_request(data){
+        $.fn.callAjax2({
+            url: $('#url-factory').attr('data-contract-sign'),
+            method: 'POST',
+            isLoading: true,
+            sweetAlertOpts: {
+                'allowOutsideClick': true,
+                'showCancelButton': true
+            },
+            data: data
+        }).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: data.message}, 'success');
+                    $('#modal_prepare_sign').modal('hide');
+                    $('.request_sign').addClass('hidden');
+                    $('.sign_check span').text($.fn.gettext('Signing'))
+                        .removeClass('badge-soft-secondary').addClass('badge-soft-primary')
+                }
+            },
+            (error) => {
+                $.fn.notifyB({description: error.data.errors}, 'failure');
+            });
     }
 }

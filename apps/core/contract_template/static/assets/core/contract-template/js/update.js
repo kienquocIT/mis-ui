@@ -22,14 +22,9 @@ $(document).ready(function () {
                 '</tr></thead></table>')
             for (let key in data.extra_data){
                 let item = data.extra_data[key]
-                let user_full_name = '';
-                for (let idx in item){
-                    if (item[idx]?.id)
-                        user_full_name += item[idx]?.['full_name'] + ', '
-                }
                 table.append('<tr>' +
                     `<th scope="row">${key}</th>` +
-                    `<td>${user_full_name}</td>` +
+                    `<td>${item?.full_name}</td>` +
                     '</tr>')
             }
             $('.user_assign label').after(table)

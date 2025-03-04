@@ -49,3 +49,19 @@ div[class*="block-index-"] > .wrap-param{
 .signatures-list > span:first-child, .signatures-list > span:last-child{
     padding-left: 0;
 }
+/** modal style submit to sign **/
+.item_sign {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    gap: 5px;
+    max-width: 100%;
+    margin-bottom: 6px;
+}
+.item_sign input{
+    width: 30%;
+}
+.item_sign > div{
+    width: 60%;
+}

@@ -242,4 +242,20 @@ class HRMRuntimeSignatureDetailAPI(APIView):
     )
     def get(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.HRM_CONTRACT_RUNTIME_DETAIL.fill_key(pk=pk)).get()
+        if resp.state:
+            if resp.result['members'] and request.user.employee_current_data:
+                for user in resp.result['members']:
+                    if user.get('id', None) == str(request.user.employee_current_data.get('id', None)):
+                        return resp.auto_return()
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_403_FORBIDDEN
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.HRM_CONTRACT_RUNTIME_DETAIL.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = HRMMsg.HRM_SIGNED
+            return resp.result, status.HTTP_200_OK
         return resp.auto_return()

@@ -18,42 +18,6 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
-msgid "unsigned"
-msgstr "Chưa ký"
-
-#
-msgid "signed"
-msgstr "Đã ký"
-
-#
-msgid "copied!"
-msgstr "Đã sao chép!"
-
-#
-msgid "rename signature file"
-msgstr "Đổi tên tệp chữ ký"
-
-#
-msgid "Rename"
-msgstr "Đổi tên"
-
-#
-msgid "Name generator"
-msgstr "Tạo tên tự động"
-
-#
-msgid "File name is exist please rename and re-upload"
-msgstr "Tên tệp đã tồn tại vui lòng đặt tên khác và tải lại tệp"
-
-#
-msgid "File upload successfully"
-msgstr "Tệp tải lên thành công"
-
-#
-msgid "Copy image URL"
-msgstr "Sao chép URL hình ảnh"
-
-#
 msgid "Unsigned"
 msgstr "Chưa ký"
 
@@ -64,3 +28,15 @@ msgstr "Đã ký"
 #
 msgid "Signing"
 msgstr "Đang ký"
+
+#
+msgid "Page Not Found"
+msgstr "Trang không tồn tại"
+
+#
+msgid "Rejected"
+msgstr "Từ chối"
+
+#
+msgid "Upcoming"
+msgstr "Sắp tới"

@@ -25,6 +25,7 @@ $(document).ready(function () {
             submitHandler: function (form) {
                 let contractData = {};
                 const serializerArray = SetupFormSubmit.serializerObject(form);
+                const extra_data = $('.user_assign table').data('data-extra_data')
                 for (let key in serializerArray) {
                     const item = serializerArray[key]
                     if (item) contractData[key] = item
@@ -38,9 +39,16 @@ $(document).ready(function () {
                 if (matches.length){
                     let html = '';
                     for (let item of matches) {
+                        let temp = '';
+                        if (extra_data?.[item] && extra_data[item].length){
+                            temp = extra_data[item].map(function (val) {
+                                return `<option value="${val.id}" selected>${val.full_name}</option>`
+                            })
+                        }
+
                         html += `<div class="item_sign">` +
                             `<input type="text" class="form-control" readonly value="${item}"><strong> : </strong>` +
-                            `<div><select class="form-select" id="sign_emp_${item}" multiple data-allowClear="true" data-closeOnSelect="false"></select></div></div>`
+                            `<div><select class="form-select" id="sign_emp_${item}" data-allowClear="true">${temp}</select></div></div>`
                     }
                     $modal.find('.modal-body').html('').append(html)
                     $('.modal-body select', $modal).each(function () {
@@ -53,29 +61,13 @@ $(document).ready(function () {
                             keyText: 'full_name',
                             keyId: "id",
                         }).on('select2:select', function(e){
-                            let defaultData = $(this).data('data-select');
-                            const dataSelect = {
+                            $(this).data('data-select', {
                                 id: e.params.data.id,
                                 code: e.params.data.data.code,
                                 full_name: e.params.data.data.full_name
-                            };
-                            if (defaultData)
-                                defaultData.push(dataSelect)
-                            else
-                                defaultData = [dataSelect]
-
-                            $(this).data('data-select', defaultData)
-                        }).on('select2:unselect', function(e){
-                            let defaultData = $(this).data('data-select');
-                            const dataUnSlt = e.params.data.id
-
-                            for (let idx in defaultData){
-                                if (defaultData[idx].id === dataUnSlt){
-                                    delete defaultData[idx]
-                                    break
-                                }
-                            }
-                            $(this).data('data-select', defaultData)
+                            })
+                        }).on('select2:unselect', function(){
+                            $(this).removeData('data-select')
                         })
                     });
                 }
@@ -91,14 +83,16 @@ $(document).ready(function () {
                     },
                 };
                 let has_assign = true;
-                const extra_data = $('.user_assign table').data('data-extra_data')
-                if (extra_data)
+                if (extra_data && Object.keys(extra_data).length){
                     for (let idx in extra_data){
-                        if (extra_data[idx].length < 0){
-                            has_assign =  false
+                        if (extra_data[idx].length <= 0){
+                            has_assign = false
                             break;
                         }
                     }
+                    if (extra_data.length !== matches.length) has_assign = false
+                }
+                else if (matches.length) has_assign = false
                 if (!has_assign)
                     Swal.fire({
                         title: $.fn.gettext("User Signature Definition"),

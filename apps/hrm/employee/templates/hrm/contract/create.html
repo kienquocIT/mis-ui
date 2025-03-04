@@ -75,8 +75,7 @@
             {% endif %}
             {% if show_icon %}
                 <div class="col-md-12 col-lg-12 request_sign text-right hidden">
-                    <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal"
-                            data-bs-target="#modal_prepare_sign">
+                    <button class="btn btn-outline-primary btn-sm" type="button">
                         {% trans 'Sign a contract' %}</button>
                 </div>
             {% endif %}
@@ -85,7 +84,7 @@
                 <input type="hidden" name="content_info" id="extra_data">
                 <textarea
                         id="inp-remarks"
-                        data-css-url-render="{% static 'comment/css/style.css' %}"
+                        data-css-url-render="{% static 'assets/hrm/css/contract/style.css' %}"
                         type="text"
                         name="remarks"
                         class="form-control {{ addClass }}"

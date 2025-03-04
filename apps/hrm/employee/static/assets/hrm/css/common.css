@@ -75,7 +75,22 @@ legend span{
 .h-100vh {
     height: 100vh
 }
-
+/** modal style submit to sign **/
+.item_sign {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    gap: 5px;
+    max-width: 100%;
+    margin-bottom: 6px;
+}
+.item_sign input{
+    width: 30%;
+}
+.item_sign > div{
+    width: 60%;
+}
 @media screen and (min-width: 1025px){
     .style-checkbox {
         text-align: right;

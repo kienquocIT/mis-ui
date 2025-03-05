@@ -587,44 +587,46 @@ class RecoveryLoadDataHandle {
                         "price": parseFloat($costEle.valCurrency()),
                         "adjust": parseInt($adjustEle.val())
                     });
-                    dataFn = dataDepreciation;
-                    if ($startLeaseEle.length > 0 && $endLeaseEle.length > 0) {
-                        if ($startLeaseEle.val() && $endLeaseEle.val()) {
-                            let matchingRange = DepreciationControl.findMatchingRange($startLeaseEle.val(), $endLeaseEle.val(), dataDepreciation);
-                            if (matchingRange.length > 0) {
-                                let firstData = matchingRange[0];
-                                let lastData = matchingRange[matchingRange.length - 1];
-                                let accumulativeMonthStart = DepreciationControl.getAccumulativeMonth($startLeaseEle.val(), firstData?.['end']);
-                                firstData['lease_time'] = $startLeaseEle.val();
-                                firstData['lease_allocated'] = firstData['depreciation_value'] * accumulativeMonthStart;
-                                if (firstData?.['month'] === "1") {
-                                    firstData['lease_allocated'] = firstData['depreciation_value'];
-                                }
-                                firstData['lease_accumulative_allocated'] = firstData['lease_allocated'];
-                                let accumulativeMonthEnd = DepreciationControl.getAccumulativeMonth(lastData?.['begin'], $endLeaseEle.val());
-                                lastData['lease_time'] = $endLeaseEle.val();
-                                lastData['lease_allocated'] = lastData['depreciation_value'] * accumulativeMonthEnd;
-                                // Loop through matchingRange and update lease_allocated and lease_accumulative_allocated
-                                for (let i = 1; i < matchingRange.length; i++) {
-                                    if (i < (matchingRange.length - 1)) {
-                                        matchingRange[i]['lease_allocated'] = matchingRange[i]['depreciation_value'];
-                                    }
-                                    matchingRange[i]["lease_accumulative_allocated"] = matchingRange[i - 1]["lease_accumulative_allocated"] + matchingRange[i]["lease_allocated"];
-                                }
+                    // dataFn = dataDepreciation;
+                    // if ($startLeaseEle.length > 0 && $endLeaseEle.length > 0) {
+                    //     if ($startLeaseEle.val() && $endLeaseEle.val()) {
+                    //         let matchingRange = DepreciationControl.findMatchingRange($startLeaseEle.val(), $endLeaseEle.val(), dataDepreciation);
+                    //         if (matchingRange.length > 0) {
+                    //             let firstData = matchingRange[0];
+                    //             let lastData = matchingRange[matchingRange.length - 1];
+                    //             let accumulativeMonthStart = DepreciationControl.getAccumulativeMonth($startLeaseEle.val(), firstData?.['end']);
+                    //             firstData['lease_time'] = $startLeaseEle.val();
+                    //             firstData['lease_allocated'] = firstData['depreciation_value'] * accumulativeMonthStart;
+                    //             if (firstData?.['month'] === "1") {
+                    //                 firstData['lease_allocated'] = firstData['depreciation_value'];
+                    //             }
+                    //             firstData['lease_accumulative_allocated'] = firstData['lease_allocated'];
+                    //             let accumulativeMonthEnd = DepreciationControl.getAccumulativeMonth(lastData?.['begin'], $endLeaseEle.val());
+                    //             lastData['lease_time'] = $endLeaseEle.val();
+                    //             lastData['lease_allocated'] = lastData['depreciation_value'] * accumulativeMonthEnd;
+                    //             // Loop through matchingRange and update lease_allocated and lease_accumulative_allocated
+                    //             for (let i = 1; i < matchingRange.length; i++) {
+                    //                 if (i < (matchingRange.length - 1)) {
+                    //                     matchingRange[i]['lease_allocated'] = matchingRange[i]['depreciation_value'];
+                    //                 }
+                    //                 matchingRange[i]["lease_accumulative_allocated"] = matchingRange[i - 1]["lease_accumulative_allocated"] + matchingRange[i]["lease_allocated"];
+                    //             }
+                    //
+                    //             let matchingRangeJSON = {};
+                    //             for (let matching of matchingRange) {
+                    //                 matchingRangeJSON[matching?.['month']] = matching;
+                    //             }
+                    //             for (let data of dataFn) {
+                    //                 if (matchingRangeJSON.hasOwnProperty(data?.['month'])) {
+                    //                     data['lease_allocated'] = Math.round(matchingRangeJSON[data?.['month']]?.['lease_allocated']);
+                    //                     data['lease_accumulative_allocated'] = Math.round(matchingRangeJSON[data?.['month']]?.['lease_accumulative_allocated']);
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // }
 
-                                let matchingRangeJSON = {};
-                                for (let matching of matchingRange) {
-                                    matchingRangeJSON[matching?.['month']] = matching;
-                                }
-                                for (let data of dataFn) {
-                                    if (matchingRangeJSON.hasOwnProperty(data?.['month'])) {
-                                        data['lease_allocated'] = Math.round(matchingRangeJSON[data?.['month']]?.['lease_allocated']);
-                                        data['lease_accumulative_allocated'] = Math.round(matchingRangeJSON[data?.['month']]?.['lease_accumulative_allocated']);
-                                    }
-                                }
-                            }
-                        }
-                    }
+
                 }
 
                 $('#depreciation_spinner').removeAttr('hidden');

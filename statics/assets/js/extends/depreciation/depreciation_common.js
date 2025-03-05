@@ -7,7 +7,7 @@ DepreciationControl{}
 
 class DepreciationControl {
     static callDepreciation(opts) {
-        let {method, months, start_date, end_date, price, adjust = null} = opts;
+        let {method = 0, months, start_date, end_date, price, adjust = null} = opts;
         months = parseInt(months);
         price = parseFloat(price);
         adjust = parseFloat(adjust);
@@ -131,6 +131,67 @@ class DepreciationControl {
         return result;
     };
 
+    static extractDataOfRange(opts) {
+        let {data_depreciation, start_date, end_date} = opts;
+        let matchingRange = DepreciationControl.findMatchingRange(start_date, end_date, data_depreciation);
+        if (matchingRange.length > 0) {
+            let firstData = matchingRange[0];
+            let lastData = matchingRange[matchingRange.length - 1];
+            let accumulativeMonthStart = DepreciationControl.getRatioDaysOfMonth(start_date, firstData?.['end']);
+            firstData['lease_time'] = start_date;
+            firstData['lease_allocated'] = firstData['depreciation_value'] * accumulativeMonthStart;
+            // if (firstData?.['month'] === "1") {
+            //     firstData['lease_allocated'] = firstData['depreciation_value'];
+            // }
+            firstData['lease_accumulative_allocated'] = firstData['lease_allocated'];
+            let accumulativeMonthEnd = DepreciationControl.getRatioDaysOfMonth(lastData?.['begin'], end_date);
+            lastData['lease_time'] = end_date;
+            lastData['lease_allocated'] = lastData['depreciation_value'] * accumulativeMonthEnd;
+            // Loop through matchingRange and update lease_allocated and lease_accumulative_allocated
+            for (let i = 1; i < matchingRange.length; i++) {
+                if (i < (matchingRange.length - 1)) {
+                    matchingRange[i]['lease_allocated'] = matchingRange[i]['depreciation_value'];
+                }
+                matchingRange[i]["lease_accumulative_allocated"] = matchingRange[i - 1]["lease_accumulative_allocated"] + matchingRange[i]["lease_allocated"];
+            }
+
+        }
+        return matchingRange;
+    };
+
+    static mapDataOfRange(opts) {
+        let {data_depreciation, data_of_range} = opts;
+        let dataFn = data_depreciation;
+        let matchingRangeJSON = {};
+        for (let matching of data_of_range) {
+            matchingRangeJSON[matching?.['month']] = matching;
+        }
+        for (let data of dataFn) {
+            if (matchingRangeJSON.hasOwnProperty(data?.['month'])) {
+                data['lease_allocated'] = Math.round(matchingRangeJSON[data?.['month']]?.['lease_allocated']);
+                data['lease_accumulative_allocated'] = Math.round(matchingRangeJSON[data?.['month']]?.['lease_accumulative_allocated']);
+            }
+        }
+        return dataFn;
+    };
+
+    static getNetValue(opts) {
+        let {data_depreciation, current_date} = opts;
+        if (data_depreciation.length > 0) {
+            let firstData = data_depreciation[0];
+            let start_date = firstData?.['begin'];
+            let price = firstData?.['start_value'];
+            let dataOfRange = DepreciationControl.extractDataOfRange({
+                'data_depreciation': data_depreciation,
+                'start_date': start_date,
+                'end_date': current_date,
+            });
+            let last = dataOfRange.at(-1);
+            return Math.round(price - last?.['lease_accumulative_allocated']);
+        }
+        return 0;
+    };
+
     static addOneDay(date_current) {
         const [day, month, year] = date_current.split('/').map(num => parseInt(num));
         const date = new Date(year, month - 1, day);
@@ -173,6 +234,20 @@ class DepreciationControl {
     };
 
     static getAccumulativeMonth(begin, end) {
+        // Convert strings to Date objects
+        let [beginDay, beginMonth, beginYear] = begin.split('/').map(Number);
+        let [endDay, endMonth, endYear] = end.split('/').map(Number);
+        let beginDate = new Date(beginYear, beginMonth - 1, beginDay);
+        let endDate = new Date(endYear, endMonth - 1, endDay);
+        // Get total days between begin and end
+        let totalDaysBetween = (endDate - beginDate) / (1000 * 60 * 60 * 24) + 1;
+        // Get total days of the month
+        let totalDaysInMonth = new Date(beginYear, beginMonth, 0).getDate();
+        // Calculate the fraction
+        return totalDaysBetween / totalDaysInMonth;
+    };
+
+    static getRatioDaysOfMonth(begin, end) {
         // Convert strings to Date objects
         let [beginDay, beginMonth, beginYear] = begin.split('/').map(Number);
         let [endDay, endMonth, endYear] = end.split('/').map(Number);

@@ -1890,7 +1890,7 @@ const columns_cfg = [
     {
         className: 'wrap-text w-20',
         'render': (data, type, row) => {
-            return `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped_data'])}' class="form-select select2 selected-accounts"></select>`;
+            return row?.['can_change_account'] ? `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped_data'])}' class="form-select select2 selected-accounts"></select>` : `<span class="text-muted">${row?.['account_mapped_data']?.['acc_code']}</span>`;
         }
     },
     {
@@ -1911,7 +1911,7 @@ const columns_cfg = [
                     <span>${$.fn.gettext('Update')}</span>
                 </span>
             </button>`;
-            return change_btn + save_btn
+            return row?.['can_change_account'] ? change_btn + save_btn : ''
         }
     },
 ]
@@ -1945,7 +1945,6 @@ function loadAccountDeterminationTable() {
                             const accCodeB = parseInt(b?.['account_mapped']?.['acc_code'], 10);
                             return accCodeA - accCodeB;
                         });
-                        console.log(data_list)
                         return data_list ? data_list : [];
                     }
                     return [];

@@ -228,6 +228,7 @@ class ForgotPasswordView(View):
             return OutLayoutRender(request=request).render_404()
         ctx = {
             'ui_domain': settings.UI_DOMAIN,
+            'ui_fixed_domain': settings.UI_FIXED_DOMAIN,
             'captcha_enabled': settings.GG_RECAPTCHA_ENABLED,
             'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY if settings.GG_RECAPTCHA_ENABLED else None,
         }

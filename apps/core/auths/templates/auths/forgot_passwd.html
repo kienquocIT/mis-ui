@@ -397,11 +397,12 @@
 
             centerBox();
 
+            let fixedDomain = '{{ui_fixed_domain}}';
             let mainDomain = "{{ ui_domain }}";
             let hostData = window.location.hostname;
             let notFoundUrl = "{% url 'OutLayoutNotFoundView' %}";
 
-            if (hostData.endsWith(mainDomain) && hostData.indexOf(mainDomain) !== -1) {
+            if (hostData.endsWith(mainDomain) || hostData.endsWith(fixedDomain)) {
                 let validateFormOpts = {
                     focusInvalid: true,
                     validClass: "is-valid",
@@ -422,6 +423,7 @@
                 let btnCopy = $('#btnCopyPass');
                 let btnCopyNotSupport = $('#msg-copy-not-support');
 
+                $('#inp-tenant-code').val(fixedDomain.split(".")[0]);
                 $('#inp-tenant-code').val(hostData.replaceAll('.' + mainDomain, ''));
 
                 let frmOTPValidate = $('#frmSubmitOTPValidate');

@@ -25,8 +25,9 @@ class ToolCommonHandler{
         this.$APInvoiceModal = $('#modal-ap-invoice')
 
         this.$depreciationDatatable = $('#datatable-depreciation')
-        this.$loadDepreciationBtn = $('#load-depreciation-btn')
         this.$depreciationTableArea = $('#table-depreciation-area')
+
+        this.$transScript = $('#trans-script')
     }
 
     init(isUpdate=false){
@@ -240,7 +241,7 @@ class ToolCommonHandler{
                     width: '10%',
                     render: (data, type, row) => {
                         const value =  row?.['value'] ? row?.['value'] : '0';
-                        return `<span class="mask-money source-value" data-id="${row?.['source_id']}" value="${value}">${value} VND</span>`
+                        return `<span class="mask-money source-value" data-id="${row?.['source_id']}" value="${value}" data-init-money="${value}"></span>`
                     }
                 },
                 {
@@ -300,7 +301,7 @@ class ToolCommonHandler{
                     },
                     {
                         targets: 1,
-                        width: '10%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<div>${row?.['quantity_import']}</div>`
                         }
@@ -314,15 +315,23 @@ class ToolCommonHandler{
                     },
                     {
                         targets: 3,
-                        width: '20%',
+                        width: '15%',
                         render: (data, type, row) => {
-                            const totalValue = Number(row?.['product_subtotal_price']) + Number(row?.['product_tax_value'])
+                            const totalValue = Number(row?.['product_subtotal_price'])
                             return `<span class="mask-money total-value" data-init-money="${totalValue}"></span>`
                         }
                     },
                     {
                         targets: 4,
-                        width: '20%',
+                        width: '15%',
+                        render: (data, type, row) => {
+                            const totalValueAfterTax = Number(row?.['product_subtotal_price']) + Number(row?.['product_tax_value'])
+                            return `<span class="mask-money total-value-after-tax" data-init-money="${totalValueAfterTax}"></span>`
+                        }
+                    },
+                    {
+                        targets: 5,
+                        width: '15%',
                         render: (data, type, row) => {
                             const apInvoiceProdId = row?.['id']
                             let dataFADetail = $('#data-script').attr('data-instrument-tool-detail')
@@ -342,8 +351,8 @@ class ToolCommonHandler{
                         }
                     },
                     {
-                        targets: 5,
-                        width: '20%',
+                        targets: 6,
+                        width: '15%',
                         render: (data, type, row) => {
                             const apInvoiceProdId = row?.['id']
                             let value = 0
@@ -478,7 +487,6 @@ class ToolCommonHandler{
         $(document).on('click', '#btn-update-ap-invoice-value', (e)=>{
             const dataScript = $('#data-script')
             const apInvoiceId = $(e.currentTarget).attr('data-id')
-            let originalCost = 0
 
             // update source value
             const currIncreasedFA = $('.current-increased-fa[data-id="' + apInvoiceId + '"]')
@@ -492,9 +500,16 @@ class ToolCommonHandler{
                 const increasedFA = Number($(ele).closest('tr').find('.prior-increased-fa').attr('data-init-money')) || 0
                 const totalValue = Number($(ele).closest('tr').find('.total-value').attr('data-init-money')) || 0
 
+                if(currIncreaseValue<=0){
+                    const text = this.$transScript.attr('data-increase-must-positive')
+                    $.fn.notifyB({'title': '','description': text}, 'failure')
+                    isValid = false
+                    return false
+                }
+
                 //  check if value + increasedFA > totalValue
                 if ((currIncreaseValue + increasedFA) > totalValue) {
-                    const text = `The sum of current increased FA (${currIncreaseValue}) and existing increased FA (${increasedFA}) exceeds the total value (${totalValue})`
+                    const text = this.$transScript.attr('data-sum-exceed-total-value')
                     $.fn.notifyB({'title': '','description': text}, 'failure')
                     isValid = false
                     return false

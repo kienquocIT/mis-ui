@@ -65,7 +65,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-10',
+                    className: 'wrap-text w-30',
                     render: (data, type, row) => {
                         if (row.is_default) {
                             return `<span class="badge badge-light w-70">${row.code}</span>`
@@ -76,7 +76,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-75',
+                    className: 'wrap-text w-55',
                     render: (data, type, row, meta) => {
                         if (!row?.['is_default']) {
                             return `<span class="text-primary"><b>${data}</b></span>`

@@ -13,7 +13,7 @@ class HttpRequestControl:
         if meta_hosts and settings.UI_DOMAIN in meta_hosts:
             sub_code = meta_hosts.split(settings.UI_DOMAIN)[0]
             if sub_code.endswith("."):
-                return sub_code[:-1]
+                return sub_code[:-1].split(":")[0]
         return None
 
     def check(self, url_skip_check=None):

@@ -254,13 +254,25 @@
             })
 
             let mainDomain = '{{ui_domain}}';
+            let fixedDomain = '{{ui_fixed_domain}}';
             let hostData = window.location.hostname;
             let frmLoginEle = $('#form-login');
 
             if (hostData.endsWith(mainDomain)) {
+                const inp$ = $(":input[name=tenant_code]");
                 let tenantCode = hostData.split(mainDomain)[0];
                 if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
+
+                if (tenantCode){
+                    inp$.val(tenantCode).attr('readonly', 'readonly');
+                } else {
+                    inp$.focus();
+                }
+            }
+
+            if (hostData.endsWith(fixedDomain)) {
                 const inp$ = $(":input[name=tenant_code]");
+                let tenantCode = hostData.replace(fixedDomain, "").replace(/\.$/, "");
                 if (tenantCode){
                     inp$.val(tenantCode).attr('readonly', 'readonly');
                 } else {

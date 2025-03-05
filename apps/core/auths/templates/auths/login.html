@@ -260,7 +260,7 @@
 
             if (hostData.endsWith(fixedDomain)) {
                 const inp$ = $(":input[name=tenant_code]");
-                let tenantCode = hostData.replace(fixedDomain, "").replace(/\.$/, "");
+                let tenantCode = fixedDomain.split(".")[0];
                 if (tenantCode) {
                     inp$.val(tenantCode).attr('readonly', 'readonly');
                 } else {

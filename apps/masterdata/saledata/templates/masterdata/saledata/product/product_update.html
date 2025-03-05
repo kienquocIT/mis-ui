@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Product' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/dropify/dist/css/dropify.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
@@ -41,6 +42,7 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static "vendors/dropify/dist/js/dropify.min.js" %}"></script>
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
     <script src="{% static "assets/js/masterdata/saledata/product/product_common.js" %}"></script>
     <script src="{% static "assets/js/masterdata/saledata/product/product_update.js" %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>

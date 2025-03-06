@@ -11202,3 +11202,7 @@ msgstr "Tên quốc tế"
 #
 msgid "Short name"
 msgstr "Tên viết tắt"
+
+#
+msgid "Enter tax code to autofill"
+msgstr "Nhập MST để tự động điền"

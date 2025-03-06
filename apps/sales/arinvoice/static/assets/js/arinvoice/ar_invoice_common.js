@@ -967,7 +967,7 @@ class ARInvoiceHandle {
                 if (data) {
                     data = data['ar_invoice_detail'];
 
-                    console.log(data)
+                    // console.log(data)
 
                     $x.fn.renderCodeBreadcrumb(data);
 

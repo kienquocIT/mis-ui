@@ -199,12 +199,14 @@ class DepreciationControl {
 
     static getNetValue(opts) {
         let {data_depreciation, current_date} = opts;
-        if (data_depreciation.length > 0) {
-            let firstData = data_depreciation[0];
+        // Create a copy of the array to prevent mutation
+        let depreciationCopy = JSON.parse(JSON.stringify(data_depreciation));
+        if (depreciationCopy.length > 0) {
+            let firstData = depreciationCopy[0];
             let start_date = firstData?.['begin'];
             let price = firstData?.['start_value'];
             let dataOfRange = DepreciationControl.extractDataOfRange({
-                'data_depreciation': data_depreciation,
+                'data_depreciation': depreciationCopy,
                 'start_date': start_date,
                 'end_date': current_date,
             });

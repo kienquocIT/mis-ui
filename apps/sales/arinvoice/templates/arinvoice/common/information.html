@@ -12,7 +12,7 @@
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="customer-code">{% trans "Customer code" %}</label>
-                    <input disabled readonly class="form-control form-control-line" id="customer-code">
+                    <input disabled readonly class="form-control text-primary fw-bold" id="customer-code">
                 </div>
             </div>
             <div class="col-12 col-md-8 col-lg-8">
@@ -41,7 +41,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-affix-wrapper">
-                            <input class="form-control" id="tax_code">
+                            <input disabled readonly class="form-control" id="tax_code">
                         </span>
                         <button data-bs-toggle="modal" data-bs-target="#modal-view-tax-code-info" type="button" class="btn btn-outline-secondary rounded" id="view-tax-code-info">
                             <i class="bi bi-search" data-bs-toggle="tooltip" title="{% trans 'View tax code information' %}"></i>

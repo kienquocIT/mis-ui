@@ -653,11 +653,13 @@ async function CheckTaxCode() {
 }
 
 accountTaxCode.on('change', async function () {
-    let [tax_code_status, responseData] = await CheckTaxCode()
-    $('#invalid-tax').prop('hidden', tax_code_status)
-    $('#valid-tax').prop('hidden', !tax_code_status)
-    accountName.val(responseData?.['data']?.['name'])
-    accountCode.val(responseData?.['data']?.['shortName'].replace(' ', '_'))
+    if ($.fn.getPkDetail() === 'None') {
+        let [tax_code_status, responseData] = await CheckTaxCode()
+        $('#invalid-tax').prop('hidden', tax_code_status)
+        $('#valid-tax').prop('hidden', !tax_code_status)
+        accountName.val(responseData?.['data']?.['name'])
+        accountCode.val(responseData?.['data']?.['shortName'].replace(' ', '_'))
+    }
 })
 
 $('#view-tax-code-info').on('click', async function () {

@@ -1528,7 +1528,7 @@ class QuotationLoadDataHandle {
     static loadDataTableCost() {
         let $table = $('#datable-quotation-create-cost');
         let $tableProduct = $('#datable-quotation-create-product');
-        // store old cost
+        // Store old cost
         let storeCost = {};
         $table.DataTable().rows().every(function () {
             let row = this.node();
@@ -1542,13 +1542,18 @@ class QuotationLoadDataHandle {
                 }
             }
         });
-        // clear table
+        // Clear table
         $table.DataTable().clear().draw();
-        $table[0].querySelector('.quotation-create-cost-pretax-amount').innerHTML = "0";
-        $table[0].querySelector('.quotation-create-cost-taxes').innerHTML = "0";
-        $table[0].querySelector('.quotation-create-cost-total').innerHTML = "0";
-        // copy data table product to table cost
-        if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
+        let pretaxEle = $table[0].querySelector('.quotation-create-cost-pretax-amount');
+        let taxEle = $table[0].querySelector('.quotation-create-cost-taxes');
+        let totalEle = $table[0].querySelector('.quotation-create-cost-total');
+        if (pretaxEle && taxEle && totalEle) {
+            pretaxEle.innerHTML = "0";
+            taxEle.innerHTML = "0";
+            totalEle.innerHTML = "0";
+        }
+        // Begin load data
+        if ($table.DataTable().data().count() === 0) {
             let valueOrder = 0;
             // check if product is hidden zone (page update)
             let $form = $('#frm_quotation_create');

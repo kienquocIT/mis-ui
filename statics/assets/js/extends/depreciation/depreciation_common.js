@@ -128,38 +128,11 @@ class DepreciationControl {
         return result;
     };
 
-    // static extractDataOfRange(opts) {
-    //     let {data_depreciation, start_date, end_date} = opts;
-    //     let matchingRange = DepreciationControl.findMatchingRange(start_date, end_date, data_depreciation);
-    //     if (matchingRange.length > 0) {
-    //         let firstData = matchingRange[0];
-    //         let lastData = matchingRange[matchingRange.length - 1];
-    //         let accumulativeMonthStart = DepreciationControl.getRatioDaysOnMonth(start_date, firstData?.['end']);
-    //         firstData['lease_time'] = start_date;
-    //         firstData['lease_allocated'] = firstData['depreciation_value'] * accumulativeMonthStart;
-    //         // if (firstData?.['month'] === "1") {
-    //         //     firstData['lease_allocated'] = firstData['depreciation_value'];
-    //         // }
-    //         firstData['lease_accumulative_allocated'] = firstData['lease_allocated'];
-    //         let accumulativeMonthEnd = DepreciationControl.getRatioDaysOnMonth(lastData?.['begin'], end_date);
-    //         lastData['lease_time'] = end_date;
-    //         lastData['lease_allocated'] = lastData['depreciation_value'] * accumulativeMonthEnd;
-    //         // Loop through matchingRange and update lease_allocated and lease_accumulative_allocated
-    //         for (let i = 1; i < matchingRange.length; i++) {
-    //             if (i < (matchingRange.length - 1)) {
-    //                 matchingRange[i]['lease_allocated'] = matchingRange[i]['depreciation_value'];
-    //             }
-    //             matchingRange[i]["lease_accumulative_allocated"] = matchingRange[i - 1]["lease_accumulative_allocated"] + matchingRange[i]["lease_allocated"];
-    //         }
-    //
-    //     }
-    //     return matchingRange;
-    // };
-
     static extractDataOfRange(opts) {
         let {data_depreciation, start_date, end_date} = opts;
         let matchingRange = DepreciationControl.findMatchingRange(start_date, end_date, data_depreciation);
         if (matchingRange.length > 0) {
+            // Get firstData to handle
             let firstData = matchingRange[0];
             firstData['lease_allocated'] =  firstData?.['depreciation_value'];
             let beginDay = parseInt(start_date.split("/")[0]);
@@ -174,8 +147,8 @@ class DepreciationControl {
 
             }
             firstData['lease_time'] = start_date;
-            firstData['lease_accumulative_allocated'] = firstData['lease_allocated'];
-
+            firstData['lease_accumulative_allocated'] = firstData?.['lease_allocated'];
+            // Get lastData to handle
             let lastData = matchingRange.at(-1);
             lastData['lease_allocated'] =  lastData?.['depreciation_value'];
             let endDay = parseInt(end_date.split("/")[0]);
@@ -189,12 +162,20 @@ class DepreciationControl {
 
             }
             lastData['lease_time'] = end_date;
+
+            // If only one record then set lease_accumulative_allocated = lease_allocated
+            if (matchingRange.length === 1) {
+                matchingRange[0]['lease_accumulative_allocated'] = matchingRange[0]?.['lease_allocated'];
+                return matchingRange;
+            }
+            // Loop through matchingRange and handle records between firstData and lastData
             for (let i = 1; i < matchingRange.length; i++) {
                 if (i < (matchingRange.length - 1)) {
-                    matchingRange[i]['lease_allocated'] = matchingRange[i]['depreciation_value'];
+                    matchingRange[i]['lease_allocated'] = matchingRange[i]?.['depreciation_value'];
                 }
-                matchingRange[i]["lease_accumulative_allocated"] = matchingRange[i - 1]["lease_accumulative_allocated"] + matchingRange[i]["lease_allocated"];
+                matchingRange[i]["lease_accumulative_allocated"] = matchingRange[i - 1]?.["lease_accumulative_allocated"] + matchingRange[i]?.["lease_allocated"];
             }
+
 
         }
         return matchingRange;

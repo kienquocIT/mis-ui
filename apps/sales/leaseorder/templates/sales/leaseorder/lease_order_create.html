@@ -819,7 +819,7 @@
                                         <th class="w-15">{% trans 'Asset name' %}</th>
                                         <th class="w-15">{% trans 'Asset code' %}</th>
                                         <th class="w-15">{% trans 'Original cost' %}</th>
-                                        <th class="w-15">{% trans 'Previous lease time' %}</th>
+                                        <th class="w-15">{% trans 'Start depreciation' %}</th>
                                         <th class="w-15">{% trans 'Net value' %}</th>
                                         <th class="w-15">{% trans 'Depreciation time' %}</th>
                                     </tr>
@@ -955,7 +955,7 @@
                         <div class="col-12 col-md-2 col-lg-2">
                             <div class="form-group">
                                 <label class="form-label" for="depreciation_method">{% trans 'Select method' %}</label>
-                                <select class="form-select depreciation-method" id="depreciation_method"></select>
+                                <select class="form-select depreciation-method" id="depreciation_method" readonly></select>
                             </div>
                         </div>
                         <div class="col-12 col-md-2 col-lg-2">
@@ -971,7 +971,7 @@
                                 <label class="form-label required" for="depreciation_start_date">{% trans 'Start depreciation' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="depreciation_start_date"
-                                           class="form-control depreciation-start-date date-picker" autocomplete="off">
+                                           class="form-control depreciation-start-date date-picker text-black" autocomplete="off" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -983,7 +983,7 @@
                                 <label class="form-label required" for="depreciation_end_date">{% trans 'End depreciation' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="depreciation_end_date"
-                                           class="form-control depreciation-end-date date-picker" autocomplete="off">
+                                           class="form-control depreciation-end-date date-picker text-black" autocomplete="off" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>

@@ -813,20 +813,18 @@ class LeaseOrderLoadDataHandle {
         return true;
     };
 
-    static loadDataOffsetSelect(ele) {
+    static loadDataFromOffset(ele) {
         let row = ele[0].closest('tr');
         if (row && ele.val()) {
-            let productData = SelectDDControl.get_data_from_idx(ele, ele.val());
-            if (productData) {
-                let data = productData;
-                data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
-                data['uom_group'] = data?.['general_information']?.['uom_group'];
+            let offsetData = SelectDDControl.get_data_from_idx(ele, ele.val());
+            if (offsetData) {
+                let dataUOM = offsetData?.['sale_information']?.['default_uom'];
+                let dataUOMGr = offsetData?.['general_information']?.['uom_group'];
                 let uomEle = row.querySelector('.table-row-uom');
                 if (uomEle) {
-                    $(uomEle).empty();
                     LeaseOrderLoadDataHandle.loadInitS2($(uomEle));
-                    if (uomEle && data?.['unit_of_measure'] && data?.['uom_group']) {
-                        LeaseOrderLoadDataHandle.loadInitS2($(uomEle), [data?.['unit_of_measure']], {'group': data?.['uom_group']?.['id']});
+                    if (uomEle && dataUOM && dataUOMGr) {
+                        LeaseOrderLoadDataHandle.loadInitS2($(uomEle), [dataUOM], {'group': dataUOMGr?.['id']});
                     }
                 }
             }
@@ -852,7 +850,7 @@ class LeaseOrderLoadDataHandle {
                         $(offsetEle).attr('data-offset-id', dataRow?.['id']);
                         LeaseOrderLoadDataHandle.loadInitS2($(offsetEle), [dataRow]);
                         $(offsetShowEle).val(dataRow?.['title']);
-                        LeaseOrderLoadDataHandle.loadDataOffsetSelect($(offsetEle));
+                        LeaseOrderLoadDataHandle.loadDataFromOffset($(offsetEle));
                     }
                 }
             }
@@ -868,7 +866,8 @@ class LeaseOrderLoadDataHandle {
                 let assetDataEle = rowTarget.querySelector('.table-row-asset-data');
                 let offsetShowEle = rowTarget.querySelector('.table-row-offset-show');
                 let quantityEle = rowTarget.querySelector('.table-row-quantity');
-                if (assetDataEle && offsetShowEle && quantityEle) {
+                let quantityNewEle = rowTarget.querySelector('.table-row-quantity-new');
+                if (assetDataEle && offsetShowEle && quantityEle && quantityNewEle) {
                     let assetData = [];
                     let strShow = "";
                     for (let checkedEle of LeaseOrderDataTableHandle.$tableSAsset[0].querySelectorAll('.table-row-checkbox:checked')) {
@@ -884,6 +883,7 @@ class LeaseOrderLoadDataHandle {
                     $(assetDataEle).val(JSON.stringify(assetData));
                     $(offsetShowEle).val(strShow);
                     $(quantityEle).val(assetData.length);
+                    $(quantityNewEle).val(assetData.length);
                 }
             }
         }
@@ -1704,9 +1704,13 @@ class LeaseOrderLoadDataHandle {
 
     // TABLE COST
     static loadDataTableCost() {
+        /*
+        asset_type = '1' (product): use product_data {} and offset_data {} to set data row
+        asset_type = '3' (asset): use product_data {} and for data in asset_data [] to set data row
+        */
         let $table = $('#datable-quotation-create-cost');
         let $tableProduct = $('#datable-quotation-create-product');
-        // store old cost
+        // Store old cost
         let storeCost = {};
         $table.DataTable().rows().every(function () {
             let row = this.node();
@@ -1714,19 +1718,29 @@ class LeaseOrderLoadDataHandle {
             let $row = LeaseOrderDataTableHandle.$tableCost.DataTable().row(rowIndex);
             let dataRow = $row.data();
 
-            if (dataRow?.['product_data']?.['id']) {
-                if (!storeCost.hasOwnProperty(dataRow?.['product_data']?.['id'])) {
-                    storeCost[dataRow?.['product_data']?.['id']] = dataRow;
+            if (dataRow?.['offset_data']?.['id']) {
+                if (!storeCost.hasOwnProperty(dataRow?.['offset_data']?.['id'])) {
+                    storeCost[dataRow?.['offset_data']?.['id']] = dataRow;
+                }
+            }
+            if (dataRow?.['asset_data']?.['id']) {
+                if (!storeCost.hasOwnProperty(dataRow?.['asset_data']?.['id'])) {
+                    storeCost[dataRow?.['asset_data']?.['id']] = dataRow;
                 }
             }
         });
-        // clear table
+        // Clear table
         $table.DataTable().clear().draw();
-        $table[0].querySelector('.quotation-create-cost-pretax-amount').innerHTML = "0";
-        $table[0].querySelector('.quotation-create-cost-taxes').innerHTML = "0";
-        $table[0].querySelector('.quotation-create-cost-total').innerHTML = "0";
-        // copy data table product to table cost
-        if ($table.DataTable().data().count() === 0) {  // if dataTable empty then add init
+        let pretaxEle = $table[0].querySelector('.quotation-create-cost-pretax-amount');
+        let taxEle = $table[0].querySelector('.quotation-create-cost-taxes');
+        let totalEle = $table[0].querySelector('.quotation-create-cost-total');
+        if (pretaxEle && taxEle && totalEle) {
+            pretaxEle.innerHTML = "0";
+            taxEle.innerHTML = "0";
+            totalEle.innerHTML = "0";
+        }
+        // Begin load data
+        if ($table.DataTable().data().count() === 0) {
             let valueOrder = 0;
             // check if product is hidden zone (page update)
             let isHidden = false;
@@ -1750,6 +1764,7 @@ class LeaseOrderLoadDataHandle {
                             "order": valueOrder,
                             "product_id": data?.['product_data']?.['id'],
                             "product_data": data?.['product_data'],
+                            "asset_type": data?.['asset_type'],
                             "offset_id": data?.['offset_data']?.['id'],
                             "offset_data": data?.['offset_data'],
                             "uom_id": data?.['uom_data']?.['id'],
@@ -1763,8 +1778,8 @@ class LeaseOrderLoadDataHandle {
                             "product_tax_amount": data?.['product_tax_amount'],
                             "product_subtotal_price": data?.['product_subtotal_price'],
                         }
-                        if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
-                            dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                        if (storeCost.hasOwnProperty(dataAdd?.['offset_data']?.['id'])) {
+                            dataAdd = storeCost[dataAdd?.['offset_data']?.['id']];
                             dataAdd['product_quantity'] = data?.['product_quantity_new'];
                             dataAdd['product_quantity_time'] = data?.['product_quantity_time'];
                             dataAdd['uom_id'] = data?.['uom_data']?.['id'];
@@ -1812,15 +1827,16 @@ class LeaseOrderLoadDataHandle {
                     let valueSubtotal = 0;
                     let valueQuantity = 0;
                     let shipping = row.querySelector('.table-row-shipping');
-
+                    // asset_type = 3: Asset
                     for (let assetData of dataRow?.['asset_data'] ? dataRow?.['asset_data'] : []) {
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
                             "product_id": dataRow?.['product_data']?.['id'],
                             "product_data": dataRow?.['product_data'],
-                            "asset_id": assetData?.['asset_data']?.['id'],
-                            "asset_data": assetData?.['asset_data'],
+                            "asset_type": dataRow?.['asset_type'],
+                            "asset_id": assetData?.['asset_id'],
+                            "asset_data": assetData,
                             "uom_id": dataRow?.['uom_data']?.['id'],
                             "uom_data": dataRow?.['uom_data'],
                             "uom_time_id": dataRow?.['uom_time_data']?.['id'],
@@ -1829,9 +1845,13 @@ class LeaseOrderLoadDataHandle {
                             "tax_data": dataRow?.['tax_data'],
                             "product_quantity": 1,
                             "product_quantity_time": dataRow?.['product_quantity_time'],
+                            "product_cost_price": assetData?.['origin_cost'],
+                            "product_depreciation_time": assetData?.['depreciation_time'],
+                            "product_depreciation_start_date": assetData?.['depreciation_start_date'],
+                            "product_depreciation_end_date": assetData?.['depreciation_end_date'],
                         }
-                        if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
-                            dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                        if (storeCost.hasOwnProperty(dataAdd?.['asset_data']?.['id'])) {
+                            dataAdd = storeCost[dataAdd?.['asset_data']?.['id']];
                             dataAdd['product_quantity'] = dataRow?.['product_quantity_new'];
                             dataAdd['product_quantity_time'] = dataRow?.['product_quantity_time'];
                             dataAdd['uom_id'] = dataRow?.['uom_data']?.['id'];
@@ -1841,14 +1861,14 @@ class LeaseOrderLoadDataHandle {
                             $table.DataTable().row.add(dataAdd).draw().node();
                         }
                     }
-
-
-                    if (dataRow?.['offset_data']?.['id']) { // PRODUCT
+                    // asset_type = 1: Offset
+                    if (dataRow?.['offset_data']?.['id']) {
                         valueOrder++
                         let dataAdd = {
                             "order": valueOrder,
                             "product_id": dataRow?.['product_data']?.['id'],
                             "product_data": dataRow?.['product_data'],
+                            "asset_type": dataRow?.['asset_type'],
                             "offset_id": dataRow?.['offset_data']?.['id'],
                             "offset_data": dataRow?.['offset_data'],
                             "uom_id": dataRow?.['uom_data']?.['id'],
@@ -1860,8 +1880,8 @@ class LeaseOrderLoadDataHandle {
                             "product_quantity": dataRow?.['product_quantity_new'],
                             "product_quantity_time": dataRow?.['product_quantity_time'],
                         }
-                        if (storeCost.hasOwnProperty(dataAdd?.['product_data']?.['id'])) {
-                            dataAdd = storeCost[dataAdd?.['product_data']?.['id']];
+                        if (storeCost.hasOwnProperty(dataAdd?.['offset_data']?.['id'])) {
+                            dataAdd = storeCost[dataAdd?.['offset_data']?.['id']];
                             dataAdd['product_quantity'] = dataRow?.['product_quantity_new'];
                             dataAdd['product_quantity_time'] = dataRow?.['product_quantity_time'];
                             dataAdd['uom_id'] = dataRow?.['uom_data']?.['id'];
@@ -1908,6 +1928,9 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadDataTableCostLeased() {
+        /*
+        asset_type = '1' (product): use product_data {} and for data in product_quantity_leased_data to set data row
+        */
         let $tableLeased = $('#datable-quotation-create-cost-leased');
         let $tableProduct = $('#datable-quotation-create-product');
         // store old cost
@@ -2143,11 +2166,17 @@ class LeaseOrderLoadDataHandle {
                     }
                 }
             }
-
+            let assetType = "";
+            let assetTypeEle = row.querySelector('.table-row-asset-type');
+            if (assetTypeEle) {
+                assetType = $(assetTypeEle).val();
+            }
             let depreciationMethodEle = row.querySelector('.table-row-depreciation-method');
             let $methodEle = $('#depreciation_method');
             if (depreciationMethodEle && $methodEle.length > 0) {
-                $methodEle.removeAttr('readonly');
+                if (assetType === "1") {
+                    $methodEle.removeAttr('readonly');
+                }
                 LeaseOrderLoadDataHandle.loadInitS2($methodEle, LeaseOrderLoadDataHandle.dataDepreciationMethod, {}, LeaseOrderLoadDataHandle.$depreciationModal);
                 if ($(depreciationMethodEle).val()) {
                     $methodEle.val(parseInt($(depreciationMethodEle).val())).trigger('change');
@@ -2215,7 +2244,9 @@ class LeaseOrderLoadDataHandle {
             let $startDateEle = $('#depreciation_start_date');
             if (depreciationStartDateEle && $startDateEle.length > 0) {
                 $startDateEle.val("").trigger('change');
-                $startDateEle.removeAttr('disabled');
+                if (assetType === "1") {
+                    $startDateEle.removeAttr('disabled');
+                }
                 if ($(depreciationStartDateEle).val()) {
                     $startDateEle.val(moment($(depreciationStartDateEle).val()).format('DD/MM/YYYY'));
                 }
@@ -2245,7 +2276,9 @@ class LeaseOrderLoadDataHandle {
             let $endDateEle = $('#depreciation_end_date');
             if (depreciationEndDateEle && $endDateEle.length > 0) {
                 $endDateEle.val("").trigger('change');
-                $endDateEle.removeAttr('disabled');
+                if (assetType === "1") {
+                    $endDateEle.removeAttr('disabled');
+                }
                 if ($(depreciationEndDateEle).val()) {
                     $endDateEle.val(moment($(depreciationEndDateEle).val()).format('DD/MM/YYYY'));
                 }
@@ -2296,8 +2329,22 @@ class LeaseOrderLoadDataHandle {
                     $leaseEndDateEle.attr('disabled', 'true');
                 }
             }
+            // Case row is asset then use depreciation_data of asset to render $tableDepreciationDetail
+            let assetEle = row.querySelector('.table-row-asset');
+            if (assetEle && assetType === "3") {
+                let dataAsset = SelectDDControl.get_data_from_idx($(assetEle), $(assetEle).val());
+                    if (dataAsset?.['depreciation_data']) {
+                        LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
+                        LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataAsset?.['depreciation_data']).draw();
+                        return true;
+                    }
+            }
+            // Case row is offset then use loadDataTableDepreciation to render $tableDepreciationDetail
+            LeaseOrderLoadDataHandle.loadDataTableDepreciation();
+
+
         }
-        LeaseOrderLoadDataHandle.loadDataTableDepreciation();
+
         return true;
     };
 
@@ -3221,7 +3268,9 @@ class LeaseOrderDataTableHandle {
     static dataTableProduct(data) {
         /*
         asset_type = '1' (product): select 1 offset item and declare quantity in #selectQuantityModal
-        asset_type = '3' (asset): select multiple offset items and quantity is total of offset items
+        data row have product_data {} (.table-row-item) and offset_data {} (.table-row-offset)
+        asset_type = '3' (asset): select multiple assets and quantity is total of assets
+        data row have product_data {} (.table-row-item) and asset_data [] (.table-row-asset-data)
         */
         LeaseOrderDataTableHandle.$tableProduct.DataTableDefault({
             styleDom: 'hide-foot',
@@ -3352,11 +3401,9 @@ class LeaseOrderDataTableHandle {
                         let dataZone = "lease_products_data";
                         return `<select 
                                     class="form-select table-row-uom"
-                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-uom')}"
-                                    data-method="GET"
-                                    data-keyResp="unit_of_measure"
                                     data-zone="${dataZone}"
                                     required
+                                    readonly
                                  >
                                 </select>`;
                     },
@@ -3590,7 +3637,10 @@ class LeaseOrderDataTableHandle {
     };
 
     static dataTableCost(data) {
-        // init dataTable
+        /*
+        asset_type = '1' (product): data row have product_data {} (.table-row-item) and offset_data {} (.table-row-offset)
+        asset_type = '3' (asset): data row have product_data {} (.table-row-item) and asset_data {} (.table-row-asset)
+        */
         LeaseOrderDataTableHandle.$tableCost.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
@@ -3631,16 +3681,20 @@ class LeaseOrderDataTableHandle {
                                             readonly
                                         >
                                         </select>
+                                        <select 
+                                            class="form-select table-row-asset-type"
+                                         >
+                                        </select>
                                         <select
                                             class="form-select table-row-offset"
-                                            data-product-id="${row?.['offset_data']?.['id']}"
+                                            data-offset-id="${row?.['offset_data']?.['id']}"
                                             data-zone="${dataZone}"
                                             readonly
                                         >
                                         </select>
                                         <select
                                             class="form-select table-row-asset"
-                                            data-product-id="${row?.['asset_data']?.['id']}"
+                                            data-asset-id="${row?.['asset_data']?.['id']}"
                                             data-zone="${dataZone}"
                                             readonly
                                         >
@@ -3655,7 +3709,11 @@ class LeaseOrderDataTableHandle {
                     targets: 2,
                     width: '12%',
                     render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-code" rows="2" readonly>${row?.['product_data']?.['code'] ? row?.['product_data']?.['code'] : ''}</textarea>`;
+                        let target = row?.['asset_data'];
+                        if (row?.['offset_data']?.['id']) {
+                            target = row?.['offset_data']
+                        }
+                        return `<textarea class="form-control table-row-code" rows="2" readonly>${target?.['code'] ? target?.['code'] : ''}</textarea>`;
                     }
                 },
                 {
@@ -3665,9 +3723,6 @@ class LeaseOrderDataTableHandle {
                         let dataZone = "lease_costs_data";
                         return `<select 
                                     class="form-select table-row-uom disabled-custom-show zone-readonly"
-                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-uom')}"
-                                    data-method="GET"
-                                    data-keyResp="unit_of_measure"
                                     data-zone="${dataZone}"
                                     readonly
                                 >
@@ -3711,6 +3766,10 @@ class LeaseOrderDataTableHandle {
                     width: '15%',
                     render: (data, type, row) => {
                         let dataZone = "lease_costs_data";
+                        let readonly = "readonly";
+                        if (row?.['asset_type'] === 1) {
+                            readonly = "";
+                        }
                         return `<div class="row">
                                     <input 
                                         type="text" 
@@ -3718,6 +3777,7 @@ class LeaseOrderDataTableHandle {
                                         value="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"
                                         data-return-type="number"
                                         data-zone="${dataZone}"
+                                        ${readonly}
                                     >
                                 </div>`;
                     }
@@ -3727,6 +3787,10 @@ class LeaseOrderDataTableHandle {
                     width: '15%',
                     render: (data, type, row) => {
                         let dataZone = "lease_costs_data";
+                        let readonly = "readonly";
+                        if (row?.['asset_type'] === 1) {
+                            readonly = "";
+                        }
                         return `<div class="row">
                                     <div class="d-flex align-items-center">
                                         <div class="input-group">
@@ -3735,6 +3799,7 @@ class LeaseOrderDataTableHandle {
                                                 class="form-control table-row-depreciation-time" 
                                                 value="${row?.['product_depreciation_time'] ? row?.['product_depreciation_time'] : 0}"
                                                 data-zone="${dataZone}"
+                                                ${readonly}
                                             >
                                             <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
                                         </div>
@@ -3778,6 +3843,7 @@ class LeaseOrderDataTableHandle {
             ],
             rowCallback: function (row, data, index) {
                 let itemEle = row.querySelector('.table-row-item');
+                let assetTypeEle = row.querySelector('.table-row-asset-type');
                 let offsetEle = row.querySelector('.table-row-offset');
                 let assetEle = row.querySelector('.table-row-asset');
                 let uomEle = row.querySelector('.table-row-uom');
@@ -3789,6 +3855,12 @@ class LeaseOrderDataTableHandle {
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(itemEle), dataS2);
                     $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
+                }
+                if (assetTypeEle) {
+                    LeaseOrderLoadDataHandle.loadInitS2($(assetTypeEle), LeaseOrderLoadDataHandle.dataAssetType);
+                    if (data?.['asset_type']) {
+                        $(assetTypeEle).val(data?.['asset_type']).trigger('change');
+                    }
                 }
                 if (offsetEle) {
                     let dataS2 = [];
@@ -3828,7 +3900,9 @@ class LeaseOrderDataTableHandle {
     };
 
     static dataTableCostLeased(data) {
-        // init dataTable
+        /*
+        asset_type = '1' (product): data row have product_data {} (.table-row-item) and offset_data {} (.table-row-offset)
+        */
         LeaseOrderDataTableHandle.$tableCostLeased.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
@@ -4969,10 +5043,10 @@ class LeaseOrderDataTableHandle {
                                 }
                             }
                         }
-                        if (row?.['asset_id'] && row?.['asset_data']) {
+                        if (row?.['asset_id']) {
                             return `<div class="form-check form-check-lg d-flex align-items-center">
                                         <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-asset-${row?.['asset_id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
-                                        <label class="form-check-label table-row-title" for="s-asset-${row?.['asset_id'].replace(/-/g, "")}">${row?.['asset_data']?.['title'] ? row?.['asset_data']?.['title'] : ''}</label>
+                                        <label class="form-check-label table-row-title" for="s-asset-${row?.['asset_id'].replace(/-/g, "")}">${row?.['title'] ? row?.['title'] : ''}</label>
                                     </div>`;
                         }
                         return `<span>--</span>`;
@@ -4981,7 +5055,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row?.['asset_data']?.['code'] ? row?.['asset_data']?.['code'] : ''}</span>`;
+                        return `<span class="table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>`;
                     }
                 },
                 {
@@ -4993,7 +5067,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span>${row?.['lease_time_previous']}</span>`;
+                        return `<span>${moment(row?.['depreciation_start_date']).format('DD/MM/YYYY')}</span>`;
                     }
                 },
                 {
@@ -7294,6 +7368,12 @@ class LeaseOrderSubmitHandle {
                     rowData['product_title'] = dataProduct?.['title'];
                     rowData['product_code'] = dataProduct?.['code'];
                     rowData['product_data'] = dataProduct;
+                }
+                let assetType = row.querySelector('.table-row-asset-type');
+                if (assetType) {
+                    if ($(assetType).val()) {
+                        rowData['asset_type'] = parseInt($(assetType).val());
+                    }
                 }
                 let offsetEle = row.querySelector('.table-row-offset');
                 if (offsetEle) {

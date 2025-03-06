@@ -54,7 +54,7 @@ $(function () {
         GRLoadDataHandle.POSelectEle.on('change', function () {
             GRLoadDataHandle.loadChangePO($(this));
             GRLoadDataHandle.loadClearModal();
-            GRLoadDataHandle.loadCallAjaxProduct();
+            GRLoadDataHandle.loadCallAjaxPOProduct();
             $('#btn-edit-product-good-receipt').click();
         });
 

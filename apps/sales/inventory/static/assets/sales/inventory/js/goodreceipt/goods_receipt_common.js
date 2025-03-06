@@ -295,7 +295,7 @@ class GRLoadDataHandle {
         }
     };
 
-    static loadCallAjaxProduct() {
+    static loadCallAjaxPOProduct() {
         let frm = new SetupFormSubmit(GRDataTableHandle.tablePOProduct);
         if (GRLoadDataHandle.POSelectEle.val()) {
             if (GRDataTableHandle.tablePOProduct[0].querySelector('.dataTables_empty')) {
@@ -311,14 +311,14 @@ class GRLoadDataHandle {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (data.hasOwnProperty('purchase_order_product_gr') && Array.isArray(data.purchase_order_product_gr)) {
-                                let dataValid = [];
-                                for (let dataPOPro of data.purchase_order_product_gr) {
-                                    if (dataPOPro?.['product_data'].hasOwnProperty('product_choice') && Array.isArray(dataPOPro?.['product_data']?.['product_choice'])) {
-                                        if (dataPOPro?.['product_data']?.['product_choice'].includes(1)) {  // has choice allow inventory
-                                            dataValid.push(dataPOPro);
-                                        }
-                                    }
-                                }
+                                let dataValid = data.purchase_order_product_gr;
+                                // for (let dataPOPro of data.purchase_order_product_gr) {
+                                //     if (dataPOPro?.['product_data'].hasOwnProperty('product_choice') && Array.isArray(dataPOPro?.['product_data']?.['product_choice'])) {
+                                //         if (dataPOPro?.['product_data']?.['product_choice'].includes(1)) {  // has choice allow inventory
+                                //             dataValid.push(dataPOPro);
+                                //         }
+                                //     }
+                                // }
                                 GRLoadDataHandle.initPOProductEle.val(JSON.stringify(dataValid));
                                 GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                                 GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataValid).draw();

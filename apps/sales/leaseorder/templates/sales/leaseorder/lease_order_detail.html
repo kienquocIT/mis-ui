@@ -800,6 +800,46 @@
             </div>
 
             <div
+                    class="modal fade" id="selectAssetModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectAssetModal"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select asset' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <table
+                                        id="table-select-asset"
+                                        class="table nowrap w-100 mb-5"
+                                >
+                                    <thead>
+                                    <tr class="bg-light">
+                                        <th class="w-15">{% trans 'Asset name' %}</th>
+                                        <th class="w-15">{% trans 'Asset code' %}</th>
+                                        <th class="w-15">{% trans 'Original cost' %}</th>
+                                        <th class="w-15">{% trans 'Start depreciation' %}</th>
+                                        <th class="w-15">{% trans 'Net value' %}</th>
+                                        <th class="w-15">{% trans 'Depreciation time' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-asset" data-bs-dismiss="modal" data-zone="lease_products_data">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
                     class="modal fade" id="selectQuantityModal" tabindex="-1"
                     role="dialog" aria-labelledby="selectQuantityModal"
             >

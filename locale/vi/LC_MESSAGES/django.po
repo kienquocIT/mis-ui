@@ -11198,3 +11198,7 @@ msgstr "Xác nhận thay đổi?"
 #
 msgid "International name"
 msgstr "Tên quốc tế"
+
+#
+msgid "Short name"
+msgstr "Tên viết tắt"

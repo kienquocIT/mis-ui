@@ -103,9 +103,6 @@ $(document).ready(function () {
                     rowIdx: true,
                     reloadCurrency: true,
                     paging: false,
-                    scrollX: '100vw',
-                    scrollY: '18vw',
-                    scrollCollapse: true,
                     ajax: {
                         url: frm.dataUrl,
                         data: {'product_type_mapped_id': product_type_mapped_id},

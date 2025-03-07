@@ -1924,9 +1924,6 @@ function loadAccountDeterminationTable() {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
-            scrollY: '15vw',
-            scrollCollapse: true,
             ajax: {
                 url: frm.dataUrl,
                 data: {'product_mapped_id': $.fn.getPkDetail()},

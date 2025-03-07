@@ -17,17 +17,9 @@ $(document).ready(function() {
             }
         },
         {
-            className: 'wrap-text w-20',
+            className: 'wrap-text w-60',
             'render': (data, type, row) => {
-                return `<span class="text-muted">${row?.['account_mapped']?.['acc_code']}</span>`;
-            }
-        },
-        {
-            className: 'wrap-text w-40',
-            'render': (data, type, row) => {
-                return `<span class="text-muted">${row?.['account_mapped']?.['acc_name']}</span>
-                        <br>
-                        <span class="small text-primary">(${row?.['account_mapped']?.['foreign_acc_name']})</span>`;
+                return `<div data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="account-des"></div>`;
             }
         },
     ]
@@ -44,6 +36,8 @@ $(document).ready(function() {
             account_determination_table.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
+                scrollY: '65vh',
+                scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
                     url: frm.dataUrl,
@@ -80,14 +74,36 @@ $(document).ready(function() {
                     },
                 },
                 columns: columns_cfg,
+                initComplete: function () {
+                    $('.account-des').each(function () {
+                        let account_mapped_data = $(this).attr('data-account-mapped') ? JSON.parse($(this).attr('data-account-mapped')) : []
+                        for (let i = 0; i < account_mapped_data.length; i++) {
+                            $(this).append(
+                                `<div class="mb-2"><span class="badge badge-outline badge-light" style="font-size: larger">${account_mapped_data[i]?.['acc_code']}</span> <span class="text-muted">${account_mapped_data[i]?.['acc_name']}</span> <span class="small text-primary">(${account_mapped_data[i]?.['foreign_acc_name']})</span></div>`
+                            )
+                        }
+                    })
+                }
             });
         }
         else {
             account_determination_table.DataTableDefault({
                 rowIdx: true,
+                scrollY: '65vh',
+                scrollCollapse: true,
                 reloadCurrency: true,
                 data: data_list,
                 columns: columns_cfg,
+                initComplete: function () {
+                    $('.account-des').each(function () {
+                        let account_mapped_data = $(this).attr('data-account-mapped') ? JSON.parse($(this).attr('data-account-mapped')) : []
+                        for (let i = 0; i < account_mapped_data.length; i++) {
+                            $(this).append(
+                                `<div class="mb-2"><span class="badge badge-outline badge-light" style="font-size: larger">${account_mapped_data[i]?.['acc_code']}</span> <span class="text-muted">${account_mapped_data[i]?.['acc_name']}</span> <span class="small text-primary">(${account_mapped_data[i]?.['foreign_acc_name']})</span></div>`
+                            )
+                        }
+                    })
+                }
             });
         }
     }

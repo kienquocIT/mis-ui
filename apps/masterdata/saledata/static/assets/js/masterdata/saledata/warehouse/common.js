@@ -280,19 +280,19 @@ const columns_cfg = [
     {
         className: 'wrap-text w-30',
         'render': (data, type, row) => {
-            return `<span class="text-muted">${row?.['title']}</span>`;
+            return `<span class="text-muted">${row?.['title']}</span><br><span class="small text-primary">${row?.['foreign_title']}</span>`;
         }
     },
     {
         className: 'wrap-text w-20',
         'render': (data, type, row) => {
-            return row?.['can_change_account'] ? `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped_data'])}' class="form-select select2 selected-accounts"></select>` : `<span class="text-muted">${row?.['account_mapped_data']?.['acc_code']}</span>`;
+            return `<select multiple disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 selected-accounts"></select>`;
         }
     },
     {
         className: 'wrap-text w-35',
         'render': (data, type, row) => {
-            return `<div class="selected-accounts-des"><span class="text-muted">${row?.['account_mapped_data']?.['acc_name']}</span> <span class="small text-primary">(${row?.['account_mapped_data']?.['foreign_acc_name']})</span></div>`;
+            return `<div class="selected-accounts-des"></div>`;
         }
     },
     {
@@ -358,12 +358,9 @@ function loadAccountDeterminationTable() {
             ],
             initComplete: function () {
                 $warehouse_account_determination_table.find('tbody tr .selected-accounts').each(function () {
-                    let account_mapped_data = $(this).attr('data-account-mapped')
-                    if (account_mapped_data) {
-                        account_mapped_data = JSON.parse(account_mapped_data)
-                    }
+                    let account_mapped = $(this).attr('data-account-mapped') ? JSON.parse($(this).attr('data-account-mapped')) : []
                     $(this).initSelect2({
-                        data: (account_mapped_data ? account_mapped_data : null),
+                        data: (account_mapped ? account_mapped : null),
                         ajax: {
                             url: $warehouse_account_determination_table.attr('data-chart-of-account-url'),
                             method: 'GET',
@@ -375,23 +372,21 @@ function loadAccountDeterminationTable() {
                             return $(`<span class="badge badge-light">${state.data?.['acc_code']}</span> <span>${state.data?.['acc_name']}</span> <span class="small">(${state.data?.['foreign_acc_name']})</span>`);
                         },
                     })
+
+                    for (let i = 0; i < account_mapped.length; i++) {
+                        $(this).closest('tr').find('.selected-accounts-des').append(
+                            `<span class="text-muted">${account_mapped[i]?.['acc_code']}</span> - <span class="text-muted">${account_mapped[i]?.['acc_name']}</span> <span class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</span><br>`
+                        )
+                    }
                 })
             }
         });
     }
 }
 
-$(document).on('change', '.selected-accounts', function () {
-    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-    $(this).closest('tr').find('.selected-accounts-des').html(`<span class="text-muted">${selected?.['acc_name']}</span> <span class="small text-primary">(${selected?.['foreign_acc_name']})</span>`)
-    $(this).closest('tr').find('.btn-change-account').prop('hidden', true)
-    $(this).closest('tr').find('.btn-save-change-account').prop('hidden', false)
-    $(this).closest('tr').addClass('bg-primary-light-5')
-})
-
 $(document).on('click', '.btn-save-change-account', function () {
     let row_id = $(this).attr('data-id')
-    let row_replace_account_id = $(this).closest('tr').find('.selected-accounts').val()
+    let row_replace_account = $(this).closest('tr').find('.selected-accounts').val()
     Swal.fire({
         html:
         `<div class="d-flex align-items-center">
@@ -417,7 +412,7 @@ $(document).on('click', '.btn-save-change-account', function () {
         if (result.value) {
             let ajax_update_account_wh = $.fn.callAjax2({
                 url: $warehouse_account_determination_table.attr('data-url-detail').replace('/0', `/${row_id}`),
-                data: {'replace_account': row_replace_account_id},
+                data: {'replace_account': row_replace_account},
                 method: 'PUT'
             }).then(
                 (resp) => {

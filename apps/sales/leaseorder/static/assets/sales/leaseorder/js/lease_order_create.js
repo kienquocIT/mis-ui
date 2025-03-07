@@ -32,10 +32,8 @@ $(function () {
         LeaseOrderDataTableHandle.dataTableSelectProduct();
         LeaseOrderDataTableHandle.dataTableSelectOffset();
         LeaseOrderDataTableHandle.dataTableSelectAsset();
-        LeaseOrderDataTableHandle.dataTableSelectLeasedProduct();
         LeaseOrderDataTableHandle.dataTableProduct();
         LeaseOrderDataTableHandle.dataTableCost();
-        LeaseOrderDataTableHandle.dataTableCostLeased();
         LeaseOrderDataTableHandle.dataTableDepreciationDetail();
         LeaseOrderDataTableHandle.dataTableExpense();
         LeaseOrderDataTableHandle.dataTableSaleOrderIndicator();
@@ -99,7 +97,6 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
-            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
@@ -112,11 +109,6 @@ $(function () {
 
         LeaseOrderLoadDataHandle.$btnSaveSelectAsset.on('click', function () {
             LeaseOrderLoadDataHandle.loadAsset(this);
-        });
-
-        LeaseOrderLoadDataHandle.$btnSaveSelectQuantity.on('click', function () {
-            LeaseOrderLoadDataHandle.loadQuantity(this);
-            LeaseOrderStoreDataHandle.storeDtbData(1);
         });
 
         // QUICK PRODUCT
@@ -317,7 +309,6 @@ $(function () {
                 let dataRow = $row.data();
 
                 LeaseOrderLoadDataHandle.$btnSaveSelectQuantity.attr('data-product-id', dataRow?.['product_data']?.['id']);
-                LeaseOrderLoadDataHandle.loadModalSQuantity(this);
             }
         });
 
@@ -374,7 +365,6 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
-            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         tableExpense.on('click', '.del-row', function (e) {
@@ -422,10 +412,8 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
-            LeaseOrderStoreDataHandle.storeDtbData(5);
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 LeaseOrderLoadDataHandle.loadDataTableCost();
-                LeaseOrderLoadDataHandle.loadDataTableCostLeased();
             }
         });
 
@@ -476,17 +464,6 @@ $(function () {
         });
 
         tableCost.on('click', '.btn-depreciation-detail', function () {
-            LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target', 'new-product-fn-cost');
-            LeaseOrderLoadDataHandle.loadShowDepreciation(this);
-        });
-
-        LeaseOrderDataTableHandle.$tableCostLeased.on('click', '.btn-depreciation-detail', function () {
-            if (this.closest('.net-value-area')) {
-                LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target', 'leased-product-net-value');
-            }
-            if (this.closest('.depreciation-area')) {
-                LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target', 'leased-product-fn-cost');
-            }
             LeaseOrderLoadDataHandle.loadShowDepreciation(this);
         });
 
@@ -511,9 +488,6 @@ $(function () {
             if (this.classList.contains('lease-start-date')) {
                 let $leaseEndDateEle = $('#lease_end_date');
                 let $table = LeaseOrderDataTableHandle.$tableCost;
-                if (LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-net-value' || LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-target') === 'leased-product-fn-cost') {
-                    $table = LeaseOrderDataTableHandle.$tableCostLeased;
-                }
                 let target = $table[0].querySelector(`.table-row-item[data-product-id="${LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
                 if (target) {
                     let targetRow = target.closest('tr');
@@ -834,7 +808,6 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
-            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         $('#btn-add-payment-stage').on('click', function () {

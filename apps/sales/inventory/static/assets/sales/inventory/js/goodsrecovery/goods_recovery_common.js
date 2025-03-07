@@ -587,8 +587,15 @@ class RecoveryLoadDataHandle {
                         "price": parseFloat($costEle.valCurrency()),
                         "adjust": parseInt($adjustEle.val())
                     });
-
-
+                    let dataOfRange = DepreciationControl.extractDataOfRange({
+                        'data_depreciation': dataDepreciation,
+                        'start_date': $startLeaseEle.val(),
+                        'end_date': $endLeaseEle.val(),
+                    });
+                    dataFn = DepreciationControl.mapDataOfRange({
+                        'data_depreciation': dataDepreciation,
+                        'data_of_range': dataOfRange,
+                    });
                 }
 
                 $('#depreciation_spinner').removeAttr('hidden');

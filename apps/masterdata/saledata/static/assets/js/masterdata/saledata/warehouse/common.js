@@ -382,8 +382,13 @@ function loadAccountDeterminationTable() {
 }
 
 $(document).on('change', '.selected-accounts', function () {
-    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-    $(this).closest('tr').find('.selected-accounts-des').html(`<span class="text-muted">${selected?.['acc_name']}</span> <span class="small text-primary">(${selected?.['foreign_acc_name']})</span>`)
+    let account_mapped = [SelectDDControl.get_data_from_idx($(this), $(this).val())]
+    $(this).closest('tr').find('.selected-accounts-des').html('')
+    for (let i = 0; i < account_mapped.length; i++) {
+        $(this).closest('tr').find('.selected-accounts-des').append(
+            `<span class="text-muted">${account_mapped[i]?.['acc_code']}</span> - <span class="text-muted">${account_mapped[i]?.['acc_name']}</span> <span class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</span><br>`
+        )
+    }
     $(this).closest('tr').find('.btn-change-account').prop('hidden', true)
     $(this).closest('tr').find('.btn-save-change-account').prop('hidden', false)
     $(this).closest('tr').addClass('bg-primary-light-5')

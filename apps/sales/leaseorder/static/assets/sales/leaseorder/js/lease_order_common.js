@@ -1632,14 +1632,14 @@ class LeaseOrderLoadDataHandle {
                             "uom_time_data": data?.['uom_time_data'],
                             "tax_id": data?.['tax_data']?.['id'],
                             "tax_data": data?.['tax_data'],
-                            "product_quantity": data?.['product_quantity_new'],
+                            "product_quantity": data?.['product_quantity'],
                             "product_quantity_time": data?.['product_quantity_time'],
                             "product_tax_amount": data?.['product_tax_amount'],
                             "product_subtotal_price": data?.['product_subtotal_price'],
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['offset_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['offset_data']?.['id']];
-                            dataAdd['product_quantity'] = data?.['product_quantity_new'];
+                            dataAdd['product_quantity'] = data?.['product_quantity'];
                             dataAdd['product_quantity_time'] = data?.['product_quantity_time'];
                             dataAdd['uom_id'] = data?.['uom_data']?.['id'];
                             dataAdd['uom_data'] = data?.['uom_data'];
@@ -1711,7 +1711,7 @@ class LeaseOrderLoadDataHandle {
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['asset_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['asset_data']?.['id']];
-                            dataAdd['product_quantity'] = dataRow?.['product_quantity_new'];
+                            dataAdd['product_quantity'] = dataRow?.['product_quantity'];
                             dataAdd['product_quantity_time'] = dataRow?.['product_quantity_time'];
                             dataAdd['uom_id'] = dataRow?.['uom_data']?.['id'];
                             dataAdd['uom_data'] = dataRow?.['uom_data'];
@@ -1736,12 +1736,12 @@ class LeaseOrderLoadDataHandle {
                             "uom_time_data": dataRow?.['uom_time_data'],
                             "tax_id": dataRow?.['tax_data']?.['id'],
                             "tax_data": dataRow?.['tax_data'],
-                            "product_quantity": dataRow?.['product_quantity_new'],
+                            "product_quantity": dataRow?.['product_quantity'],
                             "product_quantity_time": dataRow?.['product_quantity_time'],
                         }
                         if (storeCost.hasOwnProperty(dataAdd?.['offset_data']?.['id'])) {
                             dataAdd = storeCost[dataAdd?.['offset_data']?.['id']];
-                            dataAdd['product_quantity'] = dataRow?.['product_quantity_new'];
+                            dataAdd['product_quantity'] = dataRow?.['product_quantity'];
                             dataAdd['product_quantity_time'] = dataRow?.['product_quantity_time'];
                             dataAdd['uom_id'] = dataRow?.['uom_data']?.['id'];
                             dataAdd['uom_data'] = dataRow?.['uom_data'];

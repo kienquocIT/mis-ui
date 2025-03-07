@@ -1867,7 +1867,6 @@ $(document).on("click", '.delete-value', function () {
 
 const $product_account_determination_table = $('#product-account-determination-table')
 const $account_deter_referenced_by = $('#account-deter-referenced-by')
-
 const columns_cfg = [
     {
         className: 'wrap-text w-5',
@@ -1890,7 +1889,7 @@ const columns_cfg = [
     {
         className: 'wrap-text w-20',
         'render': (data, type, row) => {
-            return `<select multiple disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 selected-accounts"></select>`;
+            return `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 selected-accounts"></select>`;
         }
     },
     {
@@ -1984,6 +1983,14 @@ function loadAccountDeterminationTable() {
         });
     }
 }
+
+$(document).on('change', '.selected-accounts', function () {
+    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+    $(this).closest('tr').find('.selected-accounts-des').html(`<span class="text-muted">${selected?.['acc_name']}</span> <span class="small text-primary">(${selected?.['foreign_acc_name']})</span>`)
+    $(this).closest('tr').find('.btn-change-account').prop('hidden', true)
+    $(this).closest('tr').find('.btn-save-change-account').prop('hidden', false)
+    $(this).closest('tr').addClass('bg-primary-light-5')
+})
 
 $(document).on('click', '.btn-save-change-account', function () {
     let row_id = $(this).attr('data-id')

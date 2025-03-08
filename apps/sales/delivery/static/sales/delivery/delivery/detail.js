@@ -6,7 +6,6 @@ $(async function () {
 
     let $tableMain = $('#dtbPickingProductList');
     let $tableProductNew = $('#productNew');
-    let $tableProductLeased = $('#productLeased');
     let $tablePW = $('#productStockDetail');
     let $tableLot = $('#datable-delivery-wh-lot');
     let $tableSerial = $('#datable-delivery-wh-serial');
@@ -58,10 +57,7 @@ $(async function () {
             // Kiểm tra giao hàng theo đơn hàng hay đơn cho thuê
             let targetItemData = prod_data?.['product_data'];
             if (prod_data?.['offset_data']?.['id']) {
-                $('#productLeasedDiv').removeAttr('hidden');
                 targetItemData = prod_data?.['offset_data'];
-                $tableProductLeased.DataTable().clear().draw();
-                $tableProductLeased.DataTable().rows.add(prod_data?.['product_quantity_leased_data'] ? prod_data?.['product_quantity_leased_data'] : []).draw();
             }
             $tableProductNew.DataTable().clear().draw();
             $tableProductNew.DataTable().rows.add([prod_data]).draw();
@@ -160,14 +156,6 @@ $(async function () {
                             let $row = $tableProductNew.DataTable().row(rowIndex);
                             let rowData = $row.data();
                             delivery_data = rowData?.['delivery_data'];
-                            temp_picked += rowData?.['picked_quantity'];
-                        });
-                        $tableProductLeased.DataTable().rows().every(function () {
-                            let row = this.node();
-                            let rowIndex = $tableProductLeased.DataTable().row(row).index();
-                            let $row = $tableProductLeased.DataTable().row(rowIndex);
-                            let rowData = $row.data();
-                            product_quantity_leased_data.push(rowData);
                             temp_picked += rowData?.['picked_quantity'];
                         });
                         if (temp_picked > 0) {
@@ -1033,69 +1021,6 @@ $(async function () {
                         },
                     },
                 ],
-                drawCallback: function () {
-                    if ($eleSO.attr('data-lo')) {
-                        prodTable.dtbProductNewHDCustom();
-                    }
-                },
-            });
-        };
-
-        dataTableProductLeased(data) {
-            // init dataTable
-            $tableProductLeased.DataTableDefault({
-                styleDom: 'hide-foot',
-                data: data ? data : [],
-                ordering: false,
-                paging: false,
-                info: false,
-                searching: false,
-                autoWidth: true,
-                scrollX: true,
-                columns: [
-                    {
-                        targets: 0,
-                        width: '30%',
-                        render: (data, type, row) => {
-                            return `<div class="d-flex align-items-center">
-                                        <div class="form-check form-check-lg">
-                                            <input
-                                                type="radio"
-                                                class="form-check-input table-row-checkbox"
-                                                id="leased-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}"
-                                            >
-                                        </div>
-                                        <label class="form-check-label" for="leased-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}">${row?.['offset_data']?.['title'] ? row?.['offset_data']?.['title'] : ''}</label>
-                                    </div>`;
-                        }
-                    },
-                    {
-                        targets: 1,
-                        width: '30%',
-                        render: (data, type, row) => {
-                            return `<span class="table-row-code">${row?.['offset_data']?.['lease_code'] ? row?.['offset_data']?.['lease_code'] : ''}</span>`;
-                        },
-                    },
-                    {
-                        targets: 2,
-                        width: '20%',
-                        render: (data, type, row) => {
-                            return `<span class="table-row-remain">${row?.['remaining_quantity_leased'] ? row?.['remaining_quantity_leased'] : 0}</span>`;
-                        },
-                    },
-                    {
-                        targets: 3,
-                        width: '20%',
-                        render: (data, type, row) => {
-                            return `<b class="table-row-picked">${row?.['picked_quantity'] ? row?.['picked_quantity'] : 0}</b>`;
-                        },
-                    },
-                ],
-                drawCallback: function () {
-                    if ($eleSO.attr('data-lo')) {
-                        prodTable.dtbProductLeasedHDCustom();
-                    }
-                },
             });
         };
 
@@ -1399,42 +1324,6 @@ $(async function () {
         };
 
         // dtb header custom
-        dtbProductNewHDCustom() {
-            let wrapper$ = $tableProductNew.closest('.dataTables_wrapper');
-            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-            headerToolbar$.prepend(textFilter$);
-
-            if (textFilter$.length > 0) {
-                textFilter$.css('display', 'flex');
-                // Check if the button already exists before appending
-                if (!$('#label-new-product').length) {
-                    let $group = $(`<b id="label-new-product">${$trans.attr('data-new-products')}</b>`);
-                    textFilter$.append(
-                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                    );
-                }
-            }
-        };
-
-        dtbProductLeasedHDCustom() {
-            let wrapper$ = $tableProductLeased.closest('.dataTables_wrapper');
-            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-            headerToolbar$.prepend(textFilter$);
-
-            if (textFilter$.length > 0) {
-                textFilter$.css('display', 'flex');
-                // Check if the button already exists before appending
-                if (!$('#label-leased-product').length) {
-                    let $group = $(`<b id="label-leased-product">${$trans.attr('data-leased-products')}</b>`);
-                    textFilter$.append(
-                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                    );
-                }
-            }
-        };
-
         loadCheckExceedQuantity() {
             let check = true;
             $tableLot.DataTable().rows().every(function () {
@@ -1476,26 +1365,6 @@ $(async function () {
                 return check;
             }
             $tableProductNew.DataTable().rows().every(function () {
-                let row = this.node();
-                let remainELe = row.querySelector('.table-row-remain');
-                let deliverELe = row.querySelector('.table-row-picked');
-                if (remainELe && deliverELe) {
-                    if (remainELe.innerHTML && deliverELe.innerHTML) {
-                        let remain = parseFloat(remainELe.innerHTML);
-                        let delivered = parseFloat(deliverELe.innerHTML);
-                        if (delivered > remain) {
-                            check = false;
-                            $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
-                            return false;
-                        }
-                    }
-                }
-            });
-            if (check === false) {
-                $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
-                return check;
-            }
-            $tableProductLeased.DataTable().rows().every(function () {
                 let row = this.node();
                 let remainELe = row.querySelector('.table-row-remain');
                 let deliverELe = row.querySelector('.table-row-picked');
@@ -1680,35 +1549,6 @@ $(async function () {
                 rowData['picked_quantity'] = picked;
 
                 $tableProductNew.DataTable().row(rowIndex).data(rowData);
-                deliveryData.push(rowData);
-
-                if (checkedEle) {
-                    let checkEle = row.querySelector('.table-row-checkbox');
-                    if (checkEle) {
-                        checkEle.checked = true;
-                    }
-                }
-            });
-
-            $tableProductLeased.DataTable().rows().every(function () {
-                let row = this.node();
-                let rowIndex = $tableProductLeased.DataTable().row(row).index();
-                let $row = $tableProductLeased.DataTable().row(rowIndex);
-                let rowData = $row.data();
-
-                // update delivery_data cho dòng đang được chọn
-                let checkedEle = row.querySelector('.table-row-checkbox:checked');
-                if (checkedEle) {
-                    rowData['delivery_data'] = pwData;
-                }
-                let picked = 0;
-                for (let deliData of rowData?.['delivery_data'] ? rowData?.['delivery_data'] : []) {
-                    picked += deliData?.['picked_quantity'];
-                }
-                rowData['picked_quantity'] = picked;
-                rowData['quantity_leased_remain_recovery'] = picked;
-
-                $tableProductLeased.DataTable().row(rowIndex).data(rowData);
                 deliveryData.push(rowData);
 
                 if (checkedEle) {
@@ -1979,7 +1819,6 @@ $(async function () {
     getPageDetail()
     // init Dtb
     prodTable.dataTableProductNew();
-    prodTable.dataTableProductLeased();
     prodTable.dataTablePW();
     prodTable.dataTableTableLot();
     prodTable.dataTableTableSerial();
@@ -1996,18 +1835,6 @@ $(async function () {
                 targetItemData = rowData?.['offset_data'];
             }
             prodTable.loadCallAjaxPW(targetItemData, rowData);
-        }
-        return true;
-    });
-
-    $tableProductLeased.on('click', '.table-row-checkbox', function () {
-        let row = this.closest('tr');
-        if (row) {
-            let rowIndex = $tableProductLeased.DataTable().row(row).index();
-            let $row = $tableProductLeased.DataTable().row(rowIndex);
-            let rowData = $row.data();
-
-            prodTable.loadCallAjaxPW(rowData?.['offset_data'], rowData);
         }
         return true;
     });

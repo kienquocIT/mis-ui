@@ -132,10 +132,6 @@ $(function () {
             GRLoadDataHandle.loadCheckIsAdditional(this);
         });
 
-        GRLoadDataHandle.btnAddLot.on('click', function () {
-            GRLoadDataHandle.loadAddRowLot();
-        });
-
         GRDataTableHandle.tableLot.on('click', '.dropdown-item-lot', function () {
             let row = this.closest('tr');
             if (row) {
@@ -164,10 +160,6 @@ $(function () {
             let row = this.closest('tr');
             GRLoadDataHandle.loadDataIfChangeDateLotRow(row);
             GRStoreDataHandle.storeDataProduct();
-        });
-
-        GRLoadDataHandle.btnAddSerial.on('click', function () {
-            GRLoadDataHandle.loadAddRowSerial();
         });
 
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {

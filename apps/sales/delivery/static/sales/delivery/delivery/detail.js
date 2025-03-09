@@ -956,6 +956,7 @@ $(async function () {
                 searching: false,
                 autoWidth: true,
                 scrollX: true,
+                scrollY: "400px",
                 columns: [
                     {
                         targets: 0,
@@ -1016,9 +1017,9 @@ $(async function () {
             let config = _this.getProdConfig;
             $tablePW.DataTableDefault({
                 data: data ? data : [],
-                ordering: false,
-                paginate: false,
-                info: false,
+                autoWidth: true,
+                scrollX: true,
+                scrollY: "200px",
                 columns: [
                     {
                         targets: 0,
@@ -1150,9 +1151,9 @@ $(async function () {
         dataTableTableLot(data) {
             $tableLot.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
-                ordering: false,
-                paginate: false,
-                info: false,
+                autoWidth: true,
+                scrollX: true,
+                scrollY: "200px",
                 columns: [
                     {
                         targets: 0,
@@ -1212,6 +1213,9 @@ $(async function () {
             }
             $tableSerial.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
+                autoWidth: true,
+                scrollX: true,
+                scrollY: "200px",
                 columns: [
                     {
                         targets: 0,

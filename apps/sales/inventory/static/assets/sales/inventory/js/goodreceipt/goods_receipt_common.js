@@ -16,8 +16,6 @@ class GRLoadDataHandle {
     static $scrollWarehouse = $('#scroll-warehouse');
     static $scrollLot = $('#scroll-lot');
     static $scrollSerial = $('#scroll-serial');
-    static btnAddLot = $('#btn-add-manage-lot');
-    static btnAddSerial = $('#btn-add-manage-serial');
     static $isNoWHEle = $('#is_no_warehouse');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#url-factory');
@@ -595,11 +593,11 @@ class GRLoadDataHandle {
                     if (eleWHChecked) {
                         let isAdditional = eleWHChecked.closest('tr').querySelector('.table-row-checkbox-additional').checked;
                         if (isAdditional === true) {
-                            GRLoadDataHandle.btnAddLot[0].setAttribute('disabled', 'true');
-                            GRLoadDataHandle.btnAddSerial[0].setAttribute('disabled', 'true');
+                            $('#btn-add-manage-lot')[0].setAttribute('disabled', 'true');
+                            $('#btn-add-manage-serial')[0].setAttribute('disabled', 'true');
                         } else {
-                            GRLoadDataHandle.btnAddLot[0].removeAttribute('disabled');
-                            GRLoadDataHandle.btnAddSerial[0].removeAttribute('disabled');
+                            $('#btn-add-manage-lot')[0].removeAttribute('disabled');
+                            $('#btn-add-manage-serial')[0].removeAttribute('disabled');
                         }
                     }
                 }
@@ -1137,8 +1135,8 @@ class GRLoadDataHandle {
             if (ele.checked === true) {
                 GRDataTableHandle.tableLot.DataTable().clear().draw();
                 GRDataTableHandle.tableSerial.DataTable().clear().draw();
-                GRLoadDataHandle.btnAddLot[0].setAttribute('disabled', 'true');
-                GRLoadDataHandle.btnAddSerial[0].setAttribute('disabled', 'true');
+                $('#btn-add-manage-lot')[0].setAttribute('disabled', 'true');
+                $('#btn-add-manage-serial')[0].setAttribute('disabled', 'true');
                 if (row.querySelector('.table-row-import')) {
                     row.querySelector('.table-row-import').removeAttribute('disabled');
                 }
@@ -1147,8 +1145,8 @@ class GRLoadDataHandle {
                 }
             }
             if (ele.checked === false) {
-                GRLoadDataHandle.btnAddLot[0].removeAttribute('disabled');
-                GRLoadDataHandle.btnAddSerial[0].removeAttribute('disabled');
+                $('#btn-add-manage-lot')[0].removeAttribute('disabled');
+                $('#btn-add-manage-serial')[0].removeAttribute('disabled');
                 row.querySelector('.table-row-import').setAttribute('disabled', 'true');
             }
             GRStoreDataHandle.storeDataProduct();
@@ -1451,7 +1449,10 @@ class GRDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [],
+            searching: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "200px",
             columns: [
                 {
                     targets: 0,
@@ -1519,8 +1520,6 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                // add css to Dtb
-                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-po-product');
                 GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePOProduct);
             },
         });
@@ -1531,7 +1530,10 @@ class GRDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [],
+            searching: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "200px",
             columns: [
                 {
                     targets: 0,
@@ -1598,8 +1600,6 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                // add css to Dtb
-                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-purchase-request');
                 GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePR);
             },
         });
@@ -1610,7 +1610,10 @@ class GRDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [],
+            searching: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "200px",
             columns: [
                 {
                     targets: 0,
@@ -1690,8 +1693,6 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                // add css to Dtb
-                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-warehouse');
                 GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tableWH);
             },
         });
@@ -1702,7 +1703,9 @@ class GRDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [],
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "200px",
             columns: [
                 {
                     targets: 0,
@@ -1757,8 +1760,9 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                // add css to Dtb
-                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-manage-lot');
+                if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
+                    GRDataTableHandle.dtbLotHDCustom();
+                }
             },
         });
     };
@@ -1768,7 +1772,9 @@ class GRDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [],
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "200px",
             columns: [
                 {
                     targets: 0,
@@ -1842,8 +1848,9 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                // add css to Dtb
-                GRLoadDataHandle.loadCssToDtb('datable-good-receipt-manage-serial');
+                if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
+                    GRDataTableHandle.dtbSerialHDCustom();
+                }
             },
         });
     };
@@ -2046,6 +2053,56 @@ class GRDataTableHandle {
                 textFilter$.append(
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                 );
+            }
+        }
+    };
+
+    static dtbLotHDCustom() {
+        let $table = GRDataTableHandle.tableLot;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-manage-lot').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-manage-lot">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${GRLoadDataHandle.transEle.attr('data-add')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-manage-lot').on('click', function () {
+                    GRLoadDataHandle.loadAddRowLot();
+                });
+            }
+        }
+    };
+
+    static dtbSerialHDCustom() {
+        let $table = GRDataTableHandle.tableSerial;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-manage-serial').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-manage-serial">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${GRLoadDataHandle.transEle.attr('data-add')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-manage-serial').on('click', function () {
+                    GRLoadDataHandle.loadAddRowSerial();
+                });
             }
         }
     };

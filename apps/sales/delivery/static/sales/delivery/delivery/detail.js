@@ -60,7 +60,16 @@ $(async function () {
                 targetItemData = prod_data?.['offset_data'];
             }
             $tableProductNew.DataTable().clear().draw();
-            $tableProductNew.DataTable().rows.add([prod_data]).draw();
+
+            if (prod_data?.['asset_type'] === null) {
+               $tableProductNew.DataTable().rows.add([prod_data]).draw();
+            }
+            if (prod_data?.['asset_type'] === 1) {
+               $tableProductNew.DataTable().rows.add([prod_data]).draw();
+            }
+            if (prod_data?.['asset_type'] === 3) {
+               $tableProductNew.DataTable().rows.add(prod_data?.['asset_data']).draw();
+            }
             prodTable.loadEventRadio($scrollProduct);
 
             let checkedEle = $tableProductNew[0].querySelector('.table-row-checkbox:checked');
@@ -147,21 +156,27 @@ $(async function () {
                     }
                     $canvasPW.offcanvas('show');
                     $btnSave.off().on('click', function () {
-                        let delivery_data = [];
                         let temp_picked = 0;
+                        let delivery_data = [];
+                        let asset_data = [];
                         $tableProductNew.DataTable().rows().every(function () {
                             let row = this.node();
                             let rowIndex = $tableProductNew.DataTable().row(row).index();
                             let $row = $tableProductNew.DataTable().row(rowIndex);
                             let rowData = $row.data();
-                            delivery_data = rowData?.['delivery_data'];
+
                             temp_picked += rowData?.['picked_quantity'];
+                            delivery_data = rowData?.['delivery_data'] ? rowData?.['delivery_data'] : [];
+                            if (rowData?.['asset_data']?.['id']) {
+                                asset_data.push(rowData);
+                            }
                         });
                         if (temp_picked > 0) {
                             // lấy hàng từ popup warehouse add vào danh sách product detail
                             let tableTargetData = _this.getProdList;
                             tableTargetData[idx]['picked_quantity'] = temp_picked;
                             tableTargetData[idx]['delivery_data'] = delivery_data;
+                            tableTargetData[idx]['asset_data'] = asset_data;
                             _this.setProdList = tableTargetData;
                             $tableMain.DataTable().row(idx).data(tableTargetData[idx]).draw();
                         }
@@ -246,14 +261,14 @@ $(async function () {
                         targets: 2,
                         class: 'w-10 text-center',
                         render: (row, type, data) => {
-                            return `<p>${data.uom_data.title}</p>`;
+                            return `<p>${data?.['uom_data']?.['title'] ? data?.['uom_data']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
                         class: 'w-10 text-center',
                         render: (row, type, data) => {
-                            return `<p>${data.delivery_quantity}</p>`;
+                            return `<p>${data?.['delivery_quantity']}</p>`;
                         }
                     },
                     {
@@ -261,7 +276,7 @@ $(async function () {
                         class: 'w-10 text-center',
                         visible: delivery_config?.['is_partial_ship'],
                         render: (row, type, data) => {
-                            return `<p>${data.delivered_quantity_before}</p>`;
+                            return `<p>${data?.['delivered_quantity_before']}</p>`;
                         }
                     },
                     {
@@ -269,7 +284,7 @@ $(async function () {
                         class: 'w-10 text-center',
                         visible: delivery_config?.['is_partial_ship'],
                         render: (row, type, data) => {
-                            return `<p>${data.remaining_quantity}</p>`;
+                            return `<p>${data?.['remaining_quantity']}</p>`;
                         }
                     },
                     {
@@ -966,6 +981,9 @@ $(async function () {
                             if (row?.['offset_data']?.['id']) {
                                 targetData = row?.['offset_data'];
                             }
+                            if (row?.['asset_data']?.['id']) {
+                                targetData = row?.['asset_data'];
+                            }
                             let checked = '';
                             if (!$scrollProduct[0].querySelector('.table-row-checkbox:checked')) {
                                 checked = 'checked';
@@ -991,6 +1009,9 @@ $(async function () {
                             if (row?.['offset_data']?.['id']) {
                                 targetData = row?.['offset_data'];
                             }
+                            if (row?.['asset_data']?.['id']) {
+                                targetData = row?.['asset_data'];
+                            }
                             return `<span class="table-row-code">${targetData?.['code'] ? targetData?.['code'] : ''}</span>`;
                         },
                     },
@@ -1005,7 +1026,12 @@ $(async function () {
                         targets: 2,
                         width: '20%',
                         render: (data, type, row) => {
-                            return `<b class="table-row-picked">${row?.['picked_quantity'] ? row?.['picked_quantity'] : 0}</b>`;
+                            // return `<b class="table-row-picked">${row?.['picked_quantity'] ? row?.['picked_quantity'] : 0}</b>`;
+                            let readonly = 'readonly';
+                            if (row?.['asset_data']?.['id']) {
+                                readonly = '';
+                            }
+                            return `<input class="form-control table-row-picked text-black" type="number" value="${row?.['picked_quantity'] ? row?.['picked_quantity'] : 0}" ${readonly}>`;
                         },
                     },
                 ],
@@ -1360,9 +1386,9 @@ $(async function () {
                 let remainELe = row.querySelector('.table-row-remain');
                 let deliverELe = row.querySelector('.table-row-picked');
                 if (remainELe && deliverELe) {
-                    if (remainELe.innerHTML && deliverELe.innerHTML) {
+                    if (remainELe.innerHTML && deliverELe.value) {
                         let remain = parseFloat(remainELe.innerHTML);
-                        let delivered = parseFloat(deliverELe.innerHTML);
+                        let delivered = parseFloat(deliverELe.value);
                         if (delivered > remain) {
                             check = false;
                             $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
@@ -1384,39 +1410,38 @@ $(async function () {
                 url: $url.attr('data-customer-detail').format_url_with_uuid(customerID),
                 method: 'GET'
             }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                data = data['account_detail']
-                // handle event modal show via btn click
-                $('#modal_choise_logistics').on('shown.bs.modal', function (e) {
-                    let dataLogistics
-                    // show address else show billing
-                    if ($(e.relatedTarget).attr('data-is-address')){
-                        dataLogistics = data?.shipping_address
-                        $(this).find('.modal-body').attr('data-logistic', 'address')
-                    }
-                    else{
-                        dataLogistics = data?.billing_address
-                        $(this).find('.modal-body').attr('data-logistic', 'bill')
-                    }
-                    let htmlTemp = ''
-                    for (let item of dataLogistics){
-                        htmlTemp += `<div class="col mb-3 text-right txt-cl-black wrap_logistic"><textarea disabled class="form-control mb-2 txt-cl-black" data-id="${
-                            item?.id ? item.id : item
-                        }">${item?.full_address ? item.full_address : item}</textarea><button type="button" class="btn btn-primary btn_logistics_choise">${
-                            $trans.attr('data-select_address')}</button></div>`
-                    }
-                    $(this).find('.modal-body').html(htmlTemp)
-                    $('.wrap_logistic button', $(this).find('.modal-body')).on('click', function () {
-                        let val = $(this).parents('.wrap_logistic').find('textarea').val()
-                        if ($(this).closest('.modal-body').attr('data-logistic') === 'address') {
-                            $('#textareaShippingAddress').val(val)
+                    let data = $.fn.switcherResp(resp);
+                    data = data['account_detail']
+                    // handle event modal show via btn click
+                    $('#modal_choise_logistics').on('shown.bs.modal', function (e) {
+                        let dataLogistics
+                        // show address else show billing
+                        if ($(e.relatedTarget).attr('data-is-address')) {
+                            dataLogistics = data?.shipping_address
+                            $(this).find('.modal-body').attr('data-logistic', 'address')
                         } else {
-                            $('#textareaBilling').val(val)
+                            dataLogistics = data?.billing_address
+                            $(this).find('.modal-body').attr('data-logistic', 'bill')
                         }
-                        $('#modal_choise_logistics').modal('hide')
+                        let htmlTemp = ''
+                        for (let item of dataLogistics) {
+                            htmlTemp += `<div class="col mb-3 text-right txt-cl-black wrap_logistic"><textarea disabled class="form-control mb-2 txt-cl-black" data-id="${
+                                item?.id ? item.id : item
+                            }">${item?.full_address ? item.full_address : item}</textarea><button type="button" class="btn btn-primary btn_logistics_choise">${
+                                $trans.attr('data-select_address')}</button></div>`
+                        }
+                        $(this).find('.modal-body').html(htmlTemp)
+                        $('.wrap_logistic button', $(this).find('.modal-body')).on('click', function () {
+                            let val = $(this).parents('.wrap_logistic').find('textarea').val()
+                            if ($(this).closest('.modal-body').attr('data-logistic') === 'address') {
+                                $('#textareaShippingAddress').val(val)
+                            } else {
+                                $('#textareaBilling').val(val)
+                            }
+                            $('#modal_choise_logistics').modal('hide')
+                        });
                     });
-                });
-            },
+                },
                 (err) => console.log(err)
             );
         }
@@ -1530,6 +1555,9 @@ $(async function () {
                 let checkedEle = row.querySelector('.table-row-checkbox:checked');
                 if (checkedEle) {
                     rowData['delivery_data'] = pwData;
+                    if (rowData?.['asset_data']?.['id']) {
+                        delete rowData['delivery_data'];
+                    }
                 }
                 let picked = 0;
                 if (rowData?.['delivery_data']) {
@@ -1538,6 +1566,16 @@ $(async function () {
                     }
                 }
                 rowData['picked_quantity'] = picked;
+
+                // TSCD lấy số nhập trực tiếp
+                if (rowData?.['asset_data']?.['id']) {
+                    let deliverEle = row.querySelector('.table-row-picked');
+                    if (deliverEle) {
+                        if (deliverEle.value) {
+                            rowData['picked_quantity'] = parseFloat(deliverEle.value);
+                        }
+                    }
+                }
 
                 $tableProductNew.DataTable().row(rowIndex).data(rowData);
                 deliveryData.push(rowData);
@@ -1755,6 +1793,7 @@ $(async function () {
                         'product_id': prod?.['product_data']?.['id'],
                         'done': prod?.['picked_quantity'],
                         'delivery_data': prod?.['delivery_data'],
+                        'asset_data': prod?.['asset_data'],
                         'order': prod?.['order'],
                     })
                 }
@@ -1827,6 +1866,22 @@ $(async function () {
             prodTable.loadCallAjaxPW(targetItemData, rowData);
         }
         return true;
+    });
+
+    $tableProductNew.on('change', '.table-row-picked', function () {
+        let row = this.closest('tr');
+        if (row) {
+            DeliveryStoreDataHandle.storeData();
+            let check = prodTable.loadCheckExceedQuantity();
+            if (check === false) {
+                let rowIndex = $tableProductNew.DataTable().row(row).index();
+                let $row = $tableProductNew.DataTable().row(rowIndex);
+                let rowData = $row.data();
+                rowData['picked_quantity'] = 0;
+                $tableProductNew.DataTable().row(rowIndex).data(rowData);
+                DeliveryStoreDataHandle.storeData();
+            }
+        }
     });
 
     $tablePW.on('change', '.table-row-picked', function () {

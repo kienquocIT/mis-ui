@@ -148,7 +148,6 @@ $(async function () {
                     $canvasPW.offcanvas('show');
                     $btnSave.off().on('click', function () {
                         let delivery_data = [];
-                        let product_quantity_leased_data = [];
                         let temp_picked = 0;
                         $tableProductNew.DataTable().rows().every(function () {
                             let row = this.node();
@@ -163,7 +162,6 @@ $(async function () {
                             let tableTargetData = _this.getProdList;
                             tableTargetData[idx]['picked_quantity'] = temp_picked;
                             tableTargetData[idx]['delivery_data'] = delivery_data;
-                            tableTargetData[idx]['product_quantity_leased_data'] = product_quantity_leased_data;
                             _this.setProdList = tableTargetData;
                             $tableMain.DataTable().row(idx).data(tableTargetData[idx]).draw();
                         }
@@ -999,25 +997,14 @@ $(async function () {
                         targets: 1,
                         width: '20%',
                         render: (data, type, row) => {
-                            return `<span class="table-row-remain">${row?.['remaining_quantity_new'] ? row?.['remaining_quantity_new'] : 0}</span>`;
+                            return `<span class="table-row-remain">${row?.['remaining_quantity'] ? row?.['remaining_quantity'] : 0}</span>`;
                         },
                     },
                     {
                         targets: 2,
                         width: '20%',
                         render: (data, type, row) => {
-                            let picked = row?.['picked_quantity'] ? row?.['picked_quantity'] : 0;
-                            let leased = 0;
-                            for (let leasedData of row?.['product_quantity_leased_data'] ? row?.['product_quantity_leased_data'] : []) {
-                                if (leasedData?.['picked_quantity'] > 0) {
-                                    leased++;
-                                }
-                            }
-                            let value = picked;
-                            if (row?.['offset_data']?.['id'] && picked > 0) {
-                                value = picked - leased;
-                            }
-                            return `<b class="table-row-picked">${value}</b>`;
+                            return `<b class="table-row-picked">${row?.['picked_quantity'] ? row?.['picked_quantity'] : 0}</b>`;
                         },
                     },
                 ],
@@ -1764,7 +1751,6 @@ $(async function () {
                         'product_id': prod?.['product_data']?.['id'],
                         'done': prod?.['picked_quantity'],
                         'delivery_data': prod?.['delivery_data'],
-                        'product_quantity_leased_data': prod?.['product_quantity_leased_data'],
                         'order': prod?.['order'],
                     })
                 }

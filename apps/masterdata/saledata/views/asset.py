@@ -11,7 +11,7 @@ class FixedAssetMasterDataList(View):
         auth_require=True,
         template='masterdata/saledata/masterdata/asset.html',
         breadcrumb='FIXED_ASSET_MASTER_DATA_LIST_PAGE',
-        menu_active='id_menu_master_data_fixed_asset',
+        menu_active='id_menu_master_data_categories',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

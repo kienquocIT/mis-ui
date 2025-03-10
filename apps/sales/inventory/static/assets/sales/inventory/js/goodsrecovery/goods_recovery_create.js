@@ -85,11 +85,6 @@ $(function () {
             return true;
         });
 
-        RecoveryDataTableHandle.$tableProductLeased.on('click', '.table-row-checkbox', function () {
-            RecoveryLoadDataHandle.loadCheckNewLeasedProduct();
-            return true;
-        });
-
         // EVENT CLICK TO COLLAPSE IN LINE APP LIST
         //      ACTION: INSERT TABLE WORKFLOW LIST TO NEXT ROW (OF APP LIST)
         RecoveryDataTableHandle.$tableWarehouse.on('click', '.btn-collapse-app-wf', function (event) {

@@ -124,7 +124,6 @@ class RecoveryLoadDataHandle {
         RecoveryDataTableHandle.dataTableDelivery();
         RecoveryDataTableHandle.dataTableDeliveryProduct();
         RecoveryDataTableHandle.dataTableProductNew();
-        RecoveryDataTableHandle.dataTableProductLeased();
         RecoveryDataTableHandle.dataTableWareHouse();
         RecoveryDataTableHandle.dataTableDepreciationDetail();
         return true;
@@ -223,24 +222,6 @@ class RecoveryLoadDataHandle {
 
     static loadCheckExceedQuantity() {
         let check = true;
-        RecoveryDataTableHandle.$tableProductLeased.DataTable().rows().every(function () {
-            let row = this.node();
-            let remainELe = row.querySelector('.table-row-quantity-remain-recovery');
-            let recoveryELe = row.querySelector('.table-row-quantity-recovery');
-            if (remainELe && recoveryELe) {
-                if (remainELe.innerHTML && recoveryELe.innerHTML) {
-                    let remain = parseFloat(remainELe.innerHTML);
-                    let recovered = parseFloat(recoveryELe.innerHTML);
-                    if (recovered > remain) {
-                        check = false;
-                    }
-                }
-            }
-        });
-        if (check === false) {
-            $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-exceed-quantity')}, 'failure');
-            return check;
-        }
         RecoveryDataTableHandle.$tableProductNew.DataTable().rows().every(function () {
             let row = this.node();
             let remainELe = row.querySelector('.table-row-quantity-remain-recovery');
@@ -312,9 +293,6 @@ class RecoveryLoadDataHandle {
 
                 RecoveryDataTableHandle.$tableProductNew.DataTable().clear().draw();
                 RecoveryDataTableHandle.$tableProductNew.DataTable().rows.add([rowData]).draw();
-
-                RecoveryDataTableHandle.$tableProductLeased.DataTable().clear().draw();
-                RecoveryDataTableHandle.$tableProductLeased.DataTable().rows.add(rowData?.['product_quantity_leased_data'] ? rowData?.['product_quantity_leased_data'] : []).draw();
             }
         }
     };
@@ -343,17 +321,6 @@ class RecoveryLoadDataHandle {
                             if (row) {
                                 let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(row).index();
                                 let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
-                                let dataRow = $row.data();
-                                RecoveryLoadDataHandle.loadSetupDataPW(data?.['warehouse_inventory_list'], dataRow);
-                            }
-                        }
-
-                        let checkedLeasedEle = RecoveryDataTableHandle.$tableProductLeased[0].querySelector('.table-row-checkbox:checked');
-                        if (checkedLeasedEle) {
-                            let row = checkedLeasedEle.closest('tr');
-                            if (row) {
-                                let rowIndex = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(row).index();
-                                let $row = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(rowIndex);
                                 let dataRow = $row.data();
                                 RecoveryLoadDataHandle.loadSetupDataPW(data?.['warehouse_inventory_list'], dataRow);
                             }
@@ -394,26 +361,6 @@ class RecoveryLoadDataHandle {
             if (rowTarget) {
                 let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowTarget).index();
                 let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
-                let rowData = $row.data();
-                if (rowData?.['delivery_data']) {
-                    for (let deli_data of rowData?.['delivery_data']) {
-                        if (deli_data?.['serial_data']) {
-                            for (let serial_data of deli_data?.['serial_data']) {
-                                if (serial_data?.['product_warehouse_serial_data']) {
-                                    data.push(serial_data?.['product_warehouse_serial_data']);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        let checkedLeasedEle = RecoveryDataTableHandle.$tableProductLeased[0].querySelector('.table-row-checkbox:checked');
-        if (checkedLeasedEle) {
-            let rowTarget = checkedLeasedEle.closest('tr');
-            if (rowTarget) {
-                let rowIndex = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(rowTarget).index();
-                let $row = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(rowIndex);
                 let rowData = $row.data();
                 if (rowData?.['delivery_data']) {
                     for (let deli_data of rowData?.['delivery_data']) {
@@ -800,7 +747,6 @@ class RecoveryDataTableHandle {
     static $tableDelivery = $('#datable-delivery');
     static $tableDeliveryProduct = $('#datable-deli-product');
     static $tableProductNew = $('#datable-deli-product-new');
-    static $tableProductLeased = $('#datable-deli-product-leased');
     static $tableWarehouse = $('#datable-warehouse');
     static $tableDepreciationDetail = $('#table-depreciation-detail');
 
@@ -990,7 +936,9 @@ class RecoveryDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [],
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "200px",
             columns: [
                 {
                     targets: 0,
@@ -1030,7 +978,9 @@ class RecoveryDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [],
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "200px",
             columns: [
                 {
                     targets: 0,
@@ -1090,7 +1040,9 @@ class RecoveryDataTableHandle {
             paging: false,
             info: false,
             searching: false,
-            columnDefs: [],
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "200px",
             columns: [
                 {
                     targets: 0,
@@ -1130,26 +1082,19 @@ class RecoveryDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        let delivered = row?.['quantity_delivered'] ? row?.['quantity_delivered'] : 0;
-                        let leased = row?.['product_quantity_leased'] ? row?.['product_quantity_leased'] : 0;
-                        let value = delivered - leased;
-                        return `<span class="table-row-quantity-delivered">${value}</span>`;
+                        return `<span class="table-row-quantity-delivered">${row?.['quantity_delivered'] ? row?.['quantity_delivered'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-remain-recovery">${row?.['quantity_new_remain_recovery'] ? row?.['quantity_new_remain_recovery'] : '0'}</span>`;
+                        return `<span class="table-row-quantity-remain-recovery">${row?.['quantity_remain_recovery'] ? row?.['quantity_remain_recovery'] : '0'}</span>`;
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        let value = 0;
-                            if (row?.['quantity_recovery'] && row?.['product_quantity_leased_data']) {
-                                value = row?.['quantity_recovery'] - row?.['product_quantity_leased_data'].length;
-                            }
-                        return `<span class="table-row-quantity-recovery">${value}</span>`;
+                        return `<span class="table-row-quantity-recovery">${row?.['quantity_recovery']}</span>`;
                     }
                 },
             ],
@@ -1165,91 +1110,8 @@ class RecoveryDataTableHandle {
                 }
             },
             drawCallback: function () {
-                RecoveryDataTableHandle.dtbProductNewHDCustom();
-            },
-        });
-    };
-
-    static dataTableProductLeased(data) {
-        RecoveryDataTableHandle.$tableProductLeased.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
-            searching: false,
-            columnDefs: [],
-            columns: [
-                {
-                    targets: 0,
-                    width: '25%',
-                    render: (data, type, row) => {
-                        return `<div class="d-flex align-items-center">
-                                    <div class="form-check form-check-lg">
-                                        <input 
-                                            type="radio" 
-                                            class="form-check-input table-row-checkbox" 
-                                            id="leased-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}"
-                                            data-id="${row?.['offset_data']?.['id']}"
-                                        >
-                                        <label class="form-check-label" for="leased-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}">${row?.['offset_data']?.['title'] ? row?.['offset_data']?.['title'] : ''}</label>
-                                    </div>
-                                </div>
-                                <div class="row table-row-item-area hidden">
-                                    <div class="col-12 col-md-12 col-lg-12">
-                                        <select
-                                            class="form-select table-row-item"
-                                            data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-product')}"
-                                            data-method="GET"
-                                            data-keyResp="product_sale_list"
-                                            data-product-id="${row?.['offset_data']?.['id']}"
-                                            readonly
-                                        >
-                                        </select>
-                                    </div>
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 1,
-                    width: '20%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-code">${row?.['offset_data']?.['lease_code'] ? row?.['offset_data']?.['lease_code'] : ''}</span>`;
-                    },
-                },
-                {
-                    targets: 2,
-                    width: '15%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-delivered">${row?.['picked_quantity'] ? row?.['picked_quantity'] : '0'}</span>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-remain-recovery">${row?.['quantity_leased_remain_recovery'] ? row?.['quantity_leased_remain_recovery'] : '0'}</span>`;
-                    }
-                },
-                {
-                    targets: 4,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-recovery">${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : '0'}</span>`;
-                    }
-                },
-            ],
-            rowCallback: function (row, data, index) {
-                let itemEle = row.querySelector('.table-row-item');
-                if (itemEle) {
-                    let dataS2 = [];
-                    if (data?.['product_data']) {
-                        dataS2 = [data?.['product_data']];
-                    }
-                    RecoveryLoadDataHandle.loadInitS2($(itemEle), dataS2);
-                    $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
-                }
-            },
-            drawCallback: function () {
-                RecoveryDataTableHandle.dtbProductLeasedHDCustom();
+                // add css to Dtb
+                RecoveryLoadDataHandle.loadCssToDtb('datable-deli-product-new');
             },
         });
     };
@@ -1270,6 +1132,9 @@ class RecoveryDataTableHandle {
             },
             paging: false,
             info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "200px",
             columns: [
                 {
                     targets: 0,
@@ -1520,42 +1385,6 @@ class RecoveryDataTableHandle {
         }
     };
 
-    static dtbProductNewHDCustom() {
-        let wrapper$ = RecoveryDataTableHandle.$tableProductNew.closest('.dataTables_wrapper');
-        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-        headerToolbar$.prepend(textFilter$);
-
-        if (textFilter$.length > 0) {
-            textFilter$.css('display', 'flex');
-            // Check if the button already exists before appending
-            if (!$('#label-new-product').length) {
-                let $group = $(`<b id="label-new-product">${RecoveryLoadDataHandle.transEle.attr('data-new-products')}</b>`);
-                textFilter$.append(
-                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                );
-            }
-        }
-    };
-
-    static dtbProductLeasedHDCustom() {
-            let wrapper$ = RecoveryDataTableHandle.$tableProductLeased.closest('.dataTables_wrapper');
-            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-            headerToolbar$.prepend(textFilter$);
-
-            if (textFilter$.length > 0) {
-                textFilter$.css('display', 'flex');
-                // Check if the button already exists before appending
-                if (!$('#label-leased-product').length) {
-                    let $group = $(`<b id="label-leased-product">${RecoveryLoadDataHandle.transEle.attr('data-leased-products')}</b>`);
-                    textFilter$.append(
-                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                    );
-                }
-            }
-        };
-
 }
 
 // Calculate
@@ -1691,7 +1520,6 @@ class RecoveryStoreDataHandle {
 
         let product_warehouse_data = [];
         let product_new_data = {};
-        let product_leased_data = [];
         let delivery_product_data = [];
 
         RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
@@ -1761,36 +1589,6 @@ class RecoveryStoreDataHandle {
             }
         });
 
-        RecoveryDataTableHandle.$tableProductLeased.DataTable().rows().every(function () {
-            let row = this.node();
-            let rowIndex = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(row).index();
-            let $row = RecoveryDataTableHandle.$tableProductLeased.DataTable().row(rowIndex);
-            let rowData = $row.data();
-
-            // update data product_warehouse_data cho dòng đang được chọn
-            let checked = row.querySelector('.table-row-checkbox:checked');
-            if (checked) {
-                rowData['product_warehouse_data'] = product_warehouse_data;
-            }
-            let recovery = 0;
-            if (rowData?.['product_warehouse_data']) {
-                for (let dataPW of rowData?.['product_warehouse_data'] ? rowData?.['product_warehouse_data'] : []) {
-                    recovery += dataPW?.['quantity_recovery'];
-                }
-            }
-            rowData['quantity_recovery'] = recovery;
-
-            RecoveryDataTableHandle.$tableProductLeased.DataTable().row(rowIndex).data(rowData);
-            product_leased_data.push(rowData);
-
-            if (checked) {
-                let checkEle = row.querySelector('.table-row-checkbox');
-                if (checkEle) {
-                    checkEle.checked = true;
-                }
-            }
-        });
-
         RecoveryDataTableHandle.$tableProductNew.DataTable().rows().every(function () {
             let row = this.node();
             let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(row).index();
@@ -1801,17 +1599,11 @@ class RecoveryStoreDataHandle {
             let checked = row.querySelector('.table-row-checkbox:checked');
             if (checked) {
                 rowData['product_warehouse_data'] = product_warehouse_data;
-                rowData['product_quantity_leased_data'] = product_leased_data
             }
             let recovery = 0;
             if (rowData?.['product_warehouse_data']) {
                 for (let dataPW of rowData?.['product_warehouse_data'] ? rowData?.['product_warehouse_data'] : []) {
                     recovery += dataPW?.['quantity_recovery'];
-                }
-            }
-            if (rowData?.['product_quantity_leased_data']) {
-                for (let dataLeased of rowData?.['product_quantity_leased_data']) {
-                    recovery += dataLeased?.['quantity_recovery'];
                 }
             }
             rowData['quantity_recovery'] = recovery;

@@ -811,7 +811,7 @@ $(async function () {
             let isRegis = dataRegisConfig?.['isRegis'];
             let dataSO = dataRegisConfig?.['dataSO'];
             let url = $tableSerial.attr('data-url');
-            let dataParam = {'product_warehouse_id': productWHID, 'is_delete': false, 'gre_sn_registered__isnull': true};
+            let dataParam = {'product_warehouse_id': productWHID, 'serial_status': 0, 'gre_sn_registered__isnull': true};
             let keyResp = 'warehouse_serial_list';
             if ($form.attr('data-method').toLowerCase() === 'get') {
                 dataParam = {'product_warehouse_id': productWHID};
@@ -824,7 +824,7 @@ $(async function () {
                         'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
                         'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
                         'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
-                        'sn_registered__is_delete': false,
+                        'sn_registered__serial_status': 0,
                     };
                     keyResp = 'good_registration_serial';
                 } else {
@@ -1019,14 +1019,17 @@ $(async function () {
                         targets: 1,
                         width: '20%',
                         render: (data, type, row) => {
-                            return `<span class="table-row-remain">${row?.['remaining_quantity'] ? row?.['remaining_quantity'] : 0}</span>`;
+                            let value = row?.['remaining_quantity'] ? row?.['remaining_quantity'] : 0;
+                            if (row?.['asset_data']?.['id']) {
+                                value = 1;
+                            }
+                            return `<span class="table-row-remain">${value}</span>`;
                         },
                     },
                     {
                         targets: 2,
                         width: '20%',
                         render: (data, type, row) => {
-                            // return `<b class="table-row-picked">${row?.['picked_quantity'] ? row?.['picked_quantity'] : 0}</b>`;
                             let readonly = 'readonly';
                             if (row?.['asset_data']?.['id']) {
                                 readonly = '';

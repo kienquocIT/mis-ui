@@ -488,7 +488,7 @@ $(function () {
             if (this.classList.contains('lease-start-date')) {
                 let $leaseEndDateEle = $('#lease_end_date');
                 let $table = LeaseOrderDataTableHandle.$tableCost;
-                let target = $table[0].querySelector(`.table-row-item[data-product-id="${LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
+                let target = $table[0].querySelector(`[data-product-id="${LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
                 if (target) {
                     let targetRow = target.closest('tr');
                     if ($leaseEndDateEle.length > 0 && targetRow) {

@@ -489,6 +489,7 @@ class LeaseOrderLoadDataHandle {
             $.fn.callAjax2({
                     'url': LeaseOrderLoadDataHandle.urlEle.attr('data-md-asset'),
                     'method': 'GET',
+                    'data': {"status": 0},
                     'isDropdown': true,
                 }
             ).then(
@@ -749,14 +750,17 @@ class LeaseOrderLoadDataHandle {
             let offsetEle = row.querySelector('.table-row-offset');
             let offsetShowEle = row.querySelector('.table-row-offset-show');
             let btnSOffsetEle = row.querySelector('.btn-select-offset');
-            if (offsetShowEle && btnSOffsetEle && offsetEle) {
+            let quantityEle = row.querySelector('.table-row-quantity');
+            if (offsetShowEle && btnSOffsetEle && offsetEle && quantityEle) {
                 let bsTarget = "";
+                quantityEle.setAttribute('readonly', 'true');
                 if ($(ele).val() === "1") {
                     bsTarget = "#selectOffsetModal";
                     let btnSQuantityEle = row.querySelector('.btn-select-quantity');
                     if (btnSQuantityEle) {
                         btnSQuantityEle.removeAttribute('disabled');
                     }
+                    quantityEle.removeAttribute('readonly');
                 }
                 if ($(ele).val() === "3") {
                     bsTarget = "#selectAssetModal";
@@ -825,7 +829,7 @@ class LeaseOrderLoadDataHandle {
                 let quantityEle = rowTarget.querySelector('.table-row-quantity');
                 if (itemEle && assetDataEle && offsetShowEle && quantityEle) {
                     let assetData = [];
-                    let strShow = "";
+                    let titles = [];
                     for (let checkedEle of LeaseOrderDataTableHandle.$tableSAsset[0].querySelectorAll('.table-row-checkbox:checked')) {
                         let row = checkedEle.closest('tr');
                         if (row) {
@@ -841,11 +845,11 @@ class LeaseOrderLoadDataHandle {
                                     "asset_data": rowData
                                 });
                             }
-                            strShow += rowData?.['title'];
+                            titles.push(rowData?.['title']);
                         }
                     }
                     $(assetDataEle).val(JSON.stringify(assetData));
-                    $(offsetShowEle).val(strShow);
+                    $(offsetShowEle).val(titles.join("\n"));
                     $(quantityEle).val(assetData.length);
                 }
             }
@@ -1923,20 +1927,35 @@ class LeaseOrderLoadDataHandle {
     static loadShowDepreciation(ele) {
         let row = ele.closest('tr');
         if (row) {
-            let productEle = row.querySelector('.table-row-item');
-            if (productEle) {
-                if ($(productEle).val()) {
-                    let dataProduct = SelectDDControl.get_data_from_idx($(productEle), $(productEle).val());
-                    if (dataProduct) {
-                        LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id', dataProduct?.['id']);
-                    }
-                }
-            }
             let assetType = "";
             let assetTypeEle = row.querySelector('.table-row-asset-type');
             if (assetTypeEle) {
                 assetType = $(assetTypeEle).val();
             }
+
+            if (assetType === "1") {
+                let offsetEle = row.querySelector('.table-row-offset');
+                if (offsetEle) {
+                    if ($(offsetEle).val()) {
+                        let dataOffset = SelectDDControl.get_data_from_idx($(offsetEle), $(offsetEle).val());
+                        if (dataOffset) {
+                            LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id', dataOffset?.['id']);
+                        }
+                    }
+                }
+            }
+            if (assetType === "3") {
+                let assetEle = row.querySelector('.table-row-asset');
+                if (assetEle) {
+                    if ($(assetEle).val()) {
+                        let dataAsset = SelectDDControl.get_data_from_idx($(assetEle), $(assetEle).val());
+                        if (dataAsset) {
+                            LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id', dataAsset?.['id']);
+                        }
+                    }
+                }
+            }
+
             let depreciationMethodEle = row.querySelector('.table-row-depreciation-method');
             let $methodEle = $('#depreciation_method');
             if (depreciationMethodEle && $methodEle.length > 0) {
@@ -2046,34 +2065,36 @@ class LeaseOrderLoadDataHandle {
             if (depreciationDataEle && depreciationLeaseDataEle) {
                 if ($(depreciationDataEle).val()) {
                     let dataDepreciation = JSON.parse($(depreciationDataEle).val());
-                    dataFn = dataDepreciation;
-                    if ($(depreciationLeaseDataEle).val()) {
-                        let dataLeaseDepreciation = JSON.parse($(depreciationLeaseDataEle).val());
-                        dataFn = DepreciationControl.mapDataOfRange({
-                            'data_depreciation': dataDepreciation,
-                            'data_of_range': dataLeaseDepreciation,
-                        });
+                    if (dataDepreciation.length > 0) {
+                        dataFn = dataDepreciation;
+                        if ($(depreciationLeaseDataEle).val()) {
+                            let dataLeaseDepreciation = JSON.parse($(depreciationLeaseDataEle).val());
+                            dataFn = DepreciationControl.mapDataOfRange({
+                                'data_depreciation': dataDepreciation,
+                                'data_of_range': dataLeaseDepreciation,
+                            });
+                        }
+                        LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
+                        LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
+                        return true;
                     }
-                    LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
-                    LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
-                    return true;
                 }
                 // Case row is asset then use depreciation_data of asset to render $tableDepreciationDetail
                 let assetEle = row.querySelector('.table-row-asset');
                 if (assetEle && assetType === "3") {
                     let dataAsset = SelectDDControl.get_data_from_idx($(assetEle), $(assetEle).val());
                     if (dataAsset?.['depreciation_data']) {
-                        dataFn = dataAsset?.['depreciation_data'];
+                        if (dataAsset?.['depreciation_data'].length > 0) {
+                            dataFn = dataAsset?.['depreciation_data'];
+                            LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
+                            LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
+                            return true;
+                        }
                     }
                 }
-                LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
-                LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
-                return true;
             }
             // Case row is offset then use loadDataTableDepreciation to render $tableDepreciationDetail
             LeaseOrderLoadDataHandle.loadDataTableDepreciation();
-
-
         }
 
         return true;
@@ -2132,7 +2153,7 @@ class LeaseOrderLoadDataHandle {
 
     static loadSaveDepreciation() {
         let $table = LeaseOrderDataTableHandle.$tableCost;
-        let target = $table[0].querySelector(`.table-row-item[data-product-id="${LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
+        let target = $table[0].querySelector(`[data-product-id="${LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
         if (target) {
             let targetRow = target.closest('tr');
             if (targetRow) {
@@ -3303,11 +3324,11 @@ class LeaseOrderDataTableHandle {
                             $(offsetShowEle).val(data?.['offset_data']?.['title'] ? data?.['offset_data']?.['title'] : "");
                         }
                         if (data?.['asset_type'] === 3) {
-                            let strAsset = "";
+                            let titles = [];
                             for (let assetData of data?.['asset_data'] ? data?.['asset_data'] : []) {
-                                strAsset += assetData?.['asset_data']?.['title'];
+                                titles.push(assetData?.['asset_data']?.['title']);
                             }
-                            $(offsetShowEle).val(strAsset);
+                            $(offsetShowEle).val(titles.join("\n"));
                         }
                     }
                 }
@@ -3405,6 +3426,7 @@ class LeaseOrderDataTableHandle {
                                         </select>
                                         <select
                                             class="form-select table-row-offset"
+                                            data-product-id="${row?.['offset_data']?.['id']}"
                                             data-offset-id="${row?.['offset_data']?.['id']}"
                                             data-zone="${dataZone}"
                                             readonly
@@ -3412,6 +3434,7 @@ class LeaseOrderDataTableHandle {
                                         </select>
                                         <select
                                             class="form-select table-row-asset"
+                                            data-product-id="${row?.['asset_data']?.['id']}"
                                             data-asset-id="${row?.['asset_data']?.['id']}"
                                             data-zone="${dataZone}"
                                             readonly

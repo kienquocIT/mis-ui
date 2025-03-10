@@ -280,7 +280,7 @@ const columns_cfg = [
     {
         className: 'wrap-text w-30',
         'render': (data, type, row) => {
-            return `<span class="text-muted">${row?.['title']}</span><br><span class="small text-primary">${row?.['foreign_title']}</span>`;
+            return `<h6 class="text-muted fw-bold">${row?.['title']}</h6><h6 class="small text-primary fw-bold">${row?.['foreign_title']}</h6>`;
         }
     },
     {
@@ -372,7 +372,7 @@ function loadAccountDeterminationTable() {
 
                     for (let i = 0; i < account_mapped.length; i++) {
                         $(this).closest('tr').find('.selected-accounts-des').append(
-                            `<span class="text-muted">${account_mapped[i]?.['acc_code']}</span> - <span class="text-muted">${account_mapped[i]?.['acc_name']}</span> <span class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</span><br>`
+                            `<h6 class="text-muted">${account_mapped[i]?.['acc_name']}</h6><h6 class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</h6>`
                         )
                     }
                 })
@@ -386,7 +386,7 @@ $(document).on('change', '.selected-accounts', function () {
     $(this).closest('tr').find('.selected-accounts-des').html('')
     for (let i = 0; i < account_mapped.length; i++) {
         $(this).closest('tr').find('.selected-accounts-des').append(
-            `<span class="text-muted">${account_mapped[i]?.['acc_code']}</span> - <span class="text-muted">${account_mapped[i]?.['acc_name']}</span> <span class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</span><br>`
+            `<h6 class="text-muted">${account_mapped[i]?.['acc_name']}</h6><h6 class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</h6>`
         )
     }
     $(this).closest('tr').find('.btn-change-account').prop('hidden', true)

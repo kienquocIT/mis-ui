@@ -1049,7 +1049,7 @@ $(async function () {
                             if (row?.['asset_data']?.['id']) {
                                 readonly = '';
                             }
-                            return `<input class="form-control table-row-picked text-black" type="number" value="${row?.['picked_quantity'] ? row?.['picked_quantity'] : 0}" ${readonly}>`;
+                            return `<input class="form-control table-row-picked text-black valid-num" value="${row?.['picked_quantity'] ? row?.['picked_quantity'] : 0}" ${readonly}>`;
                         },
                     },
                 ],

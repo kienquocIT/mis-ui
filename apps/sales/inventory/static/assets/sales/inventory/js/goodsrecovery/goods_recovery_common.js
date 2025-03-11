@@ -124,7 +124,6 @@ class RecoveryLoadDataHandle {
         RecoveryDataTableHandle.dataTableDelivery();
         RecoveryDataTableHandle.dataTableDeliveryProduct();
         RecoveryDataTableHandle.dataTableProductNew();
-        RecoveryDataTableHandle.dataTableWareHouse();
         RecoveryDataTableHandle.dataTableDepreciationDetail();
         return true;
     };
@@ -227,9 +226,9 @@ class RecoveryLoadDataHandle {
             let remainELe = row.querySelector('.table-row-quantity-remain-recovery');
             let recoveryELe = row.querySelector('.table-row-quantity-recovery');
             if (remainELe && recoveryELe) {
-                if (remainELe.innerHTML && recoveryELe.innerHTML) {
+                if (remainELe.innerHTML && recoveryELe.value) {
                     let remain = parseFloat(remainELe.innerHTML);
-                    let recovered = parseFloat(recoveryELe.innerHTML);
+                    let recovered = parseFloat(recoveryELe.value);
                     if (recovered > remain) {
                         check = false;
                     }
@@ -292,7 +291,7 @@ class RecoveryLoadDataHandle {
                 let rowData = $row.data();
 
                 RecoveryDataTableHandle.$tableProductNew.DataTable().clear().draw();
-                RecoveryDataTableHandle.$tableProductNew.DataTable().rows.add([rowData]).draw();
+                RecoveryDataTableHandle.$tableProductNew.DataTable().rows.add(rowData?.['asset_data']).draw();
             }
         }
     };
@@ -379,26 +378,22 @@ class RecoveryLoadDataHandle {
     };
 
     static loadLineDetail() {
-        let dataJSON = {};
-        let result = [];
-        // Make a deep copy of the delivery data
-        let deliveryData = JSON.parse(JSON.stringify(RecoverySubmitHandle.setupDataDelivery()));
-        for (let deliData of deliveryData) {
-            if (deliData?.['delivery_product_data']) {
-                for (let productData of deliData?.['delivery_product_data']) {
-                    if (dataJSON.hasOwnProperty(productData?.['product_id'])) {
-                        dataJSON[productData?.['product_id']]['quantity_recovery'] += productData?.['quantity_recovery'];
-                    } else {
-                        dataJSON[productData?.['product_id']] = productData;
-                    }
+        let dataShow = [];
+        RecoveryDataTableHandle.$tableDelivery.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
+            let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
+            let rowData = $row.data();
+
+            for (let productData of rowData?.['delivery_product_data'] ? rowData?.['delivery_product_data'] : []) {
+                for (let assetData of productData?.['asset_data']) {
+                    dataShow.push(assetData);
                 }
             }
-        }
-        for (let key in dataJSON) {
-            result.push(dataJSON[key]);
-        }
+
+        });
         RecoveryDataTableHandle.$tableProduct.DataTable().clear().draw();
-        RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(result).draw();
+        RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(dataShow).draw();
         return true;
     };
 
@@ -757,9 +752,10 @@ class RecoveryDataTableHandle {
             ordering: false,
             paging: false,
             info: false,
+            searching: false,
             autoWidth: true,
             scrollX: true,
-            columns: [  // 25,325,325,150,175,325,150,270,25 (1920p)
+            columns: [
                 {
                     targets: 0,
                     width: '1%',
@@ -769,164 +765,130 @@ class RecoveryDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '18%',
+                    width: '15%',
                     render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" readonly>${row?.['product_data']?.['title']}</textarea>
-                                <div class="row table-row-item-area hidden">
-                                    <div class="col-12 col-md-12 col-lg-12">
-                                        <select
-                                            class="form-select table-row-item"
-                                            data-product-id="${row?.['product_data']?.['id']}"
-                                            data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-product')}"
-                                            data-method="GET"
-                                            data-keyResp="product_sale_list"
-                                            readonly
-                                        >
-                                        </select>
-                                    </div>
-                                </div>`;
-                    },
+                        return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" readonly>${row?.['asset_data']?.['title']}</textarea>`;
+                    }
                 },
                 {
                     targets: 2,
                     width: '15%',
                     render: (data, type, row) => {
-                        return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : ''}</textarea></div>`;
+                        return `<textarea class="form-control table-row-code" rows="2" readonly>${row?.['asset_data']?.['code'] ? row?.['asset_data']?.['code'] : ''}</textarea>`;
                     }
                 },
                 {
                     targets: 3,
-                    width: '7.8125%',
+                    width: '10%',
                     render: () => {
                         return `<select 
-                                    class="form-control table-row-uom"
-                                    data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-uom')}"
-                                    data-method="GET"
-                                    data-keyResp="unit_of_measure"
-                                    required
+                                    class="form-select table-row-uom disabled-custom-show zone-readonly"
                                     readonly
-                                >
-                                </select>`;
-                    }
+                                ></select>`;
+                    },
                 },
                 {
                     targets: 4,
-                    width: '9.11458333333%',
+                    width: '6%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-quantity valid-num" value="${row?.['quantity_recovery']}" required readonly>`;
+                        return `<input type="text" class="form-control table-row-quantity text-black zone-readonly" value="${row?.['product_quantity']}" readonly>`;
                     }
                 },
                 {
                     targets: 5,
-                    width: '16.9270833333%',
+                    width: '10%',
                     render: (data, type, row) => {
-                        return `<input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-price" 
-                                    value="${row?.['product_unit_price'] ? row?.['product_unit_price'] : 0}"
-                                    data-return-type="number"
-                                    readonly
-                                >`;
+                        return `<div class="input-group">
+                                        <input type="text" class="form-control table-row-quantity-time text-black valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" readonly>
+                                        <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                    </div>`;
                     }
                 },
                 {
                     targets: 6,
-                    width: '7.8125%',
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<div class="row">
-                                <select 
-                                    class="form-control table-row-tax"
-                                    data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-tax')}"
-                                    data-method="GET"
-                                    data-keyResp="tax_list"
-                                >
-                                </select>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-tax-amount"
-                                    value="${row?.['product_tax_amount']}"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-tax-amount-raw"
-                                    value="${row?.['product_tax_amount']}"
-                                    hidden
-                                >
-                            </div>`;
+                                    <input 
+                                        type="text" 
+                                        class="form-control mask-money table-row-price disabled-custom-show" 
+                                        value="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"
+                                        data-return-type="number"
+                                        readonly
+                                    >
+                                </div>`;
                     }
                 },
                 {
                     targets: 7,
-                    width: '14.0625%',
+                    width: '12%',
                     render: (data, type, row) => {
-                        return `<div class="row subtotal-area">
+                        let dataZone = "lease_costs_data";
+                        let readonly = "readonly";
+                        if (row?.['asset_type'] === 1) {
+                            readonly = "";
+                        }
+                        return `<div class="row">
                                     <div class="d-flex align-items-center">
+                                        <div class="input-group">
+                                            <input 
+                                                type="text" 
+                                                class="form-control table-row-depreciation-time" 
+                                                value="${row?.['product_depreciation_time'] ? row?.['product_depreciation_time'] : 0}"
+                                                data-zone="${dataZone}"
+                                                ${readonly}
+                                            >
+                                            <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                        </div>
                                         <button
                                             type="button"
                                             class="btn btn-icon btn-depreciation-detail"
                                             data-bs-toggle="offcanvas"
                                             data-bs-target="#viewDepreciationDetail"
+                                            data-zone="${dataZone}"
                                         ><i class="fas fa-ellipsis-h"></i>
-                                        </button><p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_depreciation_subtotal'] ? row?.['product_depreciation_subtotal'] : '0')}"></span></p>
+                                        </button>
                                     </div>
-                                    <input
-                                        type="text"
-                                        class="form-control table-row-subtotal-raw"
-                                        value="${row?.['product_depreciation_subtotal']}"
-                                        hidden
-                                    >
                                     
                                     <input type="text" class="form-control table-row-depreciation-subtotal" value="${row?.['product_depreciation_subtotal'] ? row?.['product_depreciation_subtotal'] : 0}" hidden>
                                     <input type="text" class="form-control table-row-depreciation-method" value="${row?.['product_depreciation_method'] ? row?.['product_depreciation_method'] : 0}" hidden>
                                     <input type="text" class="form-control table-row-depreciation-start-date" value="${row?.['product_depreciation_start_date'] ? row?.['product_depreciation_start_date'] : ''}" hidden>
                                     <input type="text" class="form-control table-row-depreciation-end-date" value="${row?.['product_depreciation_end_date'] ? row?.['product_depreciation_end_date'] : ''}" hidden>
                                     <input type="text" class="form-control table-row-depreciation-adjustment" value="${row?.['product_depreciation_adjustment'] ? row?.['product_depreciation_adjustment'] : 1}" hidden>
-                                    <input type="text" class="form-control table-row-depreciation-time" value="${row?.['product_depreciation_time'] ? row?.['product_depreciation_time'] : 0}" hidden>
                                 
                                     <input type="text" class="form-control table-row-lease-start-date" value="${row?.['product_lease_start_date'] ? row?.['product_lease_start_date'] : ''}" hidden>
                                     <input type="text" class="form-control table-row-lease-end-date" value="${row?.['product_lease_end_date'] ? row?.['product_lease_end_date'] : ''}" hidden>
+                                    <input type="text" class="form-control table-row-depreciation-data hidden">
+                                    <input type="text" class="form-control table-row-depreciation-lease-data hidden">
                                 </div>`;
                     }
                 },
                 {
                     targets: 8,
-                    width: '1.30208333333%',
-                    render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                    width: '15%',
+                    render: (data, type, row) => {
+                        let dataZone = "lease_costs_data";
+                        return `<div class="row subtotal-area">
+                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}" data-zone="${dataZone}"></span></p>
+                                <input
+                                    type="text"
+                                    class="form-control table-row-subtotal-raw"
+                                    value="${row?.['product_subtotal_price']}"
+                                    hidden
+                                >
+                            </div>`;
                     }
                 },
             ],
             rowCallback: function (row, data, index) {
-                let itemEle = row.querySelector('.table-row-item');
-                let uomEle = row.querySelector('.table-row-uom');
-                let taxEle = row.querySelector('.table-row-tax');
-                if (itemEle) {
-                    let dataS2 = [];
-                    if (data?.['product_data']) {
-                        dataS2 = [data?.['product_data']];
-                    }
-                    RecoveryLoadDataHandle.loadInitS2($(itemEle), dataS2);
+                let depreciationDataEle = row.querySelector('.table-row-depreciation-data');
+                let depreciationLeaseDataEle = row.querySelector('.table-row-depreciation-lease-data');
+                if (depreciationDataEle) {
+                    $(depreciationDataEle).val(JSON.stringify(data?.['depreciation_data'] ? data?.['depreciation_data'] : []));
                 }
-                if (uomEle) {
-                    let dataS2 = [];
-                    if (data?.['uom_data']) {
-                        dataS2 = [data?.['uom_data']];
-                    }
-                    RecoveryLoadDataHandle.loadInitS2($(uomEle), dataS2);
+                if (depreciationLeaseDataEle) {
+                    $(depreciationLeaseDataEle).val(JSON.stringify(data?.['depreciation_lease_data'] ? data?.['depreciation_lease_data'] : []));
                 }
-                if (taxEle) {
-                    let dataS2 = [];
-                    if (data?.['tax_data']) {
-                        dataS2 = [data?.['tax_data']];
-                    }
-                    RecoveryLoadDataHandle.loadInitS2($(taxEle), dataS2);
-                }
-            },
-            drawCallback: function () {
-                RecoveryDataTableHandle.dtbProductHDCustom();
-                $.fn.initMaskMoney2();
             },
         });
     };
@@ -990,20 +952,13 @@ class RecoveryDataTableHandle {
                                     <input 
                                         type="radio" 
                                         class="form-check-input table-row-checkbox" 
-                                        id="deli-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}"
-                                        data-id="${row?.['offset_data']?.['id']}"
+                                        id="deli-product-${row?.['product_data']?.['id'].replace(/-/g, "")}"
+                                        data-id="${row?.['product_data']?.['id']}"
                                     >
-                                    <label class="form-check-label table-row-item" for="deli-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}">${row?.['offset_data']?.['title']}</label>
+                                    <label class="form-check-label table-row-item" for="deli-product-${row?.['product_data']?.['id'].replace(/-/g, "")}">${row?.['product_data']?.['title']}</label>
                                 </div>`;
                     }
                 },
-                // {
-                //     targets: 1,
-                //     width: '20%',
-                //     render: (data, type, row) => {
-                //         return `<span class="table-row-quantity-ordered">${row?.['product_quantity'] ? row?.['product_quantity'] : '0'}</span>`;
-                //     }
-                // },
                 {
                     targets: 1,
                     width: '20%',
@@ -1047,54 +1002,25 @@ class RecoveryDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<div class="d-flex align-items-center">
-                                    <div class="form-check form-check-lg">
-                                        <input 
-                                            type="radio" 
-                                            class="form-check-input table-row-checkbox" 
-                                            id="new-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}"
-                                            data-id="${row?.['offset_data']?.['id']}"
-                                        >
-                                        <label class="form-check-label" for="new-product-${row?.['offset_data']?.['id'].replace(/-/g, "")}">${row?.['offset_data']?.['title'] ? row?.['offset_data']?.['title'] : ''}</label>
-                                    </div>
-                                </div>
-                                <div class="row table-row-item-area hidden">
-                                    <div class="col-12 col-md-12 col-lg-12">
-                                        <select
-                                            class="form-select table-row-item"
-                                            data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-product')}"
-                                            data-method="GET"
-                                            data-keyResp="product_sale_list"
-                                            data-product-id="${row?.['offset_data']?.['id']}"
-                                            readonly
-                                        >
-                                        </select>
-                                    </div>
-                                </div>`;
+                        return `<span class="table-row-code">${row?.['asset_data']?.['title'] ? row?.['asset_data']?.['title'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row?.['offset_data']?.['code'] ? row?.['offset_data']?.['code'] : ''}</span>`;
+                        return `<span class="table-row-code">${row?.['asset_data']?.['code'] ? row?.['asset_data']?.['code'] : ''}</span>`;
                     },
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-delivered">${row?.['quantity_delivered'] ? row?.['quantity_delivered'] : 0}</span>`;
+                        return `<span class="table-row-quantity-remain-recovery">1</span>`;
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-remain-recovery">${row?.['quantity_remain_recovery'] ? row?.['quantity_remain_recovery'] : '0'}</span>`;
-                    }
-                },
-                {
-                    targets: 4,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-recovery">${row?.['quantity_recovery']}</span>`;
+                        return `<input class="form-control table-row-quantity-recovery text-black valid-num" value="${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : 0}">`;
                     }
                 },
             ],
@@ -1114,48 +1040,6 @@ class RecoveryDataTableHandle {
                 RecoveryLoadDataHandle.loadCssToDtb('datable-deli-product-new');
             },
         });
-    };
-
-    static dataTableWareHouse(data) {
-        RecoveryDataTableHandle.$tableWarehouse.DataTableDefault({
-            ajax: {
-                url: RecoveryLoadDataHandle.urlEle.attr('data-warehouse'),
-                type: "GET",
-                dataSrc: function (resp) {
-                    let dataAjax = $.fn.switcherResp(resp);
-                    if (data) {
-                        return data;
-                    }
-                    if (dataAjax && dataAjax.hasOwnProperty('warehouse_inventory_list')) return dataAjax['warehouse_inventory_list'];
-                    return [];
-                },
-            },
-            paging: false,
-            info: false,
-            autoWidth: true,
-            scrollX: true,
-            scrollY: "200px",
-            columns: [
-                {
-                    targets: 0,
-                    width: "80%",
-                    render: (data, type, row) => {
-                        return `<button class="btn-collapse-app-wf btn btn-icon btn-rounded mr-1"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['warehouse_data']?.['title'] ? row?.['warehouse_data']?.['title'] : ""}</b>`;
-                    }
-                },
-                {
-                    targets: 1,
-                    width: "20%",
-                    render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-quantity-recovery valid-num" value="${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : 0}">`;
-                    }
-                },
-            ],
-            drawCallback: function () {
-                // add css to Dtb
-                RecoveryLoadDataHandle.loadCssToDtb('datable-warehouse');
-            },
-        }, false);
     };
 
     static dataTableLeaseGenerate(idTbl, data) {
@@ -1518,76 +1402,8 @@ class RecoveryStoreDataHandle {
         // Lưu lại data row của tất cả dtb & draw() lại row, dòng checked sẽ được lưu thêm data sub từ các dtb phụ
         // dtb data cố định => store hết, dtb data động callAjax => store data có thay đổi
 
-        let product_warehouse_data = [];
-        let product_new_data = {};
+        let asset_data = [];
         let delivery_product_data = [];
-
-        RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
-            let row = this.node();
-            if (!$(row).hasClass('child-workflow-list')) {
-                let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(row).index();
-                let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
-                let rowData = $row.data();
-
-                let recoveryEle = row.querySelector('.table-row-quantity-recovery');
-                if (recoveryEle) {
-                    if ($(recoveryEle).val()) {
-                        rowData['quantity_recovery'] = parseFloat($(recoveryEle).val());
-                    }
-                }
-                let lease_generate_data = [];
-                let $child = $(row).next();
-                if ($child.length > 0) {
-                    let tblChild = $child[0].querySelector('.table-child');
-                    if (tblChild) {
-                        $(tblChild).DataTable().rows().every(function () {
-                            let row = this.node();
-                            let leaseGenData = {};
-                            let serialEle = row.querySelector('.table-row-serial');
-                            let remarkEle = row.querySelector('.table-row-remark');
-                            if (serialEle) {
-                                if ($(serialEle).val()) {
-                                    let data = SelectDDControl.get_data_from_idx($(serialEle), $(serialEle).val());
-                                    if (data) {
-                                        leaseGenData['serial_id'] = $(serialEle).val();
-                                        leaseGenData['serial_data'] = data;
-                                    }
-                                }
-                            }
-                            if (remarkEle) {
-                                leaseGenData['remark'] = $(remarkEle).val();
-                            }
-                            lease_generate_data.push(leaseGenData);
-                        });
-                    }
-                }
-                rowData['lease_generate_data'] = lease_generate_data;
-
-
-                let iconEle = $(row).find('.icon-collapse-app-wf');
-                let right_or_down = '';
-                if (iconEle.hasClass('fa-caret-right')) {
-                    right_or_down = 'right';
-                }
-                if (iconEle.hasClass('fa-caret-down')) {
-                    right_or_down = 'down';
-                }
-
-                RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData);
-                if (rowData?.['quantity_recovery'] > 0) {
-                    product_warehouse_data.push(rowData);
-                }
-
-                iconEle = $(row).find('.icon-collapse-app-wf');
-                if (right_or_down === 'right') {
-                    iconEle.removeClass('fa-caret-down').addClass('fa-caret-right');
-                }
-                if (right_or_down === 'down') {
-                    iconEle.removeClass('fa-caret-right').addClass('fa-caret-down');
-                }
-
-            }
-        });
 
         RecoveryDataTableHandle.$tableProductNew.DataTable().rows().every(function () {
             let row = this.node();
@@ -1595,28 +1411,15 @@ class RecoveryStoreDataHandle {
             let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
             let rowData = $row.data();
 
-            // update data product_warehouse_data cho dòng đang được chọn
-            let checked = row.querySelector('.table-row-checkbox:checked');
-            if (checked) {
-                rowData['product_warehouse_data'] = product_warehouse_data;
-            }
-            let recovery = 0;
-            if (rowData?.['product_warehouse_data']) {
-                for (let dataPW of rowData?.['product_warehouse_data'] ? rowData?.['product_warehouse_data'] : []) {
-                    recovery += dataPW?.['quantity_recovery'];
+            let recoveryEle = row.querySelector('.table-row-quantity-recovery');
+            if (recoveryEle) {
+                if ($(recoveryEle).val()) {
+                    rowData['quantity_recovery'] = parseFloat($(recoveryEle).val());
                 }
             }
-            rowData['quantity_recovery'] = recovery;
 
             RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex).data(rowData);
-            product_new_data = rowData;
-
-            if (checked) {
-                let checkEle = row.querySelector('.table-row-checkbox');
-                if (checkEle) {
-                    checkEle.checked = true;
-                }
-            }
+            asset_data.push(rowData);
         });
 
         RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows().every(function () {
@@ -1628,9 +1431,13 @@ class RecoveryStoreDataHandle {
             // update data row cho dòng đang được chọn
             let checked = row.querySelector('.table-row-checkbox:checked');
             if (checked) {
-                rowData = product_new_data;
+                rowData['asset_data'] = asset_data;
             }
-
+            let recovery = 0;
+            for (let assetData of rowData?.['asset_data'] ? rowData?.['asset_data'] : []) {
+                recovery += assetData?.['quantity_recovery'] ? assetData?.['quantity_recovery'] : 0;
+            }
+            rowData['quantity_recovery'] = recovery;
             RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().row(rowIndex).data(rowData);
             delivery_product_data.push(rowData);
 

@@ -3394,7 +3394,7 @@ class LeaseOrderDataTableHandle {
                     targets: 0,
                     width: '1%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`
+                        return `<span class="table-row-order">${row?.['order']}</span>`;
                     }
                 },
                 {
@@ -3475,7 +3475,7 @@ class LeaseOrderDataTableHandle {
                     width: '6%',
                     render: (data, type, row) => {
                         let dataZone = "lease_costs_data";
-                        return `<input type="text" class="form-control table-row-quantity text-black zone-readonly" value="${row?.['product_quantity']}" data-zone="${dataZone}" disabled>`;
+                        return `<input type="text" class="form-control table-row-quantity text-black zone-readonly" value="${row?.['product_quantity']}" data-zone="${dataZone}" readonly>`;
                     }
                 },
                 {

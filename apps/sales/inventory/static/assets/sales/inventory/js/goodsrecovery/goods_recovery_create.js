@@ -80,62 +80,25 @@ $(function () {
             RecoveryLoadDataHandle.loadCheckDeliveryProduct();
         });
 
-        RecoveryDataTableHandle.$tableProductNew.on('click', '.table-row-checkbox', function () {
-            RecoveryLoadDataHandle.loadCheckNewLeasedProduct();
-            return true;
-        });
-
-        // EVENT CLICK TO COLLAPSE IN LINE APP LIST
-        //      ACTION: INSERT TABLE WORKFLOW LIST TO NEXT ROW (OF APP LIST)
-        RecoveryDataTableHandle.$tableWarehouse.on('click', '.btn-collapse-app-wf', function (event) {
-            event.preventDefault();
-            RecoveryLoadDataHandle.loadGenerateLease(this);
-        });
-
-        RecoveryDataTableHandle.$tableWarehouse.on('input', '.table-row-quantity-recovery', function () {
-            let row = this.closest('tr');
-            if (row) {
-                let btnEle = row.querySelector('.btn-collapse-app-wf');
-                if (btnEle) {
-                    if (btnEle.querySelector('.fa-caret-down')) {
-                        $(btnEle).trigger('click');
-                    }
-                }
-            }
-        });
-
-        RecoveryDataTableHandle.$tableWarehouse.on('change', '.table-row-quantity-recovery', function () {
+        RecoveryDataTableHandle.$tableProductNew.on('change', '.table-row-quantity-recovery', function () {
             let row = this.closest('tr');
             if (row) {
                 RecoveryStoreDataHandle.storeData();
                 let check = RecoveryLoadDataHandle.loadCheckExceedQuantity();
                 if (check === false) {
-                    let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(row).index();
-                    let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
+                    let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(row).index();
+                    let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
                     let rowData = $row.data();
                     rowData['quantity_recovery'] = 0;
-                    RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex).data(rowData);
+                    RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex).data(rowData);
                     RecoveryStoreDataHandle.storeData();
                 }
-
-                let btnEle = row.querySelector('.btn-collapse-app-wf');
-                if (btnEle) {
-                    $(btnEle).trigger('click');
-                }
             }
-
         });
 
         RecoveryLoadDataHandle.$btnSaveProduct.on('click', function () {
             RecoveryLoadDataHandle.loadLineDetail();
             RecoveryCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);
-        });
-
-        RecoveryDataTableHandle.$tableProduct.on('change', '.table-row-tax', function () {
-            let row = this.closest('tr');
-            if (row) {
-                RecoveryCalculateHandle.calculateMain(RecoveryDataTableHandle.$tableProduct, row);
-            }
         });
 
         RecoveryDataTableHandle.$tableProduct.on('click', '.btn-depreciation-detail', function () {

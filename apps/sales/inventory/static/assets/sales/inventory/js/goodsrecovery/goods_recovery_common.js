@@ -117,7 +117,7 @@ class RecoveryLoadDataHandle {
         RecoveryLoadDataHandle.$date.val(DateTimeControl.getCurrentDate("DMY", "/")).trigger('change');
         RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxStatus, RecoveryLoadDataHandle.dataStatus);
         RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxCustomer);
-        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxLeaseOrder);
+        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxLeaseOrder, [], {'system_status': 3});
         RecoveryLoadDataHandle.loadEventRadio(RecoveryLoadDataHandle.$depreciationModal);
         // dtb
         RecoveryDataTableHandle.dataTableProduct();

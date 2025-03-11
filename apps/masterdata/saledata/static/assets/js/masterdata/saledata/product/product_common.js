@@ -203,22 +203,15 @@ function loadGeneralProductType(product_type_list) {
         keyText: 'title',
     }).on('change', function () {
         $('#notify-inventory').prop('hidden', true)
-        if (generalProductTypeEle.val().length === 0) {
+        if (generalProductTypeEle.val()) {
             check_tab_inventory.prop('checked', false).prop('disabled', false)
             check_tab_sale.prop('checked', false).prop('disabled', false)
             check_tab_purchase.prop('checked', false).prop('disabled', false)
         }
         else {
-            let has_finished_goods = false
-            let has_service = false
-            for (let i = 0; i < generalProductTypeEle.val().length; i++) {
-                let selected = SelectDDControl.get_data_from_idx(generalProductTypeEle, generalProductTypeEle.val()[i])
-                if (selected?.['is_finished_goods']) {
-                    has_finished_goods = true
-                } else if (selected?.['is_service']) {
-                    has_service = true
-                }
-            }
+            let selected = SelectDDControl.get_data_from_idx(generalProductTypeEle, generalProductTypeEle.val())
+            let has_finished_goods = !!selected?.['is_finished_goods']
+            let has_service = !!selected?.['is_service']
             if (has_finished_goods && has_service) {
                 $.fn.notifyB({description: 'Can not select both Finished goods and Service at the same time'}, 'failure');
                 generalProductTypeEle.empty()
@@ -735,7 +728,7 @@ function getDataForm() {
 
     data['volume_id'] = volumeEle.attr('data-id');
     data['weight_id'] = weightEle.attr('data-id');
-    data['product_types_mapped_list'] = generalProductTypeEle.val();
+    data['product_types_mapped_list'] = [generalProductTypeEle.val()];
     data['general_product_category'] = generalProductCateEle.val();
     data['general_uom_group'] = generalUomGroupEle.val();
     data['general_traceability_method'] = $('#general-select-box-traceability-method option:selected').attr('value');
@@ -841,7 +834,6 @@ function getDataForm() {
         data['sale_default_uom'] = $('#sale-select-box-default-uom option:selected').attr('value');
         data['sale_tax'] = $('#sale-select-box-tax-code option:selected').attr('value');
         data['sale_price_list'] = sale_product_price_list;
-        data['sale_currency_using'] = currency_primary;
 
         data['is_public_website'] = public_website_Ele.prop('checked');
         if (public_website_Ele.prop('checked')) {
@@ -853,7 +845,6 @@ function getDataForm() {
         data['sale_default_uom'] = null;
         data['sale_tax'] = null;
         data['sale_price_list'] = [];
-        data['sale_currency_using'] = null;
     }
 
     if (check_tab_inventory.is(':checked') === true) {
@@ -892,7 +883,7 @@ function getDataForm() {
             $.fn.notifyB({description: 'Missing Price list for Sale online'}, 'failure');
             return false
         }
-        if (!data['sale_default_uom'] || !data['sale_currency_using'] || !data['sale_tax']) {
+        if (!data['sale_default_uom'] || !data['sale_tax']) {
             $.fn.notifyB({description: 'Some fields in Sale tab is missing'}, 'failure');
             return false
         }
@@ -973,7 +964,7 @@ function LoadDetailProduct(option) {
                 $x.fn.renderCodeBreadcrumb(product_detail);
                 // console.log(product_detail)
 
-                $('#code').val(product_detail['code'])
+                $('#code').val(product_detail['code']).prop('disabled', true).prop('readonly', true).addClass('form-control-line')
                 titleEle.val(product_detail['title'])
                 $('#description').val(product_detail['description'])
                 partNumberEle.val(product_detail['part_number'])
@@ -998,7 +989,7 @@ function LoadDetailProduct(option) {
 
                 if (Object.keys(product_detail['general_information']).length !== 0) {
                     let general_information = product_detail['general_information'];
-                    loadGeneralProductType(general_information['general_product_types_mapped']);
+                    loadGeneralProductType(general_information['general_product_types_mapped'][0]);
                     loadGeneralProductCategory(general_information['product_category']);
                     loadGeneralUoMGroup(general_information['uom_group']);
                     $('#general-select-box-traceability-method').val(general_information['traceability_method']).prop('disabled', true)

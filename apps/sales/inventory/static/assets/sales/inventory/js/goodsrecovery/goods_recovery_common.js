@@ -139,86 +139,6 @@ class RecoveryLoadDataHandle {
         }
     };
 
-    static loadGenerateLease(ele) {
-        let idTbl = UtilControl.generateRandomString(12);
-        let trEle = $(ele).closest('tr');
-        let iconEle = $(ele).find('.icon-collapse-app-wf');
-
-        iconEle.toggleClass('fa-caret-right').toggleClass('fa-caret-down');
-
-        if (iconEle.hasClass('fa-caret-right')) {
-            trEle.removeClass('bg-grey-light-5');
-            iconEle.removeClass('text-dark').addClass('text-secondary');
-            trEle.next().find('.child-workflow-group').slideToggle({
-                complete: function () {
-                    trEle.next().addClass('hidden');
-                }
-            });
-        }
-
-        if (iconEle.hasClass('fa-caret-down')) {
-            trEle.addClass('bg-grey-light-5');
-            iconEle.removeClass('text-secondary').addClass('text-dark');
-
-            let dataDtb = [];
-            let inputRecovery = 0;
-            let fromRecovery = 0;
-            let totalRecovery = 0;
-            RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
-                let row = this.node();
-                if (!$(row).hasClass('child-workflow-list')) {
-                    let recoveryEle = row.querySelector('.table-row-quantity-recovery');
-                    if (recoveryEle) {
-                        if ($(recoveryEle).val()) {
-                            totalRecovery += parseFloat($(recoveryEle).val());
-                        }
-                    }
-                }
-            });
-            let inputEle = trEle[0].querySelector('.table-row-quantity-recovery');
-            if (inputEle) {
-                if ($(inputEle).val()) {
-                    inputRecovery = parseFloat($(inputEle).val());
-                    fromRecovery = totalRecovery - inputRecovery + 1;
-                }
-            }
-            for (let i = fromRecovery; i <= totalRecovery; i++) {
-                dataDtb.push({'code': ''})
-            }
-
-            let rowIndex = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(trEle[0]).index();
-            let $row = RecoveryDataTableHandle.$tableWarehouse.DataTable().row(rowIndex);
-            let rowData = $row.data();
-            if (rowData?.['lease_generate_data']) {
-                if (rowData?.['lease_generate_data'].length > 0 && rowData?.['lease_generate_data'].length === dataDtb.length) {
-                    dataDtb = rowData?.['lease_generate_data'];
-                }
-            }
-
-            if (!trEle.next().hasClass('child-workflow-list')) {
-                let dtlSub = `<table id="${idTbl}" class="table table-child nowrap w-100 mb-5"><thead></thead><tbody></tbody></table>`
-                $(ele).closest('tr').after(
-                    `<tr class="child-workflow-list"><td colspan="4"><div class="child-workflow-group pt-3 pb-3 ml-3 pl-5 pr-5 hidden-simple">${dtlSub}</div></td></tr>`
-                );
-                RecoveryDataTableHandle.dataTableLeaseGenerate(idTbl, dataDtb);
-            } else {
-                let $child = trEle.next();
-                if ($child.length > 0) {
-                    let tblChild = $child[0].querySelector('.table-child');
-                    if (tblChild) {
-                        let count = $(tblChild).DataTable().data().count();
-                        if (count !== inputRecovery) {
-                            $(tblChild).DataTable().clear().draw();
-                            $(tblChild).DataTable().rows.add(dataDtb).draw();
-                        }
-                    }
-                }
-            }
-            trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
-        }
-        return true;
-    };
-
     static loadCheckExceedQuantity() {
         let check = true;
         RecoveryDataTableHandle.$tableProductNew.DataTable().rows().every(function () {
@@ -294,87 +214,6 @@ class RecoveryLoadDataHandle {
                 RecoveryDataTableHandle.$tableProductNew.DataTable().rows.add(rowData?.['asset_data']).draw();
             }
         }
-    };
-
-    static loadCheckNewLeasedProduct() {
-        RecoveryLoadDataHandle.loadDtbPW();
-        return true;
-    };
-
-    static loadDtbPW() {
-        WindowControl.showLoading();
-        $.fn.callAjax2({
-                'url': RecoveryLoadDataHandle.urlEle.attr('data-warehouse'),
-                'method': 'GET',
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('warehouse_inventory_list') && Array.isArray(data.warehouse_inventory_list)) {
-
-                        let checkedNewEle = RecoveryDataTableHandle.$tableProductNew[0].querySelector('.table-row-checkbox:checked');
-                        if (checkedNewEle) {
-                            let row = checkedNewEle.closest('tr');
-                            if (row) {
-                                let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(row).index();
-                                let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
-                                let dataRow = $row.data();
-                                RecoveryLoadDataHandle.loadSetupDataPW(data?.['warehouse_inventory_list'], dataRow);
-                            }
-                        }
-
-                        RecoveryDataTableHandle.$tableWarehouse.DataTable().clear().draw();
-                        RecoveryDataTableHandle.$tableWarehouse.DataTable().rows.add(data?.['warehouse_inventory_list']).draw();
-                        let warehouseArea = RecoveryLoadDataHandle.$canvasMain[0].querySelector('.dtb-warehouse-area');
-                        if (warehouseArea) {
-                            warehouseArea.removeAttribute('hidden');
-                        }
-
-                        WindowControl.hideLoading();
-                    }
-                }
-            }
-        )
-    };
-
-    static loadSetupDataPW(data, dataRow) {
-        let dataCheck = {};
-        for (let dataPW of dataRow?.['product_warehouse_data'] ? dataRow?.['product_warehouse_data'] : []) {
-            dataCheck[dataPW?.['warehouse_id']] = dataPW;
-        }
-        for (let dataObj of data) {
-            if (dataCheck.hasOwnProperty(dataObj?.['warehouse_id'])) {
-                dataObj['quantity_recovery'] = dataCheck[dataObj?.['warehouse_id']]?.['quantity_recovery'];
-                dataObj['lease_generate_data'] = dataCheck[dataObj?.['warehouse_id']]?.['lease_generate_data'];
-            }
-        }
-    };
-
-    static loadSerial() {
-        let data = [{'id': '', 'title': 'Select...',},];
-        let checkedNewEle = RecoveryDataTableHandle.$tableProductNew[0].querySelector('.table-row-checkbox:checked');
-        if (checkedNewEle) {
-            let rowTarget = checkedNewEle.closest('tr');
-            if (rowTarget) {
-                let rowIndex = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowTarget).index();
-                let $row = RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex);
-                let rowData = $row.data();
-                if (rowData?.['delivery_data']) {
-                    for (let deli_data of rowData?.['delivery_data']) {
-                        if (deli_data?.['serial_data']) {
-                            for (let serial_data of deli_data?.['serial_data']) {
-                                if (serial_data?.['product_warehouse_serial_data']) {
-                                    data.push(serial_data?.['product_warehouse_serial_data']);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return data;
     };
 
     static loadLineDetail() {
@@ -742,7 +581,6 @@ class RecoveryDataTableHandle {
     static $tableDelivery = $('#datable-delivery');
     static $tableDeliveryProduct = $('#datable-deli-product');
     static $tableProductNew = $('#datable-deli-product-new');
-    static $tableWarehouse = $('#datable-warehouse');
     static $tableDepreciationDetail = $('#table-depreciation-detail');
 
     static dataTableProduct(data) {
@@ -791,7 +629,7 @@ class RecoveryDataTableHandle {
                     targets: 4,
                     width: '6%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-quantity text-black zone-readonly" value="${row?.['product_quantity']}" readonly>`;
+                        return `<input type="text" class="form-control table-row-quantity text-black zone-readonly" value="${row?.['quantity_recovery']}" readonly>`;
                     }
                 },
                 {
@@ -812,7 +650,7 @@ class RecoveryDataTableHandle {
                                     <input 
                                         type="text" 
                                         class="form-control mask-money table-row-price disabled-custom-show" 
-                                        value="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"
+                                        value="${row?.['asset_data']?.['origin_cost'] ? row?.['asset_data']?.['origin_cost'] : 0}"
                                         data-return-type="number"
                                         readonly
                                     >
@@ -1038,124 +876,6 @@ class RecoveryDataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 RecoveryLoadDataHandle.loadCssToDtb('datable-deli-product-new');
-            },
-        });
-    };
-
-    static dataTableLeaseGenerate(idTbl, data) {
-        $('#' + idTbl).DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
-            columns: [
-                {
-                    title: 'Serial',
-                    width: '25%',
-                    render: (data, type, row) => {
-                        return `<select class="form-select table-row-serial" data-keyText="serial_number" hidden></select>`;
-                    }
-                },
-                {
-                    title: 'Note',
-                    width: '60%',
-                    render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ''}</textarea>`;
-                    }
-                },
-                {
-                    title: 'Get',
-                    width: '10%',
-                    render: (data, type, row) => {
-                        return `<div class="form-check form-check-lg">
-                                    <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" checked disabled>
-                                </div>`;
-                    }
-                },
-            ],
-            rowCallback: function (row, data, index) {
-                let serialEle = row.querySelector('.table-row-serial');
-                let remarkEle = row.querySelector('.table-row-remark');
-                if (serialEle) {
-                    let serialData = RecoveryLoadDataHandle.loadSerial();
-                    // call ajax để lọc ra các serial của các phiếu thu hồi trước đó (đã duyệt) cho cùng phiếu cho thuê hiện tại
-                    WindowControl.showLoading();
-                    $.fn.callAjax2({
-                            'url': RecoveryLoadDataHandle.urlEle.attr('data-recovery-lease-generate'),
-                            'method': 'GET',
-                            'data': {
-                                'goods_recovery__lease_order_id': RecoveryLoadDataHandle.$boxLeaseOrder.val(),
-                                'goods_recovery__system_status': 3,
-                            },
-                            'isDropdown': true,
-                        }
-                    ).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                if (data.hasOwnProperty('recovery_lease_generate_list') && Array.isArray(data.recovery_lease_generate_list)) {
-                                    let checkList = [];
-                                    for (let dataGen of data?.['recovery_lease_generate_list']) {
-                                        checkList.push(dataGen?.['serial_id']);
-                                    }
-                                    let fnData = [];
-                                    for (let serial of serialData) {
-                                        if (!checkList.includes(serial?.['id'])) {
-                                            fnData.push(serial);
-                                        }
-                                    }
-                                    RecoveryLoadDataHandle.loadInitS2($(serialEle), fnData, {}, RecoveryLoadDataHandle.$canvasMain, false, {'res2': 'serial_number'});
-                                    if (fnData.length === 0) {
-                                        serialEle.removeAttribute('hidden');
-                                    }
-                                    if (data?.['serial_id']) {
-                                        $(serialEle).val(data?.['serial_id']).trigger('change');
-                                    }
-
-                                    WindowControl.hideLoading();
-                                }
-                            }
-                        }
-                    )
-
-                    $(serialEle).on('change', function () {
-                        let $ele = $(this);
-                        let val = $ele.val();
-                        if (val) {
-                            RecoveryDataTableHandle.$tableWarehouse.DataTable().rows().every(function () {
-                                let rowCheck1 = this.node();
-                                if (!$(rowCheck1).hasClass('child-workflow-list')) {
-                                    let $child = $(rowCheck1).next();
-                                    if ($child.length > 0) {
-                                        let tblChild = $child[0].querySelector('.table-child');
-                                        if (tblChild) {
-                                            $(tblChild).DataTable().rows().every(function () {
-                                                let rowCheck2 = this.node();
-                                                if (row !== rowCheck2) {
-                                                    let serialEle = rowCheck2.querySelector('.table-row-serial');
-                                                    if ($(serialEle).val() === val) {
-                                                        $ele.val('').trigger('change');
-                                                        $.fn.notifyB({description: RecoveryLoadDataHandle.transEle.attr('data-unique-serial')}, 'failure');
-                                                        return false;
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                        RecoveryStoreDataHandle.storeData();
-                    });
-                }
-                if (remarkEle) {
-                    $(remarkEle).on('change', function () {
-                        RecoveryStoreDataHandle.storeData();
-                    });
-                }
-            },
-            drawCallback: function () {
-                // add css to Dtb
-                RecoveryLoadDataHandle.loadCssToDtb(idTbl);
             },
         });
     };

@@ -171,6 +171,9 @@ $(async function () {
                             temp_picked += rowData?.['picked_quantity'];
                             delivery_data = rowData?.['delivery_data'] ? rowData?.['delivery_data'] : [];
                             if (rowData?.['asset_data']?.['id']) {
+                                if ($actDate.val()) {
+                                    rowData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                }
                                 asset_data.push(rowData);
                             }
                         });
@@ -180,8 +183,10 @@ $(async function () {
                             tableTargetData[idx]['picked_quantity'] = temp_picked;
                             tableTargetData[idx]['delivery_data'] = delivery_data;
                             tableTargetData[idx]['asset_data'] = asset_data;
+                            // Kiểm tra nếu giao đơn cho thuê cho SP thì dùng $actDate.val() override product_depreciation_start_date, product_lease_start_date
                             if ($actDate.val() && tableTargetData[idx]?.['asset_type'] === 1) {
                                 tableTargetData[idx]['product_depreciation_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                tableTargetData[idx]['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
                                 tableTargetData[idx]['depreciation_data'] = DepreciationControl.callDepreciation({
                                     "method": tableTargetData[idx]?.['product_depreciation_method'],
                                     "months": tableTargetData[idx]?.['product_depreciation_time'],
@@ -1813,6 +1818,7 @@ $(async function () {
                         'delivery_data': prod?.['delivery_data'],
                         'asset_data': prod?.['asset_data'],
                         'product_depreciation_start_date': prod?.['product_depreciation_start_date'],
+                        'product_lease_start_date': prod?.['product_lease_start_date'],
                         'depreciation_data': prod?.['depreciation_data'],
                         'order': prod?.['order'],
                     })

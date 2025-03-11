@@ -4592,7 +4592,7 @@ class LeaseOrderDataTableHandle {
                             "data_depreciation": row?.['depreciation_data'],
                             "current_date": DateTimeControl.getCurrentDate("DMY", "/")
                         })
-                        return `<span class="mask-money table-row-net-value" data-init-money="${netValue}"></span>`;
+                        return `<span class="mask-money table-row-net-value" data-init-money="${netValue ? netValue : 0}"></span>`;
                     }
                 },
                 {

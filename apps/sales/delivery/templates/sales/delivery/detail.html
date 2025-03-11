@@ -141,7 +141,7 @@
                                    class="form-label">{% trans 'Estimated Delivery Date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
-                                       class="form-control date-picker" autocomplete="off" disabled>
+                                       class="form-control date-picker text-black" autocomplete="off" disabled>
                                 <span class="input-suffix">
                                     <i class="fas fa-calendar-alt"></i>
                                 </span>
@@ -153,7 +153,7 @@
                             <label for="inputActualDate" class="form-label">{% trans 'Actual Date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" name="actual_delivery_date" id="inputActualDate"
-                                       class="form-control date-picker" autocomplete="off" disabled>
+                                       class="form-control date-picker text-black" autocomplete="off" disabled>
                                 <span class="input-suffix">
                                     <i class="fas fa-calendar-alt"></i>
                                 </span>
@@ -415,6 +415,7 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'assets/js/extends/depreciation/depreciation_common.js' %}"></script>
     <script src="{% static 'sales/delivery/delivery/detail.js' %}"></script>
     <script src="{% static 'printer/print.js' %}"></script>
     <script>

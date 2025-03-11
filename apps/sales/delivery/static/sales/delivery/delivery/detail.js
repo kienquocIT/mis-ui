@@ -3,6 +3,7 @@ $(async function () {
     const $url = $('#url-factory');
     let $form = $('#delivery_form');
     let $eleSO = $('#inputSaleOrder');
+    let $actDate = $('#inputActualDate');
 
     let $tableMain = $('#dtbPickingProductList');
     let $tableProductNew = $('#productNew');
@@ -10,6 +11,7 @@ $(async function () {
     let $tableLot = $('#datable-delivery-wh-lot');
     let $tableSerial = $('#datable-delivery-wh-serial');
     let $scrollProduct = $('#scroll-new-leased-product');
+    let $scrollWH = $('#scroll-table-wh');
     let $scrollLot = $('#scroll-table-lot');
     let $scrollSerial = $('#scroll-table-serial');
     let $canvasPW = $('#warehouseStockCanvas');
@@ -69,6 +71,7 @@ $(async function () {
             }
             if (prod_data?.['asset_type'] === 3) {
                $tableProductNew.DataTable().rows.add(prod_data?.['asset_data']).draw();
+               $scrollWH.attr('hidden', 'true');
             }
             prodTable.loadEventRadio($scrollProduct);
 
@@ -177,6 +180,18 @@ $(async function () {
                             tableTargetData[idx]['picked_quantity'] = temp_picked;
                             tableTargetData[idx]['delivery_data'] = delivery_data;
                             tableTargetData[idx]['asset_data'] = asset_data;
+                            if ($actDate.val() && tableTargetData[idx]?.['asset_type'] === 1) {
+                                tableTargetData[idx]['product_depreciation_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                tableTargetData[idx]['depreciation_data'] = DepreciationControl.callDepreciation({
+                                    "method": tableTargetData[idx]?.['product_depreciation_method'],
+                                    "months": tableTargetData[idx]?.['product_depreciation_time'],
+                                    "start_date": $actDate.val(),
+                                    "end_date": moment(tableTargetData[idx]?.['product_depreciation_end_date']).format('DD/MM/YYYY'),
+                                    "price": tableTargetData[idx]?.['product_cost'],
+                                    "adjust": tableTargetData[idx]?.['product_depreciation_adjustment'],
+                                });
+                            }
+
                             _this.setProdList = tableTargetData;
                             $tableMain.DataTable().row(idx).data(tableTargetData[idx]).draw();
                         }
@@ -1797,6 +1812,8 @@ $(async function () {
                         'done': prod?.['picked_quantity'],
                         'delivery_data': prod?.['delivery_data'],
                         'asset_data': prod?.['asset_data'],
+                        'product_depreciation_start_date': prod?.['product_depreciation_start_date'],
+                        'depreciation_data': prod?.['depreciation_data'],
                         'order': prod?.['order'],
                     })
                 }

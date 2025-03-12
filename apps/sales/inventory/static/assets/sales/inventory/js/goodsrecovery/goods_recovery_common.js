@@ -226,13 +226,27 @@ class RecoveryLoadDataHandle {
 
             for (let productData of rowData?.['delivery_product_data'] ? rowData?.['delivery_product_data'] : []) {
                 for (let assetData of productData?.['asset_data']) {
-                    dataShow.push(assetData);
+                    if (assetData?.['quantity_recovery']) {
+                        if (assetData?.['quantity_recovery'] > 0) {
+                            dataShow.push(assetData);
+                        }
+                    }
                 }
             }
 
         });
         RecoveryDataTableHandle.$tableProduct.DataTable().clear().draw();
         RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(dataShow).draw();
+
+        RecoveryDataTableHandle.$tableProduct.DataTable().rows().every(function () {
+            let row = this.node();
+            let btnDepreciationEle = row.querySelector('.btn-depreciation-detail');
+            if (btnDepreciationEle) {
+                RecoveryLoadDataHandle.loadShowDepreciation(btnDepreciationEle);
+                RecoveryLoadDataHandle.loadSaveDepreciation();
+            }
+        });
+
         return true;
     };
 
@@ -816,6 +830,10 @@ class RecoveryDataTableHandle {
                     $(depreciationLeaseDataEle).val(JSON.stringify(data?.['depreciation_lease_data'] ? data?.['depreciation_lease_data'] : []));
                 }
             },
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                RecoveryDataTableHandle.dtbProductHDCustom();
+            },
         });
     };
 
@@ -946,7 +964,14 @@ class RecoveryDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<input class="form-control table-row-quantity-recovery text-black valid-num" value="${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : 0}">`;
+                        let checked = "";
+                        if (row?.['quantity_recovery'] > 0) {
+                            checked = "checked";
+                        }
+                        return `<div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="checkbox" name="check-asset" class="form-check-input table-row-checkbox" id="check-asset-${row?.['asset_data']?.['id'].replace(/-/g, "")}" ${checked}>
+                                </div>
+                                <input class="form-control table-row-quantity-recovery text-black valid-num" value="${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : 0}" hidden>`;
                     }
                 },
             ],
@@ -964,6 +989,7 @@ class RecoveryDataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 RecoveryLoadDataHandle.loadCssToDtb('datable-deli-product-new');
+                RecoveryLoadDataHandle.loadEventCheckbox(RecoveryDataTableHandle.$tableProductNew);
             },
         });
     };
@@ -1169,30 +1195,19 @@ class RecoverySubmitHandle {
             let $row = RecoveryDataTableHandle.$tableDelivery.DataTable().row(rowIndex);
             let rowData = $row.data();
             // update depreciation data for recovery product
-            for (let product_data of rowData?.['delivery_product_data']) {
-                let target = RecoveryDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${product_data?.['product_data']?.['id']}"]`);
-                if (target) {
-                    let targetRow = target.closest('tr');
-                    if (targetRow) {
-                        let depreciationSubtotalEle = targetRow.querySelector('.table-row-depreciation-subtotal');
-                        if (depreciationSubtotalEle) {
-                            if ($(depreciationSubtotalEle).val()) {
-                                product_data['product_depreciation_subtotal'] = parseFloat($(depreciationSubtotalEle).val());
-                                if (product_data?.['product_depreciation_subtotal'] && product_data?.['quantity_recovery']) {
-                                    product_data['product_depreciation_price'] = product_data?.['product_depreciation_subtotal'] / product_data?.['quantity_recovery'];
+            for (let productData of rowData?.['delivery_product_data']) {
+                for (let assetData of productData?.['asset_data']) {
+                    delete assetData['picked_quantity'];
+                    let target = RecoveryDataTableHandle.$tableProduct[0].querySelector(`[data-product-id="${RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
+                    if (target) {
+                        let targetRow = target.closest('tr');
+                        if (targetRow) {
+                            let depreciationLeaseDataEle = targetRow.querySelector('.table-row-depreciation-lease-data');
+                            if (depreciationLeaseDataEle) {
+                                if ($(depreciationLeaseDataEle).val() && RecoveryLoadDataHandle.$date.val()) {
+                                    assetData['product_lease_end_date'] = moment(RecoveryLoadDataHandle.$date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                    assetData['depreciation_lease_data'] = JSON.parse($(depreciationLeaseDataEle).val());
                                 }
-                            }
-                        }
-                        let leaseStartDateEle = targetRow.querySelector('.table-row-lease-start-date');
-                        if (leaseStartDateEle) {
-                            if ($(leaseStartDateEle).val()) {
-                                product_data['product_lease_start_date'] = $(leaseStartDateEle).val();
-                            }
-                        }
-                        let leaseEndDateEle = targetRow.querySelector('.table-row-lease-end-date');
-                        if (leaseEndDateEle) {
-                            if ($(leaseEndDateEle).val()) {
-                                product_data['product_lease_end_date'] = $(leaseEndDateEle).val();
                             }
                         }
                     }

@@ -96,6 +96,21 @@ $(function () {
             }
         });
 
+        RecoveryDataTableHandle.$tableProductNew.on('click', '.table-row-checkbox', function () {
+            let row = this.closest('tr');
+            if (row) {
+                let quantityRecoveryEle = row.querySelector('.table-row-quantity-recovery');
+                if (quantityRecoveryEle) {
+                    if (this.checked === true) {
+                        $(quantityRecoveryEle).val(1).trigger('change');
+                    }
+                    if (this.checked === false) {
+                        $(quantityRecoveryEle).val(0).trigger('change');
+                    }
+                }
+            }
+        });
+
         RecoveryLoadDataHandle.$btnSaveProduct.on('click', function () {
             RecoveryLoadDataHandle.loadLineDetail();
         });
@@ -123,11 +138,9 @@ $(function () {
         });
 
 
-
-
-
-
-
+        RecoveryLoadDataHandle.$date.on('change', function () {
+            RecoveryLoadDataHandle.loadLineDetail();
+        });
 
 
 // SUBMIT FORM

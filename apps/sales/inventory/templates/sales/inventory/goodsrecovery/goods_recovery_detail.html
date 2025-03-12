@@ -239,92 +239,47 @@
                 <div class="offcanvas-body">
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6 border-right">
-                            <div data-simplebar class="h-200p nicescroll-bar">
-                                <table
-                                    id="datable-delivery"
-                                    class="table nowrap w-100"
-                                >
-                                    <thead>
-                                    <tr class="bg-light">
-                                        <th class="w-60">{% trans 'Delivery' %}</th>
-                                        <th class="w-20">{% trans 'Date' %}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <table
+                                id="datable-delivery"
+                                class="table nowrap w-100"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th class="w-60">{% trans 'Delivery' %}</th>
+                                    <th class="w-20">{% trans 'Date' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                            <table
+                                id="datable-deli-product"
+                                class="table nowrap w-100"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th>{% trans 'Service' %}</th>
+                                    <th>{% trans 'Delivered' %}</th>
+                                    <th>{% trans 'Remain' %}</th>
+                                    <th>{% trans 'Recovery' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div data-simplebar class="h-200p nicescroll-bar">
-                                <table
-                                    id="datable-deli-product"
-                                    class="table nowrap w-100"
-                                >
-                                    <thead>
-                                    <tr class="bg-light">
-                                        <th>{% trans 'Product' %}</th>
-                                        <th>{% trans 'Delivered' %}</th>
-                                        <th>{% trans 'Remain' %}</th>
-                                        <th>{% trans 'Recovery' %}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6 border-right">
-                            <div data-simplebar class="h-700p nicescroll-bar hidden" id="scroll-new-leased-product">
+                            <div class="hidden" id="scroll-new-leased-product">
                                 <table
                                     id="datable-deli-product-new"
                                     class="table nowrap w-100"
                                 >
                                     <thead>
                                     <tr class="bg-light">
-                                        <th>{% trans 'Product name' %}</th>
-                                        <th>{% trans 'Product code' %}</th>
-                                        <th>{% trans 'Delivered' %}</th>
+                                        <th>{% trans 'Name' %}</th>
+                                        <th>{% trans 'Code' %}</th>
                                         <th>{% trans 'Remain' %}</th>
-                                        <th>{% trans 'Recovery' %}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                                <table
-                                    id="datable-deli-product-leased"
-                                    class="table nowrap w-100"
-                                >
-                                    <thead>
-                                    <tr class="bg-light">
-                                        <th>{% trans 'Product name' %}</th>
-                                        <th>{% trans 'Lease code' %}</th>
-                                        <th>{% trans 'Delivered' %}</th>
-                                        <th>{% trans 'Remain' %}</th>
-                                        <th>{% trans 'Recovery' %}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6 border-right">
-                            <div data-simplebar class="h-700p nicescroll-bar dtb-warehouse-area" hidden>
-                                <table
-                                        id="datable-warehouse"
-                                        class="table nowrap w-100 mb-5"
-                                        data-url="{% url 'WorkflowListAPI' %}"
-                                        data-method="get"
-                                        data-app-list="{% url 'TenantApplicationListAPI' %}"
-                                >
-                                    {% csrf_token %}
-                                    <thead>
-                                    <tr class="bg-light">
-                                        <th>{% trans 'Warehouse' %}</th>
                                         <th>{% trans 'Recovery' %}</th>
                                     </tr>
                                     </thead>
@@ -380,7 +335,7 @@
                                 <label class="form-label required" for="depreciation_start_date">{% trans 'Start depreciation' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="depreciation_start_date"
-                                           class="form-control depreciation-start-date date-picker" autocomplete="off" disabled>
+                                           class="form-control depreciation-start-date date-picker text-black" autocomplete="off" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -392,7 +347,7 @@
                                 <label class="form-label required" for="depreciation_end_date">{% trans 'End depreciation' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="depreciation_end_date"
-                                           class="form-control depreciation-end-date date-picker" autocomplete="off" disabled>
+                                           class="form-control depreciation-end-date date-picker text-black" autocomplete="off" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -404,7 +359,7 @@
                                 <label class="form-label required" for="lease_start_date">{% trans 'Start lease' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="lease_start_date"
-                                           class="form-control lease-start-date date-picker" autocomplete="off" disabled>
+                                           class="form-control lease-start-date date-picker text-black" autocomplete="off" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -416,7 +371,7 @@
                                 <label class="form-label required" for="lease_end_date">{% trans 'End lease' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="lease_end_date"
-                                           class="form-control lease-end-date date-picker" autocomplete="off" disabled>
+                                           class="form-control lease-end-date date-picker text-black" autocomplete="off" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>

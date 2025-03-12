@@ -98,7 +98,6 @@ $(function () {
 
         RecoveryLoadDataHandle.$btnSaveProduct.on('click', function () {
             RecoveryLoadDataHandle.loadLineDetail();
-            RecoveryCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);
         });
 
         RecoveryDataTableHandle.$tableProduct.on('click', '.btn-depreciation-detail', function () {
@@ -121,7 +120,6 @@ $(function () {
 
         RecoveryLoadDataHandle.$btnSaveDepreciation.on('click', function () {
             RecoveryLoadDataHandle.loadSaveDepreciation();
-            RecoveryCalculateHandle.calculateTable(RecoveryDataTableHandle.$tableProduct);
         });
 
 

@@ -2034,7 +2034,7 @@ class LeaseOrderLoadDataHandle {
                 if ($(depreciationEndDateEle).val()) {
                     $endDateEle.val(moment($(depreciationEndDateEle).val()).format('DD/MM/YYYY'));
                 }
-                // Kiểm tra nếu bảng khấu hao lấy giá vốn cuối của sản phẩm mới thì end depreciation tự lấy theo số tháng khấu hao
+                // if not data store depreciation_end_date then auto use DepreciationControl.getEndDateDepreciation
                 if ($startDateEle.val() && $timeEle.val()) {
                     let endDate = DepreciationControl.getEndDateDepreciation($startDateEle.val(), parseInt($timeEle.val()));
                     $endDateEle.val(endDate).trigger('change');

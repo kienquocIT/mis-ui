@@ -240,12 +240,12 @@ class RecoveryLoadDataHandle {
     static loadShowDepreciation(ele) {
         let row = ele.closest('tr');
         if (row) {
-            let productEle = row.querySelector('.table-row-item');
-            if (productEle) {
-                if ($(productEle).val()) {
-                    let dataProduct = SelectDDControl.get_data_from_idx($(productEle), $(productEle).val());
-                    if (dataProduct) {
-                        RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id', dataProduct?.['id']);
+            let assetEle = row.querySelector('.table-row-asset');
+            if (assetEle) {
+                if ($(assetEle).val()) {
+                    let dataAsset = SelectDDControl.get_data_from_idx($(assetEle), $(assetEle).val());
+                    if (dataAsset) {
+                        RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id', dataAsset?.['id']);
                     }
                 }
             }
@@ -319,6 +319,11 @@ class RecoveryLoadDataHandle {
                 if ($(depreciationEndDateEle).val()) {
                     $endDateEle.val(moment($(depreciationEndDateEle).val()).format('DD/MM/YYYY'));
                 }
+                // if not data store depreciation_end_date then auto use DepreciationControl.getEndDateDepreciation
+                if ($startDateEle.val() && $timeEle.val()) {
+                    let endDate = DepreciationControl.getEndDateDepreciation($startDateEle.val(), parseInt($timeEle.val()));
+                    $endDateEle.val(endDate).trigger('change');
+                }
             }
             let leaseStartDateEle = row.querySelector('.table-row-lease-start-date');
             let $leaseStartDateEle = $('#lease_start_date');
@@ -331,13 +336,40 @@ class RecoveryLoadDataHandle {
             let leaseEndDateEle = row.querySelector('.table-row-lease-end-date');
             let $leaseEndDateEle = $('#lease_end_date');
             if (leaseEndDateEle && $leaseEndDateEle.length > 0) {
-                if ($(leaseEndDateEle).val()) {
-                    $leaseEndDateEle.val(moment($(leaseEndDateEle).val()).format('DD/MM/YYYY'));
+                $leaseEndDateEle.val("").trigger('change');
+                if (RecoveryLoadDataHandle.$date.val()) {
+                    $leaseEndDateEle.val(RecoveryLoadDataHandle.$date.val());
                 }
-                $leaseEndDateEle.val(RecoveryLoadDataHandle.$date.val()).trigger('change');
+            }
+
+            let dataFn = [];
+            if (assetEle) {
+                let dataAsset = SelectDDControl.get_data_from_idx($(assetEle), $(assetEle).val());
+                if (dataAsset?.['depreciation_data']) {
+                    if (dataAsset?.['depreciation_data'].length > 0) {
+                        dataFn = dataAsset?.['depreciation_data'];
+                        if ($leaseStartDateEle.length > 0 && $leaseEndDateEle.length > 0) {
+                            if ($leaseStartDateEle.val() && $leaseEndDateEle.val()) {
+                                let dataOfRange = DepreciationControl.extractDataOfRange({
+                                    'data_depreciation': dataAsset?.['depreciation_data'],
+                                    'start_date': $leaseStartDateEle.val(),
+                                    'end_date': $leaseEndDateEle.val(),
+                                });
+                                dataFn = DepreciationControl.mapDataOfRange({
+                                    'data_depreciation': dataAsset?.['depreciation_data'],
+                                    'data_of_range': dataOfRange,
+                                });
+                            }
+                        }
+
+                        RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
+                        RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
+                        return true;
+                    }
+                }
             }
         }
-        RecoveryLoadDataHandle.loadDataTableDepreciation();
+
         return true;
     };
 
@@ -366,7 +398,7 @@ class RecoveryLoadDataHandle {
                         "start_date": $startEle.val(),
                         "end_date": $endEle.val(),
                         "price": parseFloat($costEle.valCurrency()),
-                        "adjust": parseInt($adjustEle.val())
+                        "adjust": parseFloat($adjustEle.val())
                     });
                     let dataOfRange = DepreciationControl.extractDataOfRange({
                         'data_depreciation': dataDepreciation,
@@ -394,17 +426,21 @@ class RecoveryLoadDataHandle {
 
     static loadSaveDepreciation() {
         let $table = RecoveryDataTableHandle.$tableProduct;
-        let target = $table[0].querySelector(`.table-row-item[data-product-id="${RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
+        let target = $table[0].querySelector(`[data-product-id="${RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
         if (target) {
             let targetRow = target.closest('tr');
-
             if (targetRow) {
+                let $priceEle = $('#cost_price');
+                let $timeEle = $('#depreciation_time');
                 let $methodEle = $('#depreciation_method');
                 let $adjust = $('#depreciation_adjustment');
                 let $startEle = $('#depreciation_start_date');
                 let $endEle = $('#depreciation_end_date');
                 let $leaseStartEle = $('#lease_start_date');
                 let $leaseEndEle = $('#lease_end_date');
+                let fnCost = 0;
+                let dataDepreciation = [];
+                let dataDepreciationLease = [];
                 if ($methodEle.length > 0 && $adjust.length > 0 && $startEle.length > 0 && $endEle.length > 0  && $leaseStartEle.length > 0 && $leaseEndEle.length > 0) {
                     let depreciationMethodEle = targetRow.querySelector('.table-row-depreciation-method');
                     let depreciationAdjustEle = targetRow.querySelector('.table-row-depreciation-adjustment');
@@ -436,26 +472,48 @@ class RecoveryLoadDataHandle {
                             $(leaseEndDateEle).val(moment($leaseEndEle.val(),
                                 'DD/MM/YYYY').format('YYYY-MM-DD'));
                         }
+
+                        dataDepreciation = DepreciationControl.callDepreciation({
+                            "method": parseInt($methodEle.val()),
+                            "months": parseInt($timeEle.val()),
+                            "start_date": $startEle.val(),
+                            "end_date": $endEle.val(),
+                            "price": parseFloat($priceEle.valCurrency()),
+                            "adjust": parseFloat($adjust.val()),
+                        });
+                        dataDepreciationLease = DepreciationControl.extractDataOfRange({
+                            'data_depreciation': dataDepreciation,
+                            'start_date': $leaseStartEle.val(),
+                            'end_date': $leaseEndEle.val(),
+                        });
                     }
+                    RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().rows().every(function () {
+                        let row = this.node();
+                        let rowIndex = RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().row(row).index();
+                        let $row = RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().row(rowIndex);
+                        let dataRow = $row.data();
+                        if (dataRow?.['lease_accumulative_allocated']) {
+                            fnCost = dataRow?.['lease_accumulative_allocated'];
+                        }
+                    });
                 }
-                let fnCost = 0;
-                RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().rows().every(function () {
-                    let row = this.node();
-                    let rowIndex = RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().row(row).index();
-                    let $row = RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().row(rowIndex);
-                    let dataRow = $row.data();
-                    if (dataRow?.['lease_accumulative_allocated']) {
-                        fnCost = dataRow?.['lease_accumulative_allocated'];
-                    }
-                });
+
                 let depreciationSubtotalEle = targetRow.querySelector('.table-row-depreciation-subtotal');
                 let fnCostEle = targetRow.querySelector('.table-row-subtotal');
                 let fnCostRawEle = targetRow.querySelector('.table-row-subtotal-raw');
+                let depreciationDataEle = targetRow.querySelector('.table-row-depreciation-data');
+                let depreciationLeaseDataEle = targetRow.querySelector('.table-row-depreciation-lease-data');
 
                 if (depreciationSubtotalEle && fnCostEle && fnCostRawEle) {
                     $(depreciationSubtotalEle).val(fnCost);
                     $(fnCostEle).attr('data-init-money', String(fnCost));
                     $(fnCostRawEle).val(String(fnCost));
+                }
+                if (depreciationDataEle) {
+                    $(depreciationDataEle).val(JSON.stringify(dataDepreciation));
+                }
+                if (depreciationLeaseDataEle) {
+                    $(depreciationLeaseDataEle).val(JSON.stringify(dataDepreciationLease));
                 }
                 $.fn.initMaskMoney2();
             }
@@ -605,7 +663,14 @@ class RecoveryDataTableHandle {
                     targets: 1,
                     width: '15%',
                     render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" readonly>${row?.['asset_data']?.['title']}</textarea>`;
+                        return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" readonly>${row?.['asset_data']?.['title']}</textarea>
+                                <div hidden>
+                                    <select
+                                        class="form-select table-row-asset"
+                                        data-product-id="${row?.['asset_data']?.['id']}"
+                                    >
+                                    </select>
+                                </div>`;
                     }
                 },
                 {
@@ -637,8 +702,15 @@ class RecoveryDataTableHandle {
                     width: '10%',
                     render: (data, type, row) => {
                         return `<div class="input-group">
-                                        <input type="text" class="form-control table-row-quantity-time text-black valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" readonly>
-                                        <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                    <input type="text" class="form-control table-row-quantity-time text-black valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" readonly>
+                                    <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                </div>
+                                <div hidden>
+                                        <select 
+                                            class="form-select table-row-uom-time"
+                                            data-url="${RecoveryLoadDataHandle.urlEle.attr('data-md-uom')}"
+                                         >
+                                        </select>
                                     </div>`;
                     }
                 },
@@ -719,8 +791,24 @@ class RecoveryDataTableHandle {
                 },
             ],
             rowCallback: function (row, data, index) {
+                let assetEle = row.querySelector('.table-row-asset');
+                let uomTimeEle = row.querySelector('.table-row-uom-time');
                 let depreciationDataEle = row.querySelector('.table-row-depreciation-data');
                 let depreciationLeaseDataEle = row.querySelector('.table-row-depreciation-lease-data');
+                if (assetEle) {
+                    let dataS2 = [];
+                    if (data?.['asset_data']) {
+                        dataS2 = [data?.['asset_data']];
+                    }
+                    RecoveryLoadDataHandle.loadInitS2($(assetEle), dataS2);
+                }
+                if (uomTimeEle) {
+                    let dataS2 = [];
+                    if (data?.['uom_time_data']) {
+                        dataS2 = [data?.['uom_time_data']];
+                    }
+                    RecoveryLoadDataHandle.loadInitS2($(uomTimeEle), dataS2);
+                }
                 if (depreciationDataEle) {
                     $(depreciationDataEle).val(JSON.stringify(data?.['depreciation_data'] ? data?.['depreciation_data'] : []));
                 }
@@ -989,131 +1077,6 @@ class RecoveryDataTableHandle {
         }
     };
 
-}
-
-// Calculate
-class RecoveryCalculateHandle {
-    static calculateTotal(table) {
-        let tableWrapper = document.getElementById('datable-product_wrapper');
-        if (tableWrapper) {
-            let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
-            let pretaxAmount = 0;
-            let taxAmount = 0;
-            let elePretaxAmount = tableFt.querySelector('.good-receipt-product-pretax-amount');
-            let eleTaxes = tableFt.querySelector('.good-receipt-product-taxes');
-            let eleTotal = tableFt.querySelector('.good-receipt-product-total');
-            let elePretaxAmountRaw = tableFt.querySelector('.good-receipt-product-pretax-amount-raw');
-            let eleTaxesRaw = tableFt.querySelector('.good-receipt-product-taxes-raw');
-            let eleTotalRaw = tableFt.querySelector('.good-receipt-product-total-raw');
-            let finalRevenueBeforeTax = tableFt.querySelector('.good-receipt-final-revenue-before-tax');
-            if (!table.querySelector('.dataTables_empty')) {
-                if (elePretaxAmount && eleTaxes && eleTotal) {
-                    let tableLen = table.tBodies[0].rows.length;
-                    for (let i = 0; i < tableLen; i++) {
-                        let row = table.tBodies[0].rows[i];
-                        // calculate Pretax Amount
-                        let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
-                        if (subtotalRaw) {
-                            if (subtotalRaw.value) {
-                                pretaxAmount += parseFloat(subtotalRaw.value)
-                            }
-                        }
-                        // calculate Tax Amount
-                        let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
-                        if (subTaxAmountRaw) {
-                            if (subTaxAmountRaw.value) {
-                                taxAmount += parseFloat(subTaxAmountRaw.value)
-                            }
-                        }
-                    }
-                    let totalFinal = (pretaxAmount + taxAmount);
-                    $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
-                    elePretaxAmountRaw.value = pretaxAmount;
-                    finalRevenueBeforeTax.value = pretaxAmount;
-                    $(eleTaxes).attr('data-init-money', String(taxAmount));
-                    eleTaxesRaw.value = taxAmount;
-                    $(eleTotal).attr('data-init-money', String(totalFinal));
-                    eleTotalRaw.value = totalFinal;
-                }
-            } else {
-                $(elePretaxAmount).attr('data-init-money', String(0));
-                elePretaxAmountRaw.value = '0';
-                finalRevenueBeforeTax.value = '0';
-                $(eleTaxes).attr('data-init-money', String(0));
-                eleTaxesRaw.value = '0';
-                $(eleTotal).attr('data-init-money', String(0));
-                eleTotalRaw.value = '0';
-            }
-            $.fn.initMaskMoney2();
-        }
-        $.fn.initMaskMoney2();
-        return true;
-    };
-
-    static calculateRow(row) {
-        let price = 0;
-        let quantity = 0;
-        let elePrice = row.querySelector('.table-row-price');
-        if (elePrice) {
-            price = $(elePrice).valCurrency();
-        }
-        let eleQuantity = row.querySelector('.table-row-import');
-        if (eleQuantity) {
-            if (eleQuantity.value) {
-                quantity = parseFloat(eleQuantity.value)
-            } else if (!eleQuantity.value || eleQuantity.value === "0") {
-                quantity = 0
-            }
-        }
-        let tax = 0;
-        let subtotal = (price * quantity);
-        let eleTax = row.querySelector('.table-row-tax');
-        if (eleTax) {
-            if ($(eleTax).val()) {
-                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
-                if (dataTax.hasOwnProperty('rate')) {
-                    tax = parseInt(dataTax.rate);
-                }
-            }
-        }
-        let eleTaxAmount = row.querySelector('.table-row-tax-amount');
-        let eleTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
-        // calculate tax
-        if (eleTaxAmount) {
-            let taxAmount = ((subtotal * tax) / 100);
-            $(eleTaxAmount).attr('value', String(taxAmount));
-            eleTaxAmountRaw.value = taxAmount;
-        }
-        let depreciationSubtotalEle = row.querySelector('.table-row-depreciation-subtotal');
-        if (depreciationSubtotalEle) {
-            if ($(depreciationSubtotalEle).val()) {
-                subtotal = parseFloat($(depreciationSubtotalEle).val());
-            }
-        }
-        // set subtotal value
-        let eleSubtotal = row.querySelector('.table-row-subtotal');
-        let eleSubtotalRaw = row.querySelector('.table-row-subtotal-raw');
-        if (eleSubtotal) {
-            $(eleSubtotal).attr('data-init-money', String(subtotal));
-            eleSubtotalRaw.value = subtotal;
-        }
-        $.fn.initMaskMoney2();
-        return true;
-    };
-
-    static calculateMain(table, row) {
-        RecoveryCalculateHandle.calculateRow(row);
-        // calculate total
-        RecoveryCalculateHandle.calculateTotal(table[0]);
-        return true;
-    };
-
-    static calculateTable(table) {
-        table.DataTable().rows().every(function () {
-            let row = this.node();
-            RecoveryCalculateHandle.calculateMain(table, row);
-        });
-    };
 }
 
 // Store data

@@ -863,6 +863,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     CHART_OF_ACCOUNTS_DETAIL = StringUrl('accounting-setting/chart-of-accounts/{pk}')
 
     DEFAULT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/default-account-determination/list')
+    DEFAULT_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/default-account-determination/detail/{pk}')
     WAREHOUSE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/warehouse-account-determination/list')
     WAREHOUSE_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/warehouse-account-determination/detail/{pk}')
     PRODUCT_TYPE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-type-account-determination/list')

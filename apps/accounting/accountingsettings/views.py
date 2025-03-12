@@ -66,6 +66,17 @@ class DefaultAccountDeterminationListAPI(APIView):
         return resp.auto_return(key_success='default_account_determination_list')
 
 
+class DefaultAccountDeterminationDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.DEFAULT_ACCOUNT_DETERMINATION_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='detail')
+
+
 class WarehouseAccountDeterminationListAPI(APIView):
     permission_classes = [IsAuthenticated]  # noqa
 

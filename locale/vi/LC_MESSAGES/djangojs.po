@@ -304,3 +304,7 @@ msgstr "Tạo thủ công"
 #
 msgid "Create automatically"
 msgstr "Tạo tự động"
+
+#
+msgid "Save changes"
+msgstr "Lưu thay đổi"

@@ -304,7 +304,7 @@ const columns_cfg = [
             let save_btn = `<button type="button" data-id="${row?.['id']}" hidden class="btn btn-custom btn-primary btn-xs btn-save-change-account">
                 <span>
                     <span class="icon"><span class="feather-icon"><i class="fa-solid fa-file-pen"></i></span></span>
-                    <span>${$.fn.gettext('Update')}</span>
+                    <span>${$.fn.gettext('Save changes')}</span>
                 </span>
             </button>`;
             return row?.['can_change_account'] ? change_btn + save_btn : ''

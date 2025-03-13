@@ -882,3 +882,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # asset/ instrument write off
     INSTRUMENT_TOOL_WRITE_OFF_LIST = StringUrl('asset/instrument-tool-writeoff/list')
     INSTRUMENT_TOOL_WRITE_OFF_DETAIL = StringUrl('asset/instrument-tool-writeoff/detail')
+
+    # masterdata/ bank, bank account
+    BANK_LIST = StringUrl('saledata/bank/list')
+    BANK_DETAIL = StringUrl('saledata/bank/detail')
+    BANK_ACCOUNT_LIST = StringUrl('saledata/bank-account/list')
+    BANK_ACCOUNT_DETAIL = StringUrl('saledata/bank-account/detail')

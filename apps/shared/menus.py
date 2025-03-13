@@ -143,7 +143,7 @@ class MenusCoreConfigurations:
                 icon='<i class="far fa-calendar-alt"></i>',
             ),
             MenuCommon(
-                name='Categories', code='id_menu_master_data_categories', view_name='FixedAssetMasterDataList',
+                name='Categories', code='id_menu_master_data_categories', view_name='CategoryMasterDataList',
                 icon='<i class="fas fa-folder"></i>',
             ),
         ]
@@ -172,10 +172,6 @@ class MenusCoreConfigurations:
                 name='Document', code='id_menu_master_data_document', view_name='DocumentTypeMasterDataList',
                 icon='<i class="fas fa-file"></i>',
             ),
-            # MenuCommon(
-            #     name='Fixed Asset', code='id_menu_master_data_fixed_asset', view_name='FixedAssetMasterDataList',
-            #     icon='<i class="fas fa-warehouse"></i>',
-            # ),
             MenuCommon(
                 name='Meeting', code='id_menu_master_data_meeting_schedule', view_name='MeetingScheduleMasterdataList',
                 icon='<i class="fas fa-chalkboard-teacher"></i>',

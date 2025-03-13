@@ -4,13 +4,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI
 
-class FixedAssetMasterDataList(View):
+class CategoryMasterDataList(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
-        template='masterdata/saledata/masterdata/asset.html',
-        breadcrumb='FIXED_ASSET_MASTER_DATA_LIST_PAGE',
+        template='masterdata/saledata/masterdata/category.html',
+        breadcrumb='CATEGORY_MASTER_DATA_LIST_PAGE',
         menu_active='id_menu_master_data_categories',
     )
     def get(self, request, *args, **kwargs):

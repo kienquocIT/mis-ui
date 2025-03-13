@@ -18,15 +18,15 @@ from apps.masterdata.saledata.views.bank import BankMasterDataListAPI, BankMaste
     BankAccountMasterDataListAPI, BankAccountMasterDataDetailAPI
 from apps.masterdata.saledata.views.budget_plan_config import BudgetPlanConfigList, BudgetPlanConfigListAPI, \
     ListCanViewCompanyBudgetPlanAPI, ListCanLockBudgetPlanAPI
+from apps.masterdata.saledata.views.category import CategoryMasterDataList, \
+    FixedAssetClassificationGroupMasterDataListAPI, FixedAssetClassificationMasterDataListAPI, \
+    ToolClassificationMasterDataListAPI, ToolClassificationMasterDateDetailAPI
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
 from apps.masterdata.saledata.views.document import DocumentTypeMasterDataListAPI, DocumentTypeMasterDataList, \
     DocumentTypeMasterDataDetailAPI
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
     ExpenseDetailAPI, ExpenseForSaleListAPI, ExpenseUpdate
 from apps.masterdata.saledata.views.expense_item import ExpenseItemList, ExpenseItemListAPI, ExpenseItemDetailAPI
-from apps.masterdata.saledata.views.asset import FixedAssetMasterDataList, \
-    FixedAssetClassificationGroupMasterDataListAPI, FixedAssetClassificationMasterDataListAPI, \
-    ToolClassificationMasterDataListAPI, ToolClassificationMasterDateDetailAPI
 from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
     GoodReceiptDetailAPI, GoodReceiptDetail, GoodReceiptEdit
 from apps.masterdata.saledata.views.import_data import SaleDataImportDataList
@@ -386,7 +386,7 @@ urlpatterns += [
 
 urlpatterns += [
     #view
-    path('masterdata/fixed-asset/list', FixedAssetMasterDataList.as_view(), name='FixedAssetMasterDataList'),
+    path('masterdata/category/list', CategoryMasterDataList.as_view(), name='CategoryMasterDataList'),
 
     #api
     path('masterdata/fixed-asset/classification-group/api', FixedAssetClassificationGroupMasterDataListAPI.as_view(), name='FixedAssetClassificationGroupMasterDataListAPI'),

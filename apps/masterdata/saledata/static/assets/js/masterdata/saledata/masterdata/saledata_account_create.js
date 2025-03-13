@@ -106,6 +106,9 @@ $(document).ready(function () {
                     data: 'code',
                     className: 'wrap-text w-10',
                     render: (data, type, row, meta) => {
+                        if (row?.['is_default']) {
+                            return `<span class="badge badge-light w-70">${data}</span>`
+                        }
                         return `<span class="badge badge-primary w-70">${data}</span>`
                     }
                 },
@@ -175,6 +178,9 @@ $(document).ready(function () {
                     data: 'code',
                     className: 'wrap-text w-10',
                     render: (data, type, row, meta) => {
+                        if (row?.['is_default']) {
+                            return `<span class="badge badge-light w-70">${data}</span>`
+                        }
                         return `<span class="badge badge-primary w-70">${data}</span>`
                     }
                 },

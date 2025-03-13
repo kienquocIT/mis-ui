@@ -3478,6 +3478,11 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-copy-quotation');
         $tables.DataTableDefault({
             data: data ? data : [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
             columns: [
                 {
                     targets: 0,
@@ -4078,8 +4083,11 @@ class QuotationDataTableHandle {
     static dataTableSelectProduct(data) {
         QuotationDataTableHandle.$tableSProduct.not('.dataTable').DataTableDefault({
             data: data ? data : [],
-            pageLength: 5,
-            columnDefs: [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
             columns: [
                 {
                     targets: 0,

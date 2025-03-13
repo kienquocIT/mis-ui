@@ -306,5 +306,65 @@ msgid "Create automatically"
 msgstr "Tạo tự động"
 
 #
+msgid "Bank"
+msgstr "Ngân hàng"
+
+#
+msgid "Vietnamese Name"
+msgstr "Tên tiếng việt"
+
+#
+msgid "English Name"
+msgstr "Tên tiếng anh"
+
+#
+msgid "Full Address"
+msgstr "Địa chỉ đầy đủ"
+
+#
+msgid "City"
+msgstr "Thành phố"
+
+#
+msgid "Update Bank"
+msgstr "Cập nhật ngân hàng"
+
+#
+msgid "Update Address"
+msgstr "Cập nhật địa chỉ"
+
+#
+msgid "Bank Account"
+msgstr "Tài khoản ngân hàng"
+
+#
+msgid "Account Number"
+msgstr "Số tài khoản"
+
+#
+msgid "Brand Name"
+msgstr "Tên chi nhánh"
+
+#
+msgid "Bank Abbreviation"
+msgstr "Tên viết tắt ngân hàng"
+
+#
+msgid "Bank Name"
+msgstr "Tên ngân hàng"
+
+#
+msgid "Bank Owner"
+msgstr "Người sở hữu"
+
+#
+msgid "Brand"
+msgstr "Chi nhánh"
+
+#
+msgid "Brand Full Address"
+msgstr "Địa chỉ chi nhánh"
+
+#
 msgid "Save changes"
 msgstr "Lưu thay đổi"

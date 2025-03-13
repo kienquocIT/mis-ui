@@ -27,8 +27,12 @@ $(document).ready(function () {
                 {
                     data: 'code',
                     className: 'wrap-text w-10',
-                    render: (data) => {
-                        return `<span class="badge badge-primary w-70">${data}</span>`
+                    render: (data, type, row) => {
+                        if (row.is_default) {
+                            return `<span class="badge badge-secondary w-70">${data}</span>`
+                        } else {
+                            return `<span class="badge badge-primary w-70">${data}</span>`
+                        }
                     }
                 },
                 {

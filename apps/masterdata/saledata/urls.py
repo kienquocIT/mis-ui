@@ -14,17 +14,19 @@ from apps.masterdata.saledata.views.accounts import (
 )
 from apps.masterdata.saledata.views.balance_init import BalanceInitList, BalanceInitListAPI, \
     ImportBalanceInitDBAPIViews, BalanceInitializationListImportDBAPI
+from apps.masterdata.saledata.views.bank import BankMasterDataListAPI, BankMasterDataDetailAPI, \
+    BankAccountMasterDataListAPI, BankAccountMasterDataDetailAPI
 from apps.masterdata.saledata.views.budget_plan_config import BudgetPlanConfigList, BudgetPlanConfigListAPI, \
     ListCanViewCompanyBudgetPlanAPI, ListCanLockBudgetPlanAPI
+from apps.masterdata.saledata.views.category import CategoryMasterDataList, \
+    FixedAssetClassificationGroupMasterDataListAPI, FixedAssetClassificationMasterDataListAPI, \
+    ToolClassificationMasterDataListAPI, ToolClassificationMasterDateDetailAPI
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
 from apps.masterdata.saledata.views.document import DocumentTypeMasterDataListAPI, DocumentTypeMasterDataList, \
     DocumentTypeMasterDataDetailAPI
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
     ExpenseDetailAPI, ExpenseForSaleListAPI, ExpenseUpdate
 from apps.masterdata.saledata.views.expense_item import ExpenseItemList, ExpenseItemListAPI, ExpenseItemDetailAPI
-from apps.masterdata.saledata.views.asset import FixedAssetMasterDataList, \
-    FixedAssetClassificationGroupMasterDataListAPI, FixedAssetClassificationMasterDataListAPI, \
-    ToolClassificationMasterDataListAPI, ToolClassificationMasterDateDetailAPI
 from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
     GoodReceiptDetailAPI, GoodReceiptDetail, GoodReceiptEdit
 from apps.masterdata.saledata.views.import_data import SaleDataImportDataList
@@ -384,11 +386,15 @@ urlpatterns += [
 
 urlpatterns += [
     #view
-    path('masterdata/fixed-asset/list', FixedAssetMasterDataList.as_view(), name='FixedAssetMasterDataList'),
+    path('masterdata/category/list', CategoryMasterDataList.as_view(), name='CategoryMasterDataList'),
 
     #api
     path('masterdata/fixed-asset/classification-group/api', FixedAssetClassificationGroupMasterDataListAPI.as_view(), name='FixedAssetClassificationGroupMasterDataListAPI'),
     path('masterdata/fixed-asset/classification/api', FixedAssetClassificationMasterDataListAPI.as_view(), name='FixedAssetClassificationMasterDataListAPI'),
     path('masterdata/tool/classification/api', ToolClassificationMasterDataListAPI.as_view(), name='ToolClassificationMasterDataListAPI'),
-    path('masterdata/tool/classification/api/<str:pk>', ToolClassificationMasterDateDetailAPI.as_view(), name='ToolClassificationMasterDateDetailAPI')
+    path('masterdata/tool/classification/api/<str:pk>', ToolClassificationMasterDateDetailAPI.as_view(), name='ToolClassificationMasterDateDetailAPI'),
+    path('masterdata/bank/list/api', BankMasterDataListAPI.as_view(), name='BankMasterDataListAPI'),
+    path('masterdata/bank/detail/api/<str:pk>', BankMasterDataDetailAPI.as_view(), name='BankMasterDataDetailAPI'),
+    path('masterdata/bank-account/list', BankAccountMasterDataListAPI.as_view(), name='BankAccountMasterDataListAPI'),
+    path('masterdata/bank-account/detail/api/<str:pk>', BankAccountMasterDataDetailAPI.as_view(), name='BankAccountMasterDataDetailAPI'),
 ]

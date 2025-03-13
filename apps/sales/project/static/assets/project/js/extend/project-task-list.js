@@ -142,7 +142,6 @@ class handle_tasks_cls {
             $table.DataTable().ajax.reload()
         else
             $table.DataTableDefault({
-                autoWidth: false,
                 scrollX: true,
                 useDataServer: true,
                 ajax: {
@@ -208,18 +207,18 @@ class handle_tasks_cls {
                         "class": "col-2 text-right",
                         render: (row, type, data) => {
                             let html = ''
-                            // if (!data.employee_created?.full_name)
-                            //     data.employee_created.full_name = data.employee_created.last_name +
-                            //         ' ' + data.employee_created.first_name
-                            // const assigner = $x.fn.renderAvatar(data.employee_created).replace(
-                            //     'avatar-primary', 'avatar-' + $x.fn.randomColor())
-                            // let assignee = ''
-                            // if (row) {
-                            //     if (!row.full_name) row.full_name = row.last_name + ' ' + row.first_name
-                            //     assignee = $x.fn.renderAvatar(row).replace(
-                            //         'avatar-primary', 'avatar-soft-' + $x.fn.randomColor())
-                            // }
-                            // html += assigner + '<supper>»</supper>' + assignee
+                            if (!data.employee_created?.full_name)
+                                data.employee_created.full_name = data.employee_created.last_name +
+                                    ' ' + data.employee_created.first_name
+                            const assigner = $x.fn.renderAvatar(data.employee_created).replace(
+                                'avatar-primary', 'avatar-' + $x.fn.randomColor())
+                            let assignee = ''
+                            if (row) {
+                                if (!row.full_name) row.full_name = row.last_name + ' ' + row.first_name
+                                assignee = $x.fn.renderAvatar(row).replace(
+                                    'avatar-primary', 'avatar-soft-' + $x.fn.randomColor())
+                            }
+                            html += assigner + '<supper>»</supper>' + assignee
                             return html
                         }
                     },

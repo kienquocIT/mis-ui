@@ -1,0 +1,45 @@
+.time_view_head ul{
+    padding-left: 0;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: row;
+}
+.time_view_head ul li{
+    border: solid 1px #cdcdcd;
+    border-left: 0;
+    text-align: center;
+    flex: 1;
+}
+.time_view_head ul li:first-child{
+    border-left: solid 1px #cdcdcd;
+}
+#time_view_content{
+    width: 100%;
+    height: 80px;
+    border: solid 1px #cdcdcd;
+}
+.rect_info{
+    position: absolute;
+    display: none;
+    width: 150px;
+    height: auto;
+    box-shadow: 0 0 10px rgb(0 0 0 / 25%);
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: #fff;
+}
+.rect_info p{
+    color: #717171
+}
+.wrap_time_view{
+    position: relative;
+    display: none;
+}
+.wrap_time_view.show{
+    display: block;
+}
+.rect_info.show{
+    display: inline-block;
+}

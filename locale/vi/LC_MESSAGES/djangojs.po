@@ -304,3 +304,11 @@ msgstr "Tạo thủ công"
 #
 msgid "Create automatically"
 msgstr "Tạo tự động"
+
+#
+msgid "please select Start date and Room to continue"
+msgstr "Vui lòng chọn Ngày bắt đầu và Phòng họp để tiếp tục"
+
+#
+msgid "This room is unavailable at this time"
+msgstr "Phòng này không có sẵn vào lúc này"

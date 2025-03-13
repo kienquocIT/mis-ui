@@ -196,7 +196,39 @@ class AppsCodeToList:
                 'title': _('HRM Signing request'),
                 'is_active': True
             }
-        }
+        },
+        'leaseorder': {
+            'leaseorder': {
+                'title': _('Lease order'),
+                'is_active': True,
+            }
+        },
+        'inventory': {
+            'goodsreceipt': {
+                'title': _('Goods receipt'),
+                'is_active': True,
+            },
+            'goodsreturn': {
+                'title': _('Goods return'),
+                'is_active': True,
+            },
+            'goodsissue': {
+                'title': _('Goods issue'),
+                'is_active': True,
+            },
+            'goodsdetail': {
+                'title': _('Goods detail'),
+                'is_active': True,
+            },
+            'goodstransfer': {
+                'title': _('Goods transfer'),
+                'is_active': True,
+            },
+            'inventoryadjustment': {
+                'title': _('Inventory adjustment'),
+                'is_active': True,
+            },
+        },
     }
 
     @classmethod

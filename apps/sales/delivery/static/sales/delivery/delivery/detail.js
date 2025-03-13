@@ -1066,6 +1066,8 @@ $(async function () {
             let config = _this.getProdConfig;
             $tablePW.DataTableDefault({
                 data: data ? data : [],
+                paging: false,
+                info: false,
                 autoWidth: true,
                 scrollX: true,
                 scrollY: "200px",
@@ -1200,6 +1202,8 @@ $(async function () {
         dataTableTableLot(data) {
             $tableLot.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
+                paging: false,
+                info: false,
                 autoWidth: true,
                 scrollX: true,
                 scrollY: "200px",
@@ -1262,6 +1266,8 @@ $(async function () {
             }
             $tableSerial.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
+                paging: false,
+                info: false,
                 autoWidth: true,
                 scrollX: true,
                 scrollY: "200px",

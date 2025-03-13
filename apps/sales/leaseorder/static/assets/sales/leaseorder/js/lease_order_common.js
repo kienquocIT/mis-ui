@@ -4352,8 +4352,11 @@ class LeaseOrderDataTableHandle {
     static dataTableSelectProduct(data) {
         LeaseOrderDataTableHandle.$tableSProduct.not('.dataTable').DataTableDefault({
             data: data ? data : [],
-            pageLength: 5,
-            columnDefs: [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
             columns: [
                 {
                     targets: 0,
@@ -4441,8 +4444,11 @@ class LeaseOrderDataTableHandle {
     static dataTableSelectOffset(data) {
         LeaseOrderDataTableHandle.$tableSOffset.not('.dataTable').DataTableDefault({
             data: data ? data : [],
-            pageLength: 5,
-            columnDefs: [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
             columns: [
                 {
                     targets: 0,
@@ -4530,8 +4536,11 @@ class LeaseOrderDataTableHandle {
     static dataTableSelectAsset(data) {
         LeaseOrderDataTableHandle.$tableSAsset.not('.dataTable').DataTableDefault({
             data: data ? data : [],
-            pageLength: 5,
-            columnDefs: [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
             columns: [
                 {
                     targets: 0,

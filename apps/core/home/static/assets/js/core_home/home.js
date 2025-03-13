@@ -208,13 +208,13 @@ function loadTabTodo() {
                     render: (data, type, row) => {
                         let temp = data.toLowerCase().split('.')
                         let txtTran = appList?.[temp[0]]?.[temp[1]]?.['title'] || data
-                        return data ? `<span class="badge badge-light">${txtTran}</span>` : '';
+                        return data ? `<span>${txtTran}</span>` : '';
                     }
                 }, {
                     className: 'wrap-text',
                     data: 'stage',
                     render: (data, type, row) => {
-                        return data ? `<span class="badge badge-warning">${data['title']}</span>` : '';
+                        return data ? `<span>${data['title']}</span>` : '';
                     }
                 }, {
                     className: 'wrap-text',
@@ -286,14 +286,14 @@ function loadTabFollowing() {
                     render: (data, type, row) => {
                         let temp = data.toLowerCase().split('.')
                         let txtTran = appList?.[temp[0]]?.[temp[1]]?.['title'] || data
-                        return data ? `<span class="badge badge-light">${txtTran ? txtTran : ''}</span>` : '';
+                        return data ? `<span>${txtTran ? txtTran : ''}</span>` : '';
                     }
                 },
                 {
                     width: "15%",
                     data: 'stage_currents',
                     render: (data, type, row) => {
-                        return data?.['title'] ? `<span class="badge badge-warning">${data?.['title']}</span>` : '';
+                        return data?.['title'] ? `<span>${data?.['title']}</span>` : '';
                     }
                 },
                 {

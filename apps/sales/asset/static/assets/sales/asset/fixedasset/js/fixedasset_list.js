@@ -17,6 +17,7 @@ $(document).ready(function () {
                 },
             },
             rowIdx: true,
+            scrollX: true,
             columns: [
                 {
                     targets: 0,

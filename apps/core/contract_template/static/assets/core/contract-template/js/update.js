@@ -14,9 +14,21 @@ $(document).ready(function () {
             $('input[name="title"]').val(data.title)
             $('select[name="application"]').append(`<option value="${data.application.id}" selected>${
                 data.application.title}</option>`)
-            window.signObj.init(data.signatures)
             $('#txt_template').text(data.template)
             window.is_editor.init()
+
+            const table = $('<table class="table table-bordered mb-0"><thead><tr>' +
+                `<th style="width: 50%">${$.fn.gettext('keyword')}</th><th style="width: 50%">${$.fn.gettext('User assign')}</th>` +
+                '</tr></thead></table>')
+            for (let key in data.extra_data){
+                let item = data.extra_data[key]
+                table.append('<tr>' +
+                    `<th scope="row">${key}</th>` +
+                    `<td>${item?.full_name}</td>` +
+                    '</tr>')
+            }
+            $('.user_assign label').after(table)
+            table.data('data-extra_data', data.extra_data)
         }
     })
 });

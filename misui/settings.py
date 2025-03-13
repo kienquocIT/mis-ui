@@ -87,7 +87,6 @@ INSTALLED_APPS = \
         'apps.core.attachment',
         'apps.core.form',
         'apps.core.recurrence',
-        'apps.core.online_sign',
         'apps.core.contract_template',
     ] + [  # Another Application
         'apps.masterdata.saledata',
@@ -321,6 +320,7 @@ UI_DOMAIN = os.environ.get('UI_DOMAIN', '127.0.0.1')
 UI_DOMAIN_SUB_DOMAIN = '.' + UI_DOMAIN
 UI_DOMAIN_SUB_HOME = os.environ.get('UI_DOMAIN_SUB_HOME', 'home')
 UI_FULL_DOMAIN = os.environ.get('UI_FULL_DOMAIN', 'http://{sub_domain}.local.test:8001')
+UI_FIXED_DOMAIN = os.environ.get('UI_FIXED_DOMAIN', 'http://{sub_domain}.local.test:8001')
 UI_URL = os.environ.get('UI_URL') if os.environ.get('UI_URL', None) else f'{UI_PROTOCOL}://{UI_DOMAIN}'
 UI_ALLOW_AUTO_TENANT = True if os.environ.get('UI_ALLOW_AUTO_TENANT', '0') in [1, '1'] else False
 UI_SUB_ALLOWED = json.loads(os.environ.get('UI_SUB_ALLOWED', '["*"]'))

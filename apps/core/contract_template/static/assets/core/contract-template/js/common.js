@@ -1,35 +1,78 @@
 $(document).ready(function () {
-    // run signature list
-    var signObj = new signaturesHandle()
     // run editor
-    var is_editor = new tiny_editor()
-    window.signObj = signObj
-    window.is_editor = is_editor
+    window.is_editor = new tiny_editor();
+    const $modal = $('#modal_sign_definition')
+
+    function sendData(opt, form){
+        $.fn.callAjax2(opt).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                $.fn.notifyB({description: data.message}, 'success')
+                $(form)[0].reset();
+                setTimeout(() => {
+                    window.location.replace(form.attr('data-redirect'));
+                }, 1000)
+            }
+        }, (errs) => {
+            $.fn.switcherResp(errs);
+        })
+    }
 
     // handle form SUBMIT
     SetupFormSubmit.validate(
         $('#form_contract_template'),
         {
             submitHandler: function (form) {
-                let contractData = {members: []};
+                let contractData = {};
                 const serializerArray = SetupFormSubmit.serializerObject(form);
+                const extra_data = $('.user_assign table').data('data-extra_data')
                 for (let key in serializerArray) {
                     const item = serializerArray[key]
                     if (item) contractData[key] = item
                 }
-                const signatures = signObj.get_data()
-                if (signatures){
-                    contractData.signatures = signatures
-                    for (let item in signatures){
-                        const val = signatures[item]
-                        const temp = contractData['members']
-                        for (let child in val){
-                            contractData['members'] = temp.concat(val[child])
+                let matches = contractData?.template.match(/{{(.*?)}}/g);
+                if (matches) {
+                    matches = matches.map(function (item) {
+                        return item.replace(/{{|}}/g, '').trim();
+                    });
+                }
+                if (matches.length){
+                    let html = '';
+                    for (let item of matches) {
+                        let temp = '';
+                        if (extra_data?.[item] && extra_data[item].length){
+                            temp = extra_data[item].map(function (val) {
+                                return `<option value="${val.id}" selected>${val.full_name}</option>`
+                            })
                         }
+
+                        html += `<div class="item_sign">` +
+                            `<input type="text" class="form-control" readonly value="${item}"><strong> : </strong>` +
+                            `<div><select class="form-select" id="sign_emp_${item}" data-allowClear="true">${temp}</select></div></div>`
                     }
+                    $modal.find('.modal-body').html('').append(html)
+                    $('.modal-body select', $modal).each(function () {
+                        $(this).initSelect2({
+                            ajax: {
+                                url: $('#url-factory').attr('data-employee'),
+                                method: 'GET',
+                            },
+                            keyResp: 'employee_list',
+                            keyText: 'full_name',
+                            keyId: "id",
+                        }).on('select2:select', function(e){
+                            $(this).data('data-select', {
+                                id: e.params.data.id,
+                                code: e.params.data.data.code,
+                                full_name: e.params.data.data.full_name
+                            })
+                        }).on('select2:unselect', function(){
+                            $(this).removeData('data-select')
+                        })
+                    });
                 }
 
-                $.fn.callAjax2({
+                const optionSubmit = {
                     url: form.attr('data-url'),
                     method: form.attr('data-method'),
                     data: contractData,
@@ -38,127 +81,51 @@ $(document).ready(function () {
                         'allowOutsideClick': true,
                         'showCancelButton': true
                     },
-                }).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: data.message}, 'success')
-                        $(form)[0].reset();
-                        setTimeout(() => {
-                            window.location.replace(form.attr('data-redirect'));
-                        }, 1000)
+                };
+                let has_assign = true;
+                if (extra_data && Object.keys(extra_data).length){
+                    for (let idx in extra_data){
+                        if (extra_data[idx].length <= 0){
+                            has_assign = false
+                            break;
+                        }
                     }
-                }, (errs) => {
-                    $.fn.switcherResp(errs);
+                    if (extra_data.length !== matches.length) has_assign = false
+                }
+                else if (matches.length) has_assign = false
+                if (!has_assign)
+                    Swal.fire({
+                        title: $.fn.gettext("User Signature Definition"),
+                        text: $.fn.gettext("Template include signature keyword do you want to assign user"),
+                        icon: "question",
+                        showCancelButton: false,
+                        confirmButtonText: $.fn.gettext('Okay'),
+                        showDenyButton: true,
+                        denyButtonText: $.fn.gettext('Let me see')
+                    }).then((result) => {
+                        if (result.value) {
+                            $('#modal_sign_definition').modal('show');
+                        } else return false
+                    })
+                else{
+                    optionSubmit.data['extra_data'] = extra_data
+                    sendData(optionSubmit, form)
+                }
+
+                $('#confirm_definition').off().on('click', function (e) {
+                    e.preventDefault();
+                    let extraData = {}
+                    $('#modal_sign_definition .modal-body .item_sign').each(function () {
+                        const self_key = $(this).find('input').val()
+                        extraData[self_key] = $(this).find('select').data('data-select')
+                    });
+                    optionSubmit.data['extra_data'] = extraData
+                    sendData(optionSubmit, form)
                 })
             }
         }
     );
 });
-
-class signaturesHandle {
-
-    template (idx=null){
-        return `<div class="block-index-${idx}" tabindex="${idx}" >` +
-                `<div class="wrap-param">` +
-                    `<input class="form-control"><b> : </b>` +
-                    `<div><select
-                        class="select2 form-select"
-                        data-method="GET"
-                        data-keyResp="employee_list"
-                        data-keyText="full_name" data-keyId="id"
-                        data-allowClear="true"
-                        multiple
-                        data-closeOnSelect="false"
-                    ></select></div>` +
-                `</div>` +
-                `<div class="wrap-action">` +
-                    `<span class="text-danger del-row font-5" title="delete param"><i class="bi bi-x-octagon"></i></span>` +
-                `</div>` +
-            `</div>`
-    }
-
-    active_action(elm){
-        const idx = elm.attr('class').slice("block-index-".length);
-        const _this = this;
-        // delete row
-        $('.del-row:not(.disabled)', elm).on('click', function(){
-            $(this).closest(`div[class*="block-index-${idx}"]`).remove()
-        })
-
-        // on focus add new row
-        $('.select2', elm).initSelect2({
-            ajax: {
-                url: $('#url-factory').attr('data-employee'),
-                method: 'GET',
-            },
-        }).on('select2:select', function(e){
-            const sltData = e.params.data.data
-            let old = $('input', elm).data('data-key') || []
-            old.push({
-                "id": sltData.id,
-                "full_name": sltData.full_name,
-                "first_name": sltData.first_name,
-                "last_name": sltData.last_name,
-                "selected": true
-            })
-            $('input', elm).data('data-key', old)
-        });
-
-        $('#signatures > div:last-child').on('click', function(e){
-            // kiểm tra nếu last child mới tiếp tục check
-            if (!$(this).is(":last-child")) return false
-            const t_val = $(this).find('.wrap-param > input').val();
-            if (!t_val && e.target.parentElement.classList.value.indexOf('del-row') === -1){
-                let newElm = $(_this.template($('#signatures > div').length + 1))
-                $('#signatures').append(newElm)
-                _this.active_action(newElm)
-            }
-        })
-
-        // on type first child
-        $('.wrap-param > input', elm).on('keyup', function (){
-            const regex = /[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]/g;
-            this.value = this.value.replace(regex, '')
-        })
-    }
-
-    get_data(){
-        let obj_data = {}
-        $('#signatures > div').each(function(){
-            const key = $(this).find('input').val();
-            const param_value = $(this).find('input').data('data-key');
-            if (key && param_value)
-                obj_data[key] = param_value
-        });
-        return obj_data
-    }
-    init(data=[], is_detail=false){
-        const $signElm = $('#signatures')
-        // nếu không phải là detail page thì load template đầu tiên
-        if (Object.keys(data).length === 0 && !is_detail){
-            let html = $(this.template(1))
-            html.find('.del-row').addClass('disabled')
-            $signElm.html('').append(html)
-            this.active_action(html)
-        }
-        else if (Object.keys(data).length > 0){
-            let idx = 1
-            $signElm.html('')
-            for (let key in data){
-                const item = data[key]
-                let html = $(this.template(idx))
-                html.find('input').val(key)
-                html.find('select').attr('data-onload', JSON.stringify(item))
-                if (idx === 1) html.find('.del-row').addClass('disabled')
-                $signElm.append(html)
-                html.find('input').data('data-key', item)
-                if (!is_detail) this.active_action(html)
-                else $('.select2', html).prop('disabled', true).initSelect2()
-                idx++
-            }
-        }
-    }
-}
 
 class tiny_editor {
     init(data= []){

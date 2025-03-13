@@ -49,8 +49,23 @@
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="inp-tax-code" class="form-label" id="tax-code-label">{% trans "Tax Code" %}</label>
-                <input type="text" class="form-control" id="inp-tax-code">
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label" for="inp-tax-code">{% trans "Tax code" %}</label>
+                    </div>
+                    <div class="col-6 text-right">
+                        <span hidden id="invalid-tax" class="text-warning small">{% trans 'Tax code is not valid' %}</span>
+                        <span hidden id="valid-tax" class="text-success small">{% trans 'Tax code is valid' %}</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-affix-wrapper">
+                        <input type="text" class="form-control" id="inp-tax-code">
+                    </span>
+                    <button data-bs-toggle="modal" data-bs-target="#modal-view-tax-code-info" type="button" class="btn btn-outline-secondary rounded" id="view-tax-code-info">
+                        <i class="bi bi-search" data-bs-toggle="tooltip" title="{% trans 'View tax code information' %}"></i>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="col-12">

@@ -4,7 +4,6 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
-
     <link rel="stylesheet" href="{% static 'assets/hrm/css/common.css' %}">
     <style>
         @import url('{% static 'assets/fonts/cambria/Cambria.ttf' %}');
@@ -319,9 +318,6 @@
         </div>
     </form>
 {% endblock %}
-{% block modalData %}
-    {% include 'online_signature/online-sign.html' with navigation=True %}
-{% endblock %}
 {% block dataHiddenGroup %}
     {{ data.template_list|json_script:'template_list' }}
 {% endblock %}
@@ -331,7 +327,6 @@
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
 
-    <script src="{% static 'assets/hrm/js/extend/contract_editor.js' %}"></script>
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
 
     <script src="{% static 'assets/hrm/js/create.js' %}"></script>

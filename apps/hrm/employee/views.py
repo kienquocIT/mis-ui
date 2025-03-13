@@ -7,25 +7,6 @@ from apps.shared import mask_view, ServerAPI, ApiURL
 from apps.shared.constant import GENDER_TYPE, MARITAL_STT, LIST_BANK, CONTRACT_TYPE
 from apps.shared.msg import BaseMsg
 from apps.shared.msg.hrm_employee import HRMMsg
-from django.utils.translation import gettext_lazy as _
-
-template_list = [
-    {
-        'title': _('Labor contract'),
-        'url': 'assets/hrm/template/labor_contract.html',
-        'description': 'Hợp đồng lao động mẫu của BFLOW theo quy định pháp luật.',
-    },
-    {
-        'title': _('Addendum contract'),
-        'url': 'assets/hrm/template/addendum_contract.html',
-        'description': 'Phụ lục hợp đồng lao động mẫu của BFLOW theo quy định pháp luật.',
-    },
-    {
-        'title': _('Probationary contract'),
-        'url': 'assets/hrm/template/probation_contract.html',
-        'description': 'Hợp đồng thử việc mẫu của BFLOW theo quy định pháp luật.',
-    }
-]
 
 
 class HRMEmployeeList(View):
@@ -58,6 +39,12 @@ class HRMEmployeeCreate(View):
     )
     def get(self, request, *args, **kwargs):
         language = getattr(request.user, 'language', settings.LANGUAGE_CODE)
+        resp = ServerAPI(user=request.user, url=ApiURL.CORE_CONTRACT_TEMPLATE_LIST_DD).get({
+            'application_model_code': "employeeinfo"
+        })
+        template_list = []
+        if resp.state:
+            template_list = resp.result
         return {
                    'gender': GENDER_TYPE,
                    'marital': MARITAL_STT,
@@ -142,6 +129,14 @@ class HRMEmployeeUpdate(View):
     )
     def get(self, request, *args, pk, **kwargs):
         language = getattr(request.user, 'language', settings.LANGUAGE_CODE)
+        resp = ServerAPI(user=request.user, url=ApiURL.CORE_CONTRACT_TEMPLATE_LIST_DD).get(
+            {
+                'application_model_code': "employeeinfo"
+            }
+        )
+        template_list = []
+        if resp.state:
+            template_list = resp.result
         return {
                    'gender': GENDER_TYPE,
                    'marital': MARITAL_STT,
@@ -171,7 +166,7 @@ class HRMEmployeeUpdateAPI(APIView):
         return resp.auto_return()
 
 
-# ############## CONTRACT ##############
+# ############## API FOR TAB CONTRACT ##############
 class HRMEmployeeContractList(APIView):
     @mask_view(
         auth_require=True,
@@ -212,5 +207,55 @@ class HRMSignatureAttachmentUpdateAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.HRM_EMPLOYEE_SIGNATURE_UPDATE.fill_key(pk=pk)).put(request.data)
         if resp.state:
             resp.result['message'] = f'{HRMMsg.HRM_EMPLOYEE_INFO} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+# ########## RUNTIME REQUEST SIGNATURE #########
+class HRMRuntimeSignatureAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.HRM_CONTRACT_RUNTIME).post(request.data)
+        if resp.state:
+            resp.result['message'] = HRMMsg.HRM_REQUEST_SIGNING
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class HRMRuntimeSignatureDetailView(View):
+    @mask_view(
+        auth_require=True,
+        template='hrm/signature_runtime/detail.html',
+        jsi18n='hrm',
+    )
+    def get(self, request, *args, pk, **kwargs):
+        return {'pk': pk}, status.HTTP_200_OK
+
+
+class HRMRuntimeSignatureDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.HRM_CONTRACT_RUNTIME_DETAIL.fill_key(pk=pk)).get()
+        if resp.state:
+            if resp.result['members'] and request.user.employee_current_data:
+                for user in resp.result['members']:
+                    if user.get('id', None) == str(request.user.employee_current_data.get('id', None)):
+                        return resp.auto_return()
+        return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_403_FORBIDDEN
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.HRM_CONTRACT_RUNTIME_DETAIL.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = HRMMsg.HRM_SIGNED
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()

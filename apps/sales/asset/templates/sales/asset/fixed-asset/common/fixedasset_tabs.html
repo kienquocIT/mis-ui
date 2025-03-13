@@ -136,7 +136,7 @@
                 <div class="row">
                     <div class="col-10">
                         <div class="form-group">
-                            <label class="form-label required" for="depreciation-value">{% trans 'Depreciation Value' %}</label>
+                            <label class="form-label required" for="depreciation-value">{% trans 'Depreciation value' %}</label>
                                 <input required name="depreciation_value"
                                        class="form-control mask-money" autocomplete="off" id="depreciation-value">
                         </div>
@@ -147,7 +147,7 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="form-group">
-                            <label class="form-label required" for="depreciation-start-date">{% trans 'Start Date' %}</label>
+                            <label class="form-label required" for="depreciation-start-date">{% trans 'Start date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input required type="text" name="depreciation_start_date"
                                        class="form-control depreciation-date" autocomplete="off" id="depreciation-start-date">
@@ -161,7 +161,7 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="form-group">
-                            <label class="form-label required" for="depreciation-end-date">{% trans 'End Date' %}</label>
+                            <label class="form-label required" for="depreciation-end-date">{% trans 'End date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input disabled readonly required type="text" name ='depreciation_end_date'
                                            class="form-control depreciation-date" autocomplete="off" id="depreciation-end-date">
@@ -213,5 +213,9 @@
     <script id="data-script"
             data-apinvoice-detail-list="{}"
             data-fixed-asset-detail=""
+    ></script>
+    <script id="trans-script"
+            data-increase-must-positive="{% trans 'Current FA increase must be bigger than 0' %}"
+            data-sum-exceed-total-value="{% trans 'The sum of current increased FA and existing increased FA exceeds the total value' %}"
     ></script>
 {% endblock %}

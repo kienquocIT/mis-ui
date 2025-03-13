@@ -69,6 +69,13 @@ $(document).ready(function () {
                     targets: 6,
                     width: '10%',
                     render: (data, type, row) => {
+                        return `<div>${row?.['quantity']}</div>`
+                    }
+                },
+                {
+                    targets: 7,
+                    width: '10%',
+                    render: (data, type, row) => {
                         let sttTxt = JSON.parse($('#stt_sys').text())
                         let sttData = [
                             "light",

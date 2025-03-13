@@ -630,6 +630,60 @@ function LoadDetail(option) {
         })
 }
 
+async function CheckTaxCode() {
+    try {
+        let response = await fetch(`https://api.vietqr.io/v2/business/${accountTaxCode.val()}`);
+        if (!response.ok) {
+            return [false, { desc: 'Network response was not ok' }];
+        }
+        let responseData = await response.json();
+        if (responseData.code === '00') {
+            return [true, responseData];
+        } else {
+            return [false, responseData];
+        }
+    } catch (error) {
+        $.fn.notifyB({ description: 'Can not get this Tax number information' }, 'failure');
+        return [false, {}];
+    }
+}
+
+accountTaxCode.on('change', async function () {
+    let [tax_code_status, responseData] = await CheckTaxCode()
+    $('#invalid-tax').prop('hidden', tax_code_status)
+    $('#valid-tax').prop('hidden', !tax_code_status)
+    accountName.val(responseData?.['data']?.['name'])
+    accountCode.val(responseData?.['data']?.['shortName'].replace(' ', '_'))
+})
+
+$('#view-tax-code-info').on('click', async function () {
+    if (accountTaxCode.val()) {
+        let [tax_code_status, responseData] = await CheckTaxCode()
+        $('#invalid-tax').prop('hidden', tax_code_status)
+        $('#valid-tax').prop('hidden', !tax_code_status)
+        if (tax_code_status) {
+            $('#tax-code-info-international-name').val(responseData?.['data']?.['internationalName'])
+            $('#tax-code-info-name').val(responseData?.['data']?.['name'])
+            $('#tax-code-info-short-name').val(responseData?.['data']?.['shortName'])
+            $('#tax-code-info-tax-code').val(responseData?.['data']?.['id'])
+            $('#tax-code-info-address').val(responseData?.['data']?.['address'])
+        } else {
+            Swal.fire({
+                html: `<p class="text-danger mt-3">${responseData.desc}</p>`,
+                customClass: {
+                    confirmButton: 'btn btn-xs btn-secondary',
+                    cancelButton: 'btn btn-xs btn-secondary',
+                },
+                showCancelButton: false,
+                buttonsStyling: false,
+                confirmButtonText: 'Cancel',
+                cancelButtonText: 'No',
+                reverseButtons: false
+            })
+        }
+    }
+})
+
 save_shipping_address.on('click', function () {
     let shipping_address_modal = $('#detail-modal-shipping-address');
     let shipping_city = shippingCityEle;
@@ -1247,7 +1301,6 @@ function dataTableActivity(data) {
         },
     });
 }
-
 
 $(document).on('click', '#save-changes-modal-bank-account', function () {
     let bank_country_id = $('#country-select-box-id').val();

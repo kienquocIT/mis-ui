@@ -9,12 +9,12 @@
 {% block pageAction %}
     <a href="{% url 'HRMEmployeeUpdate' data.pk %}" class="btn-edit-page">
         <button class="btn btn-outline-primary">
-        <span>
-            <span>{% trans 'Edit' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-pen-to-square"></i>
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
         </button>
     </a>
 {% endblock %}
@@ -318,14 +318,21 @@
                     {% include 'hrm/contract/list.html' %}
                 </div>
                 <div class="contract-edit hidden">
-                    {% include 'hrm/contract/create.html' with addClass="contract-readonly" edit=True %}
+                    {% include 'hrm/contract/create.html' with addClass="contract-readonly" edit=True show_icon=True %}
                 </div>
             </div>
         </div>
     </form>
 {% endblock %}
+{% block modalData %}
+    {% include 'hrm/contract/submit-to-sign.html' %}
+{% endblock %}
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory" data-hrm-detail="{% url 'HRMEmployeeDetail' pk %}">
+    <input type="text" id="url-factory"
+           data-hrm-detail="{% url 'HRMEmployeeDetail' pk %}"
+           data-employee="{% url 'EmployeeListAPI' %}"
+           data-contract-sign="{% url 'HRMRuntimeSignatureAPI' %}"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
@@ -333,7 +340,6 @@
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
 
-    <script src="{% static 'assets/hrm/js/extend/contract_editor.js' %}"></script>
     <script src="{% static 'assets/hrm/js/common.js' %}"></script>
 
     <script src="{% static 'assets/hrm/js/detail.js' %}"></script>

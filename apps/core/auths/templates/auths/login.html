@@ -253,14 +253,26 @@
                 inpPasswd.attr('type') === 'password' ? inpPasswd.attr('type', 'text') : inpPasswd.attr('type', 'password');
             })
 
+            let fixedDomain = '{{ui_fixed_domain}}';
             let mainDomain = '{{ui_domain}}';
             let hostData = window.location.hostname;
             let frmLoginEle = $('#form-login');
 
+            if (hostData.endsWith(fixedDomain)) {
+                const inp$ = $(":input[name=tenant_code]");
+                let tenantCode = fixedDomain.split(".")[0];
+                if (tenantCode) {
+                    inp$.val(tenantCode).attr('readonly', 'readonly');
+                } else {
+                    inp$.focus();
+                }
+            }
+
             if (hostData.endsWith(mainDomain)) {
+                const inp$ = $(":input[name=tenant_code]");
                 let tenantCode = hostData.split(mainDomain)[0];
                 if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
-                const inp$ = $(":input[name=tenant_code]");
+
                 if (tenantCode){
                     inp$.val(tenantCode).attr('readonly', 'readonly');
                 } else {

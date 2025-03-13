@@ -74,7 +74,7 @@ msgid "Tax code"
 msgstr "Mã số thuế"
 
 #
-msgid "Personal infomation"
+msgid "Personal information"
 msgstr "Thông tin cá nhân"
 
 #
@@ -195,29 +195,57 @@ msgid "Choose Marital status"
 msgstr "Chọn tình trạng hôn nhân"
 
 #
-msgid "Get signature"
-msgstr "Lấy chữ ký"
-
-#
-msgid "Signature"
-msgstr "Chữ ký"
-
-#
-msgid "Draw your signature"
-msgstr "Vẽ chữ ký của bạn"
-
-#
 msgid "Upload file to Cloud"
 msgstr "tải lên tệp lên Đám Mây"
 
 #
-msgid "Manager signature file"
-msgstr "Quản lý tệp chữ ký"
+msgid "Sign a contract"
+msgstr "Ký hợp đồng"
 
 #
-msgid "How to get signature file"
-msgstr "Cách lấy file chữ ký"
+msgid "Contract request signing successfully"
+msgstr "Gửi yêu cầu ký hợp đồng thành công"
 
 #
-msgid "START TOUR"
-msgstr "BẮT ĐẦU XEM"
+msgid "Sign"
+msgstr "Ký"
+
+#
+msgid "Clear, Redraw"
+msgstr "Xoá, ký lại"
+
+#
+msgid "Employee info"
+msgstr "Thông tin nhân viên"
+
+#
+msgid "Signed successfully"
+msgstr "Thực hiện ký thành công"
+
+#
+msgid "HRM Signing request"
+msgstr "Yêu cầu ký hợp đồng"
+
+#
+msgid "Image Sign"
+msgstr "Ký ảnh"
+
+#
+msgid "Employee signature"
+msgstr "Chử ký người dùng"
+
+#
+msgid "From file"
+msgstr "Từ tệp"
+
+#
+msgid "Draw"
+msgstr "Vẽ"
+
+#
+msgid "Choose File"
+msgstr "Chọn tệp"
+
+#
+msgid "Agree"
+msgstr "Đồng ý"

@@ -1264,7 +1264,7 @@ $(document).ready(function () {
     $(document).on('click', '.see-detail-prd', function () {
         hopscotch.endTour()
         WindowControl.showLoading()
-        $('#view-product-title').text($(this).closest('td').find('.prd-title').text())
+        $('#view-product-title').text($(this).closest('tr').find('.prd-title').text())
         let dataParam = {}
         dataParam['warehouse_id'] = $('#view-warehouse-title').attr('data-wh-id')
         dataParam['product_id'] = $(this).attr('data-prd-id')

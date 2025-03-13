@@ -28,10 +28,11 @@ let TOOL_ROW = null
 //// COMMON
 
 class BOMLoadPage {
-    static LoadFinishGoodsAndGoods(ele, data) {
+    static LoadProduct(ele, data) {
         ele.initSelect2({
             ajax: {
-                data: {'get_finished_goods_and_goods': true},
+                // data: {'get_finished_goods_and_goods': true},
+                data: {},
                 url: ele.attr('data-url'),
                 method: 'GET',
             },
@@ -1201,7 +1202,7 @@ class BOMAction {
 
 class BOMHandle {
     static LoadPage() {
-        BOMLoadPage.LoadFinishGoodsAndGoods(productEle)
+        BOMLoadPage.LoadProduct(productEle)
         BOMLoadTab.LoadProcessDescriptionTable()
         BOMLoadTab.LoadLaborSummaryTable()
         // material
@@ -1352,7 +1353,7 @@ class BOMHandle {
                         $('#for-sale').prop('checked', true)
                     }
 
-                    BOMLoadPage.LoadFinishGoodsAndGoods(productEle, data?.['product'])
+                    BOMLoadPage.LoadProduct(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
                     timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
 
@@ -1512,7 +1513,7 @@ $('input[name="bom-type"]').on('change', function() {
                     $('#hint-for-goods').prop('hidden', true)
                 }
                 if ($('#for-production').prop('checked')) {
-                    BOMLoadPage.LoadFinishGoodsAndGoods(productEle)
+                    BOMLoadPage.LoadProduct(productEle)
                     $('#hint-for-finished-goods').prop('hidden', false)
                     $('#hint-for-service').prop('hidden', true)
                     $('#hint-for-goods').prop('hidden', true)

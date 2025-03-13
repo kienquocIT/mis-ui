@@ -31,10 +31,11 @@ class OpportunityBOMLoadPage {
             keyText: 'full_name',
         }).trigger('change')
     }
-    static LoadFinishGoodsAndServices(ele, data) {
+    static LoadProduct(ele, data) {
         ele.initSelect2({
             ajax: {
-                data: {'get_finished_goods_and_services': true},
+                // data: {'get_finished_goods_and_services': true},
+                data: {},
                 url: ele.attr('data-url'),
                 method: 'GET',
             },
@@ -1122,7 +1123,7 @@ class OpportunityBOMHandle {
                 }).init();
             }
         }
-        OpportunityBOMLoadPage.LoadFinishGoodsAndServices(productEle)
+        OpportunityBOMLoadPage.LoadProduct(productEle)
         OpportunityBOMLoadTab.LoadProcessDescriptionTable()
         OpportunityBOMLoadTab.LoadLaborSummaryTable()
         // material
@@ -1249,7 +1250,7 @@ class OpportunityBOMHandle {
                         data_inherit: data_inherit,
                     }).init();
 
-                    OpportunityBOMLoadPage.LoadFinishGoodsAndServices(productEle, data?.['product'])
+                    OpportunityBOMLoadPage.LoadProduct(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
                     timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
 

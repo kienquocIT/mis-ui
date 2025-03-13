@@ -7,7 +7,7 @@ DepreciationControl{}
 
 class DepreciationControl {
     static callDepreciation(opts) {
-        let {method, months, start_date, end_date, price, adjust = null} = opts;
+        let {method = 0, months, start_date, end_date, price, adjust = null} = opts;
         months = parseInt(months);
         price = parseFloat(price);
         adjust = parseFloat(adjust);
@@ -84,7 +84,7 @@ class DepreciationControl {
                         month: currentMonth.toString(),
                         begin: currentStartDate,
                         end: end_date,
-                        accumulative_month: DepreciationControl.getAccumulativeMonth(currentStartDate, end_date),
+                        accumulative_month: DepreciationControl.getRatioDaysOnMonth(currentStartDate, end_date),
                         start_value: Math.round(currentValue),
                         depreciation_value: Math.round(depreciationValue),
                         accumulative_value: Math.round(accumulativeValue),
@@ -93,12 +93,9 @@ class DepreciationControl {
                 }
                 break;
             } else {
+                let accumulativeMonth = DepreciationControl.getRatioDaysOnMonth(currentStartDate, currentEndDate);
                 if (currentStartDateObj.getDate() !== 1) {
-                    let month = currentStartDateObj.getMonth() + 1;
-                    let year = currentStartDateObj.getFullYear();
-                    let totalDays = new Date(year, month, 0).getDate();
-                    let daysOdd = DepreciationControl.calDaysBetween(currentStartDateObj, currentEndDateObj);
-                    depreciationValue = depreciationValue / totalDays * (daysOdd + 1);
+                    depreciationValue = depreciationValue * accumulativeMonth;
                 }
                 /*
                 Kiểm tra nếu là tháng cuối (ngày kết thúc của tháng bằng ngày kết thúc khấu hao)
@@ -112,7 +109,7 @@ class DepreciationControl {
                     month: currentMonth.toString(),
                     begin: currentStartDate,
                     end: currentEndDate,
-                    accumulative_month: DepreciationControl.getAccumulativeMonth(currentStartDate, currentEndDate),
+                    accumulative_month: accumulativeMonth,
                     start_value: Math.round(currentValue),
                     depreciation_value: Math.round(depreciationValue),
                     accumulative_value: Math.round(accumulativeValue),
@@ -129,6 +126,94 @@ class DepreciationControl {
         }
 
         return result;
+    };
+
+    static extractDataOfRange(opts) {
+        let {data_depreciation, start_date, end_date} = opts;
+        let matchingRange = DepreciationControl.findMatchingRange(start_date, end_date, data_depreciation);
+        if (matchingRange.length > 0) {
+            // Get firstData to handle
+            let firstData = matchingRange[0];
+            firstData['lease_allocated'] =  firstData?.['depreciation_value'];
+            let beginDay = parseInt(start_date.split("/")[0]);
+            let beginDayFirstData = parseInt(firstData?.['begin'].split("/")[0]);
+            if (beginDayFirstData < beginDay) {
+                let daysOfMonth = DepreciationControl.getDaysOfMonth(firstData?.['begin']);
+                let daysOfFirstData = firstData?.['accumulative_month'] * daysOfMonth;
+                let perDayDepreciation = firstData?.['depreciation_value'] / daysOfFirstData;
+                let daysBetween = DepreciationControl.getDaysBetween(firstData?.['begin'], start_date);
+                let daysBetweenDepreciation = perDayDepreciation * daysBetween;
+                firstData['lease_allocated'] =  firstData?.['depreciation_value'] - daysBetweenDepreciation;
+
+            }
+            firstData['lease_time'] = start_date;
+            firstData['lease_accumulative_allocated'] = firstData?.['lease_allocated'];
+            // Get lastData to handle
+            let lastData = matchingRange.at(-1);
+            lastData['lease_allocated'] =  lastData?.['depreciation_value'];
+            let endDay = parseInt(end_date.split("/")[0]);
+            let beginDayEndData = parseInt(lastData?.['begin'].split("/")[0]);
+            if (beginDayEndData < endDay) {
+                let daysOfMonth = DepreciationControl.getDaysOfMonth(lastData?.['begin']);
+                let daysOfFirstData = lastData?.['accumulative_month'] * daysOfMonth;
+                let perDayDepreciation = lastData?.['depreciation_value'] / daysOfFirstData;
+                let daysBetween = DepreciationControl.getDaysBetween(lastData?.['begin'], end_date);
+                lastData['lease_allocated'] =  perDayDepreciation * daysBetween;
+
+            }
+            lastData['lease_time'] = end_date;
+
+            // If only one record then set lease_accumulative_allocated = lease_allocated
+            if (matchingRange.length === 1) {
+                matchingRange[0]['lease_accumulative_allocated'] = matchingRange[0]?.['lease_allocated'];
+                return matchingRange;
+            }
+            // Loop through matchingRange and handle records between firstData and lastData
+            for (let i = 1; i < matchingRange.length; i++) {
+                if (i < (matchingRange.length - 1)) {
+                    matchingRange[i]['lease_allocated'] = matchingRange[i]?.['depreciation_value'];
+                }
+                matchingRange[i]["lease_accumulative_allocated"] = matchingRange[i - 1]?.["lease_accumulative_allocated"] + matchingRange[i]?.["lease_allocated"];
+            }
+
+
+        }
+        return matchingRange;
+    };
+
+    static mapDataOfRange(opts) {
+        let {data_depreciation, data_of_range} = opts;
+        let dataFn = data_depreciation;
+        let matchingRangeJSON = {};
+        for (let matching of data_of_range) {
+            matchingRangeJSON[matching?.['month']] = matching;
+        }
+        for (let data of dataFn) {
+            if (matchingRangeJSON.hasOwnProperty(data?.['month'])) {
+                data['lease_allocated'] = Math.round(matchingRangeJSON[data?.['month']]?.['lease_allocated']);
+                data['lease_accumulative_allocated'] = Math.round(matchingRangeJSON[data?.['month']]?.['lease_accumulative_allocated']);
+            }
+        }
+        return dataFn;
+    };
+
+    static getNetValue(opts) {
+        let {data_depreciation, current_date} = opts;
+        // Create a copy of the array to prevent mutation
+        let depreciationCopy = JSON.parse(JSON.stringify(data_depreciation));
+        if (depreciationCopy.length > 0) {
+            let firstData = depreciationCopy[0];
+            let start_date = firstData?.['begin'];
+            let price = firstData?.['start_value'];
+            let dataOfRange = DepreciationControl.extractDataOfRange({
+                'data_depreciation': depreciationCopy,
+                'start_date': start_date,
+                'end_date': current_date,
+            });
+            let last = dataOfRange.at(-1);
+            return Math.round(price - last?.['lease_accumulative_allocated']);
+        }
+        return 0;
     };
 
     static addOneDay(date_current) {
@@ -172,16 +257,27 @@ class DepreciationControl {
         return timeDifference / (1000 * 60 * 60 * 24);
     };
 
-    static getAccumulativeMonth(begin, end) {
+    static getDaysOfMonth(date) {
+        // Convert strings to Date objects
+        let [beginDay, beginMonth, beginYear] = date.split('/').map(Number);
+        // Get total days of the month
+        return new Date(beginYear, beginMonth, 0).getDate();
+    };
+
+    static getDaysBetween(begin, end) {
         // Convert strings to Date objects
         let [beginDay, beginMonth, beginYear] = begin.split('/').map(Number);
         let [endDay, endMonth, endYear] = end.split('/').map(Number);
         let beginDate = new Date(beginYear, beginMonth - 1, beginDay);
         let endDate = new Date(endYear, endMonth - 1, endDay);
+        return (endDate - beginDate) / (1000 * 60 * 60 * 24) + 1;
+    };
+
+    static getRatioDaysOnMonth(begin, end) {
         // Get total days between begin and end
-        let totalDaysBetween = (endDate - beginDate) / (1000 * 60 * 60 * 24) + 1;
+        let totalDaysBetween = DepreciationControl.getDaysBetween(begin, end);
         // Get total days of the month
-        let totalDaysInMonth = new Date(beginYear, beginMonth, 0).getDate();
+        let totalDaysInMonth = DepreciationControl.getDaysOfMonth(begin);
         // Calculate the fraction
         return totalDaysBetween / totalDaysInMonth;
     };

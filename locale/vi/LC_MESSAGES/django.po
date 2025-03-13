@@ -11196,6 +11196,34 @@ msgid "Confirm this change?"
 msgstr "Xác nhận thay đổi?"
 
 #
+msgid "Product code"
+msgstr "Mã sản phẩm"
+
+#
+msgid "Asset code"
+msgstr "Mã tài sản"
+
+#
+msgid "Select asset"
+msgstr "Chọn tài sản"
+
+#
+msgid "Warehouse name"
+msgstr "Tên kho"
+
+#
+msgid "Warehouse code"
+msgstr "Mã kho"
+
+#
+msgid "Add service"
+msgstr "Thêm dịch vụ"
+
+#
+msgid "Select service"
+msgstr "Chọn dịch vụ"
+
+#
 msgid "International name"
 msgstr "Tên quốc tế"
 

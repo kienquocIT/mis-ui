@@ -949,7 +949,7 @@ class NodeDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         if (row?.['action'] === 1) {
-                            return `<input type="text" class="form-control table-row-min-collab validated-number" value="${row?.['min_collab'] ? row?.['min_collab'] : 0}">`;
+                            return `<input type="text" class="form-control table-row-min-collab valid-num" value="${row?.['min_collab'] ? row?.['min_collab'] : 0}">`;
                         }
                         return `<select class="form-select table-row-min-collab"></select>`;
                     }

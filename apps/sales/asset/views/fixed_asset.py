@@ -15,6 +15,7 @@ __all__ = [
     'FixedAssetDetail',
     'FixedAssetDetailAPI',
     'FixedAssetListAPI',
+    'AssetForLeaseListAPI',
 ]
 
 def create(request, url, msg):
@@ -131,3 +132,14 @@ class FixedAssetDetailAPI(APIView):
             pk=pk,
             msg=BaseMsg.SUCCESS
         )
+
+
+class AssetForLeaseListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.FIXED_ASSET_FOR_LEASE_LIST).get(data)
+        return resp.auto_return(key_success='fixed_asset_for_lease_list')

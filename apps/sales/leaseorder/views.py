@@ -70,7 +70,7 @@ class LeaseOrderList(View):
     @mask_view(
         auth_require=True,
         template='sales/leaseorder/lease_order_list.html',
-        menu_active='menu_sale_order_list',
+        menu_active='menu_lease_order_list',
         breadcrumb='LEASE_ORDER_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
@@ -81,6 +81,7 @@ class LeaseOrderCreate(View):
     @mask_view(
         auth_require=True,
         template='sales/leaseorder/lease_order_create.html',
+        menu_active='menu_lease_order_list',
         breadcrumb='LEASE_ORDER_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
@@ -137,7 +138,7 @@ class LeaseOrderDetail(View):
     @mask_view(
         auth_require=True,
         template='sales/leaseorder/lease_order_detail.html',
-        menu_active='menu_sale_order_list',
+        menu_active='menu_lease_order_list',
         breadcrumb='LEASE_ORDER_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
@@ -161,7 +162,7 @@ class LeaseOrderUpdate(View):
         auth_require=True,
         template='sales/leaseorder/lease_order_update.html',
         breadcrumb='LEASE_ORDER_UPDATE_PAGE',
-        menu_active='menu_sale_order_list',
+        menu_active='menu_lease_order_list',
     )
     def get(self, request, pk, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.SALE_ORDER_SALE_ORDER

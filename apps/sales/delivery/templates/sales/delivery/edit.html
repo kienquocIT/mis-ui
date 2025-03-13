@@ -129,7 +129,7 @@
                                    class="form-label required">{% trans 'Estimated Delivery Date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
-                                       class="form-control date-picker" autocomplete="off" required>
+                                       class="form-control date-picker text-black" autocomplete="off" required>
                                 <span class="input-suffix">
                                     <i class="fas fa-calendar-alt"></i>
                                 </span>
@@ -141,7 +141,7 @@
                             <label for="inputActualDate" class="form-label required">{% trans 'Actual Date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" name="actual_delivery_date" id="inputActualDate"
-                                       class="form-control date-picker" autocomplete="off" required>
+                                       class="form-control date-picker text-black" autocomplete="off" required>
                                 <span class="input-suffix">
                                     <i class="fas fa-calendar-alt"></i>
                                 </span>
@@ -243,39 +243,27 @@
             <div class="offcanvas-body">
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6 border-right">
-                        <div data-simplebar class="h-700p nicescroll-bar" id="scroll-new-leased-product">
+                        <div id="scroll-new-leased-product">
                             <table id="productNew" class="table w-100">
                                 <thead>
                                 <tr class="bg-light">
-                                    <th>{% trans 'Code' %}</th>
                                     <th>{% trans 'Name' %}</th>
+                                    <th>{% trans 'Code' %}</th>
                                     <th>{% trans 'Remain' %}</th>
                                     <th>{% trans 'Deliver' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <div id="productLeasedDiv" hidden>
-                                <table id="productLeased" class="table w-100">
-                                    <thead>
-                                    <tr class="bg-light">
-                                        <th>{% trans 'Lease code' %}</th>
-                                        <th>{% trans 'Name' %}</th>
-                                        <th>{% trans 'Remain' %}</th>
-                                        <th>{% trans 'Deliver' %}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
-                        <div data-simplebar class="h-250p nicescroll-bar" id="scroll-table-wh">
+                        <div id="scroll-table-wh">
                             <table id="productStockDetail" class="table w-100">
                                 <thead>
                                 <tr class="bg-light">
-                                    <th>{% trans 'Warehouse' %}</th>
+                                    <th>{% trans 'Warehouse name' %}</th>
+                                    <th>{% trans 'Warehouse code' %}</th>
                                     <th>{% trans 'UOM' %}</th>
                                     <th>{% trans 'Stock' %}</th>
                                     <th>{% trans 'Deliver' %}</th>
@@ -284,7 +272,7 @@
                                 <tbody></tbody>
                             </table>
                         </div>
-                        <div data-simplebar class="h-500p nicescroll-bar" id="scroll-table-lot" hidden>
+                        <div id="scroll-table-lot" hidden>
                             <table
                                 id="datable-delivery-wh-lot"
                                 class="table nowrap w-100"
@@ -305,7 +293,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div data-simplebar class="h-500p nicescroll-bar" id="scroll-table-serial" hidden>
+                        <div id="scroll-table-serial" hidden>
                             <table
                                 id="datable-delivery-wh-serial"
                                 class="table nowrap w-100"
@@ -419,6 +407,7 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'assets/js/extends/depreciation/depreciation_common.js' %}"></script>
     <script src="{% static 'sales/delivery/delivery/detail.js' %}"></script>
 {% endblock %}
 

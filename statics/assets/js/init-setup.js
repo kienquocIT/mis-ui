@@ -1879,6 +1879,20 @@ class ListeningEventController {
         })
     }
 
+    formatEle() {
+        // Listen event on element and format to right type (number, code,...)
+        $(document).on('input', '.valid-num', function () {
+            let value = this.value;
+            // Replace non-digit characters with an empty string
+            value = value.replace(/[^0-9.]/g, '');
+            // Remove unnecessary zeros from the integer part
+            value = value.replace("-", "").replace(/^0+(?=\d)/, '');
+            // Update value of input
+            this.value = value;
+            return true;
+        })
+    }
+
     // main
     active() {
         this.switchCompany();
@@ -1896,6 +1910,7 @@ class ListeningEventController {
         this.tabHashUrl();  // keep it run after nttDrawer and log
         this.setValidatorDefaults();
         this.dropdownInAccordion();
+        this.formatEle();
         ListeningEventController.listenImageLoad();
     }
 }
@@ -2542,8 +2557,8 @@ class WFRTControl {
                                 <div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="radio" name="next-node-collab" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
                                     <label class="form-check-label mr-2" for="collab-${collab?.['id'].replace(/-/g, "")}">${collab?.['full_name']}</label>
-                                    <span class="badge badge-light badge-outline">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                                 </div>
+                                <span class="badge badge-light badge-outline">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
                             </div>`;
         }
         return htmlCustom;

@@ -186,16 +186,26 @@ class ReportInventoryListAPI(APIView):
         return resp.auto_return(key_success='report_inventory_cost_list')
 
 
-class ReportInventoryProductWarehouseViewAPI(APIView):
-
+class WarehouseAvailableProductListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_INVENTORY_COST_WH_DETAIL).get(data)
-        return resp.auto_return(key_success='report_inventory_cost_wh_detail')
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_AVAILABLE_PRODUCT_LIST).get(data)
+        return resp.auto_return(key_success='warehouse_available_product_list')
+
+
+class WarehouseAvailableProductDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_AVAILABLE_PRODUCT_DETAIL).get(data)
+        return resp.auto_return(key_success='warehouse_available_product_detail')
 
 
 class GetQRCodeLotInfoAPI(APIView):

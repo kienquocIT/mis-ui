@@ -11234,3 +11234,15 @@ msgstr "Tên viết tắt"
 #
 msgid "Enter tax code to autofill"
 msgstr "Nhập MST để tự động điền"
+
+#
+msgid "Click on the warehouse code for more details on stock"
+msgstr "Nhấp vào mã kho để biết thêm chi tiết về tình trạng tồn kho"
+
+#
+msgid "Click here for more details on product serials or batches/lots"
+msgstr "Nhấp vào đây để biết thêm chi tiết về số serial hoặc lô sản phẩm"
+
+#
+msgid "Click here and scan the QR code to look up product information"
+msgstr "Nhấp vào đây và quét mã QR code để tra cứu thông tin sản phẩm"

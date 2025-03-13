@@ -544,6 +544,7 @@ $(document).ready(function () {
                                           data-product-title="${row?.['product']?.['title']}"
                                           data-product-description="${row?.['product']?.['description']}"
                                           data-lot-number="${row?.['lot_number']}"
+                                          data-expire-date="${row?.['expire_date']}"
                                           data-goods-receipt-date="${row?.['goods_receipt_date']}"
                                     >
                                         <i class="fa-solid fa-qrcode"></i>
@@ -1388,6 +1389,7 @@ $(document).ready(function () {
         dataParam['product_title'] = $(this).attr('data-product-title')
         dataParam['product_des'] = $(this).attr('data-product-description')
         dataParam['lot_number'] = $(this).attr('data-lot-number')
+        dataParam['expire_date'] = $(this).attr('data-expire-date').split('T')[0]
         dataParam['goods_receipt_date'] = $(this).attr('data-goods-receipt-date').split('T')[0]
         let lot_info_ajax = $.fn.callAjax2({
             url: url_script.attr('data-url-qr-code-lot-info'),

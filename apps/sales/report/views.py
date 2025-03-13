@@ -223,28 +223,31 @@ class GetQRCodeLotInfoAPI(APIView):
         )
 
         now_day = datetime.now()
-        if data.get('goods_receipt_date') != 'null':
-            receipt_day = datetime.strptime(data.get('goods_receipt_date'), '%Y-%m-%d')
-            day_in_stock = str(now_day - receipt_day).split(', ')
-            qr.add_data(
-                f"- Product: [{data.get('product_code')}] - {data.get('product_title')}\n"
-                f"  {(data.get('product_des')) if data.get('product_des') else ''}\n"
-                f"- Lot number: {data.get('lot_number')}\n"
-                
-                f"- Goods receipt date: {data.get('goods_receipt_date')}\n"
-                f"- Days in stock: {day_in_stock[0]}\n\n"
-                f"* Latest updated: {str(now_day).split(' ')[0]}"
-            )
+        goods_receipt_date = data.get('goods_receipt_date')
+        if goods_receipt_date and goods_receipt_date != 'null':
+            goods_receipt_date = datetime.strptime(goods_receipt_date, '%d/%m/%Y')
+            day_in_stock = (now_day - goods_receipt_date).days  # Lấy số ngày tồn kho
         else:
-            qr.add_data(
-                f"- Product: [{data.get('product_code')}] - {data.get('product_title')}\n"
-                f"  {(data.get('product_des')) if data.get('product_des') else ''}\n"
-                f"- Lot number: {data.get('lot_number')}\n"
+            goods_receipt_date = '-'
+            day_in_stock = '-'
 
-                f"- Goods receipt date: None\n"
-                f"- Days in stock: None\n\n"
-                f"* Latest updated: {str(now_day).split(' ')[0]}"
-            )
+        expire_date = data.get('expire_date')
+        if expire_date and expire_date != 'null':
+            expire_date = datetime.strptime(expire_date, '%d/%m/%Y')
+            remain_day = (expire_date - now_day).days
+        else:
+            expire_date = '-'
+            remain_day = '-'
+
+        qr.add_data(
+            f"- Product: [{data.get('product_code', '-')}] - {data.get('product_title', '-')}\n"
+            f"- Description: {data.get('product_des', '-')}\n"
+            f"- Lot number: {data.get('lot_number', '-')}\n"
+            f"- Expire date: {expire_date.strftime('%d/%m/%Y')} (remain: {remain_day})\n"
+            f"- Goods receipt date: {goods_receipt_date.strftime('%d/%m/%Y') if goods_receipt_date != '-' else '-'}\n"
+            f"- Days in stock: {day_in_stock}\n\n"
+            f"* Latest updated: {now_day.strftime('%d/%m/%Y')}"
+        )
         qr.make(fit=True)
         img = qr.make_image(back_color=(255, 255, 255), fill_color='#007D88')
         path = f"apps/sales/report/static/assets/sales/inventory_report/QR_lot_info/{data.get('product_id')}_{data.get('lot_number')}.png"
@@ -266,30 +269,23 @@ class GetQRCodeSerialInfoAPI(APIView):
             border=4,
         )
         now_day = datetime.now()
-        if data.get('goods_receipt_date') != 'null':
-            receipt_day = datetime.strptime(data.get('goods_receipt_date'), '%Y-%m-%d')
-            day_in_stock = str(now_day - receipt_day).split(', ')
-            qr.add_data(
-                f"- Product: [{data.get('product_code')}] - {data.get('product_title')}\n"
-                f"  {(data.get('product_des')) if data.get('product_des') else ''}\n"
-                f"- Serial number: {data.get('serial_number')}\n"
-                f"- Vendor serial number: {data.get('vendor_serial_number')}\n"
-
-                f"- Goods receipt date: {data.get('goods_receipt_date')}\n"
-                f"- Days in stock: {day_in_stock[0]}\n\n"
-                f"* Latest updated: {str(now_day).split(' ')[0]}"
-            )
+        goods_receipt_date = data.get('goods_receipt_date')
+        if goods_receipt_date and goods_receipt_date != 'null':
+            goods_receipt_date = datetime.strptime(goods_receipt_date, '%d/%m/%Y')
+            day_in_stock = (now_day - goods_receipt_date).days  # Lấy số ngày tồn kho
         else:
-            qr.add_data(
-                f"- Product: [{data.get('product_code')}] - {data.get('product_title')}\n"
-                f"  {(data.get('product_des')) if data.get('product_des') else ''}\n"
-                f"- Serial number: {data.get('serial_number')}\n"
-                f"- Vendor serial number: {data.get('vendor_serial_number')}\n"
+            goods_receipt_date = '-'
+            day_in_stock = '-'
 
-                f"- Goods receipt date: None\n"
-                f"- Days in stock: None\n\n"
-                f"* Latest updated: {str(now_day).split(' ')[0]}"
-            )
+        qr.add_data(
+            f"- Product: [{data.get('product_code', '-')}] - {data.get('product_title', '-')}\n"
+            f"- Description: {data.get('product_des', '-')}\n"
+            f"- Serial number: {data.get('serial_number', '-')}\n"
+            f"- Vendor serial number: {data.get('vendor_serial_number', '-')}\n"
+            f"- Goods receipt date: {goods_receipt_date.strftime('%d/%m/%Y') if goods_receipt_date != '-' else '-'}\n"
+            f"- Days in stock: {day_in_stock}\n\n"
+            f"* Latest updated: {now_day.strftime('%d/%m/%Y')}"
+        )
         qr.make(fit=True)
         img = qr.make_image(back_color=(255, 255, 255), fill_color='#007D88')
         path = f"apps/sales/report/static/assets/sales/inventory_report/QR_sn_info/{data.get('product_id')}_{data.get('serial_number')}.png"

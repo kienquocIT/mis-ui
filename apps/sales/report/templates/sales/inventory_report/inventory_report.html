@@ -8,12 +8,6 @@
         .detail-row {
             background-color: #f6f6f6 !important;
         }
-        .fixed-row {
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 2;
-        }
         .chat-popup {
             position: fixed;
             bottom: 10px;
@@ -77,6 +71,7 @@
             data-trans-filter="{% trans 'Filter' %}"
             data-trans-instruction="{% trans 'Instruction' %}"
             data-trans-warehouse-detail="{% trans 'Click on the warehouse code for more details on stock' %}"
+            data-trans-scroll-row="{% trans 'Hover the mouse pointer over rows to see the header information of that row when scroll horizontally' %}"
             data-trans-product-detail="{% trans 'Click here for more details on product serials or batches/lots' %}"
             data-trans-product-qr="{% trans 'Click here and scan the QR code to look up product information' %}"
     ></script>

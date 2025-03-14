@@ -140,20 +140,10 @@ $(document).ready(function () {
                             }
                         }
                         if (row?.['type'] === 'product_row') {
+                            let dot = row?.['vm'] === 0 ? `<span class="badge bg-blue-light-2 badge-indicator"></span>` : `<span class="badge bg-secondary-light-3 badge-indicator"></span>`
                             let html = `
-                                <a tabindex="0" href="#"
-                                    data-bs-placement="top"
-                                    data-bs-toggle="popover"
-                                    data-bs-trigger="hover focus"
-                                    data-bs-html="true"
-                                    data-bs-content="<span class='text-decoration-underline'>
-                                                        ${trans_script.attr('data-trans-vm')}
-                                                        </span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}
-                                                    </span>"
-                                    class="popover-prd text-secondary">
-                                    <i class="fas fa-info-circle"></i>
-                                </a>
-                                <span class="${row?.['type']}" data-product-code="${row?.['product_code']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
+                                ${dot}
+                                <span class="${row?.['type']}" data-product-vm="${row?.['vm']}" data-product-code="${row?.['product_code']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
                             `
                             if (row?.['product_lot_number']) {
                                 html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
@@ -161,7 +151,7 @@ $(document).ready(function () {
                             return html
                         }
                         if (row?.['type'] === 'detail_row') {
-                            return `<span class="detail_row ${row?.['bg_in']} ${row?.['bg_out']}"></span>`
+                            return `<span class="detail_row small ${row?.['product_code']} badge ${row?.['bg_in']} ${row?.['bg_out']}"></span>`
                         }
                         return ``
                     }
@@ -179,7 +169,7 @@ $(document).ready(function () {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
-                            return `<span>${row?.['date'] ? row?.['date'] : ''}</span>`
+                            return `<span class="small">${row?.['date'] ? row?.['date'] : ''}</span>`
                         }
                         return ``
                     }
@@ -189,7 +179,7 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             if (row?.['lot_number']) {
-                                return `<span class="text-blue"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_number']}</span>`
+                                return `<span class="small text-blue"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_number']}</span>`
                             }
                         }
                         return ``
@@ -200,7 +190,7 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             if (row?.['expired_date']) {
-                                return `<span class="text-orange"><i class="bi bi-calendar2-x"></i>&nbsp;${row?.['expired_date']}</span>`
+                                return `<span class="small text-orange"><i class="bi bi-calendar2-x"></i>&nbsp;${row?.['expired_date']}</span>`
                             }
                         }
                         return ``
@@ -210,19 +200,16 @@ $(document).ready(function () {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
-                            return `
-                                <div class="row">
-                                    <div class="col-4">--</div>
-                                    <div class="col-8"><span class="text-primary fw-bold wh-opening-value-span mask-money wh-open-value-${row?.['warehouse_id']}" data-init-money="0"></span></div>
-                                </div>
-                                `
+                            return `<div class="row">
+                                        <div class="col-4">--</div>
+                                        <div class="col-8"><span class="text-primary fw-bold wh-opening-value-span mask-money wh-open-value-${row?.['warehouse_id']}" data-init-money="0"></span></div>
+                                    </div>`
                         }
                         if (row?.['type'] === 'product_row') {
-                            return `
-                                <div class="row">
-                                    <div class="col-4"><span class="text-secondary opening-quantity-span prd-open-quantity-${row?.['warehouse_id']}">${row?.['prd_open_quantity']}</span></div>
-                                    <div class="col-8"><span class="text-secondary opening-value-span mask-money prd-open-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_open_value']}"></span></div>
-                                </div>`
+                            return `<div class="row">
+                                        <div class="col-4"><span class="text-secondary opening-quantity-span prd-open-quantity-${row?.['warehouse_id']}">${row?.['prd_open_quantity']}</span></div>
+                                        <div class="col-8"><span class="text-secondary opening-value-span mask-money prd-open-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_open_value']}"></span></div>
+                                    </div>`
                         }
                         return ``
                     }
@@ -231,74 +218,58 @@ $(document).ready(function () {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
-                            return `
-                                <div class="row">
-                                    <div class="col-4">--</div>
-                                    <div class="col-8"><span class="text-primary fw-bold wh-in-value-span wh-in-value-${row?.['warehouse_id']} mask-money" data-init-money="0"></span></div>
-                                </div>
-                            `
+                            return `<div class="row">
+                                        <div class="col-4">--</div>
+                                        <div class="col-8"><span class="text-primary fw-bold wh-in-value-span wh-in-value-${row?.['warehouse_id']} mask-money" data-init-money="0"></span></div>
+                                    </div>`
                         }
                         if (row?.['type'] === 'product_row') {
-                            return `
-                                <div class="row">
-                                    <div class="col-4"><span class="text-secondary in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['prd_in_quantity']}</span></div>
-                                    <div class="col-8"><span class="text-secondary in-value-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_in_value']}"></span></div>
-                                </div>
-                            `
+                            return `<div class="row">
+                                        <div class="col-4"><span class="text-secondary in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['prd_in_quantity']}</span></div>
+                                        <div class="col-8"><span class="text-secondary in-value-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_in_value']}"></span></div>
+                                    </div>`
                         }
-                        return `
-                                <div class="row">
-                                    <div class="col-4"><span class="text-secondary in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['in_quantity']}</span></div>
-                                    <div class="col-8"><span class="text-secondary in-quantity-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['in_value']}"></span></div>
-                                </div>
-                        `
+                        return `<div class="row">
+                                    <div class="col-4"><span class="small text-secondary in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['in_quantity']}</span></div>
+                                    <div class="col-8"><span class="small text-secondary in-quantity-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['in_value']}"></span></div>
+                                </div>`
                     }
                 },
                 {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
-                            return `
-                                <div class="row">
-                                    <div class="col-4">--</div>
-                                    <div class="col-8"><span class="text-primary fw-bold wh-out-value-span mask-money wh-out-value-${row?.['warehouse_id']}" data-init-money="0"></span></div>
-                                </div>
-                            `
+                            return `<div class="row">
+                                        <div class="col-4">--</div>
+                                        <div class="col-8"><span class="text-primary fw-bold wh-out-value-span mask-money wh-out-value-${row?.['warehouse_id']}" data-init-money="0"></span></div>
+                                    </div>`
                         }
                         if (row?.['type'] === 'product_row') {
-                            return `                                
-                                <div class="row">
-                                    <div class="col-4"><span class="text-secondary out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['prd_out_quantity']}</span></div>
-                                    <div class="col-8"><span class="text-secondary out-value-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_out_value']}"></span></div>
-                                </div>
-                            `
+                            return `<div class="row">
+                                        <div class="col-4"><span class="text-secondary out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['prd_out_quantity']}</span></div>
+                                        <div class="col-8"><span class="text-secondary out-value-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_out_value']}"></span></div>
+                                    </div>`
                         }
-                        return `                                
-                            <div class="row">
-                                <div class="col-4"><span class="text-secondary out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['out_quantity']}</span></div>
-                                <div class="col-8"><span class="text-secondary out-quantity-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['out_value']}"></span></div>
-                            </div>
-                        `
+                        return `<div class="row">
+                                    <div class="col-4"><span class="small text-secondary out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['out_quantity']}</span></div>
+                                    <div class="col-8"><span class="small text-secondary out-quantity-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['out_value']}"></span></div>
+                                </div>`
                     }
                 },
                 {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
-                            return `
-                                <div class="row">
-                                    <div class="col-4">--</div>
-                                    <div class="col-8"><span class="text-primary fw-bold wh-ending-value-span mask-money wh-end-value-${row?.['warehouse_id']}" data-init-money="0"></span></div>
-                                </div>
-                            `
+                            return `<div class="row">
+                                        <div class="col-4">--</div>
+                                        <div class="col-8"><span class="text-primary fw-bold wh-ending-value-span mask-money wh-end-value-${row?.['warehouse_id']}" data-init-money="0"></span></div>
+                                    </div>`
                         }
                         if (row?.['type'] === 'product_row') {
-                            return `                                
-                                <div class="row">
-                                    <div class="col-4"><span class="text-secondary ending-quantity-span prd-end-quantity-${row?.['warehouse_id']}">${row?.['prd_end_quantity']}</span></div>
-                                    <div class="col-8"><span class="text-secondary ending-value-span mask-money prd-end-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_end_value']}"></span></div>
-                                </div>
-                            `
+                            return `<div class="row">
+                                        <div class="col-4"><span class="text-secondary ending-quantity-span prd-end-quantity-${row?.['warehouse_id']}">${row?.['prd_end_quantity']}</span></div>
+                                        <div class="col-8"><span class="text-secondary ending-value-span mask-money prd-end-value-${row?.['warehouse_id']}" data-init-money="${row?.['prd_end_value']}"></span></div>
+                                    </div>`
                         }
                         return ``
                     }
@@ -398,14 +369,10 @@ $(document).ready(function () {
                 }
                 MatchTooltip()
 
-                const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
-                const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
-                $('.popover-prd:first-child').trigger('hover')
-
                 if (!load_tour[0]) {
                     // Start the tour!
                     let tour = {
-                        id: "hopscotch-dark",
+                        id: "hopscotch-light",
                         steps: [
                             {
                                 target: document.querySelector(".see-detail-wh"),
@@ -413,13 +380,62 @@ $(document).ready(function () {
                                 title: trans_script.attr('data-trans-instruction'),
                                 content: trans_script.attr('data-trans-warehouse-detail'),
                             },
+                            {
+                                target: document.querySelector(".see-detail-wh"),
+                                placement: 'right',
+                                title: trans_script.attr('data-trans-instruction'),
+                                content: trans_script.attr('data-trans-scroll-row'),
+                            },
                         ],
-                        showNextButton: false,
-                        showPrevButton: false,
+                        showNextButton: true,
+                        showPrevButton: true,
                         showCloseButton: true
                     };
                     hopscotch.startTour(tour);
                     load_tour[0] = true
+                }
+
+                let wrapper$ = table.closest('.dataTables_wrapper');
+                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                headerToolbar$.prepend(textFilter$);
+                if (textFilter$.length > 0) {
+                    textFilter$.css('display', 'flex');
+                    let $fiter_valuation_method = $(`<select id="valuation-method-filter-select" multiple class="form-select select2"></select>`)
+                    textFilter$.append(
+                        $(`<div class="d-inline-block min-w-300p mr-3"></div>`).append($fiter_valuation_method)
+                    )
+                    $fiter_valuation_method.initSelect2({
+                        placeholder: trans_script.attr('data-trans-vm'),
+                        minimumResultsForSearch: -1,
+                        data: [
+                            {
+                                'id': '0',
+                                'title': trans_script.attr('data-trans-fifo'),
+                            },
+                            {
+                                'id': '1',
+                                'title': trans_script.attr('data-trans-we'),
+                            }
+                        ],
+                        templateSelection: function (state) {
+                            if (state.id){
+                                if (state.id === '0') {
+                                    return $(`<span><span class="badge bg-blue-light-2 badge-indicator"></span>${state.text}</span>`)
+                                }
+                                else if (state.id === '1') {
+                                    return $(`<span><span class="badge bg-secondary-light-3 badge-indicator"></span>${state.text}</span>`)
+                                }
+                            }
+                            return state.text;
+                        },
+                    }).on('change', function () {
+                        $('.product_row').each(function () {
+                            let product_code = $(this).attr('data-product-code')
+                            $(`.${product_code}`).prop('hidden', !$fiter_valuation_method.val().includes($(this).attr('data-product-vm')))
+                            $(this).closest('tr').prop('hidden', !$fiter_valuation_method.val().includes($(this).attr('data-product-vm')))
+                        })
+                    });
                 }
             },
         });
@@ -474,7 +490,7 @@ $(document).ready(function () {
                 if (!load_tour[1]) {
                     // Start the tour!
                     let tour = {
-                        id: "hopscotch-dark",
+                        id: "hopscotch-light",
                         steps: [
                             {
                                 target: document.querySelector(".see-detail-prd"),
@@ -571,7 +587,7 @@ $(document).ready(function () {
                 if (!load_tour[2]) {
                     // Start the tour!
                     let tour = {
-                        id: "hopscotch-dark",
+                        id: "hopscotch-light",
                         steps: [
                             {
                                 target: document.querySelector(".scan_qr"),
@@ -906,6 +922,7 @@ $(document).ready(function () {
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
+                                        'product_code': warehouse_activities?.['product']?.['code'],
                                         'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
                                         'lot_number': activity?.['lot_number'],
                                         'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
@@ -973,6 +990,7 @@ $(document).ready(function () {
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
+                                        'product_code': warehouse_activities?.['product']?.['code'],
                                         'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
                                         'lot_number': activity?.['lot_number'],
                                         'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
@@ -1052,6 +1070,7 @@ $(document).ready(function () {
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
+                                        'product_code': warehouse_activities?.['product']?.['code'],
                                         'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
                                         'lot_number': activity?.['lot_number'],
                                         'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
@@ -1087,50 +1106,51 @@ $(document).ready(function () {
                                         'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value']
                                     })
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
-                                    let bg_in = ''
-                                    let bg_out = ''
-                                    if (activity?.['trans_title'] === 'Goods receipt') {
-                                        bg_in = 'badge-soft-primary'
+                                        let bg_in = ''
+                                        let bg_out = ''
+                                        if (activity?.['trans_title'] === 'Goods receipt') {
+                                            bg_in = 'badge-soft-primary'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods return') {
+                                            bg_in = 'badge-soft-blue'
+                                        }
+                                        if (activity?.['trans_title'] === 'Delivery (sale)') {
+                                            bg_out = 'badge-soft-danger dlvr-sale'
+                                        }
+                                        if (activity?.['trans_title'] === 'Delivery (lease)') {
+                                            bg_out = 'badge-soft-danger dlvr-lease'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods receipt (IA)') {
+                                            bg_in = 'badge-soft-green'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods issue') {
+                                            bg_out = 'badge-soft-orange'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods transfer (in)') {
+                                            bg_in = 'badge-soft-purple gtf-in'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods transfer (out)') {
+                                            bg_out = 'badge-soft-purple gtf-out'
+                                        }
+                                        if (activity?.['trans_title'] === 'Balance init input') {
+                                            bg_in = 'badge-soft-secondary'
+                                        }
+                                        table_inventory_report_data.push({
+                                            'type': 'detail_row',
+                                            'product_code': warehouse_activities?.['product']?.['code'],
+                                            'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
+                                            'lot_number': activity?.['lot_number'],
+                                            'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
+                                            'bg_in': bg_in,
+                                            'in_quantity': activity?.['in_quantity'],
+                                            'in_value': activity?.['in_value'],
+                                            'bg_out': bg_out,
+                                            'out_quantity': activity?.['out_quantity'],
+                                            'out_value': activity?.['out_value'],
+                                            'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
+                                            'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
+                                        })
                                     }
-                                    if (activity?.['trans_title'] === 'Goods return') {
-                                        bg_in = 'badge-soft-blue'
-                                    }
-                                    if (activity?.['trans_title'] === 'Delivery (sale)') {
-                                        bg_out = 'badge-soft-danger dlvr-sale'
-                                    }
-                                    if (activity?.['trans_title'] === 'Delivery (lease)') {
-                                        bg_out = 'badge-soft-danger dlvr-lease'
-                                    }
-                                    if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                        bg_in = 'badge-soft-green'
-                                    }
-                                    if (activity?.['trans_title'] === 'Goods issue') {
-                                        bg_out = 'badge-soft-orange'
-                                    }
-                                    if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                        bg_in = 'badge-soft-purple gtf-in'
-                                    }
-                                    if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                        bg_out = 'badge-soft-purple gtf-out'
-                                    }
-                                    if (activity?.['trans_title'] === 'Balance init input') {
-                                        bg_in = 'badge-soft-secondary'
-                                    }
-                                    table_inventory_report_data.push({
-                                        'type': 'detail_row',
-                                        'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
-                                        'lot_number': activity?.['lot_number'],
-                                        'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
-                                        'bg_in': bg_in,
-                                        'in_quantity': activity?.['in_quantity'],
-                                        'in_value': activity?.['in_value'],
-                                        'bg_out': bg_out,
-                                        'out_quantity': activity?.['out_quantity'],
-                                        'out_value': activity?.['out_value'],
-                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                        'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
-                                    })
-                                }
                                 }
                             }
                         }
@@ -1168,50 +1188,43 @@ $(document).ready(function () {
 
     function MatchTooltip() {
         table_inventory_report.find('.detail_row').each(function () {
+            $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
+            $(this).closest('tr').attr('data-bs-placement', 'top')
             if ($(this).attr('class').includes('badge-soft-primary')) {
-                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
-                $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-grc'))
+                $(this).text(trans_script.attr('data-trans-grc'))
             }
             if ($(this).attr('class').includes('badge-soft-blue')) {
-                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
-                $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-grt'))
+                $(this).text(trans_script.attr('data-trans-grt'))
             }
             if ($(this).attr('class').includes('badge-soft-danger dlvr-sale')) {
-                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
-                $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr-sale'))
+                $(this).text(trans_script.attr('data-trans-dlvr-sale'))
             }
             if ($(this).attr('class').includes('badge-soft-danger dlvr-lease')) {
-                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
-                $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr-lease'))
+                $(this).text(trans_script.attr('data-trans-dlvr-lease'))
             }
             if ($(this).attr('class').includes('badge-soft-green')) {
-                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
-                $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-grc')} (IA)`)
+                $(this).text(`${trans_script.attr('data-trans-grc')} (IA)`)
             }
             if ($(this).attr('class').includes('badge-soft-orange')) {
-                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
-                $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-gis'))
+                $(this).text(trans_script.attr('data-trans-gis'))
             }
             if ($(this).attr('class').includes('badge-soft-purple gtf-in')) {
-                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
-                $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-gtf')} (${trans_script.attr('data-trans-gtf-in')})`)
+                $(this).text(`${trans_script.attr('data-trans-gtf')} (${trans_script.attr('data-trans-gtf-in')})`)
             }
             if ($(this).attr('class').includes('badge-soft-purple gtf-out')) {
-                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
-                $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-gtf')} (${trans_script.attr('data-trans-gtf-out')})`)
+                $(this).text(`${trans_script.attr('data-trans-gtf')} (${trans_script.attr('data-trans-gtf-out')})`)
             }
             if ($(this).attr('class').includes('badge-soft-secondary')) {
-                $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
-                $(this).closest('tr').attr('data-bs-placement', 'top')
                 $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-bii')}`)
+                $(this).text(`${trans_script.attr('data-trans-bii')}`)
             }
         })
         table_inventory_report.find('.no-info').each(function () {

@@ -11240,6 +11240,10 @@ msgid "Click on the warehouse code for more details on stock"
 msgstr "Nhấp vào mã kho để biết thêm chi tiết về tình trạng tồn kho"
 
 #
+msgid "Hover the mouse pointer over rows to see the header information of that row when scroll horizontally"
+msgstr "Rê con trỏ chuột lên các hàng để xem thông tin tiêu đề của hàng đó khi cuộn ngang"
+
+#
 msgid "Click here for more details on product serials or batches/lots"
 msgstr "Nhấp vào đây để biết thêm chi tiết về số serial hoặc lô sản phẩm"
 

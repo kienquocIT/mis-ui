@@ -31,32 +31,19 @@ class JELoadPage {
                 }, {
                     className: 'wrap-text w-10',
                     render: (data, type, row) => {
-                        let html = ''
-                        for (let i = 0; i < row?.['account_data'].length; i++) {
-                            html += `<span class="text-primary fw-bold">${row?.['account_data'][i]?.['acc_code']}</span>`
-                        }
-                        return html;
+                        return `<span class="text-muted fw-bold">${row?.['account_data']?.['acc_code']}</span>`
                     }
                 }, {
                     className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        let html = ''
-                        for (let i = 0; i < row?.['account_data'].length; i++) {
-                            html += `<span class="text-primary">${row?.['account_data'][i]?.['acc_name']}</span><br><span class="text-primary small">(${row?.['account_data'][i]?.['foreign_acc_name']})</span>`
-                        }
-                        return html;
-                    }
-                }, {
-                    className: 'wrap-text w-15',
-                    render: (data, type, row) => {
-                        return `<span class="text-primary">${row?.['business_partner_data']?.['name'] || ''}</span>`;
+                        return `<h6 class="text-muted">${row?.['account_data']?.['acc_name']}</h6><h6 class="text-primary small">${row?.['account_data']?.['foreign_acc_name']}</h6>`
                     }
                 }, {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
                         if (!row?.['is_fc'] && row?.['debit'] !== 0) {
                             has_lc_value = true
-                            return `<span class="text-primary fw-bold mask-money" data-init-money="${row?.['debit']}"></span>`;
+                            return `<span class="text-primary mask-money" data-init-money="${row?.['debit']}"></span>`;
                         }
                         return ``;
                     }
@@ -65,7 +52,7 @@ class JELoadPage {
                     render: (data, type, row) => {
                         if (!row?.['is_fc'] && row?.['credit'] !== 0) {
                             has_lc_value = true
-                            return `<span class="text-primary fw-bold mask-money" data-init-money="${row?.['credit']}"></span>`;
+                            return `<span class="text-primary mask-money" data-init-money="${row?.['credit']}"></span>`;
                         }
                         return ``;
                     }
@@ -74,7 +61,7 @@ class JELoadPage {
                     render: (data, type, row) => {
                         if (row?.['is_fc'] && row?.['debit'] !== 0) {
                             has_fc_value = true
-                            return `<span class="text-primary fw-bold mask-money" data-init-money="${row?.['debit']}"></span>`;
+                            return `<span class="text-primary mask-money" data-init-money="${row?.['debit']}"></span>`;
                         }
                         return ``;
                     }
@@ -83,7 +70,7 @@ class JELoadPage {
                     render: (data, type, row) => {
                         if (row?.['is_fc'] && row?.['credit'] !== 0) {
                             has_fc_value = true
-                            return `<span class="text-primary fw-bold mask-money" data-init-money="${row?.['credit']}"></span>`;
+                            return `<span class="text-primary mask-money" data-init-money="${row?.['credit']}"></span>`;
                         }
                         return ``;
                     }
@@ -95,16 +82,21 @@ class JELoadPage {
                         }
                         return ''
                     }
-                },
+                }, {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<span class="text-blue">${row?.['business_partner_data']?.['name'] || ''}</span>`;
+                    }
+                }
             ],
             initComplete: function(settings, json) {
                 if (!has_fc_value) {
+                    this.api().column(5).visible(false);
                     this.api().column(6).visible(false);
-                    this.api().column(7).visible(false);
                 }
                 if (!has_lc_value) {
+                    this.api().column(3).visible(false);
                     this.api().column(4).visible(false);
-                    this.api().column(5).visible(false);
                 }
             }
         });
@@ -124,7 +116,7 @@ class JEHandle {
                     data = data['journal_entry_detail'];
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    // console.log(data)
+                    console.log(data)
 
                     if (data?.['system_auto_create'])
 
@@ -135,7 +127,22 @@ class JEHandle {
                     $je_posting_date.val(moment(data?.['je_posting_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $je_doc_date.val(moment(data?.['je_document_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
 
-                    JELoadPage.LoadJETable(data?.['je_items'] || [])
+                    const je_items_sum = {};
+                    (data?.['je_items'] || []).forEach(item => {
+                        const accId = item?.['account_data']?.['id'];
+                        if (!accId) return;
+
+                        if (!je_items_sum[accId]) {
+                            je_items_sum[accId] = { ...item };
+                            je_items_sum[accId]['debit'] = 0;
+                            je_items_sum[accId]['credit'] = 0;
+                        }
+
+                        je_items_sum[accId]['debit'] += item?.['debit'] || 0;
+                        je_items_sum[accId]['credit'] += item?.['credit'] || 0;
+                    });
+
+                    JELoadPage.LoadJETable(Object.values(je_items_sum) || [])
                 }
             })
     }

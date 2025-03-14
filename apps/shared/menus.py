@@ -130,9 +130,9 @@ class MenusCompanySystem:
 
 
 class MenusCoreConfigurations:
-    SYSTEM_CONFIG = MenuCommon(
-        name='System', code='menu_system', view_name='#',
-        icon='<i class="fas fa-cogs"></i>',
+    FINANCIAL_CONFIG = MenuCommon(
+        name='Financial config', code='menu_financial_config', view_name='#',
+        icon='<i class="fas fa-balance-scale"></i>',
         child=[
             MenuCommon(
                 name='Accounting policies', code='id_menu_master_data_accounting_policies', view_name='AccountingPoliciesList',
@@ -1082,7 +1082,7 @@ class SpaceItem:
             'core-configurations',
             icon='<i class="fas fa-cog"></i>',
             menus=[
-                MenusCoreConfigurations.SYSTEM_CONFIG,
+                MenusCoreConfigurations.FINANCIAL_CONFIG,
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
                 MenusCoreConfigurations.TRANSITION_DATA_CONFIG,
                 MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,

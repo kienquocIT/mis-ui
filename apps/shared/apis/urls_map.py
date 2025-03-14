@@ -577,6 +577,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # meeting schedule
     MEETING_SCHEDULE_LIST = StringUrl('meeting-schedule/meetings-schedule')
     MEETING_SCHEDULE_DETAIL = StringUrl('meeting-schedule/meeting-schedule/{pk}')
+    MEETING_SCHEDULE_CHECK = StringUrl('meeting-schedule/meeting-check')
 
     #  Goods transfer
     GOODS_TRANSFER_LIST = StringUrl('inventory/goods-transfer/list')

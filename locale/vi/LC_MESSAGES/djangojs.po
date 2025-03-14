@@ -364,3 +364,11 @@ msgstr "Chi nhánh"
 #
 msgid "Brand Full Address"
 msgstr "Địa chỉ chi nhánh"
+
+#
+msgid "please select Start date and Room to continue"
+msgstr "Vui lòng chọn Ngày bắt đầu và Phòng họp để tiếp tục"
+
+#
+msgid "This room is unavailable at this time"
+msgstr "Phòng này không có sẵn vào lúc này"

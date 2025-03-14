@@ -3,7 +3,7 @@ from django.urls import path
 from apps.eoffice.meeting.views import (
     MeetingScheduleList, MeetingScheduleCreate, MeetingScheduleListAPI,
     MeetingScheduleDetail, MeetingScheduleDetailAPI, MeetingZoomConfigListAPI,
-    MeetingZoomConfigDetailAPI, MeetingZoomConfigList
+    MeetingZoomConfigDetailAPI, MeetingZoomConfigList, MeetingScheduleCheckAPI
 )
 
 urlpatterns = [
@@ -20,5 +20,9 @@ urlpatterns = [
     path(
         'meetings-schedule/meetingzoomconfig/api/<str:pk>', MeetingZoomConfigDetailAPI.as_view(),
         name='MeetingZoomConfigDetailAPI'
+    ),
+    path(
+        'meetings-schedule/check-room/api', MeetingScheduleCheckAPI.as_view(),
+        name='MeetingScheduleCheckAPI'
     ),
 ]

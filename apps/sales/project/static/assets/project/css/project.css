@@ -643,3 +643,20 @@ form#project_form:not(.form-detail) #permit_lock_fd{
     }
     .completion_rate_block > .heading, .completion_rate_block > .title{display: inline-block}
 }
+.offcanvas-body{
+    position: relative;
+}
+.task_loading{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgb(255 255 255/50%);
+    z-index: 111;
+    text-align: center;
+    padding: calc(50% - 14px);
+    top: 0;
+    left: 0;
+}
+.task_loading.show{
+    display:block;
+}

@@ -406,10 +406,14 @@ class handle_tasks_cls {
         const _this = this;
         const edit_elm = $(row).find('.btn_task-list-action i')
         const is_edit = edit_elm.hasClass('fa-eye')
+        const elmLoading = $('.task_loading')
+
+        elmLoading.addClass('show')
         if (is_edit) {
             // off eyes icon of row
             $('.cancel-task').trigger('click')
             edit_elm.removeClass('fa-eye').addClass('fa-eye-slash')
+            $('.title-detail').removeClass('hidden')
         } else {
             const $TaskElmCanvas = $('#offCanvasRightTask')
             $TaskElmCanvas.offcanvas('show')
@@ -486,6 +490,7 @@ class handle_tasks_cls {
                         _this.renderSubTask(data.id, data?.['sub_task_list'])
                         $('.txt-create').addClass('hidden')
                         $('.txt-update').removeClass('hidden')
+                        elmLoading.removeClass('show')
                     }
                 },
                 (errs) => {

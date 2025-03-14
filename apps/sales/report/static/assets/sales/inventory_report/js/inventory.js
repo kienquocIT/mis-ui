@@ -133,7 +133,7 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
                             if (row?.['warehouse_title']) {
-                                return `<button type="button" data-bs-toggle="modal" data-bs-target="#modal-available-product-list" data-wh-id="${row?.['warehouse_id']}" class="see-detail-wh btn btn-primary btn-sm btn-rounded w-25">
+                                return `<button type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-available-product-list" data-wh-id="${row?.['warehouse_id']}" class="see-detail-wh btn btn-primary btn-sm btn-rounded w-25">
                                             <span>${row?.['warehouse_code']}</span>
                                         </button>
                                         <span data-id="${row?.['warehouse_id']}" class="fw-bold text-primary ${row?.['type']}">${row?.['warehouse_title']}</span>`
@@ -409,7 +409,7 @@ $(document).ready(function () {
                         steps: [
                             {
                                 target: document.querySelector(".see-detail-wh"),
-                                placement: 'bottom',
+                                placement: 'right',
                                 title: trans_script.attr('data-trans-instruction'),
                                 content: trans_script.attr('data-trans-warehouse-detail'),
                             },
@@ -433,7 +433,7 @@ $(document).ready(function () {
             rowIdx: true,
             ordering: false,
             scrollX: '100vw',
-            scrollY: '55vh',
+            scrollY: '65vh',
             scrollCollapse: true,
             columns: [
                 {
@@ -478,7 +478,7 @@ $(document).ready(function () {
                         steps: [
                             {
                                 target: document.querySelector(".see-detail-prd"),
-                                placement: 'bottom',
+                                placement: 'left',
                                 title: trans_script.attr('data-trans-instruction'),
                                 content: trans_script.attr('data-trans-product-detail'),
                             },
@@ -502,7 +502,7 @@ $(document).ready(function () {
             rowIdx: true,
             ordering: false,
             scrollX: '100vw',
-            scrollY: '55vh',
+            scrollY: '65vh',
             scrollCollapse: true,
             columns: [
                 {
@@ -575,7 +575,7 @@ $(document).ready(function () {
                         steps: [
                             {
                                 target: document.querySelector(".scan_qr"),
-                                placement: 'bottom',
+                                placement: 'left',
                                 title: trans_script.attr('data-trans-instruction'),
                                 content: trans_script.attr('data-trans-product-qr'),
                             },

@@ -181,35 +181,28 @@
     {% include 'sales/inventory_report/common_inventory_report/chat.html' %}
 {% endblock %}
 {% block modalData %}
-    <div class="modal fade" id="modal-available-product-list" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" style="min-width: 60%" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="view-warehouse-title"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <table class="table w-100 nowrap" id="view-wh-available-prd-list-table">
-                                <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>{% trans 'Product' %}</th>
-                                    <th>{% trans 'Stock quantity' %}</th>
-                                    <th>{% trans 'Traceability method' %}</th>
+    <div class="offcanvas offcanvas-end" style="min-width: 60vw" data-bs-scroll="true" tabindex="-1" id="offcanvas-available-product-list">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="view-warehouse-title"></h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row">
+                <div class="col-12">
+                    <table class="table w-100 nowrap" id="view-wh-available-prd-list-table">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>{% trans 'Product' %}</th>
+                            <th>{% trans 'Stock quantity' %}</th>
+                            <th>{% trans 'Traceability method' %}</th>
 {#                                    <th>{% trans 'Lot number' %} ({% trans 'Lot quantity' %}) ({% trans 'Expired date' %})#}
 {#                                    <th>{% trans 'Serial no.' %} ({% trans 'Vendor serial no.' %})</th>#}
-                                </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
-                <div class="modal-footer"></div>
             </div>
         </div>
     </div>

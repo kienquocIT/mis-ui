@@ -142,7 +142,6 @@ class handle_tasks_cls {
             $table.DataTable().ajax.reload()
         else
             $table.DataTableDefault({
-                autoWidth: false,
                 scrollX: true,
                 useDataServer: true,
                 ajax: {
@@ -208,18 +207,18 @@ class handle_tasks_cls {
                         "class": "col-2 text-right",
                         render: (row, type, data) => {
                             let html = ''
-                            // if (!data.employee_created?.full_name)
-                            //     data.employee_created.full_name = data.employee_created.last_name +
-                            //         ' ' + data.employee_created.first_name
-                            // const assigner = $x.fn.renderAvatar(data.employee_created).replace(
-                            //     'avatar-primary', 'avatar-' + $x.fn.randomColor())
-                            // let assignee = ''
-                            // if (row) {
-                            //     if (!row.full_name) row.full_name = row.last_name + ' ' + row.first_name
-                            //     assignee = $x.fn.renderAvatar(row).replace(
-                            //         'avatar-primary', 'avatar-soft-' + $x.fn.randomColor())
-                            // }
-                            // html += assigner + '<supper>»</supper>' + assignee
+                            if (!data.employee_created?.full_name)
+                                data.employee_created.full_name = data.employee_created.last_name +
+                                    ' ' + data.employee_created.first_name
+                            const assigner = $x.fn.renderAvatar(data.employee_created).replace(
+                                'avatar-primary', 'avatar-' + $x.fn.randomColor())
+                            let assignee = ''
+                            if (row) {
+                                if (!row.full_name) row.full_name = row.last_name + ' ' + row.first_name
+                                assignee = $x.fn.renderAvatar(row).replace(
+                                    'avatar-primary', 'avatar-soft-' + $x.fn.randomColor())
+                            }
+                            html += assigner + '<supper>»</supper>' + assignee
                             return html
                         }
                     },
@@ -407,10 +406,14 @@ class handle_tasks_cls {
         const _this = this;
         const edit_elm = $(row).find('.btn_task-list-action i')
         const is_edit = edit_elm.hasClass('fa-eye')
+        const elmLoading = $('.task_loading')
+
+        elmLoading.addClass('show')
         if (is_edit) {
             // off eyes icon of row
             $('.cancel-task').trigger('click')
             edit_elm.removeClass('fa-eye').addClass('fa-eye-slash')
+            $('.title-detail').removeClass('hidden')
         } else {
             const $TaskElmCanvas = $('#offCanvasRightTask')
             $TaskElmCanvas.offcanvas('show')
@@ -487,6 +490,7 @@ class handle_tasks_cls {
                         _this.renderSubTask(data.id, data?.['sub_task_list'])
                         $('.txt-create').addClass('hidden')
                         $('.txt-update').removeClass('hidden')
+                        elmLoading.removeClass('show')
                     }
                 },
                 (errs) => {

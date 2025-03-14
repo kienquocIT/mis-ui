@@ -12,12 +12,12 @@
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="customer-code">{% trans "Customer code" %}</label>
-                    <input disabled readonly class="form-control" id="customer-code">
+                    <input disabled readonly class="form-control text-primary fw-bold" id="customer-code">
                 </div>
             </div>
             <div class="col-12 col-md-8 col-lg-8">
                 <div class="form-group">
-                    <label class="form-label" for="customer-name">{% trans "Customer" %}</label>
+                    <label class="form-label required" for="customer-name">{% trans "Customer" %}</label>
                     <div class="input-group">
                         <span class="input-affix-wrapper">
                             <input disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="customer-name">
@@ -28,17 +28,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-8 col-lg-8">
-                <div class="form-group">
-                    <label class="form-label" for="buyer-name">{% trans "Buyer name" %}</label>
-                    <input class="form-control" id="buyer-name">
-                </div>
-            </div>
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <div class="row">
                         <div class="col-6">
-                            <label class="form-label" for="tax_code">{% trans "Tax code" %}</label>
+                            <label class="form-label required" for="tax_code">{% trans "Tax code" %}</label>
                         </div>
                         <div class="col-6 text-right">
                             <span hidden id="invalid-tax" class="text-warning small">{% trans 'Tax code is not valid' %}</span>
@@ -47,7 +41,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-affix-wrapper">
-                            <input class="form-control" id="tax_code">
+                            <input disabled readonly class="form-control" id="tax_code">
                         </span>
                         <button data-bs-toggle="modal" data-bs-target="#modal-view-tax-code-info" type="button" class="btn btn-outline-secondary rounded" id="view-tax-code-info">
                             <i class="bi bi-search" data-bs-toggle="tooltip" title="{% trans 'View tax code information' %}"></i>
@@ -55,30 +49,32 @@
                     </div>
                 </div>
             </div>
+            <div class="col-12 col-md-8 col-lg-8">
+                <div class="form-group">
+                    <label class="form-label" for="buyer-name">{% trans "Buyer name" %}</label>
+                    <input class="form-control" id="buyer-name">
+                </div>
+            </div>
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
-                    <label class="form-label" for="billing-address">{% trans "Billing address" %}</label>
-                    <textarea rows="1" class="form-control" id="billing-address"></textarea>
+                    <label class="form-label required" for="billing-address">{% trans "Billing address" %}</label>
+                    <select class="form-select select2" id="billing-address"></select>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
-                    <label class="form-label" for="bank-code">{% trans "Bank code" %}</label>
-                    <input class="form-control" id="bank-code">
-                </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="bank-number">{% trans "Bank number" %}</label>
-                    <input class="form-control" id="bank-number">
-                </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="bank-code">{% trans "Method" %}</label>
-                    <select class="form-select" id="bank-code">
+                    <label class="form-label required" for="invoice-method">{% trans "Method" %}</label>
+                    <select class="form-select" id="invoice-method">
                         <option value="1">{% trans 'Cash' %}</option>
                         <option value="2">{% trans 'Bank transfer' %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-8 col-lg-8">
+                <div class="form-group">
+                    <label class="form-label" for="bank-number">{% trans "Bank number" %}</label>
+                    <select class="form-select" id="bank-number">
+                        <option></option>
                     </select>
                 </div>
             </div>

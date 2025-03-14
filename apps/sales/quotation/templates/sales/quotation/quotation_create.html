@@ -1047,7 +1047,7 @@
         </div>
     </form>
 
-    {% include 'extends/import-datatable/modal-import-db.html' %}
+
     <table hidden data-table-id="datable-quotation-create-product-import-db" class="nowrap w-100 table mt-1">
         <thead class="sticky">
             <tr>
@@ -1067,6 +1067,10 @@
         </thead>
         <tbody></tbody>
     </table>
+{% endblock %}
+
+{% block modalData %}
+    {% include 'extends/import-datatable/modal-import-db.html' %}
 {% endblock %}
 
 {% block dataHiddenGroup %}

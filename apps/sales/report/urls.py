@@ -6,10 +6,11 @@ from apps.sales.report.views import (
     ReportInventoryDetailList, ReportPipelineList, ReportPipelineListAPI,
     ReportCashflowList, ReportCashflowListAPI, ReportInventoryDetailListAPI,
     ReportInventoryList, ReportInventoryListAPI, ReportGeneralList, ReportGeneralListAPI,
-    PurchaseOrderReportList, PurchaseOrderReportListAPI, ReportInventoryProductWarehouseViewAPI, BudgetReportList,
+    PurchaseOrderReportList, PurchaseOrderReportListAPI, WarehouseAvailableProductListAPI, BudgetReportList,
     BudgetReportCompanyListAPI, PaymentListForBudgetReportAPI, BudgetReportGroupListAPI, GetQRCodeSerialInfoAPI,
     GetQRCodeLotInfoAPI,
-    ReportInventoryAskAPI, ReportProductListAPIRDashBoard, AdvanceFilterListAPI, AdvanceFilterDetailAPI
+    ReportInventoryAskAPI, ReportProductListAPIRDashBoard, AdvanceFilterListAPI, AdvanceFilterDetailAPI,
+    WarehouseAvailableProductDetailAPI
 )
 
 urlpatterns = [
@@ -33,7 +34,8 @@ urlpatterns = [
     path('api/inventory-detail', ReportInventoryDetailListAPI.as_view(), name='ReportInventoryDetailListAPI'),
     path('inventory', ReportInventoryList.as_view(), name='ReportInventoryList'),
     path('api/inventory', ReportInventoryListAPI.as_view(), name='ReportInventoryListAPI'),
-    path('api/product-warehouse-view', ReportInventoryProductWarehouseViewAPI.as_view(), name='ReportInventoryProductWarehouseViewAPI'),
+    path('api/warehouse-available-product-list', WarehouseAvailableProductListAPI.as_view(), name='WarehouseAvailableProductListAPI'),
+    path('api/warehouse-available-product-detail', WarehouseAvailableProductDetailAPI.as_view(), name='WarehouseAvailableProductDetailAPI'),
     path('get-qr-code-sn-info', GetQRCodeSerialInfoAPI.as_view(), name='GetQRCodeSerialInfoAPI'),
     path('get-qr-code-lot-info', GetQRCodeLotInfoAPI.as_view(), name='GetQRCodeLotInfoAPI'),
     path('report-inventory-ask', ReportInventoryAskAPI.as_view(), name='ReportInventoryAskAPI'),

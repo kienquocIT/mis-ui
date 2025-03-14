@@ -31,12 +31,20 @@ class JELoadPage {
                 }, {
                     className: 'wrap-text w-10',
                     render: (data, type, row) => {
-                        return `<span class="text-primary fw-bold">${row?.['account_data']?.['acc_code']}</span>`;
+                        let html = ''
+                        for (let i = 0; i < row?.['account_data'].length; i++) {
+                            html += `<span class="text-primary fw-bold">${row?.['account_data'][i]?.['acc_code']}</span>`
+                        }
+                        return html;
                     }
                 }, {
                     className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<span class="text-primary">${row?.['account_data']?.['acc_name']}</span><br><span class="text-primary small">(${row?.['account_data']?.['foreign_acc_name']})</span>`;
+                        let html = ''
+                        for (let i = 0; i < row?.['account_data'].length; i++) {
+                            html += `<span class="text-primary">${row?.['account_data'][i]?.['acc_name']}</span><br><span class="text-primary small">(${row?.['account_data'][i]?.['foreign_acc_name']})</span>`
+                        }
+                        return html;
                     }
                 }, {
                     className: 'wrap-text w-15',
@@ -83,7 +91,7 @@ class JELoadPage {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row) => {
                         if (row?.['taxable_value'] !== 0) {
-                            return `<span class="text-primary mask-money" data-init-money="${row?.['taxable_value']}"></span>`;
+                            return `<span class="text-muted mask-money" data-init-money="${row?.['taxable_value']}"></span>`;
                         }
                         return ''
                     }
@@ -115,7 +123,8 @@ class JEHandle {
                 if (data) {
                     data = data['journal_entry_detail'];
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
+
+                    // console.log(data)
 
                     if (data?.['system_auto_create'])
 

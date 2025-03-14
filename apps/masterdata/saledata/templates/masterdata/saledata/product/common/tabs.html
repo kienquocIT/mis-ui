@@ -49,7 +49,6 @@
                 <div class="form-group">
                     <label for="general-select-box-product-type" class="form-label required">{% trans "Product Type" %}</label>
                     <select id="general-select-box-product-type" class="form-select select2" data-method="GET"
-                            multiple
                             data-url="{% url 'ProductTypeListAPI' %}"></select>
                 </div>
             </div>
@@ -130,7 +129,7 @@
                                         </div>
                                     </div>
                                     <span class="input-affix-wrapper affix-wth-text">
-                                        <input class="form-control" id="volume" readonly>
+                                        <input class="form-control" id="volume">
                                         <span id="VolumeSpan" class="input-suffix"></span>
                                     </span>
                                 </div>
@@ -156,7 +155,7 @@
             <label class="form-check-label" for="check-tab-sale">{% trans "Enable tab" %}</label>
         </div>
         <div hidden class="row mt-5">
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-12 col-lg-4">
                 <div class="row">
                     <div class="col-12 col-md-12 col-lg-6">
                         <div class="form-group">
@@ -175,10 +174,10 @@
                     <div class="col-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-8">
+                                <div class="col-6">
                                     <label class="form-label" for="price_list_for_sale_online">{% trans "Price list for sale online" %}</label>
                                 </div>
-                                <div class="col-4 text-right">
+                                <div class="col-6 text-right">
                                     <div class="form-check form-switch">
                                         <input type="checkbox" class="form-check-input" id="is_publish_website">
                                         <label class="form-check-label" for="is_publish_website">{% trans "Sale online" %}</label>
@@ -188,7 +187,7 @@
                             <select id="price_list_for_sale_online" data-url="{% url 'PriceListAPI' %}" class="select2 form-select" data-placeholder="{% trans 'From Price List in right side' %}"></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-6">
+                    <div class="col-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-12 col-lg-12 col-md-12">

@@ -5,23 +5,8 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
-        thead th {
-            color: white !important;
-        }
-        thead th span {
-            color: white !important;
-        }
-        tfoot td span {
-            font-weight: bold; !important;
-        }
         .detail-row {
             background-color: #f6f6f6 !important;
-        }
-        .fixed-row {
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 2;
         }
         .chat-popup {
             position: fixed;
@@ -84,86 +69,37 @@
             data-trans-all="{% trans 'Default all' %}"
             data-trans-no-response="{% trans 'Tôi chưa hiểu bạn cần gì. Hãy đặt câu hỏi rõ hơn nhé!' %}"
             data-trans-filter="{% trans 'Filter' %}"
+            data-trans-instruction="{% trans 'Instruction' %}"
+            data-trans-warehouse-detail="{% trans 'Click on the warehouse code for more details on stock' %}"
+            data-trans-scroll-row="{% trans 'Hover the mouse pointer over rows to see the header information of that row when scroll horizontally' %}"
+            data-trans-product-detail="{% trans 'Click here for more details on product serials or batches/lots' %}"
+            data-trans-product-qr="{% trans 'Click here and scan the QR code to look up product information' %}"
     ></script>
 
     <script id="url-script"
             data-url-inventory-list="{% url 'ReportInventoryListAPI' %}"
-            data-url-inventory-list-view="{% url 'ReportInventoryProductWarehouseViewAPI' %}"
+            data-url-warehouse-available-product-list="{% url 'WarehouseAvailableProductListAPI' %}"
+            data-url-warehouse-available-product-detail="{% url 'WarehouseAvailableProductDetailAPI' %}"
             data-url-qr-code-sn-info="{% url 'GetQRCodeSerialInfoAPI' %}"
             data-url-qr-code-lot-info="{% url 'GetQRCodeLotInfoAPI' %}"
             data-url-company-config-detail="{% url 'CompanyConfigDetailAPI' %}"
             data-url-ask="{% url 'ReportInventoryAskAPI' %}"
     ></script>
 
-    <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilter">
-        <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
-    </button>
-    <div class="offcanvas offcanvas-end" style="min-width: 30vw; max-width: 75vw" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasFilter">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">{% trans 'Filter' %}</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            {% include 'extends/periods_group.html' with period_req=True month_req=True date_req=True %}
-            <div class="row">
-                <div class="col-12 col-lg-12 col-md-12">
-                    <div class="form-group">
-                        <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
-                        <select class="form-select select2 select-multiple" id="warehouses_select" multiple
-                                data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
-                    </div>
-                </div>
-                <div class="col-12 col-lg-12 col-md-12">
-                    <div class="form-group">
-                        <label class="form-label" for="items_select">{% trans 'Product' %}</label>
-                        <select class="form-select select2 select-multiple" id="items_select" multiple
-                                data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
-                    </div>
-                </div>
-                <div class="project-filter col-12 col-lg-12 col-md-12">
-                    <div class="form-group">
-                        <label for="project-select" class="form-label">{% trans 'Project' %}</label>
-                        <select class="form-select select2" id="project-select"
-                                data-url="{% url 'SaleOrderListAPI' %}"
-                                data-method="GET"
-                        ></select>
-                    </div>
-                </div>
-                <div class="col-12 col-lg-12 col-md-12 mt-3">
-                    <div class="btn-group dropup w-100" role="group">
-                        <button type="button" class="btn btn-social btn-social-facebook btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {% trans 'Apply' %}
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="btn-action">
-                            <a class="dropdown-item" id="btn-view" href="#"><i class="far fa-window-maximize"></i> <span>{% trans 'General' %}</span></a>
-                            <a class="dropdown-item" id="btn-view-detail" href="#"><i class="fas fa-list-ul"></i> <span>{% trans 'Detail' %}</span></a>
-                        </div>
-                    </div>
-                    <div hidden class="btn-group dropend w-100" role="group">
-                        <button id="btn-action" type="button" class="btn btn-gradient-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {% trans 'Action' %}
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="btn-action">
-                            <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'sales/inventory_report/common_inventory_report/filter.html' %}
 
     <div class="row">
         <div class="col-12">
             <table class="table nowrap w-100" id="table-inventory-report">
                 <thead>
                     <tr class="bg-primary">
-                        <th class="border-1" style="min-width: 80px; border-top-left-radius: calc(0.5rem - 1px);">{% trans 'SALE ORDER' %}</th>
-                        <th class="border-1" style="min-width: 250px" id="product-col">{% trans 'PRODUCT' %}</th>
-                        <th class="border-1" style="min-width: 50px">{% trans 'INVENTORY UOM' %}</th>
-                        <th class="border-1" style="min-width: 100px">{% trans 'SYSTEM DATE' %}</th>
-                        <th class="border-1" style="min-width: 100px">{% trans 'LOT' %}</th>
-                        <th class="border-1" style="min-width: 100px">{% trans 'EXP DATE' %}</th>
-                        <th class="border-1 text-center" style="min-width: 220px">
+                        <th class="border-1" style="color: white; min-width: 80px; border-top-left-radius: calc(0.5rem - 1px);">{% trans 'SALE ORDER' %}</th>
+                        <th class="border-1" style="color: white; min-width: 250px" id="product-col">{% trans 'PRODUCT' %}</th>
+                        <th class="border-1" style="color: white; min-width: 50px">{% trans 'INVENTORY UOM' %}</th>
+                        <th class="border-1" style="color: white; min-width: 100px">{% trans 'SYSTEM DATE' %}</th>
+                        <th class="border-1" style="color: white; min-width: 100px">{% trans 'LOT' %}</th>
+                        <th class="border-1" style="color: white; min-width: 100px">{% trans 'EXP DATE' %}</th>
+                        <th class="border-1 text-center" style="color: white; min-width: 220px">
                             <div class="row">
                                 <div class="col-12 text-right">{% trans 'OPENING' %}</div>
                             </div>
@@ -172,7 +108,7 @@
                                 <div class="col-8 text-right">{% trans 'Value' %}</div>
                             </div>
                         </th>
-                        <th class="border-1 text-center" style="min-width: 220px">
+                        <th class="border-1 text-center" style="color: white; min-width: 220px">
                             <div class="row">
                                 <div class="col-12 text-right">{% trans 'INPUT' %}</div>
                             </div>
@@ -181,7 +117,7 @@
                                 <div class="col-8 text-right">{% trans 'Value' %}</div>
                             </div>
                         </th>
-                        <th class="border-1 text-center" style="min-width: 220px">
+                        <th class="border-1 text-center" style="color: white; min-width: 220px">
                             <div class="row">
                                 <div class="col-12 text-right">{% trans 'OUTPUT' %}</div>
                             </div>
@@ -190,7 +126,7 @@
                                 <div class="col-8 text-right">{% trans 'Value' %}</div>
                             </div>
                         </th>
-                        <th class="border-1 text-center" style="min-width: 220px; border-top-right-radius: calc(0.5rem - 1px);">
+                        <th class="border-1 text-center" style="color: white; min-width: 220px; border-top-right-radius: calc(0.5rem - 1px);">
                             <div class="row">
                                 <div class="col-12 text-right">{% trans 'ENDING' %}</div>
                             </div>
@@ -204,28 +140,28 @@
                 <tbody></tbody>
                 <tfoot>
                     <tr class="bg-secondary-light-5" id="thead-value">
-                        <td style="border-bottom-left-radius: calc(0.5rem - 1px);"></td>
+                        <td class="fw-bold" style="border-bottom-left-radius: calc(0.5rem - 1px);"></td>
                         <td class="fw-bold">{% trans 'TOTAL' %}</td>
-                        <td colspan="4"></td>
-                        <td>
+                        <td class="fw-bold" colspan="4"></td>
+                        <td class="fw-bold">
                             <div class="row">
                                 <div class="col-4 text-right">--</div>
                                 <div class="col-8 text-right"><span class="mask-money opening-total-value" data-init-money="0"></span></div>
                             </div>
                         </td>
-                        <td>
+                        <td class="fw-bold">
                             <div class="row">
                                 <div class="col-4 text-right">--</div>
                                 <div class="col-8 text-right"><span class="mask-money in-total-value" data-init-money="0"></span></div>
                             </div>
                         </td>
-                        <td>
+                        <td class="fw-bold">
                             <div class="row">
                                 <div class="col-4 text-right">--</div>
                                 <div class="col-8 text-right"><span class="mask-money out-total-value" data-init-money="0"></span></div>
                             </div>
                         </td>
-                        <td style="border-bottom-right-radius: calc(0.5rem - 1px);">
+                        <td class="fw-bold" style="border-bottom-right-radius: calc(0.5rem - 1px);">
                             <div class="row">
                                 <div class="col-4 text-right">--</div>
                                 <div class="col-8 text-right"><span class="mask-money ending-total-value" data-init-money="0"></span></div>
@@ -237,49 +173,39 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <!-- Khung Chat -->
-            <div id="chatPopup" class="chat-popup" style="z-index: 4">
-                <div class="chat-header text-primary" id="toggleChat">
-                    <span><i class="bi bi-stars text-white"></i></span>
-                </div>
-                <div class="chat-content">
-                    <div class="row">
-                        <div class="col-12" id="chat-show-space" style="overflow-y: auto; max-height: 300px">
-                            <div class="text-left">
-                                <div class="you bg-white p-2" style="max-width: 80%; border-radius: 0.375rem">
-                                    Xin chào👋! Tôi có thể hỗ trợ bạn về dữ liệu trong Báo cáo này. Ví dụ:
-                                </div>
-                                <div class="you bg-white p-2 mt-2" style="max-width: 80%; border-radius: 0.375rem">
-                                    1. [Sản phẩm] tồn đầu | đã nhập | đã xuất | tồn cuối bao nhiêu ở [Kho]
-                                </div>
-                                <div class="you bg-white p-2 mt-2" style="max-width: 80%; border-radius: 0.375rem">
-                                    2. [Sản phẩm] có giá cost đầu kì | nhập vào | xuất ra | cuối kì là bao nhiêu ở [Kho]
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-5">
-                        <div class="col-12">
-                            <div class="form-group d-flex">
-                                <textarea class="form-control" id="input-chat" placeholder="{% trans 'Type here...' %}"></textarea>
-                                <label for="input-chat" class="form-label">
-                                    <button id="send-message" class="btn fw-bold text-primary w-100 h-100"><i class="far fa-paper-plane text-white"></i></button>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+    {% include 'sales/inventory_report/common_inventory_report/chat.html' %}
+{% endblock %}
+{% block modalData %}
+    <div class="offcanvas offcanvas-end" style="min-width: 60vw" data-bs-scroll="true" tabindex="-1" id="offcanvas-available-product-list">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="view-warehouse-title"></h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row">
+                <div class="col-12">
+                    <table class="table w-100 nowrap" id="view-wh-available-prd-list-table">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>{% trans 'Product' %}</th>
+                            <th>{% trans 'Stock quantity' %}</th>
+                            <th>{% trans 'Traceability method' %}</th>
+{#                                    <th>{% trans 'Lot number' %} ({% trans 'Lot quantity' %}) ({% trans 'Expired date' %})#}
+{#                                    <th>{% trans 'Serial no.' %} ({% trans 'Vendor serial no.' %})</th>#}
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="modal fade" style="z-index: 2" id="view-prd-wh" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg min-w-1280p" role="document">
+    <div class="modal fade" id="modal-available-product-detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="min-width: 40%" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="view-prd-wh-title"></h5>
+                    <h5 class="modal-title" id="view-product-title"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -287,13 +213,24 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
-                            <table class="table w-100 nowrap" id="view-prd-wh-table">
+                            <table hidden class="table w-100 nowrap" id="view-wh-available-prd-detail-table-lot">
                                 <thead>
-                                <tr class="bg-primary">
-                                    <th>{% trans 'Product' %}</th>
-                                    <th>{% trans 'Stock quantity' %}</th>
-                                    <th>{% trans 'Lot number' %} ({% trans 'Lot quantity' %}) ({% trans 'Expired date' %})
-                                    <th>{% trans 'Serial no.' %} ({% trans 'Vendor serial no.' %})</th>
+                                <tr>
+                                    <th></th>
+                                    <th>{% trans 'Lot number' %}</th>
+                                    <th>{% trans 'Lot quantity' %}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <table hidden class="table w-100 nowrap" id="view-wh-available-prd-detail-table-serial">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>{% trans 'Vendor serial number' %}</th>
+                                    <th>{% trans 'Serial number' %}</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -305,8 +242,7 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" style="z-index: 3" id="modal-QR-lot" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal-QR-lot" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" style="width: 400px" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -333,8 +269,7 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" style="z-index: 3" id="modal-QR-sn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal-QR-sn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" style="width: 400px" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -367,6 +302,7 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/hopscotch/dist/js/hopscotch.min.js' %}"></script>
 
 {#    phải để theo thứ tự này để load dữ liệu báo cáo mặc định#}
     <script src="{% static 'assets/js/periods_group.js' %}"></script>

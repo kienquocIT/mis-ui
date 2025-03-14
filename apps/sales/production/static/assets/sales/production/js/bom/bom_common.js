@@ -28,10 +28,11 @@ let TOOL_ROW = null
 //// COMMON
 
 class BOMLoadPage {
-    static LoadFinishGoodsAndGoods(ele, data) {
+    static LoadProduct(ele, data) {
         ele.initSelect2({
             ajax: {
-                data: {'get_finished_goods_and_goods': true},
+                // data: {'get_finished_goods_and_goods': true},
+                data: {},
                 url: ele.attr('data-url'),
                 method: 'GET',
             },
@@ -593,13 +594,13 @@ class BOMLoadTab {
                 {
                     className: '',
                     'render': (data, type, row) => {
-                        return `<input disabled type="number" value="${row?.['standard_price']}" class="form-control material-unit-price">`;
+                        return `<input disabled readonly value="${row?.['standard_price']}" class="form-control mask-money material-unit-price">`;
                     }
                 },
                 {
                     className: '',
                     'render': (data, type, row) => {
-                        return `<input disabled type="number" value="0" class="form-control material-subtotal-price">`;
+                        return `<input disabled readonly value="0" class="form-control mask-money material-subtotal-price">`;
                     }
                 },
                 {
@@ -1003,8 +1004,8 @@ class BOMAction {
     }
     static Calculate_BOM_sum_price() {
         let sum_price = 0
-        labor_summary_table.find('tbody tr').each(function () {
-            sum_price += $(this).find('.labor-summary-subtotal-price').attr('data-init-money') ? parseFloat($(this).find('.labor-summary-subtotal-price').attr('data-init-money')) : 0
+        process_description_table.find('tbody tr').each(function () {
+            sum_price += parseFloat($(this).find('.process-subtotal-price').attr('value'))
         })
         if (is_outsourcing.prop('checked')) {
             material_table_outsourcing.find('tbody tr').each(function () {
@@ -1201,7 +1202,7 @@ class BOMAction {
 
 class BOMHandle {
     static LoadPage() {
-        BOMLoadPage.LoadFinishGoodsAndGoods(productEle)
+        BOMLoadPage.LoadProduct(productEle)
         BOMLoadTab.LoadProcessDescriptionTable()
         BOMLoadTab.LoadLaborSummaryTable()
         // material
@@ -1352,7 +1353,7 @@ class BOMHandle {
                         $('#for-sale').prop('checked', true)
                     }
 
-                    BOMLoadPage.LoadFinishGoodsAndGoods(productEle, data?.['product'])
+                    BOMLoadPage.LoadProduct(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
                     timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
 
@@ -1512,7 +1513,7 @@ $('input[name="bom-type"]').on('change', function() {
                     $('#hint-for-goods').prop('hidden', true)
                 }
                 if ($('#for-production').prop('checked')) {
-                    BOMLoadPage.LoadFinishGoodsAndGoods(productEle)
+                    BOMLoadPage.LoadProduct(productEle)
                     $('#hint-for-finished-goods').prop('hidden', false)
                     $('#hint-for-service').prop('hidden', true)
                     $('#hint-for-goods').prop('hidden', true)
@@ -1835,6 +1836,8 @@ $('#btn-get-selected-material').on('click', function () {
             new_material_row.find('.add-new-swap-material').attr('data-root-material-id', row.find('.material-checkbox').attr('data-material-id'))
         }
     })
+    BOMAction.Calculate_BOM_sum_price()
+    $.fn.initMaskMoney2()
     $('#select-material-modal').offcanvas('hide')
 })
 

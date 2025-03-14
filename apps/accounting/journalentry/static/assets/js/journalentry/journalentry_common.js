@@ -116,7 +116,7 @@ class JEHandle {
                     data = data['journal_entry_detail'];
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    console.log(data)
+                    // console.log(data)
 
                     if (data?.['system_auto_create'])
 

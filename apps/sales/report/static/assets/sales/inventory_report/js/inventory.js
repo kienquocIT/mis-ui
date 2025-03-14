@@ -401,41 +401,13 @@ $(document).ready(function () {
                 headerToolbar$.prepend(textFilter$);
                 if (textFilter$.length > 0) {
                     textFilter$.css('display', 'flex');
-                    let $fiter_valuation_method = $(`<select id="valuation-method-filter-select" multiple class="form-select select2"></select>`)
                     textFilter$.append(
-                        $(`<div class="d-inline-block min-w-300p mr-3"></div>`).append($fiter_valuation_method)
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="small">${trans_script.attr('data-trans-vm')}</span>`)
+                    ).append(
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-blue-light-2 badge-indicator"></span><span class="small">${trans_script.attr('data-trans-fifo')}</span>`)
+                    ).append(
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-secondary-light-3 badge-indicator"></span><span class="small">${trans_script.attr('data-trans-we')}</span>`)
                     )
-                    $fiter_valuation_method.initSelect2({
-                        placeholder: trans_script.attr('data-trans-vm'),
-                        minimumResultsForSearch: -1,
-                        data: [
-                            {
-                                'id': '0',
-                                'title': trans_script.attr('data-trans-fifo'),
-                            },
-                            {
-                                'id': '1',
-                                'title': trans_script.attr('data-trans-we'),
-                            }
-                        ],
-                        templateSelection: function (state) {
-                            if (state.id){
-                                if (state.id === '0') {
-                                    return $(`<span><span class="badge bg-blue-light-2 badge-indicator"></span>${state.text}</span>`)
-                                }
-                                else if (state.id === '1') {
-                                    return $(`<span><span class="badge bg-secondary-light-3 badge-indicator"></span>${state.text}</span>`)
-                                }
-                            }
-                            return state.text;
-                        },
-                    }).on('change', function () {
-                        $('.product_row').each(function () {
-                            let product_code = $(this).attr('data-product-code')
-                            $(`.${product_code}`).prop('hidden', !$fiter_valuation_method.val().includes($(this).attr('data-product-vm')))
-                            $(this).closest('tr').prop('hidden', !$fiter_valuation_method.val().includes($(this).attr('data-product-vm')))
-                        })
-                    });
                 }
             },
         });

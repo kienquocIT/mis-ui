@@ -146,6 +146,10 @@ class MenusCoreConfigurations:
                 name='Categories', code='id_menu_master_data_categories', view_name='CategoryMasterDataList',
                 icon='<i class="fas fa-folder"></i>',
             ),
+            MenuCommon(
+                name='Bank', code='id_menu_master_data_bank', view_name='BankMasterDataList',
+                icon='<i class="fa-solid fa-building-columns"></i>',
+            ),
         ]
     )
     MASTER_DATA_CONFIG = MenuCommon(

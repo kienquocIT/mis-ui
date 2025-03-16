@@ -11250,3 +11250,27 @@ msgstr "Nhấp vào đây để biết thêm chi tiết về số serial hoặc 
 #
 msgid "Click here and scan the QR code to look up product information"
 msgstr "Nhấp vào đây và quét mã QR code để tra cứu thông tin sản phẩm"
+
+#
+msgid "Financial config"
+msgstr "Cấu hình tài chính"
+
+#
+msgid "Bank"
+msgstr "Ngân hàng"
+
+#
+msgid "Head office"
+msgstr "Trụ sở chính"
+
+#
+msgid "Head office address"
+msgstr "Địa chỉ trụ sở chính"
+
+#
+msgid "The list is taken from VietQR API, if not you can enter it yourself"
+msgstr "Danh sách được lấy từ VietQR API, nếu không có bạn có thể tự nhập"
+
+#
+msgid "Delete this Bank?"
+msgstr "Xóa Ngân hàng này?"

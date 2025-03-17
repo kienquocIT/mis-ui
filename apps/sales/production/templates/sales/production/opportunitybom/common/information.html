@@ -22,19 +22,18 @@
         <div class="form-group">
             <label for="product" class="form-label required">{% trans 'Product' %}</label>
             <select class="form-select select2" id="product" data-url="{% url 'ProductListForOpportunityBOMAPI' %}"></select>
-            <span class="small fst-italic text-muted">{% trans 'Select Finished goods or Services' %}</span>
         </div>
     </div>
     <div class="col-6 col-md-6 col-lg-3">
         <div class="form-group">
             <label for="price" class="form-label">{% trans 'Sum price' %}</label>
-            <input disabled readonly class="form-control form-control-line mask-money" id="price" value="0">
+            <input disabled readonly class="form-control fw-bold text-primary form-control-line mask-money" id="price" value="0">
         </div>
     </div>
     <div class="col-6 col-md-6 col-lg-3">
         <div class="form-group">
             <label for="time" class="form-label">{% trans 'Sum time' %} (h)</label>
-            <input disabled readonly type="number" class="form-control form-control-line" id="time" value="0">
+            <input disabled readonly type="number" class="form-control fw-bold text-primary form-control-line" id="time" value="0">
         </div>
     </div>
 </div>

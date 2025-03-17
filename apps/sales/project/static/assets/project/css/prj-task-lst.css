@@ -20,3 +20,20 @@
 .input-affix-wrapper .form-control:not(:first-child){
     padding-left: 10.5px;
 }
+.task_loading.show{
+    display: block;
+}
+.offcanvas-body{
+    position: relative;
+}
+.task_loading{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgb(255 255 255 / 50%);
+    top: 0;
+    left: 0;
+    z-index: 11;
+    text-align: center;
+    padding-top: calc(50% - 14px);
+}

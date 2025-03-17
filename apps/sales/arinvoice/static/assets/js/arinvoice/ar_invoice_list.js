@@ -45,8 +45,8 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            if (row?.['sale_order_mapped']?.['id']) {
-                                return `<span class="badge badge-soft-blue badge-outline badge-sm">${row?.['sale_order_mapped']?.['code']}</span>`
+                            if (row?.['sale_order_mapped_data']?.['id']) {
+                                return `<span class="badge badge-soft-blue badge-outline badge-sm">${row?.['sale_order_mapped_data']?.['code']}</span>`
                             }
                             else {
                                 return ``
@@ -56,15 +56,10 @@ $(document).ready(function () {
                     {
                         className: 'wrap-text w-20',
                         render: (data, type, row) => {
-                            if (row?.['customer_mapped']?.['id']) {
-                                return `${row?.['customer_mapped']?.['name']}`
+                            if (row?.['customer_mapped_data']?.['id']) {
+                                return `${row?.['customer_mapped_data']?.['name']}`
                             }
-                            else if (row?.['customer_name']) {
-                                return `${row?.['customer_name']}`
-                            }
-                            else {
-                                return `${row?.['buyer_name']}`
-                            }
+                            return ``
                         }
                     },
                     {

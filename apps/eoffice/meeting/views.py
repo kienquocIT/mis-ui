@@ -1,11 +1,8 @@
-from django.conf import settings
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, InputMappingProperties
-import requests
-
+from apps.shared import mask_view, ApiURL, ServerAPI
 from apps.shared.msg import MeetingScheduleMsg
 
 
@@ -137,3 +134,15 @@ class MeetingZoomConfigDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.MEETING_ZOOM_CONFIG_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='meeting_zoom_config')
+
+
+class MeetingScheduleCheckAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.MEETING_SCHEDULE_CHECK).get(params)
+        return resp.auto_return(key_success='meeting_schedule_check')

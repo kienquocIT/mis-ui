@@ -523,7 +523,7 @@ function Disable(option) {
     if (option === 'detail') {
         $('form select').prop('disabled', true);
         $('form input').prop('disabled', true).prop('readonly', true);
-        $('form button').addClass('disabled').prop('hidden', true)
+        $('.tab-content button').remove()
     }
 }
 
@@ -542,7 +542,7 @@ function LoadDetail(option) {
     let pk = $.fn.getPkDetail()
     let url_loaded = $('#form-detail-update-account').attr('data-url').replace(0, pk);
     $.fn.callAjax(url_loaded, 'GET').then(
-        (resp) => {
+        async (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 $.fn.compareStatusShowPageAction(data);
@@ -626,6 +626,10 @@ function LoadDetail(option) {
 
                 // load activity
                 dataTableActivity(data?.['activity']);
+
+                let [tax_code_status, responseData] = await CheckTaxCode()
+                $('#invalid-tax').prop('hidden', tax_code_status)
+                $('#valid-tax').prop('hidden', !tax_code_status)
             }
         })
 }
@@ -649,11 +653,13 @@ async function CheckTaxCode() {
 }
 
 accountTaxCode.on('change', async function () {
-    let [tax_code_status, responseData] = await CheckTaxCode()
-    $('#invalid-tax').prop('hidden', tax_code_status)
-    $('#valid-tax').prop('hidden', !tax_code_status)
-    accountName.val(responseData?.['data']?.['name'])
-    accountCode.val(responseData?.['data']?.['shortName'].replace(' ', '_'))
+    if ($.fn.getPkDetail() === 'None') {
+        let [tax_code_status, responseData] = await CheckTaxCode()
+        $('#invalid-tax').prop('hidden', tax_code_status)
+        $('#valid-tax').prop('hidden', !tax_code_status)
+        accountName.val(responseData?.['data']?.['name'])
+        accountCode.val(responseData?.['data']?.['shortName'].replace(' ', '_'))
+    }
 })
 
 $('#view-tax-code-info').on('click', async function () {

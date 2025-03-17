@@ -470,7 +470,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('Lists'), 'ListList')
 
     # Fixed asset
-    ASSET_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Asset'), 'FixedAssetMasterDataList')
+    CATEGORY_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Categories'), 'CategoryMasterDataList')
     FIXED_ASSET_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetList')
     FIXED_ASSET_WRITE_OFF_PAGE = BreadcrumbChildren(_('Fixed Asset Write-off'), 'FixedAssetWriteOffList')
 
@@ -1235,8 +1235,8 @@ class BreadcrumbView:
     PARTNER_CENTER_LIST_DETAIL_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_DETAIL]
     PARTNER_CENTER_LIST_UPDATE_PAGE = PARTNER_CENTER_LIST + [BreadcrumbItem.BASTION_UPDATE]
 
+    CATEGORY_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.CATEGORY_MASTER_DATA_LIST_PAGE]
     # Fixed asset
-    FIXED_ASSET_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.ASSET_MASTER_DATA_LIST_PAGE]
     FIXED_ASSET_LIST = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.FIXED_ASSET_PAGE

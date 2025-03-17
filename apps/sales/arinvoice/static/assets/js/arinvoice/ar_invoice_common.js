@@ -19,8 +19,8 @@ const invoiceDateEle= $('#invoice-date')
 const customerSelectBtn = $('#customer-select-btn')
 const tax_codeEle = $('#tax_code')
 const billingAddressEle = $('#billing-address')
-const bankCodeEle = $('#bank-code')
-const bankNumberEler = $('#bank-number')
+const invoiceMethodEle = $('#invoice-method')
+const bankNumberEle = $('#bank-number')
 const invoice_exp = $('#invoice-exp')
 const invoice_action = $('#invoice-action')
 const invoice_sign = $('#invoice-sign')
@@ -106,21 +106,15 @@ class ARInvoiceLoadPage {
                 {
                     className: 'wrap-text w-5',
                     render: (data, type, row) => {
-                        return `<span class="form-check">
-                                    <input type="radio"
-                                        name="customer-selected-radio"
-                                        class="form-check-input"
-                                        data-id="${row?.['id']}"
-                                        data-name="${row?.['name']}"
-                                        data-code="${row?.['code']}"
-                                        data-tax-number="${row?.['tax_code']}"
-                                        data-billing-address="${row?.['billing_address'].length > 0 ? row?.['billing_address'][0]['account_address'] : ''}"
-                                        data-bank-name="${row?.['bank_accounts_mapped'].length > 0 ? row?.['bank_accounts_mapped'][0]['bank_name'] : ''}"
-                                        data-bank-number="${row?.['bank_accounts_mapped'].length > 0 ? row?.['bank_accounts_mapped'][0]['bank_account_number'] : ''}"
-                                    />
-                                </span>`
+                        return `<div class="form-check">
+                            <input type="radio"
+                                name="customer-selected-radio"
+                                class="form-check-input"
+                                data-customer='${JSON.stringify(row)}'/>
+                        </div>`
                     }
-                }, {
+                },
+                {
                     data: 'name',
                     className: 'wrap-text w-70',
                     render: (data, type, row) => {
@@ -596,24 +590,20 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text text-primary',
                     render: (data, type, row) => {
-                        return `<select data-id="${row?.['product']?.['id'] ? row?.['product']?.['id'] : ''}"
-                                        data-code="${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}"
-                                        data-title="${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}"
+                        return `<select data-product='${JSON.stringify(row?.['product_data'])}'
                                         class="form-select select-2 product-select"></select>`
                     }
                 },
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<textarea rows="2" disabled readonly class="des small form-control">${row?.['product']?.['des'] ? row?.['product']?.['des'] : ''}</textarea>`
+                        return `<textarea rows="2" disabled readonly class="des small form-control">${row?.['product_data']?.['des']}</textarea>`
                     }
                 },
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<select data-id="${row?.['product_uom']?.['id'] ? row?.['product_uom']?.['id'] : ''}"
-                                        data-code="${row?.['product_uom']?.['code'] ? row?.['product_uom']?.['code'] : ''}"
-                                        data-title="${row?.['product_uom']?.['title'] ? row?.['product_uom']?.['title'] : ''}"
+                        return `<select data-product-uom='${JSON.stringify(row?.['product_uom_data'])}'
                                         class="form-select select-2 uom-select"></select>`
                     }
                 },
@@ -626,7 +616,7 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
-                        return `<input ${input_disabled} class="product_unit_price mask-money form-control" value="${row?.['product_unit_price']}">`
+                        return `<input ${input_disabled} class="product_unit_price mask-money form-control text-right" value="${row?.['product_unit_price']}">`
                     }
                 },
                 {
@@ -639,7 +629,7 @@ class ARInvoiceLoadTab {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         return `<div class="input-affix-wrapper">
-                                    <input ${input_disabled} type="number" class="form-control product_discount_rate recalculate-field" value="${row?.['product_discount_rate']}">
+                                    <input ${input_disabled} type="number" class="form-control product_discount_rate recalculate-field text-right" value="${row?.['product_discount_rate']}">
                                     <div class="input-suffix"><i class="fas fa-percentage"></i></div>
                                 </div>`
                     }
@@ -654,9 +644,7 @@ class ARInvoiceLoadTab {
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<select ${input_disabled}
-                                        data-tax-id="${row?.['product_tax']?.['id'] ? row?.['product_tax']?.['id'] : ''}"
-                                        data-tax-rate="${row?.['product_tax']?.['rate'] ? row?.['product_tax']?.['rate'] : 0}"
-                                        data-tax-title="${row?.['product_tax']?.['title'] ? row?.['product_tax']?.['title'] : ''}"
+                                        data-tax='${JSON.stringify(row?.['product_tax_data'])}'
                                         class="form-select select2 product_taxes recalculate-field"></select>`
                     }
                 },
@@ -677,25 +665,11 @@ class ARInvoiceLoadTab {
                 if (datasource.length > 0) {
                     tabLineDetailTable.find('tbody tr').each(function () {
                         let prd_select = $(this).find('.product-select')
-                        ARInvoiceAction.LoadRowPrd(prd_select, prd_select.attr('data-id') !== '' ? {
-                            'id': prd_select.attr('data-id'),
-                            'code': prd_select.attr('data-code'),
-                            'title': prd_select.attr('data-title')
-                        } : null)
-
                         let uom_select = $(this).find('.uom-select')
-                        ARInvoiceAction.LoadRowUOM(uom_select, uom_select.attr('data-id') !== '' ? {
-                            'id': uom_select.attr('data-id'),
-                            'code': uom_select.attr('data-code'),
-                            'title': uom_select.attr('data-title')
-                        } : null)
-
                         let tax_select = $(this).find('.product_taxes')
-                        ARInvoiceAction.LoadRowTax(tax_select, tax_select.attr('data-tax-id') !== '' ? {
-                            'id': tax_select.attr('data-tax-id'),
-                            'title': tax_select.attr('data-tax-title'),
-                            'rate': tax_select.attr('data-tax-rate')
-                        } : null)
+                        ARInvoiceAction.LoadRowPrd(prd_select, prd_select.attr('data-product') ? JSON.parse(prd_select.attr('data-product')) : {})
+                        ARInvoiceAction.LoadRowUOM(uom_select, uom_select.attr('data-product-uom') ? JSON.parse(uom_select.attr('data-product-uom')) : {})
+                        ARInvoiceAction.LoadRowTax(tax_select, tax_select.attr('data-tax') ? JSON.parse(tax_select.attr('data-tax')) : {})
                     })
                     ARInvoiceAction.CalculatePrice()
                 }
@@ -897,10 +871,10 @@ class ARInvoiceAction {
     }
     static Disabled(option) {
         if (option === 'detail') {
-            $('form input').prop('readonly', true).prop('disabled', true)
-            $('form textarea').prop('readonly', true).prop('disabled', true)
-            $('form select').prop('disabled', true)
-            $('tr input').prop('readonly', true).prop('disabled', true)
+            $('form .form-control').prop('readonly', true).prop('disabled', true)
+            $('form .form-select').prop('readonly', true).prop('disabled', true)
+            $('tr .form-control').prop('readonly', true).prop('disabled', true)
+            $('tr .form-select').prop('readonly', true).prop('disabled', true)
             customerSelectBtn.prop('disabled', true)
             add_row_dropdown.remove()
             add_row_items_btn.remove()
@@ -921,15 +895,12 @@ class ARInvoiceHandle {
         let frm = new SetupFormSubmit($(frmEle))
 
         frm.dataForm['title'] = $('#title').val()
-        frm.dataForm['customer_code'] = customerCodeEle.val()
         frm.dataForm['customer_mapped'] = customerNameEle.attr('data-id')
-        frm.dataForm['customer_name'] = customerNameEle.val()
         frm.dataForm['buyer_name'] = $('#buyer-name').val()
-        frm.dataForm['customer_tax_number'] = tax_codeEle.val()
-        frm.dataForm['customer_billing_address'] = billingAddressEle.val()
-        frm.dataForm['customer_bank_code'] = bankCodeEle.val()
-        frm.dataForm['customer_bank_number'] = bankNumberEler.val()
-
+        frm.dataForm['tax_number'] = tax_codeEle.val()
+        frm.dataForm['billing_address_id'] = billingAddressEle.val()
+        frm.dataForm['invoice_method'] = invoiceMethodEle.val()
+        frm.dataForm['bank_account_id'] = bankNumberEle.val()
         frm.dataForm['sale_order_mapped'] = saleOrderEle.val()
 
         frm.dataForm['posting_date'] = moment(postingDateEle.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
@@ -996,7 +967,7 @@ class ARInvoiceHandle {
                 if (data) {
                     data = data['ar_invoice_detail'];
 
-                    console.log(data)
+                    // console.log(data)
 
                     $x.fn.renderCodeBreadcrumb(data);
 
@@ -1020,25 +991,38 @@ class ARInvoiceHandle {
                         invoice_action.closest('button').find('.icon').html('<i class="fa-solid fa-retweet"></i>')
                     }
 
-                    if (!data?.['is_free_input']) {
-                        customerCodeEle.prop('readonly', true).prop('disabled', true)
-                        customerNameEle.prop('readonly', true).prop('disabled', true)
-                        tax_codeEle.prop('readonly', true).prop('disabled', true)
-                        billingAddressEle.prop('readonly', true).prop('disabled', true)
-                        bankCodeEle.prop('readonly', true).prop('disabled', true)
-                        bankNumberEler.prop('readonly', true).prop('disabled', true)
-                    }
-
                     $('#title').val(data?.['title'])
-                    customerNameEle.attr('data-id', data?.['customer_mapped'])
-                    customerCodeEle.val(data?.['customer_code'])
-                    customerNameEle.val(data?.['customer_name'])
+                    customerCodeEle.val(data?.['customer_mapped_data']?.['code'])
+                    customerNameEle.attr('data-id', data?.['customer_mapped_data']?.['id'])
+                    customerNameEle.val(data?.['customer_mapped_data']?.['name'])
                     $('#buyer-name').val(data?.['buyer_name'])
-                    tax_codeEle.val(data?.['customer_tax_number'])
-                    billingAddressEle.val(data?.['customer_billing_address'])
-                    bankCodeEle.val(data?.['customer_bank_code'])
-                    bankNumberEler.val(data?.['customer_bank_number'])
-                    ARInvoiceLoadPage.LoadSaleOrder(data?.['sale_order_mapped'])
+                    tax_codeEle.val(data?.['customer_mapped_data']?.['tax_code'])
+                    for (let i = 0; i < (data?.['customer_mapped_data']?.['billing_address_list'] || []).length; i++) {
+                        billingAddressEle.append(`
+                            <option value="${data?.['customer_mapped_data']?.['billing_address_list'][i]?.['id']}">${data?.['customer_mapped_data']?.['billing_address_list'][i]?.['full_address']}</option>
+                        `)
+                    }
+                    for (let i = 0; i < (data?.['customer_mapped_data']?.['bank_account_list'] || []).length; i++) {
+                        let bank_account_name = data?.['customer_mapped_data']?.['bank_account_list'][i]?.['bank_account_name']
+                        let bank_account_number = data?.['customer_mapped_data']?.['bank_account_list'][i]?.['bank_account_number']
+                        let bank_code = data?.['customer_mapped_data']?.['bank_account_list'][i]?.['bank_code']
+                        let bank_name = data?.['customer_mapped_data']?.['bank_account_list'][i]?.['bank_name']
+                        bankNumberEle.append(`
+                            <option value="${data?.['customer_mapped_data']?.['bank_account_list'][i]?.['id']}">${bank_name} (${bank_code}) - ${bank_account_number} (${bank_account_name})</option>
+                        `)
+                    }
+                    billingAddressEle.val(data?.['customer_mapped_data']?.['billing_address_id'])
+                    bankNumberEle.val(data?.['customer_mapped_data']?.['bank_account_id'])
+                    invoiceMethodEle.val(data?.['invoice_method'])
+                    if (data?.['invoice_method'] === 1) {
+                        bankNumberEle.closest('.form-group').find('label').removeClass('required')
+                    }
+                    else {
+                        bankNumberEle.closest('.form-group').find('label').addClass('required')
+                    }
+                    ARInvoiceLoadPage.LoadSaleOrder(data?.['sale_order_mapped_data'])
+                    saleOrderEle.prop('disabled', false)
+
                     postingDateEle.val(moment(data?.['posting_date'].split(' ')[0]).format('DD/MM/YYYY'))
                     documentDateEle.val(moment(data?.['document_date'].split(' ')[0]).format('DD/MM/YYYY'))
                     invoiceDateEle.val(moment(data?.['invoice_date'].split(' ')[0]).format('DD/MM/YYYY'))
@@ -1049,12 +1033,11 @@ class ARInvoiceHandle {
                     ).removeClass('text-blue').addClass(
                         ['text-blue', 'text-primary', 'text-info', 'text-danger', 'text-warning'][data?.['invoice_status']]
                     )
-
                     invoice_exp.val(data?.['invoice_example'])
 
                     tabLineDetailTable.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
 
-                    if (Object.keys(data?.['sale_order_mapped']).length !== 0 && data?.['delivery_mapped'].length === 0) {
+                    if (Object.keys(data?.['sale_order_mapped_data']).length !== 0 && data?.['delivery_mapped'].length === 0) {
                         tabLineDetailTable.closest('.table_space').prop('hidden', true)
                         tabLineDetailTableSimple.closest('.table_space').prop('hidden', false)
                         ARInvoiceLoadTab.LoadTableLineDetailSimpleForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
@@ -1065,8 +1048,8 @@ class ARInvoiceHandle {
                         ARInvoiceLoadTab.LoadTableLineDetailForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
                     }
 
-                    add_row_dropdown.prop('hidden', !Object.keys(data?.['sale_order_mapped']).length > 0)
-                    add_row_items_btn.prop('hidden', Object.keys(data?.['sale_order_mapped']).length > 0)
+                    add_row_dropdown.prop('hidden', !Object.keys(data?.['sale_order_mapped_data']).length > 0)
+                    add_row_items_btn.prop('hidden', Object.keys(data?.['sale_order_mapped_data']).length > 0)
 
                     ARInvoiceAction.Disabled(option)
 
@@ -1086,45 +1069,51 @@ class ARInvoiceHandle {
     }
 }
 
+invoiceMethodEle.on('change', function () {
+    if ($(this).val() === '1') {
+        bankNumberEle.closest('.form-group').find('label').removeClass('required')
+    }
+    else {
+        bankNumberEle.closest('.form-group').find('label').addClass('required')
+    }
+})
+
 customerSelectBtn.on('click', function () {
     ARInvoiceLoadPage.LoadCustomer()
 })
 
-selectCustomerBtn.on('click', async function () {
-    let selected_id = null
-    let selected_code = ''
-    let selected_name = ''
-    let selected_tax = ''
-    let selected_billing_address = ''
-    let selected_bank_code = ''
-    let selected_bank_number = ''
-    $('input[name="customer-selected-radio"]').each(function () {
+selectCustomerBtn.on('click', function () {
+    let selected_obj = null
+    $('input[name="customer-selected-radio"]').each(async function () {
         if ($(this).prop('checked')) {
-            selected_id = $(this).attr('data-id')
-            selected_name = $(this).attr('data-name')
-            selected_code = $(this).attr('data-code')
-            selected_tax = $(this).attr('data-tax-number')
-            selected_billing_address = $(this).attr('data-billing-address')
-            selected_bank_code = $(this).attr('data-bank-name')
-            selected_bank_number = $(this).attr('data-bank-number')
+            selected_obj = $(this).attr('data-customer') ? JSON.parse($(this).attr('data-customer')) : {}
+            customerCodeEle.val(selected_obj?.['code']).prop('readonly', true).prop('disabled', true)
+            customerNameEle.val(selected_obj?.['name']).attr('data-id', selected_obj?.['id']).prop('readonly', true).prop('disabled', true)
+            tax_codeEle.val(selected_obj?.['tax_code']).prop('readonly', true).prop('disabled', true)
+            for (let i = 0; i < (selected_obj?.['billing_address'] || []).length; i++) {
+                billingAddressEle.append(`
+                    <option ${selected_obj?.['billing_address'][i]?.['is_default'] ? 'selected' : ''} value="${selected_obj?.['billing_address'][i]?.['id']}">${selected_obj?.['billing_address'][i]?.['full_address']}</option>
+                `)
+            }
+            for (let i = 0; i < (selected_obj?.['bank_accounts_mapped'] || []).length; i++) {
+                let bank_account_name = selected_obj?.['bank_accounts_mapped'][i]?.['bank_account_name']
+                let bank_account_number = selected_obj?.['bank_accounts_mapped'][i]?.['bank_account_number']
+                let bank_code = selected_obj?.['bank_accounts_mapped'][i]?.['bank_code']
+                let bank_name = selected_obj?.['bank_accounts_mapped'][i]?.['bank_name']
+                bankNumberEle.append(`
+                    <option value="${selected_obj?.['bank_accounts_mapped'][i]?.['id']}">${bank_name} (${bank_code}) - ${bank_account_number} (${bank_account_name})</option>
+                `)
+            }
+            saleOrderEle.prop('disabled', false)
+            ARInvoiceLoadPage.LoadSaleOrder()
+            customerSelectModal.modal('hide')
+
+            let [tax_code_status, responseData] = await ARInvoiceAction.CheckTaxCode()
+            $('#invalid-tax').prop('hidden', tax_code_status)
+            $('#valid-tax').prop('hidden', !tax_code_status)
         }
     })
-    if (selected_id) {
-        customerCodeEle.val(selected_code).prop('readonly', true).prop('disabled', true)
-        customerNameEle.val(selected_name).attr('data-id', selected_id).prop('readonly', true).prop('disabled', true)
-        tax_codeEle.val(selected_tax).prop('readonly', true).prop('disabled', true)
-        billingAddressEle.val(selected_billing_address).prop('readonly', true).prop('disabled', true)
-        bankCodeEle.val(selected_bank_code).prop('readonly', true).prop('disabled', true)
-        bankNumberEler.val(selected_bank_number).prop('readonly', true).prop('disabled', true)
-        saleOrderEle.prop('disabled', false)
-        ARInvoiceLoadPage.LoadSaleOrder()
-        customerSelectModal.modal('hide')
-
-        let [tax_code_status, responseData] = await ARInvoiceAction.CheckTaxCode()
-        $('#invalid-tax').prop('hidden', tax_code_status)
-        $('#valid-tax').prop('hidden', !tax_code_status)
-    }
-    else {
+    if (!selected_obj) {
         $.fn.notifyB({description: 'Nothing selected'}, 'warning');
     }
 })

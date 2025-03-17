@@ -577,6 +577,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # meeting schedule
     MEETING_SCHEDULE_LIST = StringUrl('meeting-schedule/meetings-schedule')
     MEETING_SCHEDULE_DETAIL = StringUrl('meeting-schedule/meeting-schedule/{pk}')
+    MEETING_SCHEDULE_CHECK = StringUrl('meeting-schedule/meeting-check')
 
     #  Goods transfer
     GOODS_TRANSFER_LIST = StringUrl('inventory/goods-transfer/list')
@@ -613,7 +614,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     REPORT_INVENTORY_STOCK_LIST = StringUrl('report/inventory-stock-report/list')
     BALANCE_INIT_LIST = StringUrl('report/balance-init/list')
     BALANCE_INIT_IMPORT_DB = StringUrl('report/balance-init-import-db')
-    REPORT_INVENTORY_COST_WH_DETAIL = StringUrl('report/inventory-cost-warehouse-detail')
+    WAREHOUSE_AVAILABLE_PRODUCT_LIST = StringUrl('report/warehouse-available-product-list')
+    WAREHOUSE_AVAILABLE_PRODUCT_DETAIL = StringUrl('report/warehouse-available-product-detail')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
     PO_REPORT_LIST = StringUrl('report/po-report/list')
 
@@ -864,6 +866,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     CHART_OF_ACCOUNTS_DETAIL = StringUrl('accounting-setting/chart-of-accounts/{pk}')
 
     DEFAULT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/default-account-determination/list')
+    DEFAULT_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/default-account-determination/detail/{pk}')
     WAREHOUSE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/warehouse-account-determination/list')
     WAREHOUSE_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/warehouse-account-determination/detail/{pk}')
     PRODUCT_TYPE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-type-account-determination/list')
@@ -882,3 +885,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # asset/ instrument write off
     INSTRUMENT_TOOL_WRITE_OFF_LIST = StringUrl('asset/instrument-tool-writeoff/list')
     INSTRUMENT_TOOL_WRITE_OFF_DETAIL = StringUrl('asset/instrument-tool-writeoff/detail')
+
+    # masterdata/ bank, bank account
+    BANK_LIST = StringUrl('saledata/bank/list')
+    BANK_DETAIL = StringUrl('saledata/bank/detail')
+    BANK_ACCOUNT_LIST = StringUrl('saledata/bank-account/list')
+    BANK_ACCOUNT_DETAIL = StringUrl('saledata/bank-account/detail')

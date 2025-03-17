@@ -152,7 +152,6 @@ class checklistHandle {
 }
 
 function TaskSubmitFunc(platform) {
-
     let _form = new SetupFormSubmit(platform);
     let formData = _form.dataForm
     const start_date = new Date(formData.start_date).getTime()
@@ -212,6 +211,8 @@ function TaskSubmitFunc(platform) {
             if (data) {
                 $.fn.notifyB({description: data.message}, 'success')
                 $('.cancel-task').trigger('click')
+                if (window.new_gantt_init)
+                    reGetDetail(window.new_gantt_init)
             }
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
@@ -455,7 +456,6 @@ class Task_in_project {
                 $empElm.append(`<option value="${infoObj.id}">${infoObj.full_name}</option>`)
             $empElm.val(infoObj.id).trigger('change')
         });
-        // to do here đang làm đến đây tìm class bastionField check add thêm list_from_prj cho employee list
         // run component project/employee inherit
         new $x.cls.bastionField({
             has_prj: true,
@@ -544,8 +544,11 @@ class Task_in_project {
 
     static loadTask(task_info) {
         const $form = $('#formOpportunityTask');
+        const elmLoading = $('.task_loading')
         $('.title-create').addClass('hidden')
         $('.title-detail').removeClass('hidden')
+
+        elmLoading.addClass('show')
         if (task_info.work_id)
             $form.append(`<input type="hidden" name="work_id" value="${task_info.work_id}"/>`)
         $.fn.callAjax2({
@@ -620,9 +623,14 @@ class Task_in_project {
                     const $btnSub = $('.create-subtask')
                     if (Object.keys(data.parent_n).length > 0) $btnSub.addClass('hidden')
                     else $btnSub.removeClass('hidden')
+
+                    elmLoading.removeClass('show')
                 }
             },
-            (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
+            (err) =>{
+                $.fn.notifyB({description: err.data.errors}, 'failure')
+                elmLoading.removeClass('show')
+            }
         )
     }
 

@@ -31,10 +31,11 @@ class OpportunityBOMLoadPage {
             keyText: 'full_name',
         }).trigger('change')
     }
-    static LoadFinishGoodsAndServices(ele, data) {
+    static LoadProduct(ele, data) {
         ele.initSelect2({
             ajax: {
-                data: {'get_finished_goods_and_services': true},
+                // data: {'get_finished_goods_and_services': true},
+                data: {},
                 url: ele.attr('data-url'),
                 method: 'GET',
             },
@@ -488,13 +489,13 @@ class OpportunityBOMLoadTab {
                 {
                     className: '',
                     'render': (data, type, row) => {
-                        return `<input disabled type="number" value="${row?.['standard_price']}" class="form-control material-unit-price">`;
+                        return `<input disabled readonly value="${row?.['standard_price']}" class="form-control mask-money material-unit-price">`;
                     }
                 },
                 {
                     className: '',
                     'render': (data, type, row) => {
-                        return `<input disabled type="number" value="0" class="form-control material-subtotal-price">`;
+                        return `<input disabled readonly value="0" class="form-control mask-money material-subtotal-price">`;
                     }
                 },
                 {
@@ -513,6 +514,7 @@ class OpportunityBOMLoadTab {
                 },
             ],
             initComplete: function () {
+                $.fn.initSelect2()
                 select_material_table.find('tbody tr').each(function () {
                     OpportunityBOMLoadTab.LoadUOM($(this).find('.material-uom'), $(this).find('.material-uom').attr('data-group-id'))
                 })
@@ -897,8 +899,8 @@ class OpportunityBOMAction {
     }
     static Calculate_BOM_sum_price() {
         let sum_price = 0
-        labor_summary_table.find('tbody tr').each(function () {
-            sum_price += parseFloat($(this).find('.labor-summary-subtotal-price').attr('data-init-money'))
+        process_description_table.find('tbody tr').each(function () {
+            sum_price += parseFloat($(this).find('.process-subtotal-price').attr('value'))
         })
         material_table.find('tbody tr').each(function () {
                 sum_price += $(this).find('.material-subtotal-price').attr('value') ? parseFloat($(this).find('.material-subtotal-price').attr('value')) : 0
@@ -1121,7 +1123,7 @@ class OpportunityBOMHandle {
                 }).init();
             }
         }
-        OpportunityBOMLoadPage.LoadFinishGoodsAndServices(productEle)
+        OpportunityBOMLoadPage.LoadProduct(productEle)
         OpportunityBOMLoadTab.LoadProcessDescriptionTable()
         OpportunityBOMLoadTab.LoadLaborSummaryTable()
         // material
@@ -1248,7 +1250,7 @@ class OpportunityBOMHandle {
                         data_inherit: data_inherit,
                     }).init();
 
-                    OpportunityBOMLoadPage.LoadFinishGoodsAndServices(productEle, data?.['product'])
+                    OpportunityBOMLoadPage.LoadProduct(productEle, data?.['product'])
                     priceEle.attr('value', data?.['sum_price'])
                     timeEle.val(parseFloat(data?.['sum_time'].toFixed(2)))
 
@@ -1610,6 +1612,8 @@ $('#btn-get-selected-material').on('click', function () {
             new_material_row.find('.add-new-swap-material').attr('data-root-material-id', row.find('.material-checkbox').attr('data-material-id'))
         }
     })
+    OpportunityBOMAction.Calculate_BOM_sum_price()
+    $.fn.initMaskMoney2()
     $('#select-material-modal').offcanvas('hide')
 })
 

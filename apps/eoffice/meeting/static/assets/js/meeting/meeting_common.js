@@ -697,7 +697,7 @@ class MeetingScheduleHandle {
             })
         })
 
-        if (frm.dataForm['participants'].length <= 0) {
+        if (frm.dataForm['participants'].length <= 0 || $('#check_room').attr('data-is_check') === 'false') {
             $.fn.notifyB({description: 'Participants have not selected yet.'}, 'failure');
             return false
         }

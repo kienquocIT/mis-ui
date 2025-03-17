@@ -54,7 +54,6 @@ class BankMasterDataDetailAPI(APIView):
         is_api=True,
     )
     def delete(self, request, pk, *args, **kwargs):
-        print(ApiURL.BANK_DETAIL.push_id(pk))
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.BANK_DETAIL.push_id(pk)).delete(request.data)
         return resp.auto_return()
 
@@ -95,6 +94,6 @@ class BankAccountMasterDataDetailAPI(APIView):
         auth_require=True,
         is_api=True,
     )
-    def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.BANK_ACCOUNT_DETAIL.push_id(pk)).put(request.data)
-        return resp.auto_return(key_success='bank_account_detail')
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.BANK_ACCOUNT_DETAIL.push_id(pk)).delete(request.data)
+        return resp.auto_return()

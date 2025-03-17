@@ -11268,9 +11268,29 @@ msgid "Head office address"
 msgstr "Địa chỉ trụ sở chính"
 
 #
-msgid "The list is taken from VietQR API, if not you can enter it yourself"
-msgstr "Danh sách được lấy từ VietQR API, nếu không có bạn có thể tự nhập"
+msgid "The example list is taken from VietQR API, if not you can enter it yourself"
+msgstr "Danh sách mẫu được lấy từ VietQR API, nếu không có bạn có thể tự nhập"
 
 #
 msgid "Delete this Bank?"
 msgstr "Xóa Ngân hàng này?"
+
+#
+msgid "Delete this Bank account?"
+msgstr "Xóa Tài khoản ngân hàng này?"
+
+#
+msgid "Account owner"
+msgstr "Chủ tài khoản"
+
+#
+msgid "Brand"
+msgstr "Chi nhánh"
+
+#
+msgid "Brand name"
+msgstr "Tên chi nhánh"
+
+#
+msgid "Brand address"
+msgstr "Địa chỉ chi nhánh"

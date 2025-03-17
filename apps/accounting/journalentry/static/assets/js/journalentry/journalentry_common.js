@@ -116,11 +116,9 @@ class JEHandle {
                     data = data['journal_entry_detail'];
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    // console.log(data)
-
                     if (data?.['system_auto_create'])
 
-                    $ori_trans.val(data?.['original_transaction'])
+                    $ori_trans.val(data?.['original_transaction']).trigger('change')
                     $transaction_code.val(data?.['je_transaction_data']?.['code'])
                     $transaction_name.val(data?.['je_transaction_data']?.['title'])
                     $type.val([$.fn.gettext('Create manually'), $.fn.gettext('Create automatically')][Number(data?.['system_auto_create'])])

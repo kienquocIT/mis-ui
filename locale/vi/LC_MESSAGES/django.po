@@ -8486,7 +8486,7 @@ msgstr "Tất cả (Hoàn thành)"
 
 #
 msgid "System status"
-msgstr "Trạng thái hệ thống"
+msgstr "TT hệ thống"
 
 #
 msgid "Goods stock plan"
@@ -10172,15 +10172,15 @@ msgid "Reconciliation create"
 msgstr "Tạo phiếu cấn trừ"
 
 #
-msgid "Reconciliation amount"
+msgid "Recon amount"
 msgstr "Giá trị cấn trừ"
 
 #
-msgid "Reconciliation total"
+msgid "Recon total"
 msgstr "Tổng cấn trừ"
 
 #
-msgid "Reconciliation total must be 0"
+msgid "Recon total must be 0"
 msgstr "Tổng cấn trừ phải bằng 0"
 
 #
@@ -11310,3 +11310,7 @@ msgstr "Phân loại"
 #
 msgid "Master Data Bank"
 msgstr "Dữ liệu Ngân hàng dùng chung"
+
+#
+msgid "Recon account"
+msgstr "TK cấn trừ"

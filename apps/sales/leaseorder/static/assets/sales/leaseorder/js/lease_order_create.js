@@ -417,10 +417,19 @@ $(function () {
             }
         });
 
-        tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-depreciation', function () {
+        tableCost.on('change', '.table-row-quantity, .table-row-price, .table-row-depreciation-time', function () {
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 LeaseOrderCalculateCaseHandle.commonCalculate(tableCost, row);
+                let btnDepreciationEle = row.querySelector('.btn-depreciation-detail');
+                let depreciationDataEle = row.querySelector('.table-row-depreciation-data');
+                let depreciationLeaseDataEle = row.querySelector('.table-row-depreciation-lease-data');
+                if (btnDepreciationEle && depreciationDataEle && depreciationLeaseDataEle) {
+                    $(depreciationDataEle).val("");
+                    $(depreciationLeaseDataEle).val("");
+                    LeaseOrderLoadDataHandle.loadShowDepreciation(btnDepreciationEle);
+                    LeaseOrderLoadDataHandle.loadSaveDepreciation();
+                }
             }
         });
 

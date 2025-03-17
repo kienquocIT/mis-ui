@@ -477,6 +477,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Instrument tool
     INSTRUMENT_TOOL_PAGE = BreadcrumbChildren(_('Instrument Tool'), 'InstrumentToolList')
     INSTRUMENT_TOOL_WRITE_OFF_PAGE = BreadcrumbChildren(_('Instrument Tool Write-off'), 'InstrumentToolWriteOffList')
+
+    # Contract
+    GOODS_RECOVERY_LIST_PAGE = BreadcrumbChildren(_('Goods recovery'), 'GoodsRecoveryList')
+
+
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -1203,7 +1208,7 @@ class BreadcrumbView:
     CONSULTING_DETAIL_PAGE = CONSULTING_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     CONSULTING_UPDATE_PAGE = CONSULTING_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
-    # Contract
+    # Lease order
     LEASE_ORDER_LIST_PAGE = [
         BreadcrumbItem.LEASE_ORDER_LIST_PAGE
     ]
@@ -1282,3 +1287,11 @@ class BreadcrumbView:
     INSTRUMENT_TOOL_WRITE_OFF_CREATE_PAGE = INSTRUMENT_TOOL_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_CREATE]
     INSTRUMENT_TOOL_WRITE_OFF_DETAIL_PAGE = INSTRUMENT_TOOL_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_DETAIL]
     INSTRUMENT_TOOL_WRITE_OFF_UPDATE_PAGE = INSTRUMENT_TOOL_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Goods recovery
+    GOODS_RECOVERY_LIST_PAGE = [
+        BreadcrumbItem.GOODS_RECOVERY_LIST_PAGE
+    ]
+    GOODS_RECOVERY_CREATE_PAGE = GOODS_RECOVERY_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    GOODS_RECOVERY_DETAIL_PAGE = GOODS_RECOVERY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    GOODS_RECOVERY_UPDATE_PAGE = GOODS_RECOVERY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]

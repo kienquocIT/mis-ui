@@ -4,7 +4,7 @@ $(document).ready(function () {
     let advance_payment = advance_payment_json ? JSON.parse(decodeURIComponent(advance_payment_json)) : null
 
     ReturnAPHandle.LoadPage(advance_payment)
-    WFRTControl.setWFInitialData('returnadvance', 'POST')
+    WFRTControl.setWFInitialData('returnadvance')
 
     // SUBMIT FORM CREATE RETURN ADVANCE
     let form_validator = $('#form-create-return-ap').validate({

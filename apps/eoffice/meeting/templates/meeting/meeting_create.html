@@ -45,7 +45,7 @@
 
     <form id="form-create-meeting" data-method="POST" data-url="{% url "MeetingScheduleListAPI" %}" data-url-redirect="{% url "MeetingScheduleList" %}">
     {% csrf_token %}
-        {% include 'meeting/common/information.html' %}
+        {% include 'meeting/common/information.html' with is_create=True%}
         {% include 'meeting/common/tabs.html' %}
     </form>
 {% endblock %}

@@ -172,7 +172,7 @@ class ARInvoiceLoadTab {
             reloadCurrency: true,
             paging: false,
             scrollX: '100vw',
-            scrollY: '50vh',
+            scrollY: '30vh',
             scrollCollapse: true,
             ajax: {
                 url: scriptUrlEle.attr('data-url-delivery-list') + '?sale_order_id=' + saleOrderEle.val(),

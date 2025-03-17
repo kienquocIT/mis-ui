@@ -6401,8 +6401,8 @@ msgid "Asset, Tools delivery"
 msgstr "Yêu cầu bàn giao"
 
 #
-msgid "Edit items"
-msgstr "Chọn sản phẩm"
+msgid "Select product from delivery"
+msgstr "Chọn sản phẩm từ phiếu giao hàng"
 
 #
 msgid "Warehouse is required"
@@ -10210,10 +10210,6 @@ msgstr "Mở rộng để xem chi tiết"
 #
 msgid "Already"
 msgstr "Đã xong"
-
-#
-msgid "Select Delivery"
-msgstr "Chọn phiếu giao hàng"
 
 #
 msgid "UOM Group"

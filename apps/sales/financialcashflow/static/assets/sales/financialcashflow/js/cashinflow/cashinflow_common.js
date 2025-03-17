@@ -258,13 +258,13 @@ class CashInflowLoadPage {
                 method: 'GET',
             },
             templateResult: function formatbankview(data) {
-                if (data?.['data']?.['id']) return $(`<span>${data?.['data']?.['bank_code']} - ${data?.['data']?.['bank_account_name']} (${data?.['data']?.['bank_account_number']})</span>`);
+                if (data?.['data']?.['id']) return $(`<span>${data?.['data']?.['bank_mapped_data']?.['bank_name']} (${data?.['data']?.['bank_mapped_data']?.['bank_abbreviation']})</span><br><span>${data?.['data']?.['bank_account_owner']} (${data?.['data']?.['bank_account_number']})</span>`);
                 return data?.['data']?.['bank_account_number'];
             },
             data: (data ? data : null),
-            keyResp: 'company_bank_account_list',
+            keyResp: 'bank_account_list',
             keyId: 'id',
-            keyText: 'bank_name'
+            keyText: 'bank_account_number'
         })
     }
 }

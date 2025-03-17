@@ -72,54 +72,50 @@
 </div>
 
 <div class="offcanvas offcanvas-end w-80" tabindex="-1" id="select-delivery-offcanvas" aria-labelledby="offcanvasTopLabel">
-        <div class="offcanvas-header">
-            <h5 id="offcanvasRightLabel">{% trans 'Select Delivery' %}</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="row">
-                <div class="col-12">
-                    <div class="table-responsive" style="max-height: 250px;">
-                        <table class="table w-100 nowrap" id="table-select-delivery">
-                            <thead class="bg-primary-light-5">
-                            <tr>
-                                <th class="w-10"></th>
-                                <th class="w-20">{% trans 'Code' %}</th>
-                                <th class="w-40">{% trans 'Name' %}</th>
-                                <th class="w-15 text-center">{% trans 'Already' %}</th>
-                                <th class="w-15 text-center">{% trans 'Select' %}</th>
-                            </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="table-responsive mt-5" style="max-height: 250px;">
-                        <table class="table w-100 nowrap" id="table-product-detail">
-                            <thead class="bg-secondary-light-5">
-                            <tr>
-                                <th class="w-10"></th>
-                                <th class="w-30">{% trans 'Product' %}</th>
-                                <th class="w-15">{% trans 'UOM' %}</th>
-                                <th class="w-15">{% trans 'Total' %}</th>
-                                <th class="w-15">{% trans 'Already' %}</th>
-                                <th class="w-15">{% trans 'This time' %}</th>
-                            </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-12 text-right mt-5">
-                    <button type="button" id="add-product-btn" class="btn btn-custom btn-primary btn-wth-icon">
-                        <span>
-                            <span>{% trans 'Add' %}</span>
-                            <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
-                        </span>
-                    </button>
-                </div>
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">{% trans 'Select product from delivery' %}</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row">
+            <div class="col-12">
+                <table class="table w-100 nowrap" id="table-select-delivery">
+                    <thead class="bg-primary-light-5">
+                    <tr>
+                        <th class="w-10"></th>
+                        <th class="w-20">{% trans 'Code' %}</th>
+                        <th class="w-40">{% trans 'Name' %}</th>
+                        <th class="w-15 text-center">{% trans 'Already' %}</th>
+                        <th class="w-15 text-center">{% trans 'Select' %}</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="col-12">
+                <table class="table w-100 nowrap mt-5" id="table-product-detail">
+                    <thead class="bg-secondary-light-5">
+                    <tr>
+                        <th class="w-10"></th>
+                        <th class="w-30">{% trans 'Product' %}</th>
+                        <th class="w-15">{% trans 'UOM' %}</th>
+                        <th class="w-15">{% trans 'Total' %}</th>
+                        <th class="w-15">{% trans 'Already' %}</th>
+                        <th class="w-15">{% trans 'This time' %}</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="col-12 text-right mt-5">
+                <button type="button" id="add-product-btn" class="btn btn-custom btn-primary btn-wth-icon">
+                    <span>
+                        <span>{% trans 'Add' %}</span>
+                        <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
+                    </span>
+                </button>
             </div>
         </div>
     </div>
+</div>
 
 <div class="modal fade" id="modal-view-tax-code-info" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog" role="document">

@@ -2,7 +2,6 @@
 class QuotationLoadDataHandle {
     static $form = $('#frm_quotation_create');
     static opportunitySelectEle = $('#opportunity_id');
-    static processSelectEle$ = $('#process_id');
     static customerSelectEle = $('#customer_id');
     static contactSelectEle = $('#contact_id');
     static paymentSelectEle = $('#payment_term_id');
@@ -17,6 +16,7 @@ class QuotationLoadDataHandle {
     static $btnSavePrice = $('#btn-save-select-price');
     static $costModal = $('#selectCostModal');
     static $btnSaveCost = $('#btn-save-select-cost');
+    static $btnSaveTerm = $('#btn-save-select-term');
     static dataSuppliedBy = [{'id': 0, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-make')}];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -429,6 +429,32 @@ class QuotationLoadDataHandle {
                 }
             }
         )
+    };
+
+    static loadModalSTerm(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let orderEle = row.querySelector('.table-row-order');
+            if (orderEle) {
+                QuotationLoadDataHandle.$btnSaveTerm.attr('data-id', orderEle.innerHTML);
+            }
+        }
+        let term = [];
+        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+            if (dataSelected) {
+                term = dataSelected?.['term'];
+                for (let termData of term) {
+                    let isNum = parseFloat(termData?.['value']);
+                    if (!isNum) {  // balance
+                        termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
+                    }
+                }
+            }
+        }
+        QuotationDataTableHandle.$tableSTerm.DataTable().clear().draw();
+        QuotationDataTableHandle.$tableSTerm.DataTable().rows.add(term).draw();
+        return true;
     };
 
     static loadCheckProductBOM(data) {
@@ -1275,6 +1301,49 @@ class QuotationLoadDataHandle {
         return true;
     };
 
+    static loadReInitDataTableInvoice() {
+        let tableData = [];
+        let dataDetail = {};
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            let eleDetail = $('#quotation-detail-data');
+            if (eleDetail && eleDetail.length > 0) {
+                if (eleDetail.val()) {
+                    dataDetail = JSON.parse(eleDetail.val());
+                    tableData = dataDetail?.['sale_order_invoice'];
+                }
+            }
+        } else {
+            QuotationDataTableHandle.$tableInvoice.DataTable().rows().every(function () {
+                let row = this.node();
+                let rowIndex = QuotationDataTableHandle.$tableInvoice.DataTable().row(row).index();
+                let $row = QuotationDataTableHandle.$tableInvoice.DataTable().row(rowIndex);
+                let dataRow = $row.data();
+
+                tableData.push(dataRow);
+            });
+
+            if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+                let eleDetail = $('#quotation-detail-data');
+                if (eleDetail && eleDetail.length > 0) {
+                    if (eleDetail.val()) {
+                        dataDetail = JSON.parse(eleDetail.val());
+                        tableData = dataDetail?.['sale_order_invoice'];
+                    }
+                }
+            }
+        }
+        QuotationDataTableHandle.$tableInvoice.DataTable().destroy();
+        QuotationDataTableHandle.dataTableInvoice();
+        QuotationDataTableHandle.$tableInvoice.DataTable().rows.add(tableData).draw();
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            QuotationLoadDataHandle.loadTableDisabled(QuotationDataTableHandle.$tableInvoice);
+        }
+        $.fn.initMaskMoney2();
+        // set again WF runtime
+        QuotationLoadDataHandle.loadSetWFRuntimeZone();
+        return true;
+    };
+
     static loadReInitPrice(data) {
         let $table = $('#datable-quotation-create-product');
         $table.DataTable().rows().every(function () {
@@ -1522,6 +1591,59 @@ class QuotationLoadDataHandle {
                 QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBT, $(eleRatio).val());
             }
         });
+    };
+
+    static loadAddInvoice() {
+        let orderEleList = QuotationDataTableHandle.$tableInvoice[0].querySelectorAll('.table-row-order');
+
+        QuotationDataTableHandle.$tableInvoice.DataTable().row.add({"order": (orderEleList.length + 1)}).draw();
+        return true;
+    };
+
+    static loadSaveSTerm() {
+        let target = QuotationDataTableHandle.$tableInvoice[0].querySelector(`[data-id="${QuotationLoadDataHandle.$btnSaveTerm.attr('data-id')}"]`);
+        if (target) {
+            let targetRow = target.closest('tr');
+            if (targetRow) {
+                let termDataEle = targetRow.querySelector('.table-row-term-data');
+                let valueEle = targetRow.querySelector('.table-row-value');
+                let totalEle = targetRow.querySelector('.table-row-total');
+                let balanceEle = targetRow.querySelector('.table-row-balance');
+                if (termDataEle && valueEle && totalEle && balanceEle) {
+                    let termData = [];
+                    let value = 0;
+                    for (let checkedEle of QuotationDataTableHandle.$tableSTerm[0].querySelectorAll('.table-row-checkbox:checked')) {
+                        let row = checkedEle.closest('tr');
+                        if (row) {
+                            let rowIndex = QuotationDataTableHandle.$tableSTerm.DataTable().row(row).index();
+                            let $row = QuotationDataTableHandle.$tableSTerm.DataTable().row(rowIndex);
+                            let dataRow = $row.data();
+                            termData.push(dataRow);
+                            value += parseFloat(dataRow?.['value'] ? dataRow?.['value'] : "0");
+                        }
+                    }
+                    $(termDataEle).val(JSON.stringify(termData));
+                    $(valueEle).val(value);
+                    if (value > 0) {
+                        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+                        if (tableProductWrapper) {
+                            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                            if (tableProductFt) {
+                                let totalSOEle = tableProductFt.querySelector('.quotation-create-product-total-raw');
+                                if (totalSOEle) {
+                                    let totalSO = parseFloat(totalSOEle.value);
+                                    let total = (value * totalSO) / 100;
+                                    $(totalEle).attr('value', String(total));
+                                    $(balanceEle).attr('data-init-money', String(total));
+                                    // mask money
+                                    $.fn.initMaskMoney2();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     };
 
     // TABLE COST
@@ -2594,6 +2716,7 @@ class QuotationDataTableHandle {
     static $tableCost = $('#datable-quotation-create-cost');
     static $tableExpense = $('#datable-quotation-create-expense');
     static $tableInvoice = $('#datable-quotation-invoice');
+    static $tableSTerm = $('#table-select-term');
     static $tablePayment = $('#datable-quotation-payment-stage');
 
     static dataTableProduct(data) {
@@ -3796,67 +3919,130 @@ class QuotationDataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    width: '8%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`
+                        return `<span class="table-row-order" data-id="${row?.['order']}">${row?.['order']}</span>`;
                     }
                 },
                 {
                     targets: 1,
+                    width: '20%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`
+                        return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ""}</textarea>`;
                     }
                 },
                 {
                     targets: 2,
+                    width: '12%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`
+                        return `<div class="input-affix-wrapper">
+                                    <input type="text" class="form-control date-picker text-black table-row-date-invoice" autocomplete="off">
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>`;
                     }
                 },
                 {
                     targets: 3,
+                    width: '15%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`
+                        return `<div class="d-flex justify-content-between align-items-center">
+                                    <div class="input-group">
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" class="form-control table-row-value valid-num" value="${row?.['value'] ? row?.['value'] : '0'}" readonly>
+                                            <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-select-term"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#selectTermModal"
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control table-row-term-data hidden">`;
                     }
                 },
                 {
                     targets: 4,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`
+                    width: '10%',
+                    render: () => {
+                        return `<select
+                                    class="form-select table-row-tax"
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                    data-method="GET"
+                                    data-keyResp="tax_list"
+                                >
+                                </select>`;
                     }
                 },
                 {
                     targets: 5,
+                    width: '15%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-total text-black" 
+                                    value="${row?.['total'] ? row?.['total'] : '0'}"
+                                    data-return-type="number"
+                                    readonly
+                                >`;
                     }
                 },
                 {
                     targets: 6,
+                    width: '15%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`
+                        return `<span class="mask-money table-row-balance" data-init-money="${row?.['balance'] ? row?.['balance'] : 0}"></span>`;
                     }
                 },
                 {
                     targets: 7,
+                    width: '5%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`
-                    }
-                },
-                {
-                    targets: 8,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`
+                        return ``;
                     }
                 },
             ],
             rowCallback: function (row, data, index) {
+                let dateEle = row.querySelector('.table-row-date-invoice');
+                let taxEle = row.querySelector('.table-row-tax');
+                let termDataEle = row.querySelector('.table-row-term-data');
+                if (dateEle) {
+                    $(dateEle).daterangepicker({
+                        singleDatePicker: true,
+                        timepicker: false,
+                        showDropdowns: false,
+                        minYear: 2023,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        },
+                        maxYear: parseInt(moment().format('YYYY'), 10),
+                        drops: 'up',
+                        autoApply: true,
+                    });
+                    $(dateEle).val(null).trigger('change');
+                    if (data?.['date_invoice']) {
+                        $(dateEle).val(moment(data?.['date_invoice']).format('DD/MM/YYYY'));
+                    }
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+                if (termDataEle) {
+                    $(termDataEle).val(JSON.stringify(data?.['term_data'] ? data?.['term_data'] : []));
+                }
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     QuotationDataTableHandle.dtbInvoiceHDCustom();
-                    // set again WF runtime
-                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
             },
         });
@@ -4179,6 +4365,62 @@ class QuotationDataTableHandle {
         });
     };
 
+    static dataTableSelectTerm(data) {
+        QuotationDataTableHandle.$tableSTerm.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let checked = "";
+                        let target = QuotationDataTableHandle.$tableInvoice[0].querySelector(`[data-id="${QuotationLoadDataHandle.$btnSaveTerm.attr('data-id')}"]`);
+                        if (target) {
+                            let targetRow = target.closest('tr');
+                            if (targetRow) {
+                                let termDataEle = targetRow.querySelector('.table-row-term-data');
+                                if (termDataEle) {
+                                    if ($(termDataEle).val()) {
+                                        let termData = JSON.parse($(termDataEle).val());
+                                        for (let term of termData) {
+                                            if (row?.['id'] === term?.['id']) {
+                                                checked = "checked";
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return `<div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-term-${row?.['id'].replace(/-/g, "")}" ${checked}>
+                                    <label class="form-check-label table-row-title" for="s-term-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span>--</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-value">${row?.['value'] ? row?.['value'] : 0} %</span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSTerm);
+            }
+        });
+    };
+
     // Custom dtb
     static dtbSProductHDCustom() {
         let $table = $('#table-select-product');
@@ -4289,32 +4531,6 @@ class QuotationDataTableHandle {
         }
     };
 
-    static dtbInvoiceHDCustom() {
-        let $table = QuotationDataTableHandle.$tableInvoice;
-        let wrapper$ = $table.closest('.dataTables_wrapper');
-        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-        headerToolbar$.prepend(textFilter$);
-
-        if (textFilter$.length > 0) {
-            textFilter$.css('display', 'flex');
-            // Check if the button already exists before appending
-            if (!$('#btn-add-invoice').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-invoice" data-zone="sale_order_payment_stage">
-                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
-                                </button>`);
-                textFilter$.append(
-                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                );
-                // Select the appended button from the DOM and attach the event listener
-                $('#btn-add-invoice').on('click', function () {
-                    // QuotationStoreDataHandle.storeDtbData(4);
-                    // QuotationLoadDataHandle.loadAddPaymentStage();
-                });
-            }
-        }
-    };
-
     static dtbPaymentHDCustom() {
         let $table = QuotationDataTableHandle.$tablePayment;
         let wrapper$ = $table.closest('.dataTables_wrapper');
@@ -4336,6 +4552,32 @@ class QuotationDataTableHandle {
                 $('#btn-add-payment-stage').on('click', function () {
                     QuotationStoreDataHandle.storeDtbData(4);
                     QuotationLoadDataHandle.loadAddPaymentStage();
+                });
+            }
+        }
+    };
+
+    static dtbInvoiceHDCustom() {
+        let $table = QuotationDataTableHandle.$tableInvoice;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-invoice').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-invoice" data-zone="sale_order_payment_stage">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-invoice').on('click', function () {
+                    QuotationStoreDataHandle.storeDtbData(5);
+                    QuotationLoadDataHandle.loadAddInvoice();
                 });
             }
         }
@@ -6178,6 +6420,10 @@ class QuotationStoreDataHandle {
             datas = QuotationSubmitHandle.setupDataPaymentStage();
             $table = QuotationDataTableHandle.$tablePayment;
         }
+        if (type === 5) {
+            datas = QuotationSubmitHandle.setupDataInvoice();
+            $table = QuotationDataTableHandle.$tableInvoice;
+        }
         if (datas.length > 0 && $table) {
             for (let data of datas) {
                 if (!dataJSON.hasOwnProperty(String(data?.['order']))) {
@@ -6204,6 +6450,9 @@ class QuotationStoreDataHandle {
             }
             if (type === 4) {
                 QuotationLoadDataHandle.loadReInitDataTablePayment();
+            }
+            if (type === 5) {
+                QuotationLoadDataHandle.loadReInitDataTableInvoice();
             }
         }
         return true;
@@ -6759,6 +7008,56 @@ class QuotationSubmitHandle {
                 if (eleDueDate.value) {
                     rowData['due_date'] = String(moment(eleDueDate.value, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
                 }
+            }
+            result.push(rowData);
+        });
+        return result;
+    };
+
+    static setupDataInvoice() {
+        let result = [];
+        QuotationDataTableHandle.$tableInvoice.DataTable().rows().every(function () {
+            let rowData = {};
+            let row = this.node();
+            let orderEle = row.querySelector('.table-row-order');
+            if (orderEle) {
+                rowData['order'] = parseInt(orderEle.innerHTML);
+            }
+            let remarkEle = row.querySelector('.table-row-remark');
+            if (remarkEle) {
+                rowData['remark'] = $(remarkEle).val();
+            }
+            let dateEle = row.querySelector('.table-row-date-invoice');
+            if (dateEle) {
+                if ($(dateEle).val()) {
+                    rowData['date_invoice'] = moment($(dateEle).val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                }
+            }
+            let termDataEle = row.querySelector('.table-row-term-data');
+            if (termDataEle) {
+                rowData['term_data'] = JSON.parse($(termDataEle).val());
+            }
+            let valueEle = row.querySelector('.table-row-value');
+            if (valueEle) {
+                rowData['value'] = parseFloat($(valueEle).val());
+            }
+            let taxEle = row.querySelector('.table-row-tax');
+            if (taxEle) {
+                if ($(taxEle).val()) {
+                    let taxData = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
+                    if (taxData) {
+                        rowData['tax_id'] = taxData?.['id'];
+                        rowData['tax_data'] = taxData;
+                    }
+                }
+            }
+            let totalEle = row.querySelector('.table-row-total');
+            if (totalEle) {
+                rowData['total'] = parseFloat($(totalEle).valCurrency());
+            }
+            let balanceEle = row.querySelector('.table-row-balance');
+            if (balanceEle) {
+                rowData['balance'] = parseFloat($(balanceEle).attr('data-init-money'));
             }
             result.push(rowData);
         });

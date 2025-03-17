@@ -36,7 +36,8 @@ $(function () {
             QuotationDataTableHandle.dataTableQuotationIndicator();
         } else {  // sale order
             QuotationDataTableHandle.dataTableSaleOrderIndicator();
-            // QuotationDataTableHandle.dataTableInvoice();
+            QuotationDataTableHandle.dataTableInvoice();
+            QuotationDataTableHandle.dataTableSelectTerm();
             QuotationDataTableHandle.dataTablePaymentStage();
         }
         // init config
@@ -711,6 +712,15 @@ $(function () {
             QuotationStoreDataHandle.storeDtbData(2);
             QuotationStoreDataHandle.storeDtbData(3);
             QuotationStoreDataHandle.storeDtbData(4);
+            QuotationStoreDataHandle.storeDtbData(5);
+        });
+
+        QuotationDataTableHandle.$tableInvoice.on('click', '.btn-select-term', function () {
+            QuotationLoadDataHandle.loadModalSTerm(this);
+        });
+
+        QuotationLoadDataHandle.$btnSaveTerm.on('click', function () {
+           QuotationLoadDataHandle.loadSaveSTerm();
         });
 
         $('#btn-add-payment-stage').on('click', function () {

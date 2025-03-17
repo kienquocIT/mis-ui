@@ -11294,3 +11294,19 @@ msgstr "Tên chi nhánh"
 #
 msgid "Brand address"
 msgstr "Địa chỉ chi nhánh"
+
+#
+msgid "Periods config"
+msgstr "Cấu hình Kỳ kế toán"
+
+#
+msgid "Master Data Categories"
+msgstr "Dữ liệu Phân loại dùng chung"
+
+#
+msgid "Categories"
+msgstr "Phân loại"
+
+#
+msgid "Master Data Bank"
+msgstr "Dữ liệu Ngân hàng dùng chung"

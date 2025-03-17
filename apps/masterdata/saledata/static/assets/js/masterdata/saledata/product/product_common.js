@@ -732,6 +732,7 @@ function getDataForm() {
     data['general_product_category'] = generalProductCateEle.val();
     data['general_uom_group'] = generalUomGroupEle.val();
     data['general_traceability_method'] = $('#general-select-box-traceability-method option:selected').attr('value');
+    data['standard_price'] = $('#standard_price').attr('value')
 
     let variant_attribute_create_valid = true;
     let variant_item_create_valid = true;
@@ -853,12 +854,10 @@ function getDataForm() {
         data['inventory_level_min'] = parseFloat($('#inventory-level-min').val());
         data['inventory_level_max'] = parseFloat($('#inventory-level-max').val());
         data['valuation_method'] = $('#valuation-method').val()
-        data['standard_price'] = $('#standard_price').attr('value')
     } else {
         data['inventory_uom'] = null;
         data['inventory_level_min'] = null;
         data['inventory_level_max'] = null;
-        data['standard_price'] = 0
     }
 
     if (check_tab_purchase.is(':checked') === true) {
@@ -993,6 +992,7 @@ function LoadDetailProduct(option) {
                     loadGeneralProductCategory(general_information['product_category']);
                     loadGeneralUoMGroup(general_information['uom_group']);
                     $('#general-select-box-traceability-method').val(general_information['traceability_method']).prop('disabled', true)
+                    $('#standard_price').attr('value', general_information['standard_price'])
                     if (Object.keys(general_information['product_size']).length !== 0) {
                         lengthEle.val(general_information['product_size']['length']);
                         widthEle.val(general_information['product_size']['width']);
@@ -1042,7 +1042,6 @@ function LoadDetailProduct(option) {
                     $('#inventory-level-min').val(inventory_information['inventory_level_min']);
                     $('#inventory-level-max').val(inventory_information['inventory_level_max']);
                     $('#valuation-method').val(inventory_information['valuation_method'])
-                    $('#standard_price').attr('value', inventory_information['standard_price'])
 
                     loadWareHouseListDetail(product_detail['product_warehouse_detail']);
                     let data_overview = [];

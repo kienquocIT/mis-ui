@@ -474,6 +474,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     FIXED_ASSET_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetList')
     FIXED_ASSET_WRITE_OFF_PAGE = BreadcrumbChildren(_('Fixed Asset Write-off'), 'FixedAssetWriteOffList')
 
+    # Bank
+    BANK_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Bank'), 'BankMasterDataList')
+
     # Instrument tool
     INSTRUMENT_TOOL_PAGE = BreadcrumbChildren(_('Instrument Tool'), 'InstrumentToolList')
     INSTRUMENT_TOOL_WRITE_OFF_PAGE = BreadcrumbChildren(_('Instrument Tool Write-off'), 'InstrumentToolWriteOffList')
@@ -1254,6 +1257,9 @@ class BreadcrumbView:
     FIXED_ASSET_WRITE_OFF_CREATE_PAGE = FIXED_ASSET_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_CREATE]
     FIXED_ASSET_WRITE_OFF_DETAIL_PAGE = FIXED_ASSET_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_DETAIL]
     FIXED_ASSET_WRITE_OFF_UPDATE_PAGE = FIXED_ASSET_WRITE_OFF_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Bank
+    BANK_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.BANK_MASTER_DATA_LIST_PAGE]
 
     # Instrument Tool
     INSTRUMENT_TOOL_LIST = [

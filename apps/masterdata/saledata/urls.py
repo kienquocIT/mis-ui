@@ -15,7 +15,7 @@ from apps.masterdata.saledata.views.accounts import (
 from apps.masterdata.saledata.views.balance_init import BalanceInitList, BalanceInitListAPI, \
     ImportBalanceInitDBAPIViews, BalanceInitializationListImportDBAPI
 from apps.masterdata.saledata.views.bank import BankMasterDataListAPI, BankMasterDataDetailAPI, \
-    BankAccountMasterDataListAPI, BankAccountMasterDataDetailAPI
+    BankAccountMasterDataListAPI, BankAccountMasterDataDetailAPI, BankMasterDataList
 from apps.masterdata.saledata.views.budget_plan_config import BudgetPlanConfigList, BudgetPlanConfigListAPI, \
     ListCanViewCompanyBudgetPlanAPI, ListCanLockBudgetPlanAPI
 from apps.masterdata.saledata.views.category import CategoryMasterDataList, \
@@ -393,6 +393,10 @@ urlpatterns += [
     path('masterdata/fixed-asset/classification/api', FixedAssetClassificationMasterDataListAPI.as_view(), name='FixedAssetClassificationMasterDataListAPI'),
     path('masterdata/tool/classification/api', ToolClassificationMasterDataListAPI.as_view(), name='ToolClassificationMasterDataListAPI'),
     path('masterdata/tool/classification/api/<str:pk>', ToolClassificationMasterDateDetailAPI.as_view(), name='ToolClassificationMasterDateDetailAPI'),
+]
+
+urlpatterns += [
+    path('masterdata/bank/list', BankMasterDataList.as_view(), name='BankMasterDataList'),
     path('masterdata/bank/list/api', BankMasterDataListAPI.as_view(), name='BankMasterDataListAPI'),
     path('masterdata/bank/detail/api/<str:pk>', BankMasterDataDetailAPI.as_view(), name='BankMasterDataDetailAPI'),
     path('masterdata/bank-account/list', BankAccountMasterDataListAPI.as_view(), name='BankAccountMasterDataListAPI'),

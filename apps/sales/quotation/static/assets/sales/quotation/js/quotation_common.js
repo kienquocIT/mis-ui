@@ -1433,7 +1433,7 @@ class QuotationLoadDataHandle {
     static loadChangePSInstallment(ele) {
         let row = ele.closest('tr');
         let dataDateType = JSON.parse($('#payment_date_type').text());
-        let eleDateType = row.querySelector('.table-row-date-type');
+        let eleDateType = row.querySelector('.table-row-remark');
         let eleRatio = row.querySelector('.table-row-ratio');
         let eleDate = row.querySelector('.table-row-date');
         let eleValueBT = row.querySelector('.table-row-value-before-tax');
@@ -1594,6 +1594,33 @@ class QuotationLoadDataHandle {
     };
 
     static loadAddInvoice() {
+        let total = 0;
+        QuotationDataTableHandle.$tableInvoice.DataTable().rows().every(function () {
+            let row = this.node();
+            let totalEle = row.querySelector('.table-row-total');
+            if (totalEle) {
+                if ($(totalEle).valCurrency()) {
+                    total += $(totalEle).valCurrency();
+                }
+            }
+        });
+        if (total > 0) {
+            let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                if (tableProductFt) {
+                    let totalSOEle = tableProductFt.querySelector('.quotation-create-product-total-raw');
+                    if (totalSOEle) {
+                        let totalSO = parseFloat(totalSOEle.value);
+                        if (total >= totalSO) {
+                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
         let orderEleList = QuotationDataTableHandle.$tableInvoice[0].querySelectorAll('.table-row-order');
 
         QuotationDataTableHandle.$tableInvoice.DataTable().row.add({"order": (orderEleList.length + 1)}).draw();
@@ -4098,7 +4125,14 @@ class QuotationDataTableHandle {
                     targets: 4,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-date-type" rows="2" readonly>${row?.['date_type'] ? row?.['date_type'] : ""}</textarea>`;
+                        let value = "";
+                        if (row?.['due_date'] !== "") {
+                            value = moment(row?.['due_date']).format('DD/MM/YYYY');
+                        }
+                        return `<div class="input-affix-wrapper">
+                                    <input type="text" class="form-control table-row-due-date text-black" value="${value}">
+                                    <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
+                                </div>`;
                     }
                 },
                 {
@@ -4160,20 +4194,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        let value = "";
-                        if (row?.['due_date'] !== "") {
-                            value = moment(row?.['due_date']).format('DD/MM/YYYY');
-                        }
-                        return `<div class="input-affix-wrapper">
-                                    <input type="text" class="form-control table-row-due-date text-black" value="${value}">
-                                    <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 11,
                     width: '1%',
                     render: () => {
                         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;

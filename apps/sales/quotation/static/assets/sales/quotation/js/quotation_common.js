@@ -18,6 +18,7 @@ class QuotationLoadDataHandle {
     static $btnSaveCost = $('#btn-save-select-cost');
     static $btnSaveTerm = $('#btn-save-select-term');
     static $btnSaveInvoice = $('#btn-save-select-invoice');
+    static $btnSaveReconcile = $('#btn-save-select-reconcile');
     static dataSuppliedBy = [{'id': 0, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-make')}];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -469,6 +470,20 @@ class QuotationLoadDataHandle {
         let datas = QuotationSubmitHandle.setupDataInvoice();
         QuotationDataTableHandle.$tableSInvoice.DataTable().clear().draw();
         QuotationDataTableHandle.$tableSInvoice.DataTable().rows.add(datas).draw();
+        return true;
+    };
+
+    static loadModalSReconcile(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let orderEle = row.querySelector('.table-row-order');
+            if (orderEle) {
+                QuotationLoadDataHandle.$btnSaveReconcile.attr('data-id', orderEle.innerHTML);
+            }
+        }
+        let datas = QuotationSubmitHandle.setupDataPaymentStage();
+        QuotationDataTableHandle.$tableSReconcile.DataTable().clear().draw();
+        QuotationDataTableHandle.$tableSReconcile.DataTable().rows.add(datas).draw();
         return true;
     };
 
@@ -1435,7 +1450,7 @@ class QuotationLoadDataHandle {
         let order = QuotationDataTableHandle.$tablePayment[0].querySelectorAll('.table-row-order').length + 1;
         let dataAdd = {
             'order': order,
-            'payment_ratio': 0,
+            'ratio': 0,
             'value_before_tax': 0,
             'is_ar_invoice': false,
         };
@@ -1723,6 +1738,7 @@ class QuotationLoadDataHandle {
         if (target) {
             let targetRow = target.closest('tr');
             if (targetRow) {
+                let dateEle = targetRow.querySelector('.table-row-date');
                 let invoiceEle = targetRow.querySelector('.table-row-invoice');
                 let invoiceDataEle = targetRow.querySelector('.table-row-invoice-data');
                 let valueBeforeEle = targetRow.querySelector('.table-row-value-before-tax');
@@ -1731,14 +1747,14 @@ class QuotationLoadDataHandle {
                 let valueTotalEle = targetRow.querySelector('.table-row-value-total');
 
                 let checkedEle = QuotationDataTableHandle.$tableSInvoice[0].querySelector('.table-row-checkbox:checked');
-                if (checkedEle && invoiceEle && invoiceDataEle && valueBeforeEle && taxEle && valueTaxEle && valueTotalEle) {
+                if (checkedEle && dateEle && invoiceEle && invoiceDataEle && valueBeforeEle && taxEle && valueTaxEle && valueTotalEle) {
                     let row = checkedEle.closest('tr');
                     if (row) {
                         let rowIndex = QuotationDataTableHandle.$tableSInvoice.DataTable().row(row).index();
                         let $row = QuotationDataTableHandle.$tableSInvoice.DataTable().row(rowIndex);
                         let dataRow = $row.data();
 
-
+                        $(dateEle).val(moment(dataRow?.['date']).format('DD/MM/YYYY')).trigger('change');
                         $(invoiceEle).val(dataRow?.['order']);
                         $(invoiceDataEle).val(JSON.stringify(dataRow));
                         QuotationLoadDataHandle.loadInitS2($(taxEle), [dataRow?.['tax_data']]);
@@ -2831,6 +2847,7 @@ class QuotationDataTableHandle {
     static $tableSProduct = $('#table-select-product');
     static $tableSTerm = $('#table-select-term');
     static $tableSInvoice = $('#table-select-invoice');
+    static $tableSReconcile = $('#table-select-reconcile');
 
     static dataTableProduct(data) {
         // init dataTable
@@ -4049,7 +4066,7 @@ class QuotationDataTableHandle {
                     width: '12%',
                     render: (data, type, row) => {
                         return `<div class="input-affix-wrapper">
-                                    <input type="text" class="form-control date-picker text-black table-row-date-invoice" autocomplete="off">
+                                    <input type="text" class="form-control date-picker text-black table-row-date" autocomplete="off">
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -4126,7 +4143,7 @@ class QuotationDataTableHandle {
                 },
             ],
             rowCallback: function (row, data, index) {
-                let dateEle = row.querySelector('.table-row-date-invoice');
+                let dateEle = row.querySelector('.table-row-date');
                 let taxEle = row.querySelector('.table-row-tax');
                 let termDataEle = row.querySelector('.table-row-term-data');
                 if (dateEle) {
@@ -4233,7 +4250,7 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-ratio valid-num" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
+                                        <input type="text" class="form-control table-row-ratio valid-num" value="${row?.['ratio'] ? row?.['ratio'] : '0'}">
                                         <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                     </div>
                                 </div>`;
@@ -4636,6 +4653,51 @@ class QuotationDataTableHandle {
             ],
             drawCallback: function () {
                 QuotationLoadDataHandle.loadEventRadio(QuotationDataTableHandle.$tableSInvoice);
+                $.fn.initMaskMoney2();
+            }
+        });
+    };
+
+    static dataTableSelectReconcile(data) {
+        QuotationDataTableHandle.$tableSReconcile.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let checked = "";
+                        return `<div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-reconcile-${row?.['order']}" ${checked}>
+                                    <label class="form-check-label table-row-order" for="s-reconcile-${row?.['order']}">${row?.['term_data']?.['title']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['remark']}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['ratio']} %</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSReconcile);
                 $.fn.initMaskMoney2();
             }
         });
@@ -7171,61 +7233,71 @@ class QuotationSubmitHandle {
             let eleInstallment = row.querySelector('.table-row-installment');
             if (eleInstallment) {
                 if ($(eleInstallment).val()) {
-                    let dataSelected = SelectDDControl.get_data_from_idx($(eleInstallment), $(eleInstallment).val());
-                    if (dataSelected) {
-                        rowData['term_id'] = $(eleInstallment).val();
-                        rowData['term_data'] = dataSelected;
-                    }
+                    rowData['term_id'] = $(eleInstallment).val();
+                    rowData['term_data'] = SelectDDControl.get_data_from_idx($(eleInstallment), $(eleInstallment).val());
                 }
             }
-            let eleRemark = row.querySelector('.table-row-remark');
-            if (eleRemark) {
-                rowData['remark'] = $(eleRemark).val();
+            let remarkEle = row.querySelector('.table-row-remark');
+            if (remarkEle) {
+                rowData['remark'] = $(remarkEle).val();
             }
-            let eleDate = row.querySelector('.table-row-date');
-            if (eleDate) {
-                if (eleDate.value) {
-                    rowData['date'] = String(moment(eleDate.value, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+            let dateEle = row.querySelector('.table-row-date');
+            if (dateEle) {
+                if ($(dateEle).val()) {
+                    rowData['date'] = String(moment($(dateEle).val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
                 }
             }
             let eleDateType = row.querySelector('.table-row-date-type');
             if (eleDateType) {
                 rowData['date_type'] = $(eleDateType).val();
             }
-            let eleRatio = row.querySelector('.table-row-ratio');
-            if (eleRatio) {
-                rowData['payment_ratio'] = parseFloat(eleRatio.value);
+            let ratioEle = row.querySelector('.table-row-ratio');
+            if (ratioEle) {
+                rowData['ratio'] = parseFloat(ratioEle.value);
             }
-            let eleValueBT = row.querySelector('.table-row-value-before-tax');
-            if (eleValueBT) {
-                if ($(eleValueBT).valCurrency()) {
-                    rowData['value_before_tax'] = parseFloat($(eleValueBT).valCurrency());
-                }
-            }
-            let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
-            if (eleIssueInvoice) {
+            let invoiceEle = row.querySelector('.table-row-invoice');
+            if (invoiceEle) {
                 rowData['is_ar_invoice'] = false;
-                if ($(eleIssueInvoice).val()) {
-                    rowData['issue_invoice'] = parseInt($(eleIssueInvoice).val());
+                if ($(invoiceEle).val()) {
+                    rowData['issue_invoice'] = parseInt($(invoiceEle).val());
                     rowData['is_ar_invoice'] = true;
                 }
             }
-            let eleValueAT = row.querySelector('.table-row-value-after-tax');
-            if (eleValueAT) {
-                if ($(eleValueAT).valCurrency()) {
-                    rowData['value_after_tax'] = parseFloat($(eleValueAT).valCurrency());
+            let invoiceDataEle = row.querySelector('.table-row-invoice-data');
+            if (invoiceDataEle) {
+                if ($(invoiceDataEle).val()) {
+                    rowData['invoice_data'] = JSON.parse($(invoiceDataEle).val());
                 }
             }
-            let eleValueTotal = row.querySelector('.table-row-value-total');
-            if (eleValueTotal) {
-                if ($(eleValueTotal).valCurrency()) {
-                    rowData['value_total'] = parseFloat($(eleValueTotal).valCurrency());
+            let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+            if (valBeforeEle) {
+                if ($(valBeforeEle).valCurrency()) {
+                    rowData['value_before_tax'] = parseFloat($(valBeforeEle).valCurrency());
                 }
             }
-            let eleDueDate = row.querySelector('.table-row-due-date');
-            if (eleDueDate) {
-                if (eleDueDate.value) {
-                    rowData['due_date'] = String(moment(eleDueDate.value, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+            let taxEle = row.querySelector('.table-row-tax');
+            if (taxEle) {
+                if ($(taxEle).val()) {
+                    rowData['tax_id'] = $(taxEle).val();
+                    rowData['tax_data'] = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
+                }
+            }
+            let valTaxEle = row.querySelector('.table-row-value-tax');
+            if (valTaxEle) {
+                if ($(valTaxEle).valCurrency()) {
+                    rowData['value_total'] = parseFloat($(valTaxEle).valCurrency());
+                }
+            }
+            let valTotalEle = row.querySelector('.table-row-value-total');
+            if (valTotalEle) {
+                if ($(valTotalEle).valCurrency()) {
+                    rowData['value_total'] = parseFloat($(valTotalEle).valCurrency());
+                }
+            }
+            let dueDateEle = row.querySelector('.table-row-due-date');
+            if (dueDateEle) {
+                if ($(dueDateEle).val()) {
+                    rowData['due_date'] = String(moment($(dueDateEle).val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
                 }
             }
             result.push(rowData);
@@ -7246,10 +7318,10 @@ class QuotationSubmitHandle {
             if (remarkEle) {
                 rowData['remark'] = $(remarkEle).val();
             }
-            let dateEle = row.querySelector('.table-row-date-invoice');
+            let dateEle = row.querySelector('.table-row-date');
             if (dateEle) {
                 if ($(dateEle).val()) {
-                    rowData['date_invoice'] = moment($(dateEle).val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                    rowData['date'] = moment($(dateEle).val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
                 }
             }
             let termDataEle = row.querySelector('.table-row-term-data');
@@ -7263,11 +7335,8 @@ class QuotationSubmitHandle {
             let taxEle = row.querySelector('.table-row-tax');
             if (taxEle) {
                 if ($(taxEle).val()) {
-                    let taxData = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
-                    if (taxData) {
-                        rowData['tax_id'] = taxData?.['id'];
-                        rowData['tax_data'] = taxData;
-                    }
+                    rowData['tax_id'] = $(taxEle).val();
+                    rowData['tax_data'] = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
                 }
             }
             let totalEle = row.querySelector('.table-row-total');
@@ -7499,7 +7568,7 @@ class QuotationSubmitHandle {
                         let totalRatio = 0;
                         let totalPayment = 0;
                         for (let payment of _form.dataForm['sale_order_payment_stage']) {
-                            totalRatio += payment?.['payment_ratio'] ? payment?.['payment_ratio'] : 0;
+                            totalRatio += payment?.['ratio'] ? payment?.['ratio'] : 0;
                             totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
                         }
                         if (totalRatio !== 100) {

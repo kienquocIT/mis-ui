@@ -472,7 +472,7 @@
                                             <th>{% trans 'Invoice issue' %}</th>
                                             <th>{% trans 'Description' %}</th>
                                             <th>{% trans 'Invoice date' %}</th>
-                                            <th>{% trans 'Percentage of contract value' %}</th>
+                                            <th>{% trans 'Percentage' %}</th>
                                             <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Total value' %}</th>
                                             <th>{% trans 'Balance due' %}</th>
@@ -487,7 +487,7 @@
                                     <b>{% trans 'Payment plan' %}</b>
                                     <table
                                             id="datable-quotation-payment-stage"
-                                            class="table nowrap min-w-1920p w-100 mb-5"
+                                            class="table nowrap min-w-2000p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr class="bg-light">
@@ -496,12 +496,14 @@
                                             <th>{% trans 'Description' %}</th>
                                             <th>{% trans 'Date' %}</th>
                                             <th>{% trans 'Due date' %}</th>
-                                            <th>% {% trans 'Payment' %}</th>
-                                            <th>{% trans 'Value before tax' %}</th>
-                                            <th>{% trans 'Issue invoice' %}</th>
-                                            <th>{% trans 'Value invoice after tax' %}</th>
+                                            <th>{% trans 'Percentage' %}</th>
+                                            <th>{% trans 'Invoice' %}</th>
+                                            <th>{% trans 'Payment before tax' %}</th>
+                                            <th>{% trans 'Reconcile' %}</th>
+                                            <th>{% trans 'Tax' %}</th>
+                                            <th>{% trans 'Tax value' %}</th>
                                             <th>{% trans 'Total payment' %}</th>
-                                            <th></th>
+{#                                            <th></th>#}
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -945,8 +947,8 @@
                                 <thead>
                                 <tr class="bg-light">
                                     <th class="w-25">{% trans 'Installment' %}</th>
-                                    <th class="w-15">{% trans 'Decription' %}</th>
-                                    <th class="w-25">{% trans 'Percentage of contract value' %}</th>
+                                    <th class="w-15">{% trans 'Description' %}</th>
+                                    <th class="w-25">{% trans 'Percentage' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -956,6 +958,46 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                             <button type="button" class="btn btn-primary" id="btn-save-select-term" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                    class="modal fade" id="selectInvoiceModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectInvoiceModal"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select invoice plan' %}</b></h5>
+                            <button
+                                    type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                    data-bs-dismiss="modal"
+                            ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table
+                                    id="table-select-invoice"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th class="w-15">{% trans 'Invoice issue' %}</th>
+                                    <th class="w-25">{% trans 'Description' %}</th>
+                                    <th class="w-10">{% trans 'Percentage' %}</th>
+                                    <th class="w-15">{% trans 'Tax' %}</th>
+                                    <th class="w-25">{% trans 'Total value' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-invoice" data-bs-dismiss="modal">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>

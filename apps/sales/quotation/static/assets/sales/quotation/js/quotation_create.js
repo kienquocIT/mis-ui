@@ -38,6 +38,7 @@ $(function () {
             QuotationDataTableHandle.dataTableSaleOrderIndicator();
             QuotationDataTableHandle.dataTableInvoice();
             QuotationDataTableHandle.dataTableSelectTerm();
+            QuotationDataTableHandle.dataTableSelectInvoice();
             QuotationDataTableHandle.dataTablePaymentStage();
         }
         // init config
@@ -727,7 +728,7 @@ $(function () {
             QuotationLoadDataHandle.loadAddPaymentStage();
         });
 
-        tablePS.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-issue-invoice, .table-row-value-total, .table-row-due-date', function () {
+        QuotationDataTableHandle.$tablePayment.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-issue-invoice, .table-row-value-total, .table-row-due-date', function () {
             if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order') && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 if ($(this).hasClass('table-row-date')) {
@@ -751,9 +752,9 @@ $(function () {
                     QuotationLoadDataHandle.loadChangePSInstallment(this);
                 }
                 if ($(this).hasClass('table-row-ratio')) {
-                    let eleValueBeforeTax = row.querySelector('.table-row-value-before-tax');
-                    QuotationLoadDataHandle.loadPSValueBeforeTax(eleValueBeforeTax, $(this).val());
-                    validatePSValue(eleValueBeforeTax);
+                    let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+                    QuotationLoadDataHandle.loadPSValueBeforeTax(valBeforeEle, $(this).val());
+                    validatePSValue(valBeforeEle);
                 }
                 if ($(this).hasClass('table-row-issue-invoice')) {
                     QuotationLoadDataHandle.loadChangePSIssueInvoice(this);
@@ -773,11 +774,47 @@ $(function () {
                         }
                     }
                 }
+                if ($(this).hasClass('table-row-value-total')) {
+                    let invoiceDataEle = row.querySelector('.table-row-invoice-data');
+                    if (invoiceDataEle) {
+                        if ($(invoiceDataEle).val()) {
+                            let invoiceData = JSON.parse($(invoiceDataEle).val());
+                            let targetEle = QuotationDataTableHandle.$tableInvoice[0].querySelector(`[data-id="${invoiceData?.['order']}"]`);
+                            if (targetEle) {
+                                let targetRow = targetEle.closest('tr');
+                                if (targetRow) {
+                                    let balanceEle = targetRow.querySelector('.table-row-balance');
+                                    if (balanceEle) {
+                                        if ($(balanceEle).valCurrency() && $(this).valCurrency()) {
+                                            let balance = parseFloat($(balanceEle).valCurrency());
+                                            let total = parseFloat($(this).valCurrency());
+
+                                            let remain = balance - total;
+                                            if (remain >= 0) {
+                                                $(balanceEle).attr('value', String(remain));
+                                                $.fn.initMaskMoney2();
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
 
-        tablePS.on('click', '.del-row', function () {
-            deleteRow(this.closest('tr'), tablePS);
+        QuotationDataTableHandle.$tablePayment.on('click', '.btn-select-invoice', function () {
+            QuotationLoadDataHandle.loadModalSInvoice(this);
+        });
+
+        QuotationLoadDataHandle.$btnSaveInvoice.on('click', function () {
+            QuotationLoadDataHandle.loadSaveSInvoice();
+        });
+
+        QuotationDataTableHandle.$tablePayment.on('click', '.del-row', function () {
+            deleteRow(this.closest('tr'), QuotationDataTableHandle.$tablePayment);
         });
 
 // IMPORT TABLE

@@ -17,6 +17,7 @@ class QuotationLoadDataHandle {
     static $costModal = $('#selectCostModal');
     static $btnSaveCost = $('#btn-save-select-cost');
     static $btnSaveTerm = $('#btn-save-select-term');
+    static $btnSaveInvoice = $('#btn-save-select-invoice');
     static dataSuppliedBy = [{'id': 0, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-make')}];
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -454,6 +455,20 @@ class QuotationLoadDataHandle {
         }
         QuotationDataTableHandle.$tableSTerm.DataTable().clear().draw();
         QuotationDataTableHandle.$tableSTerm.DataTable().rows.add(term).draw();
+        return true;
+    };
+
+    static loadModalSInvoice(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let orderEle = row.querySelector('.table-row-order');
+            if (orderEle) {
+                QuotationLoadDataHandle.$btnSaveInvoice.attr('data-id', orderEle.innerHTML);
+            }
+        }
+        let datas = QuotationSubmitHandle.setupDataInvoice();
+        QuotationDataTableHandle.$tableSInvoice.DataTable().clear().draw();
+        QuotationDataTableHandle.$tableSInvoice.DataTable().rows.add(datas).draw();
         return true;
     };
 
@@ -1430,6 +1445,35 @@ class QuotationLoadDataHandle {
         return true;
     };
 
+    static loadPaymentStage() {
+        let datas = [];
+        if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
+            if (dataSelected) {
+                let terms = dataSelected?.['term'] ? dataSelected?.['term'] : [];
+                let order = 1;
+                for (let term of terms) {
+                    datas.push({
+                        'order': order,
+                        'term_id': term?.['id'],
+                    })
+                    order++;
+                }
+            }
+        }
+        QuotationDataTableHandle.$tablePayment.DataTable().clear().draw();
+        QuotationDataTableHandle.$tablePayment.DataTable().rows.add(datas).draw();
+
+        QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+            let row = this.node();
+            let installmentEle = row.querySelector('.table-row-installment');
+            if (installmentEle) {
+                $(installmentEle).trigger('change');
+            }
+        })
+        return true;
+    };
+
     static loadChangePSInstallment(ele) {
         let row = ele.closest('tr');
         let dataDateType = JSON.parse($('#payment_date_type').text());
@@ -1633,12 +1677,12 @@ class QuotationLoadDataHandle {
             let targetRow = target.closest('tr');
             if (targetRow) {
                 let termDataEle = targetRow.querySelector('.table-row-term-data');
-                let valueEle = targetRow.querySelector('.table-row-value');
+                let ratioEle = targetRow.querySelector('.table-row-ratio');
                 let totalEle = targetRow.querySelector('.table-row-total');
                 let balanceEle = targetRow.querySelector('.table-row-balance');
-                if (termDataEle && valueEle && totalEle && balanceEle) {
+                if (termDataEle && ratioEle && totalEle && balanceEle) {
                     let termData = [];
-                    let value = 0;
+                    let ratio = 0;
                     for (let checkedEle of QuotationDataTableHandle.$tableSTerm[0].querySelectorAll('.table-row-checkbox:checked')) {
                         let row = checkedEle.closest('tr');
                         if (row) {
@@ -1646,12 +1690,12 @@ class QuotationLoadDataHandle {
                             let $row = QuotationDataTableHandle.$tableSTerm.DataTable().row(rowIndex);
                             let dataRow = $row.data();
                             termData.push(dataRow);
-                            value += parseFloat(dataRow?.['value'] ? dataRow?.['value'] : "0");
+                            ratio += parseFloat(dataRow?.['value'] ? dataRow?.['value'] : "0");
                         }
                     }
                     $(termDataEle).val(JSON.stringify(termData));
-                    $(valueEle).val(value);
-                    if (value > 0) {
+                    $(ratioEle).val(ratio);
+                    if (ratio > 0) {
                         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
                         if (tableProductWrapper) {
                             let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
@@ -1659,9 +1703,9 @@ class QuotationLoadDataHandle {
                                 let totalSOEle = tableProductFt.querySelector('.quotation-create-product-total-raw');
                                 if (totalSOEle) {
                                     let totalSO = parseFloat(totalSOEle.value);
-                                    let total = (value * totalSO) / 100;
+                                    let total = (ratio * totalSO) / 100;
                                     $(totalEle).attr('value', String(total));
-                                    $(balanceEle).attr('data-init-money', String(total));
+                                    $(balanceEle).attr('value', String(total));
                                     // mask money
                                     $.fn.initMaskMoney2();
                                 }
@@ -1671,6 +1715,47 @@ class QuotationLoadDataHandle {
                 }
             }
         }
+        return true;
+    };
+
+    static loadSaveSInvoice() {
+        let target = QuotationDataTableHandle.$tablePayment[0].querySelector(`[data-id="${QuotationLoadDataHandle.$btnSaveInvoice.attr('data-id')}"]`);
+        if (target) {
+            let targetRow = target.closest('tr');
+            if (targetRow) {
+                let invoiceEle = targetRow.querySelector('.table-row-invoice');
+                let invoiceDataEle = targetRow.querySelector('.table-row-invoice-data');
+                let valueBeforeEle = targetRow.querySelector('.table-row-value-before-tax');
+                let taxEle = targetRow.querySelector('.table-row-tax');
+                let valueTaxEle = targetRow.querySelector('.table-row-value-tax');
+                let valueTotalEle = targetRow.querySelector('.table-row-value-total');
+
+                let checkedEle = QuotationDataTableHandle.$tableSInvoice[0].querySelector('.table-row-checkbox:checked');
+                if (checkedEle && invoiceEle && invoiceDataEle && valueBeforeEle && taxEle && valueTaxEle && valueTotalEle) {
+                    let row = checkedEle.closest('tr');
+                    if (row) {
+                        let rowIndex = QuotationDataTableHandle.$tableSInvoice.DataTable().row(row).index();
+                        let $row = QuotationDataTableHandle.$tableSInvoice.DataTable().row(rowIndex);
+                        let dataRow = $row.data();
+
+
+                        $(invoiceEle).val(dataRow?.['order']);
+                        $(invoiceDataEle).val(JSON.stringify(dataRow));
+                        QuotationLoadDataHandle.loadInitS2($(taxEle), [dataRow?.['tax_data']]);
+
+                        let valBefore = $(valueBeforeEle).valCurrency();
+                        let tax = dataRow?.['tax_data']?.['rate'];
+                        let datasRelateTax = QuotationCalculateCaseHandle.getDatasRelateTax(valBefore, tax);
+
+                        $(valueTaxEle).attr('value', datasRelateTax?.['valTax']);
+                        $(valueTotalEle).attr('value', datasRelateTax?.['valAfter']);
+                        $(valueTotalEle).trigger('change');
+                        $.fn.initMaskMoney2();
+                    }
+                }
+            }
+        }
+        return true;
     };
 
     // TABLE COST
@@ -2738,13 +2823,14 @@ class QuotationLoadDataHandle {
 
 // DataTable
 class QuotationDataTableHandle {
-    static $tableSProduct = $('#table-select-product');
     static $tableProduct = $('#datable-quotation-create-product');
     static $tableCost = $('#datable-quotation-create-cost');
     static $tableExpense = $('#datable-quotation-create-expense');
-    static $tableInvoice = $('#datable-quotation-invoice');
-    static $tableSTerm = $('#table-select-term');
     static $tablePayment = $('#datable-quotation-payment-stage');
+    static $tableInvoice = $('#datable-quotation-invoice');
+    static $tableSProduct = $('#table-select-product');
+    static $tableSTerm = $('#table-select-term');
+    static $tableSInvoice = $('#table-select-invoice');
 
     static dataTableProduct(data) {
         // init dataTable
@@ -3953,7 +4039,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '20%',
+                    width: '25%',
                     render: (data, type, row) => {
                         return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ""}</textarea>`;
                     }
@@ -3972,12 +4058,12 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '15%',
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<div class="d-flex justify-content-between align-items-center">
                                     <div class="input-group">
                                         <div class="input-affix-wrapper">
-                                            <input type="text" class="form-control table-row-value valid-num" value="${row?.['value'] ? row?.['value'] : '0'}" readonly>
+                                            <input type="text" class="form-control table-row-ratio valid-num" value="${row?.['ratio'] ? row?.['ratio'] : '0'}" readonly>
                                             <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                         </div>
                                     </div>
@@ -4022,7 +4108,13 @@ class QuotationDataTableHandle {
                     targets: 6,
                     width: '15%',
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-balance" data-init-money="${row?.['balance'] ? row?.['balance'] : 0}"></span>`;
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-balance text-black" 
+                                    value="${row?.['balance'] ? row?.['balance'] : 0}"
+                                    data-return-type="number"
+                                    readonly
+                                >`;
                     }
                 },
                 {
@@ -4090,12 +4182,12 @@ class QuotationDataTableHandle {
                     targets: 0,
                     width: '1%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`;
+                        return `<span class="table-row-order" data-id="${row?.['order']}">${row?.['order']}</span>`;
                     }
                 },
                 {
                     targets: 1,
-                    width: '10%',
+                    width: '8%',
                     render: () => {
                         return `<select class="form-select table-row-installment"></select>`;
                     }
@@ -4109,7 +4201,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '10%',
+                    width: '8%',
                     render: (data, type, row) => {
                         let value = "";
                         if (row?.['date'] !== "") {
@@ -4123,7 +4215,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '10%',
+                    width: '8%',
                     render: (data, type, row) => {
                         let value = "";
                         if (row?.['due_date'] !== "") {
@@ -4149,6 +4241,24 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
+                    width: '6%',
+                    render: (data, type, row) => {
+                        // return `<select class="form-select table-row-issue-invoice"></select>`;
+                        return `<div class="d-flex justify-content-between align-items-center">
+                                    <input type="text" class="form-control table-row-invoice valid-num" value="${row?.['invoice_data']?.['order'] ? row?.['invoice_data']?.['order'] : ''}" readonly>
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-select-invoice"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#selectInvoiceModal"
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control table-row-invoice-data hidden">`;
+                    }
+                },
+                {
+                    targets: 7,
                     width: '12%',
                     render: (data, type, row) => {
                         return `<input 
@@ -4156,32 +4266,62 @@ class QuotationDataTableHandle {
                                     class="form-control mask-money table-row-value-before-tax text-black" 
                                     value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
                                     data-return-type="number"
-                                    disabled
+                                    readonly
                                 >`;
-                    }
-                },
-                {
-                    targets: 7,
-                    width: '8%',
-                    render: () => {
-                        return `<select class="form-select table-row-issue-invoice"></select>`;
                     }
                 },
                 {
                     targets: 8,
                     width: '12%',
                     render: (data, type, row) => {
-                        return `<input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-value-after-tax text-black" 
-                                    value="${row?.['value_after_tax'] ? row?.['value_after_tax'] : '0'}"
-                                    data-return-type="number"
-                                    hidden
-                                >`;
+                        return `<div class="d-flex justify-content-between align-items-center">
+                                    <input 
+                                        type="text" 
+                                        class="form-control mask-money table-row-reconcile text-black" 
+                                        value="${row?.['value_reconcile'] ? row?.['value_reconcile'] : '0'}"
+                                        data-return-type="number"
+                                        readonly
+                                    >
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-select-reconcile"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#selectReconcileModal"
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control table-row-reconcile-data hidden">`;
                     }
                 },
                 {
                     targets: 9,
+                    width: '6%',
+                    render: () => {
+                        return `<select
+                                    class="form-select table-row-tax"
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                    data-method="GET"
+                                    data-keyResp="tax_list"
+                                    readonly
+                                >
+                                </select>`;
+                    }
+                },
+                {
+                    targets: 10,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-value-tax text-black" 
+                                    value="${row?.['value_tax'] ? row?.['value_tax'] : '0'}"
+                                    data-return-type="number"
+                                    readonly
+                                >`;
+                    }
+                },
+                {
+                    targets: 11,
                     width: '12%',
                     render: (data, type, row) => {
                         return `<input 
@@ -4189,22 +4329,24 @@ class QuotationDataTableHandle {
                                     class="form-control mask-money table-row-value-total text-black" 
                                     value="${row?.['value_total'] ? row?.['value_total'] : '0'}"
                                     data-return-type="number"
+                                    readonly
                                 >`;
                     }
                 },
-                {
-                    targets: 10,
-                    width: '1%',
-                    render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
-                    }
-                },
+                // {
+                //     targets: 10,
+                //     width: '1%',
+                //     render: () => {
+                //         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                //     }
+                // },
             ],
             rowCallback: function (row, data, index) {
                 let installmentEle = row.querySelector('.table-row-installment');
                 let issueInvoiceEle = row.querySelector('.table-row-issue-invoice');
                 let dateEle = row.querySelector('.table-row-date');
                 let dueDateEle = row.querySelector('.table-row-due-date');
+                let taxEle = row.querySelector('.table-row-tax');
                 if (installmentEle) {
                     let term = [];
                     if (QuotationLoadDataHandle.paymentSelectEle.val()) {
@@ -4273,6 +4415,13 @@ class QuotationDataTableHandle {
                         $(issueInvoiceEle).val(data?.['issue_invoice']).trigger('change');
                     }
                     QuotationLoadDataHandle.loadChangePSIssueInvoice(issueInvoiceEle);
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
                 }
             },
             drawCallback: function () {
@@ -4441,6 +4590,57 @@ class QuotationDataTableHandle {
         });
     };
 
+    static dataTableSelectInvoice(data) {
+        QuotationDataTableHandle.$tableSInvoice.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let checked = "";
+                        return `<div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-invoice-${row?.['order']}" ${checked}>
+                                    <label class="form-check-label table-row-order" for="s-invoice-${row?.['order']}">${row?.['order']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['remark']}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['ratio']} %</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['tax_data']?.['title']}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${row?.['total'] ? row?.['total'] : 0}"></span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                QuotationLoadDataHandle.loadEventRadio(QuotationDataTableHandle.$tableSInvoice);
+                $.fn.initMaskMoney2();
+            }
+        });
+    };
+
     // Custom dtb
     static dtbSProductHDCustom() {
         let $table = $('#table-select-product');
@@ -4571,7 +4771,9 @@ class QuotationDataTableHandle {
                 // Select the appended button from the DOM and attach the event listener
                 $('#btn-add-payment-stage').on('click', function () {
                     QuotationStoreDataHandle.storeDtbData(4);
-                    QuotationLoadDataHandle.loadAddPaymentStage();
+                    // QuotationLoadDataHandle.loadAddPaymentStage();
+                    QuotationLoadDataHandle.loadPaymentStage();
+
                 });
             }
         }
@@ -4938,15 +5140,12 @@ class QuotationCalculateCaseHandle {
         });
     };
 
-    static calculateAllRowsTableCost() {
-        QuotationDataTableHandle.$tableCost.DataTable().rows().every(function () {
-            let row = this.node();
-            if (row.querySelector('.table-row-item')) {
-                QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableCost, row);
-            }
-        });
+    // Calculate funcs
+    static getDatasRelateTax(valBefore, tax) {
+        let valTax = valBefore * tax / 100;
+        let valAfter = valBefore + valTax;
+        return {'valBefore': valBefore, 'valTax': valTax, 'valAfter': valAfter};
     };
-
 }
 
 // Config
@@ -7057,9 +7256,9 @@ class QuotationSubmitHandle {
             if (termDataEle) {
                 rowData['term_data'] = JSON.parse($(termDataEle).val());
             }
-            let valueEle = row.querySelector('.table-row-value');
-            if (valueEle) {
-                rowData['value'] = parseFloat($(valueEle).val());
+            let ratioEle = row.querySelector('.table-row-ratio');
+            if (ratioEle) {
+                rowData['ratio'] = parseFloat($(ratioEle).val());
             }
             let taxEle = row.querySelector('.table-row-tax');
             if (taxEle) {
@@ -7077,7 +7276,7 @@ class QuotationSubmitHandle {
             }
             let balanceEle = row.querySelector('.table-row-balance');
             if (balanceEle) {
-                rowData['balance'] = parseFloat($(balanceEle).attr('data-init-money'));
+                rowData['balance'] = parseFloat($(balanceEle).valCurrency());
             }
             result.push(rowData);
         });

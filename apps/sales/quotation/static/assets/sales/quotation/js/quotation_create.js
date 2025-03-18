@@ -39,6 +39,7 @@ $(function () {
             QuotationDataTableHandle.dataTableInvoice();
             QuotationDataTableHandle.dataTableSelectTerm();
             QuotationDataTableHandle.dataTableSelectInvoice();
+            QuotationDataTableHandle.dataTableSelectReconcile();
             QuotationDataTableHandle.dataTablePaymentStage();
         }
         // init config
@@ -752,8 +753,8 @@ $(function () {
                     QuotationLoadDataHandle.loadChangePSInstallment(this);
                 }
                 if ($(this).hasClass('table-row-ratio')) {
+                    QuotationLoadDataHandle.loadPSValueBeforeTax(this);
                     let valBeforeEle = row.querySelector('.table-row-value-before-tax');
-                    QuotationLoadDataHandle.loadPSValueBeforeTax(valBeforeEle, $(this).val());
                     validatePSValue(valBeforeEle);
                 }
                 if ($(this).hasClass('table-row-issue-invoice')) {
@@ -775,32 +776,7 @@ $(function () {
                     }
                 }
                 if ($(this).hasClass('table-row-value-total')) {
-                    let invoiceDataEle = row.querySelector('.table-row-invoice-data');
-                    if (invoiceDataEle) {
-                        if ($(invoiceDataEle).val()) {
-                            let invoiceData = JSON.parse($(invoiceDataEle).val());
-                            let targetEle = QuotationDataTableHandle.$tableInvoice[0].querySelector(`[data-id="${invoiceData?.['order']}"]`);
-                            if (targetEle) {
-                                let targetRow = targetEle.closest('tr');
-                                if (targetRow) {
-                                    let balanceEle = targetRow.querySelector('.table-row-balance');
-                                    if (balanceEle) {
-                                        if ($(balanceEle).valCurrency() && $(this).valCurrency()) {
-                                            let balance = parseFloat($(balanceEle).valCurrency());
-                                            let total = parseFloat($(this).valCurrency());
-
-                                            let remain = balance - total;
-                                            if (remain >= 0) {
-                                                $(balanceEle).attr('value', String(remain));
-                                                $.fn.initMaskMoney2();
-                                            }
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    QuotationLoadDataHandle.minusInvoiceBalance(this);
                 }
             }
         });
@@ -811,6 +787,14 @@ $(function () {
 
         QuotationLoadDataHandle.$btnSaveInvoice.on('click', function () {
             QuotationLoadDataHandle.loadSaveSInvoice();
+        });
+
+        QuotationDataTableHandle.$tablePayment.on('click', '.btn-select-reconcile', function () {
+            QuotationLoadDataHandle.loadModalSReconcile(this);
+        });
+
+        QuotationLoadDataHandle.$btnSaveReconcile.on('click', function () {
+            QuotationLoadDataHandle.loadSaveSReconcile();
         });
 
         QuotationDataTableHandle.$tablePayment.on('click', '.del-row', function () {
@@ -998,6 +982,7 @@ $(function () {
                     'indicator_net_income',
                     // payment stage tab
                     'sale_order_payment_stage',
+                    'sale_order_invoice',
                     // abstract
                     'system_status',
                     'next_node_collab_id',

@@ -248,6 +248,13 @@ var jampack = function () {
         $wrapper.removeAttr('data-hover');
         return false;
     });
+    $('.hk-menu').on('mouseenter', function(e){
+        if ($(this).closest('.hk-menu').length)
+            setTimeout(()=>this.classList.add('active'), 600)
+    })
+    .on('mouseleave', function () {
+        this.classList.remove('active')
+    });
 
     /*Horizontal Menu*/
     $(document).on('click', '[data-layout="horizontal"] .navbar-toggle', function (e) {

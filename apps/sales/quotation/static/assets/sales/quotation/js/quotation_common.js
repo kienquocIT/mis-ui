@@ -1424,32 +1424,11 @@ class QuotationLoadDataHandle {
     static loadChangePaymentTerm() {
         let formSubmit = $('#frm_quotation_create');
         if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
-            let $table = $('#datable-quotation-payment-stage');
-            let term = [];
-            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
-                if (dataSelected) {
-                    term = dataSelected?.['term'];
-                    let dataDateType = JSON.parse($('#payment_date_type').text());
-                    for (let termData of term) {
-                        // termData['title'] = dataDateType[termData?.['after']][1];
-                        let isNum = parseFloat(termData?.['value']);
-                        if (!isNum) {  // balance
-                            termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
-                        }
-                    }
-                }
-            }
-            $table.DataTable().rows().every(function () {
-                let row = this.node();
-                let eleInstallment = row.querySelector('.table-row-installment');
-                if (eleInstallment) {
-                    eleInstallment.removeAttribute('disabled');
-                    QuotationLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
-                    $(eleInstallment).val('').trigger('change');
-                }
-            });
+            QuotationDataTableHandle.$tableInvoice.DataTable().clear().draw();
+            QuotationDataTableHandle.$tablePayment.DataTable().clear().draw();
+            // QuotationLoadDataHandle.loadPaymentStage();
         }
+        return true;
     };
 
     // TABLE PAYMENT STAGE
@@ -1503,10 +1482,11 @@ class QuotationLoadDataHandle {
         let ratioEle = row.querySelector('.table-row-ratio');
         let eleDate = row.querySelector('.table-row-date');
         let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+        let valTotalEle = row.querySelector('.table-row-value-total');
         let dueDateEle = row.querySelector('.table-row-due-date');
         if ($(ele).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
-            if (remarkELe && ratioEle && eleDate && valBeforeEle && dueDateEle && dataSelected && dataDateType) {
+            if (remarkELe && ratioEle && eleDate && valBeforeEle && valTotalEle && dueDateEle && dataSelected && dataDateType) {
                 $(remarkELe).val(dataDateType[dataSelected?.['after']][1]);
                 ratioEle.setAttribute('readonly', 'true');
                 $(ratioEle).val('');
@@ -1517,6 +1497,7 @@ class QuotationLoadDataHandle {
                     }
                     if (dataSelected?.['unit_type'] === 1) {
                         $(valBeforeEle).attr('value', String(dataSelected?.['value']));
+                        $(valTotalEle).attr('value', String(dataSelected?.['value']));
                     }
                 }
                 dueDateEle.setAttribute('disabled', 'true');
@@ -1798,13 +1779,14 @@ class QuotationLoadDataHandle {
 
                         let valBefore = $(valBeforeEle).valCurrency();
                         let dataTax = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
-                        let tax = dataTax?.['rate'];
+                        let tax = dataTax?.['rate'] ? dataTax?.['rate'] : 0;
                         let datasRelateTax = QuotationCalculateCaseHandle.getDatasRelateTax(valBefore, tax);
 
                         $(valTaxEle).attr('value', datasRelateTax?.['valTax']);
                         $(valTotalEle).attr('value', datasRelateTax?.['valAfter']);
                         $.fn.initMaskMoney2();
-                        $(valTotalEle).trigger('change');
+                        QuotationLoadDataHandle.loadMinusBalance();
+                        QuotationStoreDataHandle.storeDtbData(5);
                     }
                 }
             }
@@ -1836,58 +1818,57 @@ class QuotationLoadDataHandle {
                 if (valBeforeEle && valReconcileEle && reconcileDataEle && taxEle && valTaxEle && valTotalEle && reconcile > 0) {
                     $(valReconcileEle).attr('value', reconcile);
                     let dataTax = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
-                    let tax = dataTax?.['rate'];
+                    let tax = dataTax?.['rate'] ? dataTax?.['rate'] : 0;
                     let datasRelateTax = QuotationCalculateCaseHandle.getDatasRelateTax(reconcile, tax);
                     $(valTaxEle).attr('value', $(valTaxEle).valCurrency() + datasRelateTax?.['valTax']);
                     $(valTotalEle).attr('value', $(valTotalEle).valCurrency() + datasRelateTax?.['valTax']);
                     $.fn.initMaskMoney2();
-                    $(valTotalEle).trigger('change');
                     $(reconcileDataEle).val(JSON.stringify(reconcileData));
+                    QuotationLoadDataHandle.loadMinusBalance();
+                    QuotationStoreDataHandle.storeDtbData(5);
                 }
             }
         }
         return true;
     };
 
-    static minusInvoiceBalance(ele) {
-        let row = ele.closest('tr');
-        if (row) {
-            let invoiceDataEle = row.querySelector('.table-row-invoice-data');
-            let valBeforeEle = row.querySelector('.table-row-value-before-tax');
-            let valReconcileEle = row.querySelector('.table-row-value-reconcile');
-            let valTaxEle = row.querySelector('.table-row-value-tax');
-            if (invoiceDataEle && valBeforeEle && valReconcileEle && valTaxEle) {
-                if ($(invoiceDataEle).val()) {
-                    let invoiceData = JSON.parse($(invoiceDataEle).val());
-                    let targetEle = QuotationDataTableHandle.$tableInvoice[0].querySelector(`[data-id="${invoiceData?.['order']}"]`);
-                    if (targetEle) {
-                        let targetRow = targetEle.closest('tr');
-                        if (targetRow) {
-                            let totalEle = targetRow.querySelector('.table-row-total');
-                            let balanceEle = targetRow.querySelector('.table-row-balance');
-                            let paidFullEle = targetRow.querySelector('.paid-full');
-                            if (totalEle && balanceEle && paidFullEle) {
-                                let totalInvoice = parseFloat($(totalEle).valCurrency());
-                                let before = parseFloat($(valBeforeEle).valCurrency());
-                                let reconcile = parseFloat($(valReconcileEle).valCurrency());
-                                let tax = parseFloat($(valTaxEle).valCurrency());
+    static loadMinusBalance() {
+        QuotationDataTableHandle.$tableInvoice.DataTable().rows().every(function () {
+            let rowI = this.node();
+            let rowIndex = QuotationDataTableHandle.$tableInvoice.DataTable().row(rowI).index();
+            let $row = QuotationDataTableHandle.$tableInvoice.DataTable().row(rowIndex);
+            let dataRow = $row.data();
 
-                                paidFullEle.setAttribute('hidden', 'true');
-                                let remain = totalInvoice - (before + reconcile + tax);
-                                if (remain >= 0) {
-                                    $(balanceEle).attr('value', String(remain));
-                                    $.fn.initMaskMoney2();
-                                    if (remain === 0) {
-                                        paidFullEle.removeAttribute('hidden');
-                                    }
-                                }
+            let totalEle = rowI.querySelector('.table-row-total');
+            let balanceEle = rowI.querySelector('.table-row-balance');
+            if (totalEle && balanceEle) {
+                $(balanceEle).attr('value', String($(totalEle).valCurrency()));
+                $.fn.initMaskMoney2();
+                let balance = 0;
+
+                QuotationDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+                    let rowP = this.node();
+                    let invoiceDataEle = rowP.querySelector('.table-row-invoice-data');
+                    let valBeforeEle = rowP.querySelector('.table-row-value-before-tax');
+                    let valReconcileEle = rowP.querySelector('.table-row-value-reconcile');
+                    let valTaxEle = rowP.querySelector('.table-row-value-tax');
+                    if (invoiceDataEle && valBeforeEle && valReconcileEle && valTaxEle) {
+                        if ($(invoiceDataEle).val()) {
+                            let invoiceData = JSON.parse($(invoiceDataEle).val());
+                            let before = parseFloat($(valBeforeEle).valCurrency());
+                            let reconcile = parseFloat($(valReconcileEle).valCurrency());
+                            let tax = parseFloat($(valTaxEle).valCurrency());
+                            if (dataRow?.['order'] === invoiceData?.['order']) {
+                                balance += (before + reconcile + tax);
                             }
                         }
                     }
-                }
+
+                });
+                $(balanceEle).attr('value', String($(balanceEle).valCurrency() - balance));
+                $.fn.initMaskMoney2();
             }
-        }
-        return true;
+        });
     };
 
     // TABLE COST
@@ -4782,7 +4763,7 @@ class QuotationDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span>${row?.['tax_data']?.['title']}</span>`;
+                        return `<span>${row?.['tax_data']?.['title'] ? row?.['tax_data']?.['title'] : ''}</span>`;
                     }
                 },
                 {

@@ -101,6 +101,7 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
@@ -361,6 +362,7 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         tableExpense.on('click', '.del-row', function (e) {
@@ -408,6 +410,7 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderStoreDataHandle.storeDtbData(5);
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 LeaseOrderLoadDataHandle.loadDataTableCost();
             }
@@ -813,6 +816,7 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(2);
             LeaseOrderStoreDataHandle.storeDtbData(3);
             LeaseOrderStoreDataHandle.storeDtbData(4);
+            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         LeaseOrderDataTableHandle.$tableInvoice.on('click', '.btn-select-term', function () {
@@ -871,9 +875,6 @@ $(function () {
                         }
                     }
                 }
-            }
-            if ($(this).hasClass('table-row-value-total')) {
-                LeaseOrderLoadDataHandle.minusInvoiceBalance(this);
             }
         });
 
@@ -1023,6 +1024,7 @@ $(function () {
                 'indicator_net_income',
                 // payment stage tab
                 'lease_payment_stage',
+                'lease_invoice',
                 // abstract
                 'system_status',
                 'next_node_collab_id',

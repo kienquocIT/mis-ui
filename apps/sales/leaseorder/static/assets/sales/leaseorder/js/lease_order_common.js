@@ -544,7 +544,7 @@ class LeaseOrderLoadDataHandle {
                 LeaseOrderLoadDataHandle.$btnSaveInvoice.attr('data-id', orderEle.innerHTML);
             }
         }
-        let datas = QuotationSubmitHandle.setupDataInvoice();
+        let datas = LeaseOrderSubmitHandle.setupDataInvoice();
         LeaseOrderDataTableHandle.$tableSInvoice.DataTable().clear().draw();
         LeaseOrderDataTableHandle.$tableSInvoice.DataTable().rows.add(datas).draw();
         return true;
@@ -560,7 +560,7 @@ class LeaseOrderLoadDataHandle {
         }
         let fnData = [];
         let check = parseInt(LeaseOrderLoadDataHandle.$btnSaveReconcile.attr('data-id'));
-        let datas = QuotationSubmitHandle.setupDataPaymentStage();
+        let datas = LeaseOrderSubmitHandle.setupDataPaymentStage();
         for (let data of datas) {
             if (data?.['order'] < check && data?.['invoice'] === null) {
                 fnData.push(data);
@@ -1382,6 +1382,49 @@ class LeaseOrderLoadDataHandle {
         return true;
     };
 
+    static loadReInitDataTableInvoice() {
+        let tableData = [];
+        let dataDetail = {};
+        if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            let eleDetail = $('#quotation-detail-data');
+            if (eleDetail && eleDetail.length > 0) {
+                if (eleDetail.val()) {
+                    dataDetail = JSON.parse(eleDetail.val());
+                    tableData = dataDetail?.['sale_order_invoice'];
+                }
+            }
+        } else {
+            LeaseOrderDataTableHandle.$tableInvoice.DataTable().rows().every(function () {
+                let row = this.node();
+                let rowIndex = LeaseOrderDataTableHandle.$tableInvoice.DataTable().row(row).index();
+                let $row = LeaseOrderDataTableHandle.$tableInvoice.DataTable().row(rowIndex);
+                let dataRow = $row.data();
+
+                tableData.push(dataRow);
+            });
+
+            if (tableData.length === 0 && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
+                let eleDetail = $('#quotation-detail-data');
+                if (eleDetail && eleDetail.length > 0) {
+                    if (eleDetail.val()) {
+                        dataDetail = JSON.parse(eleDetail.val());
+                        tableData = dataDetail?.['sale_order_invoice'];
+                    }
+                }
+            }
+        }
+        LeaseOrderDataTableHandle.$tableInvoice.DataTable().destroy();
+        LeaseOrderDataTableHandle.dataTableInvoice();
+        LeaseOrderDataTableHandle.$tableInvoice.DataTable().rows.add(tableData).draw();
+        if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+            LeaseOrderLoadDataHandle.loadTableDisabled(LeaseOrderDataTableHandle.$tableInvoice);
+        }
+        $.fn.initMaskMoney2();
+        // set again WF runtime
+        LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
+        return true;
+    };
+
     static loadReInitPrice(data) {
         let $table = $('#datable-quotation-create-product');
         $table.DataTable().rows().every(function () {
@@ -1423,31 +1466,9 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadChangePaymentTerm() {
-        if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
-            let $table = $('#datable-quotation-payment-stage');
-            let term = [];
-            if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
-                if (dataSelected) {
-                    term = dataSelected?.['term'];
-                    for (let termData of term) {
-                        let isNum = parseFloat(termData?.['value']);
-                        if (!isNum) {  // balance
-                            termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
-                        }
-                    }
-                }
-            }
-            $table.DataTable().rows().every(function () {
-                let row = this.node();
-                let eleInstallment = row.querySelector('.table-row-installment');
-                if (eleInstallment) {
-                    eleInstallment.removeAttribute('disabled');
-                    LeaseOrderLoadDataHandle.loadInitS2($(eleInstallment), term, {}, null, true);
-                    $(eleInstallment).val('').trigger('change');
-                }
-            });
-        }
+        LeaseOrderDataTableHandle.$tableInvoice.DataTable().clear().draw();
+        LeaseOrderDataTableHandle.$tablePayment.DataTable().clear().draw();
+        return true;
     };
 
     // TABLE PAYMENT STAGE
@@ -1501,10 +1522,11 @@ class LeaseOrderLoadDataHandle {
         let ratioEle = row.querySelector('.table-row-ratio');
         let eleDate = row.querySelector('.table-row-date');
         let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+        let valTotalEle = row.querySelector('.table-row-value-total');
         let dueDateEle = row.querySelector('.table-row-due-date');
         if ($(ele).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
-            if (remarkELe && ratioEle && eleDate && valBeforeEle && dueDateEle && dataSelected && dataDateType) {
+            if (remarkELe && ratioEle && eleDate && valBeforeEle && valTotalEle && dueDateEle && dataSelected && dataDateType) {
                 $(remarkELe).val(dataDateType[dataSelected?.['after']][1]);
                 ratioEle.setAttribute('readonly', 'true');
                 $(ratioEle).val('');
@@ -1515,6 +1537,7 @@ class LeaseOrderLoadDataHandle {
                     }
                     if (dataSelected?.['unit_type'] === 1) {
                         $(valBeforeEle).attr('value', String(dataSelected?.['value']));
+                        $(valTotalEle).attr('value', String(dataSelected?.['value']));
                     }
                 }
                 dueDateEle.setAttribute('disabled', 'true');
@@ -1786,13 +1809,13 @@ class LeaseOrderLoadDataHandle {
 
                         let valBefore = $(valBeforeEle).valCurrency();
                         let dataTax = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
-                        let tax = dataTax?.['rate'];
+                        let tax = dataTax?.['rate'] ? dataTax?.['rate'] : 0;
                         let datasRelateTax = LeaseOrderCalculateCaseHandle.getDatasRelateTax(valBefore, tax);
 
                         $(valTaxEle).attr('value', datasRelateTax?.['valTax']);
                         $(valTotalEle).attr('value', datasRelateTax?.['valAfter']);
                         $.fn.initMaskMoney2();
-                        $(valTotalEle).trigger('change');
+                        LeaseOrderLoadDataHandle.loadMinusBalance();
                     }
                 }
             }
@@ -1824,58 +1847,56 @@ class LeaseOrderLoadDataHandle {
                 if (valBeforeEle && valReconcileEle && reconcileDataEle && taxEle && valTaxEle && valTotalEle && reconcile > 0) {
                     $(valReconcileEle).attr('value', reconcile);
                     let dataTax = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
-                    let tax = dataTax?.['rate'];
+                    let tax = dataTax?.['rate'] ? dataTax?.['rate'] : 0;
                     let datasRelateTax = LeaseOrderCalculateCaseHandle.getDatasRelateTax(reconcile, tax);
                     $(valTaxEle).attr('value', $(valTaxEle).valCurrency() + datasRelateTax?.['valTax']);
                     $(valTotalEle).attr('value', $(valTotalEle).valCurrency() + datasRelateTax?.['valTax']);
                     $.fn.initMaskMoney2();
-                    $(valTotalEle).trigger('change');
                     $(reconcileDataEle).val(JSON.stringify(reconcileData));
+                    LeaseOrderLoadDataHandle.loadMinusBalance();
                 }
             }
         }
         return true;
     };
 
-    static minusInvoiceBalance(ele) {
-        let row = ele.closest('tr');
-        if (row) {
-            let invoiceDataEle = row.querySelector('.table-row-invoice-data');
-            let valBeforeEle = row.querySelector('.table-row-value-before-tax');
-            let valReconcileEle = row.querySelector('.table-row-value-reconcile');
-            let valTaxEle = row.querySelector('.table-row-value-tax');
-            if (invoiceDataEle && valBeforeEle && valReconcileEle && valTaxEle) {
-                if ($(invoiceDataEle).val()) {
-                    let invoiceData = JSON.parse($(invoiceDataEle).val());
-                    let targetEle = LeaseOrderDataTableHandle.$tableInvoice[0].querySelector(`[data-id="${invoiceData?.['order']}"]`);
-                    if (targetEle) {
-                        let targetRow = targetEle.closest('tr');
-                        if (targetRow) {
-                            let totalEle = targetRow.querySelector('.table-row-total');
-                            let balanceEle = targetRow.querySelector('.table-row-balance');
-                            let paidFullEle = targetRow.querySelector('.paid-full');
-                            if (totalEle && balanceEle && paidFullEle) {
-                                let totalInvoice = parseFloat($(totalEle).valCurrency());
-                                let before = parseFloat($(valBeforeEle).valCurrency());
-                                let reconcile = parseFloat($(valReconcileEle).valCurrency());
-                                let tax = parseFloat($(valTaxEle).valCurrency());
+    static loadMinusBalance() {
+        LeaseOrderDataTableHandle.$tableInvoice.DataTable().rows().every(function () {
+            let rowI = this.node();
+            let rowIndex = LeaseOrderDataTableHandle.$tableInvoice.DataTable().row(rowI).index();
+            let $row = LeaseOrderDataTableHandle.$tableInvoice.DataTable().row(rowIndex);
+            let dataRow = $row.data();
 
-                                paidFullEle.setAttribute('hidden', 'true');
-                                let remain = totalInvoice - (before + reconcile + tax);
-                                if (remain >= 0) {
-                                    $(balanceEle).attr('value', String(remain));
-                                    $.fn.initMaskMoney2();
-                                    if (remain === 0) {
-                                        paidFullEle.removeAttribute('hidden');
-                                    }
-                                }
+            let totalEle = rowI.querySelector('.table-row-total');
+            let balanceEle = rowI.querySelector('.table-row-balance');
+            if (totalEle && balanceEle) {
+                $(balanceEle).attr('value', String($(totalEle).valCurrency()));
+                $.fn.initMaskMoney2();
+                let balance = 0;
+
+                LeaseOrderDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+                    let rowP = this.node();
+                    let invoiceDataEle = rowP.querySelector('.table-row-invoice-data');
+                    let valBeforeEle = rowP.querySelector('.table-row-value-before-tax');
+                    let valReconcileEle = rowP.querySelector('.table-row-value-reconcile');
+                    let valTaxEle = rowP.querySelector('.table-row-value-tax');
+                    if (invoiceDataEle && valBeforeEle && valReconcileEle && valTaxEle) {
+                        if ($(invoiceDataEle).val()) {
+                            let invoiceData = JSON.parse($(invoiceDataEle).val());
+                            let before = parseFloat($(valBeforeEle).valCurrency());
+                            let reconcile = parseFloat($(valReconcileEle).valCurrency());
+                            let tax = parseFloat($(valTaxEle).valCurrency());
+                            if (dataRow?.['order'] === invoiceData?.['order']) {
+                                balance += (before + reconcile + tax);
                             }
                         }
                     }
-                }
+
+                });
+                $(balanceEle).attr('value', String($(balanceEle).valCurrency() - balance));
+                $.fn.initMaskMoney2();
             }
-        }
-        return true;
+        });
     };
 
     // TABLE COST
@@ -5365,7 +5386,7 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span>${row?.['tax_data']?.['title']}</span>`;
+                        return `<span>${row?.['tax_data']?.['title'] ? row?.['tax_data']?.['title'] : ''}</span>`;
                     }
                 },
                 {
@@ -7244,6 +7265,10 @@ class LeaseOrderStoreDataHandle {
             datas = LeaseOrderSubmitHandle.setupDataPaymentStage();
             $table = LeaseOrderDataTableHandle.$tablePayment;
         }
+        if (type === 5) {
+            datas = LeaseOrderSubmitHandle.setupDataInvoice();
+            $table = LeaseOrderDataTableHandle.$tableInvoice;
+        }
         if (datas.length > 0 && $table) {
             for (let data of datas) {
                 if (!dataJSON.hasOwnProperty(String(data?.['order']))) {
@@ -7270,6 +7295,9 @@ class LeaseOrderStoreDataHandle {
             }
             if (type === 4) {
                 LeaseOrderLoadDataHandle.loadReInitDataTablePayment();
+            }
+            if (type === 5) {
+                LeaseOrderLoadDataHandle.loadReInitDataTableInvoice();
             }
         }
         return true;

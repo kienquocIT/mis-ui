@@ -104,6 +104,7 @@ $(function () {
             QuotationStoreDataHandle.storeDtbData(2);
             QuotationStoreDataHandle.storeDtbData(3);
             QuotationStoreDataHandle.storeDtbData(4);
+            QuotationStoreDataHandle.storeDtbData(5);
         });
 
         QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
@@ -321,6 +322,7 @@ $(function () {
             QuotationStoreDataHandle.storeDtbData(2);
             QuotationStoreDataHandle.storeDtbData(3);
             QuotationStoreDataHandle.storeDtbData(4);
+            QuotationStoreDataHandle.storeDtbData(5);
         });
 
         tableExpense.on('click', '.del-row', function (e) {
@@ -368,6 +370,7 @@ $(function () {
             QuotationStoreDataHandle.storeDtbData(2);
             QuotationStoreDataHandle.storeDtbData(3);
             QuotationStoreDataHandle.storeDtbData(4);
+            QuotationStoreDataHandle.storeDtbData(5);
             if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 QuotationLoadDataHandle.loadDataTableCost();
             }
@@ -773,9 +776,6 @@ $(function () {
                             }
                         }
                     }
-                }
-                if ($(this).hasClass('table-row-value-total')) {
-                    QuotationLoadDataHandle.minusInvoiceBalance(this);
                 }
             }
         });

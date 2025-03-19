@@ -483,9 +483,32 @@
                             </div>
                             <div class="tab-pane fade" id="tab_payment">
                                 <div class="row">
+                                    <b>{% trans 'Invoice plan' %}</b>
+                                    <table
+                                            id="datable-quotation-invoice"
+                                            class="table nowrap min-w-1366p w-100 mb-5"
+                                    >
+                                        <thead>
+                                        <tr class="bg-light">
+                                            <th>{% trans 'Invoice issue' %}</th>
+                                            <th>{% trans 'Description' %}</th>
+                                            <th>{% trans 'Invoice date' %}</th>
+                                            <th>{% trans 'Percentage' %}</th>
+                                            <th>{% trans 'Tax' %}</th>
+                                            <th>{% trans 'Total value' %}</th>
+                                            <th>{% trans 'Balance due' %}</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <b>{% trans 'Payment plan' %}</b>
                                     <table
                                             id="datable-quotation-payment-stage"
-                                            class="table nowrap min-w-1920p w-100 mb-5"
+                                            class="table nowrap min-w-2000p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr class="bg-light">
@@ -493,14 +516,15 @@
                                             <th>{% trans 'Installment' %}</th>
                                             <th>{% trans 'Description' %}</th>
                                             <th>{% trans 'Date' %}</th>
-                                            <th>{% trans 'Term date type' %}</th>
-                                            <th>% {% trans 'Payment' %}</th>
-                                            <th>{% trans 'Value before tax' %}</th>
-                                            <th>{% trans 'Issue invoice' %}</th>
-                                            <th>{% trans 'Value invoice after tax' %}</th>
-                                            <th>{% trans 'Total payment' %}</th>
                                             <th>{% trans 'Due date' %}</th>
-                                            <th></th>
+                                            <th>{% trans 'Percentage' %}</th>
+                                            <th>{% trans 'Invoice' %}</th>
+                                            <th>{% trans 'Payment before tax' %}</th>
+                                            <th>{% trans 'Reconcile' %}</th>
+                                            <th>{% trans 'Tax' %}</th>
+                                            <th>{% trans 'Tax value' %}</th>
+                                            <th>{% trans 'Total payment' %}</th>
+{#                                            <th></th>#}
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -876,8 +900,9 @@
                                 <thead>
                                 <tr class="bg-light">
                                     <th class="w-25">{% trans 'Installment' %}</th>
-                                    <th class="w-15">{% trans 'Description' %}</th>
+                                    <th class="w-25">{% trans 'Description' %}</th>
                                     <th class="w-25">{% trans 'Percentage' %}</th>
+                                    <th class="w-25">{% trans 'Specific amount' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>

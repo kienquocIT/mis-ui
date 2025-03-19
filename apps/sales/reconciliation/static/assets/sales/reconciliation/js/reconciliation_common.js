@@ -170,7 +170,7 @@ class ReconAction {
         else if (app_code === 'delivery.orderdeliverysub') {
             return $trans_script.attr('data-trans-delivery')
         }
-        else if (app_code === 'financialrecon.reconciliation') {
+        else if (app_code === 'financialcashflow.cashinflow') {
             return $trans_script.attr('data-trans-cif')
         }
         return ''

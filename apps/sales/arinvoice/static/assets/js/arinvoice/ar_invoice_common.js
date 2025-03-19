@@ -900,7 +900,7 @@ class ARInvoiceHandle {
         frm.dataForm['tax_number'] = tax_codeEle.val()
         frm.dataForm['billing_address_id'] = billingAddressEle.val()
         frm.dataForm['invoice_method'] = invoiceMethodEle.val()
-        frm.dataForm['bank_account_id'] = bankNumberEle.val()
+        frm.dataForm['bank_account_id'] = bankNumberEle.val() ? bankNumberEle.val() : null
         frm.dataForm['sale_order_mapped'] = saleOrderEle.val()
 
         frm.dataForm['posting_date'] = moment(postingDateEle.val(), "DD/MM/YYYY").format('YYYY-MM-DD')

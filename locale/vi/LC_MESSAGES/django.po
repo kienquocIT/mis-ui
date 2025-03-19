@@ -4402,6 +4402,10 @@ msgid "Request For"
 msgstr "Yêu cầu cho"
 
 #
+msgid "Create purchase request for"
+msgstr "Tạo YCMH cho"
+
+#
 msgid "Request"
 msgstr "Yêu cầu"
 
@@ -10056,8 +10060,8 @@ msgid "Cash outflow list"
 msgstr "Danh sách phiếu chi"
 
 #
-msgid "Customer pays by invoice"
-msgstr "Khách hàng thanh toán theo hóa đơn"
+msgid "Customers pay according to AR invoice"
+msgstr "Khách hàng thanh toán theo Hóa đơn bán hàng"
 
 #
 msgid "Payment discount"
@@ -10080,8 +10084,8 @@ msgid "Balance value"
 msgstr "Giá trị cân đối"
 
 #
-msgid "Customer prepay for purchase"
-msgstr "Khách hàng ứng trước tiền mua hàng"
+msgid "Customers pay in advance (not according to contract)"
+msgstr "Khách hàng tạm ứng trước (không theo hợp đồng)"
 
 #
 msgid "Payment method"
@@ -10108,8 +10112,8 @@ msgid "Bank account owner"
 msgstr "Chủ tài khoản"
 
 #
-msgid "Customer advance payment according to contract"
-msgstr "Khách hàng tạm ứng theo hợp đồng"
+msgid "Customers pay in advance (according to contract)"
+msgstr "Khách hàng tạm ứng trước (theo hợp đồng)"
 
 #
 msgid "Add Company Bank Account"

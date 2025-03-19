@@ -243,8 +243,8 @@ class CashInflowLoadPage {
             keyText: 'name',
         }).on('change', function () {
             if (element.val()) {
-                CashInflowAction.LoadCustomerAdvanceTable({'sale_order__customer_id': element.val()})
-                CashInflowAction.LoadARInvoiceTable({'customer_mapped_id': element.val()})
+                CashInflowAction.LoadCustomerAdvanceTable({'sale_order__customer_id': element.val(), 'cash_inflow_done': false})
+                CashInflowAction.LoadARInvoiceTable({'customer_mapped_id': element.val(),'cash_inflow_done': false})
             }
         })
     }
@@ -501,7 +501,7 @@ class CashInflowAction {
             $('.modal .form-check-input').prop('readonly', true).prop('disabled', true);
             $('.modal .form-control').prop('readonly', true).prop('disabled', true);
             $('.modal .form-select').prop('readonly', true).prop('disabled', true);
-            $('#cif_type_label').closest('span').removeAttr('data-bs-toggle').removeClass('dropdown-toggle')
+            // $('#cif_type_label').closest('span').removeAttr('data-bs-toggle').removeClass('dropdown-toggle')
             $('#payment-method-modal .modal-footer').remove();
             $('#detail-payment-value-modal .modal-footer').remove();
         }
@@ -586,25 +586,49 @@ class CashInflowHandle {
                     $description.val(data?.['description'])
 
                     $purchase_advance_value.attr('value', data?.['purchase_advance_value'] ? data?.['purchase_advance_value'] : 0)
-                    if (data?.['cash_in_customer_advance_data'].length > 0) {
-                        $('#cif_type_label').text($('#cif_type .dropdown-item:eq(0)').text()).attr('data-value', '0')
-                        $('#area_table_customer_advance').prop('hidden', false)
-                        $('#area_table_ar_invoice').prop('hidden', true)
-                    }
-                    else if (data?.['cash_in_ar_invoice_data'].length > 0) {
-                        $('#cif_type_label').text($('#cif_type .dropdown-item:eq(1)').text()).attr('data-value', '1')
-                        $('#area_table_customer_advance').prop('hidden', true)
-                        $('#area_table_ar_invoice').prop('hidden', false)
-                    }
 
-                    if (data?.['system_status'] === 3 && data?.['cash_in_customer_advance_data'].length === 0 && data?.['cash_in_ar_invoice_data'].length === 0) {
-                        CashInflowAction.LoadCustomerAdvanceTable()
-                        CashInflowAction.LoadARInvoiceTable()
+                    if (data?.['system_status'] === 3) {
+                        if (data?.['cash_in_customer_advance_data'].length === 0 && data?.['cash_in_ar_invoice_data'].length === 0) {
+                            // phiếu đã duyệt nhưng chỉ thu tạm ứng không theo hđ
+                            CashInflowAction.LoadCustomerAdvanceTable()
+                            CashInflowAction.LoadARInvoiceTable()
+                        }
+                        else if (data?.['cash_in_customer_advance_data'].length > 0) {
+                            $('#cif_type_label').text($('#cif_type .dropdown-item:eq(0)').text()).attr('data-value', '0')
+                            $('#area_table_customer_advance').prop('hidden', false)
+                            $('#area_table_ar_invoice').prop('hidden', true)
+                            // nếu thu tạm ứng theo hđ
+                            CashInflowAction.LoadCustomerAdvanceTable(
+                                {'sale_order__customer_id': $customer.val()},
+                                data?.['cash_in_customer_advance_data'],
+                                data?.['system_status'] === 3
+                            )
+                            CashInflowAction.LoadARInvoiceTable()
+                        }
+                        else if (data?.['cash_in_ar_invoice_data'].length > 0) {
+                            $('#cif_type_label').text($('#cif_type .dropdown-item:eq(1)').text()).attr('data-value', '1')
+                            $('#area_table_customer_advance').prop('hidden', true)
+                            $('#area_table_ar_invoice').prop('hidden', false)
+                            // nếu thu theo hóa đơn
+                            CashInflowAction.LoadCustomerAdvanceTable()
+                            CashInflowAction.LoadARInvoiceTable(
+                                {'customer_mapped_id': $customer.val()},
+                                data?.['cash_in_ar_invoice_data'],
+                                data?.['system_status'] === 3
+                            )
+                        }
                     }
                     else {
-                        // tạm ứng không theo hđ đã duyệt => thì khỏi load 2 bảng
-                        CashInflowAction.LoadCustomerAdvanceTable({'sale_order__customer_id': $customer.val()}, data?.['cash_in_customer_advance_data'], data?.['system_status'] === 3)
-                        CashInflowAction.LoadARInvoiceTable({'customer_mapped_id': $customer.val()}, data?.['cash_in_ar_invoice_data'], data?.['system_status'] === 3)
+                        CashInflowAction.LoadCustomerAdvanceTable(
+                            {'sale_order__customer_id': $customer.val()},
+                            data?.['cash_in_customer_advance_data'],
+                            data?.['system_status'] === 3
+                        )
+                        CashInflowAction.LoadARInvoiceTable(
+                            {'customer_mapped_id': $customer.val()},
+                            data?.['cash_in_ar_invoice_data'],
+                            data?.['system_status'] === 3
+                        )
                     }
 
                     $total_payment.attr('value', data?.['total_value'])

@@ -3,7 +3,7 @@
 <div class="row mt-5">
     <div class="col-12 col-md-6 col-lg-6">
         <div class="form-group">
-            <label for="purchase_advance_value" class="form-label fw-bold">
+            <label for="purchase_advance_value" class="form-label fw-bold h5">
                 {% trans "Customers pay in advance (not according to contract)" %}
             </label>
             <input name="purchase_advance_value" class="form-control mask-money" value="0" id="purchase_advance_value">
@@ -14,13 +14,13 @@
     <div class="col-12 col-md-6 col-lg-6">
         <div class="dropdown">
             <span data-bs-toggle="dropdown">
-                <label data-value="0" id="cif_type_label" class="form-label fw-bold">
+                <label data-value="0" id="cif_type_label" class="form-label fw-bold h5">
                     {% trans 'Customers pay in advance (according to contract)' %}
                 </label><i class="fa-regular fa-square-caret-down text-primary ml-2"></i>
             </span>
             <div id="cif_type" role="menu" class="dropdown-menu">
-                <a class="dropdown-item" href="#" data-value="0">{% trans 'Customers pay in advance (according to contract)' %}</a>
-                <a class="dropdown-item" href="#" data-value="1">{% trans 'Customers pay according to AR invoice' %}</a>
+                <a class="dropdown-item" href="#" data-value="0"><i class="dropdown-icon fa-solid fa-hand-point-right"></i><span>{% trans 'Customers pay in advance (according to contract)' %}</span></a>
+                <a class="dropdown-item" href="#" data-value="1"><i class="dropdown-icon fa-solid fa-hand-point-right"></i><span>{% trans 'Customers pay according to AR invoice' %}</span></a>
             </div>
         </div>
     </div>

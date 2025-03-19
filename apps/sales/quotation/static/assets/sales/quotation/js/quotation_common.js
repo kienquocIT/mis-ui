@@ -4408,10 +4408,16 @@ class QuotationDataTableHandle {
                     targets: 3,
                     width: '10%',
                     render: (data, type, row) => {
+                        let ratio = '';
+                        if (row?.['ratio']) {
+                            if (row?.['ratio'] !== null) {
+                                ratio = row?.['ratio'];
+                            }
+                        }
                         return `<div class="d-flex justify-content-between align-items-center">
                                     <div class="input-group">
                                         <div class="input-affix-wrapper">
-                                            <input type="text" class="form-control table-row-ratio valid-num" value="${row?.['ratio'] ? row?.['ratio'] : '0'}" readonly>
+                                            <input type="text" class="form-control table-row-ratio valid-num" value="${ratio}" readonly>
                                             <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                         </div>
                                     </div>
@@ -4757,7 +4763,13 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span>${row?.['ratio']} %</span>`;
+                        let txt = ``;
+                        if (row?.['ratio']) {
+                            if (row?.['ratio'] !== null) {
+                                txt = `<span>${row?.['ratio']} %</span>`;
+                            }
+                        }
+                        return txt;
                     }
                 },
                 {
@@ -4826,7 +4838,13 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span>${row?.['ratio']} %</span>`;
+                        let txt = ``;
+                        if (row?.['ratio']) {
+                            if (row?.['ratio'] !== null) {
+                                txt = `<span>${row?.['ratio']} %</span>`;
+                            }
+                        }
+                        return txt;
                     }
                 },
                 {
@@ -4971,7 +4989,7 @@ class QuotationDataTableHandle {
             // Check if the button already exists before appending
             if (!$('#btn-add-payment-stage').length) {
                 let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="sale_order_payment_stage">
-                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
+                                    <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-detail')}</span></span>
                                 </button>`);
                 textFilter$.append(
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
@@ -7731,15 +7749,9 @@ class QuotationSubmitHandle {
             if (type === 0) {
                 if (_form.dataForm?.['sale_order_payment_stage'] && _form.dataForm?.['total_product']) {
                     if (_form.dataForm?.['sale_order_payment_stage'].length > 0) {
-                        let totalRatio = 0;
                         let totalPayment = 0;
                         for (let payment of _form.dataForm['sale_order_payment_stage']) {
-                            totalRatio += payment?.['ratio'] ? payment?.['ratio'] : 0;
                             totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
-                        }
-                        if (totalRatio !== 100) {
-                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-ratio-payment')}, 'failure');
-                            return false;
                         }
                         if (totalPayment !== _form.dataForm?.['total_product']) {
                             $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');

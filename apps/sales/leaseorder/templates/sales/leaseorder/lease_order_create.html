@@ -854,6 +854,124 @@
                 </div>
             </div>
 
+            <div
+                    class="modal fade" id="selectTermModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectTermModal"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select term' %}</b></h5>
+                            <button
+                                    type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                    data-bs-dismiss="modal"
+                            ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table
+                                    id="table-select-term"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th class="w-25">{% trans 'Installment' %}</th>
+                                    <th class="w-15">{% trans 'Description' %}</th>
+                                    <th class="w-25">{% trans 'Percentage' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-term" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                    class="modal fade" id="selectInvoiceModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectInvoiceModal"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select invoice plan' %}</b></h5>
+                            <button
+                                    type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                    data-bs-dismiss="modal"
+                            ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table
+                                    id="table-select-invoice"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th class="w-15">{% trans 'Invoice issue' %}</th>
+                                    <th class="w-25">{% trans 'Description' %}</th>
+                                    <th class="w-10">{% trans 'Percentage' %}</th>
+                                    <th class="w-15">{% trans 'Tax' %}</th>
+                                    <th class="w-25">{% trans 'Total value' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-invoice" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                    class="modal fade" id="selectReconcileModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectReconcileModal"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select invoice plan' %}</b></h5>
+                            <button
+                                    type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                    data-bs-dismiss="modal"
+                            ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table
+                                    id="table-select-reconcile"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th class="w-15">{% trans 'Invoice issue' %}</th>
+                                    <th class="w-25">{% trans 'Description' %}</th>
+                                    <th class="w-10">{% trans 'Percentage' %}</th>
+                                    <th class="w-15">{% trans 'Tax' %}</th>
+                                    <th class="w-25">{% trans 'Total value' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-reconcile" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="offcanvas offcanvas-end w-85" tabindex="-1" id="viewDepreciationDetail" aria-labelledby="offcanvasTopLabel">
                 <div class="modal-header">
                     <h5><b>{% trans 'Depreciation detail' %}</b></h5>
@@ -1007,7 +1125,7 @@
         data-copy-successfully="{% trans "Copy successfully" %}"
         data-validate-due-date="{% trans "Invalid due date" %}"
         data-validate-total-ratio-payment="{% trans "Total payment ratio must be 100%" %}"
-        data-validate-total-payment="{% trans "Total payment must equal to total after tax" %}"
+        data-validate-total-payment="{% trans "Paid in full" %}"
         data-validate-ss-role="{% trans "Opportunity is disabled because employee in short sales roles" %}"
         data-promotion="{% trans "Promotion" %}"
         data-shipping="{% trans "Shipping fee" %}"

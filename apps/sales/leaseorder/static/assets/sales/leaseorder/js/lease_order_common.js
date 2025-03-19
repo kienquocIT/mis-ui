@@ -24,6 +24,9 @@ class LeaseOrderLoadDataHandle {
     static $btnSaveCost = $('#btn-save-select-cost');
     static $depreciationModal = $('#viewDepreciationDetail');
     static $btnSaveDepreciation = $('#btn-save-depreciation-detail');
+    static $btnSaveTerm = $('#btn-save-select-term');
+    static $btnSaveInvoice = $('#btn-save-select-invoice');
+    static $btnSaveReconcile = $('#btn-save-select-reconcile');
     static dataAssetType = [
         {'id': '', 'title': 'Select...',},
         {'id': 1, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-1')},
@@ -505,6 +508,67 @@ class LeaseOrderLoadDataHandle {
                 }
             )
         }
+        return true;
+    };
+
+    static loadModalSTerm(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let orderEle = row.querySelector('.table-row-order');
+            if (orderEle) {
+                LeaseOrderLoadDataHandle.$btnSaveTerm.attr('data-id', orderEle.innerHTML);
+            }
+        }
+        let term = [];
+        if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
+            if (dataSelected) {
+                term = dataSelected?.['term'];
+                for (let termData of term) {
+                    let isNum = parseFloat(termData?.['value']);
+                    if (!isNum) {  // balance
+                        termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
+                    }
+                }
+            }
+        }
+        LeaseOrderDataTableHandle.$tableSTerm.DataTable().clear().draw();
+        LeaseOrderDataTableHandle.$tableSTerm.DataTable().rows.add(term).draw();
+        return true;
+    };
+
+    static loadModalSInvoice(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let orderEle = row.querySelector('.table-row-order');
+            if (orderEle) {
+                LeaseOrderLoadDataHandle.$btnSaveInvoice.attr('data-id', orderEle.innerHTML);
+            }
+        }
+        let datas = QuotationSubmitHandle.setupDataInvoice();
+        LeaseOrderDataTableHandle.$tableSInvoice.DataTable().clear().draw();
+        LeaseOrderDataTableHandle.$tableSInvoice.DataTable().rows.add(datas).draw();
+        return true;
+    };
+
+    static loadModalSReconcile(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let orderEle = row.querySelector('.table-row-order');
+            if (orderEle) {
+                LeaseOrderLoadDataHandle.$btnSaveReconcile.attr('data-id', orderEle.innerHTML);
+            }
+        }
+        let fnData = [];
+        let check = parseInt(LeaseOrderLoadDataHandle.$btnSaveReconcile.attr('data-id'));
+        let datas = QuotationSubmitHandle.setupDataPaymentStage();
+        for (let data of datas) {
+            if (data?.['order'] < check && data?.['invoice'] === null) {
+                fnData.push(data);
+            }
+        }
+        LeaseOrderDataTableHandle.$tableSReconcile.DataTable().clear().draw();
+        LeaseOrderDataTableHandle.$tableSReconcile.DataTable().rows.add(fnData).draw();
         return true;
     };
 
@@ -1392,13 +1456,42 @@ class LeaseOrderLoadDataHandle {
         let order = LeaseOrderDataTableHandle.$tablePayment[0].querySelectorAll('.table-row-order').length + 1;
         let dataAdd = {
             'order': order,
-            'payment_ratio': 0,
+            'ratio': 0,
             'value_before_tax': 0,
             'is_ar_invoice': false,
         };
         LeaseOrderDataTableHandle.$tablePayment.DataTable().row.add(dataAdd).draw().node();
         // mask money
         $.fn.initMaskMoney2();
+        return true;
+    };
+
+    static loadPaymentStage() {
+        let datas = [];
+        if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
+            if (dataSelected) {
+                let terms = dataSelected?.['term'] ? dataSelected?.['term'] : [];
+                let order = 1;
+                for (let term of terms) {
+                    datas.push({
+                        'order': order,
+                        'term_id': term?.['id'],
+                    })
+                    order++;
+                }
+            }
+        }
+        LeaseOrderDataTableHandle.$tablePayment.DataTable().clear().draw();
+        LeaseOrderDataTableHandle.$tablePayment.DataTable().rows.add(datas).draw();
+
+        LeaseOrderDataTableHandle.$tablePayment.DataTable().rows().every(function () {
+            let row = this.node();
+            let installmentEle = row.querySelector('.table-row-installment');
+            if (installmentEle) {
+                $(installmentEle).trigger('change');
+            }
+        })
         return true;
     };
 
@@ -1563,6 +1656,202 @@ class LeaseOrderLoadDataHandle {
                 LeaseOrderLoadDataHandle.loadPSValueBeforeTax(eleValueBT, $(eleRatio).val());
             }
         });
+    };
+
+    static loadAddInvoice() {
+        let total = 0;
+        LeaseOrderDataTableHandle.$tableInvoice.DataTable().rows().every(function () {
+            let row = this.node();
+            let totalEle = row.querySelector('.table-row-total');
+            if (totalEle) {
+                if ($(totalEle).valCurrency()) {
+                    total += $(totalEle).valCurrency();
+                }
+            }
+        });
+        if (total > 0) {
+            let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                if (tableProductFt) {
+                    let totalSOEle = tableProductFt.querySelector('.quotation-create-product-total-raw');
+                    if (totalSOEle) {
+                        let totalSO = parseFloat(totalSOEle.value);
+                        if (total >= totalSO) {
+                            $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        let orderEleList = LeaseOrderDataTableHandle.$tableInvoice[0].querySelectorAll('.table-row-order');
+
+        LeaseOrderDataTableHandle.$tableInvoice.DataTable().row.add({"order": (orderEleList.length + 1)}).draw();
+        return true;
+    };
+
+    static loadSaveSTerm() {
+        let target = LeaseOrderDataTableHandle.$tableInvoice[0].querySelector(`[data-id="${LeaseOrderLoadDataHandle.$btnSaveTerm.attr('data-id')}"]`);
+        if (target) {
+            let targetRow = target.closest('tr');
+            if (targetRow) {
+                let termDataEle = targetRow.querySelector('.table-row-term-data');
+                let ratioEle = targetRow.querySelector('.table-row-ratio');
+                let totalEle = targetRow.querySelector('.table-row-total');
+                let balanceEle = targetRow.querySelector('.table-row-balance');
+                if (termDataEle && ratioEle && totalEle && balanceEle) {
+                    let termData = [];
+                    let ratio = 0;
+                    for (let checkedEle of LeaseOrderDataTableHandle.$tableSTerm[0].querySelectorAll('.table-row-checkbox:checked')) {
+                        let row = checkedEle.closest('tr');
+                        if (row) {
+                            let rowIndex = LeaseOrderDataTableHandle.$tableSTerm.DataTable().row(row).index();
+                            let $row = LeaseOrderDataTableHandle.$tableSTerm.DataTable().row(rowIndex);
+                            let dataRow = $row.data();
+                            termData.push(dataRow);
+                            ratio += parseFloat(dataRow?.['value'] ? dataRow?.['value'] : "0");
+                        }
+                    }
+                    $(termDataEle).val(JSON.stringify(termData));
+                    $(ratioEle).val(ratio);
+                    if (ratio > 0) {
+                        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+                        if (tableProductWrapper) {
+                            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                            if (tableProductFt) {
+                                let totalSOEle = tableProductFt.querySelector('.quotation-create-product-total-raw');
+                                if (totalSOEle) {
+                                    let totalSO = parseFloat(totalSOEle.value);
+                                    let total = (ratio * totalSO) / 100;
+                                    $(totalEle).attr('value', String(total));
+                                    $(balanceEle).attr('value', String(total));
+                                    $.fn.initMaskMoney2();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    };
+
+    static loadSaveSInvoice() {
+        let target = LeaseOrderDataTableHandle.$tablePayment[0].querySelector(`[data-id="${LeaseOrderLoadDataHandle.$btnSaveInvoice.attr('data-id')}"]`);
+        if (target) {
+            let targetRow = target.closest('tr');
+            if (targetRow) {
+                let dateEle = targetRow.querySelector('.table-row-date');
+                let invoiceEle = targetRow.querySelector('.table-row-invoice');
+                let invoiceDataEle = targetRow.querySelector('.table-row-invoice-data');
+                let valBeforeEle = targetRow.querySelector('.table-row-value-before-tax');
+                let taxEle = targetRow.querySelector('.table-row-tax');
+                let valTaxEle = targetRow.querySelector('.table-row-value-tax');
+                let valTotalEle = targetRow.querySelector('.table-row-value-total');
+
+                let checkedEle = LeaseOrderDataTableHandle.$tableSInvoice[0].querySelector('.table-row-checkbox:checked');
+                if (checkedEle && dateEle && invoiceEle && invoiceDataEle && valBeforeEle && taxEle && valTaxEle && valTotalEle) {
+                    let row = checkedEle.closest('tr');
+                    if (row) {
+                        let rowIndex = LeaseOrderDataTableHandle.$tableSInvoice.DataTable().row(row).index();
+                        let $row = LeaseOrderDataTableHandle.$tableSInvoice.DataTable().row(rowIndex);
+                        let dataRow = $row.data();
+
+                        $(dateEle).val(moment(dataRow?.['date']).format('DD/MM/YYYY')).trigger('change');
+                        $(invoiceEle).val(dataRow?.['order']);
+                        $(invoiceDataEle).val(JSON.stringify(dataRow));
+                        LeaseOrderLoadDataHandle.loadInitS2($(taxEle), [dataRow?.['tax_data']]);
+
+                        let valBefore = $(valBeforeEle).valCurrency();
+                        let dataTax = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
+                        let tax = dataTax?.['rate'];
+                        let datasRelateTax = QuotationCalculateCaseHandle.getDatasRelateTax(valBefore, tax);
+
+                        $(valTaxEle).attr('value', datasRelateTax?.['valTax']);
+                        $(valTotalEle).attr('value', datasRelateTax?.['valAfter']);
+                        $.fn.initMaskMoney2();
+                        $(valTotalEle).trigger('change');
+                    }
+                }
+            }
+        }
+        return true;
+    };
+
+    static loadSaveSReconcile() {
+        let target = LeaseOrderDataTableHandle.$tablePayment[0].querySelector(`[data-id="${LeaseOrderLoadDataHandle.$btnSaveReconcile.attr('data-id')}"]`);
+        if (target) {
+            let targetRow = target.closest('tr');
+            if (targetRow) {
+                let valBeforeEle = targetRow.querySelector('.table-row-value-before-tax');
+                let valReconcileEle = targetRow.querySelector('.table-row-value-reconcile');
+                let reconcileDataEle = targetRow.querySelector('.table-row-reconcile-data');
+                let taxEle = targetRow.querySelector('.table-row-tax');
+                let valTaxEle = targetRow.querySelector('.table-row-value-tax');
+                let valTotalEle = targetRow.querySelector('.table-row-value-total');
+                let reconcile = 0;
+                let reconcileData = [];
+                for (let checkedEle of LeaseOrderDataTableHandle.$tableSReconcile[0].querySelectorAll('.table-row-checkbox:checked')) {
+                    let row = checkedEle.closest('tr');
+                    let rowIndex = LeaseOrderDataTableHandle.$tableSReconcile.DataTable().row(row).index();
+                    let $row = LeaseOrderDataTableHandle.$tableSReconcile.DataTable().row(rowIndex);
+                    let dataRow = $row.data();
+                    reconcile += dataRow?.['value_total'];
+                    reconcileData.push(dataRow);
+                }
+                if (valBeforeEle && valReconcileEle && reconcileDataEle && taxEle && valTaxEle && valTotalEle && reconcile > 0) {
+                    $(valReconcileEle).attr('value', reconcile);
+                    let dataTax = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
+                    let tax = dataTax?.['rate'];
+                    let valBefore = $(valBeforeEle).valCurrency() + reconcile;
+                    let datasRelateTax = QuotationCalculateCaseHandle.getDatasRelateTax(reconcile, tax);
+                    $(valTaxEle).attr('value', $(valTaxEle).valCurrency() + datasRelateTax?.['valTax']);
+                    $(valTotalEle).attr('value', $(valTotalEle).valCurrency() + datasRelateTax?.['valTax']);
+                    $.fn.initMaskMoney2();
+                    $(valTotalEle).trigger('change');
+                    $(reconcileDataEle).val(JSON.stringify(reconcileData));
+                }
+            }
+        }
+        return true;
+    };
+
+    static minusInvoiceBalance(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let invoiceDataEle = row.querySelector('.table-row-invoice-data');
+            let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+            let valReconcileEle = row.querySelector('.table-row-value-reconcile');
+            let valTaxEle = row.querySelector('.table-row-value-tax');
+            if (invoiceDataEle && valBeforeEle && valReconcileEle && valTaxEle) {
+                if ($(invoiceDataEle).val()) {
+                    let invoiceData = JSON.parse($(invoiceDataEle).val());
+                    let targetEle = LeaseOrderDataTableHandle.$tableInvoice[0].querySelector(`[data-id="${invoiceData?.['order']}"]`);
+                    if (targetEle) {
+                        let targetRow = targetEle.closest('tr');
+                        if (targetRow) {
+                            let totalEle = targetRow.querySelector('.table-row-total');
+                            let balanceEle = targetRow.querySelector('.table-row-balance');
+                            if (totalEle && balanceEle) {
+                                let totalInvoice = parseFloat($(totalEle).valCurrency());
+                                let before = parseFloat($(valBeforeEle).valCurrency());
+                                let reconcile = parseFloat($(valReconcileEle).valCurrency());
+                                let tax = parseFloat($(valTaxEle).valCurrency());
+
+                                let remain = totalInvoice - (before + reconcile + tax);
+                                if (remain >= 0) {
+                                    $(balanceEle).attr('value', String(remain));
+                                    $.fn.initMaskMoney2();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     };
 
     // TABLE COST
@@ -3009,15 +3298,18 @@ class LeaseOrderLoadDataHandle {
 
 // DataTable
 class LeaseOrderDataTableHandle {
-    static $tableSProduct = $('#table-select-product');
-    static $tableSOffset = $('#table-select-offset');
-    static $tableSAsset = $('#table-select-asset');
-    static $tableSLeasedProduct = $('#table-select-leased-product');
     static $tableDepreciationDetail = $('#table-depreciation-detail');
     static $tableProduct = $('#datable-quotation-create-product');
     static $tableCost = $('#datable-quotation-create-cost');
     static $tableExpense = $('#datable-quotation-create-expense');
     static $tablePayment = $('#datable-quotation-payment-stage');
+    static $tableInvoice = $('#datable-quotation-invoice');
+    static $tableSProduct = $('#table-select-product');
+    static $tableSOffset = $('#table-select-offset');
+    static $tableSAsset = $('#table-select-asset');
+    static $tableSTerm = $('#table-select-term');
+    static $tableSInvoice = $('#table-select-invoice');
+    static $tableSReconcile = $('#table-select-reconcile');
 
     static dataTableProduct(data) {
         /*
@@ -4133,222 +4425,6 @@ class LeaseOrderDataTableHandle {
         }
     };
 
-    static dataTablePaymentStage(data) {
-        // init dataTable
-        LeaseOrderDataTableHandle.$tablePayment.DataTableDefault({
-            styleDom: 'hide-foot',
-            data: data ? data : [],
-            paging: false,
-            info: false,
-            searching: false,
-            autoWidth: true,
-            scrollX: true,
-            columns: [
-                {
-                    targets: 0,
-                    width: '1%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-order">${row?.['order']}</span>`;
-                    }
-                },
-                {
-                    targets: 1,
-                    width: '10%',
-                    render: () => {
-                        return `<select class="form-select table-row-installment"></select>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ''}</textarea>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        let value = "";
-                        if (row?.['date'] !== "") {
-                            value = moment(row?.['date']).format('DD/MM/YYYY');
-                        }
-                        return `<div class="input-affix-wrapper">
-                                    <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${value}">
-                                    <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
-                                </div>`;
-                    },
-                },
-                {
-                    targets: 4,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-date-type" rows="2" readonly>${row?.['date_type'] ? row?.['date_type'] : ""}</textarea>`;
-                    }
-                },
-                {
-                    targets: 5,
-                    width: '6%',
-                    render: (data, type, row) => {
-                        return `<div class="input-group">
-                                    <div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-ratio valid-num" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
-                                        <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
-                                    </div>
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 6,
-                    width: '12%',
-                    render: (data, type, row) => {
-                        return `<input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-value-before-tax text-black" 
-                                    value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
-                                    data-return-type="number"
-                                    disabled
-                                >`;
-                    }
-                },
-                {
-                    targets: 7,
-                    width: '8%',
-                    render: () => {
-                        return `<select class="form-select table-row-issue-invoice"></select>`;
-                    }
-                },
-                {
-                    targets: 8,
-                    width: '12%',
-                    render: (data, type, row) => {
-                        return `<input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-value-after-tax text-black" 
-                                    value="${row?.['value_after_tax'] ? row?.['value_after_tax'] : '0'}"
-                                    data-return-type="number"
-                                    hidden
-                                >`;
-                    }
-                },
-                {
-                    targets: 9,
-                    width: '12%',
-                    render: (data, type, row) => {
-                        return `<input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-value-total text-black" 
-                                    value="${row?.['value_total'] ? row?.['value_total'] : '0'}"
-                                    data-return-type="number"
-                                >`;
-                    }
-                },
-                {
-                    targets: 10,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        let value = "";
-                        if (row?.['due_date'] !== "") {
-                            value = moment(row?.['due_date']).format('DD/MM/YYYY');
-                        }
-                        return `<div class="input-affix-wrapper">
-                                    <input type="text" class="form-control table-row-due-date text-black" value="${value}">
-                                    <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 11,
-                    width: '1%',
-                    render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
-                    }
-                },
-            ],
-            rowCallback: function (row, data, index) {
-                let installmentEle = row.querySelector('.table-row-installment');
-                let issueInvoiceEle = row.querySelector('.table-row-issue-invoice');
-                let dateEle = row.querySelector('.table-row-date');
-                let dueDateEle = row.querySelector('.table-row-due-date');
-                if (installmentEle) {
-                    let term = [];
-                    if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
-                        let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
-                        if (dataSelected) {
-                            term = dataSelected?.['term'];
-                            for (let termData of term) {
-                                let isNum = parseFloat(termData?.['value']);
-                                if (!isNum) {  // balance
-                                    termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
-                                }
-                            }
-                        }
-                    }
-                    term.unshift({'id': '', 'title': 'Select...',});
-                    LeaseOrderLoadDataHandle.loadInitS2($(installmentEle), term, {}, null, true);
-                    if (data?.['term_id']) {
-                        $(installmentEle).val(data?.['term_id']).trigger('change');
-                    }
-                }
-                if (dateEle) {
-                    $(dateEle).daterangepicker({
-                        singleDatePicker: true,
-                        timepicker: false,
-                        showDropdowns: false,
-                        minYear: 2023,
-                        locale: {
-                            format: 'DD/MM/YYYY'
-                        },
-                        maxYear: parseInt(moment().format('YYYY'), 10),
-                        drops: 'up',
-                        autoApply: true,
-                    });
-                    $(dateEle).val(null).trigger('change');
-                    if (data?.['date']) {
-                        $(dateEle).val(moment(data?.['date']).format('DD/MM/YYYY'));
-                    }
-                }
-                if (dueDateEle) {
-                    $(dueDateEle).daterangepicker({
-                        singleDatePicker: true,
-                        timepicker: false,
-                        showDropdowns: false,
-                        minYear: 2023,
-                        locale: {
-                            format: 'DD/MM/YYYY'
-                        },
-                        maxYear: parseInt(moment().format('YYYY'), 10),
-                        drops: 'up',
-                        autoApply: true,
-                    });
-                    $(dueDateEle).val(null).trigger('change');
-                    if (data?.['due_date']) {
-                        $(dueDateEle).val(moment(data?.['due_date']).format('DD/MM/YYYY'));
-                    }
-                }
-                if (issueInvoiceEle) {
-                    let count = data?.['order'];
-                    let dataIssue = [{'id': '', 'title': 'Select...',}];
-                    for (let i = 1; i <= count; i++) {
-                        let add = {'id': String(i), 'title': String(i)};
-                        dataIssue.push(add);
-                    }
-                    LeaseOrderLoadDataHandle.loadInitS2($(issueInvoiceEle), dataIssue, {}, null, true);
-                    if (data?.['issue_invoice']) {
-                        $(issueInvoiceEle).val(data?.['issue_invoice']).trigger('change');
-                    }
-                    LeaseOrderLoadDataHandle.loadChangePSIssueInvoice(issueInvoiceEle);
-                }
-            },
-            drawCallback: function () {
-                $.fn.initMaskMoney2();
-                if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    LeaseOrderDataTableHandle.dtbPaymentHDCustom();
-                }
-            },
-        });
-    };
-
     static dataTableSelectProduct(data) {
         LeaseOrderDataTableHandle.$tableSProduct.not('.dataTable').DataTableDefault({
             data: data ? data : [],
@@ -4705,6 +4781,608 @@ class LeaseOrderDataTableHandle {
         });
     };
 
+    static dataTablePaymentStage(data) {
+        // init dataTable
+        LeaseOrderDataTableHandle.$tablePayment.DataTableDefault({
+            styleDom: 'hide-foot',
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            searching: false,
+            autoWidth: true,
+            scrollX: true,
+            columns: [
+                {
+                    targets: 0,
+                    width: '1%',
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order" data-id="${row?.['order']}">${row?.['order']}</span>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '8%',
+                    render: () => {
+                        return `<select class="form-select table-row-installment"></select>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ''}</textarea>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '8%',
+                    render: (data, type, row) => {
+                        let value = "";
+                        if (row?.['date'] !== "") {
+                            value = moment(row?.['date']).format('DD/MM/YYYY');
+                        }
+                        return `<div class="input-affix-wrapper">
+                                    <input type="text" class="form-control table-row-date" data-number-of-day="${row?.['number_of_day']}" value="${value}">
+                                    <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
+                                </div>`;
+                    },
+                },
+                {
+                    targets: 4,
+                    width: '8%',
+                    render: (data, type, row) => {
+                        let value = "";
+                        if (row?.['due_date'] !== "") {
+                            value = moment(row?.['due_date']).format('DD/MM/YYYY');
+                        }
+                        return `<div class="input-affix-wrapper">
+                                    <input type="text" class="form-control table-row-due-date text-black" value="${value}">
+                                    <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    width: '6%',
+                    render: (data, type, row) => {
+                        return `<div class="input-group">
+                                    <div class="input-affix-wrapper">
+                                        <input type="text" class="form-control table-row-ratio valid-num" value="${row?.['ratio'] ? row?.['ratio'] : '0'}">
+                                        <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
+                                    </div>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 6,
+                    width: '6%',
+                    render: (data, type, row) => {
+                        // return `<select class="form-select table-row-issue-invoice"></select>`;
+                        return `<div class="d-flex justify-content-between align-items-center">
+                                    <input type="text" class="form-control table-row-invoice valid-num" value="${row?.['invoice_data']?.['order'] ? row?.['invoice_data']?.['order'] : ''}" readonly>
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-select-invoice"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#selectInvoiceModal"
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control table-row-invoice-data hidden">`;
+                    }
+                },
+                {
+                    targets: 7,
+                    width: '12%',
+                    render: (data, type, row) => {
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-value-before-tax text-black" 
+                                    value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
+                                    data-return-type="number"
+                                    readonly
+                                >`;
+                    }
+                },
+                {
+                    targets: 8,
+                    width: '12%',
+                    render: (data, type, row) => {
+                        return `<div class="d-flex justify-content-between align-items-center">
+                                    <input 
+                                        type="text" 
+                                        class="form-control mask-money table-row-value-reconcile text-black" 
+                                        value="${row?.['value_reconcile'] ? row?.['value_reconcile'] : '0'}"
+                                        data-return-type="number"
+                                        readonly
+                                    >
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-select-reconcile"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#selectReconcileModal"
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control table-row-reconcile-data hidden">`;
+                    }
+                },
+                {
+                    targets: 9,
+                    width: '6%',
+                    render: () => {
+                        return `<select
+                                    class="form-select table-row-tax"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                    data-method="GET"
+                                    data-keyResp="tax_list"
+                                    readonly
+                                >
+                                </select>`;
+                    }
+                },
+                {
+                    targets: 10,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-value-tax text-black" 
+                                    value="${row?.['value_tax'] ? row?.['value_tax'] : '0'}"
+                                    data-return-type="number"
+                                    readonly
+                                >`;
+                    }
+                },
+                {
+                    targets: 11,
+                    width: '12%',
+                    render: (data, type, row) => {
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-value-total text-black" 
+                                    value="${row?.['value_total'] ? row?.['value_total'] : '0'}"
+                                    data-return-type="number"
+                                    readonly
+                                >`;
+                    }
+                },
+                // {
+                //     targets: 10,
+                //     width: '1%',
+                //     render: () => {
+                //         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                //     }
+                // },
+            ],
+            rowCallback: function (row, data, index) {
+                let installmentEle = row.querySelector('.table-row-installment');
+                let dateEle = row.querySelector('.table-row-date');
+                let dueDateEle = row.querySelector('.table-row-due-date');
+                let invoiceDataEle = row.querySelector('.table-row-invoice-data');
+                let reconcileDataEle = row.querySelector('.table-row-reconcile-data');
+                let taxEle = row.querySelector('.table-row-tax');
+                if (installmentEle) {
+                    let term = [];
+                    if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                        let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
+                        if (dataSelected) {
+                            term = dataSelected?.['term'];
+                            for (let termData of term) {
+                                let isNum = parseFloat(termData?.['value']);
+                                if (!isNum) {  // balance
+                                    termData['value'] = String(LeaseOrderLoadDataHandle.loadBalanceValPaymentTerm());
+                                }
+                            }
+                        }
+                    }
+                    term.unshift({'id': '', 'title': 'Select...',});
+                    LeaseOrderLoadDataHandle.loadInitS2($(installmentEle), term, {}, null, true);
+                    if (data?.['term_id']) {
+                        $(installmentEle).val(data?.['term_id']).trigger('change');
+                    }
+                }
+                if (dateEle) {
+                    $(dateEle).daterangepicker({
+                        singleDatePicker: true,
+                        timepicker: false,
+                        showDropdowns: false,
+                        minYear: 2023,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        },
+                        maxYear: parseInt(moment().format('YYYY'), 10),
+                        drops: 'up',
+                        autoApply: true,
+                    });
+                    $(dateEle).val(null).trigger('change');
+                    if (data?.['date']) {
+                        $(dateEle).val(moment(data?.['date']).format('DD/MM/YYYY'));
+                    }
+                }
+                if (dueDateEle) {
+                    $(dueDateEle).daterangepicker({
+                        singleDatePicker: true,
+                        timepicker: false,
+                        showDropdowns: false,
+                        minYear: 2023,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        },
+                        maxYear: parseInt(moment().format('YYYY'), 10),
+                        drops: 'up',
+                        autoApply: true,
+                    });
+                    $(dueDateEle).val(null).trigger('change');
+                    if (data?.['due_date']) {
+                        $(dueDateEle).val(moment(data?.['due_date']).format('DD/MM/YYYY'));
+                    }
+                }
+                if (invoiceDataEle) {
+                    $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : []));
+                }
+                if (reconcileDataEle) {
+                    $(reconcileDataEle).val(JSON.stringify(data?.['reconcile_data'] ? data?.['reconcile_data'] : []));
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+            },
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    LeaseOrderDataTableHandle.dtbPaymentHDCustom();
+                    // set again WF runtime
+                    LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
+                }
+            },
+        });
+    };
+
+    static dataTableInvoice(data) {
+        // init dataTable
+        LeaseOrderDataTableHandle.$tableInvoice.DataTableDefault({
+            styleDom: 'hide-foot',
+            data: data ? data : [],
+            ordering: false,
+            paging: false,
+            info: false,
+            searching: false,
+            autoWidth: true,
+            scrollX: true,
+            columns: [
+                {
+                    targets: 0,
+                    width: '8%',
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order" data-id="${row?.['order']}">${row?.['order']}</span>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '25%',
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ""}</textarea>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    width: '12%',
+                    render: (data, type, row) => {
+                        return `<div class="input-affix-wrapper">
+                                    <input type="text" class="form-control date-picker text-black table-row-date" autocomplete="off">
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<div class="d-flex justify-content-between align-items-center">
+                                    <div class="input-group">
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" class="form-control table-row-ratio valid-num" value="${row?.['ratio'] ? row?.['ratio'] : '0'}" readonly>
+                                            <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-select-term"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#selectTermModal"
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control table-row-term-data hidden">`;
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '10%',
+                    render: () => {
+                        return `<select
+                                    class="form-select table-row-tax"
+                                    data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                    data-method="GET"
+                                    data-keyResp="tax_list"
+                                >
+                                </select>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    width: '15%',
+                    render: (data, type, row) => {
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-total text-black" 
+                                    value="${row?.['total'] ? row?.['total'] : '0'}"
+                                    data-return-type="number"
+                                    readonly
+                                >`;
+                    }
+                },
+                {
+                    targets: 6,
+                    width: '15%',
+                    render: (data, type, row) => {
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-balance text-black" 
+                                    value="${row?.['balance'] ? row?.['balance'] : 0}"
+                                    data-return-type="number"
+                                    readonly
+                                >`;
+                    }
+                },
+                {
+                    targets: 7,
+                    width: '5%',
+                    render: (data, type, row) => {
+                        return ``;
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+                let dateEle = row.querySelector('.table-row-date');
+                let taxEle = row.querySelector('.table-row-tax');
+                let termDataEle = row.querySelector('.table-row-term-data');
+                if (dateEle) {
+                    $(dateEle).daterangepicker({
+                        singleDatePicker: true,
+                        timepicker: false,
+                        showDropdowns: false,
+                        minYear: 2023,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        },
+                        maxYear: parseInt(moment().format('YYYY'), 10),
+                        drops: 'up',
+                        autoApply: true,
+                    });
+                    $(dateEle).val(null).trigger('change');
+                    if (data?.['date']) {
+                        $(dateEle).val(moment(data?.['date']).format('DD/MM/YYYY'));
+                    }
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    LeaseOrderLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+                if (termDataEle) {
+                    $(termDataEle).val(JSON.stringify(data?.['term_data'] ? data?.['term_data'] : []));
+                }
+            },
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    LeaseOrderDataTableHandle.dtbInvoiceHDCustom();
+                }
+            },
+        });
+    };
+
+    static dataTableSelectTerm(data) {
+        LeaseOrderDataTableHandle.$tableSTerm.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let checked = "";
+                        let target = LeaseOrderDataTableHandle.$tableInvoice[0].querySelector(`[data-id="${LeaseOrderLoadDataHandle.$btnSaveTerm.attr('data-id')}"]`);
+                        if (target) {
+                            let targetRow = target.closest('tr');
+                            if (targetRow) {
+                                let termDataEle = targetRow.querySelector('.table-row-term-data');
+                                if (termDataEle) {
+                                    if ($(termDataEle).val()) {
+                                        let termData = JSON.parse($(termDataEle).val());
+                                        for (let term of termData) {
+                                            if (row?.['id'] === term?.['id']) {
+                                                checked = "checked";
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return `<div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-term-${row?.['id'].replace(/-/g, "")}" ${checked}>
+                                    <label class="form-check-label table-row-title" for="s-term-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span>--</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-value">${row?.['value'] ? row?.['value'] : 0} %</span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableSTerm);
+            }
+        });
+    };
+
+    static dataTableSelectInvoice(data) {
+        LeaseOrderDataTableHandle.$tableSInvoice.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let checked = "";
+                        let target = LeaseOrderDataTableHandle.$tablePayment[0].querySelector(`[data-id="${LeaseOrderLoadDataHandle.$btnSaveInvoice.attr('data-id')}"]`);
+                        if (target) {
+                            let targetRow = target.closest('tr');
+                            if (targetRow) {
+                                let invoiceDataEle = targetRow.querySelector('.table-row-invoice-data');
+                                if (invoiceDataEle) {
+                                    if ($(invoiceDataEle).val()) {
+                                        let invoiceData = JSON.parse($(invoiceDataEle).val());
+                                        if (row?.['order'] === invoiceData?.['order']) {
+                                            checked = "checked";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return `<div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-invoice-${row?.['order']}" ${checked}>
+                                    <label class="form-check-label table-row-order" for="s-invoice-${row?.['order']}">${row?.['order']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['remark']}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['ratio']} %</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['tax_data']?.['title']}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${row?.['total'] ? row?.['total'] : 0}"></span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderDataTableHandle.$tableSInvoice);
+                $.fn.initMaskMoney2();
+            }
+        });
+    };
+
+    static dataTableSelectReconcile(data) {
+        LeaseOrderDataTableHandle.$tableSReconcile.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let checked = "";
+                        let target = LeaseOrderDataTableHandle.$tablePayment[0].querySelector(`[data-id="${LeaseOrderLoadDataHandle.$btnSaveReconcile.attr('data-id')}"]`);
+                        if (target) {
+                            let targetRow = target.closest('tr');
+                            if (targetRow) {
+                                let reconcileDataEle = targetRow.querySelector('.table-row-reconcile-data');
+                                if (reconcileDataEle) {
+                                    if ($(reconcileDataEle).val()) {
+                                        let reconcileData = JSON.parse($(reconcileDataEle).val());
+                                        for (let reconcile of reconcileData) {
+                                            if (row?.['order'] === reconcile?.['order']) {
+                                                checked = "checked";
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return `<div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-reconcile-${row?.['order']}" ${checked}>
+                                    <label class="form-check-label table-row-order" for="s-reconcile-${row?.['order']}">${row?.['term_data']?.['title']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['remark']}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['ratio']} %</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['tax_data']?.['title'] ? row?.['tax_data']?.['title'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableSReconcile);
+                $.fn.initMaskMoney2();
+            }
+        });
+    };
+
     // Custom dtb
     static dtbProductHDCustom() {
         let $table = LeaseOrderDataTableHandle.$tableProduct;
@@ -4779,32 +5457,6 @@ class LeaseOrderDataTableHandle {
         }
     };
 
-    static dtbPaymentHDCustom() {
-        let $table = LeaseOrderDataTableHandle.$tablePayment;
-        let wrapper$ = $table.closest('.dataTables_wrapper');
-        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-        headerToolbar$.prepend(textFilter$);
-
-        if (textFilter$.length > 0) {
-            textFilter$.css('display', 'flex');
-            // Check if the button already exists before appending
-            if (!$('#btn-add-payment-stage').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="lease_payment_stage">
-                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
-                                </button>`);
-                textFilter$.append(
-                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                );
-                // Select the appended button from the DOM and attach the event listener
-                $('#btn-add-payment-stage').on('click', function () {
-                    LeaseOrderStoreDataHandle.storeDtbData(4);
-                    LeaseOrderLoadDataHandle.loadAddPaymentStage();
-                });
-            }
-        }
-    };
-
     static dtbIndicatorHDCustom() {
         let $table = $('#datable-quotation-create-indicator');
         let wrapper$ = $table.closest('.dataTables_wrapper');
@@ -4828,6 +5480,59 @@ class LeaseOrderDataTableHandle {
                     document.getElementById('quotation-indicator-data').value = "";
                     LeaseOrderIndicatorHandle.loadIndicator();
                     $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-refreshed')}, 'success');
+                });
+            }
+        }
+    };
+
+    static dtbPaymentHDCustom() {
+        let $table = QuotationDataTableHandle.$tablePayment;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-payment-stage').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="sale_order_payment_stage">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-payment-stage').on('click', function () {
+                    LeaseOrderStoreDataHandle.storeDtbData(4);
+                    LeaseOrderLoadDataHandle.loadPaymentStage();
+
+                });
+            }
+        }
+    };
+
+    static dtbInvoiceHDCustom() {
+        let $table = QuotationDataTableHandle.$tableInvoice;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the button already exists before appending
+            if (!$('#btn-add-invoice').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-invoice" data-zone="sale_order_payment_stage">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
+                                </button>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-invoice').on('click', function () {
+                    LeaseOrderStoreDataHandle.storeDtbData(5);
+                    LeaseOrderLoadDataHandle.loadAddInvoice();
                 });
             }
         }
@@ -7093,66 +7798,132 @@ class LeaseOrderSubmitHandle {
             let eleInstallment = row.querySelector('.table-row-installment');
             if (eleInstallment) {
                 if ($(eleInstallment).val()) {
-                    let dataSelected = SelectDDControl.get_data_from_idx($(eleInstallment), $(eleInstallment).val());
-                    if (dataSelected) {
-                        rowData['term_id'] = $(eleInstallment).val();
-                        rowData['term_data'] = dataSelected;
-                    }
+                    rowData['term_id'] = $(eleInstallment).val();
+                    rowData['term_data'] = SelectDDControl.get_data_from_idx($(eleInstallment), $(eleInstallment).val());
                 }
             }
-            let eleRemark = row.querySelector('.table-row-remark');
-            if (eleRemark) {
-                rowData['remark'] = $(eleRemark).val();
+            let remarkEle = row.querySelector('.table-row-remark');
+            if (remarkEle) {
+                rowData['remark'] = $(remarkEle).val();
             }
-            let eleDate = row.querySelector('.table-row-date');
-            if (eleDate) {
-                if (eleDate.value) {
-                    rowData['date'] = String(moment(eleDate.value, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+            let dateEle = row.querySelector('.table-row-date');
+            if (dateEle) {
+                if ($(dateEle).val()) {
+                    rowData['date'] = String(moment($(dateEle).val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
                 }
             }
             let eleDateType = row.querySelector('.table-row-date-type');
             if (eleDateType) {
                 rowData['date_type'] = $(eleDateType).val();
             }
-            let eleRatio = row.querySelector('.table-row-ratio');
-            if (eleRatio) {
-                rowData['payment_ratio'] = parseFloat(eleRatio.value);
+            let ratioEle = row.querySelector('.table-row-ratio');
+            if (ratioEle) {
+                rowData['ratio'] = parseFloat(ratioEle.value);
             }
-            let eleValueBT = row.querySelector('.table-row-value-before-tax');
-            if (eleValueBT) {
-                if ($(eleValueBT).valCurrency()) {
-                    rowData['value_before_tax'] = parseFloat($(eleValueBT).valCurrency());
-                }
-            }
-            let eleIssueInvoice = row.querySelector('.table-row-issue-invoice');
-            if (eleIssueInvoice) {
+            let invoiceEle = row.querySelector('.table-row-invoice');
+            if (invoiceEle) {
+                rowData['invoice'] = null;
                 rowData['is_ar_invoice'] = false;
-                if ($(eleIssueInvoice).val()) {
-                    rowData['issue_invoice'] = parseInt($(eleIssueInvoice).val());
+                if ($(invoiceEle).val()) {
+                    rowData['invoice'] = parseInt($(invoiceEle).val());
                     rowData['is_ar_invoice'] = true;
                 }
             }
-            let eleValueAT = row.querySelector('.table-row-value-after-tax');
-            if (eleValueAT) {
-                if ($(eleValueAT).valCurrency()) {
-                    rowData['value_after_tax'] = parseFloat($(eleValueAT).valCurrency());
+            let invoiceDataEle = row.querySelector('.table-row-invoice-data');
+            if (invoiceDataEle) {
+                if ($(invoiceDataEle).val()) {
+                    rowData['invoice_data'] = JSON.parse($(invoiceDataEle).val());
                 }
             }
-            let eleValueTotal = row.querySelector('.table-row-value-total');
-            if (eleValueTotal) {
-                if ($(eleValueTotal).valCurrency()) {
-                    rowData['value_total'] = parseFloat($(eleValueTotal).valCurrency());
+            let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+            if (valBeforeEle) {
+                if ($(valBeforeEle).valCurrency()) {
+                    rowData['value_before_tax'] = parseFloat($(valBeforeEle).valCurrency());
                 }
             }
-            let eleDueDate = row.querySelector('.table-row-due-date');
-            if (eleDueDate) {
-                if (eleDueDate.value) {
-                    rowData['due_date'] = String(moment(eleDueDate.value, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+            let valReconcileEle = row.querySelector('.table-row-value-reconcile');
+            if (valReconcileEle) {
+                if ($(valReconcileEle).valCurrency()) {
+                    rowData['value_reconcile'] = parseFloat($(valReconcileEle).valCurrency());
                 }
             }
-            let eleARInvoice = row.querySelector('.table-row-checkbox-invoice');
-            if (eleARInvoice) {
-                rowData['is_ar_invoice'] = eleARInvoice.checked;
+            let reconcileDataEle = row.querySelector('.table-row-reconcile-data');
+            if (reconcileDataEle) {
+                if ($(reconcileDataEle).val()) {
+                    rowData['reconcile_data'] = JSON.parse($(reconcileDataEle).val());
+                }
+            }
+            let taxEle = row.querySelector('.table-row-tax');
+            if (taxEle) {
+                if ($(taxEle).val()) {
+                    rowData['tax_id'] = $(taxEle).val();
+                    rowData['tax_data'] = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
+                }
+            }
+            let valTaxEle = row.querySelector('.table-row-value-tax');
+            if (valTaxEle) {
+                if ($(valTaxEle).valCurrency()) {
+                    rowData['value_tax'] = parseFloat($(valTaxEle).valCurrency());
+                }
+            }
+            let valTotalEle = row.querySelector('.table-row-value-total');
+            if (valTotalEle) {
+                if ($(valTotalEle).valCurrency()) {
+                    rowData['value_total'] = parseFloat($(valTotalEle).valCurrency());
+                }
+            }
+            let dueDateEle = row.querySelector('.table-row-due-date');
+            if (dueDateEle) {
+                if ($(dueDateEle).val()) {
+                    rowData['due_date'] = String(moment($(dueDateEle).val(), 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+                }
+            }
+            result.push(rowData);
+        });
+        return result;
+    };
+
+    static setupDataInvoice() {
+        let result = [];
+        QuotationDataTableHandle.$tableInvoice.DataTable().rows().every(function () {
+            let rowData = {};
+            let row = this.node();
+            let orderEle = row.querySelector('.table-row-order');
+            if (orderEle) {
+                rowData['order'] = parseInt(orderEle.innerHTML);
+            }
+            let remarkEle = row.querySelector('.table-row-remark');
+            if (remarkEle) {
+                rowData['remark'] = $(remarkEle).val();
+            }
+            let dateEle = row.querySelector('.table-row-date');
+            if (dateEle) {
+                if ($(dateEle).val()) {
+                    rowData['date'] = moment($(dateEle).val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                }
+            }
+            let termDataEle = row.querySelector('.table-row-term-data');
+            if (termDataEle) {
+                rowData['term_data'] = JSON.parse($(termDataEle).val());
+            }
+            let ratioEle = row.querySelector('.table-row-ratio');
+            if (ratioEle) {
+                rowData['ratio'] = parseFloat($(ratioEle).val());
+            }
+            let taxEle = row.querySelector('.table-row-tax');
+            if (taxEle) {
+                if ($(taxEle).val()) {
+                    rowData['tax_id'] = $(taxEle).val();
+                    rowData['tax_data'] = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
+                }
+            }
+            let totalEle = row.querySelector('.table-row-total');
+            if (totalEle) {
+                rowData['total'] = parseFloat($(totalEle).valCurrency());
+            }
+            let balanceEle = row.querySelector('.table-row-balance');
+            if (balanceEle) {
+                rowData['balance'] = parseFloat($(balanceEle).valCurrency());
             }
             result.push(rowData);
         });
@@ -7363,6 +8134,7 @@ class LeaseOrderSubmitHandle {
 
         // payment stage
         _form.dataForm['lease_payment_stage'] = LeaseOrderSubmitHandle.setupDataPaymentStage();
+        _form.dataForm['lease_invoice'] = LeaseOrderSubmitHandle.setupDataInvoice();
         // validate payment stage submit
         if (type === 0) {
             if (_form.dataForm?.['lease_payment_stage'] && _form.dataForm?.['total_product']) {
@@ -7370,7 +8142,7 @@ class LeaseOrderSubmitHandle {
                     let totalRatio = 0;
                     let totalPayment = 0;
                     for (let payment of _form.dataForm['lease_payment_stage']) {
-                        totalRatio += payment?.['payment_ratio'] ? payment?.['payment_ratio'] : 0;
+                        totalRatio += payment?.['ratio'] ? payment?.['ratio'] : 0;
                         totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
                     }
                     if (totalRatio !== 100) {

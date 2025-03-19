@@ -8,7 +8,6 @@ $(function () {
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
-        let tablePS = $('#datable-quotation-payment-stage');
         let tablePromotion = $('#datable-quotation-create-promotion');
         let tableShipping = $('#datable-quotation-create-shipping');
         let tableCopyQuotation = $('#datable-copy-quotation');
@@ -36,11 +35,11 @@ $(function () {
             QuotationDataTableHandle.dataTableQuotationIndicator();
         } else {  // sale order
             QuotationDataTableHandle.dataTableSaleOrderIndicator();
+            QuotationDataTableHandle.dataTablePaymentStage();
             QuotationDataTableHandle.dataTableInvoice();
             QuotationDataTableHandle.dataTableSelectTerm();
             QuotationDataTableHandle.dataTableSelectInvoice();
             QuotationDataTableHandle.dataTableSelectReconcile();
-            QuotationDataTableHandle.dataTablePaymentStage();
         }
         // init config
         QuotationLoadDataHandle.loadInitQuotationConfig(QuotationLoadDataHandle.$form.attr('data-method'));

@@ -38,6 +38,10 @@ $(function () {
         LeaseOrderDataTableHandle.dataTableExpense();
         LeaseOrderDataTableHandle.dataTableSaleOrderIndicator();
         LeaseOrderDataTableHandle.dataTablePaymentStage();
+        LeaseOrderDataTableHandle.dataTableInvoice();
+        LeaseOrderDataTableHandle.dataTableSelectTerm();
+        LeaseOrderDataTableHandle.dataTableSelectInvoice();
+        LeaseOrderDataTableHandle.dataTableSelectReconcile();
         // init config
         LeaseOrderLoadDataHandle.loadInitQuotationConfig(LeaseOrderLoadDataHandle.$form.attr('data-method'));
         // date picker
@@ -349,14 +353,6 @@ $(function () {
                 LeaseOrderCalculateCaseHandle.calculate(row);
             });
             LeaseOrderCalculateCaseHandle.updateTotal(tableProduct[0])
-        });
-
-        LeaseOrderDataTableHandle.$tableSLeasedProduct.on('click', '.table-row-checkbox', function () {
-            let checkedCount = LeaseOrderDataTableHandle.$tableSLeasedProduct[0].querySelectorAll('.table-row-checkbox:checked').length;
-            let leasedEle = LeaseOrderLoadDataHandle.$quantityModal[0].querySelector('.quantity-leased');
-            if (leasedEle) {
-                $(leasedEle).val(checkedCount);
-            }
         });
 
 // EXPENSE
@@ -819,11 +815,19 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(4);
         });
 
+        LeaseOrderDataTableHandle.$tableInvoice.on('click', '.btn-select-term', function () {
+            LeaseOrderLoadDataHandle.loadModalSTerm(this);
+        });
+
+        LeaseOrderLoadDataHandle.$btnSaveTerm.on('click', function () {
+           LeaseOrderLoadDataHandle.loadSaveSTerm();
+        });
+
         $('#btn-add-payment-stage').on('click', function () {
             LeaseOrderLoadDataHandle.loadAddPaymentStage();
         });
 
-        tablePS.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-issue-invoice, .table-row-value-total, .table-row-due-date', function () {
+        LeaseOrderDataTableHandle.$tablePayment.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-issue-invoice, .table-row-value-total, .table-row-due-date', function () {
             let row = this.closest('tr');
             if ($(this).hasClass('table-row-date')) {
                 let isCheck = true;
@@ -846,9 +850,9 @@ $(function () {
                 LeaseOrderLoadDataHandle.loadChangePSInstallment(this);
             }
             if ($(this).hasClass('table-row-ratio')) {
-                let eleValueBeforeTax = row.querySelector('.table-row-value-before-tax');
-                LeaseOrderLoadDataHandle.loadPSValueBeforeTax(eleValueBeforeTax, $(this).val());
-                validatePSValue(eleValueBeforeTax);
+                LeaseOrderLoadDataHandle.loadPSValueBeforeTax(this);
+                let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+                validatePSValue(valBeforeEle);
             }
             if ($(this).hasClass('table-row-issue-invoice')) {
                 LeaseOrderLoadDataHandle.loadChangePSIssueInvoice(this);
@@ -868,10 +872,29 @@ $(function () {
                     }
                 }
             }
+            if ($(this).hasClass('table-row-value-total')) {
+                LeaseOrderLoadDataHandle.minusInvoiceBalance(this);
+            }
         });
 
-        tablePS.on('click', '.del-row', function () {
-            deleteRow(this.closest('tr'), tablePS);
+        LeaseOrderDataTableHandle.$tablePayment.on('click', '.btn-select-invoice', function () {
+            LeaseOrderLoadDataHandle.loadModalSInvoice(this);
+        });
+
+        LeaseOrderLoadDataHandle.$btnSaveInvoice.on('click', function () {
+            LeaseOrderLoadDataHandle.loadSaveSInvoice();
+        });
+
+        LeaseOrderDataTableHandle.$tablePayment.on('click', '.btn-select-reconcile', function () {
+            LeaseOrderLoadDataHandle.loadModalSReconcile(this);
+        });
+
+        LeaseOrderLoadDataHandle.$btnSaveReconcile.on('click', function () {
+            LeaseOrderLoadDataHandle.loadSaveSReconcile();
+        });
+
+        LeaseOrderDataTableHandle.$tablePayment.on('click', '.del-row', function () {
+            deleteRow(this.closest('tr'), LeaseOrderDataTableHandle.$tablePayment);
         });
 
 // IMPORT TABLE

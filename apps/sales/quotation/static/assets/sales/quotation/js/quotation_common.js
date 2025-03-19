@@ -4098,155 +4098,6 @@ class QuotationDataTableHandle {
         }
     };
 
-    static dataTableInvoice(data) {
-        // init dataTable
-        QuotationDataTableHandle.$tableInvoice.DataTableDefault({
-            styleDom: 'hide-foot',
-            data: data ? data : [],
-            ordering: false,
-            paging: false,
-            info: false,
-            searching: false,
-            autoWidth: true,
-            scrollX: true,
-            columns: [
-                {
-                    targets: 0,
-                    width: '8%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-order" data-id="${row?.['order']}">${row?.['order']}</span>`;
-                    }
-                },
-                {
-                    targets: 1,
-                    width: '25%',
-                    render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ""}</textarea>`;
-                    }
-                },
-                {
-                    targets: 2,
-                    width: '12%',
-                    render: (data, type, row) => {
-                        return `<div class="input-affix-wrapper">
-                                    <input type="text" class="form-control date-picker text-black table-row-date" autocomplete="off">
-                                    <div class="input-suffix">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </div>
-                                </div>`;
-                    }
-                },
-                {
-                    targets: 3,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        return `<div class="d-flex justify-content-between align-items-center">
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <input type="text" class="form-control table-row-ratio valid-num" value="${row?.['ratio'] ? row?.['ratio'] : '0'}" readonly>
-                                            <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
-                                        </div>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        class="btn btn-icon btn-select-term"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#selectTermModal"
-                                    ><i class="fas fa-ellipsis-h"></i>
-                                    </button>
-                                </div>
-                                <input type="text" class="form-control table-row-term-data hidden">`;
-                    }
-                },
-                {
-                    targets: 4,
-                    width: '10%',
-                    render: () => {
-                        return `<select
-                                    class="form-select table-row-tax"
-                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
-                                    data-method="GET"
-                                    data-keyResp="tax_list"
-                                >
-                                </select>`;
-                    }
-                },
-                {
-                    targets: 5,
-                    width: '15%',
-                    render: (data, type, row) => {
-                        return `<input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-total text-black" 
-                                    value="${row?.['total'] ? row?.['total'] : '0'}"
-                                    data-return-type="number"
-                                    readonly
-                                >`;
-                    }
-                },
-                {
-                    targets: 6,
-                    width: '15%',
-                    render: (data, type, row) => {
-                        return `<input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-balance text-black" 
-                                    value="${row?.['balance'] ? row?.['balance'] : 0}"
-                                    data-return-type="number"
-                                    readonly
-                                >`;
-                    }
-                },
-                {
-                    targets: 7,
-                    width: '5%',
-                    render: (data, type, row) => {
-                        return ``;
-                    }
-                },
-            ],
-            rowCallback: function (row, data, index) {
-                let dateEle = row.querySelector('.table-row-date');
-                let taxEle = row.querySelector('.table-row-tax');
-                let termDataEle = row.querySelector('.table-row-term-data');
-                if (dateEle) {
-                    $(dateEle).daterangepicker({
-                        singleDatePicker: true,
-                        timepicker: false,
-                        showDropdowns: false,
-                        minYear: 2023,
-                        locale: {
-                            format: 'DD/MM/YYYY'
-                        },
-                        maxYear: parseInt(moment().format('YYYY'), 10),
-                        drops: 'up',
-                        autoApply: true,
-                    });
-                    $(dateEle).val(null).trigger('change');
-                    if (data?.['date']) {
-                        $(dateEle).val(moment(data?.['date']).format('DD/MM/YYYY'));
-                    }
-                }
-                if (taxEle) {
-                    let dataS2 = [];
-                    if (data?.['tax_data']) {
-                        dataS2 = [data?.['tax_data']];
-                    }
-                    QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
-                }
-                if (termDataEle) {
-                    $(termDataEle).val(JSON.stringify(data?.['term_data'] ? data?.['term_data'] : []));
-                }
-            },
-            drawCallback: function () {
-                $.fn.initMaskMoney2();
-                if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    QuotationDataTableHandle.dtbInvoiceHDCustom();
-                }
-            },
-        });
-    };
-
     static dataTablePaymentStage(data) {
         // init dataTable
         QuotationDataTableHandle.$tablePayment.DataTableDefault({
@@ -4504,6 +4355,155 @@ class QuotationDataTableHandle {
                     QuotationDataTableHandle.dtbPaymentHDCustom();
                     // set again WF runtime
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
+                }
+            },
+        });
+    };
+
+    static dataTableInvoice(data) {
+        // init dataTable
+        QuotationDataTableHandle.$tableInvoice.DataTableDefault({
+            styleDom: 'hide-foot',
+            data: data ? data : [],
+            ordering: false,
+            paging: false,
+            info: false,
+            searching: false,
+            autoWidth: true,
+            scrollX: true,
+            columns: [
+                {
+                    targets: 0,
+                    width: '8%',
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order" data-id="${row?.['order']}">${row?.['order']}</span>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '25%',
+                    render: (data, type, row) => {
+                        return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ""}</textarea>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    width: '12%',
+                    render: (data, type, row) => {
+                        return `<div class="input-affix-wrapper">
+                                    <input type="text" class="form-control date-picker text-black table-row-date" autocomplete="off">
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<div class="d-flex justify-content-between align-items-center">
+                                    <div class="input-group">
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" class="form-control table-row-ratio valid-num" value="${row?.['ratio'] ? row?.['ratio'] : '0'}" readonly>
+                                            <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-select-term"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#selectTermModal"
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control table-row-term-data hidden">`;
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '10%',
+                    render: () => {
+                        return `<select
+                                    class="form-select table-row-tax"
+                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                    data-method="GET"
+                                    data-keyResp="tax_list"
+                                >
+                                </select>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    width: '15%',
+                    render: (data, type, row) => {
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-total text-black" 
+                                    value="${row?.['total'] ? row?.['total'] : '0'}"
+                                    data-return-type="number"
+                                    readonly
+                                >`;
+                    }
+                },
+                {
+                    targets: 6,
+                    width: '15%',
+                    render: (data, type, row) => {
+                        return `<input 
+                                    type="text" 
+                                    class="form-control mask-money table-row-balance text-black" 
+                                    value="${row?.['balance'] ? row?.['balance'] : 0}"
+                                    data-return-type="number"
+                                    readonly
+                                >`;
+                    }
+                },
+                {
+                    targets: 7,
+                    width: '5%',
+                    render: (data, type, row) => {
+                        return ``;
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+                let dateEle = row.querySelector('.table-row-date');
+                let taxEle = row.querySelector('.table-row-tax');
+                let termDataEle = row.querySelector('.table-row-term-data');
+                if (dateEle) {
+                    $(dateEle).daterangepicker({
+                        singleDatePicker: true,
+                        timepicker: false,
+                        showDropdowns: false,
+                        minYear: 2023,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        },
+                        maxYear: parseInt(moment().format('YYYY'), 10),
+                        drops: 'up',
+                        autoApply: true,
+                    });
+                    $(dateEle).val(null).trigger('change');
+                    if (data?.['date']) {
+                        $(dateEle).val(moment(data?.['date']).format('DD/MM/YYYY'));
+                    }
+                }
+                if (taxEle) {
+                    let dataS2 = [];
+                    if (data?.['tax_data']) {
+                        dataS2 = [data?.['tax_data']];
+                    }
+                    QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                }
+                if (termDataEle) {
+                    $(termDataEle).val(JSON.stringify(data?.['term_data'] ? data?.['term_data'] : []));
+                }
+            },
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
+                    QuotationDataTableHandle.dtbInvoiceHDCustom();
                 }
             },
         });

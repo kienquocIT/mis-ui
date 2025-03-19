@@ -446,7 +446,7 @@ $(document).ready(async function () {
                 'bank_account_number': $bank_account_number.val(),
                 'bank_account_owner': $bank_account_owner.val(),
                 'currency': $currency.val(),
-                'is_brand': $is_brand.val(),
+                'is_brand': $is_brand.prop('checked'),
                 'brand_name': $brand_name.val(),
                 'brand_address_data': {
                     'country_id': $bank_account_country.val(),

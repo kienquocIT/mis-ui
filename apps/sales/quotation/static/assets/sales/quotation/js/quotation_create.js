@@ -749,7 +749,7 @@ $(function () {
                     }
                 }
                 if ($(this).hasClass('table-row-installment')) {
-                    QuotationLoadDataHandle.loadChangePSInstallment(this);
+                    QuotationLoadDataHandle.loadChangeInstallment(this);
                 }
                 if ($(this).hasClass('table-row-ratio')) {
                     QuotationLoadDataHandle.loadPSValueBeforeTax(this);

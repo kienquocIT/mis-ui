@@ -847,7 +847,7 @@ $(function () {
                 }
             }
             if ($(this).hasClass('table-row-installment')) {
-                LeaseOrderLoadDataHandle.loadChangePSInstallment(this);
+                LeaseOrderLoadDataHandle.loadChangeInstallment(this);
             }
             if ($(this).hasClass('table-row-ratio')) {
                 LeaseOrderLoadDataHandle.loadPSValueBeforeTax(this);

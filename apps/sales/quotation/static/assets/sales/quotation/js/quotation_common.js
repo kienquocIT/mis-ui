@@ -1496,37 +1496,43 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadChangePSInstallment(ele) {
+    static loadChangeInstallment(ele) {
         let row = ele.closest('tr');
         let dataDateType = JSON.parse($('#payment_date_type').text());
-        let eleDateType = row.querySelector('.table-row-remark');
-        let eleRatio = row.querySelector('.table-row-ratio');
+        let remarkELe = row.querySelector('.table-row-remark');
+        let ratioEle = row.querySelector('.table-row-ratio');
         let eleDate = row.querySelector('.table-row-date');
-        let eleValueBT = row.querySelector('.table-row-value-before-tax');
-        let eleDueDate = row.querySelector('.table-row-due-date');
+        let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+        let dueDateEle = row.querySelector('.table-row-due-date');
         if ($(ele).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
-            if (eleDateType && eleRatio && eleDate && eleValueBT && eleDueDate && dataSelected && dataDateType) {
-                $(eleDateType).val(dataDateType[dataSelected?.['after']][1]);
-                eleRatio.setAttribute('readonly', 'true');
+            if (remarkELe && ratioEle && eleDate && valBeforeEle && dueDateEle && dataSelected && dataDateType) {
+                $(remarkELe).val(dataDateType[dataSelected?.['after']][1]);
+                ratioEle.setAttribute('readonly', 'true');
+                $(ratioEle).val('');
                 if (dataSelected?.['value']) {
-                    eleRatio.value = parseFloat(dataSelected?.['value']);
+                    if (dataSelected?.['unit_type'] === 0 || dataSelected?.['unit_type'] === 2) {
+                        $(ratioEle).val(parseFloat(dataSelected?.['value']));
+                        QuotationLoadDataHandle.loadPSValueBeforeTax(ratioEle);
+                    }
+                    if (dataSelected?.['unit_type'] === 1) {
+                        $(valBeforeEle).attr('value', String(dataSelected?.['value']));
+                    }
                 }
-                QuotationLoadDataHandle.loadPSValueBeforeTax(eleRatio);
-                eleDueDate.setAttribute('disabled', 'true');
+                dueDateEle.setAttribute('disabled', 'true');
                 let date = $(eleDate).val();
                 if (date && dataSelected?.['no_of_days']) {
                     let dueDate = calculateDate(date, {'number_day_after': parseInt(dataSelected?.['no_of_days'])});
                     if (dueDate) {
-                        $(eleDueDate).val(dueDate);
+                        $(dueDateEle).val(dueDate);
                     }
                 }
             }
         } else {
-            if (eleRatio && eleValueBT && eleDueDate) {
+            if (ratioEle && valBeforeEle && dueDateEle) {
                 if (["post", "put"].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    eleRatio.removeAttribute('readonly');
-                    eleDueDate.removeAttribute('disabled');
+                    ratioEle.removeAttribute('readonly');
+                    dueDateEle.removeAttribute('disabled');
                 }
             }
         }
@@ -1715,6 +1721,7 @@ class QuotationLoadDataHandle {
                 if (termDataEle && ratioEle && totalEle && balanceEle) {
                     let termData = [];
                     let ratio = 0;
+                    let amount = 0;
                     for (let checkedEle of QuotationDataTableHandle.$tableSTerm[0].querySelectorAll('.table-row-checkbox:checked')) {
                         let row = checkedEle.closest('tr');
                         if (row) {
@@ -1722,12 +1729,21 @@ class QuotationLoadDataHandle {
                             let $row = QuotationDataTableHandle.$tableSTerm.DataTable().row(rowIndex);
                             let dataRow = $row.data();
                             termData.push(dataRow);
-                            ratio += parseFloat(dataRow?.['value'] ? dataRow?.['value'] : "0");
+                            if (dataRow?.['unit_type'] === 0 || dataRow?.['unit_type'] === 2) {
+                                ratio += parseFloat(dataRow?.['value'] ? dataRow?.['value'] : "0");
+                            }
+                            if (dataRow?.['unit_type'] === 1) {
+                                amount += parseFloat(dataRow?.['value'] ? dataRow?.['value'] : "0");
+                            }
                         }
                     }
                     $(termDataEle).val(JSON.stringify(termData));
-                    $(ratioEle).val(ratio);
+                    $(ratioEle).val('');
+                    $(totalEle).attr('value', String(0));
+                    $(balanceEle).attr('value', String(0));
+                    $.fn.initMaskMoney2();
                     if (ratio > 0) {
+                        $(ratioEle).val(ratio);
                         let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
                         if (tableProductWrapper) {
                             let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
@@ -1742,6 +1758,11 @@ class QuotationLoadDataHandle {
                                 }
                             }
                         }
+                    }
+                    if (amount > 0) {
+                        $(totalEle).attr('value', String($(totalEle).valCurrency() + amount));
+                        $(balanceEle).attr('value', String($(balanceEle).valCurrency() + amount));
+                        $.fn.initMaskMoney2();
                     }
                 }
             }
@@ -1816,7 +1837,6 @@ class QuotationLoadDataHandle {
                     $(valReconcileEle).attr('value', reconcile);
                     let dataTax = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
                     let tax = dataTax?.['rate'];
-                    let valBefore = $(valBeforeEle).valCurrency() + reconcile;
                     let datasRelateTax = QuotationCalculateCaseHandle.getDatasRelateTax(reconcile, tax);
                     $(valTaxEle).attr('value', $(valTaxEle).valCurrency() + datasRelateTax?.['valTax']);
                     $(valTotalEle).attr('value', $(valTotalEle).valCurrency() + datasRelateTax?.['valTax']);
@@ -1845,16 +1865,21 @@ class QuotationLoadDataHandle {
                         if (targetRow) {
                             let totalEle = targetRow.querySelector('.table-row-total');
                             let balanceEle = targetRow.querySelector('.table-row-balance');
-                            if (totalEle && balanceEle) {
+                            let paidFullEle = targetRow.querySelector('.paid-full');
+                            if (totalEle && balanceEle && paidFullEle) {
                                 let totalInvoice = parseFloat($(totalEle).valCurrency());
                                 let before = parseFloat($(valBeforeEle).valCurrency());
                                 let reconcile = parseFloat($(valReconcileEle).valCurrency());
                                 let tax = parseFloat($(valTaxEle).valCurrency());
 
+                                paidFullEle.setAttribute('hidden', 'true');
                                 let remain = totalInvoice - (before + reconcile + tax);
                                 if (remain >= 0) {
                                     $(balanceEle).attr('value', String(remain));
                                     $.fn.initMaskMoney2();
+                                    if (remain === 0) {
+                                        paidFullEle.removeAttribute('hidden');
+                                    }
                                 }
                             }
                         }
@@ -4450,13 +4475,24 @@ class QuotationDataTableHandle {
                     targets: 6,
                     width: '15%',
                     render: (data, type, row) => {
-                        return `<input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-balance text-black" 
-                                    value="${row?.['balance'] ? row?.['balance'] : 0}"
-                                    data-return-type="number"
-                                    readonly
-                                >`;
+                        let hidden = "hidden";
+                        if (row?.['total'] > 0 && row?.['balance'] === 0) {
+                            hidden = "";
+                        }
+                        return `<div class="row">
+                                    <div class=input-group">
+                                        <span class="input-affix-wrapper">
+                                            <input 
+                                                type="text" 
+                                                class="form-control mask-money table-row-balance text-black" 
+                                                value="${row?.['balance'] ? row?.['balance'] : 0}"
+                                                data-return-type="number"
+                                                readonly
+                                            >
+                                            <span class="input-suffix"><i class="far fa-check-circle text-success paid-full" ${hidden}></i></span>
+                                        </span>
+                                    </div>
+                                </div>`;
                     }
                 },
                 {
@@ -4620,6 +4656,23 @@ class QuotationDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
+                        let disabled = "";
+                        QuotationDataTableHandle.$tableInvoice.DataTable().rows().every(function () {
+                            let rowCheck = this.node();
+                            if (!rowCheck.querySelector(`[data-id="${QuotationLoadDataHandle.$btnSaveTerm.attr('data-id')}"]`)) {
+                                let termDataEle = rowCheck.querySelector('.table-row-term-data');
+                                if (termDataEle) {
+                                    if ($(termDataEle).val()) {
+                                        let termData = JSON.parse($(termDataEle).val());
+                                        for (let term of termData) {
+                                            if (term?.['id'] === row?.['id']) {
+                                                disabled = "disabled";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
                         let checked = "";
                         let target = QuotationDataTableHandle.$tableInvoice[0].querySelector(`[data-id="${QuotationLoadDataHandle.$btnSaveTerm.attr('data-id')}"]`);
                         if (target) {
@@ -4640,7 +4693,7 @@ class QuotationDataTableHandle {
                             }
                         }
                         return `<div class="form-check form-check-lg d-flex align-items-center">
-                                    <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-term-${row?.['id'].replace(/-/g, "")}" ${checked}>
+                                    <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-term-${row?.['id'].replace(/-/g, "")}" ${checked} ${disabled}>
                                     <label class="form-check-label table-row-title" for="s-term-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
                                 </div>`;
                     }
@@ -4648,18 +4701,34 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span>--</span>`;
+                        let dataDateType = JSON.parse($('#payment_date_type').text());
+                        return `<span>${dataDateType[row?.['after']][1]}</span>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-value">${row?.['value'] ? row?.['value'] : 0} %</span>`;
+                        let txt = ``;
+                        if (row?.['unit_type'] === 0 || row?.['unit_type'] === 2) {
+                            txt = `<span class="table-row-value">${row?.['value'] ? row?.['value'] : 0} %</span>`;
+                        }
+                        return txt;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        let txt = ``;
+                        if (row?.['unit_type'] === 1) {
+                            txt = `<span class="mask-money table-row-value" data-init-money="${row?.['value'] ? row?.['value'] : 0}"></span>`;
+                        }
+                        return txt;
                     }
                 },
             ],
             drawCallback: function () {
                 QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSTerm);
+                $.fn.initMaskMoney2();
             }
         });
     };
@@ -7349,7 +7418,10 @@ class QuotationSubmitHandle {
             }
             let ratioEle = row.querySelector('.table-row-ratio');
             if (ratioEle) {
-                rowData['ratio'] = parseFloat(ratioEle.value);
+                rowData['ratio'] = null;
+                if ($(ratioEle).val()) {
+                    rowData['ratio'] = parseFloat($(ratioEle).val());
+                }
             }
             let invoiceEle = row.querySelector('.table-row-invoice');
             if (invoiceEle) {
@@ -7439,7 +7511,10 @@ class QuotationSubmitHandle {
             }
             let ratioEle = row.querySelector('.table-row-ratio');
             if (ratioEle) {
-                rowData['ratio'] = parseFloat($(ratioEle).val());
+                rowData['ratio'] = null;
+                if ($(ratioEle).val()) {
+                    rowData['ratio'] = parseFloat($(ratioEle).val());
+                }
             }
             let taxEle = row.querySelector('.table-row-tax');
             if (taxEle) {

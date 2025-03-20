@@ -1,10 +1,10 @@
 $(document).ready(async function () {
-    loadPriceList([]);
-    await new ProductHandle().load();
+    await ProductLoadPage.LoadPageDataFirst()
+    await ProductHandler.LoadPage()
 
     $('#form-create-product').submit(function (event) {
         event.preventDefault();
-        let combinesData = new ProductHandle().combinesData($(this), false);
+        let combinesData = ProductHandler.CombinesData($(this), false);
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)
@@ -30,5 +30,5 @@ $(document).ready(async function () {
                     }
                 )
         }
-    });
+    })
 })

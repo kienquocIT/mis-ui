@@ -1,12 +1,13 @@
 $(document).ready(async function () {
-    new ProductHandle().load();
+    await ProductLoadPage.LoadPageDataFirst()
+    await ProductHandler.LoadPage();
 
-    LoadDetailProduct('update');
+    ProductHandler.LoadDetailProduct('update');
 
     let pk = $.fn.getPkDetail()
     $('#form-update-product').submit(function (event) {
         event.preventDefault();
-        let combinesData = new ProductHandle().combinesData($(this), true);
+        let combinesData = ProductHandler.CombinesData($(this), true);
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

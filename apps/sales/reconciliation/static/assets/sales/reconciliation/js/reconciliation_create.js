@@ -1,6 +1,6 @@
 $(document).ready(function () {
     ReconHandle.LoadPage();
-    WFRTControl.setWFInitialData('reconciliation', 'POST')
+    WFRTControl.setWFInitialData('reconciliation')
 
     // SUBMIT FORM CREATE
     const recon_create_form = $('#form-create-recon')

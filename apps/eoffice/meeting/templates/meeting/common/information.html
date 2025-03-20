@@ -126,6 +126,7 @@
                     <span class="text-muted small">{% trans 'Click the button behind the box to select' %}</span>
                 </div>
             </div>
+            {% if is_create %}
             <div class="col-md-12">
                 <button class="btn btn-outline-primary mb-3" type="button" id="check_room"
                         data-url="{% url 'MeetingScheduleCheckAPI' %}">{% trans "Check this room's bookings" %}</button>
@@ -163,6 +164,7 @@
                     </svg>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>

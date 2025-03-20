@@ -149,14 +149,6 @@ function loadInternalParticipantsTable() {
                 }
             },
             {
-                className: 'wrap-text w-5',
-                render: (data, type, row) => {
-                    return `<div class="form-check">
-                                <input type="checkbox" class="form-check-input checkbox_internal_employees">
-                            </div>`
-                }
-            },
-            {
                 data: 'full_name',
                 className: 'wrap-text w-25',
                 render: (data, type, row) => {
@@ -184,7 +176,7 @@ function loadInternalParticipantsTable() {
                 }
             },
             {
-                className: 'wrap-text w-15 text-right',
+                className: 'wrap-text w-10 text-center',
                 render: (data, type, row) => {
                     return row?.['email'] ? `<div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox_internal_send_notify_email">
@@ -192,9 +184,17 @@ function loadInternalParticipantsTable() {
                 }
             },
             {
-                className: 'wrap-text w-10 text-right',
+                className: 'wrap-text w-10 text-center',
                 render: (data, type, row) => {
                     return '<span class="send-email-status small"></span>'
+                }
+            },
+            {
+                className: 'wrap-text w-10 text-center',
+                render: (data, type, row) => {
+                    return `<div class="form-check">
+                                <input type="checkbox" class="form-check-input checkbox_internal_employees">
+                            </div>`
                 }
             },
         ],
@@ -303,14 +303,6 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
                 }
             },
             {
-                className: 'wrap-text w-5',
-                render: (data, type, row) => {
-                    return `<div class="form-check ">
-                                <input type="checkbox" class="form-check-input checkbox_external_contacts">
-                            </div>`
-                }
-            },
-            {
                 data: 'full_name',
                 className: 'wrap-text w-25',
                 render: (data, type, row) => {
@@ -338,7 +330,7 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
                 }
             },
             {
-                className: 'wrap-text w-15 text-right',
+                className: 'wrap-text w-15 text-center',
                 render: (data, type, row) => {
                     return row?.['email'] ? `<div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox_external_send_notify_email">
@@ -346,9 +338,17 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
                 }
             },
             {
-                className: 'wrap-text w-10 text-right',
+                className: 'wrap-text w-10 text-center',
                 render: (data, type, row) => {
                     return '<span class="send-email-status small"></span>'
+                }
+            },
+            {
+                className: 'wrap-text w-5 text-center',
+                render: (data, type, row) => {
+                    return `<div class="form-check ">
+                                <input type="checkbox" class="form-check-input checkbox_external_contacts">
+                            </div>`
                 }
             },
         ],
@@ -697,7 +697,7 @@ class MeetingScheduleHandle {
             })
         })
 
-        if (frm.dataForm['participants'].length <= 0) {
+        if (frm.dataForm['participants'].length <= 0 || $('#check_room').attr('data-is_check') === 'false') {
             $.fn.notifyB({description: 'Participants have not selected yet.'}, 'failure');
             return false
         }
@@ -973,7 +973,7 @@ class checkRoomAvailable {
     }
 
     checkData(data){
-        let datePick = new Date($('#start-date').val())
+        let datePick = (([d, m , y]) => new Date(y, m - 1, d))($('#start-date').val().split('/'))
         const elmTime = $('#start-time')
         let start_compare = new Date(datePick)
         start_compare.setHours(parseInt(elmTime.val().slice(0,2)), parseInt(elmTime.val().slice(3,5)), 0)
@@ -992,9 +992,10 @@ class checkRoomAvailable {
 
             // case lớn hơn
             if (
-                (start_compare.getTime() < start_item.getTime() && end_compare.getTime() > start_item.getTime()) ||
-                (start_compare.getTime() > start_item.getTime() && end_compare.getTime() < end_time.getTime()) ||
+                (start_compare.getTime() < start_item.getTime() && end_compare.getTime() >= start_item.getTime()) ||
+                (start_compare.getTime() >= start_item.getTime() && end_compare.getTime() <= end_time.getTime()) ||
                 (start_compare.getTime() < end_time.getTime() && end_compare.getTime() > end_time.getTime())
+
             ) {
                 $('#check_room').attr('data-is_check', false)
                 $.fn.notifyB({'description': $.fn.gettext('This room is unavailable at this time')}, 'failure')
@@ -1004,12 +1005,13 @@ class checkRoomAvailable {
     }
 
     listenEvent(){
-        $('#start-date, #start-time, #duration-hour, #duration-min').on('change', ()=>{
-            if (
+        $('#start-date, #start-time, #duration-hour, #duration-min, #room').on('change', ()=>{
+            if ($('#room').val() &&
                 $('#start-date').val() &&
                 $('#start-time').val() &&
                 (parseInt($('#duration-hour').val()) || parseInt($('#duration-min').val()))
             ){
+                console.log('có vào')
                 this.validData(true)
             }
         });

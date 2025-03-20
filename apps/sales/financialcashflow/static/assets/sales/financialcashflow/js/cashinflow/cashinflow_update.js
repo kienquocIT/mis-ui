@@ -1,6 +1,6 @@
 $(document).ready(function () {
     CashInflowHandle.LoadPage();
-    WFRTControl.setWFInitialData('cashinflow', 'PUT')
+    WFRTControl.setWFInitialData('cashinflow')
     CashInflowHandle.LoadDetailCIF('update');
 
     // SUBMIT FORM UPDATE

@@ -249,3 +249,7 @@ msgstr "Chọn tệp"
 #
 msgid "Agree"
 msgstr "Đồng ý"
+
+#
+msgid "User ID"
+msgstr "Mã ID Người dùng"

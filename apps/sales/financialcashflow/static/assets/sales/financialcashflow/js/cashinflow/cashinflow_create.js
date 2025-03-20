@@ -1,6 +1,6 @@
 $(document).ready(function () {
     CashInflowHandle.LoadPage();
-    WFRTControl.setWFInitialData('cashinflow', 'POST')
+    WFRTControl.setWFInitialData('cashinflow')
 
     // SUBMIT FORM CREATE
     let form_validator = $('#form-create-cashinflow').validate({

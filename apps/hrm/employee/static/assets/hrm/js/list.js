@@ -45,7 +45,8 @@ $(document).ready(function () {
                 class: 'text-center',
                 render: (row) => {
                     let badge = '--';
-                    if (row?.id) badge = `<span class="badge badge-soft-primary">${row.id}</span>`
+                    if (row?.id) badge = `<span class="badge badge-soft-primary text-lowercase">${row?.username.toLowerCase() + ' - ' +
+                    row?.id}</span>`
                     return badge
                 }
             },

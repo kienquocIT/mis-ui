@@ -1,7 +1,7 @@
 $(document).ready(function () {
     PaymentHandle.LoadPage('update')
     PaymentHandle.LoadDetailPayment('update');
-    WFRTControl.setWFInitialData('payment', 'PUT')
+    WFRTControl.setWFInitialData('payment')
 
     let form_validator = $('#form-detail-payment').validate({
         submitHandler: function (form) {

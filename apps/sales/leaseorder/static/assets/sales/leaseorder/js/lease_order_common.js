@@ -1915,6 +1915,7 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadCheckSameMixTax() {
+        let listTaxID = [];
         let listTax = [];
         LeaseOrderDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let row = this.node();
@@ -1922,11 +1923,12 @@ class LeaseOrderLoadDataHandle {
             if (taxEle) {
                 if ($(taxEle).val()) {
                     let taxData = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
-                    listTax.push(taxData?.['id']);
+                    listTaxID.push(taxData?.['id']);
+                    listTax.push(taxData);
                 }
             }
         });
-        return listTax.every(val => val === listTax[0]) ? "same" : "mixed";
+        return {"check": listTaxID.every(val => val === listTaxID[0]) ? "same" : "mixed", "list_tax": listTax};
     };
 
     // TABLE COST
@@ -4924,7 +4926,7 @@ class LeaseOrderDataTableHandle {
                     render: (data, type, row) => {
                         let readonly = "readonly";
                         let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
-                        if (check === "mixed") {
+                        if (check?.['check'] === "mixed") {
                             readonly = "";
                         }
                         return `<input 
@@ -4966,7 +4968,7 @@ class LeaseOrderDataTableHandle {
                         let hiddenS2 = "";
                         let hiddenSpan = "hidden";
                         let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
-                        if (check === "mixed") {
+                        if (check?.['check'] === "mixed") {
                             hiddenS2 = "hidden";
                             hiddenSpan = "";
                         }
@@ -4989,7 +4991,7 @@ class LeaseOrderDataTableHandle {
                     render: (data, type, row) => {
                         let readonly = "readonly";
                         let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
-                        if (check === "mixed") {
+                        if (check?.['check'] === "mixed") {
                             readonly = "";
                         }
                         return `<input 
@@ -5007,7 +5009,7 @@ class LeaseOrderDataTableHandle {
                     render: (data, type, row) => {
                         let readonly = "readonly";
                         let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
-                        if (check === "mixed") {
+                        if (check?.['check'] === "mixed") {
                             readonly = "";
                         }
                         return `<input 
@@ -5188,7 +5190,7 @@ class LeaseOrderDataTableHandle {
                         let hiddenS2 = "";
                         let hiddenSpan = "hidden";
                         let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
-                        if (check === "mixed") {
+                        if (check?.['check'] === "mixed") {
                             hiddenS2 = "hidden";
                             hiddenSpan = "";
                         }
@@ -5210,7 +5212,7 @@ class LeaseOrderDataTableHandle {
                     render: (data, type, row) => {
                         let readonly = "readonly";
                         let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
-                        if (check === "mixed") {
+                        if (check?.['check'] === "mixed") {
                             readonly = "";
                         }
                         return `<input 

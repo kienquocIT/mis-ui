@@ -1875,6 +1875,7 @@ class QuotationLoadDataHandle {
     };
 
     static loadCheckSameMixTax() {
+        let listTaxID = [];
         let listTax = [];
         QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let row = this.node();
@@ -1882,11 +1883,12 @@ class QuotationLoadDataHandle {
             if (taxEle) {
                 if ($(taxEle).val()) {
                     let taxData = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
-                    listTax.push(taxData?.['id']);
+                    listTaxID.push(taxData?.['id']);
+                    listTax.push(taxData);
                 }
             }
         });
-        return listTax.every(val => val === listTax[0]) ? "same" : "mixed";
+        return {"check": listTaxID.every(val => val === listTaxID[0]) ? "same" : "mixed", "list_tax": listTax};
     };
 
     // TABLE COST
@@ -4218,7 +4220,7 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         let readonly = "readonly";
                         let check = QuotationLoadDataHandle.loadCheckSameMixTax();
-                        if (check === "mixed") {
+                        if (check?.['check'] === "mixed") {
                             readonly = "";
                         }
                         return `<input 
@@ -4260,7 +4262,7 @@ class QuotationDataTableHandle {
                         let hiddenS2 = "";
                         let hiddenSpan = "hidden";
                         let check = QuotationLoadDataHandle.loadCheckSameMixTax();
-                        if (check === "mixed") {
+                        if (check?.['check'] === "mixed") {
                             hiddenS2 = "hidden";
                             hiddenSpan = "";
                         }
@@ -4283,7 +4285,7 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         let readonly = "readonly";
                         let check = QuotationLoadDataHandle.loadCheckSameMixTax();
-                        if (check === "mixed") {
+                        if (check?.['check'] === "mixed") {
                             readonly = "";
                         }
                         return `<input 
@@ -4301,7 +4303,7 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         let readonly = "readonly";
                         let check = QuotationLoadDataHandle.loadCheckSameMixTax();
-                        if (check === "mixed") {
+                        if (check?.['check'] === "mixed") {
                             readonly = "";
                         }
                         return `<input 
@@ -4479,10 +4481,14 @@ class QuotationDataTableHandle {
                     targets: 4,
                     width: '10%',
                     render: () => {
+                        let readonlyS2 = "";
                         let hiddenS2 = "";
                         let hiddenSpan = "hidden";
                         let check = QuotationLoadDataHandle.loadCheckSameMixTax();
-                        if (check === "mixed") {
+                        if (check?.['check'] === "same") {
+                            readonlyS2 = "readonly";
+                        }
+                        if (check?.['check'] === "mixed") {
                             hiddenS2 = "hidden";
                             hiddenSpan = "";
                         }
@@ -4492,10 +4498,11 @@ class QuotationDataTableHandle {
                                         data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
                                         data-method="GET"
                                         data-keyResp="tax_list"
+                                        ${readonlyS2}
                                     >
                                     </select>
                                 </div>
-                                <span ${hiddenSpan}>${QuotationLoadDataHandle.transEle.attr('data-mixed')}</span>`;
+                                <span class="" ${hiddenSpan}>${QuotationLoadDataHandle.transEle.attr('data-mixed')}</span>`;
                     }
                 },
                 {
@@ -4504,7 +4511,7 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         let readonly = "readonly";
                         let check = QuotationLoadDataHandle.loadCheckSameMixTax();
-                        if (check === "mixed") {
+                        if (check?.['check'] === "mixed") {
                             readonly = "";
                         }
                         return `<input 

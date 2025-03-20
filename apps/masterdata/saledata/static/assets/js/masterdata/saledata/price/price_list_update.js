@@ -74,7 +74,7 @@ $(document).ready(function () {
                 frm.dataForm['can_delete'] = false
             }
 
-            WindowControl.showLoading()
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             $.fn.callAjax2({
                 url: frm.dataUrl.format_url_with_uuid(pk),
                 method: frm.dataMethod,
@@ -112,7 +112,7 @@ $(document).ready(function () {
             },
         },
         submitHandler: function (form) {
-            WindowControl.showLoading()
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             let frm = new SetupFormSubmit(form);
 
             frm.dataForm['product'] = {
@@ -148,7 +148,7 @@ $(document).ready(function () {
     let frm_update_item_price = $('#form-update-item-price')
     new SetupFormSubmit(frm_update_item_price).validate({
         submitHandler: function (form) {
-            WindowControl.showLoading()
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             let frm = new SetupFormSubmit($(form));
             frm.dataForm['list_item'] = PriceListAction.getDataItemChangePrice()
             $.fn.callAjax2({

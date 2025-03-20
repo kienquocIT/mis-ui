@@ -32,7 +32,7 @@ $('#form-invoice-sign').submit(function (event) {
     event.preventDefault();
     let combinesDataCre = combinesDataCreate($(this));
     if (combinesDataCre) {
-        WindowControl.showLoading();
+        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
         $.fn.callAjax2(combinesDataCre).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);

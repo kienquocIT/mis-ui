@@ -6,7 +6,7 @@ $(document).ready(function () {
         submitHandler: function (form) {
             let combinesData = new LeadHandle().combinesData(form);
             if (combinesData) {
-                WindowControl.showLoading();
+                WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
                 $.fn.callAjax2(combinesData)
                     .then(
                         (resp) => {

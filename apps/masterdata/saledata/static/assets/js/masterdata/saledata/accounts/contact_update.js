@@ -4,7 +4,7 @@ $(document).ready(function () {
     const frm = new SetupFormSubmit($('#form-detail-contact'));
     frm.validate({
         submitHandler: function (form) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             let combinesData = ContactHandle.combinesData(form);
             $.fn.callAjax2(combinesData).then(
                 (resp) => {

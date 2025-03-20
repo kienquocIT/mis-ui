@@ -5,7 +5,7 @@ $(document).ready(function () {
         event.preventDefault();
         let combinesData = new CompanyHandle().combinesData($(this), false);
         if (combinesData) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {

@@ -2276,7 +2276,7 @@ class WFRTControl {
     }
 
     static callAjaxWFCreate(_form) {
-        WindowControl.showLoading();
+        WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
         $.fn.callAjax2(
             {
                 'url': _form.dataUrl,
@@ -2302,7 +2302,7 @@ class WFRTControl {
     }
 
     static callAjaxWFUpdate(_form) {
-        WindowControl.showLoading();
+        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
         $.fn.callAjax2(
             {
                 'url': _form.dataUrl,

@@ -465,7 +465,7 @@ $(document).ready(function () {
         event.preventDefault();
         let combinesData = combinesDataSerial($(this));
         if (combinesData) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {
